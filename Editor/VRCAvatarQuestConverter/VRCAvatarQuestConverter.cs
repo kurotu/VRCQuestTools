@@ -11,12 +11,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 
-namespace Kurotu
+namespace KRTQuestTools
 {
     public static class VRCAvatarQuestConverter
     {
         const string Tag = "VRCAvatarQuestConverter";
-        const string ArtifactsRootDir = "Assets/VRCAvatarQuestConverter/Artifacts";
+        const string ArtifactsRootDir = "Assets/KRT/KRTQuestTools/Artifacts";
         const string QuestShader = "VRChat/Mobile/Toon Lit";
         readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
