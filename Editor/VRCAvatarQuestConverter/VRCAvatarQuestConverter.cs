@@ -60,11 +60,7 @@ namespace KRTQuestTools
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
                 if (convertedMaterials.ContainsKey(guid)) { continue; }
                 var shader = Shader.Find(QuestShader);
-                var mat = new Material(m)
-                {
-                    shader = shader,
-                    shaderKeywords = null
-                };
+                Material mat = MaterialConverter.Convert(m, shader);
                 var file = $"{artifactsDir}/{m.name}_from_{guid}.mat";
                 AssetDatabase.CreateAsset(mat, file);
                 convertedMaterials.Add(guid, mat);
