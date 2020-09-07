@@ -54,11 +54,25 @@ namespace KRTQuestTools
     public class UnitySettingsWindow : EditorWindow
     {
         private delegate void Action();
+        private const string CURRENT_VERSION = "0.0.0";
+        private const string LAST_VERSION_KEY = "dev.kurotu.LastQuestToolsVersion";
+
+        [InitializeOnLoadMethod]
+        static void InitOnInstall()
+        {
+            var lastVersion = EditorUserSettings.GetConfigValue(LAST_VERSION_KEY);
+            if (!lastVersion.Equals(CURRENT_VERSION))
+            {
+                Init();
+            }
+            EditorUserSettings.SetConfigValue(LAST_VERSION_KEY, CURRENT_VERSION);
+        }
 
         [MenuItem("KRTQuestTools/Unity Settings")]
         static void Init()
         {
-            GetWindow(typeof(UnitySettingsWindow));
+            var window = GetWindow(typeof(UnitySettingsWindow));
+            window.Show();
         }
 
         private void OnGUI()
