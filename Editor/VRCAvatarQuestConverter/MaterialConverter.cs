@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEditor;
 
 namespace KRTQuestTools
 {
@@ -33,6 +34,33 @@ namespace KRTQuestTools
                 "MatCap Lit", "Toon Lit", "Particles/Additive", "Particles/Multiply"
             }.Select(s => $"VRChat/Mobile/{s}");
             return usableShaders.Contains(material.shader.name);
+        }
+
+        public static Texture GetEmissionMap(Material material)
+        {
+            switch (IdentifyShader(material.shader))
+            {
+                case ShaderCategory.Generic:
+                    return material.GetTexture("_EmissionMap");
+                case ShaderCategory.QuestAvatar:
+                    return null;
+                default:
+                    return null;
+            }
+        }
+
+        public static Color GetEmissionColor(Material material)
+        {
+            return material.GetColor("_EmissionColor");
+        }
+
+        static ShaderCategory IdentifyShader(Shader shader)
+        {
+            if (shader.name.StartsWith("VRChat/Mobile/"))
+            {
+                return ShaderCategory.QuestAvatar;
+            }
+            return ShaderCategory.Generic;
         }
     }
 }

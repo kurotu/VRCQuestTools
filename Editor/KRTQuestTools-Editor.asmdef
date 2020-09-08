@@ -1,0 +1,19 @@
+{
+    "name": "KRTQuestTools-Editor",
+    "references": [],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Magick.NET.Core.dll",
+        "Magick.NET-Q16-x64.dll",
+        "VRCCore-Editor.dll",
+        "VRCSDKBase.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

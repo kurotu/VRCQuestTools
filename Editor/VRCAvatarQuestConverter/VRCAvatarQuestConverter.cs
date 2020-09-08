@@ -4,6 +4,7 @@
 // <author>kurotu</author>
 // <remarks>Licensed under the MIT license.</remarks>
 
+using ImageMagick;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace KRTQuestTools
         VRC.SDKBase.VRC_AvatarDescriptor avatar;
         string outputPath = "";
         bool allowOverwriting = false;
+        bool combineEmission = true;
 
         [MenuItem("KRTQuestTools/Convert Avatar For Quest")]
         static void Init()
@@ -35,11 +37,20 @@ namespace KRTQuestTools
 
             EditorGUILayout.LabelField("Converter Settings", EditorStyles.boldLabel);
             var selectedAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField("Avatar", avatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
-            if (string.IsNullOrEmpty(outputPath) && avatar != null && avatar != selectedAvatar)
+            if (selectedAvatar == null)
             {
-                outputPath = $"Assets/KRT/KRTQuestTools/Artifacts/{avatar.name}";
+                outputPath = "";
+            }
+            else if (avatar != selectedAvatar)
+            {
+                outputPath = $"Assets/KRT/KRTQuestTools/Artifacts/{selectedAvatar.name}";
             }
             avatar = selectedAvatar;
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Experimental Settings", EditorStyles.boldLabel);
+            combineEmission = EditorGUILayout.Toggle("Combine Emission", combineEmission);
 
             EditorGUILayout.Space();
 
@@ -61,7 +72,7 @@ namespace KRTQuestTools
             EditorGUILayout.Space();
             if (GUILayout.Button("Convert"))
             {
-                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath);
+                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, combineEmission);
             }
         }
     }
@@ -78,10 +89,10 @@ namespace KRTQuestTools
         {
             var original = Selection.activeGameObject;
             var artifactsDir = $"{ArtifactsRootDir}/{original.name}";
-            ConvertForQuest(original, artifactsDir);
+            ConvertForQuest(original, artifactsDir, false);
         }
 
-        internal static void ConvertForQuest(GameObject original, string artifactsDir)
+        internal static void ConvertForQuest(GameObject original, string artifactsDir, bool combineEmission)
         {
             if (Directory.Exists(artifactsDir))
             {
@@ -118,7 +129,7 @@ namespace KRTQuestTools
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
                 if (convertedMaterials.ContainsKey(guid)) { continue; }
                 var shader = Shader.Find(QuestShader);
-                Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader);
+                Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader, combineEmission);
                 convertedMaterials.Add(guid, mat);
             }
 
@@ -167,10 +178,30 @@ namespace KRTQuestTools
             Undo.CollapseUndoOperations(undoGroup);
         }
 
-        private static Material ConvertMaterialForQuest(string artifactsDir, Material m, string guid, Shader shader)
+        private static Material ConvertMaterialForQuest(string artifactsDir, Material material, string guid, Shader newShader, bool combineEmission)
         {
-            Material mat = MaterialConverter.Convert(m, shader);
-            var file = $"{artifactsDir}/{m.name}_from_{guid}.mat";
+            Material mat = MaterialConverter.Convert(material, newShader);
+            var mainTexturePath = AssetDatabase.GetAssetPath(material.mainTexture);
+            var emissionMapPath = AssetDatabase.GetAssetPath(MaterialConverter.GetEmissionMap(material));
+            var emissionColor = MaterialConverter.GetEmissionColor(material);
+            if (emissionColor == null)
+            {
+                emissionColor = Color.black;
+            }
+            using (var albedo = new MagickImage(mainTexturePath))
+            using (var emissionMap = emissionMapPath != "" ?
+                new MagickImage(emissionMapPath) :
+                new MagickImage(MagickColors.White, albedo.Width, albedo.Height))
+            using (var emission = ImgProc.Multiply(emissionMap, emissionColor))
+            using (var combined = ImgProc.Screen(albedo, emission))
+            {
+                var outFile = $"{artifactsDir}/{material.name}_from_{guid}.png";
+                combined.Write(outFile, MagickFormat.Png24);
+                AssetDatabase.Refresh();
+                var tex = AssetDatabase.LoadAssetAtPath<Texture>(outFile);
+                mat.mainTexture = tex;
+            }
+            var file = $"{artifactsDir}/{material.name}_from_{guid}.mat";
             AssetDatabase.CreateAsset(mat, file);
             return mat;
         }
