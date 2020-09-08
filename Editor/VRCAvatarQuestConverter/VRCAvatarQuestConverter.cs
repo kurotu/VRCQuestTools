@@ -25,6 +25,11 @@ namespace KRTQuestTools
         {
             var original = Selection.activeGameObject;
             var artifactsDir = $"{ArtifactsRootDir}/{original.name}";
+            ConvertForQuest(original, artifactsDir);
+        }
+
+        private static void ConvertForQuest(GameObject original, string artifactsDir)
+        {
             if (Directory.Exists(artifactsDir))
             {
                 var altDir = AssetDatabase.GenerateUniqueAssetPath(artifactsDir);
@@ -60,9 +65,7 @@ namespace KRTQuestTools
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
                 if (convertedMaterials.ContainsKey(guid)) { continue; }
                 var shader = Shader.Find(QuestShader);
-                Material mat = MaterialConverter.Convert(m, shader);
-                var file = $"{artifactsDir}/{m.name}_from_{guid}.mat";
-                AssetDatabase.CreateAsset(mat, file);
+                Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader);
                 convertedMaterials.Add(guid, mat);
             }
 
@@ -109,6 +112,14 @@ namespace KRTQuestTools
             }
 
             Undo.CollapseUndoOperations(undoGroup);
+        }
+
+        private static Material ConvertMaterialForQuest(string artifactsDir, Material m, string guid, Shader shader)
+        {
+            Material mat = MaterialConverter.Convert(m, shader);
+            var file = $"{artifactsDir}/{m.name}_from_{guid}.mat";
+            AssetDatabase.CreateAsset(mat, file);
+            return mat;
         }
 
         [MenuItem("GameObject/Convert Avatar For Quest", true)]
