@@ -13,6 +13,59 @@ using UnityEditor;
 
 namespace KRTQuestTools
 {
+    public class VRCAvatarQuestConverterWindow : EditorWindow
+    {
+        VRC.SDKBase.VRC_AvatarDescriptor avatar;
+        string outputPath = "";
+        bool allowOverwriting = false;
+
+        [MenuItem("KRTQuestTools/Convert Avatar For Quest")]
+        static void Init()
+        {
+            var window = GetWindow<VRCAvatarQuestConverterWindow>();
+            if (window.avatar == null || VRCAvatarQuestConverter.IsAvatar(Selection.activeGameObject))
+            {
+                window.avatar = Selection.activeGameObject.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>();
+            }
+        }
+
+        private void OnGUI()
+        {
+            titleContent.text = "Convert Avatar for Quest";
+
+            EditorGUILayout.LabelField("Converter Settings", EditorStyles.boldLabel);
+            var selectedAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField("Avatar", avatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+            if (string.IsNullOrEmpty(outputPath) && avatar != null && avatar != selectedAvatar)
+            {
+                outputPath = $"Assets/KRT/KRTQuestTools/Artifacts/{avatar.name}";
+            }
+            avatar = selectedAvatar;
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Output Folder", EditorStyles.boldLabel);
+            outputPath = EditorGUILayout.TextField("Save To", outputPath);
+            if (GUILayout.Button("Select"))
+            {
+                var split = outputPath.Split('/');
+                var folder = string.Join("/", split.Where((s, i) => i <= split.Length - 2));
+                var defaultName = split.Last();
+                var dest = EditorUtility.SaveFolderPanel("Artifacts", folder, defaultName);
+                if (dest != "") // Cancel
+                {
+                    outputPath = "Assets" + dest.Remove(0, Application.dataPath.Length);
+                }
+            }
+            // allowOverwriting = EditorGUILayout.Toggle("AllowOverwriting", allowOverwriting);
+
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Convert"))
+            {
+                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath);
+            }
+        }
+    }
+
     public static class VRCAvatarQuestConverter
     {
         const string Tag = "VRCAvatarQuestConverter";
@@ -28,7 +81,7 @@ namespace KRTQuestTools
             ConvertForQuest(original, artifactsDir);
         }
 
-        private static void ConvertForQuest(GameObject original, string artifactsDir)
+        internal static void ConvertForQuest(GameObject original, string artifactsDir)
         {
             if (Directory.Exists(artifactsDir))
             {
@@ -126,6 +179,11 @@ namespace KRTQuestTools
         public static bool ValidateMenu()
         {
             var obj = Selection.activeGameObject;
+            return IsAvatar(obj);
+        }
+
+        internal static bool IsAvatar(GameObject obj)
+        {
             if (obj == null) { return false; }
             if (obj.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>() == null) { return false; }
             return true;
