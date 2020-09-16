@@ -181,25 +181,16 @@ namespace KRTQuestTools
         private static Material ConvertMaterialForQuest(string artifactsDir, Material material, string guid, Shader newShader, bool combineEmission)
         {
             Material mat = MaterialConverter.Convert(material, newShader);
-            var mainTexturePath = AssetDatabase.GetAssetPath(material.mainTexture);
-            var emissionMapPath = AssetDatabase.GetAssetPath(MaterialConverter.GetEmissionMap(material));
-            var emissionColor = MaterialConverter.GetEmissionColor(material);
-            if (emissionColor == null)
+            if (combineEmission)
             {
-                emissionColor = Color.black;
-            }
-            using (var albedo = new MagickImage(mainTexturePath))
-            using (var emissionMap = emissionMapPath != "" ?
-                new MagickImage(emissionMapPath) :
-                new MagickImage(MagickColors.White, albedo.Width, albedo.Height))
-            using (var emission = ImgProc.Multiply(emissionMap, emissionColor))
-            using (var combined = ImgProc.Screen(albedo, emission))
-            {
-                var outFile = $"{artifactsDir}/{material.name}_from_{guid}.png";
-                combined.Write(outFile, MagickFormat.Png24);
-                AssetDatabase.Refresh();
-                var tex = AssetDatabase.LoadAssetAtPath<Texture>(outFile);
-                mat.mainTexture = tex;
+                using (var combined = MaterialUtils.GetCompositedImage(material))
+                {
+                    var outFile = $"{artifactsDir}/{material.name}_from_{guid}.png";
+                    combined.Write(outFile, MagickFormat.Png24);
+                    AssetDatabase.Refresh();
+                    var tex = AssetDatabase.LoadAssetAtPath<Texture>(outFile);
+                    mat.mainTexture = tex;
+                }
             }
             var file = $"{artifactsDir}/{material.name}_from_{guid}.mat";
             AssetDatabase.CreateAsset(mat, file);

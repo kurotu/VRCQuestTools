@@ -11,7 +11,12 @@ namespace KRTQuestTools
     {
         internal static MagickImage Multiply(MagickImage image, Color32 color)
         {
-            using (var colorTex = new MagickImage(GetMagickColor(color), image.Width, image.Height))
+            return Multiply(image, GetMagickColor(color));
+        }
+
+        internal static MagickImage Multiply(MagickImage image, MagickColor color)
+        {
+            using (var colorTex = new MagickImage(color, image.Width, image.Height))
             {
                 var newImage = new MagickImage(image);
                 newImage.Composite(colorTex, CompositeOperator.Multiply);
