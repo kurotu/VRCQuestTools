@@ -123,8 +123,11 @@ namespace KRTQuestTools
 
             var materials = GetMaterialsInChildren(original);
             var convertedMaterials = new Dictionary<string, Material>();
-            foreach (var m in materials)
+            for (var i = 0; i < materials.Length; i++)
             {
+                var progress = i / (float)materials.Length;
+                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", "Converting materials...", progress);
+                var m = materials[i];
                 if (m == null) { continue; }
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
                 if (convertedMaterials.ContainsKey(guid)) { continue; }
@@ -132,6 +135,7 @@ namespace KRTQuestTools
                 Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader, combineEmission);
                 convertedMaterials.Add(guid, mat);
             }
+            EditorUtility.ClearProgressBar();
 
             var newName = original.name + " (Quest)";
             newName = GenerateUniqueRootGameObjectName(SceneManager.GetActiveScene(), newName);
