@@ -187,7 +187,8 @@ namespace KRTQuestTools
             Material mat = MaterialConverter.Convert(material, newShader);
             if (combineEmission)
             {
-                using (var combined = MaterialUtils.GetCompositedImage(material))
+                var mw = MaterialUtils.CreateWrapper(material);
+                using (var combined = mw.CompositeLayers())
                 {
                     var outFile = $"{artifactsDir}/{material.name}_from_{guid}.png";
                     combined.Write(outFile, MagickFormat.Png24);

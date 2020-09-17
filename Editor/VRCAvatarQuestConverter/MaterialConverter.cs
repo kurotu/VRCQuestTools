@@ -12,10 +12,7 @@ namespace KRTQuestTools
         {
             if (IsUsableForQuestAvatar(material))
             {
-                return new Material(material)
-                {
-                    shaderKeywords = null
-                };
+                return new Material(material);
             }
             return new Material(material)
             {
