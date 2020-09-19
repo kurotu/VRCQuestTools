@@ -41,6 +41,9 @@ namespace KRTQuestTools
     {
         public static MaterialWrapper CreateWrapper(Material material)
         {
+            if (material.shader.name.StartsWith("UnityChanToonShader")) {
+                return new UTS2Material(material);
+            }
             if (material.shader.name.StartsWith("arktoon/"))
             {
                 return new ArktoonMaterial(material);
