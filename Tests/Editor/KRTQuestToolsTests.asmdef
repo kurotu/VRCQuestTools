@@ -1,0 +1,21 @@
+{
+    "name": "KRTQuestToolsTests",
+    "references": [
+        "KRTQuestTools-Editor"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Magick.NET-Q16-x64.dll",
+        "Magick.NET.Core.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

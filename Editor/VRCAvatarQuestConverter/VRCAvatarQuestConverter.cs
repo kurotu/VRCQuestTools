@@ -4,6 +4,7 @@
 // <author>kurotu</author>
 // <remarks>Licensed under the MIT license.</remarks>
 
+using ImageMagick;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,12 +12,75 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 
-namespace Kurotu
+namespace KRTQuestTools
 {
+    public class VRCAvatarQuestConverterWindow : EditorWindow
+    {
+        VRC.SDKBase.VRC_AvatarDescriptor avatar;
+        string outputPath = "";
+        bool allowOverwriting = false;
+        bool combineEmission = true;
+
+        [MenuItem("KRTQuestTools/Convert Avatar For Quest")]
+        static void Init()
+        {
+            var window = GetWindow<VRCAvatarQuestConverterWindow>();
+            if (window.avatar == null || VRCAvatarQuestConverter.IsAvatar(Selection.activeGameObject))
+            {
+                window.avatar = Selection.activeGameObject.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>();
+            }
+        }
+
+        private void OnGUI()
+        {
+            titleContent.text = "Convert Avatar for Quest";
+
+            EditorGUILayout.LabelField("Converter Settings", EditorStyles.boldLabel);
+            var selectedAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField("Avatar", avatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+            if (selectedAvatar == null)
+            {
+                outputPath = "";
+            }
+            else if (avatar != selectedAvatar)
+            {
+                outputPath = $"Assets/KRT/KRTQuestTools/Artifacts/{selectedAvatar.name}";
+            }
+            avatar = selectedAvatar;
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Experimental Settings", EditorStyles.boldLabel);
+            combineEmission = EditorGUILayout.Toggle("Combine Emission", combineEmission);
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Output Folder", EditorStyles.boldLabel);
+            outputPath = EditorGUILayout.TextField("Save To", outputPath);
+            if (GUILayout.Button("Select"))
+            {
+                var split = outputPath.Split('/');
+                var folder = string.Join("/", split.Where((s, i) => i <= split.Length - 2));
+                var defaultName = split.Last();
+                var dest = EditorUtility.SaveFolderPanel("Artifacts", folder, defaultName);
+                if (dest != "") // Cancel
+                {
+                    outputPath = "Assets" + dest.Remove(0, Application.dataPath.Length);
+                }
+            }
+            // allowOverwriting = EditorGUILayout.Toggle("AllowOverwriting", allowOverwriting);
+
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Convert"))
+            {
+                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, combineEmission);
+            }
+        }
+    }
+
     public static class VRCAvatarQuestConverter
     {
         const string Tag = "VRCAvatarQuestConverter";
-        const string ArtifactsRootDir = "Assets/VRCAvatarQuestConverter/Artifacts";
+        const string ArtifactsRootDir = "Assets/KRT/KRTQuestTools/Artifacts";
         const string QuestShader = "VRChat/Mobile/Toon Lit";
         readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
@@ -25,6 +89,11 @@ namespace Kurotu
         {
             var original = Selection.activeGameObject;
             var artifactsDir = $"{ArtifactsRootDir}/{original.name}";
+            ConvertForQuest(original, artifactsDir, false);
+        }
+
+        internal static void ConvertForQuest(GameObject original, string artifactsDir, bool combineEmission)
+        {
             if (Directory.Exists(artifactsDir))
             {
                 var altDir = AssetDatabase.GenerateUniqueAssetPath(artifactsDir);
@@ -54,21 +123,19 @@ namespace Kurotu
 
             var materials = GetMaterialsInChildren(original);
             var convertedMaterials = new Dictionary<string, Material>();
-            foreach (var m in materials)
+            for (var i = 0; i < materials.Length; i++)
             {
+                var progress = i / (float)materials.Length;
+                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", "Converting materials...", progress);
+                var m = materials[i];
                 if (m == null) { continue; }
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
                 if (convertedMaterials.ContainsKey(guid)) { continue; }
                 var shader = Shader.Find(QuestShader);
-                var mat = new Material(m)
-                {
-                    shader = shader,
-                    shaderKeywords = null
-                };
-                var file = $"{artifactsDir}/{m.name}_from_{guid}.mat";
-                AssetDatabase.CreateAsset(mat, file);
+                Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader, combineEmission);
                 convertedMaterials.Add(guid, mat);
             }
+            EditorUtility.ClearProgressBar();
 
             var newName = original.name + " (Quest)";
             newName = GenerateUniqueRootGameObjectName(SceneManager.GetActiveScene(), newName);
@@ -115,10 +182,35 @@ namespace Kurotu
             Undo.CollapseUndoOperations(undoGroup);
         }
 
+        private static Material ConvertMaterialForQuest(string artifactsDir, Material material, string guid, Shader newShader, bool combineEmission)
+        {
+            Material mat = MaterialConverter.Convert(material, newShader);
+            if (combineEmission)
+            {
+                var mw = MaterialUtils.CreateWrapper(material);
+                using (var combined = mw.CompositeLayers())
+                {
+                    var outFile = $"{artifactsDir}/{material.name}_from_{guid}.png";
+                    combined.Write(outFile, MagickFormat.Png24);
+                    AssetDatabase.Refresh();
+                    var tex = AssetDatabase.LoadAssetAtPath<Texture>(outFile);
+                    mat.mainTexture = tex;
+                }
+            }
+            var file = $"{artifactsDir}/{material.name}_from_{guid}.mat";
+            AssetDatabase.CreateAsset(mat, file);
+            return mat;
+        }
+
         [MenuItem("GameObject/Convert Avatar For Quest", true)]
         public static bool ValidateMenu()
         {
             var obj = Selection.activeGameObject;
+            return IsAvatar(obj);
+        }
+
+        internal static bool IsAvatar(GameObject obj)
+        {
             if (obj == null) { return false; }
             if (obj.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>() == null) { return false; }
             return true;
