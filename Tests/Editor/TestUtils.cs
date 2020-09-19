@@ -20,7 +20,7 @@ namespace KRTQuestTools
             return material;
         }
 
-        internal static IMaterialWrapper LoadMaterialWrapper(string file)
+        internal static MaterialWrapper LoadMaterialWrapper(string file)
         {
             var material = LoadMaterial(file);
             var wrapper = MaterialUtils.CreateWrapper(material);

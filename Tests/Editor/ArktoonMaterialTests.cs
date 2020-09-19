@@ -13,13 +13,14 @@ namespace KRTQuestTools
         public void EmissionColor()
         {
             var wrapper = TestUtils.LoadMaterialWrapper("arktoon.mat");
+            Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
             using (var image = wrapper.CompositeLayers())
             using (var original = TestUtils.LoadMagickImage("albedo_1024px.png"))
             using (var emission = new MagickImage(new MagickColorFactory().Create("#1F1F1F"), original.Width, original.Height))
             {
                 original.Composite(emission, CompositeOperator.Screen);
-                var result = image.CompareTo(original);
-                Assert.AreEqual(result, 0);
+                var result = image.Compare(original);
+                Assert.AreEqual(0.0, result.MeanErrorPerPixel);
             }
         }
 
@@ -27,6 +28,7 @@ namespace KRTQuestTools
         public void EmissiveFreak()
         {
             var wrapper = TestUtils.LoadMaterialWrapper("arktoon_EmissiveFreak.mat");
+            Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
             using (var image = wrapper.CompositeLayers())
             using (var main = TestUtils.LoadMagickImage("albedo_1024px.png"))
             using (var emission = TestUtils.LoadMagickImage("emission_1024px.png"))
@@ -36,8 +38,8 @@ namespace KRTQuestTools
                 main.Composite(emission, CompositeOperator.Screen);
                 main.Composite(ef1, CompositeOperator.Screen);
                 main.Composite(ef2, CompositeOperator.Screen);
-                var result = image.CompareTo(main);
-                Assert.AreEqual(result, 0);
+                var result = image.Compare(main);
+                Assert.AreEqual(0.0, result.MeanErrorPerPixel);
             }
         }
     }

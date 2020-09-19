@@ -30,16 +30,16 @@ namespace KRTQuestTools
         }
     }
 
-    public interface IMaterialWrapper
+    public abstract class MaterialWrapper
     {
-        Layer GetMainLayer();
-        Layer GetEmissionLayer();
-        MagickImage CompositeLayers();
+        public abstract Layer GetMainLayer();
+        public abstract Layer GetEmissionLayer();
+        public abstract MagickImage CompositeLayers();
     }
 
     public static class MaterialUtils
     {
-        public static IMaterialWrapper CreateWrapper(Material material)
+        public static MaterialWrapper CreateWrapper(Material material)
         {
             if (material.shader.name.StartsWith("arktoon/"))
             {

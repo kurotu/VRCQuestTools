@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace KRTQuestTools
 {
-    public class GenericMaterial : IMaterialWrapper
+    public class GenericMaterial : MaterialWrapper
     {
         protected readonly Material material;
 
@@ -17,7 +17,7 @@ namespace KRTQuestTools
             this.material = material;
         }
 
-        public Layer GetMainLayer()
+        public override Layer GetMainLayer()
         {
             return new Layer
             {
@@ -26,12 +26,12 @@ namespace KRTQuestTools
             };
         }
 
-        public bool HasEmission()
+        public virtual bool HasEmission()
         {
             return material.shaderKeywords.Contains("_EMISSION");
         }
 
-        public Layer GetEmissionLayer()
+        public override Layer GetEmissionLayer()
         {
             if (!HasEmission()) return null;
             return new Layer
@@ -41,7 +41,7 @@ namespace KRTQuestTools
             };
         }
 
-        public MagickImage CompositeLayers()
+        public override MagickImage CompositeLayers()
         {
             using (var main = GetMainLayer())
             using (var emission = GetEmissionLayer())

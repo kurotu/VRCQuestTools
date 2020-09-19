@@ -10,12 +10,12 @@ namespace KRTQuestTools
     {
         internal ArktoonMaterial(Material material) : base(material) { }
 
-        public new bool HasEmission()
+        public override bool HasEmission()
         {
             return true;
         }
 
-        public new MagickImage CompositeLayers()
+        public override MagickImage CompositeLayers()
         {
             var image = base.CompositeLayers();
             if (HasEmissiveFreak())
@@ -25,7 +25,7 @@ namespace KRTQuestTools
                     using (var ef = GetEmissiveFreakLayer(i))
                     using (var efImage = ef.GetMagickImage())
                     {
-                        efImage.Resize(image.EncodingGeometry);
+                        efImage.Resize(image.Width, image.Height);
                         image.Composite(efImage, CompositeOperator.Screen);
                     }
                 }
