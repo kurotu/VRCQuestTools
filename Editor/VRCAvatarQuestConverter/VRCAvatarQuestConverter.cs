@@ -25,10 +25,12 @@ namespace KRTQuestTools
         static void Init()
         {
             var window = GetWindow<VRCAvatarQuestConverterWindow>();
-            if (window.avatar == null || VRCAvatarQuestConverter.IsAvatar(Selection.activeGameObject))
+            if (window.avatar == null && VRCAvatarQuestConverter.IsAvatar(Selection.activeGameObject))
             {
                 window.avatar = Selection.activeGameObject.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>();
+                window.SetArtifactsPath(window.avatar);
             }
+            window.Show();
         }
 
         private void OnGUI()
@@ -43,7 +45,7 @@ namespace KRTQuestTools
             }
             else if (avatar != selectedAvatar)
             {
-                outputPath = $"Assets/KRT/KRTQuestTools/Artifacts/{selectedAvatar.name}";
+                SetArtifactsPath(selectedAvatar);
             }
             avatar = selectedAvatar;
 
@@ -74,6 +76,11 @@ namespace KRTQuestTools
             {
                 VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, combineEmission);
             }
+        }
+
+        private void SetArtifactsPath(VRC.SDKBase.VRC_AvatarDescriptor avatar)
+        {
+            outputPath = $"Assets/KRT/KRTQuestTools/Artifacts/{avatar.name}";
         }
     }
 
