@@ -17,20 +17,33 @@ namespace KRTQuestTools
 
         public override MagickImage CompositeLayers()
         {
-            var image = base.CompositeLayers();
             if (HasEmissiveFreak())
             {
-                for (var i = 0; i < 2; i++)
+                using (var baseImage = base.CompositeLayers())
                 {
-                    using (var ef = GetEmissiveFreakLayer(i))
-                    using (var efImage = ef.GetMagickImage())
+                    var image = new MagickImage(baseImage)
                     {
-                        efImage.Resize(image.Width, image.Height);
-                        image.Composite(efImage, CompositeOperator.Screen);
+                        HasAlpha = false
+                    };
+                    for (var i = 0; i < 2; i++)
+                    {
+                        using (var ef = GetEmissiveFreakLayer(i))
+                        using (var efImage = ef.GetMagickImage())
+                        {
+                            efImage.HasAlpha = false;
+                            efImage.Resize(image.Width, image.Height);
+                            image.Composite(efImage, CompositeOperator.Screen);
+                        }
                     }
+                    if (baseImage.HasAlpha)
+                    {
+                        image.HasAlpha = true;
+                        image.CopyPixels(baseImage, Channels.Alpha);
+                    }
+                    return image;
                 }
             }
-            return image;
+            return base.CompositeLayers();
         }
 
         private bool HasEmissiveFreak()
