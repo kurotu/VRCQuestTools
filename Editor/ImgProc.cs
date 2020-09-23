@@ -19,7 +19,13 @@ namespace KRTQuestTools
             using (var colorTex = new MagickImage(color, image.Width, image.Height))
             {
                 var newImage = new MagickImage(image);
+                newImage.HasAlpha = false;
                 newImage.Composite(colorTex, CompositeOperator.Multiply);
+                if (image.HasAlpha)
+                {
+                    newImage.HasAlpha = true;
+                    newImage.CopyPixels(image, Channels.Alpha);
+                }
                 return newImage;
             }
         }

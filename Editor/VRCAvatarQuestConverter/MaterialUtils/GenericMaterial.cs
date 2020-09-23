@@ -50,6 +50,7 @@ namespace KRTQuestTools
                 var newImage = new MagickImage(MagickColors.Black, width, height);
                 using (var mainImage = main.GetMagickImage())
                 {
+                    mainImage.HasAlpha = false;
                     mainImage.Resize(width, height);
                     newImage.Composite(mainImage, CompositeOperator.Plus);
                 }
@@ -58,8 +59,14 @@ namespace KRTQuestTools
                     using (var emissionImage = emission.GetMagickImage())
                     {
                         emissionImage.Resize(width, height);
+                        emissionImage.HasAlpha = false;
                         newImage.Composite(emissionImage, CompositeOperator.Screen);
                     }
+                }
+                if (main.image != null && main.image.HasAlpha)
+                {
+                    newImage.HasAlpha = true;
+                    newImage.CopyPixels(main.image, Channels.Alpha);
                 }
                 return newImage;
             }

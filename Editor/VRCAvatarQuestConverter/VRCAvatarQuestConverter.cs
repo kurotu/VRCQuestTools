@@ -198,7 +198,8 @@ namespace KRTQuestTools
                 using (var combined = mw.CompositeLayers())
                 {
                     var outFile = $"{artifactsDir}/{material.name}_from_{guid}.png";
-                    combined.Write(outFile, MagickFormat.Png24);
+                    var format = combined.HasAlpha ? MagickFormat.Png32 : MagickFormat.Png24;
+                    combined.Write(outFile, format);
                     AssetDatabase.Refresh();
                     var tex = AssetDatabase.LoadAssetAtPath<Texture>(outFile);
                     mat.mainTexture = tex;
