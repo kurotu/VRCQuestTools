@@ -77,7 +77,7 @@ namespace KRTQuestTools
 
         private void OnGUI()
         {
-            titleContent.text = "Unity Settings";
+            titleContent.text = "KRT Unity Settings";
             EditorGUILayout.LabelField("Unity Preferences", EditorStyles.boldLabel);
             var allActions = new List<Action>();
 
@@ -85,7 +85,7 @@ namespace KRTQuestTools
 
             if (UnitySettings.GetCacheServerMode() == CacheServerMode.Disable)
             {
-                EditorGUILayout.HelpBox("Cache server is not enabled. You can save time for switching platform by enabling cache server.", MessageType.Warning);
+                EditorGUILayout.HelpBox("Cache server is not enabled. You can save time for texture compression by enabling cache server.", MessageType.Warning);
                 allActions.Add(UnitySettings.EnableLocalCacheServer);
                 if (GUILayout.Button("Enable Local Cache Server"))
                 {
