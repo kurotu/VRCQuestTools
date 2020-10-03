@@ -21,7 +21,7 @@ namespace KRTQuestTools
         bool allowOverwriting = false;
         bool combineEmission = true;
 
-        [MenuItem("KRTQuestTools/Convert Avatar For Quest")]
+        [MenuItem("KRTQuestTools/Convert Avatar For Quest", false, MenuPriority.AvatarQuestConverter)]
         static void Init()
         {
             var window = GetWindow<VRCAvatarQuestConverterWindow>();
