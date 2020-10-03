@@ -68,7 +68,7 @@ namespace KRTQuestTools
             }
         }
 
-        [MenuItem("KRTQuestTools/Unity Settings", false, (int)MenuPriority.UnitySettings)]
+        [MenuItem(KRTQuestTools.RootMenu + "Unity Settings", false, (int)MenuPriority.UnitySettings)]
         static void Init()
         {
             var window = GetWindow(typeof(UnitySettingsWindow));

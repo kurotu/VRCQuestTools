@@ -8,7 +8,7 @@ namespace KRTQuestTools
         SkinnedMeshRenderer source;
         SkinnedMeshRenderer target;
 
-        [MenuItem("KRTQuestTools/BlendShapes Copy", false, (int)MenuPriority.BlendShapesCopy)]
+        [MenuItem(KRTQuestTools.RootMenu + "BlendShapes Copy", false, (int)MenuPriority.BlendShapesCopy)]
         static void Init()
         {
             var window = (BlendShapesCopy)GetWindow(typeof(BlendShapesCopy));
