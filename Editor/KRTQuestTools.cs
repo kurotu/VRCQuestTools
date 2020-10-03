@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRTQuestTools {
+namespace KRTQuestTools
+{
     public static class KRTQuestTools
     {
         public const string Version = "0.0.0";
     }
 
-    internal static class MenuPriority
+    internal enum MenuPriority : int
     {
-        internal const int AvatarQuestConverter = 0;
-        internal const int UnitySettings = 100;
+        AvatarQuestConverter = 0,
+        BlendShapesCopy,
+        UnitySettings = 100
     }
 }
