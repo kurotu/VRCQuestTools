@@ -30,16 +30,6 @@ namespace KRTQuestTools
             EditorPrefs.SetInt(EditorPrefsKey.CacheServerMode, (int)CacheServerMode.Local);
         }
 
-        public static bool GetCompressTexturesOnImport()
-        {
-            return EditorPrefs.GetBool(EditorPrefsKey.CompressTexturesOnImport);
-        }
-
-        public static void DisableCompressTexturesOnImport()
-        {
-            EditorPrefs.SetBool(EditorPrefsKey.CompressTexturesOnImport, false);
-        }
-
         public static MobileTextureSubtarget GetAndroidTextureCompression()
         {
             return EditorUserBuildSettings.androidBuildSubtarget;
@@ -92,7 +82,6 @@ namespace KRTQuestTools
             var allActions = new List<Action>();
 
             EditorGUILayout.LabelField($"Cache Server Mode: {UnitySettings.GetCacheServerMode()}");
-            EditorGUILayout.LabelField($"Compress Assets on Import: {(UnitySettings.GetCompressTexturesOnImport() ? "Enable" : "Disable") }");
 
             if (UnitySettings.GetCacheServerMode() == CacheServerMode.Disable)
             {
@@ -101,16 +90,6 @@ namespace KRTQuestTools
                 if (GUILayout.Button("Enable Local Cache Server"))
                 {
                     UnitySettings.EnableLocalCacheServer();
-                }
-            }
-
-            if (UnitySettings.GetCompressTexturesOnImport())
-            {
-                EditorGUILayout.HelpBox("\"Compress Assets on Import\" is enabled. You can postpone compression on build.", MessageType.Warning);
-                allActions.Add(UnitySettings.DisableCompressTexturesOnImport);
-                if (GUILayout.Button("Disable \"Compress Assets on Import\""))
-                {
-                    UnitySettings.DisableCompressTexturesOnImport();
                 }
             }
 
