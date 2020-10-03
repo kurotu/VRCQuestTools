@@ -51,21 +51,31 @@ namespace KRTQuestTools
         }
     }
 
+    static class EditorUserSettingsKey
+    {
+        private const string PREFIX = "dev.kurotu.";
+        public const string LAST_VERSION = PREFIX + "LastQuestToolsVersion";
+        public const string DONT_SHOW_ON_LOAD = PREFIX + "DontShowOnLoad";
+    }
+
     public class UnitySettingsWindow : EditorWindow
     {
         private delegate void Action();
-        private const string CURRENT_VERSION = "0.0.0";
-        private const string LAST_VERSION_KEY = "dev.kurotu.LastQuestToolsVersion";
+        private const string FALSE = "FALSE";
+        private const string TRUE = "TRUE";
 
         [InitializeOnLoadMethod]
         static void InitOnInstall()
         {
-            var lastVersion = EditorUserSettings.GetConfigValue(LAST_VERSION_KEY);
-            if (!lastVersion.Equals(CURRENT_VERSION))
+            var lastVersion = EditorUserSettings.GetConfigValue(EditorUserSettingsKey.LAST_VERSION) ?? "";
+            if (!lastVersion.Equals(KRTQuestTools.Version))
             {
-                Init();
+                EditorUserSettings.SetConfigValue(EditorUserSettingsKey.LAST_VERSION, KRTQuestTools.Version);
+                if ((EditorUserSettings.GetConfigValue(EditorUserSettingsKey.DONT_SHOW_ON_LOAD) ?? FALSE) != TRUE)
+                {
+                    Init();
+                }
             }
-            EditorUserSettings.SetConfigValue(LAST_VERSION_KEY, CURRENT_VERSION);
         }
 
         [MenuItem("KRTQuestTools/Unity Settings")]
@@ -135,6 +145,13 @@ namespace KRTQuestTools
             {
                 EditorGUILayout.HelpBox("OK, all recommended settings are applied.", MessageType.Info);
             }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            var donotshow = (EditorUserSettings.GetConfigValue(EditorUserSettingsKey.DONT_SHOW_ON_LOAD) ?? FALSE) == TRUE;
+            var donotshowValue = EditorGUILayout.Toggle("Don't show on startup", donotshow) ? TRUE : FALSE;
+            EditorUserSettings.SetConfigValue(EditorUserSettingsKey.DONT_SHOW_ON_LOAD, donotshowValue);
         }
     }
 }
