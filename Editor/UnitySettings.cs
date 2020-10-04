@@ -11,28 +11,43 @@ namespace KRTQuestTools
         Disable
     }
 
-    static class EditorPrefsKey
-    {
-        public const string CacheServerMode = "CacheServerMode";
-        public const string CompressTexturesOnImport = "kCompressTexturesOnImport";
-    }
-
     static class UnitySettings
     {
+        private static class EditorPrefsKeys
+        {
+            public const string CacheServerMode = "CacheServerMode";
+            public const string CompressTexturesOnImport = "kCompressTexturesOnImport";
+        }
+
+        public static bool ValidateAll()
+        {
+            return ValidateCacheServerMode() && ValidateAndroidTextureCompression();
+        }
+
         public static CacheServerMode GetCacheServerMode()
         {
-            var mode = EditorPrefs.GetInt(EditorPrefsKey.CacheServerMode, (int)CacheServerMode.Disable);
+            var mode = EditorPrefs.GetInt(EditorPrefsKeys.CacheServerMode, (int)CacheServerMode.Disable);
             return (CacheServerMode)System.Enum.ToObject(typeof(CacheServerMode), mode);
+        }
+
+        public static bool ValidateCacheServerMode()
+        {
+            return GetCacheServerMode() != CacheServerMode.Disable;
         }
 
         public static void EnableLocalCacheServer()
         {
-            EditorPrefs.SetInt(EditorPrefsKey.CacheServerMode, (int)CacheServerMode.Local);
+            EditorPrefs.SetInt(EditorPrefsKeys.CacheServerMode, (int)CacheServerMode.Local);
         }
 
         public static MobileTextureSubtarget GetAndroidTextureCompression()
         {
             return EditorUserBuildSettings.androidBuildSubtarget;
+        }
+
+        public static bool ValidateAndroidTextureCompression()
+        {
+            return GetAndroidTextureCompression() == MobileTextureSubtarget.ASTC;
         }
 
         public static void EnableAndroidASTC()
@@ -41,30 +56,58 @@ namespace KRTQuestTools
         }
     }
 
-    static class EditorUserSettingsKey
+    static class KRTQuestToolsSettings
     {
-        private const string PREFIX = "dev.kurotu.";
-        public const string LAST_VERSION = PREFIX + "LastQuestToolsVersion";
-        public const string DONT_SHOW_ON_LOAD = PREFIX + "DontShowOnLoad";
+        private static class Keys
+        {
+            private const string PREFIX = "dev.kurotu.KRTQuestTools.";
+            public const string LAST_VERSION = PREFIX + "LastQuestToolsVersion";
+            public const string DONT_SHOW_ON_LOAD = PREFIX + "DontShowOnLoad";
+        }
+
+        private const string FALSE = "FALSE";
+        private const string TRUE = "TRUE";
+
+        public static string GetLastVersion()
+        {
+            return EditorUserSettings.GetConfigValue(Keys.LAST_VERSION) ?? "";
+        }
+
+        public static void SetLastVersion(string version)
+        {
+            EditorUserSettings.SetConfigValue(Keys.LAST_VERSION, version);
+        }
+
+        public static bool IsDontShowOnLoadEnabled()
+        {
+            return (EditorUserSettings.GetConfigValue(Keys.DONT_SHOW_ON_LOAD) ?? FALSE) == TRUE;
+        }
+
+        public static void SetDontShowOnLoad(bool enabled)
+        {
+            var value = enabled ? TRUE : FALSE;
+            EditorUserSettings.SetConfigValue(Keys.DONT_SHOW_ON_LOAD, value);
+        }
     }
 
     public class UnitySettingsWindow : EditorWindow
     {
         private delegate void Action();
-        private const string FALSE = "FALSE";
-        private const string TRUE = "TRUE";
 
         [InitializeOnLoadMethod]
-        static void InitOnInstall()
+        static void InitOnLoad()
         {
-            var lastVersion = EditorUserSettings.GetConfigValue(EditorUserSettingsKey.LAST_VERSION) ?? "";
-            if (!lastVersion.Equals(KRTQuestTools.Version))
+            var lastVersion = KRTQuestToolsSettings.GetLastVersion();
+            var hasUpdated = !lastVersion.Equals(KRTQuestTools.Version);
+            if (hasUpdated)
             {
-                EditorUserSettings.SetConfigValue(EditorUserSettingsKey.LAST_VERSION, KRTQuestTools.Version);
-                if ((EditorUserSettings.GetConfigValue(EditorUserSettingsKey.DONT_SHOW_ON_LOAD) ?? FALSE) != TRUE)
-                {
-                    Init();
-                }
+                KRTQuestToolsSettings.SetLastVersion(KRTQuestTools.Version);
+            }
+            var shouldShowWindow = !UnitySettings.ValidateAll();
+
+            if (shouldShowWindow && (!KRTQuestToolsSettings.IsDontShowOnLoadEnabled() || hasUpdated))
+            {
+                Init();
             }
         }
 
@@ -83,7 +126,7 @@ namespace KRTQuestTools
 
             EditorGUILayout.LabelField($"Cache Server Mode: {UnitySettings.GetCacheServerMode()}");
 
-            if (UnitySettings.GetCacheServerMode() == CacheServerMode.Disable)
+            if (!UnitySettings.ValidateCacheServerMode())
             {
                 EditorGUILayout.HelpBox("Cache server is not enabled. You can save time for texture compression by enabling cache server.", MessageType.Warning);
                 allActions.Add(UnitySettings.EnableLocalCacheServer);
@@ -98,7 +141,7 @@ namespace KRTQuestTools
             EditorGUILayout.LabelField("Build Settings", EditorStyles.boldLabel);
 
             EditorGUILayout.LabelField($"Android Texture Compression: {UnitySettings.GetAndroidTextureCompression()}");
-            if (UnitySettings.GetAndroidTextureCompression() != MobileTextureSubtarget.ASTC)
+            if (!UnitySettings.ValidateAndroidTextureCompression())
             {
                 EditorGUILayout.HelpBox("\"Texture compress is not ASTC. ASTC improves texture quality.", MessageType.Warning);
                 allActions.Add(UnitySettings.EnableAndroidASTC);
@@ -128,9 +171,9 @@ namespace KRTQuestTools
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
-            var donotshow = (EditorUserSettings.GetConfigValue(EditorUserSettingsKey.DONT_SHOW_ON_LOAD) ?? FALSE) == TRUE;
-            var donotshowValue = EditorGUILayout.Toggle("Don't show on startup", donotshow) ? TRUE : FALSE;
-            EditorUserSettings.SetConfigValue(EditorUserSettingsKey.DONT_SHOW_ON_LOAD, donotshowValue);
+            var donotshow = KRTQuestToolsSettings.IsDontShowOnLoadEnabled();
+            donotshow = EditorGUILayout.Toggle("Don't show on startup", donotshow);
+            KRTQuestToolsSettings.SetDontShowOnLoad(donotshow);
         }
     }
 }
