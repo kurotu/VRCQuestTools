@@ -1,9 +1,5 @@
-﻿using NUnit.Framework;
-using System.Collections;
-using System.Collections.Generic;
-using ImageMagick;
-using UnityEditor;
-using UnityEngine;
+﻿using ImageMagick;
+using NUnit.Framework;
 
 namespace KRTQuestTools
 {

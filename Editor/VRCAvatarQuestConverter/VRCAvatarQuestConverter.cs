@@ -8,9 +8,9 @@ using ImageMagick;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor;
 
 namespace KRTQuestTools
 {

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using ImageMagick;
-using UnityEditor;
+﻿using ImageMagick;
 using UnityEngine;
 
 namespace KRTQuestTools

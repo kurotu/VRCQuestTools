@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using ImageMagick;
+﻿using ImageMagick;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
