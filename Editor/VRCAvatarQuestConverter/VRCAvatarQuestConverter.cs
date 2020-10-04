@@ -18,7 +18,6 @@ namespace KRTQuestTools
     {
         VRC.SDKBase.VRC_AvatarDescriptor avatar;
         string outputPath = "";
-        bool allowOverwriting = false;
         bool combineEmission = true;
 
         [MenuItem(KRTQuestTools.RootMenu + "Convert Avatar For Quest", false, (int)MenuPriority.AvatarQuestConverter)]
