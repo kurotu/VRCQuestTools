@@ -46,7 +46,7 @@ namespace KRTQuestTools
             {
                 return new ArktoonMaterial(material);
             }
-            return new GenericMaterial(material);
+            return new StandardMaterial(material);
         }
 
         internal static MagickImage GetMagickImage(Material material, string texturePropertyName)

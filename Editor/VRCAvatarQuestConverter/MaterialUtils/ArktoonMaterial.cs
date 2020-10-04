@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace KRTQuestTools
 {
-    public class ArktoonMaterial : GenericMaterial
+    public class ArktoonMaterial : StandardMaterial
     {
         internal ArktoonMaterial(Material material) : base(material) { }
 

@@ -3,13 +3,13 @@ using NUnit.Framework;
 
 namespace KRTQuestTools
 {
-    public class GenericMaterialTests
+    public class StandardMaterialTests
     {
         [Test]
         public void StandardNoEmission()
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_NoEmission.mat");
-            Assert.AreEqual(typeof(GenericMaterial), wrapper.GetType());
+            Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             using (var image = wrapper.CompositeLayers())
             using (var original = TestUtils.LoadMagickImage("albedo_1024px.png"))
             {
@@ -22,7 +22,7 @@ namespace KRTQuestTools
         public void StandardEmission()
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_Emission.mat");
-            Assert.AreEqual(typeof(GenericMaterial), wrapper.GetType());
+            Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             using (var image = wrapper.CompositeLayers())
             using (var main = TestUtils.LoadMagickImage("albedo_1024px.png"))
             using (var emission = TestUtils.LoadMagickImage("emission_1024px.png"))

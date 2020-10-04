@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace KRTQuestTools
 {
-    public class GenericMaterial : MaterialWrapper
+    public class StandardMaterial : MaterialWrapper
     {
         protected readonly Material material;
 
-        internal GenericMaterial(Material material)
+        internal StandardMaterial(Material material)
         {
             this.material = material;
         }

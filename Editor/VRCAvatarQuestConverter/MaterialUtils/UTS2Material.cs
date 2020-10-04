@@ -2,7 +2,7 @@
 
 namespace KRTQuestTools
 {
-    public class UTS2Material : GenericMaterial
+    public class UTS2Material : StandardMaterial
     {
         internal UTS2Material(Material material) : base(material) { }
 
