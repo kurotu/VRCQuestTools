@@ -19,6 +19,7 @@ namespace KRTQuestTools
         VRC.SDKBase.VRC_AvatarDescriptor avatar;
         string outputPath = "";
         bool combineEmission = true;
+        readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
         [MenuItem(KRTQuestTools.RootMenu + "Convert Avatar For Quest", false, (int)MenuPriority.AvatarQuestConverter)]
         static void Init()
@@ -36,8 +37,8 @@ namespace KRTQuestTools
         {
             titleContent.text = "Convert Avatar for Quest";
 
-            EditorGUILayout.LabelField("Converter Settings", EditorStyles.boldLabel);
-            var selectedAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField("Avatar", avatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+            EditorGUILayout.LabelField(i18n.ConvertSettingsLabel, EditorStyles.boldLabel);
+            var selectedAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, avatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
             if (selectedAvatar == null)
             {
                 outputPath = "";
@@ -50,14 +51,15 @@ namespace KRTQuestTools
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField("Experimental Settings", EditorStyles.boldLabel);
-            combineEmission = EditorGUILayout.Toggle("Combine Emission", combineEmission);
+            EditorGUILayout.LabelField(i18n.ExperimentalSettingsLabel, EditorStyles.boldLabel);
+            combineEmission = EditorGUILayout.Toggle(i18n.CombineEmissionLabel, combineEmission);
+            EditorGUILayout.HelpBox($"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField("Output Folder", EditorStyles.boldLabel);
-            outputPath = EditorGUILayout.TextField("Save To", outputPath);
-            if (GUILayout.Button("Select"))
+            EditorGUILayout.LabelField(i18n.OutputSettingsLabel, EditorStyles.boldLabel);
+            outputPath = EditorGUILayout.TextField(i18n.SaveToLabel, outputPath);
+            if (GUILayout.Button(i18n.SelectButtonLabel))
             {
                 var split = outputPath.Split('/');
                 var folder = string.Join("/", split.Where((s, i) => i <= split.Length - 2));
@@ -71,7 +73,7 @@ namespace KRTQuestTools
             // allowOverwriting = EditorGUILayout.Toggle("AllowOverwriting", allowOverwriting);
 
             EditorGUILayout.Space();
-            if (GUILayout.Button("Convert"))
+            if (GUILayout.Button(i18n.ConvertButtonLabel))
             {
                 VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, combineEmission);
             }
@@ -88,7 +90,7 @@ namespace KRTQuestTools
         const string Tag = "VRCAvatarQuestConverter";
         const string ArtifactsRootDir = "Assets/KRT/KRTQuestTools/Artifacts";
         const string QuestShader = "VRChat/Mobile/Toon Lit";
-        readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
+        internal readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
         [MenuItem("GameObject/Convert Avatar For Quest", false)]
         public static void ConvertToQuest()
@@ -104,10 +106,10 @@ namespace KRTQuestTools
             {
                 var altDir = AssetDatabase.GenerateUniqueAssetPath(artifactsDir);
                 var option = EditorUtility.DisplayDialogComplex(
-                    i18n.OverwriteWarningDialogTitle(),
+                    i18n.OverwriteWarningDialogTitle,
                     i18n.OverwriteWarningDialogMessage(artifactsDir),
-                    i18n.OverwriteWarningDialogButtonOK(),
-                    i18n.OverwriteWarningDialogButtonCancel(),
+                    i18n.OverwriteWarningDialogButtonOK,
+                    i18n.OverwriteWarningDialogButtonCancel,
                     i18n.OverwriteWarningDialogButtonUseAltDir(altDir));
                 switch (option)
                 {
@@ -132,7 +134,7 @@ namespace KRTQuestTools
             for (var i = 0; i < materials.Length; i++)
             {
                 var progress = i / (float)materials.Length;
-                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", "Converting materials...", progress);
+                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.ConvertingMaterialsDialogMessage} : {i + 1}/{materials.Length}", progress);
                 var m = materials[i];
                 if (m == null) { continue; }
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
