@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEditor;
 
 namespace KRTQuestTools
 {
@@ -28,5 +26,56 @@ namespace KRTQuestTools
         BlendShapesCopy,
         AutoRemoveVertexColors = 100,
         UnitySettings = 200
+    }
+
+    static class KRTQuestToolsSettings
+    {
+        private static class Keys
+        {
+            private const string PREFIX = "dev.kurotu.KRTQuestTools.";
+            public const string LAST_VERSION = PREFIX + "LastQuestToolsVersion";
+            public const string DONT_SHOW_ON_LOAD = PREFIX + "DontShowOnLoad";
+            public const string AUTO_REMOVE_VERTEX_COLORS = PREFIX + "AutoRemoveVertexColors";
+        }
+
+        private const string FALSE = "FALSE";
+        private const string TRUE = "TRUE";
+        private static string GetStringValue(bool boolean)
+        {
+            return boolean ? TRUE : FALSE;
+        }
+
+        public static string GetLastVersion()
+        {
+            return EditorUserSettings.GetConfigValue(Keys.LAST_VERSION) ?? "";
+        }
+
+        public static void SetLastVersion(string version)
+        {
+            EditorUserSettings.SetConfigValue(Keys.LAST_VERSION, version);
+        }
+
+        public static bool IsDontShowOnLoadEnabled()
+        {
+            return (EditorUserSettings.GetConfigValue(Keys.DONT_SHOW_ON_LOAD) ?? FALSE) == TRUE;
+        }
+
+        public static void SetDontShowOnLoad(bool enabled)
+        {
+            var value = GetStringValue(enabled);
+            EditorUserSettings.SetConfigValue(Keys.DONT_SHOW_ON_LOAD, value);
+        }
+
+        public static bool IsAutoRemoveVertexColorsEnabled()
+        {
+            var defaultValue = TRUE;
+            return (EditorUserSettings.GetConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS) ?? defaultValue) == TRUE;
+        }
+
+        public static void SetAutoRemoveVertexColors(bool enabled)
+        {
+            var value = GetStringValue(enabled);
+            EditorUserSettings.SetConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS, value);
+        }
     }
 }
