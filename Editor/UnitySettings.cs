@@ -64,15 +64,15 @@ namespace KRTQuestTools
         [InitializeOnLoadMethod]
         static void InitOnLoad()
         {
-            var lastVersion = KRTQuestToolsSettings.GetLastVersion();
+            var lastVersion = KRTQuestToolsSettings.LastVersion;
             var hasUpdated = !lastVersion.Equals(KRTQuestTools.Version);
             if (hasUpdated)
             {
-                KRTQuestToolsSettings.SetLastVersion(KRTQuestTools.Version);
+                KRTQuestToolsSettings.LastVersion = KRTQuestTools.Version;
             }
             var shouldShowWindow = !UnitySettings.ValidateAll();
 
-            if (shouldShowWindow && (!KRTQuestToolsSettings.IsDontShowOnLoadEnabled() || hasUpdated))
+            if (shouldShowWindow && (!KRTQuestToolsSettings.IsDontShowSettingsWindowOnLoadEnabled || hasUpdated))
             {
                 Init();
             }
@@ -138,9 +138,9 @@ namespace KRTQuestTools
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
-            var donotshow = KRTQuestToolsSettings.IsDontShowOnLoadEnabled();
+            var donotshow = KRTQuestToolsSettings.IsDontShowSettingsWindowOnLoadEnabled;
             donotshow = EditorGUILayout.Toggle(i18n.DontShowOnStartupLabel, donotshow);
-            KRTQuestToolsSettings.SetDontShowOnLoad(donotshow);
+            KRTQuestToolsSettings.IsDontShowSettingsWindowOnLoadEnabled = donotshow;
         }
     }
 

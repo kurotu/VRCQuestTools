@@ -40,42 +40,35 @@ namespace KRTQuestTools
 
         private const string FALSE = "FALSE";
         private const string TRUE = "TRUE";
-        private static string GetStringValue(bool boolean)
+
+        private static void SetBooleanConfigValue(string name, bool value)
         {
-            return boolean ? TRUE : FALSE;
+            var v = value ? TRUE : FALSE;
+            EditorUserSettings.SetConfigValue(name, v);
         }
 
-        public static string GetLastVersion()
+        private static bool GetBooleanConfigValue(string name, bool defaultValue)
         {
-            return EditorUserSettings.GetConfigValue(Keys.LAST_VERSION) ?? "";
+            var d = defaultValue ? TRUE : FALSE;
+            return (EditorUserSettings.GetConfigValue(name) ?? d) == TRUE;
         }
 
-        public static void SetLastVersion(string version)
+        public static string LastVersion
         {
-            EditorUserSettings.SetConfigValue(Keys.LAST_VERSION, version);
+            get { return EditorUserSettings.GetConfigValue(Keys.LAST_VERSION) ?? ""; }
+            set { EditorUserSettings.SetConfigValue(Keys.LAST_VERSION, value); }
         }
 
-        public static bool IsDontShowOnLoadEnabled()
+        public static bool IsDontShowSettingsWindowOnLoadEnabled
         {
-            return (EditorUserSettings.GetConfigValue(Keys.DONT_SHOW_ON_LOAD) ?? FALSE) == TRUE;
+            get { return GetBooleanConfigValue(Keys.DONT_SHOW_ON_LOAD, false); }
+            set { SetBooleanConfigValue(Keys.DONT_SHOW_ON_LOAD, value); }
         }
 
-        public static void SetDontShowOnLoad(bool enabled)
+        public static bool IsAutoRemoveVertexColorsEnabled
         {
-            var value = GetStringValue(enabled);
-            EditorUserSettings.SetConfigValue(Keys.DONT_SHOW_ON_LOAD, value);
-        }
-
-        public static bool IsAutoRemoveVertexColorsEnabled()
-        {
-            var defaultValue = TRUE;
-            return (EditorUserSettings.GetConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS) ?? defaultValue) == TRUE;
-        }
-
-        public static void SetAutoRemoveVertexColors(bool enabled)
-        {
-            var value = GetStringValue(enabled);
-            EditorUserSettings.SetConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS, value);
+            get { return GetBooleanConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS, true); }
+            set { SetBooleanConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS, value); }
         }
     }
 }

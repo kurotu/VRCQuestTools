@@ -25,14 +25,13 @@ namespace KRTQuestTools
 
         static VertexColorRemoverAutomator()
         {
-            var enabled = KRTQuestToolsSettings.IsAutoRemoveVertexColorsEnabled();
-            SetAutomation(enabled);
+            SetAutomation(KRTQuestToolsSettings.IsAutoRemoveVertexColorsEnabled);
         }
 
         private static void SetAutomation(bool enabled)
         {
             Menu.SetChecked(MenuPaths.AutoRemoveVertexColors, enabled);
-            KRTQuestToolsSettings.SetAutoRemoveVertexColors(enabled);
+            KRTQuestToolsSettings.IsAutoRemoveVertexColorsEnabled = enabled;
             if (enabled)
             {
                 EditorApplication.hierarchyChanged += HierarchyChanged;
