@@ -63,10 +63,15 @@ namespace KRTQuestTools
             private const string PREFIX = "dev.kurotu.KRTQuestTools.";
             public const string LAST_VERSION = PREFIX + "LastQuestToolsVersion";
             public const string DONT_SHOW_ON_LOAD = PREFIX + "DontShowOnLoad";
+            public const string AUTO_REMOVE_VERTEX_COLORS = PREFIX + "AutoRemoveVertexColors";
         }
 
         private const string FALSE = "FALSE";
         private const string TRUE = "TRUE";
+        private static string GetStringValue(bool boolean)
+        {
+            return boolean ? TRUE : FALSE;
+        }
 
         public static string GetLastVersion()
         {
@@ -85,8 +90,20 @@ namespace KRTQuestTools
 
         public static void SetDontShowOnLoad(bool enabled)
         {
-            var value = enabled ? TRUE : FALSE;
+            var value = GetStringValue(enabled);
             EditorUserSettings.SetConfigValue(Keys.DONT_SHOW_ON_LOAD, value);
+        }
+
+        public static bool IsAutoRemoveVertexColorsEnabled()
+        {
+            var defaultValue = TRUE;
+            return (EditorUserSettings.GetConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS) ?? defaultValue) == TRUE;
+        }
+
+        public static void SetAutoRemoveVertexColors(bool enabled)
+        {
+            var value = GetStringValue(enabled);
+            EditorUserSettings.SetConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS, value);
         }
     }
 
@@ -112,7 +129,7 @@ namespace KRTQuestTools
             }
         }
 
-        [MenuItem(KRTQuestTools.RootMenu + "Unity Settings", false, (int)MenuPriority.UnitySettings)]
+        [MenuItem(MenuPaths.UnitySettings, false, (int)MenuPriorities.UnitySettings)]
         static void Init()
         {
             var window = GetWindow(typeof(UnitySettingsWindow));

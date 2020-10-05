@@ -21,7 +21,7 @@ namespace KRTQuestTools
         bool combineEmission = true;
         readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
-        [MenuItem(KRTQuestTools.RootMenu + "Convert Avatar For Quest", false, (int)MenuPriority.AvatarQuestConverter)]
+        [MenuItem(MenuPaths.ConvertAvatarForQuest, false, (int)MenuPriorities.ConvertAvatarForQuest)]
         static void Init()
         {
             var window = GetWindow<VRCAvatarQuestConverterWindow>();
@@ -92,7 +92,7 @@ namespace KRTQuestTools
         const string QuestShader = "VRChat/Mobile/Toon Lit";
         internal readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
-        [MenuItem("GameObject/Convert Avatar For Quest", false)]
+        [MenuItem(MenuPaths.GameObjectConvertAvatarForQuest, false)]
         public static void ConvertToQuest()
         {
             var original = Selection.activeGameObject;
@@ -211,7 +211,7 @@ namespace KRTQuestTools
             return mat;
         }
 
-        [MenuItem("GameObject/Convert Avatar For Quest", true)]
+        [MenuItem(MenuPaths.GameObjectConvertAvatarForQuest, true)]
         public static bool ValidateMenu()
         {
             var obj = Selection.activeGameObject;

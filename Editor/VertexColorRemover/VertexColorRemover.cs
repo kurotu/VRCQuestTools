@@ -16,13 +16,7 @@ namespace KRTQuestTools
     {
         private const string Tag = "VertexColorRemover";
 
-        [MenuItem(KRTQuestTools.RootMenu + "Remove All Vertex Colors", false, (int)MenuPriority.VertexColorRemover)]
-        private static void Init()
-        {
-            RemoveAllVertexColors();
-        }
-
-        [MenuItem("GameObject/Remove All Vertex Colors", false, 200)]
+        [MenuItem(MenuPaths.GameObjectRemoveAllVertexColors)]
         private static void RemoveAllVertexColors()
         {
             var obj = Selection.activeGameObject;
@@ -60,7 +54,7 @@ namespace KRTQuestTools
             }
         }
 
-        [MenuItem("GameObject/Remove All Vertex Colors", true)]
+        [MenuItem(MenuPaths.GameObjectRemoveAllVertexColors, true)]
         public static bool ValidateMenu()
         {
             return Selection.activeGameObject != null;

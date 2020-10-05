@@ -9,14 +9,14 @@ namespace KRTQuestTools
         SkinnedMeshRenderer source;
         SkinnedMeshRenderer target;
 
-        [MenuItem(KRTQuestTools.RootMenu + "BlendShapes Copy", false, (int)MenuPriority.BlendShapesCopy)]
+        [MenuItem(MenuPaths.BlendShapesCopy, false, (int)MenuPriorities.BlendShapesCopy)]
         static void Init()
         {
             var window = (BlendShapesCopy)GetWindow(typeof(BlendShapesCopy));
             window.Show();
         }
 
-        [MenuItem("CONTEXT/SkinnedMeshRenderer/Copy BlendShape Weights")]
+        [MenuItem(MenuPaths.ContextBlendShapesCopy)]
         static void InitOnContext(MenuCommand command)
         {
             var window = (BlendShapesCopy)GetWindow(typeof(BlendShapesCopy));

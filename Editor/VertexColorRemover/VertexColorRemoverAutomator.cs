@@ -16,11 +16,34 @@ namespace KRTQuestTools
     {
         static readonly string Tag = typeof(VertexColorRemoverAutomator).Name;
 
+        [MenuItem(MenuPaths.AutoRemoveVertexColors, false, (int)MenuPriorities.AutoRemoveVertexColors)]
+        private static void ToggleAutomation()
+        {
+            var enabled = !Menu.GetChecked(MenuPaths.AutoRemoveVertexColors);
+            SetAutomation(enabled);
+        }
+
         static VertexColorRemoverAutomator()
         {
-            EditorApplication.hierarchyChanged += HierarchyChanged;
-            RemoveAllVertexColorsFromAvatars(SceneManager.GetActiveScene());
-            Debug.Log($"[{Tag}] Loaded");
+            var enabled = KRTQuestToolsSettings.IsAutoRemoveVertexColorsEnabled();
+            SetAutomation(enabled);
+        }
+
+        private static void SetAutomation(bool enabled)
+        {
+            Menu.SetChecked(MenuPaths.AutoRemoveVertexColors, enabled);
+            KRTQuestToolsSettings.SetAutoRemoveVertexColors(enabled);
+            if (enabled)
+            {
+                EditorApplication.hierarchyChanged += HierarchyChanged;
+                RemoveAllVertexColorsFromAvatars(SceneManager.GetActiveScene());
+                Debug.Log($"[{Tag}] Enabled");
+            }
+            else
+            {
+                EditorApplication.hierarchyChanged -= HierarchyChanged;
+                Debug.Log($"[{Tag}] Disabled");
+            }
         }
 
         private static void HierarchyChanged()
