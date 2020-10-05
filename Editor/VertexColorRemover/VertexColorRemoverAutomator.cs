@@ -25,7 +25,13 @@ namespace KRTQuestTools
 
         static VertexColorRemoverAutomator()
         {
+            EditorApplication.delayCall += DelayInit;
+        }
+
+        private static void DelayInit()
+        {
             SetAutomation(KRTQuestToolsSettings.IsAutoRemoveVertexColorsEnabled);
+            EditorApplication.delayCall -= DelayInit;
         }
 
         private static void SetAutomation(bool enabled)

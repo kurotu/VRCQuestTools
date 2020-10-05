@@ -56,14 +56,20 @@ namespace KRTQuestTools
         }
     }
 
+    [InitializeOnLoad]
     public class UnitySettingsWindow : EditorWindow
     {
         private delegate void Action();
         private readonly UnitySettingsI18nBase i18n = UnitySettingsI18n.Create();
 
-        [InitializeOnLoadMethod]
-        static void InitOnLoad()
+        static UnitySettingsWindow()
         {
+            EditorApplication.delayCall += DelayInit;
+        }
+
+        static void DelayInit()
+        {
+            EditorApplication.delayCall -= DelayInit;
             var lastVersion = KRTQuestToolsSettings.LastVersion;
             var hasUpdated = !lastVersion.Equals(KRTQuestTools.Version);
             if (hasUpdated)
