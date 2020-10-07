@@ -26,7 +26,7 @@ namespace KRTQuestTools
             return new Layer
             {
                 image = MaterialUtils.GetMagickImage(material.mainTexture),
-                color = material.color
+                color = material.HasProperty("_Color") ? material.color : Color.white
             };
         }
 
