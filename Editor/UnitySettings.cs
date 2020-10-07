@@ -1,4 +1,10 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="UnitySettings.cs" company="kurotu">
+// Copyright (c) kurotu.
+// </copyright>
+// <author>kurotu</author>
+// <remarks>Licensed under the MIT license.</remarks>
+
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 

@@ -1,4 +1,10 @@
-﻿using UnityEditor;
+﻿// <copyright file="BlendShapesCopy.cs" company="kurotu">
+// Copyright (c) kurotu.
+// </copyright>
+// <author>kurotu</author>
+// <remarks>Licensed under the MIT license.</remarks>
+
+using UnityEditor;
 using UnityEngine;
 
 namespace KRTQuestTools

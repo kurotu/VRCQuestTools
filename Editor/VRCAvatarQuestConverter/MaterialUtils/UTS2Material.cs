@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿// <copyright file="UTS2Material.cs" company="kurotu">
+// Copyright (c) kurotu.
+// </copyright>
+// <author>kurotu</author>
+// <remarks>Licensed under the MIT license.</remarks>
+
+using UnityEngine;
 
 namespace KRTQuestTools
 {

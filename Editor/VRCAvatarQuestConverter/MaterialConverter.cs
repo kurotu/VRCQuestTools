@@ -1,4 +1,10 @@
-﻿using System.Linq;
+﻿// <copyright file="MaterialConverter.cs" company="kurotu">
+// Copyright (c) kurotu.
+// </copyright>
+// <author>kurotu</author>
+// <remarks>Licensed under the MIT license.</remarks>
+
+using System.Linq;
 using UnityEngine;
 
 namespace KRTQuestTools

@@ -1,5 +1,5 @@
 ﻿// <copyright file="VRCAvatarQuestConverter.cs" company="kurotu">
-// Copyright (c) kurotu. All rights reserved.
+// Copyright (c) kurotu.
 // </copyright>
 // <author>kurotu</author>
 // <remarks>Licensed under the MIT license.</remarks>

@@ -1,4 +1,10 @@
-﻿using ImageMagick;
+﻿// <copyright file="MaterialUtils.cs" company="kurotu">
+// Copyright (c) kurotu.
+// </copyright>
+// <author>kurotu</author>
+// <remarks>Licensed under the MIT license.</remarks>
+
+using ImageMagick;
 using System;
 using UnityEditor;
 using UnityEngine;

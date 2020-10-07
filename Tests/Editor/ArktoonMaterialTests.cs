@@ -1,4 +1,10 @@
-﻿using ImageMagick;
+﻿// <copyright file="ArktoonMaterialTests.cs" company="kurotu">
+// Copyright (c) kurotu.
+// </copyright>
+// <author>kurotu</author>
+// <remarks>Licensed under the MIT license.</remarks>
+
+using ImageMagick;
 using NUnit.Framework;
 
 namespace KRTQuestTools
