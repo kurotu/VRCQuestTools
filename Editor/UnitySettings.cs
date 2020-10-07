@@ -181,10 +181,10 @@ namespace KRTQuestTools
     class UnitySettingsI18nEnglish : UnitySettingsI18nBase
     {
         public override string CacheServerModeLabel => "Cache Server Mode";
-        public override string CacheServerHelp => "By enabling the local cache server, you can save time for texture compression (such as \"Switch Platform\") from the next. In default preferences, the server takes 10 GB from C drive at maximum.";
+        public override string CacheServerHelp => "By enabling the local cache server, you can save time for such as texture compression from the next. In default preferences, the server takes 10 GB from C drive at maximum.";
         public override string CacheServerButtonLabel => "Enable Local Cache Server";
         public override string TextureCompressionLabel => "Android Texture Compression";
-        public override string TextureCompressionHelp => "ASTC improves texture quality in exchange for long compression time";
+        public override string TextureCompressionHelp => "ASTC improves Quest texture quality in exchange for long compression time";
         public override string TextureCompressionButtonLabel => "Set texture compression to ASTC";
         public override string ApplyAllButtonLabel => "Apply All Settings";
         public override string DontShowOnStartupLabel => "Don't show on startup";
@@ -194,13 +194,13 @@ namespace KRTQuestTools
     class UnitySettingsI18nJapanese : UnitySettingsI18nBase
     {
         public override string CacheServerModeLabel => "キャッシュサーバー";
-        public override string CacheServerHelp => "ローカルキャッシュサーバーを使用すると、次回以降のSwitch Platformによるテクスチャ圧縮にかかる時間を短縮できることがあります。デフォルト設定ではCドライブを最大10GB使用します。";
-        public override string CacheServerButtonLabel => "ローカルキャッシュサーバーを有効化する";
+        public override string CacheServerHelp => "ローカルキャッシュサーバーを使用すると、テクスチャ圧縮などの結果を保存して次回にかかる時間を短縮できます。デフォルト設定では C ドライブを最大 10 GB 使用します。";
+        public override string CacheServerButtonLabel => "ローカルキャッシュサーバーを有効化";
         public override string TextureCompressionLabel => "Android テクスチャ圧縮";
-        public override string TextureCompressionHelp => "ASTCを使用すると圧縮に時間がかかる代わりにテクスチャの画質が向上します";
+        public override string TextureCompressionHelp => "ASTCを使用するとQuest用のテクスチャ圧縮に時間がかかる代わりに画質が向上します。";
         public override string TextureCompressionButtonLabel => "ASTCでテクスチャを圧縮";
         public override string ApplyAllButtonLabel => "すべての設定を適用";
         public override string DontShowOnStartupLabel => "起動時に表示しない";
-        public override string AllAppliedHelp => "すべての推奨設定が適用されています";
+        public override string AllAppliedHelp => "すべての推奨設定が適用されています。";
     }
 }
