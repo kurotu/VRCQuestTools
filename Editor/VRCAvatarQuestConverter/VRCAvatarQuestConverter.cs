@@ -22,6 +22,7 @@ namespace KRTQuestTools
         readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
         [MenuItem(MenuPaths.ConvertAvatarForQuest, false, (int)MenuPriorities.ConvertAvatarForQuest)]
+        [MenuItem(MenuPaths.GameObjectConvertAvatarForQuest, false)]
         static void Init()
         {
             var window = GetWindow<VRCAvatarQuestConverterWindow>();
@@ -91,14 +92,6 @@ namespace KRTQuestTools
         const string ArtifactsRootDir = "Assets/KRT/KRTQuestTools/Artifacts";
         const string QuestShader = "VRChat/Mobile/Toon Lit";
         internal readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
-
-        [MenuItem(MenuPaths.GameObjectConvertAvatarForQuest, false)]
-        public static void ConvertToQuest()
-        {
-            var original = Selection.activeGameObject;
-            var artifactsDir = $"{ArtifactsRootDir}/{original.name}";
-            ConvertForQuest(original, artifactsDir, false);
-        }
 
         internal static void ConvertForQuest(GameObject original, string artifactsDir, bool combineEmission)
         {
