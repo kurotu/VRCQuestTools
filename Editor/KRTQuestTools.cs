@@ -34,7 +34,7 @@ namespace KRTQuestTools
         {
             private const string PREFIX = "dev.kurotu.KRTQuestTools.";
             public const string LAST_VERSION = PREFIX + "LastQuestToolsVersion";
-            public const string DONT_SHOW_ON_LOAD = PREFIX + "DontShowOnLoad";
+            public const string SHOW_SETTINGS_ON_LOAD = PREFIX + "ShowSettingsOnLoad";
             public const string AUTO_REMOVE_VERTEX_COLORS = PREFIX + "AutoRemoveVertexColors";
         }
 
@@ -59,10 +59,10 @@ namespace KRTQuestTools
             set { EditorUserSettings.SetConfigValue(Keys.LAST_VERSION, value); }
         }
 
-        public static bool IsDontShowSettingsWindowOnLoadEnabled
+        public static bool IsShowSettingsWindowOnLoadEnabled
         {
-            get { return GetBooleanConfigValue(Keys.DONT_SHOW_ON_LOAD, false); }
-            set { SetBooleanConfigValue(Keys.DONT_SHOW_ON_LOAD, value); }
+            get { return GetBooleanConfigValue(Keys.SHOW_SETTINGS_ON_LOAD, true); }
+            set { SetBooleanConfigValue(Keys.SHOW_SETTINGS_ON_LOAD, value); }
         }
 
         public static bool IsAutoRemoveVertexColorsEnabled

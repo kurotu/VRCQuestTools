@@ -76,9 +76,9 @@ namespace KRTQuestTools
             {
                 KRTQuestToolsSettings.LastVersion = KRTQuestTools.Version;
             }
-            var shouldShowWindow = !UnitySettings.ValidateAll();
+            var hasInvalidSettings = !UnitySettings.ValidateAll();
 
-            if (shouldShowWindow && (!KRTQuestToolsSettings.IsDontShowSettingsWindowOnLoadEnabled || hasUpdated))
+            if (hasInvalidSettings && (KRTQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled || hasUpdated))
             {
                 Init();
             }
@@ -144,9 +144,9 @@ namespace KRTQuestTools
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
-            var donotshow = KRTQuestToolsSettings.IsDontShowSettingsWindowOnLoadEnabled;
-            donotshow = EditorGUILayout.Toggle(i18n.DontShowOnStartupLabel, donotshow);
-            KRTQuestToolsSettings.IsDontShowSettingsWindowOnLoadEnabled = donotshow;
+            var showOnLoad = KRTQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled;
+            showOnLoad = EditorGUILayout.Toggle(i18n.ShowOnStartupLabel, showOnLoad);
+            KRTQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled = showOnLoad;
         }
     }
 
@@ -174,7 +174,7 @@ namespace KRTQuestTools
         public abstract string TextureCompressionHelp { get; }
         public abstract string TextureCompressionButtonLabel { get; }
         public abstract string ApplyAllButtonLabel { get; }
-        public abstract string DontShowOnStartupLabel { get; }
+        public abstract string ShowOnStartupLabel { get; }
         public abstract string AllAppliedHelp { get; }
     }
 
@@ -187,7 +187,7 @@ namespace KRTQuestTools
         public override string TextureCompressionHelp => "ASTC improves Quest texture quality in exchange for long compression time";
         public override string TextureCompressionButtonLabel => "Set texture compression to ASTC";
         public override string ApplyAllButtonLabel => "Apply All Settings";
-        public override string DontShowOnStartupLabel => "Don't show on startup";
+        public override string ShowOnStartupLabel => "Show on startup";
         public override string AllAppliedHelp => "OK, all recommended settings are applied.";
     }
 
@@ -200,7 +200,7 @@ namespace KRTQuestTools
         public override string TextureCompressionHelp => "ASTCを使用するとQuest用のテクスチャ圧縮に時間がかかる代わりに画質が向上します。";
         public override string TextureCompressionButtonLabel => "ASTCでテクスチャを圧縮";
         public override string ApplyAllButtonLabel => "すべての設定を適用";
-        public override string DontShowOnStartupLabel => "起動時に表示しない";
+        public override string ShowOnStartupLabel => "起動時に表示";
         public override string AllAppliedHelp => "すべての推奨設定が適用されています。";
     }
 }
