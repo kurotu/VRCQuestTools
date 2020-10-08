@@ -6,7 +6,7 @@
 
 ### VRCAvatarQuestConverter
 
-VRChatアバターを無理やりQuest対応(概ねVery Poor)に変換します。
+VRChatアバターをQuestから見えるように無理やり変換します(大体Very Poor)。
 元のアバターに変更を加えないため、既存のプロジェクトでそのまま使用することができます。
 
 既存ツール VRCAvatarQuestConverter (https://booth.pm/ja/items/2089584) の改良版です。
@@ -22,13 +22,13 @@ VRChatアバターを無理やりQuest対応(概ねVery Poor)に変換します�
 SkinnedMeshRendererに設定されたブレンドシェイプ(シェイプキー)の値を別のSkinnedMeshRendererにコピーします。
 PC用とQuest用で別々のモデルを使用する場合などに、設定済みシェイプキーを移す際に使用します。
 
-### UnitySettings
+### UnityQuestSettings
 
-Quest対応に有用なUnityの機能を有効化します。
+Quest対応に有用なUnityの設定を有効化します。
 
 ## 使用方法
 
-unitypackageを導入後、メニューの「KRTQuestTools」を選択すると各機能を使用できます。
+unitypackageを導入後、メニューから「KRTQuestTools」を選択すると各機能を使用できます。
 一部機能は自動的に有効になっています。
 
 ## 動作環境
