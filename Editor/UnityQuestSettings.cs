@@ -17,7 +17,7 @@ namespace KRTQuestTools
         Disable
     }
 
-    static class UnitySettings
+    static class UnityQuestSettings
     {
         private static class EditorPrefsKeys
         {
@@ -63,12 +63,12 @@ namespace KRTQuestTools
     }
 
     [InitializeOnLoad]
-    public class UnitySettingsWindow : EditorWindow
+    public class UnityQuestSettingsWindow : EditorWindow
     {
         private delegate void Action();
-        private readonly UnitySettingsI18nBase i18n = UnitySettingsI18n.Create();
+        private readonly UnityQuestSettingsI18nBase i18n = UnityQuestSettingsI18n.Create();
 
-        static UnitySettingsWindow()
+        static UnityQuestSettingsWindow()
         {
             EditorApplication.delayCall += DelayInit;
         }
@@ -82,7 +82,7 @@ namespace KRTQuestTools
             {
                 KRTQuestToolsSettings.LastVersion = KRTQuestTools.Version;
             }
-            var hasInvalidSettings = !UnitySettings.ValidateAll();
+            var hasInvalidSettings = !UnityQuestSettings.ValidateAll();
 
             if (hasInvalidSettings && (KRTQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled || hasUpdated))
             {
@@ -93,25 +93,25 @@ namespace KRTQuestTools
         [MenuItem(MenuPaths.UnitySettings, false, (int)MenuPriorities.UnitySettings)]
         static void Init()
         {
-            var window = GetWindow(typeof(UnitySettingsWindow));
+            var window = GetWindow(typeof(UnityQuestSettingsWindow));
             window.Show();
         }
 
         private void OnGUI()
         {
-            titleContent.text = "KRT Unity Settings";
+            titleContent.text = "Unity Settings for Quest";
             EditorGUILayout.LabelField("Unity Preferences", EditorStyles.boldLabel);
             var allActions = new List<Action>();
 
-            EditorGUILayout.LabelField($"{i18n.CacheServerModeLabel}: {UnitySettings.GetCacheServerMode()}");
+            EditorGUILayout.LabelField($"{i18n.CacheServerModeLabel}: {UnityQuestSettings.GetCacheServerMode()}");
 
-            if (!UnitySettings.ValidateCacheServerMode())
+            if (!UnityQuestSettings.ValidateCacheServerMode())
             {
                 EditorGUILayout.HelpBox(i18n.CacheServerHelp, MessageType.Warning);
-                allActions.Add(UnitySettings.EnableLocalCacheServer);
+                allActions.Add(UnityQuestSettings.EnableLocalCacheServer);
                 if (GUILayout.Button(i18n.CacheServerButtonLabel))
                 {
-                    UnitySettings.EnableLocalCacheServer();
+                    UnityQuestSettings.EnableLocalCacheServer();
                 }
             }
 
@@ -119,14 +119,14 @@ namespace KRTQuestTools
 
             EditorGUILayout.LabelField("Build Settings", EditorStyles.boldLabel);
 
-            EditorGUILayout.LabelField($"{i18n.TextureCompressionLabel}: {UnitySettings.GetAndroidTextureCompression()}");
-            if (!UnitySettings.ValidateAndroidTextureCompression())
+            EditorGUILayout.LabelField($"{i18n.TextureCompressionLabel}: {UnityQuestSettings.GetAndroidTextureCompression()}");
+            if (!UnityQuestSettings.ValidateAndroidTextureCompression())
             {
                 EditorGUILayout.HelpBox(i18n.TextureCompressionHelp, MessageType.Warning);
-                allActions.Add(UnitySettings.EnableAndroidASTC);
+                allActions.Add(UnityQuestSettings.EnableAndroidASTC);
                 if (GUILayout.Button(i18n.TextureCompressionButtonLabel))
                 {
-                    UnitySettings.EnableAndroidASTC();
+                    UnityQuestSettings.EnableAndroidASTC();
                 }
             }
 
@@ -156,22 +156,22 @@ namespace KRTQuestTools
         }
     }
 
-    static class UnitySettingsI18n
+    static class UnityQuestSettingsI18n
     {
-        public static UnitySettingsI18nBase Create()
+        public static UnityQuestSettingsI18nBase Create()
         {
             if (System.Globalization.CultureInfo.CurrentCulture.Name == "ja-JP")
             {
-                return new UnitySettingsI18nJapanese();
+                return new UnityQuestSettingsI18nJapanese();
             }
             else
             {
-                return new UnitySettingsI18nEnglish();
+                return new UnityQuestSettingsI18nEnglish();
             }
         }
     }
 
-    abstract class UnitySettingsI18nBase
+    abstract class UnityQuestSettingsI18nBase
     {
         public abstract string CacheServerModeLabel { get; }
         public abstract string CacheServerHelp { get; }
@@ -184,7 +184,7 @@ namespace KRTQuestTools
         public abstract string AllAppliedHelp { get; }
     }
 
-    class UnitySettingsI18nEnglish : UnitySettingsI18nBase
+    class UnityQuestSettingsI18nEnglish : UnityQuestSettingsI18nBase
     {
         public override string CacheServerModeLabel => "Cache Server Mode";
         public override string CacheServerHelp => "By enabling the local cache server, you can save time for such as texture compression from the next. In default preferences, the server takes 10 GB from C drive at maximum.";
@@ -197,7 +197,7 @@ namespace KRTQuestTools
         public override string AllAppliedHelp => "OK, all recommended settings are applied.";
     }
 
-    class UnitySettingsI18nJapanese : UnitySettingsI18nBase
+    class UnityQuestSettingsI18nJapanese : UnityQuestSettingsI18nBase
     {
         public override string CacheServerModeLabel => "キャッシュサーバー";
         public override string CacheServerHelp => "ローカルキャッシュサーバーを使用すると、テクスチャ圧縮などの結果を保存して次回にかかる時間を短縮できます。デフォルト設定では C ドライブを最大 10 GB 使用します。";
