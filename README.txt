@@ -1,4 +1,4 @@
-# KRTQuestTools
+# VRCQuestTools
 
 主にOculus Quest対応を想定したVRChat向けUnity Editor拡張の詰め合わせです。
 
@@ -28,7 +28,7 @@ Quest対応に有用なUnityの設定を有効化します。
 
 ## 使用方法
 
-unitypackageを導入後、メニューから「KRTQuestTools」を選択すると各機能を使用できます。
+unitypackageを導入後、メニューから「VRCQuestTools」を選択すると各機能を使用できます。
 一部機能は自動的に有効になっています。
 
 ## 動作環境

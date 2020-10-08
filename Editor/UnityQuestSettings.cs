@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace KRTQuestTools
+namespace VRCQuestTools
 {
     enum CacheServerMode
     {
@@ -76,15 +76,15 @@ namespace KRTQuestTools
         static void DelayInit()
         {
             EditorApplication.delayCall -= DelayInit;
-            var lastVersion = KRTQuestToolsSettings.LastVersion;
-            var hasUpdated = !lastVersion.Equals(KRTQuestTools.Version);
+            var lastVersion = VRCQuestToolsSettings.LastVersion;
+            var hasUpdated = !lastVersion.Equals(VRCQuestTools.Version);
             if (hasUpdated)
             {
-                KRTQuestToolsSettings.LastVersion = KRTQuestTools.Version;
+                VRCQuestToolsSettings.LastVersion = VRCQuestTools.Version;
             }
             var hasInvalidSettings = !UnityQuestSettings.ValidateAll();
 
-            if (hasInvalidSettings && (KRTQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled || hasUpdated))
+            if (hasInvalidSettings && (VRCQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled || hasUpdated))
             {
                 Init();
             }
@@ -150,9 +150,9 @@ namespace KRTQuestTools
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
-            var showOnLoad = KRTQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled;
+            var showOnLoad = VRCQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled;
             showOnLoad = EditorGUILayout.Toggle(i18n.ShowOnStartupLabel, showOnLoad);
-            KRTQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled = showOnLoad;
+            VRCQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled = showOnLoad;
         }
     }
 

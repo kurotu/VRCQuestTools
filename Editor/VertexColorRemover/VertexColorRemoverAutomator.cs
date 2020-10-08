@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace KRTQuestTools
+namespace VRCQuestTools
 {
     [InitializeOnLoad]
     public class VertexColorRemoverAutomator
@@ -30,14 +30,14 @@ namespace KRTQuestTools
 
         private static void DelayInit()
         {
-            SetAutomation(KRTQuestToolsSettings.IsAutoRemoveVertexColorsEnabled);
+            SetAutomation(VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled);
             EditorApplication.delayCall -= DelayInit;
         }
 
         private static void SetAutomation(bool enabled)
         {
             Menu.SetChecked(MenuPaths.AutoRemoveVertexColors, enabled);
-            KRTQuestToolsSettings.IsAutoRemoveVertexColorsEnabled = enabled;
+            VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled = enabled;
             if (enabled)
             {
                 EditorApplication.hierarchyChanged += HierarchyChanged;

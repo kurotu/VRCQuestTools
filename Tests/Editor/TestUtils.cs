@@ -9,11 +9,11 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-namespace KRTQuestTools
+namespace VRCQuestTools
 {
     static class TestUtils
     {
-        internal const string FixturesFolder = "Assets/KRT/KRTQuestTools/Tests/Fixtures";
+        internal const string FixturesFolder = "Assets/KRT/VRCQuestTools/Tests/Fixtures";
         internal const string MaterialsFolder = FixturesFolder + "/Materials";
         internal const string TexturesFolder = FixturesFolder + "/Textures";
 

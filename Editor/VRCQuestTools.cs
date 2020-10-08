@@ -6,16 +6,16 @@
 
 using UnityEditor;
 
-namespace KRTQuestTools
+namespace VRCQuestTools
 {
-    public static class KRTQuestTools
+    public static class VRCQuestTools
     {
         public const string Version = "0.0.0";
     }
 
     internal static class MenuPaths
     {
-        private const string RootMenu = "KRTQuestTools/";
+        private const string RootMenu = "VRCQuestTools/";
         internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar For Quest";
         internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
         internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
@@ -34,11 +34,11 @@ namespace KRTQuestTools
         UnitySettings = 200
     }
 
-    static class KRTQuestToolsSettings
+    static class VRCQuestToolsSettings
     {
         private static class Keys
         {
-            private const string PREFIX = "dev.kurotu.KRTQuestTools.";
+            private const string PREFIX = "dev.kurotu.VRCQuestTools.";
             public const string LAST_VERSION = PREFIX + "LastQuestToolsVersion";
             public const string SHOW_SETTINGS_ON_LOAD = PREFIX + "ShowSettingsOnLoad";
             public const string AUTO_REMOVE_VERTEX_COLORS = PREFIX + "AutoRemoveVertexColors";

@@ -7,7 +7,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace KRTQuestTools
+namespace VRCQuestTools
 {
     /// <summary>
     /// 頂点カラーを消去

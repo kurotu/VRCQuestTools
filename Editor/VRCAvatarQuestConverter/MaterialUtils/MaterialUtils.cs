@@ -9,7 +9,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace KRTQuestTools
+namespace VRCQuestTools
 {
     public class Layer : IDisposable
     {

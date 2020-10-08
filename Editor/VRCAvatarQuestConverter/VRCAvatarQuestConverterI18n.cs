@@ -4,7 +4,7 @@
 // <author>kurotu</author>
 // <remarks>Licensed under the MIT license.</remarks>
 
-namespace KRTQuestTools
+namespace VRCQuestTools
 {
     static class VRCAvatarQuestConverterI18n
     {

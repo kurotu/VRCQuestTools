@@ -1,7 +1,7 @@
 {
-    "name": "KRTQuestToolsTests",
+    "name": "VRCQuestToolsTests",
     "references": [
-        "KRTQuestTools-Editor"
+        "VRCQuestTools-Editor"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"

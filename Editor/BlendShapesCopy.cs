@@ -7,7 +7,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace KRTQuestTools
+namespace VRCQuestTools
 {
     public class BlendShapesCopy : EditorWindow
     {

@@ -12,7 +12,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace KRTQuestTools
+namespace VRCQuestTools
 {
     public class VRCAvatarQuestConverterWindow : EditorWindow
     {
@@ -82,14 +82,14 @@ namespace KRTQuestTools
 
         private void SetArtifactsPath(VRC.SDKBase.VRC_AvatarDescriptor avatar)
         {
-            outputPath = $"Assets/KRT/KRTQuestTools/Artifacts/{avatar.name}";
+            outputPath = $"{VRCAvatarQuestConverter.ArtifactsRootDir}/{avatar.name}";
         }
     }
 
     public static class VRCAvatarQuestConverter
     {
         const string Tag = "VRCAvatarQuestConverter";
-        const string ArtifactsRootDir = "Assets/KRT/KRTQuestTools/Artifacts";
+        internal const string ArtifactsRootDir = "Assets/KRT/VRCQuestTools/Artifacts";
         const string QuestShader = "VRChat/Mobile/Toon Lit";
         internal readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 

@@ -7,7 +7,7 @@
 using ImageMagick;
 using NUnit.Framework;
 
-namespace KRTQuestTools
+namespace VRCQuestTools
 {
     public class StandardMaterialTests
     {
