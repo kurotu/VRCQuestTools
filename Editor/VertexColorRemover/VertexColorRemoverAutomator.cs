@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace VRCQuestTools
+namespace KRT.VRCQuestTools
 {
     [InitializeOnLoad]
     public class VertexColorRemoverAutomator

@@ -7,7 +7,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace VRCQuestTools
+namespace KRT.VRCQuestTools
 {
     public static class MaterialConverter
     {

@@ -6,7 +6,7 @@
 
 using UnityEditor;
 
-namespace VRCQuestTools
+namespace KRT.VRCQuestTools
 {
     public static class VRCQuestTools
     {

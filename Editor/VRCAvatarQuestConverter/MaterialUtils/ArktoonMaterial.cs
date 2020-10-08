@@ -7,7 +7,7 @@
 using ImageMagick;
 using UnityEngine;
 
-namespace VRCQuestTools
+namespace KRT.VRCQuestTools
 {
     public class ArktoonMaterial : StandardMaterial
     {

@@ -9,7 +9,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-namespace VRCQuestTools
+namespace KRT.VRCQuestTools
 {
     static class TestUtils
     {

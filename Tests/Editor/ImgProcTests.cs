@@ -7,7 +7,7 @@
 using ImageMagick;
 using NUnit.Framework;
 
-namespace VRCQuestTools
+namespace KRT.VRCQuestTools
 {
     public class ImgProcTests
     {

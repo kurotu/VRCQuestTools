@@ -12,7 +12,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace VRCQuestTools
+namespace KRT.VRCQuestTools
 {
     public class VRCAvatarQuestConverterWindow : EditorWindow
     {

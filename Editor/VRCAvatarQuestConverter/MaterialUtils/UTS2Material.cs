@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace VRCQuestTools
+namespace KRT.VRCQuestTools
 {
     public class UTS2Material : StandardMaterial
     {
