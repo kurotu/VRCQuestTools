@@ -79,7 +79,8 @@ namespace KRT.VRCQuestTools
 
         public override string ConvertingMaterialsDialogMessage => "Converting materials...";
 
-        public override string WarningForPerformance => "In many cases, the converted avatar's performance rank will be \"Very Poor\" for Quest. Quest users need to use \"Show Avatar\" due to Performance Options limitation.";
+        public override string WarningForPerformance => "In many cases, the converted avatar's performance rank will be \"Very Poor\" for Quest. Quest users need to use \"Show Avatar\" due to Performance Options limitation.\\nn" +
+            "And texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips).";
     }
 
     class VRCAvatarQuestConverterI18nJapanese : VRCAvatarQuestConverterI18nBase
@@ -120,6 +121,7 @@ namespace KRT.VRCQuestTools
 
         public override string ConvertingMaterialsDialogMessage => "マテリアルを変換中";
 
-        public override string WarningForPerformance => "多くの場合、Questから見た場合のパフォーマンスランクはVery Poorになります。Performance Optionsによる制限があるためQuestから見るにはShow Avatarの操作をする必要があります。";
+        public override string WarningForPerformance => "多くの場合、Questから見た場合のパフォーマンスランクはVery Poorになります。Performance Optionsによる制限があるためQuestから見るにはShow Avatarの操作をする必要があります。\n\n" +
+            "またテクスチャの透過が反映されないため、頬染めなどの表情に問題がある場合があります。そのような場合はアニメーション編集などの方法で対策する必要があります。";
     }
 }
