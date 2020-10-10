@@ -71,5 +71,5 @@ Twitter: https://twitter.com/kurotu
 
 ## 更新履歴
 
-- 2020/10/XX: v0.1.0
+- 2020/10/10: v0.1.0
     - 公開
