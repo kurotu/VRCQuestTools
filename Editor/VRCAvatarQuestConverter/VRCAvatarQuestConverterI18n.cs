@@ -38,6 +38,7 @@ namespace KRT.VRCQuestTools
         public abstract string SelectButtonLabel { get; }
         public abstract string ConvertButtonLabel { get; }
         public abstract string ConvertingMaterialsDialogMessage { get; }
+        public abstract string WarningForPerformance { get; }
     }
 
     class VRCAvatarQuestConverterI18nEnglish : VRCAvatarQuestConverterI18nBase
@@ -77,6 +78,8 @@ namespace KRT.VRCQuestTools
         public override string ConvertButtonLabel => "Convert";
 
         public override string ConvertingMaterialsDialogMessage => "Converting materials...";
+
+        public override string WarningForPerformance => "In many cases, the converted avatar's performance rank will be \"Very Poor\" for Quest. Quest users need to use \"Show Avatar\" due to Performance Options limitation.";
     }
 
     class VRCAvatarQuestConverterI18nJapanese : VRCAvatarQuestConverterI18nBase
@@ -116,5 +119,7 @@ namespace KRT.VRCQuestTools
         public override string ConvertButtonLabel => "変換";
 
         public override string ConvertingMaterialsDialogMessage => "マテリアルを変換中";
+
+        public override string WarningForPerformance => "多くの場合、Questから見た場合のパフォーマンスランクはVery Poorになります。Performance Optionsによる制限があるためQuestから見るにはShow Avatarの操作をする必要があります。";
     }
 }
