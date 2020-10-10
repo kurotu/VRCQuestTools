@@ -6,16 +6,16 @@
 
 ### VRCAvatarQuestConverter
 
-VRChatアバターをQuestから見えるように無理やり変換します(大体Very Poor)。
+VRChatアバターをQuestから見えるように無理やり変換します(大抵はVery Poor)。
 元のアバターに変更を加えないため、既存のプロジェクトでそのまま使用することができます。
 
 既存ツール VRCAvatarQuestConverter (https://booth.pm/ja/items/2089584) の改良版です。
 
 ### VertexColorRemover
 
-シーン内のアバターのメッシュから頂点カラーを自動的に取り除き、一部アバターでVRChat/Mobile系シェーダーを使用する際にテクスチャの色が正しく表示されない問題を対策します。
+シーン内のアバターのメッシュから頂点カラーを自動的に取り除き、一部アバターでVRChat/Mobile系シェーダーを使用する際に真っ黒になるなどテクスチャの色が正しく表示されない問題を対策します。
 
-既存ツール VertexColorRemover (https://booth.pm/ja/items/1849557) の改良版です。
+既存ツール VertexColorRemover (https://booth.pm/ja/items/1849557) とほぼ同様です。
 
 ### BlendShapesCopy
 
