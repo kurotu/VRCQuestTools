@@ -162,12 +162,6 @@ namespace KRT.VRCQuestTools
             RemoveMissingComponents(questObj);
             RemoveMissingComponentsInChildren(questObj, true);
             RemoveUnsupportedComponentsInChildren(questObj, true);
-            Selection.activeGameObject = questObj;
-            if (System.Type.GetType("VertexColorRemover") != null)
-            {
-                Debug.Log($"[{Tag}] VertexColorRemover found. Apply to the converted avatar");
-                EditorApplication.ExecuteMenuItem("GameObject/Remove All Vertex Colors");
-            }
 
             var prefab = $"{artifactsDir}/{questObj.name}.prefab";
             PrefabUtility.SaveAsPrefabAssetAndConnect(questObj, prefab, InteractionMode.UserAction);
