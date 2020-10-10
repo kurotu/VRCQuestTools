@@ -20,6 +20,7 @@ namespace KRT.VRCQuestTools
         private static void ToggleAutomation()
         {
             var enabled = !Menu.GetChecked(MenuPaths.AutoRemoveVertexColors);
+            VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled = enabled;
             SetAutomation(enabled);
         }
 
@@ -37,7 +38,6 @@ namespace KRT.VRCQuestTools
         private static void SetAutomation(bool enabled)
         {
             Menu.SetChecked(MenuPaths.AutoRemoveVertexColors, enabled);
-            VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled = enabled;
             if (enabled)
             {
                 EditorApplication.hierarchyChanged += HierarchyChanged;

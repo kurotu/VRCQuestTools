@@ -16,7 +16,7 @@ namespace KRT.VRCQuestTools
     internal static class MenuPaths
     {
         private const string RootMenu = "VRCQuestTools/";
-        internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar For Quest";
+        internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar for Quest";
         internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
         internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
         internal const string UnitySettings = RootMenu + "Unity Settings";
