@@ -22,11 +22,10 @@ namespace KRT.VRCQuestTools
         readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
         [MenuItem(MenuPaths.ConvertAvatarForQuest, false, (int)MenuPriorities.ConvertAvatarForQuest)]
-        [MenuItem(MenuPaths.GameObjectConvertAvatarForQuest, false)]
-        static void Init()
+        internal static void Init()
         {
             var window = GetWindow<VRCAvatarQuestConverterWindow>();
-            if (window.avatar == null && VRCAvatarQuestConverter.IsAvatar(Selection.activeGameObject))
+            if (window.avatar == null && VRCSDKUtils.IsAvatar(Selection.activeGameObject))
             {
                 window.avatar = Selection.activeGameObject.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>();
                 window.SetArtifactsPath(window.avatar);
@@ -197,20 +196,6 @@ namespace KRT.VRCQuestTools
             var file = $"{artifactsDir}/{material.name}_from_{guid}.mat";
             AssetDatabase.CreateAsset(mat, file);
             return mat;
-        }
-
-        [MenuItem(MenuPaths.GameObjectConvertAvatarForQuest, true)]
-        public static bool ValidateMenu()
-        {
-            var obj = Selection.activeGameObject;
-            return IsAvatar(obj);
-        }
-
-        internal static bool IsAvatar(GameObject obj)
-        {
-            if (obj == null) { return false; }
-            if (obj.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>() == null) { return false; }
-            return true;
         }
 
         private static Material[] GetMaterialsInChildren(GameObject gameObject)

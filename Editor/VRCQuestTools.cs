@@ -5,6 +5,7 @@
 // <remarks>Licensed under the MIT license.</remarks>
 
 using UnityEditor;
+using UnityEngine;
 
 namespace KRT.VRCQuestTools
 {
@@ -21,8 +22,6 @@ namespace KRT.VRCQuestTools
         internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
         internal const string UnitySettings = RootMenu + "Unity Settings";
 
-        internal const string GameObjectRemoveAllVertexColors = "GameObject/Remove All Vertex Colors";
-        internal const string GameObjectConvertAvatarForQuest = "GameObject/Convert Avatar For Quest";
         internal const string ContextBlendShapesCopy = "CONTEXT/SkinnedMeshRenderer/Copy BlendShape Weights";
     }
 
@@ -75,6 +74,50 @@ namespace KRT.VRCQuestTools
         {
             get { return GetBooleanConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS, true); }
             set { SetBooleanConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS, value); }
+        }
+    }
+
+    static class VRCSDKUtils
+    {
+        internal static bool IsAvatar(GameObject obj)
+        {
+            if (obj == null) { return false; }
+            if (obj.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>() == null) { return false; }
+            return true;
+        }
+    }
+
+    static class GameObjectMenu
+    {
+        const string MenuPrefix = "GameObject/VRCQuestTools/";
+        const string GameObjectRemoveAllVertexColors = MenuPrefix + "Remove All Vertex Colors";
+        const string GameObjectConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Quest";
+
+        [MenuItem(GameObjectConvertAvatarForQuest, false)]
+        static void ConvertAvatarForQuest()
+        {
+            VRCAvatarQuestConverterWindow.Init();
+        }
+
+        [MenuItem(GameObjectConvertAvatarForQuest, true)]
+        static bool ValidateAvatarMenu()
+        {
+            var obj = Selection.activeGameObject;
+            return VRCSDKUtils.IsAvatar(obj);
+        }
+
+        [MenuItem(GameObjectRemoveAllVertexColors)]
+        static void RemoveAllVertexColors()
+        {
+            var obj = Selection.activeGameObject;
+            VertexColorRemover.RemoveAllVertexColors(obj);
+            Debug.LogFormat("[{0}] All vertex colors are removed from {1}", "VRCQuestTools", obj);
+        }
+
+        [MenuItem(GameObjectRemoveAllVertexColors, true)]
+        static bool ValidateVertexColorRemover()
+        {
+            return Selection.activeGameObject != null;
         }
     }
 }
