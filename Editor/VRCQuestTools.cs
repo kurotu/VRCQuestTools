@@ -77,33 +77,35 @@ namespace KRT.VRCQuestTools
         }
     }
 
-    static class VRCSDKUtils
-    {
-        internal static bool IsAvatar(GameObject obj)
-        {
-            if (obj == null) { return false; }
-            if (obj.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>() == null) { return false; }
-            return true;
-        }
-    }
-
     static class GameObjectMenu
     {
         const string MenuPrefix = "GameObject/VRCQuestTools/";
         const string GameObjectRemoveAllVertexColors = MenuPrefix + "Remove All Vertex Colors";
+        const string GameObjectRemoveUnsupportedComponents = MenuPrefix + "Remove Unsupported Components";
+        const string GameObjectRemoveMissingComponents = MenuPrefix + "Remove Missing Components";
         const string GameObjectConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Quest";
 
-        [MenuItem(GameObjectConvertAvatarForQuest, false)]
+        [MenuItem(GameObjectConvertAvatarForQuest, false, 10)]
         static void ConvertAvatarForQuest()
         {
             VRCAvatarQuestConverterWindow.Init();
         }
 
-        [MenuItem(GameObjectConvertAvatarForQuest, true)]
-        static bool ValidateAvatarMenu()
+        [MenuItem(GameObjectRemoveUnsupportedComponents, false)]
+        static void RemoveUnsupportedComponents()
         {
             var obj = Selection.activeGameObject;
-            return VRCSDKUtils.IsAvatar(obj);
+            Undo.RecordObject(obj, "Remove Unsupported Components");
+            VRCSDKUtils.RemoveUnsupportedComponentsInChildren(obj, true);
+        }
+
+        [MenuItem(GameObjectRemoveMissingComponents, false)]
+        static void RemoveMissingComponents()
+        {
+            var obj = Selection.activeGameObject;
+            Undo.RecordObject(obj, "Remove Missing Components");
+            VRCSDKUtils.RemoveMissingComponents(obj);
+            VRCSDKUtils.RemoveMissingComponentsInChildren(obj, true);
         }
 
         [MenuItem(GameObjectRemoveAllVertexColors)]
@@ -114,8 +116,17 @@ namespace KRT.VRCQuestTools
             Debug.LogFormat("[{0}] All vertex colors are removed from {1}", "VRCQuestTools", obj);
         }
 
+        [MenuItem(GameObjectConvertAvatarForQuest, true)]
+        [MenuItem(GameObjectRemoveUnsupportedComponents, true)]
+        static bool ValidateAvatarMenu()
+        {
+            var obj = Selection.activeGameObject;
+            return VRCSDKUtils.IsAvatar(obj);
+        }
+
+        [MenuItem(GameObjectRemoveMissingComponents, true)]
         [MenuItem(GameObjectRemoveAllVertexColors, true)]
-        static bool ValidateVertexColorRemover()
+        static bool ValidateActiveGameObject()
         {
             return Selection.activeGameObject != null;
         }

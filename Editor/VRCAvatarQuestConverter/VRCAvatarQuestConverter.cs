@@ -158,9 +158,9 @@ namespace KRT.VRCQuestTools
                 });
                 r.sharedMaterials = newMaterials.ToArray();
             }
-            RemoveMissingComponents(questObj);
-            RemoveMissingComponentsInChildren(questObj, true);
-            RemoveUnsupportedComponentsInChildren(questObj, true);
+            VRCSDKUtils.RemoveMissingComponents(questObj);
+            VRCSDKUtils.RemoveMissingComponentsInChildren(questObj, true);
+            VRCSDKUtils.RemoveUnsupportedComponentsInChildren(questObj, true);
 
             var prefab = $"{artifactsDir}/{questObj.name}.prefab";
             PrefabUtility.SaveAsPrefabAssetAndConnect(questObj, prefab, InteractionMode.UserAction);
@@ -204,73 +204,11 @@ namespace KRT.VRCQuestTools
             return renderers.SelectMany(r => r.sharedMaterials).Distinct().ToArray();
         }
 
-        private static void RemoveMissingComponentsInChildren(GameObject gameObject, bool includeInactive)
-        {
-            var children = gameObject.GetComponentsInChildren<Transform>(includeInactive).Select(t => t.gameObject);
-            foreach (var c in children)
-            {
-                RemoveMissingComponents(c);
-            }
-        }
-
-        private static void RemoveMissingComponents(GameObject gameObject)
-        {
-            var serializedObj = new SerializedObject(gameObject);
-            var serializedComponentList = serializedObj.FindProperty("m_Component");
-            var components = gameObject.GetComponents<Component>();
-
-            for (int i = components.Length - 1; i > -1; i--)
-            {
-                if (components[i] == null)
-                {
-                    serializedComponentList.DeleteArrayElementAtIndex(i);
-                }
-            }
-            serializedObj.ApplyModifiedProperties();
-        }
-
-        private static void RemoveUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive)
-        {
-            var types = new System.Type[] {
-                GetType("DynamicBoneColliderBase"), GetType("DynamicBone"), // DynamicBone may be missing
-                typeof(Cloth),
-                typeof(Camera),
-                typeof(Light),
-                typeof(AudioSource),
-                typeof(Joint), typeof(Rigidbody),typeof(Collider),
-                typeof(UnityEngine.Animations.IConstraint)
-            }.Where(e => e != null);
-            foreach (var type in types)
-            {
-                var components = gameObject.GetComponentsInChildren(type, includeInactive);
-                foreach (var c in components)
-                {
-                    var message = $"[{Tag}] Removed {c.GetType().Name} from {c.gameObject.name}";
-                    Object.DestroyImmediate(c);
-                    Debug.Log(message);
-                }
-            }
-        }
 
         private static string GenerateUniqueRootGameObjectName(Scene scene, string name)
         {
             var names = scene.GetRootGameObjects().Select(o => o.name).ToArray();
             return ObjectNames.GetUniqueName(names, name);
-        }
-
-        private static System.Type GetType(string fullName)
-        {
-            foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (var type in asm.GetTypes())
-                {
-                    if (type.FullName == fullName)
-                    {
-                        return type;
-                    }
-                }
-            }
-            return null;
         }
     }
 }
