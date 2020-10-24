@@ -22,11 +22,10 @@ namespace KRT.VRCQuestTools
         readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
         [MenuItem(MenuPaths.ConvertAvatarForQuest, false, (int)MenuPriorities.ConvertAvatarForQuest)]
-        [MenuItem(MenuPaths.GameObjectConvertAvatarForQuest, false)]
-        static void Init()
+        internal static void Init()
         {
             var window = GetWindow<VRCAvatarQuestConverterWindow>();
-            if (window.avatar == null && VRCAvatarQuestConverter.IsAvatar(Selection.activeGameObject))
+            if (window.avatar == null && VRCSDKUtils.IsAvatar(Selection.activeGameObject))
             {
                 window.avatar = Selection.activeGameObject.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>();
                 window.SetArtifactsPath(window.avatar);
@@ -159,9 +158,9 @@ namespace KRT.VRCQuestTools
                 });
                 r.sharedMaterials = newMaterials.ToArray();
             }
-            RemoveMissingComponents(questObj);
-            RemoveMissingComponentsInChildren(questObj, true);
-            RemoveUnsupportedComponentsInChildren(questObj, true);
+            VRCSDKUtils.RemoveMissingComponents(questObj);
+            VRCSDKUtils.RemoveMissingComponentsInChildren(questObj, true);
+            VRCSDKUtils.RemoveUnsupportedComponentsInChildren(questObj, true);
 
             var prefab = $"{artifactsDir}/{questObj.name}.prefab";
             PrefabUtility.SaveAsPrefabAssetAndConnect(questObj, prefab, InteractionMode.UserAction);
@@ -199,93 +198,17 @@ namespace KRT.VRCQuestTools
             return mat;
         }
 
-        [MenuItem(MenuPaths.GameObjectConvertAvatarForQuest, true)]
-        public static bool ValidateMenu()
-        {
-            var obj = Selection.activeGameObject;
-            return IsAvatar(obj);
-        }
-
-        internal static bool IsAvatar(GameObject obj)
-        {
-            if (obj == null) { return false; }
-            if (obj.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>() == null) { return false; }
-            return true;
-        }
-
         private static Material[] GetMaterialsInChildren(GameObject gameObject)
         {
             var renderers = gameObject.GetComponentsInChildren<Renderer>(true);
             return renderers.SelectMany(r => r.sharedMaterials).Distinct().ToArray();
         }
 
-        private static void RemoveMissingComponentsInChildren(GameObject gameObject, bool includeInactive)
-        {
-            var children = gameObject.GetComponentsInChildren<Transform>(includeInactive).Select(t => t.gameObject);
-            foreach (var c in children)
-            {
-                RemoveMissingComponents(c);
-            }
-        }
-
-        private static void RemoveMissingComponents(GameObject gameObject)
-        {
-            var serializedObj = new SerializedObject(gameObject);
-            var serializedComponentList = serializedObj.FindProperty("m_Component");
-            var components = gameObject.GetComponents<Component>();
-
-            for (int i = components.Length - 1; i > -1; i--)
-            {
-                if (components[i] == null)
-                {
-                    serializedComponentList.DeleteArrayElementAtIndex(i);
-                }
-            }
-            serializedObj.ApplyModifiedProperties();
-        }
-
-        private static void RemoveUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive)
-        {
-            var types = new System.Type[] {
-                GetType("DynamicBoneColliderBase"), GetType("DynamicBone"), // DynamicBone may be missing
-                typeof(Cloth),
-                typeof(Camera),
-                typeof(Light),
-                typeof(AudioSource),
-                typeof(Joint), typeof(Rigidbody),typeof(Collider),
-                typeof(UnityEngine.Animations.IConstraint)
-            }.Where(e => e != null);
-            foreach (var type in types)
-            {
-                var components = gameObject.GetComponentsInChildren(type, includeInactive);
-                foreach (var c in components)
-                {
-                    var message = $"[{Tag}] Removed {c.GetType().Name} from {c.gameObject.name}";
-                    Object.DestroyImmediate(c);
-                    Debug.Log(message);
-                }
-            }
-        }
 
         private static string GenerateUniqueRootGameObjectName(Scene scene, string name)
         {
             var names = scene.GetRootGameObjects().Select(o => o.name).ToArray();
             return ObjectNames.GetUniqueName(names, name);
-        }
-
-        private static System.Type GetType(string fullName)
-        {
-            foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (var type in asm.GetTypes())
-                {
-                    if (type.FullName == fullName)
-                    {
-                        return type;
-                    }
-                }
-            }
-            return null;
         }
     }
 }

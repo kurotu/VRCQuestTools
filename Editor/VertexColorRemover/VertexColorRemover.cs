@@ -16,14 +16,6 @@ namespace KRT.VRCQuestTools
     {
         private const string Tag = "VertexColorRemover";
 
-        [MenuItem(MenuPaths.GameObjectRemoveAllVertexColors)]
-        private static void RemoveAllVertexColors()
-        {
-            var obj = Selection.activeGameObject;
-            RemoveAllVertexColors(obj);
-            Debug.LogFormat("[{0}] All vertex colors are removed from {1}", Tag, obj);
-        }
-
         public static void RemoveAllVertexColors(GameObject gameObject)
         {
             var skinnedMeshRenderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true);
@@ -52,12 +44,6 @@ namespace KRT.VRCQuestTools
                     mesh.colors32 = null;
                 }
             }
-        }
-
-        [MenuItem(MenuPaths.GameObjectRemoveAllVertexColors, true)]
-        public static bool ValidateMenu()
-        {
-            return Selection.activeGameObject != null;
         }
 
         private static Mesh GetSharedMesh(Renderer r)
