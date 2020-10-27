@@ -12,25 +12,98 @@ namespace KRT.VRCQuestTools
     public static class VRCQuestTools
     {
         public const string Version = "0.1.1";
+
+        static class MenuPaths
+        {
+            private const string RootMenu = "VRCQuestTools/";
+            internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar for Quest";
+            internal const string RemoveUnsupportedComponents = RootMenu + "Remove Unsupported Components";
+            internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
+            internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
+            internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
+            internal const string UnitySettings = RootMenu + "Unity Settings";
+        }
+
+        enum MenuPriorities : int
+        {
+            ConvertAvatarForQuest = 0,
+            BlendShapesCopy,
+            RemoveMissingComponents = 100,
+            RemoveUnsupportedComponents,
+            AutoRemoveVertexColors = 200,
+            UnitySettings = 300
+        }
+
+        // Convert Avatar for Quest
+
+        [MenuItem(MenuPaths.ConvertAvatarForQuest, false, (int)MenuPriorities.ConvertAvatarForQuest)]
+        internal static void InitConvertAvatarForQuest()
+        {
+            if (!ValidateConvertAvatarForQuest())
+            {
+                Debug.LogError("[VRCQuestTools] Slected object is not an avatar");
+                return;
+            }
+            VRCAvatarQuestConverterWindow.InitFromMenu();
+        }
+
+        [MenuItem(MenuPaths.ConvertAvatarForQuest, true)]
+        internal static bool ValidateConvertAvatarForQuest()
+        {
+            var obj = Selection.activeGameObject;
+            return VRCSDKUtils.IsAvatar(obj);
+        }
+
+        // Remove Unsupported Components
+
+        [MenuItem(MenuPaths.RemoveUnsupportedComponents, false, (int)MenuPriorities.RemoveUnsupportedComponents)]
+        internal static void RemoveUnsupportedComponents()
+        {
+            var obj = Selection.activeGameObject;
+            Undo.RecordObject(obj, "Remove Unsupported Components");
+            VRCSDKUtils.RemoveUnsupportedComponentsInChildren(obj, true);
+        }
+
+        // Remove Missing Components
+
+        [MenuItem(MenuPaths.RemoveMissingComponents, false, (int)MenuPriorities.RemoveMissingComponents)]
+        internal static void RemoveMissingComponents()
+        {
+            var obj = Selection.activeGameObject;
+            Undo.RecordObject(obj, "Remove Missing Components");
+            VRCSDKUtils.RemoveMissingComponents(obj);
+            VRCSDKUtils.RemoveMissingComponentsInChildren(obj, true);
+        }
+
+        // BlendShapes Copy
+
+        [MenuItem(MenuPaths.BlendShapesCopy, false, (int)MenuPriorities.BlendShapesCopy)]
+        static void InitBlendShapesCopy()
+        {
+            BlendShapesCopy.InitFromMenu();
+        }
+
+        // Auto Remove Vertex Colors
+
+        [MenuItem(MenuPaths.AutoRemoveVertexColors, false, (int)MenuPriorities.AutoRemoveVertexColors)]
+        static void ToggleVertexColorRemoverAutomator()
+        {
+            var enabled = !Menu.GetChecked(MenuPaths.AutoRemoveVertexColors);
+            VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled = enabled;
+            Menu.SetChecked(MenuPaths.AutoRemoveVertexColors, enabled);
+            VertexColorRemoverAutomator.SetAutomation(enabled);
+        }
+
+        [MenuItem(MenuPaths.UnitySettings, false, (int)MenuPriorities.UnitySettings)]
+        static void UnitySettings()
+        {
+            UnityQuestSettingsWindow.Init();
+        }
     }
 
-    internal static class MenuPaths
+    static class ContextMenu
     {
-        private const string RootMenu = "VRCQuestTools/";
-        internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar for Quest";
-        internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
-        internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
-        internal const string UnitySettings = RootMenu + "Unity Settings";
-
         internal const string ContextBlendShapesCopy = "CONTEXT/SkinnedMeshRenderer/Copy BlendShape Weights";
-    }
-
-    internal enum MenuPriorities : int
-    {
-        ConvertAvatarForQuest = 0,
-        BlendShapesCopy,
-        AutoRemoveVertexColors = 100,
-        UnitySettings = 200
     }
 
     static class VRCQuestToolsSettings
@@ -88,24 +161,19 @@ namespace KRT.VRCQuestTools
         [MenuItem(GameObjectConvertAvatarForQuest, false, 10)]
         static void ConvertAvatarForQuest()
         {
-            VRCAvatarQuestConverterWindow.Init();
+            VRCQuestTools.InitConvertAvatarForQuest();
         }
 
         [MenuItem(GameObjectRemoveUnsupportedComponents, false)]
         static void RemoveUnsupportedComponents()
         {
-            var obj = Selection.activeGameObject;
-            Undo.RecordObject(obj, "Remove Unsupported Components");
-            VRCSDKUtils.RemoveUnsupportedComponentsInChildren(obj, true);
+            VRCQuestTools.RemoveUnsupportedComponents();
         }
 
         [MenuItem(GameObjectRemoveMissingComponents, false)]
         static void RemoveMissingComponents()
         {
-            var obj = Selection.activeGameObject;
-            Undo.RecordObject(obj, "Remove Missing Components");
-            VRCSDKUtils.RemoveMissingComponents(obj);
-            VRCSDKUtils.RemoveMissingComponentsInChildren(obj, true);
+            VRCQuestTools.RemoveMissingComponents();
         }
 
         [MenuItem(GameObjectRemoveAllVertexColors)]

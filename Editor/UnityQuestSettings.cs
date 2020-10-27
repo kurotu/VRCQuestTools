@@ -90,8 +90,7 @@ namespace KRT.VRCQuestTools
             }
         }
 
-        [MenuItem(MenuPaths.UnitySettings, false, (int)MenuPriorities.UnitySettings)]
-        static void Init()
+        internal static void Init()
         {
             var window = GetWindow(typeof(UnityQuestSettingsWindow));
             window.Show();
