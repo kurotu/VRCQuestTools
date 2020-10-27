@@ -64,6 +64,10 @@ namespace KRT.VRCQuestTools
         internal static MagickImage GetMagickImage(Texture texture)
         {
             if (texture == null) return null;
+            if (texture.GetType() == typeof(RenderTexture))
+            {
+                return new MagickImage(MagickColors.Black, 1, 1);
+            }
             var path = AssetDatabase.GetAssetPath(texture);
             return new MagickImage(path);
         }

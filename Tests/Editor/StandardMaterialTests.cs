@@ -64,5 +64,18 @@ namespace KRT.VRCQuestTools
                 Assert.AreEqual(0.0, result.MeanErrorPerPixel);
             }
         }
+
+        [Test]
+        public void RenderTexture()
+        {
+            var wrapper = TestUtils.LoadMaterialWrapper("render_texture.mat");
+            Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
+            using (var image = wrapper.CompositeLayers())
+            using (var main = new MagickImage(MagickColor.FromRgb(0, 0, 0), 1, 1))
+            {
+                var result = image.Compare(main);
+                Assert.AreEqual(0.0, result.MeanErrorPerPixel);
+            }
+        }
     }
 }
