@@ -75,6 +75,7 @@ namespace KRT.VRCQuestTools
 
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Warning);
+            EditorGUILayout.HelpBox(i18n.InfoForAppearance, MessageType.Info);
             if (GUILayout.Button(i18n.ConvertButtonLabel))
             {
                 VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, combineEmission);
