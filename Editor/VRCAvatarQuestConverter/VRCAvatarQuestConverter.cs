@@ -74,6 +74,7 @@ namespace KRT.VRCQuestTools
 
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Warning);
+            EditorGUILayout.HelpBox(i18n.InfoForAppearance, MessageType.Info);
             if (GUILayout.Button(i18n.ConvertButtonLabel))
             {
                 VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, combineEmission);
@@ -124,19 +125,31 @@ namespace KRT.VRCQuestTools
 
             var materials = GetMaterialsInChildren(original);
             var convertedMaterials = new Dictionary<string, Material>();
-            for (var i = 0; i < materials.Length; i++)
+            try
             {
-                var progress = i / (float)materials.Length;
-                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.ConvertingMaterialsDialogMessage} : {i + 1}/{materials.Length}", progress);
-                var m = materials[i];
-                if (m == null) { continue; }
-                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
-                if (convertedMaterials.ContainsKey(guid)) { continue; }
-                var shader = Shader.Find(QuestShader);
-                Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader, combineEmission);
-                convertedMaterials.Add(guid, mat);
+                for (var i = 0; i < materials.Length; i++)
+                {
+                    var progress = i / (float)materials.Length;
+                    EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.ConvertingMaterialsDialogMessage} : {i + 1}/{materials.Length}", progress);
+                    var m = materials[i];
+                    if (m == null) { continue; }
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
+                    if (convertedMaterials.ContainsKey(guid)) { continue; }
+                    var shader = Shader.Find(QuestShader);
+                    Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader, combineEmission);
+                    convertedMaterials.Add(guid, mat);
+                }
             }
-            EditorUtility.ClearProgressBar();
+            catch (System.Exception e)
+            {
+                Debug.LogException(e);
+                EditorUtility.DisplayDialog("VRCAvatarQuestConverter", $"{i18n.MaterialExceptionDialogMessage}\n\n{e.Message}", "OK");
+                return;
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
 
             var newName = original.name + " (Quest)";
             newName = GenerateUniqueRootGameObjectName(SceneManager.GetActiveScene(), newName);
