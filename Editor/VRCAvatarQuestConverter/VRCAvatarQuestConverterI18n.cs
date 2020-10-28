@@ -130,7 +130,7 @@ namespace KRT.VRCQuestTools
         public override string MaterialExceptionDialogMessage => "マテリアルの変換中にエラーが発生しました。変換を中止します。";
 
         public override string WarningForPerformance => "多くの場合、Questから見た場合のパフォーマンスランクはVery Poorになります。Performance Optionsによる制限があるためQuestから見るにはShow Avatarの操作をする必要があります。\n\n" +
-            "またテクスチャの透過が反映されないため、頬染めなどの表情に問題がある場合があります。そのような場合はアニメーション編集などの方法で対策する必要があります。";
+            "またテクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集などの方法で対策する必要があります。";
 
         public override string InfoForAppearance => "別のBlueprint IDでのアップロードやAvatars 3.0のローカルテストを使用してアバターの見た目を確認することをお勧めします。";
     }
