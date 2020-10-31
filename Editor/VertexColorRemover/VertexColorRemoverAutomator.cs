@@ -16,14 +16,6 @@ namespace KRT.VRCQuestTools
     {
         static readonly string Tag = typeof(VertexColorRemoverAutomator).Name;
 
-        [MenuItem(MenuPaths.AutoRemoveVertexColors, false, (int)MenuPriorities.AutoRemoveVertexColors)]
-        private static void ToggleAutomation()
-        {
-            var enabled = !Menu.GetChecked(MenuPaths.AutoRemoveVertexColors);
-            VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled = enabled;
-            SetAutomation(enabled);
-        }
-
         static VertexColorRemoverAutomator()
         {
             EditorApplication.delayCall += DelayInit;
@@ -35,9 +27,8 @@ namespace KRT.VRCQuestTools
             EditorApplication.delayCall -= DelayInit;
         }
 
-        private static void SetAutomation(bool enabled)
+        internal static void SetAutomation(bool enabled)
         {
-            Menu.SetChecked(MenuPaths.AutoRemoveVertexColors, enabled);
             if (enabled)
             {
                 EditorApplication.hierarchyChanged += HierarchyChanged;

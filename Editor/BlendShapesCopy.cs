@@ -15,14 +15,13 @@ namespace KRT.VRCQuestTools
         SkinnedMeshRenderer source;
         SkinnedMeshRenderer target;
 
-        [MenuItem(MenuPaths.BlendShapesCopy, false, (int)MenuPriorities.BlendShapesCopy)]
-        static void Init()
+        internal static void InitFromMenu()
         {
             var window = (BlendShapesCopy)GetWindow(typeof(BlendShapesCopy));
             window.Show();
         }
 
-        [MenuItem(MenuPaths.ContextBlendShapesCopy)]
+        [MenuItem(ContextMenu.ContextBlendShapesCopy)]
         static void InitOnContext(MenuCommand command)
         {
             var window = (BlendShapesCopy)GetWindow(typeof(BlendShapesCopy));

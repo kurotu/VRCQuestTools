@@ -21,8 +21,7 @@ namespace KRT.VRCQuestTools
         bool combineEmission = true;
         readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
-        [MenuItem(MenuPaths.ConvertAvatarForQuest, false, (int)MenuPriorities.ConvertAvatarForQuest)]
-        internal static void Init()
+        internal static void InitFromMenu()
         {
             var window = GetWindow<VRCAvatarQuestConverterWindow>();
             if (window.avatar == null && VRCSDKUtils.IsAvatar(Selection.activeGameObject))
