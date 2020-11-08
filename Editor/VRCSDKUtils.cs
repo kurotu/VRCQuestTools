@@ -19,7 +19,7 @@ namespace KRT.VRCQuestTools
             return true;
         }
 
-        internal static void RemoveUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive)
+        internal static void RemoveUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive, bool canUndo = false)
         {
             var types = new System.Type[] {
                 GetType("DynamicBoneColliderBase"), GetType("DynamicBone"), // DynamicBone may be missing
@@ -36,7 +36,14 @@ namespace KRT.VRCQuestTools
                 foreach (var c in components)
                 {
                     var message = $"[VRCQuestTools] Removed {c.GetType().Name} from {c.gameObject.name}";
-                    Object.DestroyImmediate(c);
+                    if (canUndo)
+                    {
+                        Undo.DestroyObjectImmediate(c);
+                    }
+                    else
+                    {
+                        Object.DestroyImmediate(c);
+                    }
                     Debug.Log(message);
                 }
             }

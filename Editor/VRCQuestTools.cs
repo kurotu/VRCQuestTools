@@ -60,8 +60,8 @@ namespace KRT.VRCQuestTools
         internal static void RemoveUnsupportedComponents()
         {
             var obj = Selection.activeGameObject;
-            Undo.RecordObject(obj, "Remove Unsupported Components");
-            VRCSDKUtils.RemoveUnsupportedComponentsInChildren(obj, true);
+            Undo.SetCurrentGroupName("Remove Unsupported Components");
+            VRCSDKUtils.RemoveUnsupportedComponentsInChildren(obj, true, true);
         }
 
         // Remove Missing Components
