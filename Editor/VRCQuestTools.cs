@@ -17,18 +17,18 @@ namespace KRT.VRCQuestTools
         {
             private const string RootMenu = "VRCQuestTools/";
             internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar for Quest";
-            internal const string RemoveUnsupportedComponents = RootMenu + "Remove Unsupported Components";
+            internal const string RemoveUnsupportedComponents = RootMenu + "Tools/Remove Unsupported Components";
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
-            internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
+            internal const string BlendShapesCopy = RootMenu + "Tools/BlendShapes Copy";
             internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
-            internal const string UnitySettings = RootMenu + "Unity Settings";
+            internal const string UnitySettings = RootMenu + "Unity Settings for Quest";
         }
 
         enum MenuPriorities : int
         {
             ConvertAvatarForQuest = 0,
-            BlendShapesCopy,
-            RemoveMissingComponents = 100,
+            RemoveMissingComponents,
+            BlendShapesCopy = 100,
             RemoveUnsupportedComponents,
             AutoRemoveVertexColors = 200,
             UnitySettings = 300
@@ -97,6 +97,13 @@ namespace KRT.VRCQuestTools
         static void UnitySettings()
         {
             UnityQuestSettingsWindow.Init();
+        }
+
+        [MenuItem(MenuPaths.RemoveMissingComponents, true)]
+        [MenuItem(MenuPaths.RemoveUnsupportedComponents, true)]
+        private static bool ValidateGameObjectMenu()
+        {
+            return Selection.activeGameObject != null;
         }
     }
 
