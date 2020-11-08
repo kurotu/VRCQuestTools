@@ -170,7 +170,6 @@ namespace KRT.VRCQuestTools
                 });
                 r.sharedMaterials = newMaterials.ToArray();
             }
-            VRCSDKUtils.RemoveMissingComponents(questObj);
             VRCSDKUtils.RemoveMissingComponentsInChildren(questObj, true);
             VRCSDKUtils.RemoveUnsupportedComponentsInChildren(questObj, true);
 

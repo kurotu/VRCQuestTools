@@ -70,9 +70,8 @@ namespace KRT.VRCQuestTools
         internal static void RemoveMissingComponents()
         {
             var obj = Selection.activeGameObject;
-            Undo.RecordObject(obj, "Remove Missing Components");
-            VRCSDKUtils.RemoveMissingComponents(obj);
             VRCSDKUtils.RemoveMissingComponentsInChildren(obj, true);
+            EditorUtility.SetDirty(obj);
         }
 
         // BlendShapes Copy

@@ -62,24 +62,8 @@ namespace KRT.VRCQuestTools
             var children = gameObject.GetComponentsInChildren<Transform>(includeInactive).Select(t => t.gameObject);
             foreach (var c in children)
             {
-                RemoveMissingComponents(c);
+                GameObjectUtility.RemoveMonoBehavioursWithMissingScript(c);
             }
-        }
-
-        internal static void RemoveMissingComponents(GameObject gameObject)
-        {
-            var serializedObj = new SerializedObject(gameObject);
-            var serializedComponentList = serializedObj.FindProperty("m_Component");
-            var components = gameObject.GetComponents<Component>();
-
-            for (int i = components.Length - 1; i > -1; i--)
-            {
-                if (components[i] == null)
-                {
-                    serializedComponentList.DeleteArrayElementAtIndex(i);
-                }
-            }
-            serializedObj.ApplyModifiedProperties();
         }
     }
 }
