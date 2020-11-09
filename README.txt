@@ -71,6 +71,8 @@ Twitter: https://twitter.com/kurotu
 
 ## 更新履歴
 
+- 2020/11/09: v0.1.2
+    - MissingになっているDynamicBoneを含むアバターを変換するとUnityがクラッシュする問題を修正
 - 2020/10/28: v0.1.1
     - RenderTextureを使用するマテリアルがあると変換が停止する問題を修正
     - メッセージの内容を一部変更
