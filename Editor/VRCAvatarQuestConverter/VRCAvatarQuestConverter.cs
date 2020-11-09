@@ -172,7 +172,6 @@ namespace KRT.VRCQuestTools
                 });
                 r.sharedMaterials = newMaterials.ToArray();
             }
-            RemoveMissingComponents(questObj);
             RemoveMissingComponentsInChildren(questObj, true);
             RemoveUnsupportedComponentsInChildren(questObj, true);
 
@@ -237,24 +236,8 @@ namespace KRT.VRCQuestTools
             var children = gameObject.GetComponentsInChildren<Transform>(includeInactive).Select(t => t.gameObject);
             foreach (var c in children)
             {
-                RemoveMissingComponents(c);
+                GameObjectUtility.RemoveMonoBehavioursWithMissingScript(c);
             }
-        }
-
-        private static void RemoveMissingComponents(GameObject gameObject)
-        {
-            var serializedObj = new SerializedObject(gameObject);
-            var serializedComponentList = serializedObj.FindProperty("m_Component");
-            var components = gameObject.GetComponents<Component>();
-
-            for (int i = components.Length - 1; i > -1; i--)
-            {
-                if (components[i] == null)
-                {
-                    serializedComponentList.DeleteArrayElementAtIndex(i);
-                }
-            }
-            serializedObj.ApplyModifiedProperties();
         }
 
         private static void RemoveUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive)
