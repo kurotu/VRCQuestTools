@@ -70,8 +70,13 @@ namespace KRT.VRCQuestTools
         internal static void RemoveMissingComponents()
         {
             var obj = Selection.activeGameObject;
+            if (PrefabUtility.IsPartOfPrefabInstance(obj))
+            {
+                Undo.SetCurrentGroupName("Remove Missing Components");
+                // Somehow unpacking is needed to apply changes to the scene file.
+                PrefabUtility.UnpackPrefabInstance(obj, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
+            }
             VRCSDKUtils.RemoveMissingComponentsInChildren(obj, true);
-            EditorUtility.SetDirty(obj);
         }
 
         // BlendShapes Copy
