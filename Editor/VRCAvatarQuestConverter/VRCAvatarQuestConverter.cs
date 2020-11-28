@@ -16,9 +16,19 @@ namespace KRT.VRCQuestTools
 {
     public class VRCAvatarQuestConverterWindow : EditorWindow
     {
+        enum TextureResizeMode
+        {
+            None = 0,
+            UpTo256x256 = 256,
+            UpTo512x512 = 512,
+            UpTo1024x1024 = 1024,
+            UpTo2048x2048 = 2048
+        }
+
         VRC.SDKBase.VRC_AvatarDescriptor avatar;
         string outputPath = "";
-        bool combineEmission = true;
+        bool generateQuestTextures = true;
+        TextureResizeMode resizeTextures = TextureResizeMode.UpTo1024x1024;
         readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
         internal static void InitFromMenu()
@@ -51,8 +61,9 @@ namespace KRT.VRCQuestTools
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField(i18n.ExperimentalSettingsLabel, EditorStyles.boldLabel);
-            combineEmission = EditorGUILayout.Toggle(i18n.CombineEmissionLabel, combineEmission);
+            generateQuestTextures = EditorGUILayout.Toggle(i18n.GenerateQuestTexturesLabel, generateQuestTextures);
             EditorGUILayout.HelpBox($"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
+            resizeTextures = (TextureResizeMode)EditorGUILayout.EnumPopup(i18n.ResizeTexturesLabel, resizeTextures);
 
             EditorGUILayout.Space();
 
@@ -76,7 +87,7 @@ namespace KRT.VRCQuestTools
             EditorGUILayout.HelpBox(i18n.InfoForAppearance, MessageType.Info);
             if (GUILayout.Button(i18n.ConvertButtonLabel))
             {
-                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, combineEmission);
+                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)resizeTextures);
             }
         }
 
@@ -93,7 +104,7 @@ namespace KRT.VRCQuestTools
         const string QuestShader = "VRChat/Mobile/Toon Lit";
         internal readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
-        internal static void ConvertForQuest(GameObject original, string artifactsDir, bool combineEmission)
+        internal static void ConvertForQuest(GameObject original, string artifactsDir, bool generateQuestTextures, int maxTextureSize)
         {
             if (Directory.Exists(artifactsDir))
             {
@@ -135,7 +146,7 @@ namespace KRT.VRCQuestTools
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
                     if (convertedMaterials.ContainsKey(guid)) { continue; }
                     var shader = Shader.Find(QuestShader);
-                    Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader, combineEmission);
+                    Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader, generateQuestTextures, maxTextureSize);
                     convertedMaterials.Add(guid, mat);
                 }
             }
@@ -188,16 +199,21 @@ namespace KRT.VRCQuestTools
             Undo.CollapseUndoOperations(undoGroup);
         }
 
-        private static Material ConvertMaterialForQuest(string artifactsDir, Material material, string guid, Shader newShader, bool combineEmission)
+        private static Material ConvertMaterialForQuest(string artifactsDir, Material material, string guid, Shader newShader, bool generateQuestTextures, int maxTextureSize)
         {
+            var resizeTextures = maxTextureSize > 0;
             Material mat = MaterialConverter.Convert(material, newShader);
-            if (combineEmission)
+            if (generateQuestTextures || resizeTextures)
             {
                 var mw = MaterialUtils.CreateWrapper(material);
                 using (var combined = mw.CompositeLayers())
                 {
                     var outFile = $"{artifactsDir}/{material.name}_from_{guid}.png";
                     var format = combined.HasAlpha ? MagickFormat.Png32 : MagickFormat.Png24;
+                    if (resizeTextures && (combined.Width > maxTextureSize || combined.Height > maxTextureSize))
+                    {
+                        combined.Resize(maxTextureSize, maxTextureSize);
+                    }
                     combined.Write(outFile, format);
                     AssetDatabase.Refresh();
                     var tex = AssetDatabase.LoadAssetAtPath<Texture>(outFile);

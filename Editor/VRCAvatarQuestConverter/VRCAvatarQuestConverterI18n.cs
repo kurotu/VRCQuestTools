@@ -31,7 +31,7 @@ namespace KRT.VRCQuestTools
         public abstract string ConvertSettingsLabel { get; }
         public abstract string AvatarLabel { get; }
         public abstract string ExperimentalSettingsLabel { get; }
-        public abstract string CombineEmissionLabel { get; }
+        public abstract string GenerateQuestTexturesLabel { get; }
         public abstract string SupportedShadersLabel { get; }
         public abstract string OutputSettingsLabel { get; }
         public abstract string SaveToLabel { get; }
@@ -41,6 +41,7 @@ namespace KRT.VRCQuestTools
         public abstract string MaterialExceptionDialogMessage { get; }
         public abstract string WarningForPerformance { get; }
         public abstract string InfoForAppearance { get; }
+        public abstract string ResizeTexturesLabel { get; }
     }
 
     class VRCAvatarQuestConverterI18nEnglish : VRCAvatarQuestConverterI18nBase
@@ -67,7 +68,7 @@ namespace KRT.VRCQuestTools
 
         public override string ExperimentalSettingsLabel => "Experimental Settings";
 
-        public override string CombineEmissionLabel => "Combine Emission";
+        public override string GenerateQuestTexturesLabel => "Generate Textures for Quest";
 
         public override string SupportedShadersLabel => "Supported Shaders";
 
@@ -87,6 +88,8 @@ namespace KRT.VRCQuestTools
             "And texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips).";
 
         public override string InfoForAppearance => "You should check avatar's appearance by using another Blueprint ID or Avatars 3.0 local testing.";
+
+        public override string ResizeTexturesLabel => "Resize Textures";
     }
 
     class VRCAvatarQuestConverterI18nJapanese : VRCAvatarQuestConverterI18nBase
@@ -113,7 +116,7 @@ namespace KRT.VRCQuestTools
 
         public override string ExperimentalSettingsLabel => "実験的機能";
 
-        public override string CombineEmissionLabel => "Emissionを合成する";
+        public override string GenerateQuestTexturesLabel => "Quest用のテクスチャを生成する";
 
         public override string SupportedShadersLabel => "対応シェーダー";
 
@@ -133,5 +136,7 @@ namespace KRT.VRCQuestTools
             "またテクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集などの方法で対策する必要があります。";
 
         public override string InfoForAppearance => "別のBlueprint IDでのアップロードやAvatars 3.0のローカルテストを使用してアバターの見た目を確認することをお勧めします。";
+
+        public override string ResizeTexturesLabel => "テクスチャをリサイズする";
     }
 }
