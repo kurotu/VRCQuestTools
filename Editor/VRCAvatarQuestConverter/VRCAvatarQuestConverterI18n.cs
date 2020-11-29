@@ -30,6 +30,7 @@ namespace KRT.VRCQuestTools
         public abstract string OverwriteWarningDialogButtonUseAltDir(string altDir);
         public abstract string AvatarLabel { get; }
         public abstract string GenerateQuestTexturesLabel { get; }
+        public abstract string QuestTexturesDescription { get; }
         public abstract string SupportedShadersLabel { get; }
         public abstract string SaveToLabel { get; }
         public abstract string SelectButtonLabel { get; }
@@ -62,6 +63,8 @@ namespace KRT.VRCQuestTools
         public override string AvatarLabel => "Avatar";
 
         public override string GenerateQuestTexturesLabel => "Generate Textures for Quest";
+
+        public override string QuestTexturesDescription => "By generating new textures which applying material's color or emission, get closer to PC version of the avatar";
 
         public override string SupportedShadersLabel => "Supported Shaders";
 
@@ -104,6 +107,8 @@ namespace KRT.VRCQuestTools
         public override string AvatarLabel => "アバター";
 
         public override string GenerateQuestTexturesLabel => "Quest用のテクスチャを生成する";
+
+        public override string QuestTexturesDescription => "マテリアルのメインテクスチャ以外に色やEmissionを参照してテクスチャを生成し、PC版アバターの外観に近づけます。";
 
         public override string SupportedShadersLabel => "対応シェーダー";
 

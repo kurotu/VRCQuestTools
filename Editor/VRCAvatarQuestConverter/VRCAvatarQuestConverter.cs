@@ -62,7 +62,8 @@ namespace KRT.VRCQuestTools
             EditorGUILayout.BeginVertical(GUI.skin.box);
             {
                 generateQuestTextures = EditorGUILayout.BeginToggleGroup(i18n.GenerateQuestTexturesLabel, generateQuestTextures);
-                EditorGUILayout.HelpBox($"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
+                EditorGUILayout.HelpBox($"{i18n.QuestTexturesDescription}\n\n" +
+                    $"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
                 texturesSizeLimit = (TexturesSizeLimit)EditorGUILayout.EnumPopup(i18n.TexturesSizeLimitLabel, texturesSizeLimit);
                 EditorGUILayout.EndToggleGroup();
             }
