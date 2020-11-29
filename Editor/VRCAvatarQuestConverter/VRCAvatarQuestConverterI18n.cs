@@ -28,20 +28,17 @@ namespace KRT.VRCQuestTools
         public abstract string OverwriteWarningDialogButtonOK { get; }
         public abstract string OverwriteWarningDialogButtonCancel { get; }
         public abstract string OverwriteWarningDialogButtonUseAltDir(string altDir);
-        public abstract string ConvertSettingsLabel { get; }
         public abstract string AvatarLabel { get; }
-        public abstract string ExperimentalSettingsLabel { get; }
         public abstract string GenerateQuestTexturesLabel { get; }
         public abstract string SupportedShadersLabel { get; }
-        public abstract string OutputSettingsLabel { get; }
         public abstract string SaveToLabel { get; }
         public abstract string SelectButtonLabel { get; }
         public abstract string ConvertButtonLabel { get; }
         public abstract string ConvertingMaterialsDialogMessage { get; }
         public abstract string MaterialExceptionDialogMessage { get; }
         public abstract string WarningForPerformance { get; }
-        public abstract string InfoForAppearance { get; }
-        public abstract string ResizeTexturesLabel { get; }
+        public abstract string WarningForAppearance { get; }
+        public abstract string TexturesSizeLimitLabel { get; }
     }
 
     class VRCAvatarQuestConverterI18nEnglish : VRCAvatarQuestConverterI18nBase
@@ -62,19 +59,13 @@ namespace KRT.VRCQuestTools
 
         public override string OverwriteWarningDialogTitle => "VRCAvatarQuestConverter Warning";
 
-        public override string ConvertSettingsLabel => "Convert Settings";
-
         public override string AvatarLabel => "Avatar";
-
-        public override string ExperimentalSettingsLabel => "Experimental Settings";
 
         public override string GenerateQuestTexturesLabel => "Generate Textures for Quest";
 
         public override string SupportedShadersLabel => "Supported Shaders";
 
-        public override string OutputSettingsLabel => "Output Settings";
-
-        public override string SaveToLabel => "Save to";
+        public override string SaveToLabel => "Folder to Save";
 
         public override string SelectButtonLabel => "Select";
 
@@ -84,12 +75,12 @@ namespace KRT.VRCQuestTools
 
         public override string MaterialExceptionDialogMessage => "An error occured when converting materials. Aborted.";
 
-        public override string WarningForPerformance => "In many cases, the converted avatar's performance rank will be \"Very Poor\" for Quest. Quest users need to use \"Show Avatar\" due to Performance Options limitation.\\nn" +
-            "And texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips).";
+        public override string WarningForPerformance => "In many cases, the converted avatar's performance rank will be \"Very Poor\" for Quest. Quest users need to use \"Show Avatar\" due to Performance Options limitation.";
 
-        public override string InfoForAppearance => "You should check avatar's appearance by using another Blueprint ID or Avatars 3.0 local testing.";
+        public override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n\n" +
+            "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
 
-        public override string ResizeTexturesLabel => "Resize Textures";
+        public override string TexturesSizeLimitLabel => "Textures Size Limit";
     }
 
     class VRCAvatarQuestConverterI18nJapanese : VRCAvatarQuestConverterI18nBase
@@ -110,19 +101,13 @@ namespace KRT.VRCQuestTools
 
         public override string OverwriteWarningDialogTitle => "VRCAvatarQuestConverter 警告";
 
-        public override string ConvertSettingsLabel => "変換設定";
-
         public override string AvatarLabel => "アバター";
-
-        public override string ExperimentalSettingsLabel => "実験的機能";
 
         public override string GenerateQuestTexturesLabel => "Quest用のテクスチャを生成する";
 
         public override string SupportedShadersLabel => "対応シェーダー";
 
-        public override string OutputSettingsLabel => "保存設定";
-
-        public override string SaveToLabel => "保存先";
+        public override string SaveToLabel => "保存先フォルダ";
 
         public override string SelectButtonLabel => "選択";
 
@@ -132,11 +117,11 @@ namespace KRT.VRCQuestTools
 
         public override string MaterialExceptionDialogMessage => "マテリアルの変換中にエラーが発生しました。変換を中止します。";
 
-        public override string WarningForPerformance => "多くの場合、Questから見た場合のパフォーマンスランクはVery Poorになります。Performance Optionsによる制限があるためQuestから見るにはShow Avatarの操作をする必要があります。\n\n" +
-            "またテクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集などの方法で対策する必要があります。";
+        public override string WarningForPerformance => "多くの場合、Questから見た場合のパフォーマンスランクはVery Poorになります。Performance Optionsによる制限があるためQuestから見るにはShow Avatarの操作をする必要があります。";
 
-        public override string InfoForAppearance => "別のBlueprint IDでのアップロードやAvatars 3.0のローカルテストを使用してアバターの見た目を確認することをお勧めします。";
+        public override string WarningForAppearance => "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n\n" +
+            "別のBlueprint IDでのアップロードやAvatars 3.0のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
 
-        public override string ResizeTexturesLabel => "テクスチャをリサイズする";
+        public override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
     }
 }

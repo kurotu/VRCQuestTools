@@ -16,7 +16,7 @@ namespace KRT.VRCQuestTools
 {
     public class VRCAvatarQuestConverterWindow : EditorWindow
     {
-        enum TextureResizeMode
+        enum TexturesSizeLimit
         {
             None = 0,
             UpTo256x256 = 256,
@@ -28,7 +28,7 @@ namespace KRT.VRCQuestTools
         VRC.SDKBase.VRC_AvatarDescriptor avatar;
         string outputPath = "";
         bool generateQuestTextures = true;
-        TextureResizeMode resizeTextures = TextureResizeMode.UpTo1024x1024;
+        TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.UpTo1024x1024;
         readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
         internal static void InitFromMenu()
@@ -63,7 +63,7 @@ namespace KRT.VRCQuestTools
             {
                 generateQuestTextures = EditorGUILayout.BeginToggleGroup(i18n.GenerateQuestTexturesLabel, generateQuestTextures);
                 EditorGUILayout.HelpBox($"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
-                resizeTextures = (TextureResizeMode)EditorGUILayout.EnumPopup(i18n.ResizeTexturesLabel, resizeTextures);
+                texturesSizeLimit = (TexturesSizeLimit)EditorGUILayout.EnumPopup(i18n.TexturesSizeLimitLabel, texturesSizeLimit);
                 EditorGUILayout.EndToggleGroup();
             }
             EditorGUILayout.EndVertical();
@@ -90,10 +90,10 @@ namespace KRT.VRCQuestTools
 
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Warning);
-            EditorGUILayout.HelpBox(i18n.InfoForAppearance, MessageType.Info);
+            EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
             if (GUILayout.Button(i18n.ConvertButtonLabel))
             {
-                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)resizeTextures);
+                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
             }
         }
 
