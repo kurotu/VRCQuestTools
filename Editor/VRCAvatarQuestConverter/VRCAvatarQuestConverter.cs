@@ -210,7 +210,7 @@ namespace KRT.VRCQuestTools
         {
             var resizeTextures = maxTextureSize > 0;
             Material mat = MaterialConverter.Convert(material, newShader);
-            if (generateQuestTextures || resizeTextures)
+            if (generateQuestTextures)
             {
                 var mw = MaterialUtils.CreateWrapper(material);
                 using (var combined = mw.CompositeLayers())
