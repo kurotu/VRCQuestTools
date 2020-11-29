@@ -16,7 +16,7 @@ namespace KRT.VRCQuestTools
 {
     public class VRCAvatarQuestConverterWindow : EditorWindow
     {
-        enum TextureResizeMode
+        enum TexturesSizeLimit
         {
             None = 0,
             UpTo256x256 = 256,
@@ -28,7 +28,7 @@ namespace KRT.VRCQuestTools
         VRC.SDKBase.VRC_AvatarDescriptor avatar;
         string outputPath = "";
         bool generateQuestTextures = true;
-        TextureResizeMode resizeTextures = TextureResizeMode.UpTo1024x1024;
+        TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.UpTo1024x1024;
         readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
         internal static void InitFromMenu()
@@ -46,7 +46,6 @@ namespace KRT.VRCQuestTools
         {
             titleContent.text = "Convert Avatar for Quest";
 
-            EditorGUILayout.LabelField(i18n.ConvertSettingsLabel, EditorStyles.boldLabel);
             var selectedAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, avatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
             if (selectedAvatar == null)
             {
@@ -60,34 +59,41 @@ namespace KRT.VRCQuestTools
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField(i18n.ExperimentalSettingsLabel, EditorStyles.boldLabel);
-            generateQuestTextures = EditorGUILayout.Toggle(i18n.GenerateQuestTexturesLabel, generateQuestTextures);
-            EditorGUILayout.HelpBox($"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
-            resizeTextures = (TextureResizeMode)EditorGUILayout.EnumPopup(i18n.ResizeTexturesLabel, resizeTextures);
+            EditorGUILayout.BeginVertical(GUI.skin.box);
+            {
+                generateQuestTextures = EditorGUILayout.BeginToggleGroup(i18n.GenerateQuestTexturesLabel, generateQuestTextures);
+                EditorGUILayout.HelpBox($"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
+                texturesSizeLimit = (TexturesSizeLimit)EditorGUILayout.EnumPopup(i18n.TexturesSizeLimitLabel, texturesSizeLimit);
+                EditorGUILayout.EndToggleGroup();
+            }
+            EditorGUILayout.EndVertical();
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField(i18n.OutputSettingsLabel, EditorStyles.boldLabel);
-            outputPath = EditorGUILayout.TextField(i18n.SaveToLabel, outputPath);
-            if (GUILayout.Button(i18n.SelectButtonLabel))
+            EditorGUILayout.BeginVertical(GUI.skin.box);
             {
-                var split = outputPath.Split('/');
-                var folder = string.Join("/", split.Where((s, i) => i <= split.Length - 2));
-                var defaultName = split.Last();
-                var dest = EditorUtility.SaveFolderPanel("Artifacts", folder, defaultName);
-                if (dest != "") // Cancel
+                outputPath = EditorGUILayout.TextField(i18n.SaveToLabel, outputPath);
+                if (GUILayout.Button(i18n.SelectButtonLabel))
                 {
-                    outputPath = "Assets" + dest.Remove(0, Application.dataPath.Length);
+                    var split = outputPath.Split('/');
+                    var folder = string.Join("/", split.Where((s, i) => i <= split.Length - 2));
+                    var defaultName = split.Last();
+                    var dest = EditorUtility.SaveFolderPanel("Artifacts", folder, defaultName);
+                    if (dest != "") // Cancel
+                    {
+                        outputPath = "Assets" + dest.Remove(0, Application.dataPath.Length);
+                    }
                 }
+                // allowOverwriting = EditorGUILayout.Toggle("AllowOverwriting", allowOverwriting);
             }
-            // allowOverwriting = EditorGUILayout.Toggle("AllowOverwriting", allowOverwriting);
+            EditorGUILayout.EndVertical();
 
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Warning);
-            EditorGUILayout.HelpBox(i18n.InfoForAppearance, MessageType.Info);
+            EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
             if (GUILayout.Button(i18n.ConvertButtonLabel))
             {
-                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)resizeTextures);
+                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
             }
         }
 

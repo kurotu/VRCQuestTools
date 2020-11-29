@@ -169,7 +169,7 @@ namespace KRT.VRCQuestTools
         const string GameObjectRemoveMissingComponents = MenuPrefix + "Remove Missing Components";
         const string GameObjectConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Quest";
 
-        [MenuItem(GameObjectConvertAvatarForQuest, false, 10)]
+        [MenuItem(GameObjectConvertAvatarForQuest, false, 30)]
         static void ConvertAvatarForQuest()
         {
             VRCQuestTools.InitConvertAvatarForQuest();
