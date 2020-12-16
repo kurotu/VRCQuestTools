@@ -22,6 +22,7 @@ namespace KRT.VRCQuestTools
             internal const string BlendShapesCopy = RootMenu + "Tools/BlendShapes Copy";
             internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
             internal const string UnitySettings = RootMenu + "Unity Settings for Quest";
+            internal const string CheckForUpdate = RootMenu + "Check for Update";
         }
 
         enum MenuPriorities : int
@@ -31,7 +32,8 @@ namespace KRT.VRCQuestTools
             BlendShapesCopy = 100,
             RemoveUnsupportedComponents,
             AutoRemoveVertexColors = 200,
-            UnitySettings = 300
+            UnitySettings = 300,
+            CheckForUpdate = 400
         }
 
         // Convert Avatar for Quest
@@ -110,6 +112,13 @@ namespace KRT.VRCQuestTools
         {
             return Selection.activeGameObject != null;
         }
+
+        [MenuItem(MenuPaths.CheckForUpdate, false, (int)MenuPriorities.CheckForUpdate]
+        private static void CheckForUpdate()
+        {
+            UpdateChecker.CheckForUpdateFromMenu();
+        }
+
     }
 
     static class ContextMenu
