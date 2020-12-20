@@ -31,7 +31,7 @@ namespace KRT.VRCQuestTools
             if (VRCQuestToolsSettings.LastVersionCheckDateTime.Subtract(System.DateTime.UtcNow).Days >= 7)
             {
                 var skippedVersion = new SemVer(VRCQuestToolsSettings.SkippedVersion);
-                var t = Task.Run(() => { CheckForUpdate(false, skippedVersion); });
+                var t = Task.Run(() => CheckForUpdate(skippedVersion));
                 t.Wait();
                 if (t.IsFaulted)
                 {
@@ -46,8 +46,9 @@ namespace KRT.VRCQuestTools
 
         internal static void CheckForUpdateFromMenu()
         {
+            var i18n = UpdateCheckerI18n.Create();
             var skippedVersion = new SemVer(VRCQuestToolsSettings.SkippedVersion);
-            var t = Task.Run(() => { CheckForUpdate(true, skippedVersion); });
+            var t = Task.Run(() => CheckForUpdate(new SemVer("0.0.0")));
             t.Wait();
             if (t.IsFaulted)
             {
@@ -55,26 +56,34 @@ namespace KRT.VRCQuestTools
             }
             else
             {
+                if (!t.Result)
+                {
+                    EditorUtility.DisplayDialog("VRCQuestTools", i18n.ThereIsNoUpdate, "OK");
+                }
                 VRCQuestToolsSettings.LastVersionCheckDateTime = System.DateTime.UtcNow;
             }
         }
 
-        static async void CheckForUpdate(bool forceShowWindow, SemVer skippedVersion)
+        /// <summary>
+        /// Check for update to github package.json
+        /// </summary>
+        /// <param name="skippedVersion"></param>
+        /// <returns>true when there is applicable update.</returns>
+        static async Task<bool> CheckForUpdate(SemVer skippedVersion)
         {
             var latestVersion = await GetLatestVersion();
             var currentVersion = isDebug ? new SemVer("0.0.0") : new SemVer(VRCQuestTools.Version);
             Debug.Log($"[VRCQuestTools] Current: {currentVersion}, Latest: {latestVersion}, Skipped: {skippedVersion.ToString()}");
-            if (latestVersion > currentVersion)
+            var hasApplicableUpdate = HasApplicableUpdate(currentVersion, latestVersion, skippedVersion);
+            if (hasApplicableUpdate)
             {
-                if (forceShowWindow || ShouldShowWindow(currentVersion, latestVersion, skippedVersion))
+                unityContext.Post(obj =>
                 {
-                    unityContext.Post(obj =>
-                    {
-                        var version = (SemVer)obj;
-                        UpdateCheckerWindow.Init(version);
-                    }, latestVersion);
-                }
+                    var version = (SemVer)obj;
+                    UpdateCheckerWindow.Init(version);
+                }, latestVersion);
             }
+            return hasApplicableUpdate;
         }
 
         async static Task<SemVer> GetLatestVersion()
@@ -85,7 +94,7 @@ namespace KRT.VRCQuestTools
             return new SemVer(package.version);
         }
 
-        static bool ShouldShowWindow(SemVer currentVersion, SemVer latestVersion, SemVer skippedVersion)
+        static bool HasApplicableUpdate(SemVer currentVersion, SemVer latestVersion, SemVer skippedVersion)
         {
             var baseVersion = currentVersion > skippedVersion ? currentVersion : skippedVersion;
             return latestVersion > baseVersion;
@@ -153,8 +162,8 @@ namespace KRT.VRCQuestTools
         public abstract string RemindMeLater { get; }
         public abstract string GetUpdate { get; }
         public abstract string SkipThisVersion { get; }
-
         public abstract string NewVersionIsAvailable(string latestVersion);
+        public abstract string ThereIsNoUpdate { get; }
     }
 
     class UpdateCheckerI18nEnglish : UpdateCheckerI18nBase
@@ -163,6 +172,7 @@ namespace KRT.VRCQuestTools
         public override string GetUpdate => "Get update";
         public override string SkipThisVersion => "Skip this version";
         public override string NewVersionIsAvailable(string latestVersion) => $"VRCQuestTools {latestVersion} is available.";
+        public override string ThereIsNoUpdate => "There is no update.";
     }
 
     class UpdateCheckerI18nJapanese : UpdateCheckerI18nBase
@@ -171,6 +181,7 @@ namespace KRT.VRCQuestTools
         public override string GetUpdate => "アップデート";
         public override string SkipThisVersion => "このバージョンをスキップ";
         public override string NewVersionIsAvailable(string latestVersion) => $"VRCQuestTools {latestVersion} が公開されています。";
+        public override string ThereIsNoUpdate => "アップデートはありません。";
     }
 
     [System.Serializable]
