@@ -4,58 +4,173 @@
 // <author>kurotu</author>
 // <remarks>Licensed under the MIT license.</remarks>
 
-using UnityEditor;
-using UnityEngine;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEditor;
+using UnityEngine;
 
 namespace KRT.VRCQuestTools
 {
+    [InitializeOnLoad]
     static class UpdateChecker
     {
+        private const bool isDebug = false;
+
+        private static readonly HttpClient client = new HttpClient();
+        private static SynchronizationContext unityContext = SynchronizationContext.Current;
+
+        static UpdateChecker()
+        {
+            EditorApplication.delayCall += DelayInit;
+        }
+
+        static void DelayInit()
+        {
+            EditorApplication.delayCall -= DelayInit;
+            if (VRCQuestToolsSettings.LastVersionCheckDateTime.Subtract(System.DateTime.UtcNow).Days >= 7)
+            {
+                var skippedVersion = new SemVer(VRCQuestToolsSettings.SkippedVersion);
+                var t = Task.Run(() => { CheckForUpdate(false, skippedVersion); });
+                t.Wait();
+                if (t.IsFaulted)
+                {
+                    Debug.LogError(t.Exception.Message);
+                }
+                else
+                {
+                    VRCQuestToolsSettings.LastVersionCheckDateTime = System.DateTime.UtcNow;
+                }
+            }
+        }
 
         internal static void CheckForUpdateFromMenu()
         {
-            var t = Task.Run(CheckForUpdate);
+            var skippedVersion = new SemVer(VRCQuestToolsSettings.SkippedVersion);
+            var t = Task.Run(() => { CheckForUpdate(true, skippedVersion); });
             t.Wait();
             if (t.IsFaulted)
             {
                 Debug.LogError(t.Exception.Message);
             }
-        }
-
-        private const string githubURL = "https://github.com/kurotu/VRCQuestTools";
-        private static readonly HttpClient client = new HttpClient();
-        private static SynchronizationContext unityContext = SynchronizationContext.Current;
-
-        async static void CheckForUpdate()
-        {
-            var url = $"{githubURL}/raw/master/package.json";
-            var result = await client.GetStringAsync(url);
-            var latestVersion = GetVersion(result);
-            var currentVersion = new SemVer(VRCQuestTools.Version);
-            Debug.Log($"[VRCQuestTools] Current: {currentVersion}, Latest: {latestVersion}");
-            if (latestVersion > currentVersion)
+            else
             {
-                Debug.Log($"[VRCQuestTools] Update available");
-                unityContext.Post(o =>
-                {
-                    var version = (SemVer)o;
-                    Debug.Log("Open");
-                    if (EditorUtility.DisplayDialog("VRCQuestTools", $"Update available: {version}", "Update", "Cancel"))
-                    {
-                        Application.OpenURL(githubURL);
-                    }
-                }, latestVersion);
+                VRCQuestToolsSettings.LastVersionCheckDateTime = System.DateTime.UtcNow;
             }
         }
 
-        static SemVer GetVersion(string packageJsonString)
+        static async void CheckForUpdate(bool forceShowWindow, SemVer skippedVersion)
         {
-            var package = JsonUtility.FromJson<PackageJson>(packageJsonString);
+            var latestVersion = await GetLatestVersion();
+            var currentVersion = isDebug ? new SemVer("0.0.0") : new SemVer(VRCQuestTools.Version);
+            Debug.Log($"[VRCQuestTools] Current: {currentVersion}, Latest: {latestVersion}, Skipped: {skippedVersion.ToString()}");
+            if (latestVersion > currentVersion)
+            {
+                if (forceShowWindow || ShouldShowWindow(currentVersion, latestVersion, skippedVersion))
+                {
+                    unityContext.Post(obj =>
+                    {
+                        var version = (SemVer)obj;
+                        UpdateCheckerWindow.Init(version);
+                    }, latestVersion);
+                }
+            }
+        }
+
+        async static Task<SemVer> GetLatestVersion()
+        {
+            var url = $"{VRCQuestTools.GitHubURL}/raw/master/package.json";
+            var result = await client.GetStringAsync(url);
+            var package = JsonUtility.FromJson<PackageJson>(result);
             return new SemVer(package.version);
         }
+
+        static bool ShouldShowWindow(SemVer currentVersion, SemVer latestVersion, SemVer skippedVersion)
+        {
+            var baseVersion = currentVersion > skippedVersion ? currentVersion : skippedVersion;
+            return latestVersion > baseVersion;
+        }
+    }
+
+    class UpdateCheckerWindow : EditorWindow
+    {
+        string latestVersion = "0.0.0";
+        readonly UpdateCheckerI18nBase i18n = UpdateCheckerI18n.Create();
+
+        [MenuItem("VRCQuestTools/Debug")]
+        internal static void Init(SemVer latestVersion)
+        {
+            var window = GetWindow<UpdateCheckerWindow>();
+            window.latestVersion = latestVersion.ToString();
+            window.Show();
+        }
+
+        private void OnGUI()
+        {
+            titleContent.text = "VRCQuestTools Updater";
+            EditorGUILayout.LabelField(i18n.NewVersionIsAvailable(latestVersion));
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+            {
+                if (GUILayout.Button(i18n.GetUpdate))
+                {
+                    Application.OpenURL(VRCQuestTools.BoothURL);
+                    Close();
+                }
+                GUILayout.Space(8);
+                if (GUILayout.Button(i18n.RemindMeLater))
+                {
+                    Close();
+                }
+                GUILayout.Space(8);
+                if (GUILayout.Button(i18n.SkipThisVersion))
+                {
+                    VRCQuestToolsSettings.SkippedVersion = latestVersion.ToString();
+                    Close();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+    }
+
+    static class UpdateCheckerI18n
+    {
+        public static UpdateCheckerI18nBase Create()
+        {
+            if (System.Globalization.CultureInfo.CurrentCulture.Name == "ja-JP")
+            {
+                return new UpdateCheckerI18nJapanese();
+            }
+            else
+            {
+                return new UpdateCheckerI18nEnglish();
+            }
+        }
+    }
+
+    abstract class UpdateCheckerI18nBase
+    {
+        public abstract string RemindMeLater { get; }
+        public abstract string GetUpdate { get; }
+        public abstract string SkipThisVersion { get; }
+
+        public abstract string NewVersionIsAvailable(string latestVersion);
+    }
+
+    class UpdateCheckerI18nEnglish : UpdateCheckerI18nBase
+    {
+        public override string RemindMeLater => "Remind me later";
+        public override string GetUpdate => "Get update";
+        public override string SkipThisVersion => "Skip this version";
+        public override string NewVersionIsAvailable(string latestVersion) => $"VRCQuestTools {latestVersion} is available.";
+    }
+
+    class UpdateCheckerI18nJapanese : UpdateCheckerI18nBase
+    {
+        public override string RemindMeLater => "後で通知";
+        public override string GetUpdate => "アップデート";
+        public override string SkipThisVersion => "このバージョンをスキップ";
+        public override string NewVersionIsAvailable(string latestVersion) => $"VRCQuestTools {latestVersion} が公開されています。";
     }
 
     [System.Serializable]

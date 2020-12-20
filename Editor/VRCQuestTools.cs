@@ -4,6 +4,7 @@
 // <author>kurotu</author>
 // <remarks>Licensed under the MIT license.</remarks>
 
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ namespace KRT.VRCQuestTools
     public static class VRCQuestTools
     {
         public const string Version = "0.2.0";
+        public const string GitHubURL = "https://github.com/kurotu/VRCQuestTools";
+        public const string BoothURL = "https://booth.pm/ja/items/2436054";
 
         static class MenuPaths
         {
@@ -33,7 +36,7 @@ namespace KRT.VRCQuestTools
             RemoveUnsupportedComponents,
             AutoRemoveVertexColors = 200,
             UnitySettings = 300,
-            CheckForUpdate = 400
+            CheckForUpdate = 301
         }
 
         // Convert Avatar for Quest
@@ -113,7 +116,7 @@ namespace KRT.VRCQuestTools
             return Selection.activeGameObject != null;
         }
 
-        [MenuItem(MenuPaths.CheckForUpdate, false, (int)MenuPriorities.CheckForUpdate]
+        [MenuItem(MenuPaths.CheckForUpdate, false, (int)MenuPriorities.CheckForUpdate)]
         private static void CheckForUpdate()
         {
             UpdateChecker.CheckForUpdateFromMenu();
@@ -134,10 +137,13 @@ namespace KRT.VRCQuestTools
             public const string LAST_VERSION = PREFIX + "LastQuestToolsVersion";
             public const string SHOW_SETTINGS_ON_LOAD = PREFIX + "ShowSettingsOnLoad";
             public const string AUTO_REMOVE_VERTEX_COLORS = PREFIX + "AutoRemoveVertexColors";
+            public const string LAST_VERSION_CHECK_DATE = PREFIX + "LastVersionCheckDate";
+            public const string SKIPPED_VERSION = PREFIX + "SkippedVersion";
         }
 
         private const string FALSE = "FALSE";
         private const string TRUE = "TRUE";
+        private static DateTime UnixEpoch => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
         private static void SetBooleanConfigValue(string name, bool value)
         {
@@ -167,6 +173,27 @@ namespace KRT.VRCQuestTools
         {
             get { return GetBooleanConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS, true); }
             set { SetBooleanConfigValue(Keys.AUTO_REMOVE_VERTEX_COLORS, value); }
+        }
+
+        public static DateTime LastVersionCheckDateTime
+        {
+            get
+            {
+                var unixTime = int.Parse(EditorUserSettings.GetConfigValue(Keys.LAST_VERSION_CHECK_DATE) ?? "0");
+                return UnixEpoch.AddSeconds(unixTime);
+            }
+            set
+            {
+                var date = value.Kind == DateTimeKind.Utc ? value : value.ToUniversalTime();
+                var unixTime = (int)date.Subtract(UnixEpoch).TotalSeconds;
+                EditorUserSettings.SetConfigValue(Keys.LAST_VERSION_CHECK_DATE, unixTime.ToString());
+            }
+        }
+
+        public static string SkippedVersion
+        {
+            get { return EditorUserSettings.GetConfigValue(Keys.SKIPPED_VERSION) ?? "0.0.0"; }
+            set { EditorUserSettings.SetConfigValue(Keys.SKIPPED_VERSION, value); }
         }
     }
 
