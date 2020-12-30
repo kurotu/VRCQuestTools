@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace KRT.VRCQuestTools
 {
+    [InitializeOnLoad]
     public static class VRCQuestTools
     {
         public const string Version = "0.2.0";
@@ -32,6 +33,18 @@ namespace KRT.VRCQuestTools
             RemoveUnsupportedComponents,
             AutoRemoveVertexColors = 200,
             UnitySettings = 300
+        }
+
+        static VRCQuestTools()
+        {
+            EditorApplication.delayCall += DelayInit;
+        }
+
+        static void DelayInit()
+        {
+            EditorApplication.delayCall -= DelayInit;
+            var enabled = VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled;
+            Menu.SetChecked(MenuPaths.AutoRemoveVertexColors, enabled);
         }
 
         // Convert Avatar for Quest
