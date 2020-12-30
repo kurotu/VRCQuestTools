@@ -31,13 +31,13 @@ namespace KRT.VRCQuestTools
 
         enum MenuPriorities : int
         {
-            ConvertAvatarForQuest = 0,
+            ConvertAvatarForQuest = 600, // VRChat SDK/Splash Screen: 500
             RemoveMissingComponents,
-            BlendShapesCopy = 100,
+            BlendShapesCopy = 700,
             RemoveUnsupportedComponents,
-            AutoRemoveVertexColors = 200,
-            UnitySettings = 300,
-            CheckForUpdate = 301
+            AutoRemoveVertexColors = 800,
+            UnitySettings = 900,
+            CheckForUpdate
         }
 
         static VRCQuestTools()
