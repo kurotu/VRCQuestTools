@@ -17,87 +17,77 @@ namespace KRT.VRCQuestTools
     {
         private const bool isDebug = false;
 
+        private static readonly string GitHubRepo = "kurotu/VRCQuestTools";
+        internal static readonly string BoothURL = "https://booth.pm/ja/items/2436054";
+
         private static readonly HttpClient client = new HttpClient();
-        private static SynchronizationContext unityContext = SynchronizationContext.Current;
 
         static UpdateChecker()
         {
+            client.DefaultRequestHeaders.Add("User-Agent", "VRCQuestTools");
             EditorApplication.delayCall += DelayInit;
         }
 
         static void DelayInit()
         {
             EditorApplication.delayCall -= DelayInit;
-            if (VRCQuestToolsSettings.LastVersionCheckDateTime.Subtract(System.DateTime.UtcNow).Days >= 7)
+            var dateDiff = System.DateTime.UtcNow.Subtract(VRCQuestToolsSettings.LastVersionCheckDateTime);
+            if (isDebug && dateDiff.Seconds < 1)
             {
-                var skippedVersion = new SemVer(VRCQuestToolsSettings.SkippedVersion);
-                var t = Task.Run(() => CheckForUpdate(skippedVersion));
-                t.Wait();
-                if (t.IsFaulted)
+                return;
+            }
+            if (!isDebug && dateDiff.Days < 1)
+            {
+                return;
+            }
+            var context = SynchronizationContext.Current;
+            var t = Task.Run(async () =>
+            {
+                var latestVersion = await GetLatestVersion();
+                var currentVersion = isDebug ? new SemVer("0.0.0") : new SemVer(VRCQuestTools.Version);
+                Debug.Log($"[VRCQuestTools] Current: {currentVersion}, Latest: {latestVersion}");
+                if (latestVersion > currentVersion)
                 {
-                    Debug.LogError(t.Exception.Message);
+                    Debug.LogWarning($"[VRCQuestTools] New version is available: {latestVersion} See {BoothURL}");
                 }
-                else
+                context.Post(state =>
                 {
                     VRCQuestToolsSettings.LastVersionCheckDateTime = System.DateTime.UtcNow;
-                }
-            }
+                }, null);
+            });
         }
 
         internal static void CheckForUpdateFromMenu()
         {
-            var i18n = UpdateCheckerI18n.Create();
-            var skippedVersion = new SemVer(VRCQuestToolsSettings.SkippedVersion);
-            var t = Task.Run(() => CheckForUpdate(new SemVer("0.0.0")));
+            var t = Task.Run(GetLatestVersion);
             t.Wait();
             if (t.IsFaulted)
             {
                 Debug.LogError(t.Exception.Message);
+                return;
+            }
+
+            var currentVersion = isDebug ? new SemVer("0.0.0") : new SemVer(VRCQuestTools.Version);
+            var latestVersion = t.Result;
+            Debug.Log($"[VRCQuestTools] Current: {currentVersion}, Latest: {latestVersion}");
+            if (latestVersion > currentVersion)
+            {
+                UpdateCheckerWindow.Init(latestVersion);
             }
             else
             {
-                if (!t.Result)
-                {
-                    EditorUtility.DisplayDialog("VRCQuestTools", i18n.ThereIsNoUpdate, "OK");
-                }
-                VRCQuestToolsSettings.LastVersionCheckDateTime = System.DateTime.UtcNow;
+                var i18n = UpdateCheckerI18n.Create();
+                EditorUtility.DisplayDialog("VRCQuestTools", i18n.ThereIsNoUpdate, "OK");
             }
-        }
-
-        /// <summary>
-        /// Check for update to github package.json
-        /// </summary>
-        /// <param name="skippedVersion"></param>
-        /// <returns>true when there is applicable update.</returns>
-        static async Task<bool> CheckForUpdate(SemVer skippedVersion)
-        {
-            var latestVersion = await GetLatestVersion();
-            var currentVersion = isDebug ? new SemVer("0.0.0") : new SemVer(VRCQuestTools.Version);
-            Debug.Log($"[VRCQuestTools] Current: {currentVersion}, Latest: {latestVersion}, Skipped: {skippedVersion.ToString()}");
-            var hasApplicableUpdate = HasApplicableUpdate(currentVersion, latestVersion, skippedVersion);
-            if (hasApplicableUpdate)
-            {
-                unityContext.Post(obj =>
-                {
-                    var version = (SemVer)obj;
-                    UpdateCheckerWindow.Init(version);
-                }, latestVersion);
-            }
-            return hasApplicableUpdate;
+            VRCQuestToolsSettings.LastVersionCheckDateTime = System.DateTime.UtcNow;
         }
 
         async static Task<SemVer> GetLatestVersion()
         {
-            var url = $"{VRCQuestTools.GitHubURL}/raw/master/package.json";
+            var url = $"https://api.github.com/repos/{GitHubRepo}/releases/latest";
             var result = await client.GetStringAsync(url);
-            var package = JsonUtility.FromJson<PackageJson>(result);
-            return new SemVer(package.version);
-        }
-
-        static bool HasApplicableUpdate(SemVer currentVersion, SemVer latestVersion, SemVer skippedVersion)
-        {
-            var baseVersion = currentVersion > skippedVersion ? currentVersion : skippedVersion;
-            return latestVersion > baseVersion;
+            var package = JsonUtility.FromJson<GitHubRelease>(result);
+            return new SemVer(package.tag_name);
         }
     }
 
@@ -123,18 +113,11 @@ namespace KRT.VRCQuestTools
             {
                 if (GUILayout.Button(i18n.GetUpdate))
                 {
-                    Application.OpenURL(VRCQuestTools.BoothURL);
-                    Close();
+                    Application.OpenURL(UpdateChecker.BoothURL);
                 }
                 GUILayout.Space(8);
-                if (GUILayout.Button(i18n.RemindMeLater))
+                if (GUILayout.Button(i18n.CheckLater))
                 {
-                    Close();
-                }
-                GUILayout.Space(8);
-                if (GUILayout.Button(i18n.SkipThisVersion))
-                {
-                    VRCQuestToolsSettings.SkippedVersion = latestVersion.ToString();
                     Close();
                 }
             }
@@ -159,35 +142,32 @@ namespace KRT.VRCQuestTools
 
     abstract class UpdateCheckerI18nBase
     {
-        public abstract string RemindMeLater { get; }
+        public abstract string CheckLater { get; }
         public abstract string GetUpdate { get; }
-        public abstract string SkipThisVersion { get; }
         public abstract string NewVersionIsAvailable(string latestVersion);
         public abstract string ThereIsNoUpdate { get; }
     }
 
     class UpdateCheckerI18nEnglish : UpdateCheckerI18nBase
     {
-        public override string RemindMeLater => "Remind me later";
+        public override string CheckLater => "Check later";
         public override string GetUpdate => "Get update";
-        public override string SkipThisVersion => "Skip this version";
         public override string NewVersionIsAvailable(string latestVersion) => $"VRCQuestTools {latestVersion} is available.";
         public override string ThereIsNoUpdate => "There is no update.";
     }
 
     class UpdateCheckerI18nJapanese : UpdateCheckerI18nBase
     {
-        public override string RemindMeLater => "後で通知";
+        public override string CheckLater => "後で確認";
         public override string GetUpdate => "アップデート";
-        public override string SkipThisVersion => "このバージョンをスキップ";
         public override string NewVersionIsAvailable(string latestVersion) => $"VRCQuestTools {latestVersion} が公開されています。";
         public override string ThereIsNoUpdate => "アップデートはありません。";
     }
 
     [System.Serializable]
-    class PackageJson
+    class GitHubRelease
     {
-        public string version;
+        public string tag_name = null;
     }
 
     class SemVer
@@ -198,7 +178,7 @@ namespace KRT.VRCQuestTools
 
         public SemVer(string version)
         {
-            var part = version.Split('-');
+            var part = version.TrimStart('v').Split('-');
             var split = part[0].Split('.');
             major = int.Parse(split[0]);
             minor = int.Parse(split[1]);
