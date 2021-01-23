@@ -13,7 +13,7 @@ namespace KRT.VRCQuestTools
     [InitializeOnLoad]
     public static class VRCQuestTools
     {
-        public const string Version = "0.2.0";
+        public const string Version = "0.2.1";
         public const string GitHubURL = "https://github.com/kurotu/VRCQuestTools";
         public const string BoothURL = "https://booth.pm/ja/items/2436054";
 

@@ -80,6 +80,8 @@ Twitter: https://twitter.com/kurotu
 
 ## 更新履歴
 
+- 2021/1/24: v0.2.1
+    - プロジェクトを開いたときに「Auto Remove Vertex Colors」のチェックが反映されない問題を修正
 - 2020/11/29: v0.2.0
     - 「Remove Missing Components」「Remove Unsupported Components」を追加
     - オブジェクトの右クリックメニューにVRCQuestToolsを追加
