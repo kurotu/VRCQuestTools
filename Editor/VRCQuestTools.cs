@@ -14,8 +14,6 @@ namespace KRT.VRCQuestTools
     public static class VRCQuestTools
     {
         public const string Version = "0.2.1";
-        public const string GitHubURL = "https://github.com/kurotu/VRCQuestTools";
-        public const string BoothURL = "https://booth.pm/ja/items/2436054";
 
         static class MenuPaths
         {
@@ -151,7 +149,6 @@ namespace KRT.VRCQuestTools
             public const string SHOW_SETTINGS_ON_LOAD = PREFIX + "ShowSettingsOnLoad";
             public const string AUTO_REMOVE_VERTEX_COLORS = PREFIX + "AutoRemoveVertexColors";
             public const string LAST_VERSION_CHECK_DATE = PREFIX + "LastVersionCheckDate";
-            public const string SKIPPED_VERSION = PREFIX + "SkippedVersion";
         }
 
         private const string FALSE = "FALSE";
@@ -201,12 +198,6 @@ namespace KRT.VRCQuestTools
                 var unixTime = (int)date.Subtract(UnixEpoch).TotalSeconds;
                 EditorUserSettings.SetConfigValue(Keys.LAST_VERSION_CHECK_DATE, unixTime.ToString());
             }
-        }
-
-        public static string SkippedVersion
-        {
-            get { return EditorUserSettings.GetConfigValue(Keys.SKIPPED_VERSION) ?? "0.0.0"; }
-            set { EditorUserSettings.SetConfigValue(Keys.SKIPPED_VERSION, value); }
         }
     }
 
