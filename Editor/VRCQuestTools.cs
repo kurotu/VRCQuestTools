@@ -74,11 +74,18 @@ namespace KRT.VRCQuestTools
         internal static void RemoveMissingComponents()
         {
             var obj = Selection.activeGameObject;
+            var count = VRCSDKUtils.CountMissingComponentsInChildren(obj, true);
+            Debug.Log($"[VRCQuestTools] {obj.name} has {count} missing scripts in children");
+            if (count == 0)
+            {
+                return;
+            }
             if (PrefabUtility.IsPartOfPrefabInstance(obj))
             {
                 Undo.SetCurrentGroupName("Remove Missing Components");
                 // Somehow unpacking is needed to apply changes to the scene file.
                 PrefabUtility.UnpackPrefabInstance(obj, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
+                Debug.Log($"[VRCQuestTools] {obj.name} has been unpacked");
             }
             VRCSDKUtils.RemoveMissingComponentsInChildren(obj, true);
         }

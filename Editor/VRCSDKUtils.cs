@@ -72,5 +72,11 @@ namespace KRT.VRCQuestTools
                 GameObjectUtility.RemoveMonoBehavioursWithMissingScript(c);
             }
         }
+
+        internal static int CountMissingComponentsInChildren(GameObject gameObject, bool includeInactive)
+        {
+            var children = gameObject.GetComponentsInChildren<Transform>(includeInactive).Select(t => t.gameObject);
+            return children.Sum(c => GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(c));
+        }
     }
 }
