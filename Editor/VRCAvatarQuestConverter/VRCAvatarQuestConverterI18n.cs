@@ -40,6 +40,8 @@ namespace KRT.VRCQuestTools
         public abstract string WarningForPerformance { get; }
         public abstract string WarningForAppearance { get; }
         public abstract string TexturesSizeLimitLabel { get; }
+        public abstract string CompletedDialogTitle { get; }
+        public abstract string CompletedDialogMessage(string originalName);
     }
 
     class VRCAvatarQuestConverterI18nEnglish : VRCAvatarQuestConverterI18nBase
@@ -58,7 +60,7 @@ namespace KRT.VRCQuestTools
             return $"\"{artifactsDir}\" already exists. Do you want to overwrite?";
         }
 
-        public override string OverwriteWarningDialogTitle => "VRCAvatarQuestConverter Warning";
+        public override string OverwriteWarningDialogTitle => "VRCQuestTools Warning";
 
         public override string AvatarLabel => "Avatar";
 
@@ -84,6 +86,10 @@ namespace KRT.VRCQuestTools
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
 
         public override string TexturesSizeLimitLabel => "Textures Size Limit";
+
+        public override string CompletedDialogTitle => "VRCQuestTools";
+
+        public override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
     }
 
     class VRCAvatarQuestConverterI18nJapanese : VRCAvatarQuestConverterI18nBase
@@ -128,5 +134,9 @@ namespace KRT.VRCQuestTools
             "別のBlueprint IDでのアップロードやAvatars 3.0のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
 
         public override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
+
+        public override string CompletedDialogTitle => "VRCQuestTools";
+
+        public override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";
     }
 }

@@ -100,6 +100,7 @@ namespace KRT.VRCQuestTools
             if (GUILayout.Button(i18n.ConvertButtonLabel))
             {
                 VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
+                EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(avatar.name), "OK");
             }
             EditorGUI.EndDisabledGroup();
         }
