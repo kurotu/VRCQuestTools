@@ -92,10 +92,16 @@ namespace KRT.VRCQuestTools
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Warning);
             EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
+
+            if (avatar == null)
+            {
+                EditorGUI.BeginDisabledGroup(true);
+            }
             if (GUILayout.Button(i18n.ConvertButtonLabel))
             {
                 VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
             }
+            EditorGUI.EndDisabledGroup();
         }
 
         private void SetArtifactsPath(VRC.SDKBase.VRC_AvatarDescriptor avatar)

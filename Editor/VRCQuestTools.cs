@@ -55,19 +55,7 @@ namespace KRT.VRCQuestTools
         [MenuItem(MenuPaths.ConvertAvatarForQuest, false, (int)MenuPriorities.ConvertAvatarForQuest)]
         internal static void InitConvertAvatarForQuest()
         {
-            if (!ValidateConvertAvatarForQuest())
-            {
-                Debug.LogError("[VRCQuestTools] Slected object is not an avatar");
-                return;
-            }
             VRCAvatarQuestConverterWindow.InitFromMenu();
-        }
-
-        [MenuItem(MenuPaths.ConvertAvatarForQuest, true)]
-        internal static bool ValidateConvertAvatarForQuest()
-        {
-            var obj = Selection.activeGameObject;
-            return VRCSDKUtils.IsAvatar(obj);
         }
 
         // Remove Unsupported Components
