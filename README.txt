@@ -40,9 +40,11 @@ Quest対応に有用なUnityの設定を有効化します。
 unitypackageを導入後、メニューから「VRCQuestTools」を選択すると各機能を使用できます。
 一部機能は自動的に有効になっています。
 
-## 動作環境
+## 動作確認環境
 
 - Windows 10 64-bit
+- macOS Big Sur (Intel CPU)
+- Ubuntu 20.04 LTS
 - Unity 2018.4.20f1
 - VRCSDK2 / VRCSDK3
 
@@ -80,6 +82,12 @@ Twitter: https://twitter.com/kurotu
 
 ## 更新履歴
 
+- Under development
+    - 更新確認機能を追加
+    - アバターの変換完了時にダイアログで通知するように変更
+    - メニューの表示を調整
+    - macOS, Linuxで「Quest用テクスチャを生成する」機能が動作するように修正
+    - 「Remove Missing Components」でUnpack Prefabが不要な場合には実行しないように修正
 - 2021/1/24: v0.2.1
     - プロジェクトを開いたときに「Auto Remove Vertex Colors」のチェックが反映されない問題を修正
 - 2020/11/29: v0.2.0
