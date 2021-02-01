@@ -79,7 +79,7 @@ namespace KRT.VRCQuestTools
                     var split = outputPath.Split('/');
                     var folder = string.Join("/", split.Where((s, i) => i <= split.Length - 2));
                     var defaultName = split.Last();
-                    var dest = EditorUtility.SaveFolderPanel("Artifacts", folder, defaultName);
+                    var dest = EditorUtility.SaveFolderPanel("QuestAvatars", folder, defaultName);
                     if (dest != "") // Cancel
                     {
                         outputPath = "Assets" + dest.Remove(0, Application.dataPath.Length);
@@ -114,7 +114,7 @@ namespace KRT.VRCQuestTools
     public static class VRCAvatarQuestConverter
     {
         const string Tag = "VRCAvatarQuestConverter";
-        internal const string ArtifactsRootDir = "Assets/KRT/VRCQuestTools/Artifacts";
+        internal const string ArtifactsRootDir = "Assets/KRT/QuestAvatars";
         const string QuestShader = "VRChat/Mobile/Toon Lit";
         internal readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
