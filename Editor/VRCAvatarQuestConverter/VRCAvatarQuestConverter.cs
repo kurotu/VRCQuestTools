@@ -99,8 +99,12 @@ namespace KRT.VRCQuestTools
             }
             if (GUILayout.Button(i18n.ConvertButtonLabel))
             {
-                VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
-                EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(avatar.name), "OK");
+                var questAvatar = VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
+                if (questAvatar != null)
+                {
+                    EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(avatar.name), "OK");
+                    Selection.activeGameObject = questAvatar;
+                }
             }
             EditorGUI.EndDisabledGroup();
         }
@@ -118,7 +122,7 @@ namespace KRT.VRCQuestTools
         const string QuestShader = "VRChat/Mobile/Toon Lit";
         internal readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
-        internal static void ConvertForQuest(GameObject original, string artifactsDir, bool generateQuestTextures, int maxTextureSize)
+        internal static GameObject ConvertForQuest(GameObject original, string artifactsDir, bool generateQuestTextures, int maxTextureSize)
         {
             if (Directory.Exists(artifactsDir))
             {
@@ -135,7 +139,7 @@ namespace KRT.VRCQuestTools
                         // do nothing
                         break;
                     case 1: // Cancel
-                        return;
+                        return null;
                     case 2: // Alt
                         artifactsDir = altDir;
                         break;
@@ -168,7 +172,7 @@ namespace KRT.VRCQuestTools
             {
                 Debug.LogException(e);
                 EditorUtility.DisplayDialog("VRCAvatarQuestConverter", $"{i18n.MaterialExceptionDialogMessage}\n\n{e.Message}", "OK");
-                return;
+                return null;
             }
             finally
             {
@@ -211,6 +215,7 @@ namespace KRT.VRCQuestTools
             }
 
             Undo.CollapseUndoOperations(undoGroup);
+            return questObj;
         }
 
         private static Material ConvertMaterialForQuest(string artifactsDir, Material material, string guid, Shader newShader, bool generateQuestTextures, int maxTextureSize)
