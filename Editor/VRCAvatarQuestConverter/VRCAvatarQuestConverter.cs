@@ -227,7 +227,9 @@ namespace KRT.VRCQuestTools
                 var mw = MaterialUtils.CreateWrapper(material);
                 using (var combined = mw.CompositeLayers())
                 {
-                    var outFile = $"{artifactsDir}/{material.name}_from_{guid}.png";
+                    var texturesDir = $"{artifactsDir}/Textures";
+                    Directory.CreateDirectory(texturesDir);
+                    var outFile = $"{texturesDir}/{material.name}_from_{guid}.png";
                     var format = combined.HasAlpha ? MagickFormat.Png32 : MagickFormat.Png24;
                     if (resizeTextures && (combined.Width > maxTextureSize || combined.Height > maxTextureSize))
                     {
@@ -239,7 +241,9 @@ namespace KRT.VRCQuestTools
                     mat.mainTexture = tex;
                 }
             }
-            var file = $"{artifactsDir}/{material.name}_from_{guid}.mat";
+            var materialsDir = $"{artifactsDir}/Materials";
+            Directory.CreateDirectory(materialsDir);
+            var file = $"{materialsDir}/{material.name}_from_{guid}.mat";
             AssetDatabase.CreateAsset(mat, file);
             return mat;
         }

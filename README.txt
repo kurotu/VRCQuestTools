@@ -86,6 +86,7 @@ Twitter: https://twitter.com/kurotu
     - 更新確認機能を追加
     - アバターの変換完了時にダイアログで通知するように変更
     - 変換済みアバターのデフォルトの保存先を Assets/KRT/QuestAvatars に変更
+    - 生成したマテリアルとテクスチャをそれぞれ Materials, Textures フォルダに保存するように変更
     - メニューの表示を調整
     - macOS, Linuxで「Quest用テクスチャを生成する」機能が動作するように修正
     - 「Remove Missing Components」でUnpack Prefabが不要な場合には実行しないように修正
