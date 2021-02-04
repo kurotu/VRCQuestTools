@@ -84,12 +84,12 @@ Twitter: https://twitter.com/kurotu
 
 - Under development
     - 更新確認機能を追加
+    - macOS, Linuxで「Quest用テクスチャを生成する」機能が動作するように変更
     - アバターの変換完了時にダイアログで通知するように変更
     - 変換済みアバターのデフォルトの保存先を Assets/KRT/QuestAvatars に変更
     - 生成したマテリアルとテクスチャをそれぞれ Materials, Textures フォルダに保存するように変更
-    - メニューの表示を調整
-    - macOS, Linuxで「Quest用テクスチャを生成する」機能が動作するように修正
-    - 「Remove Missing Components」でUnpack Prefabが不要な場合には実行しないように修正
+    - 「Remove Missing Components」でUnpack Prefabが不要な場合には実行しないように変更
+    - メニューの表示順を調整
 - 2021/1/24: v0.2.1
     - プロジェクトを開いたときに「Auto Remove Vertex Colors」のチェックが反映されない問題を修正
 - 2020/11/29: v0.2.0
