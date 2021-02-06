@@ -84,7 +84,7 @@ Twitter: https://twitter.com/kurotu
 
 ## 更新履歴
 
-- Under development
+- 2021/2/6: v0.3.0
     - 更新確認機能を追加
     - macOS, Linux で「Quest用のテクスチャを生成する」機能が動作するように変更
     - アバターの変換完了時にダイアログで通知するように変更
