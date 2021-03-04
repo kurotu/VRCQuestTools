@@ -20,8 +20,9 @@ namespace KRT.VRCQuestTools
             return new Material(material)
             {
                 shader = newShader,
-                shaderKeywords = null
-            };
+                shaderKeywords = null,
+                enableInstancing = true // https://docs.vrchat.com/docs/quest-content-optimization#avatars-and-worlds
+        };
         }
 
         private static bool IsUsableForQuestAvatar(Material material)
