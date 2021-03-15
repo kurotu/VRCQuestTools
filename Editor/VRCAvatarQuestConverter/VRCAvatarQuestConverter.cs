@@ -251,6 +251,7 @@ namespace KRT.VRCQuestTools
         private static Material[] GetMaterialsInChildren(GameObject gameObject)
         {
             var renderers = gameObject.GetComponentsInChildren<Renderer>(true);
+#if VRC_SDK_VRCSDK3
             List<Material> animMats = gameObject
                 .GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>()    // avaterDescriptor
                 .baseAnimationLayers
@@ -263,13 +264,16 @@ namespace KRT.VRCQuestTools
 
                         List<Material> keyframes = binding.SelectMany(b => AnimationUtility.GetObjectReferenceCurve(layer, b))  // keyframeに設定されているオブジェクト
                         .Where(keyframe => keyframe.value.GetType() == typeof(Material))    // マテリアルのみ取得
-                        .Select(keyframe => (Material)keyframe.value)  // マテリに変換
+                        .Select(keyframe => (Material)keyframe.value)  // マテリアルに変換
                         .ToList();
-                        
+
                         return keyframes;
                     })
                 .ToList();
+            return renderers.SelectMany(r => r.sharedMaterials).Concat(animMats).Distinct().ToArray();
+#else
             return renderers.SelectMany(r => r.sharedMaterials).Distinct().ToArray();
+#endif
         }
 
 
