@@ -29,6 +29,11 @@ DynamicBone や Cloth など、Quest 用アバターで使用できないコン�
 SkinnedMeshRenderer に設定されたブレンドシェイプ(シェイプキー)の値を別の SkinnedMeshRenderer にコピーします。
 PC 用と Quest 用で別々のモデルを使用する場合などに、設定済みシェイプキーを移す際に使用します。
 
+### Tools/Metallic Smoothness Map
+
+Metallic マップや Smoothness/Roughness マップから Metallic Smoothness マップを生成します。
+生成したテクスチャは VRChat/Mobile/Standard Lite シェーダーで使用できます。
+
 ### Auto Remove Vertex Colors
 
 シーン内のアバターのメッシュから頂点カラーを自動的に取り除き、一部アバターで VRChat/Mobile 系シェーダーを使用する際に真っ黒になるなどテクスチャの色が正しく表示されない問題を対策します。
@@ -81,9 +86,16 @@ SOFTWARE.
 ## 連絡先
 
 Twitter: https://twitter.com/kurotu
+GitHun: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2021/3/x: v0.4.0
+    - 「Metallic Smoothness Map」を追加
+    - 変換済みアバターのテクスチャのみを更新する機能を追加
+    - 変換後のアバターで削除されるコンポーネントについて警告を追加
+    - 変換後のマテリアルから不要なプロパティを削除するように変更
+    - 変換後のマテリアルでは GPU インスタンシングを有効にするように変更
 - 2021/2/6: v0.3.0
     - 更新確認機能を追加
     - macOS, Linux で「Quest用のテクスチャを生成する」機能が動作するように変更

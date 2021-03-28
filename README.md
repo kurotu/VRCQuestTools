@@ -9,22 +9,22 @@ Unity editor extension to support uploading VRChat avatars for Oculus Quest. Com
 
 Download the latest `.unitypackage` from [the release page](https://github.com/kurotu/VRCQuestTools/releases/latest) or [Booth](https://kurotu.booth.pm/items/2436054). Then import it to your avatar project.
 
-Select your avatar from a scene, then use **VRCQuestTools** menu item from the menu bar.
+Select your avatar from a scene, then use *VRCQuestTools* menu item from the menu bar.
 
 ## Features
 
 ### Convert Avatar for Quest
 
-Convert a PC avatar to be ready to upload for Quest by automating below operations.
+Convert a PC avatar to be ready to upload for Quest by automating following operations.
 
-⚠ In many cases, the converted avatar would have **Very Poor** performance rank due to [Quest Limits](https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits).
+⚠ In many cases, the converted avatar would have **Very Poor** performance rank because of [Quest Limits](https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits).
 
 - Duplicate the avatar and its materials.
-- Change to "VRChat/Mobile/Toon Lit" shader.
+- Change duplicated materials' shader to *VRChat/Mobile/Toon Lit*.
 - Generate new textures which applies color and emission of original materials.
 - Remove prohibited components such as Dynamic Bone.
 
-VRCQuestTools doesn't make any changes to the original avatar, so you can use the tool for an existing project as is.
+VRCQuestTools doesn't make any changes to the original avatar, so you can use the tool in existing projects as is.
 
 ### Remove Missing Components
 
@@ -39,6 +39,11 @@ Remove prohibited components such as Dynamic Bone.
 
 Copy BlendShape (Shape key) weights from a Skinned Mesh Renderer to another Skinned Mesh Renderer.
 You will often use when PC version and Quest version use different models and need to have same BlendShape weights.
+
+### Tools/Metallic Smoothness Map
+
+Generate *Metallic Smoothness Map* from a metallic map and/or a smoothness/roughness map.
+You can use generated textures in *VRChat/Mobile/Standard Lite* shader.
 
 ### Auto Remove Vertex Colors
 
