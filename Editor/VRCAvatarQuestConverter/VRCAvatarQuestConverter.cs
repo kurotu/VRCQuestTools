@@ -184,7 +184,7 @@ namespace KRT.VRCQuestTools
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
                     if (convertedMaterials.ContainsKey(guid)) { continue; }
                     var shader = Shader.Find(QuestShader);
-                    Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader, generateQuestTextures, maxTextureSize);
+                    Material mat = ConvertMaterialForQuest(artifactsDir, m, shader, generateQuestTextures, maxTextureSize);
                     convertedMaterials.Add(guid, mat);
                 }
             }
@@ -246,29 +246,29 @@ namespace KRT.VRCQuestTools
                 var m = materials[i];
                 var progress = i / (float)materials.Length;
                 EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.GeneratingTexturesDialogMessage} : {i + 1}/{materials.Length}", progress);
-                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m.GetInstanceID(), out string guid, out long localId);
-                GenerateTextureForQuest(artifactsDir, m, guid, maxTextureSize);
+                GenerateTextureForQuest(artifactsDir, m, maxTextureSize);
             }
             EditorUtility.ClearProgressBar();
         }
 
-        private static Material ConvertMaterialForQuest(string artifactsDir, Material material, string guid, Shader newShader, bool generateQuestTextures, int maxTextureSize)
+        private static Material ConvertMaterialForQuest(string artifactsDir, Material material, Shader newShader, bool generateQuestTextures, int maxTextureSize)
         {
             var resizeTextures = maxTextureSize > 0;
             Material mat = MaterialConverter.Convert(material, newShader);
             if (generateQuestTextures)
             {
-                var tex = GenerateTextureForQuest(artifactsDir, material, guid, maxTextureSize);
+                var tex = GenerateTextureForQuest(artifactsDir, material, maxTextureSize);
                 mat.mainTexture = tex;
             }
             var materialsDir = $"{artifactsDir}/Materials";
             Directory.CreateDirectory(materialsDir);
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localid);
             var file = $"{materialsDir}/{material.name}_from_{guid}.mat";
             AssetDatabase.CreateAsset(mat, file);
             return mat;
         }
 
-        private static Texture GenerateTextureForQuest(string artifactsDir, Material material, string guid, int maxTextureSize)
+        private static Texture GenerateTextureForQuest(string artifactsDir, Material material, int maxTextureSize)
         {
             var resizeTextures = maxTextureSize > 0;
             var mw = MaterialUtils.CreateWrapper(material);
@@ -276,6 +276,7 @@ namespace KRT.VRCQuestTools
             {
                 var texturesDir = $"{artifactsDir}/Textures";
                 Directory.CreateDirectory(texturesDir);
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localid);
                 var outFile = $"{texturesDir}/{material.name}_from_{guid}.png";
                 var format = combined.HasAlpha ? MagickFormat.Png32 : MagickFormat.Png24;
                 if (resizeTextures && (combined.Width > maxTextureSize || combined.Height > maxTextureSize))
