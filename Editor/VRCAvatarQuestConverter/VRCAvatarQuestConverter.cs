@@ -236,28 +236,34 @@ namespace KRT.VRCQuestTools
             Material mat = MaterialConverter.Convert(material, newShader);
             if (generateQuestTextures)
             {
-                var mw = MaterialUtils.CreateWrapper(material);
-                using (var combined = mw.CompositeLayers())
-                {
-                    var texturesDir = $"{artifactsDir}/Textures";
-                    Directory.CreateDirectory(texturesDir);
-                    var outFile = $"{texturesDir}/{material.name}_from_{guid}.png";
-                    var format = combined.HasAlpha ? MagickFormat.Png32 : MagickFormat.Png24;
-                    if (resizeTextures && (combined.Width > maxTextureSize || combined.Height > maxTextureSize))
-                    {
-                        combined.Resize(maxTextureSize, maxTextureSize);
-                    }
-                    combined.Write(outFile, format);
-                    AssetDatabase.Refresh();
-                    var tex = AssetDatabase.LoadAssetAtPath<Texture>(outFile);
-                    mat.mainTexture = tex;
-                }
+                var tex = GenerateTextureForQuest(artifactsDir, material, guid, maxTextureSize);
+                mat.mainTexture = tex;
             }
             var materialsDir = $"{artifactsDir}/Materials";
             Directory.CreateDirectory(materialsDir);
             var file = $"{materialsDir}/{material.name}_from_{guid}.mat";
             AssetDatabase.CreateAsset(mat, file);
             return mat;
+        }
+
+        private static Texture GenerateTextureForQuest(string artifactsDir, Material material, string guid, int maxTextureSize)
+        {
+            var resizeTextures = maxTextureSize > 0;
+            var mw = MaterialUtils.CreateWrapper(material);
+            using (var combined = mw.CompositeLayers())
+            {
+                var texturesDir = $"{artifactsDir}/Textures";
+                Directory.CreateDirectory(texturesDir);
+                var outFile = $"{texturesDir}/{material.name}_from_{guid}.png";
+                var format = combined.HasAlpha ? MagickFormat.Png32 : MagickFormat.Png24;
+                if (resizeTextures && (combined.Width > maxTextureSize || combined.Height > maxTextureSize))
+                {
+                    combined.Resize(maxTextureSize, maxTextureSize);
+                }
+                combined.Write(outFile, format);
+                AssetDatabase.Refresh();
+                return AssetDatabase.LoadAssetAtPath<Texture>(outFile);
+            }
         }
 
         private static Material[] GetMaterialsInChildren(GameObject gameObject)
