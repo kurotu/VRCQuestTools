@@ -41,6 +41,8 @@ namespace KRT.VRCQuestTools
         public abstract string WarningForAppearance { get; }
         public abstract string TexturesSizeLimitLabel { get; }
         public abstract string CompletedDialogTitle { get; }
+        public abstract string AlertForComponents { get; }
+
         public abstract string CompletedDialogMessage(string originalName);
     }
 
@@ -84,6 +86,8 @@ namespace KRT.VRCQuestTools
 
         public override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n\n" +
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
+
+        public override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
 
         public override string TexturesSizeLimitLabel => "Textures Size Limit";
 
@@ -132,6 +136,8 @@ namespace KRT.VRCQuestTools
 
         public override string WarningForAppearance => "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n\n" +
             "別のBlueprint IDでのアップロードやAvatars 3.0のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
+
+        public override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";
 
         public override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
 

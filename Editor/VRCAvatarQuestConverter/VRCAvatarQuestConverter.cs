@@ -92,6 +92,18 @@ namespace KRT.VRCQuestTools
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Warning);
             EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
+            if (avatar != null)
+            {
+                var componentsToBeAlearted = VRCSDKUtils.GetUnsupportedComponentsInChildren(avatar.gameObject, true)
+                    .Where(c => !c.GetType().Name.StartsWith("DynamicBone"))
+                    .Select(c => $"{c.GetType().Name} ({c.gameObject.name})")
+                    .Distinct()
+                    .ToArray();
+                if (componentsToBeAlearted.Count() > 0)
+                {
+                    EditorGUILayout.HelpBox(i18n.AlertForComponents + "\n\n" + string.Join("\n", componentsToBeAlearted.Select(c => $"  - {c}")), MessageType.Error);
+                }
+            }
 
             if (avatar == null)
             {
