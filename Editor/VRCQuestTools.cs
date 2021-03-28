@@ -22,6 +22,7 @@ namespace KRT.VRCQuestTools
             internal const string RemoveUnsupportedComponents = RootMenu + "Tools/Remove Unsupported Components";
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
             internal const string BlendShapesCopy = RootMenu + "Tools/BlendShapes Copy";
+            internal const string MSMapGenerator = RootMenu + "Tools/Metallic Smoothness Map";
             internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
             internal const string UnitySettings = RootMenu + "Unity Settings for Quest";
             internal const string CheckForUpdate = RootMenu + "Check for Update";
@@ -33,6 +34,7 @@ namespace KRT.VRCQuestTools
             RemoveMissingComponents,
             BlendShapesCopy = 700,
             RemoveUnsupportedComponents,
+            MSMapGenerator,
             AutoRemoveVertexColors = 800,
             UnitySettings = 900,
             CheckForUpdate
@@ -66,6 +68,14 @@ namespace KRT.VRCQuestTools
             var obj = Selection.activeGameObject;
             Undo.SetCurrentGroupName("Remove Unsupported Components");
             VRCSDKUtils.RemoveUnsupportedComponentsInChildren(obj, true, true);
+        }
+
+        // Metallic Smoothness
+
+        [MenuItem(MenuPaths.MSMapGenerator, false, (int)MenuPriorities.MSMapGenerator)]
+        internal static void MSMapGenerator()
+        {
+            MSMapGen.ShowWindow();
         }
 
         // Remove Missing Components
