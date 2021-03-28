@@ -25,24 +25,31 @@ namespace KRT.VRCQuestTools
 
         private void OnGUI()
         {
-            titleContent.text = "MS Map Generator";
-            EditorGUILayout.LabelField("Textures", EditorStyles.boldLabel);
-            metallicMap = (Texture2D)EditorGUILayout.ObjectField("Metallic", metallicMap, typeof(Texture2D), false);
-            EditorGUILayout.Space();
-            smoothnessMap = (Texture2D)EditorGUILayout.ObjectField("Smoothness", smoothnessMap, typeof(Texture2D), false);
-            EditorGUI.BeginDisabledGroup(smoothnessMap == null);
-            invertSmoothness = EditorGUILayout.Toggle(i18n.InvertSmoothness, invertSmoothness);
-            EditorGUI.EndDisabledGroup();
+            titleContent.text = "Metallic Smoothness";
+            EditorGUILayout.BeginVertical("HelpBox");
+            {
+                EditorGUILayout.LabelField("Metallic", EditorStyles.boldLabel);
+                metallicMap = (Texture2D)EditorGUILayout.ObjectField(i18n.TextureLabel, metallicMap, typeof(Texture2D), false);
+            }
+            EditorGUILayout.EndVertical();
 
-            EditorGUILayout.Space();
+            EditorGUILayout.BeginVertical("HelpBox");
+            {
+                EditorGUILayout.LabelField("Smoothness", EditorStyles.boldLabel);
+                smoothnessMap = (Texture2D)EditorGUILayout.ObjectField(i18n.TextureLabel, smoothnessMap, typeof(Texture2D), false);
+                EditorGUI.BeginDisabledGroup(smoothnessMap == null);
+                invertSmoothness = EditorGUILayout.Toggle(i18n.InvertLabel, invertSmoothness);
+                EditorGUI.EndDisabledGroup();
+            }
+            EditorGUILayout.EndVertical();
 
             EditorGUILayout.Space();
 
             var disableGenerate = (smoothnessMap == null) && (metallicMap == null);
             EditorGUI.BeginDisabledGroup(disableGenerate);
-            if (GUILayout.Button(i18n.Generate))
+            if (GUILayout.Button(i18n.GenerateButtonLabel))
             {
-                var dest = EditorUtility.SaveFilePanelInProject(i18n.SaveFileDialogTitle("Metallic Smoothness"), "MetallicSmoothness", "png", "Please enter a file name to save the texture to");
+                var dest = EditorUtility.SaveFilePanelInProject(i18n.SaveFileDialogTitle("Metallic Smoothness"), "MetallicSmoothness", "png", i18n.SaveFileDialogMessage);
                 if (dest != "") // Cancel
                 {
                     var metallicPath = metallicMap ? AssetDatabase.GetAssetPath(metallicMap) : "";
