@@ -105,18 +105,26 @@ namespace KRT.VRCQuestTools
                 }
             }
 
-            if (avatar == null)
+            EditorGUI.BeginDisabledGroup(avatar == null);
             {
-                EditorGUI.BeginDisabledGroup(true);
-            }
-            if (GUILayout.Button(i18n.ConvertButtonLabel))
-            {
-                var questAvatar = VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
-                if (questAvatar != null)
+                if (GUILayout.Button(i18n.ConvertButtonLabel))
                 {
-                    EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(avatar.name), "OK");
-                    Selection.activeGameObject = questAvatar;
+                    var questAvatar = VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
+                    if (questAvatar != null)
+                    {
+                        EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(avatar.name), "OK");
+                        Selection.activeGameObject = questAvatar;
+                    }
                 }
+                EditorGUILayout.Space();
+                EditorGUI.BeginDisabledGroup(!generateQuestTextures);
+                {
+                    if (GUILayout.Button(i18n.UpdateTexturesLabel))
+                    {
+                        VRCAvatarQuestConverter.GenerateTexturesForQuest(avatar.gameObject, outputPath, (int)texturesSizeLimit);
+                    }
+                }
+                EditorGUI.EndDisabledGroup();
             }
             EditorGUI.EndDisabledGroup();
         }
@@ -228,6 +236,20 @@ namespace KRT.VRCQuestTools
 
             Undo.CollapseUndoOperations(undoGroup);
             return questObj;
+        }
+
+        internal static void GenerateTexturesForQuest(GameObject original, string artifactsDir, int maxTextureSize)
+        {
+            var materials = GetMaterialsInChildren(original);
+            for (int i = 0; i < materials.Length; i++)
+            {
+                var m = materials[i];
+                var progress = i / (float)materials.Length;
+                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.GeneratingTexturesDialogMessage} : {i + 1}/{materials.Length}", progress);
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m.GetInstanceID(), out string guid, out long localId);
+                GenerateTextureForQuest(artifactsDir, m, guid, maxTextureSize);
+            }
+            EditorUtility.ClearProgressBar();
         }
 
         private static Material ConvertMaterialForQuest(string artifactsDir, Material material, string guid, Shader newShader, bool generateQuestTextures, int maxTextureSize)

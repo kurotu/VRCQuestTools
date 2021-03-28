@@ -35,7 +35,9 @@ namespace KRT.VRCQuestTools
         public abstract string SaveToLabel { get; }
         public abstract string SelectButtonLabel { get; }
         public abstract string ConvertButtonLabel { get; }
+        public abstract string UpdateTexturesLabel { get; }
         public abstract string ConvertingMaterialsDialogMessage { get; }
+        public abstract string GeneratingTexturesDialogMessage { get; }
         public abstract string MaterialExceptionDialogMessage { get; }
         public abstract string WarningForPerformance { get; }
         public abstract string WarningForAppearance { get; }
@@ -78,7 +80,11 @@ namespace KRT.VRCQuestTools
 
         public override string ConvertButtonLabel => "Convert";
 
+        public override string UpdateTexturesLabel => "Update Quest Textures";
+
         public override string ConvertingMaterialsDialogMessage => "Converting materials...";
+
+        public override string GeneratingTexturesDialogMessage => "Generating textures...";
 
         public override string MaterialExceptionDialogMessage => "An error occured when converting materials. Aborted.";
 
@@ -128,7 +134,11 @@ namespace KRT.VRCQuestTools
 
         public override string ConvertButtonLabel => "変換";
 
+        public override string UpdateTexturesLabel => "Quest用テクスチャを更新";
+
         public override string ConvertingMaterialsDialogMessage => "マテリアルを変換中";
+
+        public override string GeneratingTexturesDialogMessage => "テクスチャを生成中";
 
         public override string MaterialExceptionDialogMessage => "マテリアルの変換中にエラーが発生しました。変換を中止します。";
 
