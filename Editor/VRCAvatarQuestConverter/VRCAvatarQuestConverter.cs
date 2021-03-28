@@ -105,18 +105,26 @@ namespace KRT.VRCQuestTools
                 }
             }
 
-            if (avatar == null)
+            EditorGUI.BeginDisabledGroup(avatar == null);
             {
-                EditorGUI.BeginDisabledGroup(true);
-            }
-            if (GUILayout.Button(i18n.ConvertButtonLabel))
-            {
-                var questAvatar = VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
-                if (questAvatar != null)
+                if (GUILayout.Button(i18n.ConvertButtonLabel))
                 {
-                    EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(avatar.name), "OK");
-                    Selection.activeGameObject = questAvatar;
+                    var questAvatar = VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
+                    if (questAvatar != null)
+                    {
+                        EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(avatar.name), "OK");
+                        Selection.activeGameObject = questAvatar;
+                    }
                 }
+                EditorGUILayout.Space();
+                EditorGUI.BeginDisabledGroup(!generateQuestTextures);
+                {
+                    if (GUILayout.Button(i18n.UpdateTexturesLabel))
+                    {
+                        VRCAvatarQuestConverter.GenerateTexturesForQuest(avatar.gameObject, outputPath, (int)texturesSizeLimit);
+                    }
+                }
+                EditorGUI.EndDisabledGroup();
             }
             EditorGUI.EndDisabledGroup();
         }
@@ -176,7 +184,7 @@ namespace KRT.VRCQuestTools
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
                     if (convertedMaterials.ContainsKey(guid)) { continue; }
                     var shader = Shader.Find(QuestShader);
-                    Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader, generateQuestTextures, maxTextureSize);
+                    Material mat = ConvertMaterialForQuest(artifactsDir, m, shader, generateQuestTextures, maxTextureSize);
                     convertedMaterials.Add(guid, mat);
                 }
             }
@@ -230,34 +238,55 @@ namespace KRT.VRCQuestTools
             return questObj;
         }
 
-        private static Material ConvertMaterialForQuest(string artifactsDir, Material material, string guid, Shader newShader, bool generateQuestTextures, int maxTextureSize)
+        internal static void GenerateTexturesForQuest(GameObject original, string artifactsDir, int maxTextureSize)
+        {
+            var materials = GetMaterialsInChildren(original);
+            for (int i = 0; i < materials.Length; i++)
+            {
+                var m = materials[i];
+                var progress = i / (float)materials.Length;
+                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.GeneratingTexturesDialogMessage} : {i + 1}/{materials.Length}", progress);
+                GenerateTextureForQuest(artifactsDir, m, maxTextureSize);
+            }
+            EditorUtility.ClearProgressBar();
+        }
+
+        private static Material ConvertMaterialForQuest(string artifactsDir, Material material, Shader newShader, bool generateQuestTextures, int maxTextureSize)
         {
             var resizeTextures = maxTextureSize > 0;
             Material mat = MaterialConverter.Convert(material, newShader);
             if (generateQuestTextures)
             {
-                var mw = MaterialUtils.CreateWrapper(material);
-                using (var combined = mw.CompositeLayers())
-                {
-                    var texturesDir = $"{artifactsDir}/Textures";
-                    Directory.CreateDirectory(texturesDir);
-                    var outFile = $"{texturesDir}/{material.name}_from_{guid}.png";
-                    var format = combined.HasAlpha ? MagickFormat.Png32 : MagickFormat.Png24;
-                    if (resizeTextures && (combined.Width > maxTextureSize || combined.Height > maxTextureSize))
-                    {
-                        combined.Resize(maxTextureSize, maxTextureSize);
-                    }
-                    combined.Write(outFile, format);
-                    AssetDatabase.Refresh();
-                    var tex = AssetDatabase.LoadAssetAtPath<Texture>(outFile);
-                    mat.mainTexture = tex;
-                }
+                var tex = GenerateTextureForQuest(artifactsDir, material, maxTextureSize);
+                mat.mainTexture = tex;
             }
             var materialsDir = $"{artifactsDir}/Materials";
             Directory.CreateDirectory(materialsDir);
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localid);
             var file = $"{materialsDir}/{material.name}_from_{guid}.mat";
             AssetDatabase.CreateAsset(mat, file);
             return mat;
+        }
+
+        private static Texture GenerateTextureForQuest(string artifactsDir, Material material, int maxTextureSize)
+        {
+            var resizeTextures = maxTextureSize > 0;
+            var mw = MaterialUtils.CreateWrapper(material);
+            using (var combined = mw.CompositeLayers())
+            {
+                var texturesDir = $"{artifactsDir}/Textures";
+                Directory.CreateDirectory(texturesDir);
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localid);
+                var outFile = $"{texturesDir}/{material.name}_from_{guid}.png";
+                var format = combined.HasAlpha ? MagickFormat.Png32 : MagickFormat.Png24;
+                if (resizeTextures && (combined.Width > maxTextureSize || combined.Height > maxTextureSize))
+                {
+                    combined.Resize(maxTextureSize, maxTextureSize);
+                }
+                combined.Write(outFile, format);
+                AssetDatabase.Refresh();
+                return AssetDatabase.LoadAssetAtPath<Texture>(outFile);
+            }
         }
 
         private static Material[] GetMaterialsInChildren(GameObject gameObject)
