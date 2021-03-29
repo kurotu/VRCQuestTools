@@ -95,9 +95,9 @@ namespace KRT.VRCQuestTools
             if (avatar != null)
             {
                 var componentsToBeAlearted = VRCSDKUtils.GetUnsupportedComponentsInChildren(avatar.gameObject, true)
-                    .Where(c => !c.GetType().Name.StartsWith("DynamicBone"))
-                    .Select(c => $"{c.GetType().Name} ({c.gameObject.name})")
+                    .Select(c => c.GetType().Name)
                     .Distinct()
+                    .OrderBy(s => s)
                     .ToArray();
                 if (componentsToBeAlearted.Count() > 0)
                 {
