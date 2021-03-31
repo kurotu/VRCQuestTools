@@ -90,7 +90,7 @@ GitHun: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
-- 2021/3/x: v0.4.0
+- 2021/4/1: v0.4.0
     - 「Metallic Smoothness Map」を追加
     - 変換済みアバターのテクスチャのみを更新する機能を追加
     - 変換後のアバターで削除されるコンポーネントについて警告を追加
