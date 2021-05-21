@@ -173,31 +173,36 @@ namespace KRT.VRCQuestTools
 
             var materials = GetMaterialsInChildren(original);
             var convertedMaterials = new Dictionary<string, Material>();
-            try
+            for (var i = 0; i < materials.Length; i++)
             {
-                for (var i = 0; i < materials.Length; i++)
+                var progress = i / (float)materials.Length;
+                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.ConvertingMaterialsDialogMessage} : {i + 1}/{materials.Length}", progress);
+                var m = materials[i];
+                if (m == null) { continue; }
+                try
                 {
-                    var progress = i / (float)materials.Length;
-                    EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.ConvertingMaterialsDialogMessage} : {i + 1}/{materials.Length}", progress);
-                    var m = materials[i];
-                    if (m == null) { continue; }
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
                     if (convertedMaterials.ContainsKey(guid)) { continue; }
                     var shader = Shader.Find(QuestShader);
                     Material mat = ConvertMaterialForQuest(artifactsDir, m, shader, generateQuestTextures, maxTextureSize);
                     convertedMaterials.Add(guid, mat);
                 }
+                catch (System.Exception e)
+                {
+                    Debug.LogException(e);
+                    EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                        $"{i18n.MaterialExceptionDialogMessage}\n" +
+                        "\n" +
+                        $"Material: {AssetDatabase.GetAssetPath(m)}\n" +
+                        $"Shader: {m.shader.name}\n" +
+                        "\n" +
+                        $"Exception: {e.Message}"
+                        , "OK");
+                    EditorUtility.ClearProgressBar();
+                    return null;
+                }
             }
-            catch (System.Exception e)
-            {
-                Debug.LogException(e);
-                EditorUtility.DisplayDialog("VRCAvatarQuestConverter", $"{i18n.MaterialExceptionDialogMessage}\n\n{e.Message}", "OK");
-                return null;
-            }
-            finally
-            {
-                EditorUtility.ClearProgressBar();
-            }
+            EditorUtility.ClearProgressBar();
 
             var newName = original.name + " (Quest)";
             newName = GenerateUniqueRootGameObjectName(SceneManager.GetActiveScene(), newName);

@@ -69,7 +69,14 @@ namespace KRT.VRCQuestTools
                 return new MagickImage(MagickColors.Black, 1, 1);
             }
             var path = AssetDatabase.GetAssetPath(texture);
-            return new MagickImage(path);
+            try
+            {
+                return new MagickImage(path);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Failed to load \"{path}\" as MagickImage: {e.Message}");
+            }
         }
     }
 }
