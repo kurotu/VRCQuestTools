@@ -13,7 +13,7 @@ namespace KRT.VRCQuestTools
     [InitializeOnLoad]
     public static class VRCQuestTools
     {
-        public const string Version = "0.4.0";
+        public const string Version = "0.4.1";
 
         static class MenuPaths
         {

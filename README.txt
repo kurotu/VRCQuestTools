@@ -1,6 +1,6 @@
 # VRCQuestTools
 
-主に Oculus Quest 対応を想定した VRChat 向け Unity Editor 拡張です。
+VRChat アバターの Oculus Quest 対応を想定した Unity Editor 拡張です。
 
 ## 内容
 
@@ -90,6 +90,9 @@ GitHun: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2021/5/23: v0.4.1
+    - マテリアル変換時のエラーをより詳細に表示するよう変更
+    - 「Quest用テクスチャを更新」ボタンの配置を変更
 - 2021/4/1: v0.4.0
     - 「Metallic Smoothness Map」を追加
     - 変換済みアバターのテクスチャのみを更新する機能を追加
