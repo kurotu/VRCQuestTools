@@ -65,6 +65,13 @@ namespace KRT.VRCQuestTools
                 EditorGUILayout.HelpBox($"{i18n.QuestTexturesDescription}\n\n" +
                     $"{i18n.VerifiedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
                 texturesSizeLimit = (TexturesSizeLimit)EditorGUILayout.EnumPopup(i18n.TexturesSizeLimitLabel, texturesSizeLimit);
+
+                EditorGUILayout.Space();
+
+                if (GUILayout.Button(i18n.UpdateTexturesLabel))
+                {
+                    VRCAvatarQuestConverter.GenerateTexturesForQuest(avatar.gameObject, outputPath, (int)texturesSizeLimit);
+                }
                 EditorGUILayout.EndToggleGroup();
             }
             EditorGUILayout.EndVertical();
@@ -116,15 +123,6 @@ namespace KRT.VRCQuestTools
                         Selection.activeGameObject = questAvatar;
                     }
                 }
-                EditorGUILayout.Space();
-                EditorGUI.BeginDisabledGroup(!generateQuestTextures);
-                {
-                    if (GUILayout.Button(i18n.UpdateTexturesLabel))
-                    {
-                        VRCAvatarQuestConverter.GenerateTexturesForQuest(avatar.gameObject, outputPath, (int)texturesSizeLimit);
-                    }
-                }
-                EditorGUI.EndDisabledGroup();
             }
             EditorGUI.EndDisabledGroup();
         }

@@ -80,7 +80,7 @@ namespace KRT.VRCQuestTools
 
         public override string ConvertButtonLabel => "Convert";
 
-        public override string UpdateTexturesLabel => "Update Quest Textures";
+        public override string UpdateTexturesLabel => "Update Only Quest Textures";
 
         public override string ConvertingMaterialsDialogMessage => "Converting materials...";
 
@@ -134,7 +134,7 @@ namespace KRT.VRCQuestTools
 
         public override string ConvertButtonLabel => "変換";
 
-        public override string UpdateTexturesLabel => "Quest用テクスチャを更新";
+        public override string UpdateTexturesLabel => "Quest用テクスチャのみ更新";
 
         public override string ConvertingMaterialsDialogMessage => "マテリアルを変換中";
 
