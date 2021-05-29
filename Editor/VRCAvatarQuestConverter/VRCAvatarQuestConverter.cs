@@ -295,7 +295,11 @@ namespace KRT.VRCQuestTools
         private static Material[] GetMaterialsInChildren(GameObject gameObject)
         {
             var renderers = gameObject.GetComponentsInChildren<Renderer>(true);
-            return renderers.SelectMany(r => r.sharedMaterials).Distinct().ToArray();
+            return renderers
+                .SelectMany(r => r.sharedMaterials)
+                .Distinct()
+                .Where(m => m != null)
+                .ToArray();
         }
 
 
