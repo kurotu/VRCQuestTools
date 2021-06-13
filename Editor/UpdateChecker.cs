@@ -95,7 +95,6 @@ namespace KRT.VRCQuestTools
     {
         string latestVersion = "0.0.0";
 
-        [MenuItem("VRCQuestTools/Debug")]
         internal static void Init(SemVer latestVersion)
         {
             var window = GetWindow<UpdateCheckerWindow>();
