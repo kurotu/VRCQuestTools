@@ -76,7 +76,7 @@ namespace KRT.VRCQuestTools
             }
             else
             {
-                var i18n = I18n.GetI18n();
+                var i18n = VRCQuestToolsSettings.I18nResource;
                 EditorUtility.DisplayDialog("VRCQuestTools", i18n.ThereIsNoUpdate, "OK");
             }
             VRCQuestToolsSettings.LastVersionCheckDateTime = System.DateTime.UtcNow;
@@ -94,7 +94,6 @@ namespace KRT.VRCQuestTools
     class UpdateCheckerWindow : EditorWindow
     {
         string latestVersion = "0.0.0";
-        readonly I18nBase i18n = I18n.GetI18n();
 
         [MenuItem("VRCQuestTools/Debug")]
         internal static void Init(SemVer latestVersion)
@@ -106,6 +105,7 @@ namespace KRT.VRCQuestTools
 
         private void OnGUI()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             titleContent.text = "VRCQuestTools Updater";
             EditorGUILayout.LabelField(i18n.NewVersionIsAvailable(latestVersion));
             EditorGUILayout.Space();

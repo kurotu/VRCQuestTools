@@ -29,7 +29,6 @@ namespace KRT.VRCQuestTools
         string outputPath = "";
         bool generateQuestTextures = true;
         TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.UpTo1024x1024;
-        private readonly I18nBase i18n = I18n.GetI18n();
 
         internal static void InitFromMenu()
         {
@@ -44,6 +43,7 @@ namespace KRT.VRCQuestTools
 
         private void OnGUI()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             titleContent.text = "Convert Avatar for Quest";
 
             var selectedAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, avatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
@@ -138,10 +138,10 @@ namespace KRT.VRCQuestTools
         const string Tag = "VRCAvatarQuestConverter";
         internal const string ArtifactsRootDir = "Assets/KRT/QuestAvatars";
         const string QuestShader = "VRChat/Mobile/Toon Lit";
-        internal readonly static I18nBase i18n = I18n.GetI18n();
 
         internal static GameObject ConvertForQuest(GameObject original, string artifactsDir, bool generateQuestTextures, int maxTextureSize)
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             if (Directory.Exists(artifactsDir))
             {
                 var altDir = AssetDatabase.GenerateUniqueAssetPath(artifactsDir);
@@ -243,6 +243,7 @@ namespace KRT.VRCQuestTools
 
         internal static void GenerateTexturesForQuest(GameObject original, string artifactsDir, int maxTextureSize)
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var materials = GetMaterialsInChildren(original);
             for (int i = 0; i < materials.Length; i++)
             {

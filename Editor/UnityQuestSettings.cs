@@ -66,7 +66,6 @@ namespace KRT.VRCQuestTools
     public class UnityQuestSettingsWindow : EditorWindow
     {
         private delegate void Action();
-        private readonly I18nBase i18n = I18n.GetI18n();
 
         static UnityQuestSettingsWindow()
         {
@@ -98,6 +97,7 @@ namespace KRT.VRCQuestTools
 
         private void OnGUI()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             titleContent.text = "Unity Settings for Quest";
             EditorGUILayout.LabelField("Unity Preferences", EditorStyles.boldLabel);
             var allActions = new List<Action>();

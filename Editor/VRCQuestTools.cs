@@ -5,6 +5,7 @@
 // <remarks>Licensed under the MIT license.</remarks>
 
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -25,6 +26,10 @@ namespace KRT.VRCQuestTools
             internal const string MSMapGenerator = RootMenu + "Tools/Metallic Smoothness Map";
             internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
             internal const string UnitySettings = RootMenu + "Unity Settings for Quest";
+            private const string LanguageMenu = RootMenu + "Languages/";
+            internal const string LanguageAuto = LanguageMenu + "Auto (default)";
+            internal const string LanguageEnglish = LanguageMenu + "English";
+            internal const string LanguageJapanese = LanguageMenu + "日本語";
             internal const string CheckForUpdate = RootMenu + "Check for Update";
         }
 
@@ -37,7 +42,10 @@ namespace KRT.VRCQuestTools
             MSMapGenerator,
             AutoRemoveVertexColors = 800,
             UnitySettings = 900,
-            CheckForUpdate
+            LanguageAuto = 1000,
+            LanguageEnglish,
+            LanguageJapanese,
+            CheckForUpdate = 1100
         }
 
         static VRCQuestTools()
@@ -50,6 +58,7 @@ namespace KRT.VRCQuestTools
             EditorApplication.delayCall -= DelayInit;
             var enabled = VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled;
             Menu.SetChecked(MenuPaths.AutoRemoveVertexColors, enabled);
+            UpdateLanguageChecks(VRCQuestToolsSettings.DisplayLanguage);
         }
 
         // Convert Avatar for Quest
@@ -132,6 +141,45 @@ namespace KRT.VRCQuestTools
             return Selection.activeGameObject != null;
         }
 
+        [MenuItem(MenuPaths.LanguageAuto, false,(int)MenuPriorities.LanguageAuto)]
+        static void LanguageAuto()
+        {
+            SetLanguage(DisplayLanguage.Auto);
+        }
+
+        [MenuItem(MenuPaths.LanguageEnglish,false,(int)MenuPriorities.LanguageEnglish)]
+        static void LanguageEnglish()
+        {
+            SetLanguage(DisplayLanguage.English);
+        }
+
+        [MenuItem(MenuPaths.LanguageJapanese, false, (int)MenuPriorities.LanguageJapanese)]
+        static void LanguageJapanese()
+        {
+            SetLanguage(DisplayLanguage.Japanese);
+        }
+
+        private static void SetLanguage(DisplayLanguage language)
+        {
+            VRCQuestToolsSettings.DisplayLanguage = language;
+            UpdateLanguageChecks(language);
+        }
+
+        private static void UpdateLanguageChecks(DisplayLanguage language)
+        {
+            var menus = new Dictionary<DisplayLanguage, string> {
+                { DisplayLanguage.Auto, MenuPaths.LanguageAuto },
+                { DisplayLanguage.English, MenuPaths.LanguageEnglish },
+                { DisplayLanguage.Japanese, MenuPaths.LanguageJapanese },
+            };
+            Debug.Assert(menus.Count == Enum.GetValues(typeof(DisplayLanguage)).Length);
+
+            foreach (var kvp in menus)
+            {
+                Menu.SetChecked(kvp.Value, kvp.Key == language);
+            }
+        }
+
         [MenuItem(MenuPaths.CheckForUpdate, false, (int)MenuPriorities.CheckForUpdate)]
         private static void CheckForUpdate()
         {
@@ -145,6 +193,11 @@ namespace KRT.VRCQuestTools
         internal const string ContextBlendShapesCopy = "CONTEXT/SkinnedMeshRenderer/Copy BlendShape Weights";
     }
 
+    internal enum DisplayLanguage
+    {
+        Auto, English, Japanese
+    }
+
     static class VRCQuestToolsSettings
     {
         private static class Keys
@@ -154,6 +207,7 @@ namespace KRT.VRCQuestTools
             public const string SHOW_SETTINGS_ON_LOAD = PREFIX + "ShowSettingsOnLoad";
             public const string AUTO_REMOVE_VERTEX_COLORS = PREFIX + "AutoRemoveVertexColors";
             public const string LAST_VERSION_CHECK_DATE = PREFIX + "LastVersionCheckDate";
+            public const string DISPLAY_LANGUAGE = PREFIX + "DisplayLanguage";
         }
 
         private const string FALSE = "FALSE";
@@ -202,6 +256,36 @@ namespace KRT.VRCQuestTools
                 var date = value.Kind == DateTimeKind.Utc ? value : value.ToUniversalTime();
                 var unixTime = (int)date.Subtract(UnixEpoch).TotalSeconds;
                 EditorUserSettings.SetConfigValue(Keys.LAST_VERSION_CHECK_DATE, unixTime.ToString());
+            }
+        }
+
+        internal static DisplayLanguage DisplayLanguage
+        {
+            get
+            {
+                var value = EditorUserSettings.GetConfigValue(Keys.DISPLAY_LANGUAGE);
+                if (value == null) return DisplayLanguage.Auto;
+
+                var result = Enum.TryParse(value, out DisplayLanguage language);
+                if (result == false) return DisplayLanguage.Auto;
+
+                return language;
+            }
+            set
+            {
+                var language = Enum.GetName(typeof(DisplayLanguage), value);
+                EditorUserSettings.SetConfigValue(Keys.DISPLAY_LANGUAGE, language);
+                _i18n = I18n.GetI18n();
+            }
+        }
+
+        private static I18nBase _i18n = null;
+        internal static I18nBase I18nResource
+        {
+            get
+            {
+                if (_i18n == null) { _i18n = I18n.GetI18n(); }
+                return _i18n;
             }
         }
     }

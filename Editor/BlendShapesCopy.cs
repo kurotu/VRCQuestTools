@@ -11,7 +11,6 @@ namespace KRT.VRCQuestTools
 {
     public class BlendShapesCopy : EditorWindow
     {
-        private readonly I18nBase i18n = I18n.GetI18n();
         SkinnedMeshRenderer source;
         SkinnedMeshRenderer target;
 
@@ -31,6 +30,7 @@ namespace KRT.VRCQuestTools
 
         private void OnGUI()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             titleContent.text = "BlendShapes Copy";
             source = (SkinnedMeshRenderer)EditorGUILayout.ObjectField(i18n.SourceMeshLabel, source, typeof(SkinnedMeshRenderer), true);
             target = (SkinnedMeshRenderer)EditorGUILayout.ObjectField(i18n.TargetMeshLabel, target, typeof(SkinnedMeshRenderer), true);

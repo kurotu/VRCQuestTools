@@ -16,7 +16,6 @@ namespace KRT.VRCQuestTools
         Texture2D smoothnessMap;
         bool invertSmoothness;
         bool allowOverwriting;
-        private readonly I18nBase i18n = I18n.GetI18n();
 
         internal static void ShowWindow()
         {
@@ -25,6 +24,7 @@ namespace KRT.VRCQuestTools
 
         private void OnGUI()
         {
+            var i18n = I18n.GetI18n();
             titleContent.text = "Metallic Smoothness";
             EditorGUILayout.BeginVertical("HelpBox");
             {
