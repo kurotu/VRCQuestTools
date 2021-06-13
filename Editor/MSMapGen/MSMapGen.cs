@@ -19,7 +19,8 @@ namespace KRT.VRCQuestTools
 
         internal static void ShowWindow()
         {
-            GetWindow(typeof(MSMapGen));
+            var window = GetWindow<MSMapGen>(typeof(MSMapGen));
+            window.Show();
         }
 
         private void OnGUI()
