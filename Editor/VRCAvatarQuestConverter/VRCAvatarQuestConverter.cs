@@ -29,7 +29,7 @@ namespace KRT.VRCQuestTools
         string outputPath = "";
         bool generateQuestTextures = true;
         TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.UpTo1024x1024;
-        readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
+        private readonly I18nBase i18n = I18n.GetI18n();
 
         internal static void InitFromMenu()
         {
@@ -138,7 +138,7 @@ namespace KRT.VRCQuestTools
         const string Tag = "VRCAvatarQuestConverter";
         internal const string ArtifactsRootDir = "Assets/KRT/QuestAvatars";
         const string QuestShader = "VRChat/Mobile/Toon Lit";
-        internal readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
+        internal readonly static I18nBase i18n = I18n.GetI18n();
 
         internal static GameObject ConvertForQuest(GameObject original, string artifactsDir, bool generateQuestTextures, int maxTextureSize)
         {

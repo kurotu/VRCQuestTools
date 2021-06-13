@@ -16,7 +16,7 @@ namespace KRT.VRCQuestTools
         Texture2D smoothnessMap;
         bool invertSmoothness;
         bool allowOverwriting;
-        readonly MSMapGenI18nBase i18n = MSMapGenI18n.Create();
+        private readonly I18nBase i18n = I18n.GetI18n();
 
         internal static void ShowWindow()
         {

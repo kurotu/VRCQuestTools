@@ -11,7 +11,7 @@ namespace KRT.VRCQuestTools
 {
     public class BlendShapesCopy : EditorWindow
     {
-        readonly BlendShapesCopyI18nBase i18n = BlendShapesCopyI18n.Create();
+        private readonly I18nBase i18n = I18n.GetI18n();
         SkinnedMeshRenderer source;
         SkinnedMeshRenderer target;
 
@@ -75,49 +75,5 @@ namespace KRT.VRCQuestTools
                 target.SetBlendShapeWeight(targetIndex, weight);
             }
         }
-    }
-
-    static class BlendShapesCopyI18n
-    {
-        public static BlendShapesCopyI18nBase Create()
-        {
-            if (System.Globalization.CultureInfo.CurrentCulture.Name == "ja-JP")
-            {
-                return new BlendShapesCopyI18nJapanese();
-            }
-            else
-            {
-                return new BlendShapesCopyI18nEnglish();
-            }
-        }
-    }
-
-    abstract class BlendShapesCopyI18nBase
-    {
-        public abstract string SourceMeshLabel { get; }
-        public abstract string TargetMeshLabel { get; }
-        public abstract string CopyButtonLabel { get; }
-        public abstract string SwitchButtonLabel { get; }
-    }
-
-    class BlendShapesCopyI18nEnglish : BlendShapesCopyI18nBase
-    {
-        public override string SourceMeshLabel => "Source Mesh";
-
-        public override string TargetMeshLabel => "Target Mesh";
-
-        public override string CopyButtonLabel => "Copy BlendShape Weights";
-
-        public override string SwitchButtonLabel => "Switch Source/Target";
-    }
-    class BlendShapesCopyI18nJapanese : BlendShapesCopyI18nBase
-    {
-        public override string SourceMeshLabel => "コピー元メッシュ";
-
-        public override string TargetMeshLabel => "コピー先メッシュ";
-
-        public override string CopyButtonLabel => "ブレンドシェイプの値をコピー";
-
-        public override string SwitchButtonLabel => "コピー元/コピー先を入れ替え";
     }
 }
