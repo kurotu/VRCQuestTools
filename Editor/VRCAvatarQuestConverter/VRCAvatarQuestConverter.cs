@@ -64,6 +64,15 @@ namespace KRT.VRCQuestTools
                 generateQuestTextures = EditorGUILayout.BeginToggleGroup(i18n.GenerateQuestTexturesLabel, generateQuestTextures);
                 EditorGUILayout.HelpBox($"{i18n.QuestTexturesDescription}\n\n" +
                     $"{i18n.VerifiedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
+                if (avatar != null)
+                {
+                    var unverifiedMaterials = VRCAvatarQuestConverter.GetMaterialsInChildrenWithUnverifiedShaders(avatar.gameObject);
+                    if (unverifiedMaterials.Length > 0)
+                    {
+                        EditorGUILayout.HelpBox($"{i18n.WarningForUnverifiedShaders}\n\n" +
+                            $"{string.Join("\n", unverifiedMaterials.Select(m => $"  - {m.name} ({m.shader.name})"))}", MessageType.Error);
+                    }
+                }
                 texturesSizeLimit = (TexturesSizeLimit)EditorGUILayout.EnumPopup(i18n.TexturesSizeLimitLabel, texturesSizeLimit);
 
                 EditorGUILayout.Space();
@@ -308,6 +317,12 @@ namespace KRT.VRCQuestTools
         {
             var names = scene.GetRootGameObjects().Select(o => o.name).ToArray();
             return ObjectNames.GetUniqueName(names, name);
+        }
+
+        internal static Material[] GetMaterialsInChildrenWithUnverifiedShaders(GameObject gameObject)
+        {
+            var materials = GetMaterialsInChildren(gameObject);
+            return materials.Where(m => MaterialUtils.DetectShaderType(m) == ShaderCategory.Unverified).ToArray();
         }
     }
 }

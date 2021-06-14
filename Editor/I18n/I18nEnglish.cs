@@ -24,6 +24,7 @@
         internal override string WarningForPerformance => "In many cases, the converted avatar's performance rank will be \"Very Poor\" for Quest. Quest users need to use \"Show Avatar\" due to Performance Options limitation.";
         internal override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n\n" +
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
+        internal override string WarningForUnverifiedShaders => "Following materials are using unverified shaders. Textures might not properly be generated.";
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
         internal override string TexturesSizeLimitLabel => "Textures Size Limit";
         internal override string CompletedDialogTitle => "VRCQuestTools";
