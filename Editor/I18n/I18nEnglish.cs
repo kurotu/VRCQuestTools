@@ -2,6 +2,8 @@
 {
     class I18nEnglish : I18nBase
     {
+        internal override string CancelLabel => "Cancel";
+
         // Convert Avatar for Quest
         internal override string OverwriteWarningDialogButtonCancel => "Cancel";
         internal override string OverwriteWarningDialogButtonOK => "OK";
@@ -27,11 +29,20 @@
         internal override string CompletedDialogTitle => "VRCQuestTools";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
 
+        // Remove Missing Components
+        internal override string NoMissingComponentsMessage(string objectName) => $"There are no \"missing\" components in {objectName}.";
+        internal override string MissingRemoverConfirmationMessage(string objectName) => $"Remove \"missing\" components from {objectName}.";
+        internal override string UnpackPrefabMessage => "This also executes \"Unpack Prefab\" operation.";
+
         // BlendShapes Copy
         internal override string SourceMeshLabel => "Source Mesh";
         internal override string TargetMeshLabel => "Target Mesh";
         internal override string CopyButtonLabel => "Copy BlendShape Weights";
         internal override string SwitchButtonLabel => "Switch Source/Target";
+
+        // Remove Unsupported Components
+        internal override string NoUnsupportedComponentsMessage(string objectName) => $"There are no unsupported components in {objectName}.";
+        internal override string UnsupportedRemoverConfirmationMessage(string objectName) => $"Remove following unsupported components from {objectName}.";
 
         // Metallic Smoothness
         internal override string TextureLabel => "Texture";

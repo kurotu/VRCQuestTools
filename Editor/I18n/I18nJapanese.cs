@@ -2,6 +2,8 @@
 {
     class I18nJapanese : I18nBase
     {
+        internal override string CancelLabel => "キャンセル";
+
         // Convert Avatar for Quest
         internal override string OverwriteWarningDialogButtonCancel => "キャンセル";
         internal override string OverwriteWarningDialogButtonOK => "OK";
@@ -27,11 +29,20 @@
         internal override string CompletedDialogTitle => "VRCQuestTools";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";
 
+        // Remove Missing Components
+        internal override string NoMissingComponentsMessage(string objectName) => $"{objectName} に \"Missing\" 状態のコンポーネントはありません。";
+        internal override string MissingRemoverConfirmationMessage(string objectName) => $"{objectName} から \"Missing\" 状態のコンポーネントを削除します。";
+        internal override string UnpackPrefabMessage => "同時に Unpack Prefab を実行します。";
+
         // BlendShapes Copy
         internal override string SourceMeshLabel => "コピー元メッシュ";
         internal override string TargetMeshLabel => "コピー先メッシュ";
         internal override string CopyButtonLabel => "ブレンドシェイプの値をコピー";
         internal override string SwitchButtonLabel => "コピー元/コピー先を入れ替え";
+
+        // Remove Unsupported Components
+        internal override string NoUnsupportedComponentsMessage(string objectName) => $"{objectName} に非対応コンポーネントはありません。";
+        internal override string UnsupportedRemoverConfirmationMessage(string objectName) => $"{objectName} から以下の非対応コンポーネントを削除します。";
 
         // Metallic Smoothness
         internal override string TextureLabel => "テクスチャ";

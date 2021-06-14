@@ -8,6 +8,8 @@ namespace KRT.VRCQuestTools
 {
     abstract class I18nBase
     {
+        internal abstract string CancelLabel { get; }
+
         // Convert Avatar for Quest
         internal abstract string OverwriteWarningDialogTitle { get; }
         internal abstract string OverwriteWarningDialogMessage(string artifactsDir);
@@ -32,11 +34,20 @@ namespace KRT.VRCQuestTools
         internal abstract string AlertForComponents { get; }
         internal abstract string CompletedDialogMessage(string originalName);
 
+        // Remove Missing Components
+        internal abstract string NoMissingComponentsMessage(string objectName);
+        internal abstract string MissingRemoverConfirmationMessage(string objectName);
+        internal abstract string UnpackPrefabMessage { get; }
+
         // BlendShapes Copy
         internal abstract string SourceMeshLabel { get; }
         internal abstract string TargetMeshLabel { get; }
         internal abstract string CopyButtonLabel { get; }
         internal abstract string SwitchButtonLabel { get; }
+
+        // Remove Unsupported Components
+        internal abstract string NoUnsupportedComponentsMessage(string objectName);
+        internal abstract string UnsupportedRemoverConfirmationMessage(string objectName);
 
         // Metallic Smoothness
         internal abstract string TextureLabel { get; }

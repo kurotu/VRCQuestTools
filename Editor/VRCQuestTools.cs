@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -74,7 +75,19 @@ namespace KRT.VRCQuestTools
         [MenuItem(MenuPaths.RemoveUnsupportedComponents, false, (int)MenuPriorities.RemoveUnsupportedComponents)]
         internal static void RemoveUnsupportedComponents()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var obj = Selection.activeGameObject;
+
+            var components = VRCSDKUtils.GetUnsupportedComponentsInChildren(obj, true);
+            if (components.Length == 0)
+            {
+                EditorUtility.DisplayDialog("VRCQuestTools", i18n.NoUnsupportedComponentsMessage(obj.name), "OK");
+                return;
+            }
+            var message = i18n.UnsupportedRemoverConfirmationMessage(obj.name) + "\n\n" +
+                string.Join("\n", components.Select(c => c.GetType()).Distinct().Select(c => $"  - {c}").OrderBy(c => c));
+            if (!EditorUtility.DisplayDialog("VRCQuestTools", message, "OK", i18n.CancelLabel)) { return; }
+
             Undo.SetCurrentGroupName("Remove Unsupported Components");
             VRCSDKUtils.RemoveUnsupportedComponentsInChildren(obj, true, true);
         }
@@ -92,14 +105,25 @@ namespace KRT.VRCQuestTools
         [MenuItem(MenuPaths.RemoveMissingComponents, false, (int)MenuPriorities.RemoveMissingComponents)]
         internal static void RemoveMissingComponents()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var obj = Selection.activeGameObject;
             var count = VRCSDKUtils.CountMissingComponentsInChildren(obj, true);
             Debug.Log($"[VRCQuestTools] {obj.name} has {count} missing scripts in children");
             if (count == 0)
             {
+                EditorUtility.DisplayDialog("VRCQuestTools", i18n.NoMissingComponentsMessage(obj.name), "OK");
                 return;
             }
-            if (PrefabUtility.IsPartOfPrefabInstance(obj))
+
+            var needsToUnpackPrefab = PrefabUtility.IsPartOfPrefabInstance(obj);
+            var message = i18n.MissingRemoverConfirmationMessage(obj.name);
+            if (needsToUnpackPrefab) { message += $" ({i18n.UnpackPrefabMessage})"; }
+            if (!EditorUtility.DisplayDialog("VRCQuestTools", message, "OK", i18n.CancelLabel))
+            {
+                return;
+            }
+
+            if (needsToUnpackPrefab)
             {
                 Undo.SetCurrentGroupName("Remove Missing Components");
                 // Somehow unpacking is needed to apply changes to the scene file.
