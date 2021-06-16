@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -188,6 +189,139 @@ namespace KRT.VRCQuestTools
             questObj.SetActive(true);
             questObj.name = newName;
             questObj.GetComponent<VRC.Core.PipelineManager>().blueprintId = null;
+
+            // アニメーション内容書き換え
+            Dictionary< string, AnimationClip> convertedAnimatoinClip = new Dictionary<string, AnimationClip>();
+            var animationClips = GetAnimationClipsInChildren(questObj);
+            var animationClipDir = $"{artifactsDir}/Animations";
+            Directory.CreateDirectory(animationClipDir);
+            try
+            {
+                for (var i = 0; i < animationClips.Length; i++)
+                {
+                    var progress = i / (float)animationClips.Length;
+                    EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"Convert AnimationCilp : {i + 1}/{animationClips.Length}", progress);
+
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animationClips[i], out string guid, out long localid);
+                    var outFile = $"{animationClipDir}/{animationClips[i].name}_from_{guid}.anim";
+                    var anim = ConvertAnimationClipForQuest(animationClips[i], convertedMaterials);//Object.Instantiate(animationClips[i]);
+
+                    //
+                    AssetDatabase.CreateAsset(anim, outFile);
+                    convertedAnimatoinClip.Add(guid, anim);
+                    Debug.Log("create asset: " + outFile);
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogException(e);
+                EditorUtility.DisplayDialog("VRCAvatarQuestConverter", $"{i18n.MaterialExceptionDialogMessage}\n\n{e.Message}", "OK");
+                return null;
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            // アニメーションファイル差し替え,コントローラーコピー
+            Dictionary<string, RuntimeAnimatorController> convertedAnimationControllers = new Dictionary<string, RuntimeAnimatorController>();
+            var controllerDir = $"{artifactsDir}/AnimationControllers";
+            Directory.CreateDirectory(controllerDir);
+            RuntimeAnimatorController[] controllers = GetAnimationControllerInChildren(questObj);
+            var indx = 0;
+            try
+            {
+                foreach (var c in controllers)
+                {
+                    var progress = indx / (float)controllers.Length;
+                    EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"Convert AnimatorController : {indx + 1}/{controllers.Length}", progress);
+                    indx++;
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(c, out string guid, out long localid);
+                    var outFile = $"{controllerDir}/{c.name}_from_{guid}.controller";
+                    Debug.Log("originalPath :" + AssetDatabase.GetAssetPath(c));
+                    Debug.Log("copy Path    :" + outFile);
+                    AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(c),outFile);
+                    AssetDatabase.Refresh();
+                    AnimatorController cloneController = (AnimatorController)AssetDatabase.LoadAssetAtPath(outFile, typeof(AnimatorController));
+
+                    //コピーしたコントローラーに修正したアニメーションクリップを反映
+                    // レイヤー→ステートマシン→ステート→アニメーションクリップ
+                    for (int i = 0; i < cloneController.layers.Length; i++)
+                    {
+                        AnimatorControllerLayer layer = cloneController.layers[i];
+                        AnimatorStateMachine stateMachine = layer.stateMachine;
+                        for (int j = 0; j < stateMachine.states.Length; j++)
+                        {
+                            AnimatorState animState = stateMachine.states[j].state;
+
+                            AnimationClip anim = (AnimationClip)animState.motion;
+                            if (anim == null)
+                            {
+                                continue;
+                            }
+                            Debug.Log("am :" + anim.name);
+                            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(anim, out string _guid, out long _localid);
+                            if (convertedAnimatoinClip.ContainsKey(_guid))
+                            {
+                                //animState.motion = convertedAnimatoinClip[_guid];
+                                cloneController.layers[i].stateMachine.states[j].state.motion = convertedAnimatoinClip[_guid];
+                                Debug.Log("replace animationClip : " + convertedAnimatoinClip[_guid].name);
+                            }
+                        }
+                    }
+
+                    AssetDatabase.SaveAssets();
+                    convertedAnimationControllers.Add(guid, cloneController);
+                    Debug.Log("create asset: " + outFile);
+                    Debug.Log("test: "+ c.Equals(cloneController));
+                }
+
+                // アバターのアニメーションコントローラー差し替え                
+                var customAnimationLayers = questObj.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
+                for (int i = 0; i < customAnimationLayers.Length; i++)
+                {
+                    if (!customAnimationLayers[i].isDefault)
+                    {
+                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(customAnimationLayers[i].animatorController, out string guid, out long localid);
+                        if (convertedAnimationControllers.ContainsKey(guid))
+                        {
+                            Debug.Log("replace asset: " + customAnimationLayers[i].animatorController.name + " to " + convertedAnimationControllers[guid].name);
+                            customAnimationLayers[i].animatorController = convertedAnimationControllers[guid];
+                        }
+                    }
+                }
+                AssetDatabase.SaveAssets();
+
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogException(e);
+                EditorUtility.DisplayDialog("VRCAvatarQuestConverter", $"{i18n.MaterialExceptionDialogMessage}\n\n{e.Message}", "OK");
+                return null;
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+
+            // アバターに付属するAnimatorのアニメーターコントローラーを差し替える
+            Animator[] animators = questObj.GetComponentsInChildren<Animator>();
+            for(int i = 0; i < animators.Length; i++)
+            {
+                if (animators[i].runtimeAnimatorController)
+                {
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animators[i].runtimeAnimatorController, out string guid, out long localid);
+                    if (convertedAnimationControllers.ContainsKey(guid))
+                    {
+                        Debug.Log("replace asset: " + animators[i].runtimeAnimatorController.name + " to " + convertedAnimationControllers[guid].name);
+                        animators[i].runtimeAnimatorController = convertedAnimationControllers[guid];
+                    }
+                }
+            }
+
+            // Materials
             var renderers = questObj.GetComponentsInChildren<Renderer>(true);
             foreach (var r in renderers)
             {
@@ -199,6 +333,8 @@ namespace KRT.VRCQuestTools
                 });
                 r.sharedMaterials = newMaterials.ToArray();
             }
+
+
             VRCSDKUtils.RemoveMissingComponentsInChildren(questObj, true);
             VRCSDKUtils.RemoveUnsupportedComponentsInChildren(questObj, true);
 
@@ -248,32 +384,116 @@ namespace KRT.VRCQuestTools
             return mat;
         }
 
+        // マテリアルアニメーションが入っていることをGUIで出すための関数化
         private static Material[] GetMaterialsInChildren(GameObject gameObject)
         {
             var renderers = gameObject.GetComponentsInChildren<Renderer>(true);
-#if VRC_SDK_VRCSDK3
+
             List<Material> animMats = gameObject
                 .GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>()    // avaterDescriptor
                 .baseAnimationLayers
                 .Where(obj => !obj.isDefault)   // AnimationControllerが設定されている
                 .SelectMany(obj => obj.animatorController.animationClips)   // 設定されているAnimationファイルすべて
                 .SelectMany(layer =>
-                    {
-                        EditorCurveBinding[] binding = AnimationUtility.GetObjectReferenceCurveBindings(layer); //Animationに設定されているオブジェクト
-                        binding = binding.Where(b => b.type == typeof(MeshRenderer) || b.type == typeof(SkinnedMeshRenderer)).ToArray();    // Renderer系のみ
+                {
+                    EditorCurveBinding[] binding = AnimationUtility.GetObjectReferenceCurveBindings(layer); //Animationに設定されているオブジェクト
+                    binding = binding.Where(b => b.type == typeof(MeshRenderer) || b.type == typeof(SkinnedMeshRenderer)).ToArray();    // Renderer系のみ
 
-                        List<Material> keyframes = binding.SelectMany(b => AnimationUtility.GetObjectReferenceCurve(layer, b))  // keyframeに設定されているオブジェクト
-                        .Where(keyframe => keyframe.value.GetType() == typeof(Material))    // マテリアルのみ取得
-                        .Select(keyframe => (Material)keyframe.value)  // マテリアルに変換
-                        .ToList();
+                    List<Material> keyframes = binding.SelectMany(b => AnimationUtility.GetObjectReferenceCurve(layer, b))  // keyframeに設定されているオブジェクト
+                    .Where(keyframe => keyframe.value && keyframe.value.GetType() == typeof(Material))    // マテリアルのみ取得
+                    .Select(keyframe => (Material)keyframe.value)  // マテリアルに変換
+                    .ToList();
 
-                        return keyframes;
-                    })
+                    return keyframes;
+                })
+                .Distinct()
                 .ToList();
+            Debug.Log("anims start");
+            foreach (var a in animMats)
+            {
+                Debug.Log(a.name);
+            }
+            Debug.Log("anims end");
             return renderers.SelectMany(r => r.sharedMaterials).Concat(animMats).Distinct().ToArray();
-#else
-            return renderers.SelectMany(r => r.sharedMaterials).Distinct().ToArray();
-#endif
+
+            //            return renderers.SelectMany(r => r.sharedMaterials).Distinct().ToArray();
+
+        }
+        private static AnimationClip ConvertAnimationClipForQuest(AnimationClip clip, Dictionary<string, Material> convertedMaterials)
+        {
+            var anim = Object.Instantiate(clip);
+            EditorCurveBinding[] bindng = AnimationUtility.GetObjectReferenceCurveBindings(anim);
+            for (int j = 0; j < bindng.Length; j++)
+            {
+                if (bindng[j].type == typeof(MeshRenderer) || bindng[j].type == typeof(SkinnedMeshRenderer))
+                {
+                    var keyframes = AnimationUtility.GetObjectReferenceCurve(anim, bindng[j]);
+                    for (int k = 0; k < keyframes.Length; k++)
+                    {
+                        if (keyframes[k].value && keyframes[k].value.GetType() == typeof(Material))
+                        {
+                            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(keyframes[k].value, out string _guid, out long _localid);
+                            if (convertedMaterials.ContainsKey(_guid))
+                            {
+                                keyframes[k].value = convertedMaterials[_guid];
+                                Debug.Log("replace animationClip: " + convertedMaterials[_guid]);
+                            }
+                        }
+                    }
+                    AnimationUtility.SetObjectReferenceCurve(anim, bindng[j], keyframes);
+                }
+            }
+            return anim;
+        }
+        private static RuntimeAnimatorController[] GetAnimationControllerInChildren(GameObject gameObject)
+        {
+            // AV3 Playable Layers
+            RuntimeAnimatorController[] controller = gameObject
+                .GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>()
+                .baseAnimationLayers
+                .Where(obj => !obj.isDefault)
+                .Select(obj => obj.animatorController)
+                .ToArray();
+
+            // Animator Controller
+            RuntimeAnimatorController[] avatercontrollers = gameObject
+                .GetComponentsInChildren<Animator>()
+                .Select(obj => obj.runtimeAnimatorController)
+                .ToArray();
+
+            return controller.Concat(avatercontrollers).Distinct().ToArray();
+            
+        }
+
+        private static AnimationClip[] GetAnimationClipsInChildren(GameObject gameObject)
+        {
+            AnimationClip[] animations = GetAnimationControllerInChildren(gameObject)
+                .SelectMany(obj => obj.animationClips)
+                .Distinct()
+                .ToArray();
+
+            return animations;
+        }
+
+        private static Material[] GetMaterialInChildrenAnimation(GameObject gameObject)
+        {
+            Material[] mats = GetAnimationClipsInChildren(gameObject)
+                .SelectMany(layer =>
+                {
+
+                    EditorCurveBinding[] binding = AnimationUtility.GetObjectReferenceCurveBindings(layer); //Animationに設定されているオブジェクト
+                    binding = binding.Where(b => b.type == typeof(MeshRenderer) || b.type == typeof(SkinnedMeshRenderer)).ToArray();    // Renderer系のみ
+
+                    Material[] keyframes = binding.SelectMany(b => AnimationUtility.GetObjectReferenceCurve(layer, b))  // keyframeに設定されているオブジェクト
+                    .Where(keyframe => keyframe.value.GetType() == typeof(Material))    // マテリアルのみ取得
+                    .Select(keyframe => (Material)keyframe.value)  // マテリアルに変換
+                    .ToArray();
+
+                    return keyframes;
+                })
+                .ToArray();
+
+            return mats;
         }
 
 
