@@ -255,12 +255,11 @@ namespace KRT.VRCQuestTools
                         for (int j = 0; j < stateMachine.states.Length; j++)
                         {
                             AnimatorState animState = stateMachine.states[j].state;
+                            if (animState.motion == null) continue;
+                            // BlendTreeも設定できるので型チェック
+                            if (animState.motion.GetType() != typeof(AnimationClip)) continue;
 
                             AnimationClip anim = (AnimationClip)animState.motion;
-                            if (anim == null)
-                            {
-                                continue;
-                            }
                             Debug.Log("am :" + anim.name);
                             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(anim, out string _guid, out long _localid);
                             if (convertedAnimatoinClip.ContainsKey(_guid))
@@ -461,8 +460,7 @@ namespace KRT.VRCQuestTools
                 .Select(obj => obj.runtimeAnimatorController)
                 .ToArray();
 
-            return controller.Concat(avatercontrollers).Distinct().ToArray();
-            
+            return controller.Concat(avatercontrollers).Where(c => c != null).Distinct().ToArray();
         }
 
         private static AnimationClip[] GetAnimationClipsInChildren(GameObject gameObject)
