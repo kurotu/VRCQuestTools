@@ -277,6 +277,7 @@ namespace KRT.VRCQuestTools
                     Debug.Log("test: "+ c.Equals(cloneController));
                 }
 
+#if VRC_SDK_VRCSDK3
                 // アバターのアニメーションコントローラー差し替え                
                 var customAnimationLayers = questObj.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
                 for (int i = 0; i < customAnimationLayers.Length; i++)
@@ -291,6 +292,7 @@ namespace KRT.VRCQuestTools
                         }
                     }
                 }
+#endif
                 AssetDatabase.SaveAssets();
 
             }
@@ -388,6 +390,7 @@ namespace KRT.VRCQuestTools
         {
             var renderers = gameObject.GetComponentsInChildren<Renderer>(true);
 
+#if VRC_SDK_VRCSDK3
             List<Material> animMats = gameObject
                 .GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>()    // avaterDescriptor
                 .baseAnimationLayers
@@ -407,6 +410,9 @@ namespace KRT.VRCQuestTools
                 })
                 .Distinct()
                 .ToList();
+#else
+            var animMats = new List<Material>();
+#endif
             Debug.Log("anims start");
             foreach (var a in animMats)
             {
@@ -446,6 +452,7 @@ namespace KRT.VRCQuestTools
         }
         private static RuntimeAnimatorController[] GetAnimationControllerInChildren(GameObject gameObject)
         {
+#if VRC_SDK_VRCSDK3
             // AV3 Playable Layers
             RuntimeAnimatorController[] controller = gameObject
                 .GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>()
@@ -453,6 +460,9 @@ namespace KRT.VRCQuestTools
                 .Where(obj => !obj.isDefault)
                 .Select(obj => obj.animatorController)
                 .ToArray();
+#else
+            RuntimeAnimatorController[] controller = { };
+#endif
 
             // Animator Controller
             RuntimeAnimatorController[] avatercontrollers = gameObject
