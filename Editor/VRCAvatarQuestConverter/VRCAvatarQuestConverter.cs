@@ -223,7 +223,7 @@ namespace KRT.VRCQuestTools
             questObj.GetComponent<VRC.Core.PipelineManager>().blueprintId = null;
 
             // アニメーション内容書き換え
-            Dictionary< string, AnimationClip> convertedAnimatoinClip = new Dictionary<string, AnimationClip>();
+            Dictionary<string, AnimationClip> convertedAnimatoinClip = new Dictionary<string, AnimationClip>();
             var animationClips = GetAnimationClipsInChildren(questObj);
             var animationClipDir = $"{artifactsDir}/Animations";
             Directory.CreateDirectory(animationClipDir);
@@ -274,7 +274,7 @@ namespace KRT.VRCQuestTools
                     var outFile = $"{controllerDir}/{c.name}_from_{guid}.controller";
                     Debug.Log("originalPath :" + AssetDatabase.GetAssetPath(c));
                     Debug.Log("copy Path    :" + outFile);
-                    AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(c),outFile);
+                    AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(c), outFile);
                     AssetDatabase.Refresh();
                     AnimatorController cloneController = (AnimatorController)AssetDatabase.LoadAssetAtPath(outFile, typeof(AnimatorController));
 
@@ -306,7 +306,7 @@ namespace KRT.VRCQuestTools
                     AssetDatabase.SaveAssets();
                     convertedAnimationControllers.Add(guid, cloneController);
                     Debug.Log("create asset: " + outFile);
-                    Debug.Log("test: "+ c.Equals(cloneController));
+                    Debug.Log("test: " + c.Equals(cloneController));
                 }
 
 #if VRC_SDK_VRCSDK3
@@ -341,7 +341,7 @@ namespace KRT.VRCQuestTools
 
             // アバターに付属するAnimatorのアニメーターコントローラーを差し替える
             Animator[] animators = questObj.GetComponentsInChildren<Animator>();
-            for(int i = 0; i < animators.Length; i++)
+            for (int i = 0; i < animators.Length; i++)
             {
                 if (animators[i].runtimeAnimatorController)
                 {
