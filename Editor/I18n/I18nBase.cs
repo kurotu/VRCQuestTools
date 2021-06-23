@@ -27,6 +27,8 @@ namespace KRT.VRCQuestTools
         internal abstract string ConvertingMaterialsDialogMessage { get; }
         internal abstract string GeneratingTexturesDialogMessage { get; }
         internal abstract string MaterialExceptionDialogMessage { get; }
+        internal abstract string AnimationClipExceptionDialogMessage { get; }
+        internal abstract string AnimatorControllerExceptionDialogMessage { get; }
         internal abstract string WarningForPerformance { get; }
         internal abstract string WarningForAppearance { get; }
         internal abstract string WarningForUnverifiedShaders { get; }

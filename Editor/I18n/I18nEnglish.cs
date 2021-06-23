@@ -21,6 +21,8 @@
         internal override string ConvertingMaterialsDialogMessage => "Converting materials...";
         internal override string GeneratingTexturesDialogMessage => "Generating textures...";
         internal override string MaterialExceptionDialogMessage => "An error occured when converting materials. Aborted.";
+        internal override string AnimationClipExceptionDialogMessage => "An error occured when converting Animation Clips. Aborted.";
+        internal override string AnimatorControllerExceptionDialogMessage => "An error occured when converting Animator Controllers. Aborted.";
         internal override string WarningForPerformance => "In many cases, the converted avatar's performance rank will be \"Very Poor\" for Quest. Quest users need to use \"Show Avatar\" due to Performance Options limitation.";
         internal override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n\n" +
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";

@@ -227,9 +227,9 @@ namespace KRT.VRCQuestTools
             var animationClips = GetAnimationClipsInChildren(questObj);
             var animationClipDir = $"{artifactsDir}/Animations";
             Directory.CreateDirectory(animationClipDir);
-            try
+            for (var i = 0; i < animationClips.Length; i++)
             {
-                for (var i = 0; i < animationClips.Length; i++)
+                try
                 {
                     var progress = i / (float)animationClips.Length;
                     EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"Convert AnimationCilp : {i + 1}/{animationClips.Length}", progress);
@@ -243,17 +243,20 @@ namespace KRT.VRCQuestTools
                     convertedAnimatoinClip.Add(guid, anim);
                     Debug.Log("create asset: " + outFile);
                 }
+                catch (System.Exception e)
+                {
+                    Debug.LogException(e);
+                    EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                        $"{i18n.AnimationClipExceptionDialogMessage}\n" +
+                        $"\n" +
+                        $"AnimationClip: {animationClips[i].name}\n" +
+                        $"\n" +
+                        $"Exception: {e.Message}", "OK");
+                    EditorUtility.ClearProgressBar();
+                    return null;
+                }
             }
-            catch (System.Exception e)
-            {
-                Debug.LogException(e);
-                EditorUtility.DisplayDialog("VRCAvatarQuestConverter", $"{i18n.MaterialExceptionDialogMessage}\n\n{e.Message}", "OK");
-                return null;
-            }
-            finally
-            {
-                EditorUtility.ClearProgressBar();
-            }
+            EditorUtility.ClearProgressBar();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
@@ -263,9 +266,9 @@ namespace KRT.VRCQuestTools
             Directory.CreateDirectory(controllerDir);
             RuntimeAnimatorController[] controllers = GetAnimationControllerInChildren(questObj);
             var indx = 0;
-            try
+            foreach (var c in controllers)
             {
-                foreach (var c in controllers)
+                try
                 {
                     var progress = indx / (float)controllers.Length;
                     EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"Convert AnimatorController : {indx + 1}/{controllers.Length}", progress);
@@ -307,37 +310,39 @@ namespace KRT.VRCQuestTools
                     convertedAnimationControllers.Add(guid, cloneController);
                     Debug.Log("create asset: " + outFile);
                     Debug.Log("test: " + c.Equals(cloneController));
-                }
 
-#if VRC_SDK_VRCSDK3
-                // アバターのアニメーションコントローラー差し替え                
-                var customAnimationLayers = questObj.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
-                for (int i = 0; i < customAnimationLayers.Length; i++)
+                }
+                catch (System.Exception e)
                 {
-                    if (!customAnimationLayers[i].isDefault)
+                    Debug.LogException(e);
+                    EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                        $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
+                        $"\n" +
+                        $"AnimatorController: {c.name}\n" +
+                        $"\n" +
+                        $"Exception: {e.Message}", "OK");
+                    EditorUtility.ClearProgressBar();
+                    return null;
+                }
+            }
+#if VRC_SDK_VRCSDK3
+            // アバターのアニメーションコントローラー差し替え                
+            var customAnimationLayers = questObj.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
+            for (int i = 0; i < customAnimationLayers.Length; i++)
+            {
+                if (!customAnimationLayers[i].isDefault)
+                {
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(customAnimationLayers[i].animatorController, out string guid, out long localid);
+                    if (convertedAnimationControllers.ContainsKey(guid))
                     {
-                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(customAnimationLayers[i].animatorController, out string guid, out long localid);
-                        if (convertedAnimationControllers.ContainsKey(guid))
-                        {
-                            Debug.Log("replace asset: " + customAnimationLayers[i].animatorController.name + " to " + convertedAnimationControllers[guid].name);
-                            customAnimationLayers[i].animatorController = convertedAnimationControllers[guid];
-                        }
+                        Debug.Log("replace asset: " + customAnimationLayers[i].animatorController.name + " to " + convertedAnimationControllers[guid].name);
+                        customAnimationLayers[i].animatorController = convertedAnimationControllers[guid];
                     }
                 }
+            }
 #endif
-                AssetDatabase.SaveAssets();
-
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogException(e);
-                EditorUtility.DisplayDialog("VRCAvatarQuestConverter", $"{i18n.MaterialExceptionDialogMessage}\n\n{e.Message}", "OK");
-                return null;
-            }
-            finally
-            {
-                EditorUtility.ClearProgressBar();
-            }
+            AssetDatabase.SaveAssets();
+            EditorUtility.ClearProgressBar();
 
             // アバターに付属するAnimatorのアニメーターコントローラーを差し替える
             Animator[] animators = questObj.GetComponentsInChildren<Animator>();
