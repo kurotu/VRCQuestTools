@@ -478,7 +478,7 @@ namespace KRT.VRCQuestTools
                 Debug.Log(a.name);
             }
             Debug.Log("anims end");
-            return renderers.SelectMany(r => r.sharedMaterials).Concat(animMats).Distinct().ToArray();
+            return renderers.SelectMany(r => r.sharedMaterials).Concat(animMats).Where(m => m != null).Distinct().ToArray();
 
             //            return renderers.SelectMany(r => r.sharedMaterials).Distinct().ToArray();
 
