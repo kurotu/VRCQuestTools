@@ -76,7 +76,7 @@ namespace KRT.VRCQuestTools
             }
             else
             {
-                var i18n = UpdateCheckerI18n.Create();
+                var i18n = VRCQuestToolsSettings.I18nResource;
                 EditorUtility.DisplayDialog("VRCQuestTools", i18n.ThereIsNoUpdate, "OK");
             }
             VRCQuestToolsSettings.LastVersionCheckDateTime = System.DateTime.UtcNow;
@@ -94,9 +94,7 @@ namespace KRT.VRCQuestTools
     class UpdateCheckerWindow : EditorWindow
     {
         string latestVersion = "0.0.0";
-        readonly UpdateCheckerI18nBase i18n = UpdateCheckerI18n.Create();
 
-        [MenuItem("VRCQuestTools/Debug")]
         internal static void Init(SemVer latestVersion)
         {
             var window = GetWindow<UpdateCheckerWindow>();
@@ -106,6 +104,7 @@ namespace KRT.VRCQuestTools
 
         private void OnGUI()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             titleContent.text = "VRCQuestTools Updater";
             EditorGUILayout.LabelField(i18n.NewVersionIsAvailable(latestVersion));
             EditorGUILayout.Space();
@@ -123,45 +122,6 @@ namespace KRT.VRCQuestTools
             }
             EditorGUILayout.EndHorizontal();
         }
-    }
-
-    static class UpdateCheckerI18n
-    {
-        public static UpdateCheckerI18nBase Create()
-        {
-            if (System.Globalization.CultureInfo.CurrentCulture.Name == "ja-JP")
-            {
-                return new UpdateCheckerI18nJapanese();
-            }
-            else
-            {
-                return new UpdateCheckerI18nEnglish();
-            }
-        }
-    }
-
-    abstract class UpdateCheckerI18nBase
-    {
-        public abstract string CheckLater { get; }
-        public abstract string GetUpdate { get; }
-        public abstract string NewVersionIsAvailable(string latestVersion);
-        public abstract string ThereIsNoUpdate { get; }
-    }
-
-    class UpdateCheckerI18nEnglish : UpdateCheckerI18nBase
-    {
-        public override string CheckLater => "Check later";
-        public override string GetUpdate => "Get update";
-        public override string NewVersionIsAvailable(string latestVersion) => $"VRCQuestTools {latestVersion} is available.";
-        public override string ThereIsNoUpdate => "There is no update.";
-    }
-
-    class UpdateCheckerI18nJapanese : UpdateCheckerI18nBase
-    {
-        public override string CheckLater => "後で確認";
-        public override string GetUpdate => "アップデート";
-        public override string NewVersionIsAvailable(string latestVersion) => $"VRCQuestTools {latestVersion} が公開されています。";
-        public override string ThereIsNoUpdate => "アップデートはありません。";
     }
 
     [System.Serializable]

@@ -45,14 +45,15 @@ namespace KRT.VRCQuestTools
     {
         public static MaterialWrapper CreateWrapper(Material material)
         {
-            if (material.shader.name.StartsWith("UnityChanToonShader")) {
-                return new UTS2Material(material);
-            }
-            if (material.shader.name.StartsWith("arktoon/"))
+            switch (DetectShaderType(material))
             {
-                return new ArktoonMaterial(material);
+                case ShaderCategory.UTS2:
+                    return new UTS2Material(material);
+                case ShaderCategory.Arktoon:
+                    return new ArktoonMaterial(material);
+                default:
+                    return new StandardMaterial(material);
             }
-            return new StandardMaterial(material);
         }
 
         internal static MagickImage GetMagickImage(Material material, string texturePropertyName)
@@ -69,7 +70,41 @@ namespace KRT.VRCQuestTools
                 return new MagickImage(MagickColors.Black, 1, 1);
             }
             var path = AssetDatabase.GetAssetPath(texture);
-            return new MagickImage(path);
+            try
+            {
+                return new MagickImage(path);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Failed to load \"{path}\" as MagickImage: {e.Message}");
+            }
         }
+
+        internal static ShaderCategory DetectShaderType(Material material)
+        {
+            var shaderName = material.shader.name;
+            if (shaderName.StartsWith("UnityChanToonShader"))
+            {
+                return ShaderCategory.UTS2;
+            }
+            if (shaderName.StartsWith("arktoon/"))
+            {
+                return ShaderCategory.Arktoon;
+            }
+            if (shaderName.StartsWith("Unlit/"))
+            {
+                return ShaderCategory.Unlit;
+            }
+            if (shaderName.StartsWith("VRChat/Mobile/"))
+            {
+                return ShaderCategory.Quest;
+            }
+            return ShaderCategory.Unverified;
+        }
+    }
+
+    internal enum ShaderCategory
+    {
+        UTS2, Arktoon, Standard, Unlit, Quest, Unverified
     }
 }

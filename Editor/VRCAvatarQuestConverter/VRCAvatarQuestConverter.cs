@@ -30,7 +30,6 @@ namespace KRT.VRCQuestTools
         string outputPath = "";
         bool generateQuestTextures = true;
         TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.UpTo1024x1024;
-        readonly VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
         internal static void InitFromMenu()
         {
@@ -45,6 +44,7 @@ namespace KRT.VRCQuestTools
 
         private void OnGUI()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             titleContent.text = "Convert Avatar for Quest";
 
             var selectedAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, avatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
@@ -64,8 +64,24 @@ namespace KRT.VRCQuestTools
             {
                 generateQuestTextures = EditorGUILayout.BeginToggleGroup(i18n.GenerateQuestTexturesLabel, generateQuestTextures);
                 EditorGUILayout.HelpBox($"{i18n.QuestTexturesDescription}\n\n" +
-                    $"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
+                    $"{i18n.VerifiedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
+                if (avatar != null)
+                {
+                    var unverifiedMaterials = VRCAvatarQuestConverter.GetMaterialsInChildrenWithUnverifiedShaders(avatar.gameObject);
+                    if (unverifiedMaterials.Length > 0)
+                    {
+                        EditorGUILayout.HelpBox($"{i18n.WarningForUnverifiedShaders}\n\n" +
+                            $"{string.Join("\n", unverifiedMaterials.Select(m => $"  - {m.name} ({m.shader.name})"))}", MessageType.Error);
+                    }
+                }
                 texturesSizeLimit = (TexturesSizeLimit)EditorGUILayout.EnumPopup(i18n.TexturesSizeLimitLabel, texturesSizeLimit);
+
+                EditorGUILayout.Space();
+
+                if (GUILayout.Button(i18n.UpdateTexturesLabel))
+                {
+                    VRCAvatarQuestConverter.GenerateTexturesForQuest(avatar.gameObject, outputPath, (int)texturesSizeLimit);
+                }
                 EditorGUILayout.EndToggleGroup();
             }
             EditorGUILayout.EndVertical();
@@ -93,18 +109,29 @@ namespace KRT.VRCQuestTools
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Warning);
             EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
-
-            if (avatar == null)
+            if (avatar != null)
             {
-                EditorGUI.BeginDisabledGroup(true);
-            }
-            if (GUILayout.Button(i18n.ConvertButtonLabel))
-            {
-                var questAvatar = VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
-                if (questAvatar != null)
+                var componentsToBeAlearted = VRCSDKUtils.GetUnsupportedComponentsInChildren(avatar.gameObject, true)
+                    .Select(c => c.GetType().Name)
+                    .Distinct()
+                    .OrderBy(s => s)
+                    .ToArray();
+                if (componentsToBeAlearted.Count() > 0)
                 {
-                    EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(avatar.name), "OK");
-                    Selection.activeGameObject = questAvatar;
+                    EditorGUILayout.HelpBox(i18n.AlertForComponents + "\n\n" + string.Join("\n", componentsToBeAlearted.Select(c => $"  - {c}")), MessageType.Error);
+                }
+            }
+
+            EditorGUI.BeginDisabledGroup(avatar == null);
+            {
+                if (GUILayout.Button(i18n.ConvertButtonLabel))
+                {
+                    var questAvatar = VRCAvatarQuestConverter.ConvertForQuest(avatar.gameObject, outputPath, generateQuestTextures, (int)texturesSizeLimit);
+                    if (questAvatar != null)
+                    {
+                        EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(avatar.name), "OK");
+                        Selection.activeGameObject = questAvatar;
+                    }
                 }
             }
             EditorGUI.EndDisabledGroup();
@@ -121,10 +148,10 @@ namespace KRT.VRCQuestTools
         const string Tag = "VRCAvatarQuestConverter";
         internal const string ArtifactsRootDir = "Assets/KRT/QuestAvatars";
         const string QuestShader = "VRChat/Mobile/Toon Lit";
-        internal readonly static VRCAvatarQuestConverterI18nBase i18n = VRCAvatarQuestConverterI18n.Create();
 
         internal static GameObject ConvertForQuest(GameObject original, string artifactsDir, bool generateQuestTextures, int maxTextureSize)
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             if (Directory.Exists(artifactsDir))
             {
                 var altDir = AssetDatabase.GenerateUniqueAssetPath(artifactsDir);
@@ -154,31 +181,36 @@ namespace KRT.VRCQuestTools
 
             var materials = GetMaterialsInChildren(original);
             var convertedMaterials = new Dictionary<string, Material>();
-            try
+            for (var i = 0; i < materials.Length; i++)
             {
-                for (var i = 0; i < materials.Length; i++)
+                var progress = i / (float)materials.Length;
+                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.ConvertingMaterialsDialogMessage} : {i + 1}/{materials.Length}", progress);
+                var m = materials[i];
+                if (m == null) { continue; }
+                try
                 {
-                    var progress = i / (float)materials.Length;
-                    EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.ConvertingMaterialsDialogMessage} : {i + 1}/{materials.Length}", progress);
-                    var m = materials[i];
-                    if (m == null) { continue; }
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localid);
                     if (convertedMaterials.ContainsKey(guid)) { continue; }
                     var shader = Shader.Find(QuestShader);
-                    Material mat = ConvertMaterialForQuest(artifactsDir, m, guid, shader, generateQuestTextures, maxTextureSize);
+                    Material mat = ConvertMaterialForQuest(artifactsDir, m, shader, generateQuestTextures, maxTextureSize);
                     convertedMaterials.Add(guid, mat);
                 }
+                catch (System.Exception e)
+                {
+                    Debug.LogException(e);
+                    EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                        $"{i18n.MaterialExceptionDialogMessage}\n" +
+                        "\n" +
+                        $"Material: {AssetDatabase.GetAssetPath(m)}\n" +
+                        $"Shader: {m.shader.name}\n" +
+                        "\n" +
+                        $"Exception: {e.Message}"
+                        , "OK");
+                    EditorUtility.ClearProgressBar();
+                    return null;
+                }
             }
-            catch (System.Exception e)
-            {
-                Debug.LogException(e);
-                EditorUtility.DisplayDialog("VRCAvatarQuestConverter", $"{i18n.MaterialExceptionDialogMessage}\n\n{e.Message}", "OK");
-                return null;
-            }
-            finally
-            {
-                EditorUtility.ClearProgressBar();
-            }
+            EditorUtility.ClearProgressBar();
 
             var newName = original.name + " (Quest)";
             newName = GenerateUniqueRootGameObjectName(SceneManager.GetActiveScene(), newName);
@@ -355,34 +387,56 @@ namespace KRT.VRCQuestTools
             return questObj;
         }
 
-        private static Material ConvertMaterialForQuest(string artifactsDir, Material material, string guid, Shader newShader, bool generateQuestTextures, int maxTextureSize)
+        internal static void GenerateTexturesForQuest(GameObject original, string artifactsDir, int maxTextureSize)
+        {
+            var i18n = VRCQuestToolsSettings.I18nResource;
+            var materials = GetMaterialsInChildren(original);
+            for (int i = 0; i < materials.Length; i++)
+            {
+                var m = materials[i];
+                var progress = i / (float)materials.Length;
+                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.GeneratingTexturesDialogMessage} : {i + 1}/{materials.Length}", progress);
+                GenerateTextureForQuest(artifactsDir, m, maxTextureSize);
+            }
+            EditorUtility.ClearProgressBar();
+        }
+
+        private static Material ConvertMaterialForQuest(string artifactsDir, Material material, Shader newShader, bool generateQuestTextures, int maxTextureSize)
         {
             var resizeTextures = maxTextureSize > 0;
             Material mat = MaterialConverter.Convert(material, newShader);
             if (generateQuestTextures)
             {
-                var mw = MaterialUtils.CreateWrapper(material);
-                using (var combined = mw.CompositeLayers())
-                {
-                    var texturesDir = $"{artifactsDir}/Textures";
-                    Directory.CreateDirectory(texturesDir);
-                    var outFile = $"{texturesDir}/{material.name}_from_{guid}.png";
-                    var format = combined.HasAlpha ? MagickFormat.Png32 : MagickFormat.Png24;
-                    if (resizeTextures && (combined.Width > maxTextureSize || combined.Height > maxTextureSize))
-                    {
-                        combined.Resize(maxTextureSize, maxTextureSize);
-                    }
-                    combined.Write(outFile, format);
-                    AssetDatabase.Refresh();
-                    var tex = AssetDatabase.LoadAssetAtPath<Texture>(outFile);
-                    mat.mainTexture = tex;
-                }
+                var tex = GenerateTextureForQuest(artifactsDir, material, maxTextureSize);
+                mat.mainTexture = tex;
             }
             var materialsDir = $"{artifactsDir}/Materials";
             Directory.CreateDirectory(materialsDir);
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localid);
             var file = $"{materialsDir}/{material.name}_from_{guid}.mat";
             AssetDatabase.CreateAsset(mat, file);
             return mat;
+        }
+
+        private static Texture GenerateTextureForQuest(string artifactsDir, Material material, int maxTextureSize)
+        {
+            var resizeTextures = maxTextureSize > 0;
+            var mw = MaterialUtils.CreateWrapper(material);
+            using (var combined = mw.CompositeLayers())
+            {
+                var texturesDir = $"{artifactsDir}/Textures";
+                Directory.CreateDirectory(texturesDir);
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localid);
+                var outFile = $"{texturesDir}/{material.name}_from_{guid}.png";
+                var format = combined.HasAlpha ? MagickFormat.Png32 : MagickFormat.Png24;
+                if (resizeTextures && (combined.Width > maxTextureSize || combined.Height > maxTextureSize))
+                {
+                    combined.Resize(maxTextureSize, maxTextureSize);
+                }
+                combined.Write(outFile, format);
+                AssetDatabase.Refresh();
+                return AssetDatabase.LoadAssetAtPath<Texture>(outFile);
+            }
         }
 
         // マテリアルアニメーションが入っていることをGUIで出すための関数化
@@ -509,6 +563,12 @@ namespace KRT.VRCQuestTools
         {
             var names = scene.GetRootGameObjects().Select(o => o.name).ToArray();
             return ObjectNames.GetUniqueName(names, name);
+        }
+
+        internal static Material[] GetMaterialsInChildrenWithUnverifiedShaders(GameObject gameObject)
+        {
+            var materials = GetMaterialsInChildren(gameObject);
+            return materials.Where(m => MaterialUtils.DetectShaderType(m) == ShaderCategory.Unverified).ToArray();
         }
     }
 }

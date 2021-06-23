@@ -17,10 +17,20 @@ namespace KRT.VRCQuestTools
             {
                 return new Material(material);
             }
-            return new Material(material)
+            return new Material(newShader)
             {
+                color = material.color,
+                doubleSidedGI = material.doubleSidedGI,
+                enableInstancing = true, // https://docs.vrchat.com/docs/quest-content-optimization#avatars-and-worlds
+                globalIlluminationFlags = material.globalIlluminationFlags,
+                hideFlags = material.hideFlags,
+                mainTexture = material.mainTexture,
+                mainTextureOffset = material.mainTextureOffset,
+                mainTextureScale = material.mainTextureScale,
+                name = $"{material.name}_{newShader.name.Split('/').Last()}",
+                renderQueue = material.renderQueue,
                 shader = newShader,
-                shaderKeywords = null
+                shaderKeywords = null,
             };
         }
 
