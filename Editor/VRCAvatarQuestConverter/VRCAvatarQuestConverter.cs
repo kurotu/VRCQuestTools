@@ -268,10 +268,10 @@ namespace KRT.VRCQuestTools
                 AssetDatabase.Refresh();
 
                 // アニメーションファイル差し替え,コントローラーコピー
-                Dictionary<string, RuntimeAnimatorController> convertedAnimationControllers = new Dictionary<string, RuntimeAnimatorController>();
-                var controllerDir = $"{artifactsDir}/AnimationControllers";
+                Dictionary<string, RuntimeAnimatorController> convertedAnimatorControllers = new Dictionary<string, RuntimeAnimatorController>();
+                var controllerDir = $"{artifactsDir}/AnimatorControllers";
                 Directory.CreateDirectory(controllerDir);
-                RuntimeAnimatorController[] controllers = GetAnimationControllerInChildren(questObj);
+                RuntimeAnimatorController[] controllers = GetAnimatorControllerInChildren(questObj);
                 var indx = 0;
                 foreach (var c in controllers)
                 {
@@ -314,7 +314,7 @@ namespace KRT.VRCQuestTools
                         }
 
                         AssetDatabase.SaveAssets();
-                        convertedAnimationControllers.Add(guid, cloneController);
+                        convertedAnimatorControllers.Add(guid, cloneController);
                         Debug.Log("create asset: " + outFile);
                         Debug.Log("test: " + c.Equals(cloneController));
 
@@ -333,17 +333,17 @@ namespace KRT.VRCQuestTools
                     }
                 }
 #if VRC_SDK_VRCSDK3
-                // アバターのアニメーションコントローラー差し替え                
+                // アバターのアニメーターコントローラー差し替え                
                 var customAnimationLayers = questObj.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
                 for (int i = 0; i < customAnimationLayers.Length; i++)
                 {
                     if (!customAnimationLayers[i].isDefault)
                     {
                         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(customAnimationLayers[i].animatorController, out string guid, out long localid);
-                        if (convertedAnimationControllers.ContainsKey(guid))
+                        if (convertedAnimatorControllers.ContainsKey(guid))
                         {
-                            Debug.Log("replace asset: " + customAnimationLayers[i].animatorController.name + " to " + convertedAnimationControllers[guid].name);
-                            customAnimationLayers[i].animatorController = convertedAnimationControllers[guid];
+                            Debug.Log("replace asset: " + customAnimationLayers[i].animatorController.name + " to " + convertedAnimatorControllers[guid].name);
+                            customAnimationLayers[i].animatorController = convertedAnimatorControllers[guid];
                         }
                     }
                 }
@@ -351,17 +351,17 @@ namespace KRT.VRCQuestTools
                 AssetDatabase.SaveAssets();
                 EditorUtility.ClearProgressBar();
 
-                // アバターに付属するAnimatorのアニメーターコントローラーを差し替える
+                // GameObjectに付属するAnimatorのアニメーターコントローラーを差し替える
                 Animator[] animators = questObj.GetComponentsInChildren<Animator>();
                 for (int i = 0; i < animators.Length; i++)
                 {
                     if (animators[i].runtimeAnimatorController)
                     {
                         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animators[i].runtimeAnimatorController, out string guid, out long localid);
-                        if (convertedAnimationControllers.ContainsKey(guid))
+                        if (convertedAnimatorControllers.ContainsKey(guid))
                         {
-                            Debug.Log("replace asset: " + animators[i].runtimeAnimatorController.name + " to " + convertedAnimationControllers[guid].name);
-                            animators[i].runtimeAnimatorController = convertedAnimationControllers[guid];
+                            Debug.Log("replace asset: " + animators[i].runtimeAnimatorController.name + " to " + convertedAnimatorControllers[guid].name);
+                            animators[i].runtimeAnimatorController = convertedAnimatorControllers[guid];
                         }
                     }
                 }
@@ -473,7 +473,7 @@ namespace KRT.VRCQuestTools
             var animMats = gameObject
                 .GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>()    // avaterDescriptor
                 .baseAnimationLayers
-                .Where(obj => !obj.isDefault)   // AnimationControllerが設定されている
+                .Where(obj => !obj.isDefault)   // AnimatorControllerが設定されている
                 .SelectMany(obj => obj.animatorController.animationClips)   // 設定されているAnimationファイルすべて
                 .SelectMany(layer =>
                 {
@@ -528,7 +528,7 @@ namespace KRT.VRCQuestTools
             }
             return anim;
         }
-        private static RuntimeAnimatorController[] GetAnimationControllerInChildren(GameObject gameObject)
+        private static RuntimeAnimatorController[] GetAnimatorControllerInChildren(GameObject gameObject)
         {
 #if VRC_SDK_VRCSDK3
             // AV3 Playable Layers
@@ -553,7 +553,7 @@ namespace KRT.VRCQuestTools
 
         private static AnimationClip[] GetAnimationClipsInChildren(GameObject gameObject)
         {
-            AnimationClip[] animations = GetAnimationControllerInChildren(gameObject)
+            AnimationClip[] animations = GetAnimatorControllerInChildren(gameObject)
                 .SelectMany(obj => obj.animationClips)
                 .Distinct()
                 .ToArray();
