@@ -231,7 +231,9 @@ namespace KRT.VRCQuestTools
             {
                 // アニメーション内容書き換え
                 Dictionary<string, AnimationClip> convertedAnimatoinClip = new Dictionary<string, AnimationClip>();
-                var animationClips = GetAnimationClipsInChildren(questObj);
+                var animationClips = GetAnimationClipsInChildren(questObj)
+                    .Where(anim => !VRCSDKUtils.IsProxyAnimationClip(anim))
+                    .ToArray();
                 var animationClipDir = $"{artifactsDir}/Animations";
                 Directory.CreateDirectory(animationClipDir);
                 for (var i = 0; i < animationClips.Length; i++)
