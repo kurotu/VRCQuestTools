@@ -28,6 +28,7 @@
             "別のBlueprint IDでのアップロードやAvatars 3.0のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
         internal override string WarningForUnverifiedShaders => "以下のマテリアルは動作未確認のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。";
         internal override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";
+        internal override string AlertForMaterialAnimation => "マテリアルを変更するアニメーションがあるため、Animator ControllerおよびアニメーションをQuest用に複製・変換します。";
         internal override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
         internal override string CompletedDialogTitle => "VRCQuestTools";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";

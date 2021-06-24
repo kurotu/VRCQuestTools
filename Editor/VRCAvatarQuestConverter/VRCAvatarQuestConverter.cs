@@ -120,6 +120,11 @@ namespace KRT.VRCQuestTools
                 {
                     EditorGUILayout.HelpBox(i18n.AlertForComponents + "\n\n" + string.Join("\n", componentsToBeAlearted.Select(c => $"  - {c}")), MessageType.Error);
                 }
+
+                if (VRCAvatarQuestConverter.GetAnimatedMaterialsInChildren(avatar.gameObject).Length > 0)
+                {
+                    EditorGUILayout.HelpBox(i18n.AlertForMaterialAnimation, MessageType.Error);
+                }
             }
 
             EditorGUI.BeginDisabledGroup(avatar == null);
@@ -222,139 +227,142 @@ namespace KRT.VRCQuestTools
             questObj.name = newName;
             questObj.GetComponent<VRC.Core.PipelineManager>().blueprintId = null;
 
-            // アニメーション内容書き換え
-            Dictionary<string, AnimationClip> convertedAnimatoinClip = new Dictionary<string, AnimationClip>();
-            var animationClips = GetAnimationClipsInChildren(questObj);
-            var animationClipDir = $"{artifactsDir}/Animations";
-            Directory.CreateDirectory(animationClipDir);
-            for (var i = 0; i < animationClips.Length; i++)
+            if (GetAnimatedMaterialsInChildren(original).Length > 0)
             {
-                try
+                // アニメーション内容書き換え
+                Dictionary<string, AnimationClip> convertedAnimatoinClip = new Dictionary<string, AnimationClip>();
+                var animationClips = GetAnimationClipsInChildren(questObj);
+                var animationClipDir = $"{artifactsDir}/Animations";
+                Directory.CreateDirectory(animationClipDir);
+                for (var i = 0; i < animationClips.Length; i++)
                 {
-                    var progress = i / (float)animationClips.Length;
-                    EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"Convert AnimationCilp : {i + 1}/{animationClips.Length}", progress);
-
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animationClips[i], out string guid, out long localid);
-                    var outFile = $"{animationClipDir}/{animationClips[i].name}_from_{guid}.anim";
-                    var anim = ConvertAnimationClipForQuest(animationClips[i], convertedMaterials);//Object.Instantiate(animationClips[i]);
-
-                    //
-                    AssetDatabase.CreateAsset(anim, outFile);
-                    convertedAnimatoinClip.Add(guid, anim);
-                    Debug.Log("create asset: " + outFile);
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogException(e);
-                    EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
-                        $"{i18n.AnimationClipExceptionDialogMessage}\n" +
-                        $"\n" +
-                        $"AnimationClip: {animationClips[i].name}\n" +
-                        $"\n" +
-                        $"Exception: {e.Message}", "OK");
-                    EditorUtility.ClearProgressBar();
-                    return null;
-                }
-            }
-            EditorUtility.ClearProgressBar();
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            // アニメーションファイル差し替え,コントローラーコピー
-            Dictionary<string, RuntimeAnimatorController> convertedAnimationControllers = new Dictionary<string, RuntimeAnimatorController>();
-            var controllerDir = $"{artifactsDir}/AnimationControllers";
-            Directory.CreateDirectory(controllerDir);
-            RuntimeAnimatorController[] controllers = GetAnimationControllerInChildren(questObj);
-            var indx = 0;
-            foreach (var c in controllers)
-            {
-                try
-                {
-                    var progress = indx / (float)controllers.Length;
-                    EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"Convert AnimatorController : {indx + 1}/{controllers.Length}", progress);
-                    indx++;
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(c, out string guid, out long localid);
-                    var outFile = $"{controllerDir}/{c.name}_from_{guid}.controller";
-                    Debug.Log("originalPath :" + AssetDatabase.GetAssetPath(c));
-                    Debug.Log("copy Path    :" + outFile);
-                    AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(c), outFile);
-                    AssetDatabase.Refresh();
-                    AnimatorController cloneController = (AnimatorController)AssetDatabase.LoadAssetAtPath(outFile, typeof(AnimatorController));
-
-                    //コピーしたコントローラーに修正したアニメーションクリップを反映
-                    // レイヤー→ステートマシン→ステート→アニメーションクリップ
-                    for (int i = 0; i < cloneController.layers.Length; i++)
+                    try
                     {
-                        AnimatorControllerLayer layer = cloneController.layers[i];
-                        AnimatorStateMachine stateMachine = layer.stateMachine;
-                        for (int j = 0; j < stateMachine.states.Length; j++)
-                        {
-                            AnimatorState animState = stateMachine.states[j].state;
-                            if (animState.motion == null) continue;
-                            // BlendTreeも設定できるので型チェック
-                            if (animState.motion.GetType() != typeof(AnimationClip)) continue;
+                        var progress = i / (float)animationClips.Length;
+                        EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"Convert AnimationCilp : {i + 1}/{animationClips.Length}", progress);
 
-                            AnimationClip anim = (AnimationClip)animState.motion;
-                            Debug.Log("am :" + anim.name);
-                            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(anim, out string _guid, out long _localid);
-                            if (convertedAnimatoinClip.ContainsKey(_guid))
+                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animationClips[i], out string guid, out long localid);
+                        var outFile = $"{animationClipDir}/{animationClips[i].name}_from_{guid}.anim";
+                        var anim = ConvertAnimationClipForQuest(animationClips[i], convertedMaterials);//Object.Instantiate(animationClips[i]);
+
+                        //
+                        AssetDatabase.CreateAsset(anim, outFile);
+                        convertedAnimatoinClip.Add(guid, anim);
+                        Debug.Log("create asset: " + outFile);
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogException(e);
+                        EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                            $"{i18n.AnimationClipExceptionDialogMessage}\n" +
+                            $"\n" +
+                            $"AnimationClip: {animationClips[i].name}\n" +
+                            $"\n" +
+                            $"Exception: {e.Message}", "OK");
+                        EditorUtility.ClearProgressBar();
+                        return null;
+                    }
+                }
+                EditorUtility.ClearProgressBar();
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+
+                // アニメーションファイル差し替え,コントローラーコピー
+                Dictionary<string, RuntimeAnimatorController> convertedAnimationControllers = new Dictionary<string, RuntimeAnimatorController>();
+                var controllerDir = $"{artifactsDir}/AnimationControllers";
+                Directory.CreateDirectory(controllerDir);
+                RuntimeAnimatorController[] controllers = GetAnimationControllerInChildren(questObj);
+                var indx = 0;
+                foreach (var c in controllers)
+                {
+                    try
+                    {
+                        var progress = indx / (float)controllers.Length;
+                        EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"Convert AnimatorController : {indx + 1}/{controllers.Length}", progress);
+                        indx++;
+                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(c, out string guid, out long localid);
+                        var outFile = $"{controllerDir}/{c.name}_from_{guid}.controller";
+                        Debug.Log("originalPath :" + AssetDatabase.GetAssetPath(c));
+                        Debug.Log("copy Path    :" + outFile);
+                        AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(c), outFile);
+                        AssetDatabase.Refresh();
+                        AnimatorController cloneController = (AnimatorController)AssetDatabase.LoadAssetAtPath(outFile, typeof(AnimatorController));
+
+                        //コピーしたコントローラーに修正したアニメーションクリップを反映
+                        // レイヤー→ステートマシン→ステート→アニメーションクリップ
+                        for (int i = 0; i < cloneController.layers.Length; i++)
+                        {
+                            AnimatorControllerLayer layer = cloneController.layers[i];
+                            AnimatorStateMachine stateMachine = layer.stateMachine;
+                            for (int j = 0; j < stateMachine.states.Length; j++)
                             {
-                                //animState.motion = convertedAnimatoinClip[_guid];
-                                cloneController.layers[i].stateMachine.states[j].state.motion = convertedAnimatoinClip[_guid];
-                                Debug.Log("replace animationClip : " + convertedAnimatoinClip[_guid].name);
+                                AnimatorState animState = stateMachine.states[j].state;
+                                if (animState.motion == null) continue;
+                                // BlendTreeも設定できるので型チェック
+                                if (animState.motion.GetType() != typeof(AnimationClip)) continue;
+
+                                AnimationClip anim = (AnimationClip)animState.motion;
+                                Debug.Log("am :" + anim.name);
+                                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(anim, out string _guid, out long _localid);
+                                if (convertedAnimatoinClip.ContainsKey(_guid))
+                                {
+                                    //animState.motion = convertedAnimatoinClip[_guid];
+                                    cloneController.layers[i].stateMachine.states[j].state.motion = convertedAnimatoinClip[_guid];
+                                    Debug.Log("replace animationClip : " + convertedAnimatoinClip[_guid].name);
+                                }
                             }
                         }
+
+                        AssetDatabase.SaveAssets();
+                        convertedAnimationControllers.Add(guid, cloneController);
+                        Debug.Log("create asset: " + outFile);
+                        Debug.Log("test: " + c.Equals(cloneController));
+
                     }
-
-                    AssetDatabase.SaveAssets();
-                    convertedAnimationControllers.Add(guid, cloneController);
-                    Debug.Log("create asset: " + outFile);
-                    Debug.Log("test: " + c.Equals(cloneController));
-
+                    catch (System.Exception e)
+                    {
+                        Debug.LogException(e);
+                        EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                            $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
+                            $"\n" +
+                            $"AnimatorController: {c.name}\n" +
+                            $"\n" +
+                            $"Exception: {e.Message}", "OK");
+                        EditorUtility.ClearProgressBar();
+                        return null;
+                    }
                 }
-                catch (System.Exception e)
-                {
-                    Debug.LogException(e);
-                    EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
-                        $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
-                        $"\n" +
-                        $"AnimatorController: {c.name}\n" +
-                        $"\n" +
-                        $"Exception: {e.Message}", "OK");
-                    EditorUtility.ClearProgressBar();
-                    return null;
-                }
-            }
 #if VRC_SDK_VRCSDK3
-            // アバターのアニメーションコントローラー差し替え                
-            var customAnimationLayers = questObj.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
-            for (int i = 0; i < customAnimationLayers.Length; i++)
-            {
-                if (!customAnimationLayers[i].isDefault)
+                // アバターのアニメーションコントローラー差し替え                
+                var customAnimationLayers = questObj.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
+                for (int i = 0; i < customAnimationLayers.Length; i++)
                 {
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(customAnimationLayers[i].animatorController, out string guid, out long localid);
-                    if (convertedAnimationControllers.ContainsKey(guid))
+                    if (!customAnimationLayers[i].isDefault)
                     {
-                        Debug.Log("replace asset: " + customAnimationLayers[i].animatorController.name + " to " + convertedAnimationControllers[guid].name);
-                        customAnimationLayers[i].animatorController = convertedAnimationControllers[guid];
+                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(customAnimationLayers[i].animatorController, out string guid, out long localid);
+                        if (convertedAnimationControllers.ContainsKey(guid))
+                        {
+                            Debug.Log("replace asset: " + customAnimationLayers[i].animatorController.name + " to " + convertedAnimationControllers[guid].name);
+                            customAnimationLayers[i].animatorController = convertedAnimationControllers[guid];
+                        }
                     }
                 }
-            }
 #endif
-            AssetDatabase.SaveAssets();
-            EditorUtility.ClearProgressBar();
+                AssetDatabase.SaveAssets();
+                EditorUtility.ClearProgressBar();
 
-            // アバターに付属するAnimatorのアニメーターコントローラーを差し替える
-            Animator[] animators = questObj.GetComponentsInChildren<Animator>();
-            for (int i = 0; i < animators.Length; i++)
-            {
-                if (animators[i].runtimeAnimatorController)
+                // アバターに付属するAnimatorのアニメーターコントローラーを差し替える
+                Animator[] animators = questObj.GetComponentsInChildren<Animator>();
+                for (int i = 0; i < animators.Length; i++)
                 {
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animators[i].runtimeAnimatorController, out string guid, out long localid);
-                    if (convertedAnimationControllers.ContainsKey(guid))
+                    if (animators[i].runtimeAnimatorController)
                     {
-                        Debug.Log("replace asset: " + animators[i].runtimeAnimatorController.name + " to " + convertedAnimationControllers[guid].name);
-                        animators[i].runtimeAnimatorController = convertedAnimationControllers[guid];
+                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animators[i].runtimeAnimatorController, out string guid, out long localid);
+                        if (convertedAnimationControllers.ContainsKey(guid))
+                        {
+                            Debug.Log("replace asset: " + animators[i].runtimeAnimatorController.name + " to " + convertedAnimationControllers[guid].name);
+                            animators[i].runtimeAnimatorController = convertedAnimationControllers[guid];
+                        }
                     }
                 }
             }
@@ -444,13 +452,25 @@ namespace KRT.VRCQuestTools
             }
         }
 
-        // マテリアルアニメーションが入っていることをGUIで出すための関数化
         private static Material[] GetMaterialsInChildren(GameObject gameObject)
         {
-            var renderers = gameObject.GetComponentsInChildren<Renderer>(true);
+            return GetRendererMaterialsInChildren(gameObject)
+                .Concat(GetAnimatedMaterialsInChildren(gameObject))
+                .Distinct()
+                .ToArray();
+        }
 
+        private static Material[] GetRendererMaterialsInChildren(GameObject gameObject)
+        {
+            var renderers = gameObject.GetComponentsInChildren<Renderer>(true);
+            return renderers.SelectMany(r => r.sharedMaterials).Where(m => m != null).Distinct().ToArray();
+        }
+
+        // マテリアルアニメーションが入っていることをGUIで出すための関数化
+        internal static Material[] GetAnimatedMaterialsInChildren(GameObject gameObject)
+        {
 #if VRC_SDK_VRCSDK3
-            List<Material> animMats = gameObject
+            var animMats = gameObject
                 .GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>()    // avaterDescriptor
                 .baseAnimationLayers
                 .Where(obj => !obj.isDefault)   // AnimationControllerが設定されている
@@ -467,22 +487,21 @@ namespace KRT.VRCQuestTools
 
                     return keyframes;
                 })
+                .Where(m => m != null)
                 .Distinct()
-                .ToList();
-#else
-            var animMats = new List<Material>();
-#endif
+                .ToArray();
             Debug.Log("anims start");
             foreach (var a in animMats)
             {
                 Debug.Log(a.name);
             }
             Debug.Log("anims end");
-            return renderers.SelectMany(r => r.sharedMaterials).Concat(animMats).Where(m => m != null).Distinct().ToArray();
-
-            //            return renderers.SelectMany(r => r.sharedMaterials).Distinct().ToArray();
-
+#else
+            var animMats = new List<Material>();
+#endif
+            return animMats;
         }
+
         private static AnimationClip ConvertAnimationClipForQuest(AnimationClip clip, Dictionary<string, Material> convertedMaterials)
         {
             var anim = Object.Instantiate(clip);
