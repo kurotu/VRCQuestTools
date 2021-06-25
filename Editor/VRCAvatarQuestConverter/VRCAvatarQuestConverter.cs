@@ -31,6 +31,8 @@ namespace KRT.VRCQuestTools
         bool generateQuestTextures = true;
         TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.UpTo1024x1024;
 
+        private Vector2 _scrollPosition = Vector2.zero;
+
         internal static void InitFromMenu()
         {
             var window = GetWindow<VRCAvatarQuestConverterWindow>();
@@ -59,6 +61,8 @@ namespace KRT.VRCQuestTools
             avatar = selectedAvatar;
 
             EditorGUILayout.Space();
+
+            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
             EditorGUILayout.BeginVertical(GUI.skin.box);
             {
@@ -140,6 +144,10 @@ namespace KRT.VRCQuestTools
                 }
             }
             EditorGUI.EndDisabledGroup();
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.EndScrollView();
         }
 
         private void SetArtifactsPath(VRC.SDKBase.VRC_AvatarDescriptor avatar)
