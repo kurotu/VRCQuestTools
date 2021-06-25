@@ -68,7 +68,7 @@ namespace KRT.VRCQuestTools
                 if (avatar != null)
                 {
                     var unverifiedMaterials = VRCAvatarQuestConverter.GetMaterialsInChildrenWithUnverifiedShaders(avatar.gameObject);
-                    if (unverifiedMaterials.Length > 0)
+                    if (generateQuestTextures && unverifiedMaterials.Length > 0)
                     {
                         EditorGUILayout.HelpBox($"{i18n.WarningForUnverifiedShaders}\n\n" +
                             $"{string.Join("\n", unverifiedMaterials.Select(m => $"  - {m.name} ({m.shader.name})"))}", MessageType.Error);
@@ -107,7 +107,7 @@ namespace KRT.VRCQuestTools
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.Space();
-            EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Warning);
+            EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Info);
             EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
             if (avatar != null)
             {
