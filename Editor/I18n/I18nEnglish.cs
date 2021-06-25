@@ -28,6 +28,7 @@
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
         internal override string WarningForUnverifiedShaders => "Following materials are using unverified shaders. Textures might not properly be generated.";
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
+        internal override string AlertForMaterialAnimation => "There are Animation clips which change avatar's materials. Animator Controllers and Animation clips will be duplicated then converted for Quest.";
         internal override string TexturesSizeLimitLabel => "Textures Size Limit";
         internal override string CompletedDialogTitle => "VRCQuestTools";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";

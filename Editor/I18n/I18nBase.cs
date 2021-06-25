@@ -35,6 +35,7 @@ namespace KRT.VRCQuestTools
         internal abstract string TexturesSizeLimitLabel { get; }
         internal abstract string CompletedDialogTitle { get; }
         internal abstract string AlertForComponents { get; }
+        internal abstract string AlertForMaterialAnimation { get; }
         internal abstract string CompletedDialogMessage(string originalName);
 
         // Remove Missing Components

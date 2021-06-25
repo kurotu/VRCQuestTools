@@ -29,6 +29,22 @@ namespace KRT.VRCQuestTools
             return true;
         }
 
+        internal static bool IsProxyAnimationClip(AnimationClip animationClip)
+        {
+            var path = AssetDatabase.GetAssetPath(animationClip);
+            // SDK3
+            if (path.StartsWith("Assets/VRCSDK/Examples3/Animation/ProxyAnim/"))
+            {
+                return true;
+            }
+            // SDK2
+            if (path.StartsWith("Assets/VRChat Examples/Examples2/Animation/"))
+            {
+                return true;
+            }
+            return false;
+        }
+
         internal static Component[] GetUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive)
         {
             return UnsupportedComponentTypes.SelectMany(type => gameObject.GetComponentsInChildren(type, includeInactive)).ToArray();
