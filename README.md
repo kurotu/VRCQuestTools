@@ -23,6 +23,7 @@ Convert a PC avatar to be ready to upload for Quest by automating following oper
 - Change duplicated materials' shader to *VRChat/Mobile/Toon Lit*.
 - Generate new textures which applies color and emission of original materials.
 - Remove prohibited components such as Dynamic Bone.
+- (Avatars 3.0 only) Convert animator controllers and animation clips when the avatar has animation clips which change materials.
 
 VRCQuestTools doesn't make any changes to the original avatar, so you can use the tool in existing projects as is.
 

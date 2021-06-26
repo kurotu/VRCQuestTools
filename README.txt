@@ -12,6 +12,7 @@ VRChat アバターの Oculus Quest 対応を想定した Unity Editor 拡張で
 - シェーダーを VRChat/Mobile/Toon Lit に変更
 - 元々のマテリアルの Color, Emission を反映したテクスチャの生成
 - DynamicBone や Cloth などの使用不可コンポーネントの削除
+- (Avatars 3.0 のみ) マテリアル変更アニメーションがある場合に Animator Controller とアニメーションを複製・変換
 
 コピーを作成することで元のアバターに変更を加えないため、既存のプロジェクトでそのまま使用することができます。
 
@@ -90,6 +91,13 @@ GitHun: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2021/6/27: v0.5.0
+    - (Avatars 3.0) マテリアル変更アニメーションがある場合に Animator Contrller とアニメーションを変換する機能を追加 (Thanks zin3!)
+    - 表示言語の選択機能を追加 (日/英)
+    - 「Remove Missing Components」「Remove Unsupported Components」の実行を確認するダイアログを追加
+    - 動作未確認のシェーダーに対してのテクスチャ生成について警告を追加
+    - 空のマテリアルスロットがある場合にテクスチャのみの更新に失敗する問題を修正
+    - UI の細かな改善
 - 2021/5/23: v0.4.1
     - マテリアル変換時のエラーをより詳細に表示するよう変更
     - 「Quest用テクスチャを更新」ボタンの配置を変更
