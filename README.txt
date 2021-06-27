@@ -86,13 +86,14 @@ SOFTWARE.
 
 ## 連絡先
 
+VRCID: kurotu
 Twitter: https://twitter.com/kurotu
-GitHun: https://github.com/kurotu/VRCQuestTools
+GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
 - 2021/6/27: v0.5.0
-    - (Avatars 3.0) マテリアル変更アニメーションがある場合に Animator Contrller とアニメーションを変換する機能を追加 (Thanks zin3!)
+    - (Avatars 3.0) マテリアル変更アニメーションがある場合に Animator Controller とアニメーションを変換する機能を追加 (Thanks zin3)
     - 表示言語の選択機能を追加 (日/英)
     - 「Remove Missing Components」「Remove Unsupported Components」の実行を確認するダイアログを追加
     - 動作未確認のシェーダーに対してのテクスチャ生成について警告を追加

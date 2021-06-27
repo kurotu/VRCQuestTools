@@ -59,3 +59,9 @@ Enable useful settings of Unity.
 ## License
 
 The MIT License.
+
+## Contact
+
+- VRCID: kurotu
+- Twitter: [@kurotu](https://twitter.com/kurotu)
+- GitHub: [kurotu/VRCQuestTools](https://github.com/kurotu/VRCQuestTools)
