@@ -36,8 +36,6 @@ namespace KRT.VRCQuestTools
 
     public abstract class MaterialWrapper
     {
-        public abstract Layer GetMainLayer();
-        public abstract Layer GetEmissionLayer();
         public abstract MagickImage CompositeLayers();
     }
 
@@ -51,6 +49,8 @@ namespace KRT.VRCQuestTools
                     return new UTS2Material(material);
                 case ShaderCategory.Arktoon:
                     return new ArktoonMaterial(material);
+                case ShaderCategory.Sunao:
+                    return new SunaoMaterial(material);
                 default:
                     return new StandardMaterial(material);
             }
@@ -107,6 +107,10 @@ namespace KRT.VRCQuestTools
             {
                 return ShaderCategory.Quest;
             }
+            if (shaderName.StartsWith("Sunao Shader/"))
+            {
+                return ShaderCategory.Sunao;
+            }
             return ShaderCategory.Unverified;
         }
 
@@ -121,6 +125,6 @@ namespace KRT.VRCQuestTools
 
     internal enum ShaderCategory
     {
-        UTS2, Arktoon, Standard, Unlit, Quest, Unverified
+        UTS2, Arktoon, Standard, Unlit, Quest, Sunao, Unverified
     }
 }
