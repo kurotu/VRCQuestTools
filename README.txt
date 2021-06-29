@@ -92,6 +92,8 @@ GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2021/6/30: v0.5.1
+    - VRCSDK2のプロジェクトでコンパイルエラーになる問題を修正
 - 2021/6/27: v0.5.0
     - (Avatars 3.0) マテリアル変更アニメーションがある場合に Animator Controller とアニメーションを変換する機能を追加 (Thanks zin3)
     - 表示言語の選択機能を追加 (日/英)
