@@ -507,7 +507,7 @@ namespace KRT.VRCQuestTools
             }
             Debug.Log("anims end");
 #else
-            var animMats = new List<Material>();
+            var animMats = new Material[0];
 #endif
             return animMats;
         }
