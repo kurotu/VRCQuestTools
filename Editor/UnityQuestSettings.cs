@@ -27,7 +27,12 @@ namespace KRT.VRCQuestTools
 
         public static bool ValidateAll()
         {
+#if UNITY_2019_3_OR_NEWER
+            // Do not check cache server on Unity 2019 (Asset Pipeline v2)
+            return ValidateAndroidTextureCompression();
+#else
             return ValidateCacheServerMode() && ValidateAndroidTextureCompression();
+#endif
         }
 
         public static CacheServerMode GetCacheServerMode()
@@ -99,9 +104,10 @@ namespace KRT.VRCQuestTools
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
             titleContent.text = "Unity Settings for Quest";
-            EditorGUILayout.LabelField("Unity Preferences", EditorStyles.boldLabel);
             var allActions = new List<Action>();
 
+#if !UNITY_2019_3_OR_NEWER
+            EditorGUILayout.LabelField("Unity Preferences", EditorStyles.boldLabel);
             EditorGUILayout.LabelField($"{i18n.CacheServerModeLabel}: {UnityQuestSettings.GetCacheServerMode()}");
 
             if (!UnityQuestSettings.ValidateCacheServerMode())
@@ -115,6 +121,7 @@ namespace KRT.VRCQuestTools
             }
 
             EditorGUILayout.Space();
+#endif
 
             EditorGUILayout.LabelField("Build Settings", EditorStyles.boldLabel);
 
