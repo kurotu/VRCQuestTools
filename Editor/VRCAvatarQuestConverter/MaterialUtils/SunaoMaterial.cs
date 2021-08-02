@@ -6,6 +6,7 @@
 
 using ImageMagick;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools
@@ -206,16 +207,22 @@ namespace KRT.VRCQuestTools
                         case SunaoDecalMode.EmissiveAdd:
                             using (var pc = decalCanvas.GetPixels())
                             {
-                                foreach (var p in pc)
+                                var values = pc.GetValues();
+                                var channels = pc.Channels;
+                                Parallel.For(0, values.Length / channels, (index) =>
                                 {
-                                    var c = p.ToColor();
-                                    var mono = (0.2126f * c.R) + (0.7152f * c.G) + (0.0722f * c.B);
-                                    var a = mono * DecalColor.a * DecalEmissionIntensity;
-                                    p.SetChannel(3, Saturate(a));
-                                    p.SetChannel(0, Saturate(c.R * a / Quantum.Max));
-                                    p.SetChannel(1, Saturate(c.G * a / Quantum.Max));
-                                    p.SetChannel(2, Saturate(c.B * a / Quantum.Max));
-                                }
+                                    var baseIndex = index * channels;
+                                    var r = values[baseIndex + 0];
+                                    var g = values[baseIndex + 1];
+                                    var b = values[baseIndex + 2];
+                                    var a = values[baseIndex + 3];
+                                    var mono = (0.2126f * r) + (0.7152f * g) + (0.0722f * b);
+                                    values[baseIndex + 0] = Saturate(r * a / Quantum.Max);
+                                    values[baseIndex + 1] = Saturate(g * a / Quantum.Max);
+                                    values[baseIndex + 2] = Saturate(b * a / Quantum.Max);
+                                    values[baseIndex + 3] = Saturate(a);
+                                });
+                                pc.SetPixels(values);
                             }
                             main.Composite(decalCanvas, CompositeOperator.Plus);
                             break;
@@ -223,13 +230,21 @@ namespace KRT.VRCQuestTools
                             main.Composite(decalCanvas, CompositeOperator.Over);
                             using (var pc = decalCanvas.GetPixels())
                             {
-                                foreach (var p in pc)
+                                var values = pc.GetValues();
+                                var channels = pc.Channels;
+                                var intensity = DecalEmissionIntensity;
+                                Parallel.For(0, values.Length / channels, (index) =>
                                 {
-                                    var c = p.ToColor();
-                                    p.SetChannel(0, Saturate(c.R * c.A * DecalEmissionIntensity / Quantum.Max));
-                                    p.SetChannel(1, Saturate(c.G * c.A * DecalEmissionIntensity / Quantum.Max));
-                                    p.SetChannel(2, Saturate(c.B * c.A * DecalEmissionIntensity / Quantum.Max));
-                                }
+                                    var baseIndex = index * channels;
+                                    var r = values[baseIndex + 0];
+                                    var g = values[baseIndex + 1];
+                                    var b = values[baseIndex + 2];
+                                    var a = values[baseIndex + 3];
+                                    values[baseIndex + 0] = Saturate(r * a * intensity / Quantum.Max);
+                                    values[baseIndex + 1] = Saturate(r * g * intensity / Quantum.Max);
+                                    values[baseIndex + 2] = Saturate(r * b * intensity / Quantum.Max);
+                                });
+                                pc.SetPixels(values);
                             }
                             main.Composite(decalCanvas, CompositeOperator.Plus);
                             break;
@@ -278,15 +293,19 @@ namespace KRT.VRCQuestTools
                     var powB = 1.0f / (1.0f / Mathf.Max(GammaB, 0.00001f));
                     using (var pc = main.GetPixels())
                     {
-                        foreach (var p in pc)
+                        var values = pc.GetValues();
+                        var channels = pc.Channels;
+                        Parallel.For(0, values.Length / channels, (index) =>
                         {
-                            var r = Mathf.Pow(p.GetChannel(0) / (float)Quantum.Max, powR) * Quantum.Max;
-                            var g = Mathf.Pow(p.GetChannel(1) / (float)Quantum.Max, powG) * Quantum.Max;
-                            var b = Mathf.Pow(p.GetChannel(2) / (float)Quantum.Max, powB) * Quantum.Max;
-                            p.SetChannel(0, Saturate(r));
-                            p.SetChannel(1, Saturate(g));
-                            p.SetChannel(2, Saturate(b));
-                        }
+                            var baseIndex = index * channels;
+                            var r = Mathf.Pow(values[baseIndex + 0] / (float)Quantum.Max, powR) * Quantum.Max;
+                            var g = Mathf.Pow(values[baseIndex + 1] / (float)Quantum.Max, powG) * Quantum.Max;
+                            var b = Mathf.Pow(values[baseIndex + 2] / (float)Quantum.Max, powB) * Quantum.Max;
+                            values[baseIndex + 0] = Saturate(r);
+                            values[baseIndex + 1] = Saturate(g);
+                            values[baseIndex + 2] = Saturate(b);
+                        });
+                        pc.SetPixels(values);
                     }
                 }
 
@@ -296,15 +315,20 @@ namespace KRT.VRCQuestTools
                     using (var pc = main.GetPixels())
                     {
                         var offset = BrightnessOffset * Quantum.Max;
-                        foreach (var p in pc)
+                        var values = pc.GetValues();
+                        var channels = pc.Channels;
+                        var brightness = OutputBrightness;
+                        Parallel.For(0, values.Length / channels, (index) =>
                         {
-                            var r = p.GetChannel(0) * OutputBrightness + offset;
-                            var g = p.GetChannel(1) * OutputBrightness + offset;
-                            var b = p.GetChannel(2) * OutputBrightness + offset;
-                            p.SetChannel(0, Saturate(r));
-                            p.SetChannel(1, Saturate(g));
-                            p.SetChannel(2, Saturate(b));
-                        }
+                            var baseIndex = index * channels;
+                            var r = values[baseIndex + 0] * brightness + offset;
+                            var g = values[baseIndex + 1] * brightness + offset;
+                            var b = values[baseIndex + 2] * brightness + offset;
+                            values[baseIndex + 0] = Saturate(r);
+                            values[baseIndex + 1] = Saturate(g);
+                            values[baseIndex + 2] = Saturate(b);
+                        });
+                        pc.SetPixels(values);
                     }
                 }
 
@@ -313,23 +337,30 @@ namespace KRT.VRCQuestTools
                 {
                     using (var pc = main.GetPixels())
                     {
-                        var limit = Saturate(LimitterMax * Quantum.Max);
-                        foreach (var p in pc)
+                        var limit = LimitterMax;
+                        var values = pc.GetValues();
+                        var channels = pc.Channels;
+                        Parallel.For(0, values.Length / channels, (index) =>
                         {
                             // OUT.rgb  = min(OUT.rgb , _LimitterMax) の詳細が分からない
                             // hsv化してv^2を制限するとそれっぽくなる
+                            var baseIndex = index * channels;
+                            var r = values[baseIndex + 0];
+                            var g = values[baseIndex + 1];
+                            var b = values[baseIndex + 2];
                             var c = new Color(
-                                p.GetChannel(0) / (float)Quantum.Max,
-                                p.GetChannel(1) / (float)Quantum.Max,
-                                p.GetChannel(2) / (float)Quantum.Max
+                                r / (float)Quantum.Max,
+                                g / (float)Quantum.Max,
+                                b / (float)Quantum.Max
                             );
                             Color.RGBToHSV(c, out float h, out float s, out float v);
-                            var limitedV2 = Mathf.Min(LimitterMax, v * v);
+                            var limitedV2 = Mathf.Min(limit, v * v);
                             var limited = Color.HSVToRGB(h, s, (float)Math.Sqrt(limitedV2));
-                            p.SetChannel(0, (ushort)(limited.r * Quantum.Max));
-                            p.SetChannel(1, (ushort)(limited.g * Quantum.Max));
-                            p.SetChannel(2, (ushort)(limited.b * Quantum.Max));
-                        }
+                            values[baseIndex + 0] = (ushort)(limited.r * Quantum.Max);
+                            values[baseIndex + 1] = (ushort)(limited.g * Quantum.Max);
+                            values[baseIndex + 2] = (ushort)(limited.b * Quantum.Max);
+                        });
+                        pc.SetPixels(values);
                     }
                 }
 
@@ -386,17 +417,22 @@ namespace KRT.VRCQuestTools
             var main = CompositeMainImage();
             using (var mainPixels = main.GetPixels())
             {
-                foreach (var p in mainPixels)
+                var values = mainPixels.GetValues();
+                var channels = mainPixels.Channels;
+                var offset = DecalBrightnessOffset;
+                Parallel.For(0, values.Length / mainPixels.Channels, (index) =>
                 {
-                    var mono = Mathf.Max(p.GetChannel(0), p.GetChannel(1), p.GetChannel(2));
-                    var v = Mathf.Min(Quantum.Max, mono + DecalBrightnessOffset * Quantum.Max);
-                    v = Mathf.Max(v, 0);
-                    ushort value = (ushort)Mathf.RoundToInt(v);
-                    p.SetChannel(0, value);
-                    p.SetChannel(1, value);
-                    p.SetChannel(2, value);
-                    mainPixels.SetPixel(p);
-                }
+                    var baseIndex = index * channels;
+                    var r = values[baseIndex + 0];
+                    var g = values[baseIndex + 1];
+                    var b = values[baseIndex + 2];
+                    var mono = Mathf.Max(r, g, b);
+                    var v = Saturate(mono + offset * Quantum.Max);
+                    values[baseIndex + 0] = v;
+                    values[baseIndex + 1] = v;
+                    values[baseIndex + 2] = v;
+                });
+                mainPixels.SetPixels(values);
             }
             return main;
         }
@@ -427,22 +463,29 @@ namespace KRT.VRCQuestTools
                     var result = new MagickImage(MagickColors.Black, size, size);
                     result.Composite(emission1, CompositeOperator.Over);
                     result.Composite(emission2, CompositeOperator.Multiply);
-                    using(var pc = result.GetPixels())
+                    using (var pc = result.GetPixels())
                     {
-                        foreach(var p in pc)
+                        var values = pc.GetValues();
+                        var channels = pc.Channels;
+                        var intensity = EmissionIntensity;
+                        Parallel.For(0, values.Length / channels, (index) =>
                         {
-                            var c = p.ToColor();
-                            p.SetChannel(0, Saturate(c.R * EmissionIntensity));
-                            p.SetChannel(1, Saturate(c.G * EmissionIntensity));
-                            p.SetChannel(2, Saturate(c.B * EmissionIntensity));
-                        }
+                            var baseIndex = index * channels;
+                            var r = values[baseIndex + 0];
+                            var g = values[baseIndex + 1];
+                            var b = values[baseIndex + 2];
+                            values[baseIndex + 0] = Saturate(r * intensity);
+                            values[baseIndex + 1] = Saturate(g * intensity);
+                            values[baseIndex + 2] = Saturate(b * intensity);
+                        });
+                        pc.SetPixels(values);
                     }
                     return result;
                 }
             }
         }
 
-        private ushort Saturate(float value)
+        private static ushort Saturate(float value)
         {
             var rounded = Mathf.RoundToInt(value);
             if (rounded > Quantum.Max)
