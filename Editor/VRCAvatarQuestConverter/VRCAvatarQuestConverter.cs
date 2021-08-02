@@ -417,9 +417,25 @@ namespace KRT.VRCQuestTools
             for (int i = 0; i < materials.Length; i++)
             {
                 var m = materials[i];
-                var progress = i / (float)materials.Length;
-                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.GeneratingTexturesDialogMessage} : {i + 1}/{materials.Length}", progress);
-                GenerateTextureForQuest(artifactsDir, m, maxTextureSize);
+                try
+                {
+                    var progress = i / (float)materials.Length;
+                    EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.GeneratingTexturesDialogMessage} : {i + 1}/{materials.Length}", progress);
+                    GenerateTextureForQuest(artifactsDir, m, maxTextureSize);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogException(e);
+                    EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                        $"{i18n.MaterialExceptionDialogMessage}\n" +
+                        "\n" +
+                        $"Material: {AssetDatabase.GetAssetPath(m)}\n" +
+                        $"Shader: {m.shader.name}\n" +
+                        "\n" +
+                        $"Exception: {e.Message}"
+                        , "OK");
+                    break;
+                }
             }
             EditorUtility.ClearProgressBar();
         }
