@@ -158,7 +158,7 @@ namespace KRT.VRCQuestTools
 
     public static class VRCAvatarQuestConverter
     {
-        const string Tag = "VRCAvatarQuestConverter";
+        const string Tag = "VRCQuestTools";
         internal const string ArtifactsRootDir = "Assets/KRT/QuestAvatars";
         const string QuestShader = "VRChat/Mobile/Toon Lit";
 
@@ -197,7 +197,7 @@ namespace KRT.VRCQuestTools
             for (var i = 0; i < materials.Length; i++)
             {
                 var progress = i / (float)materials.Length;
-                EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.ConvertingMaterialsDialogMessage} : {i + 1}/{materials.Length}", progress);
+                EditorUtility.DisplayProgressBar("VRCQuestTools", $"{i18n.ConvertingMaterialsDialogMessage} : {i + 1}/{materials.Length}", progress);
                 var m = materials[i];
                 if (m == null) { continue; }
                 try
@@ -211,7 +211,7 @@ namespace KRT.VRCQuestTools
                 catch (System.Exception e)
                 {
                     Debug.LogException(e);
-                    EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                    EditorUtility.DisplayDialog("VRCQuestTools",
                         $"{i18n.MaterialExceptionDialogMessage}\n" +
                         "\n" +
                         $"Material: {AssetDatabase.GetAssetPath(m)}\n" +
@@ -249,7 +249,7 @@ namespace KRT.VRCQuestTools
                     try
                     {
                         var progress = i / (float)animationClips.Length;
-                        EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"Convert AnimationCilp : {i + 1}/{animationClips.Length}", progress);
+                        EditorUtility.DisplayProgressBar("VRCQuestTools", $"Convert AnimationCilp : {i + 1}/{animationClips.Length}", progress);
 
                         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animationClips[i], out string guid, out long localid);
                         var outFile = $"{animationClipDir}/{animationClips[i].name}_from_{guid}.anim";
@@ -263,7 +263,7 @@ namespace KRT.VRCQuestTools
                     catch (System.Exception e)
                     {
                         Debug.LogException(e);
-                        EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                        EditorUtility.DisplayDialog("VRCQuestTools",
                             $"{i18n.AnimationClipExceptionDialogMessage}\n" +
                             $"\n" +
                             $"AnimationClip: {animationClips[i].name}\n" +
@@ -288,7 +288,7 @@ namespace KRT.VRCQuestTools
                     try
                     {
                         var progress = indx / (float)controllers.Length;
-                        EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"Convert AnimatorController : {indx + 1}/{controllers.Length}", progress);
+                        EditorUtility.DisplayProgressBar("VRCQuestTools", $"Convert AnimatorController : {indx + 1}/{controllers.Length}", progress);
                         indx++;
                         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(c, out string guid, out long localid);
                         var outFile = $"{controllerDir}/{c.name}_from_{guid}.controller";
@@ -332,7 +332,7 @@ namespace KRT.VRCQuestTools
                     catch (System.Exception e)
                     {
                         Debug.LogException(e);
-                        EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                        EditorUtility.DisplayDialog("VRCQuestTools",
                             $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
                             $"\n" +
                             $"AnimatorController: {c.name}\n" +
@@ -420,13 +420,13 @@ namespace KRT.VRCQuestTools
                 try
                 {
                     var progress = i / (float)materials.Length;
-                    EditorUtility.DisplayProgressBar("VRCAvatarQuestConverter", $"{i18n.GeneratingTexturesDialogMessage} : {i + 1}/{materials.Length}", progress);
+                    EditorUtility.DisplayProgressBar("VRCQuestTools", $"{i18n.GeneratingTexturesDialogMessage} : {i + 1}/{materials.Length}", progress);
                     GenerateTextureForQuest(artifactsDir, m, maxTextureSize);
                 }
                 catch (System.Exception e)
                 {
                     Debug.LogException(e);
-                    EditorUtility.DisplayDialog("VRCAvatarQuestConverter",
+                    EditorUtility.DisplayDialog("VRCQuestTools",
                         $"{i18n.MaterialExceptionDialogMessage}\n" +
                         "\n" +
                         $"Material: {AssetDatabase.GetAssetPath(m)}\n" +
