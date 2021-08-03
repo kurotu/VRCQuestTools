@@ -87,6 +87,10 @@ namespace KRT.VRCQuestTools
         internal static ShaderCategory DetectShaderType(Material material)
         {
             var shaderName = material.shader.name;
+            if (shaderName == "Standard" || shaderName == "Standard (Specular setup)" || shaderName.StartsWith("Standard/"))
+            {
+                return ShaderCategory.Standard;
+            }
             if (shaderName.StartsWith("UnityChanToonShader"))
             {
                 return ShaderCategory.UTS2;
