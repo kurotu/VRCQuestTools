@@ -72,6 +72,10 @@ namespace KRT.VRCQuestTools
             var path = AssetDatabase.GetAssetPath(texture);
             try
             {
+                if (path == "Resources/unity_builtin_extra")
+                {
+                    return UnityBuiltinExtraToMagickImage(texture as Texture2D);
+                }
                 return new MagickImage(path);
             }
             catch (Exception e)
@@ -100,6 +104,14 @@ namespace KRT.VRCQuestTools
                 return ShaderCategory.Quest;
             }
             return ShaderCategory.Unverified;
+        }
+
+        private static MagickImage UnityBuiltinExtraToMagickImage(Texture2D texture)
+        {
+            var copy = new Texture2D(texture.width, texture.height);
+            copy.LoadRawTextureData(texture.GetRawTextureData());
+            var image = new MagickImage(copy.EncodeToPNG());
+            return image;
         }
     }
 
