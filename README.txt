@@ -92,6 +92,10 @@ GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2021/8/4: v0.5.2
+    - Resources/unity_builtin_extra を使用するマテリアルの変換に失敗する問題を修正
+    - Standard シェーダーが動作未確認のシェーダーとして警告される問題を修正
+    - 「Quest用テクスチャのみ更新」にエラーダイアログを追加
 - 2021/6/30: v0.5.1
     - VRCSDK2のプロジェクトでコンパイルエラーになる問題を修正
 - 2021/6/27: v0.5.0
