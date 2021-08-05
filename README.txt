@@ -53,7 +53,7 @@ unitypackage を導入後、ヒエラルキーでアバターを選択した状�
 - Windows 10 64-bit
 - macOS Big Sur (Intel CPU)
 - Ubuntu 20.04 LTS
-- Unity 2018.4.20f1
+- Unity 2019.4.29f1
 - VRCSDK2 / VRCSDK3
 
 ## 利用規約
@@ -92,6 +92,9 @@ GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2021/8/5: v0.6.0
+    - Unity 2019 では Local Cache Server が不要なため推奨設定から削除
+    - (macOS) 内部プラグインを Unity 2019 用にリネーム
 - 2021/8/4: v0.5.2
     - Resources/unity_builtin_extra を使用するマテリアルの変換に失敗する問題を修正
     - Standard シェーダーが動作未確認のシェーダーとして警告される問題を修正
