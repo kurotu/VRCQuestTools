@@ -53,7 +53,7 @@ unitypackage を導入後、ヒエラルキーでアバターを選択した状�
 - Windows 10 64-bit
 - macOS Big Sur (Intel CPU)
 - Ubuntu 20.04 LTS
-- Unity 2019.4.29f1
+- Unity 2018.4.20f1 / 2019.4.29f1 (macOS のみ Unity 2019 専用)
 - VRCSDK2 / VRCSDK3
 
 ## 利用規約
