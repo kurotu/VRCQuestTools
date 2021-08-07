@@ -12,7 +12,7 @@
         internal override string OverwriteWarningDialogTitle => "VRCAvatarQuestConverter 警告";
         internal override string AvatarLabel => "アバター";
         internal override string GenerateQuestTexturesLabel => "Quest用のテクスチャを生成する";
-        internal override string QuestTexturesDescription => "マテリアルのメインテクスチャ以外に色やEmissionを参照してテクスチャを生成し、PC版アバターの外観に近づけます。";
+        internal override string QuestTexturesDescription => "メインテクスチャ以外にもマテリアルのパラメーターを参照してテクスチャを生成し、PC版アバターの外観に近づけます。";
         internal override string VerifiedShadersLabel => "動作確認済みシェーダー";
         internal override string SaveToLabel => "保存先フォルダ";
         internal override string SelectButtonLabel => "選択";

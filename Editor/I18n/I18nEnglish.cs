@@ -12,7 +12,7 @@
         internal override string OverwriteWarningDialogTitle => "VRCQuestTools Warning";
         internal override string AvatarLabel => "Avatar";
         internal override string GenerateQuestTexturesLabel => "Generate Textures for Quest";
-        internal override string QuestTexturesDescription => "By generating new textures which applying material's color or emission, get closer to PC version of the avatar";
+        internal override string QuestTexturesDescription => "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar";
         internal override string VerifiedShadersLabel => "Verified Shaders";
         internal override string SaveToLabel => "Folder to Save";
         internal override string SelectButtonLabel => "Select";
