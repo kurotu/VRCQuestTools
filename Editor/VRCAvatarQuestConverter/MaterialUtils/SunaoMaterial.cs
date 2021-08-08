@@ -212,10 +212,10 @@ namespace KRT.VRCQuestTools
                                 Parallel.For(0, values.Length / channels, (index) =>
                                 {
                                     var baseIndex = index * channels;
-                                    var r = values[baseIndex + 0];
-                                    var g = values[baseIndex + 1];
-                                    var b = values[baseIndex + 2];
-                                    var a = values[baseIndex + 3];
+                                    var r = (float)values[baseIndex + 0];
+                                    var g = (float)values[baseIndex + 1];
+                                    var b = (float)values[baseIndex + 2];
+                                    var a = (float)values[baseIndex + 3];
                                     var mono = (0.2126f * r) + (0.7152f * g) + (0.0722f * b);
                                     values[baseIndex + 0] = Saturate(r * a / Quantum.Max);
                                     values[baseIndex + 1] = Saturate(g * a / Quantum.Max);
@@ -236,13 +236,13 @@ namespace KRT.VRCQuestTools
                                 Parallel.For(0, values.Length / channels, (index) =>
                                 {
                                     var baseIndex = index * channels;
-                                    var r = values[baseIndex + 0];
-                                    var g = values[baseIndex + 1];
-                                    var b = values[baseIndex + 2];
-                                    var a = values[baseIndex + 3];
+                                    var r = (float)values[baseIndex + 0];
+                                    var g = (float)values[baseIndex + 1];
+                                    var b = (float)values[baseIndex + 2];
+                                    var a = (float)values[baseIndex + 3];
                                     values[baseIndex + 0] = Saturate(r * a * intensity / Quantum.Max);
-                                    values[baseIndex + 1] = Saturate(r * g * intensity / Quantum.Max);
-                                    values[baseIndex + 2] = Saturate(r * b * intensity / Quantum.Max);
+                                    values[baseIndex + 1] = Saturate(g * a * intensity / Quantum.Max);
+                                    values[baseIndex + 2] = Saturate(b * a * intensity / Quantum.Max);
                                 });
                                 pc.SetPixels(values);
                             }
@@ -423,9 +423,9 @@ namespace KRT.VRCQuestTools
                 Parallel.For(0, values.Length / mainPixels.Channels, (index) =>
                 {
                     var baseIndex = index * channels;
-                    var r = values[baseIndex + 0];
-                    var g = values[baseIndex + 1];
-                    var b = values[baseIndex + 2];
+                    var r = (float)values[baseIndex + 0];
+                    var g = (float)values[baseIndex + 1];
+                    var b = (float)values[baseIndex + 2];
                     var mono = Mathf.Max(r, g, b);
                     var v = Saturate(mono + offset * Quantum.Max);
                     values[baseIndex + 0] = v;
