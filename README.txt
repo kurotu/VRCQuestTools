@@ -92,6 +92,8 @@ GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2021/8/8: v0.7.0
+    - Sunao Shaderのマテリアルからのテクスチャ生成に対応
 - 2021/8/5: v0.6.0
     - Unity 2019 では Local Cache Server が不要なため推奨設定から削除
     - (macOS) 内部プラグインを Unity 2019 用にリネーム
