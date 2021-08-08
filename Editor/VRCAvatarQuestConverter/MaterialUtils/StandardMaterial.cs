@@ -21,7 +21,7 @@ namespace KRT.VRCQuestTools
             this.material = material;
         }
 
-        public override Layer GetMainLayer()
+        public virtual Layer GetMainLayer()
         {
             return new Layer
             {
@@ -35,7 +35,7 @@ namespace KRT.VRCQuestTools
             return material.shaderKeywords.Contains("_EMISSION");
         }
 
-        public override Layer GetEmissionLayer()
+        public virtual Layer GetEmissionLayer()
         {
             if (!HasEmission()) return null;
             return new Layer

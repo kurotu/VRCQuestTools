@@ -68,7 +68,7 @@ namespace KRT.VRCQuestTools
             {
                 generateQuestTextures = EditorGUILayout.BeginToggleGroup(i18n.GenerateQuestTexturesLabel, generateQuestTextures);
                 EditorGUILayout.HelpBox($"{i18n.QuestTexturesDescription}\n\n" +
-                    $"{i18n.VerifiedShadersLabel}: Standard, UTS2, arktoon", MessageType.Info);
+                    $"{i18n.VerifiedShadersLabel}: Standard, UTS2, arktoon, Sunao", MessageType.Info);
                 if (avatar != null)
                 {
                     var unverifiedMaterials = VRCAvatarQuestConverter.GetMaterialsInChildrenWithUnverifiedShaders(avatar.gameObject);

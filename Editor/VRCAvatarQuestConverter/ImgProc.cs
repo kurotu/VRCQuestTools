@@ -48,6 +48,12 @@ namespace KRT.VRCQuestTools
             return newImage;
         }
 
+        internal static void ResizeToSquare(MagickImage image)
+        {
+            var size = System.Math.Max(image.Width, image.Height);
+            image.InterpolativeResize(size, size, PixelInterpolateMethod.Bilinear);
+        }
+
         internal static MagickColor GetMagickColor(Color32 color)
         {
             var r = GetMagickColor(color.r);
