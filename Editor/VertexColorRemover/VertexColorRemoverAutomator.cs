@@ -14,7 +14,8 @@ namespace KRT.VRCQuestTools
     [InitializeOnLoad]
     public class VertexColorRemoverAutomator
     {
-        static readonly string Tag = typeof(VertexColorRemoverAutomator).Name;
+        static readonly string Tag = "VRCQuestTools";
+        static readonly string ClassName = typeof(VertexColorRemoverAutomator).Name;
 
         static VertexColorRemoverAutomator()
         {
@@ -33,18 +34,18 @@ namespace KRT.VRCQuestTools
             {
                 EditorApplication.hierarchyChanged += HierarchyChanged;
                 RemoveAllVertexColorsFromAvatars(SceneManager.GetActiveScene());
-                Debug.Log($"[{Tag}] Enabled");
+                Debug.Log($"[{Tag}] {ClassName} Enabled");
             }
             else
             {
                 EditorApplication.hierarchyChanged -= HierarchyChanged;
-                Debug.Log($"[{Tag}] Disabled");
+                Debug.Log($"[{Tag}] {ClassName} Disabled");
             }
         }
 
         private static void HierarchyChanged()
         {
-            Debug.Log($"[{Tag}] HierarchyChanged");
+            Debug.Log($"[{Tag}] HierarchyChanged, {ClassName} tries to remove vertex colors");
             RemoveAllVertexColorsFromAvatars(SceneManager.GetActiveScene());
         }
 
