@@ -1,8 +1,7 @@
-﻿// <copyright file="UnitySettings.cs" company="kurotu">
+﻿// <copyright file="UnityQuestSettings.cs" company="kurotu">
 // Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
-// <author>kurotu</author>
-// <remarks>Licensed under the MIT license.</remarks>
 
 using System.Collections.Generic;
 using UnityEditor;

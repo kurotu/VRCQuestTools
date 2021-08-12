@@ -1,4 +1,9 @@
-﻿namespace KRT.VRCQuestTools
+﻿// <copyright file="I18nJapanese.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+namespace KRT.VRCQuestTools
 {
     class I18nJapanese : I18nBase
     {
