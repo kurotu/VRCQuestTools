@@ -16,7 +16,7 @@ namespace KRT.VRCQuestTools
     {
         public const string Version = "0.7.0";
 
-        static class MenuPaths
+        internal static class MenuPaths
         {
             private const string RootMenu = "VRCQuestTools/";
             internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar for Quest";
@@ -33,7 +33,7 @@ namespace KRT.VRCQuestTools
             internal const string CheckForUpdate = RootMenu + "Check for Update";
         }
 
-        enum MenuPriorities : int
+        internal enum MenuPriorities : int
         {
             ConvertAvatarForQuest = 600, // VRChat SDK/Splash Screen: 500
             RemoveMissingComponents,
@@ -132,14 +132,6 @@ namespace KRT.VRCQuestTools
             VRCSDKUtils.RemoveMissingComponentsInChildren(obj, true);
         }
 
-        // BlendShapes Copy
-
-        [MenuItem(MenuPaths.BlendShapesCopy, false, (int)MenuPriorities.BlendShapesCopy)]
-        static void InitBlendShapesCopy()
-        {
-            BlendShapesCopy.InitFromMenu();
-        }
-
         // Auto Remove Vertex Colors
 
         [MenuItem(MenuPaths.AutoRemoveVertexColors, false, (int)MenuPriorities.AutoRemoveVertexColors)]
@@ -209,11 +201,6 @@ namespace KRT.VRCQuestTools
             UpdateChecker.CheckForUpdateFromMenu();
         }
 
-    }
-
-    static class ContextMenu
-    {
-        internal const string ContextBlendShapesCopy = "CONTEXT/SkinnedMeshRenderer/Copy BlendShape Weights";
     }
 
     internal enum DisplayLanguage
