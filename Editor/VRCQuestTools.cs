@@ -138,12 +138,6 @@ namespace KRT.VRCQuestTools
             VertexColorRemoverAutomator.SetAutomation(enabled);
         }
 
-        [MenuItem(MenuPaths.UnitySettings, false, (int)MenuPriorities.UnitySettings)]
-        static void UnitySettings()
-        {
-            UnityQuestSettingsWindow.Init();
-        }
-
         [MenuItem(MenuPaths.RemoveMissingComponents, true)]
         [MenuItem(MenuPaths.RemoveUnsupportedComponents, true)]
         private static bool ValidateGameObjectMenu()
