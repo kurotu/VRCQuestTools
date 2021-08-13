@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;

@@ -3,10 +3,17 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-namespace KRT.VRCQuestTools
+namespace KRT.VRCQuestTools.I18n
 {
-    static class I18n
+    /// <summary>
+    /// Manipulates i18n objects.
+    /// </summary>
+    internal static class I18n
     {
+        /// <summary>
+        /// Gets appropreate i18n object by VRCQuestToolsSettings.DisplayLanguage.
+        /// </summary>
+        /// <returns>Reolved i18n object.</returns>
         internal static I18nBase GetI18n()
         {
             switch (VRCQuestToolsSettings.DisplayLanguage)
@@ -31,6 +38,5 @@ namespace KRT.VRCQuestTools
             }
             return new I18nEnglish();
         }
-
     }
 }

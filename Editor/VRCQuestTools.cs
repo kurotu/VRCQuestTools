@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KRT.VRCQuestTools.I18n;
 using UnityEditor;
 using UnityEngine;
 
@@ -285,7 +286,7 @@ namespace KRT.VRCQuestTools
             {
                 var language = Enum.GetName(typeof(DisplayLanguage), value);
                 EditorUserSettings.SetConfigValue(Keys.DISPLAY_LANGUAGE, language);
-                _i18n = I18n.GetI18n();
+                _i18n = I18n.I18n.GetI18n();
             }
         }
 
@@ -294,7 +295,7 @@ namespace KRT.VRCQuestTools
         {
             get
             {
-                if (_i18n == null) { _i18n = I18n.GetI18n(); }
+                if (_i18n == null) { _i18n = I18n.I18n.GetI18n(); }
                 return _i18n;
             }
         }

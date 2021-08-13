@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools
 
         private void OnGUI()
         {
-            var i18n = I18n.GetI18n();
+            var i18n = I18n.I18n.GetI18n();
             titleContent.text = "Metallic Smoothness";
             EditorGUILayout.BeginVertical("HelpBox");
             {

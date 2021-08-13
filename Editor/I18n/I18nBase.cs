@@ -3,9 +3,16 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-namespace KRT.VRCQuestTools
+#pragma warning disable SA1201 // Elements should appear in the correct order
+#pragma warning disable SA1516 // Elements should be separated by blank line
+#pragma warning disable SA1600 // Elements should be documented
+
+namespace KRT.VRCQuestTools.I18n
 {
-    abstract class I18nBase
+    /// <summary>
+    /// Base class for i18n object.
+    /// </summary>
+    internal abstract class I18nBase
     {
         internal abstract string CancelLabel { get; }
 
