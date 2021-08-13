@@ -16,6 +16,8 @@ namespace KRT.VRCQuestTools
     public static class VRCQuestTools
     {
         public const string Version = "0.7.0";
+        internal const string GitHubRepository = "kurotu/VRCQuestTools";
+        internal const string BoothURL = "https://booth.pm/ja/items/2436054";
 
         internal static class MenuPaths
         {
@@ -187,13 +189,6 @@ namespace KRT.VRCQuestTools
                 Menu.SetChecked(kvp.Value, kvp.Key == language);
             }
         }
-
-        [MenuItem(MenuPaths.CheckForUpdate, false, (int)MenuPriorities.CheckForUpdate)]
-        private static void CheckForUpdate()
-        {
-            UpdateChecker.CheckForUpdateFromMenu();
-        }
-
     }
 
     internal enum DisplayLanguage
