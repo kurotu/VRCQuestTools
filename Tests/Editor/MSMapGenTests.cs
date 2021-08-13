@@ -3,39 +3,52 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using ImageMagick;
-using NUnit.Framework;
 using System.IO;
+using ImageMagick;
+using KRT.VRCQuestTools.Utils;
+using NUnit.Framework;
 
 namespace KRT.VRCQuestTools
 {
+    /// <summary>
+    /// Tests for MSMapGen.
+    /// </summary>
     public class MSMapGenTests
     {
-        readonly string LinearGradationPath = Path.Combine(TestUtils.TexturesFolder, "linear_gradation.png");
-        readonly string MSMapPath = Path.GetTempFileName() + ".png";
+        private readonly string linearGradationPath = Path.Combine(TestUtils.TexturesFolder, "linear_gradation.png");
+        private readonly string msMapPath = Path.GetTempFileName() + ".png";
 
+        /// <summary>
+        /// Setup params.
+        /// </summary>
         [SetUp]
         public void Setup()
         {
-            if (File.Exists(MSMapPath))
+            if (File.Exists(msMapPath))
             {
-                File.Delete(MSMapPath);
+                File.Delete(msMapPath);
             }
         }
 
+        /// <summary>
+        /// TearDown params.
+        /// </summary>
         [TearDown]
         public void TearDown()
         {
-            if (File.Exists(MSMapPath))
+            if (File.Exists(msMapPath))
             {
-                File.Delete(MSMapPath);
+                File.Delete(msMapPath);
             }
         }
 
+        /// <summary>
+        /// Test gradation fixture.
+        /// </summary>
         [Test]
         public void LinearGradation()
         {
-            using (var gradation = new MagickImage(LinearGradationPath))
+            using (var gradation = new MagickImage(linearGradationPath))
             {
                 Assert.AreEqual(256, gradation.Width);
                 Assert.AreEqual(256, gradation.Height);
@@ -50,10 +63,13 @@ namespace KRT.VRCQuestTools
             }
         }
 
+        /// <summary>
+        /// Test Negate() as invert.
+        /// </summary>
         [Test]
         public void Invert()
         {
-            using (var gradation = new MagickImage(LinearGradationPath))
+            using (var gradation = new MagickImage(linearGradationPath))
             {
                 gradation.Negate();
                 Assert.AreEqual(ColorSpace.sRGB, gradation.ColorSpace);
@@ -67,11 +83,14 @@ namespace KRT.VRCQuestTools
             }
         }
 
+        /// <summary>
+        /// Test generating MSMap.
+        /// </summary>
         [Test]
         public void MetallicSmoothness()
         {
-            using (var gradation = new MagickImage(LinearGradationPath))
-            using (var msmap = MSMapGen.GenerateMetallicSmoothness(gradation, false, gradation, false))
+            using (var gradation = new MagickImage(linearGradationPath))
+            using (var msmap = MagickImageUtility.GenerateMetallicSmoothness(gradation, false, gradation, false))
             {
                 Assert.AreEqual(ColorSpace.sRGB, msmap.ColorSpace);
                 Assert.True(msmap.HasAlpha);
@@ -85,9 +104,9 @@ namespace KRT.VRCQuestTools
                     Assert.AreEqual(0, v[2]);
                     Assert.AreEqual(257 * x, v[3]);
                 }
-                msmap.Write(MSMapPath, MagickFormat.Png32);
+                msmap.Write(msMapPath, MagickFormat.Png32);
             }
-            using (var msmap = new MagickImage(MSMapPath))
+            using (var msmap = new MagickImage(msMapPath))
             {
                 Assert.AreEqual(ColorSpace.sRGB, msmap.ColorSpace);
                 Assert.True(msmap.HasAlpha);
@@ -104,11 +123,14 @@ namespace KRT.VRCQuestTools
             }
         }
 
+        /// <summary>
+        /// Test inverted input maps.
+        /// </summary>
         [Test]
         public void MetallicSmoothnessInvert()
         {
-            using (var gradation = new MagickImage(LinearGradationPath))
-            using (var msmap = MSMapGen.GenerateMetallicSmoothness(gradation, true, gradation, true))
+            using (var gradation = new MagickImage(linearGradationPath))
+            using (var msmap = MagickImageUtility.GenerateMetallicSmoothness(gradation, true, gradation, true))
             {
                 Assert.AreEqual(ColorSpace.sRGB, msmap.ColorSpace);
                 Assert.True(msmap.HasAlpha);
@@ -122,9 +144,9 @@ namespace KRT.VRCQuestTools
                     Assert.AreEqual(0, v[2]);
                     Assert.AreEqual(257 * (255 - x), v[3]);
                 }
-                msmap.Write(MSMapPath, MagickFormat.Png32);
+                msmap.Write(msMapPath, MagickFormat.Png32);
             }
-            using (var msmap = new MagickImage(MSMapPath))
+            using (var msmap = new MagickImage(msMapPath))
             {
                 Assert.AreEqual(ColorSpace.sRGB, msmap.ColorSpace);
                 Assert.True(msmap.HasAlpha);

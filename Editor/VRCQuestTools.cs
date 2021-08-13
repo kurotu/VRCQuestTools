@@ -92,14 +92,6 @@ namespace KRT.VRCQuestTools
             VRCSDKUtils.RemoveUnsupportedComponentsInChildren(obj, true, true);
         }
 
-        // Metallic Smoothness
-
-        [MenuItem(MenuPaths.MSMapGenerator, false, (int)MenuPriorities.MSMapGenerator)]
-        internal static void MSMapGenerator()
-        {
-            MSMapGen.ShowWindow();
-        }
-
         // Remove Missing Components
 
         [MenuItem(MenuPaths.RemoveMissingComponents, false, (int)MenuPriorities.RemoveMissingComponents)]
