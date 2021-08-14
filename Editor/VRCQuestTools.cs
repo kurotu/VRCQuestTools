@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.I18n;
+using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
 
@@ -49,17 +50,6 @@ namespace KRT.VRCQuestTools
             LanguageEnglish,
             LanguageJapanese,
             CheckForUpdate = 1100
-        }
-
-        static VRCQuestTools()
-        {
-            EditorApplication.delayCall += DelayInit;
-        }
-
-        static void DelayInit()
-        {
-            EditorApplication.delayCall -= DelayInit;
-            UpdateLanguageChecks(VRCQuestToolsSettings.DisplayLanguage);
         }
 
         // Convert Avatar for Quest
@@ -131,50 +121,6 @@ namespace KRT.VRCQuestTools
         {
             return Selection.activeGameObject != null;
         }
-
-        [MenuItem(MenuPaths.LanguageAuto, false,(int)MenuPriorities.LanguageAuto)]
-        static void LanguageAuto()
-        {
-            SetLanguage(DisplayLanguage.Auto);
-        }
-
-        [MenuItem(MenuPaths.LanguageEnglish,false,(int)MenuPriorities.LanguageEnglish)]
-        static void LanguageEnglish()
-        {
-            SetLanguage(DisplayLanguage.English);
-        }
-
-        [MenuItem(MenuPaths.LanguageJapanese, false, (int)MenuPriorities.LanguageJapanese)]
-        static void LanguageJapanese()
-        {
-            SetLanguage(DisplayLanguage.Japanese);
-        }
-
-        private static void SetLanguage(DisplayLanguage language)
-        {
-            VRCQuestToolsSettings.DisplayLanguage = language;
-            UpdateLanguageChecks(language);
-        }
-
-        private static void UpdateLanguageChecks(DisplayLanguage language)
-        {
-            var menus = new Dictionary<DisplayLanguage, string> {
-                { DisplayLanguage.Auto, MenuPaths.LanguageAuto },
-                { DisplayLanguage.English, MenuPaths.LanguageEnglish },
-                { DisplayLanguage.Japanese, MenuPaths.LanguageJapanese },
-            };
-            Debug.Assert(menus.Count == Enum.GetValues(typeof(DisplayLanguage)).Length);
-
-            foreach (var kvp in menus)
-            {
-                Menu.SetChecked(kvp.Value, kvp.Key == language);
-            }
-        }
-    }
-
-    internal enum DisplayLanguage
-    {
-        Auto, English, Japanese
     }
 
     static class VRCQuestToolsSettings
