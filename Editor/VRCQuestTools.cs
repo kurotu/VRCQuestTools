@@ -59,8 +59,6 @@ namespace KRT.VRCQuestTools
         static void DelayInit()
         {
             EditorApplication.delayCall -= DelayInit;
-            var enabled = VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled;
-            Menu.SetChecked(MenuPaths.AutoRemoveVertexColors, enabled);
             UpdateLanguageChecks(VRCQuestToolsSettings.DisplayLanguage);
         }
 
@@ -125,17 +123,6 @@ namespace KRT.VRCQuestTools
                 Debug.Log($"[VRCQuestTools] {obj.name} has been unpacked");
             }
             VRCSDKUtils.RemoveMissingComponentsInChildren(obj, true);
-        }
-
-        // Auto Remove Vertex Colors
-
-        [MenuItem(MenuPaths.AutoRemoveVertexColors, false, (int)MenuPriorities.AutoRemoveVertexColors)]
-        static void ToggleVertexColorRemoverAutomator()
-        {
-            var enabled = !Menu.GetChecked(MenuPaths.AutoRemoveVertexColors);
-            VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled = enabled;
-            Menu.SetChecked(MenuPaths.AutoRemoveVertexColors, enabled);
-            VertexColorRemoverAutomator.SetAutomation(enabled);
         }
 
         [MenuItem(MenuPaths.RemoveMissingComponents, true)]
@@ -285,7 +272,7 @@ namespace KRT.VRCQuestTools
     static class GameObjectMenu
     {
         const string MenuPrefix = "GameObject/VRCQuestTools/";
-        const string GameObjectRemoveAllVertexColors = MenuPrefix + "Remove All Vertex Colors";
+        internal const string GameObjectRemoveAllVertexColors = MenuPrefix + "Remove All Vertex Colors";
         const string GameObjectRemoveUnsupportedComponents = MenuPrefix + "Remove Unsupported Components";
         const string GameObjectRemoveMissingComponents = MenuPrefix + "Remove Missing Components";
         const string GameObjectConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Quest";
@@ -308,14 +295,6 @@ namespace KRT.VRCQuestTools
             VRCQuestTools.RemoveMissingComponents();
         }
 
-        [MenuItem(GameObjectRemoveAllVertexColors)]
-        static void RemoveAllVertexColors()
-        {
-            var obj = Selection.activeGameObject;
-            VertexColorRemover.RemoveAllVertexColors(obj);
-            Debug.LogFormat("[{0}] All vertex colors are removed from {1}", "VRCQuestTools", obj);
-        }
-
         [MenuItem(GameObjectConvertAvatarForQuest, true)]
         [MenuItem(GameObjectRemoveUnsupportedComponents, true)]
         static bool ValidateAvatarMenu()
@@ -325,7 +304,6 @@ namespace KRT.VRCQuestTools
         }
 
         [MenuItem(GameObjectRemoveMissingComponents, true)]
-        [MenuItem(GameObjectRemoveAllVertexColors, true)]
         static bool ValidateActiveGameObject()
         {
             return Selection.activeGameObject != null;

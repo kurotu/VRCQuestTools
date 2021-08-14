@@ -35,7 +35,7 @@ namespace KRT.VRCQuestTools.ViewModels
         internal void CopyBlendShapesCopy()
         {
             Undo.RecordObject(targetMesh, "Copy BlendShape Weights");
-            SkinnedMeshRendererUtility.CopyBlensShapesWeights(sourceMesh, targetMesh);
+            RendererUtility.CopyBlendShapesWeights(sourceMesh, targetMesh);
         }
 
         /// <summary>

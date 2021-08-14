@@ -4,8 +4,10 @@
 // </copyright>
 
 using System.Linq;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace KRT.VRCQuestTools
 {
@@ -94,6 +96,16 @@ namespace KRT.VRCQuestTools
         {
             var children = gameObject.GetComponentsInChildren<Transform>(includeInactive).Select(t => t.gameObject);
             return children.Sum(c => GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(c));
+        }
+
+        internal static VRC.SDKBase.VRC_AvatarDescriptor[] GetAvatarsFromScene(Scene scene) {
+            var avatars = new List<VRC.SDKBase.VRC_AvatarDescriptor>();
+            var rootGameObjects = scene.GetRootGameObjects();
+            foreach (var obj in rootGameObjects)
+            {
+                avatars.AddRange(obj.GetComponentsInChildren<VRC.SDKBase.VRC_AvatarDescriptor>());
+            }
+            return avatars.ToArray();
         }
     }
 }

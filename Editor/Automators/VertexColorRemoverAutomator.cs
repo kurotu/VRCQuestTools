@@ -3,31 +3,32 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System.Collections.Generic;
+using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace KRT.VRCQuestTools
+namespace KRT.VRCQuestTools.Automators
 {
+    /// <summary>
+    /// Automates VertexColorRemover.
+    /// </summary>
     [InitializeOnLoad]
     public class VertexColorRemoverAutomator
     {
-        static readonly string Tag = "VRCQuestTools";
-        static readonly string ClassName = typeof(VertexColorRemoverAutomator).Name;
+        private static readonly string Tag = "VRCQuestTools";
+        private static readonly string ClassName = typeof(VertexColorRemoverAutomator).Name;
 
         static VertexColorRemoverAutomator()
         {
-            EditorApplication.delayCall += DelayInit;
+            EditorApplication.delayCall += DelayCall;
         }
 
-        private static void DelayInit()
-        {
-            SetAutomation(VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled);
-            EditorApplication.delayCall -= DelayInit;
-        }
-
-        internal static void SetAutomation(bool enabled)
+        /// <summary>
+        /// Enable automation.
+        /// </summary>
+        /// <param name="enabled">Whether the automator is enabled.</param>
+        internal static void Enable(bool enabled)
         {
             if (enabled)
             {
@@ -42,6 +43,11 @@ namespace KRT.VRCQuestTools
             }
         }
 
+        private static void DelayCall()
+        {
+            Enable(VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled);
+        }
+
         private static void HierarchyChanged()
         {
             Debug.Log($"[{Tag}] HierarchyChanged, {ClassName} tries to remove vertex colors");
@@ -50,22 +56,13 @@ namespace KRT.VRCQuestTools
 
         private static void RemoveAllVertexColorsFromAvatars(Scene scene)
         {
-            var avatars = GetAvatars(scene);
+            var model = new VertexColorRemoverViewModel();
+            var avatars = VRCSDKUtils.GetAvatarsFromScene(scene);
             foreach (var a in avatars)
             {
-                VertexColorRemover.RemoveAllVertexColors(a.gameObject);
+                model.target = a.gameObject;
+                model.RemoveVertexColor();
             }
-        }
-
-        private static VRC.SDKBase.VRC_AvatarDescriptor[] GetAvatars(Scene scene)
-        {
-            var avatars = new List<VRC.SDKBase.VRC_AvatarDescriptor>();
-            var rootGameObjects = scene.GetRootGameObjects();
-            foreach (var obj in rootGameObjects)
-            {
-                avatars.AddRange(obj.GetComponentsInChildren<VRC.SDKBase.VRC_AvatarDescriptor>());
-            }
-            return avatars.ToArray();
         }
     }
 }
