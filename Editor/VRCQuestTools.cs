@@ -59,68 +59,6 @@ namespace KRT.VRCQuestTools
         {
             VRCAvatarQuestConverterWindow.InitFromMenu();
         }
-
-        // Remove Unsupported Components
-
-        [MenuItem(MenuPaths.RemoveUnsupportedComponents, false, (int)MenuPriorities.RemoveUnsupportedComponents)]
-        internal static void RemoveUnsupportedComponents()
-        {
-            var i18n = VRCQuestToolsSettings.I18nResource;
-            var obj = Selection.activeGameObject;
-
-            var components = VRCSDKUtils.GetUnsupportedComponentsInChildren(obj, true);
-            if (components.Length == 0)
-            {
-                EditorUtility.DisplayDialog("VRCQuestTools", i18n.NoUnsupportedComponentsMessage(obj.name), "OK");
-                return;
-            }
-            var message = i18n.UnsupportedRemoverConfirmationMessage(obj.name) + "\n\n" +
-                string.Join("\n", components.Select(c => c.GetType()).Distinct().Select(c => $"  - {c}").OrderBy(c => c));
-            if (!EditorUtility.DisplayDialog("VRCQuestTools", message, "OK", i18n.CancelLabel)) { return; }
-
-            Undo.SetCurrentGroupName("Remove Unsupported Components");
-            VRCSDKUtils.RemoveUnsupportedComponentsInChildren(obj, true, true);
-        }
-
-        // Remove Missing Components
-
-        [MenuItem(MenuPaths.RemoveMissingComponents, false, (int)MenuPriorities.RemoveMissingComponents)]
-        internal static void RemoveMissingComponents()
-        {
-            var i18n = VRCQuestToolsSettings.I18nResource;
-            var obj = Selection.activeGameObject;
-            var count = VRCSDKUtils.CountMissingComponentsInChildren(obj, true);
-            Debug.Log($"[VRCQuestTools] {obj.name} has {count} missing scripts in children");
-            if (count == 0)
-            {
-                EditorUtility.DisplayDialog("VRCQuestTools", i18n.NoMissingComponentsMessage(obj.name), "OK");
-                return;
-            }
-
-            var needsToUnpackPrefab = PrefabUtility.IsPartOfPrefabInstance(obj);
-            var message = i18n.MissingRemoverConfirmationMessage(obj.name);
-            if (needsToUnpackPrefab) { message += $" ({i18n.UnpackPrefabMessage})"; }
-            if (!EditorUtility.DisplayDialog("VRCQuestTools", message, "OK", i18n.CancelLabel))
-            {
-                return;
-            }
-
-            if (needsToUnpackPrefab)
-            {
-                Undo.SetCurrentGroupName("Remove Missing Components");
-                // Somehow unpacking is needed to apply changes to the scene file.
-                PrefabUtility.UnpackPrefabInstance(obj, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
-                Debug.Log($"[VRCQuestTools] {obj.name} has been unpacked");
-            }
-            VRCSDKUtils.RemoveMissingComponentsInChildren(obj, true);
-        }
-
-        [MenuItem(MenuPaths.RemoveMissingComponents, true)]
-        [MenuItem(MenuPaths.RemoveUnsupportedComponents, true)]
-        private static bool ValidateGameObjectMenu()
-        {
-            return Selection.activeGameObject != null;
-        }
     }
 
     static class VRCQuestToolsSettings
@@ -219,8 +157,8 @@ namespace KRT.VRCQuestTools
     {
         const string MenuPrefix = "GameObject/VRCQuestTools/";
         internal const string GameObjectRemoveAllVertexColors = MenuPrefix + "Remove All Vertex Colors";
-        const string GameObjectRemoveUnsupportedComponents = MenuPrefix + "Remove Unsupported Components";
-        const string GameObjectRemoveMissingComponents = MenuPrefix + "Remove Missing Components";
+        internal const string GameObjectRemoveUnsupportedComponents = MenuPrefix + "Remove Unsupported Components";
+        internal const string GameObjectRemoveMissingComponents = MenuPrefix + "Remove Missing Components";
         const string GameObjectConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Quest";
 
         [MenuItem(GameObjectConvertAvatarForQuest, false, 30)]
@@ -229,30 +167,11 @@ namespace KRT.VRCQuestTools
             VRCQuestTools.InitConvertAvatarForQuest();
         }
 
-        [MenuItem(GameObjectRemoveUnsupportedComponents, false)]
-        static void RemoveUnsupportedComponents()
-        {
-            VRCQuestTools.RemoveUnsupportedComponents();
-        }
-
-        [MenuItem(GameObjectRemoveMissingComponents, false)]
-        static void RemoveMissingComponents()
-        {
-            VRCQuestTools.RemoveMissingComponents();
-        }
-
         [MenuItem(GameObjectConvertAvatarForQuest, true)]
-        [MenuItem(GameObjectRemoveUnsupportedComponents, true)]
         static bool ValidateAvatarMenu()
         {
             var obj = Selection.activeGameObject;
             return VRCSDKUtils.IsAvatar(obj);
-        }
-
-        [MenuItem(GameObjectRemoveMissingComponents, true)]
-        static bool ValidateActiveGameObject()
-        {
-            return Selection.activeGameObject != null;
         }
     }
 }
