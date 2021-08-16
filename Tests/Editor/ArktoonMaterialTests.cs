@@ -4,18 +4,25 @@
 // </copyright>
 
 using ImageMagick;
+using KRT.VRCQuestTools.Models.Unity;
 using NUnit.Framework;
 
 namespace KRT.VRCQuestTools
 {
+    /// <summary>
+    /// Tests for Arktoon.
+    /// </summary>
     public class ArktoonMaterialTests
     {
+        /// <summary>
+        /// Arctoon with emission.
+        /// </summary>
         [Test]
         public void EmissionColor()
         {
             var wrapper = TestUtils.LoadMaterialWrapper("arktoon.mat");
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
-            using (var image = wrapper.CompositeLayers())
+            using (var image = wrapper.GenerateToonLitImage())
             using (var original = TestUtils.LoadMagickImage("albedo_1024px.png"))
             using (var emission = new MagickImage(new MagickColorFactory().Create("#1F1F1F"), original.Width, original.Height))
             {
@@ -25,12 +32,15 @@ namespace KRT.VRCQuestTools
             }
         }
 
+        /// <summary>
+        /// Arctoon with emissive freak.
+        /// </summary>
         [Test]
         public void EmissiveFreak()
         {
             var wrapper = TestUtils.LoadMaterialWrapper("arktoon_EmissiveFreak.mat");
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
-            using (var image = wrapper.CompositeLayers())
+            using (var image = wrapper.GenerateToonLitImage())
             using (var main = TestUtils.LoadMagickImage("albedo_1024px.png"))
             using (var emission = TestUtils.LoadMagickImage("emission_1024px.png"))
             using (var ef1 = TestUtils.LoadMagickImage("emissive_freak_1_1024px.png"))

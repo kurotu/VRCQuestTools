@@ -51,14 +51,6 @@ namespace KRT.VRCQuestTools
             LanguageJapanese,
             CheckForUpdate = 1100
         }
-
-        // Convert Avatar for Quest
-
-        [MenuItem(MenuPaths.ConvertAvatarForQuest, false, (int)MenuPriorities.ConvertAvatarForQuest)]
-        internal static void InitConvertAvatarForQuest()
-        {
-            VRCAvatarQuestConverterWindow.InitFromMenu();
-        }
     }
 
     static class VRCQuestToolsSettings
@@ -159,19 +151,6 @@ namespace KRT.VRCQuestTools
         internal const string GameObjectRemoveAllVertexColors = MenuPrefix + "Remove All Vertex Colors";
         internal const string GameObjectRemoveUnsupportedComponents = MenuPrefix + "Remove Unsupported Components";
         internal const string GameObjectRemoveMissingComponents = MenuPrefix + "Remove Missing Components";
-        const string GameObjectConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Quest";
-
-        [MenuItem(GameObjectConvertAvatarForQuest, false, 30)]
-        static void ConvertAvatarForQuest()
-        {
-            VRCQuestTools.InitConvertAvatarForQuest();
-        }
-
-        [MenuItem(GameObjectConvertAvatarForQuest, true)]
-        static bool ValidateAvatarMenu()
-        {
-            var obj = Selection.activeGameObject;
-            return VRCSDKUtils.IsAvatar(obj);
-        }
+        internal const string GameObjectConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Quest";
     }
 }

@@ -3,48 +3,31 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using ImageMagick;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ImageMagick;
+using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
-namespace KRT.VRCQuestTools
+namespace KRT.VRCQuestTools.Models.Unity
 {
-    public class StandardMaterial : MaterialWrapper
+    /// <summary>
+    /// Represents Unity Standard shader material.
+    /// </summary>
+    internal class StandardMaterial : MaterialBase
     {
-        protected readonly Material material;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StandardMaterial"/> class.
+        /// </summary>
+        /// <param name="material">Material.</param>
         internal StandardMaterial(Material material)
+            : base(material)
         {
-            this.material = material;
         }
 
-        public virtual Layer GetMainLayer()
-        {
-            return new Layer
-            {
-                image = MaterialUtils.GetMagickImage(material.mainTexture),
-                color = material.HasProperty("_Color") ? material.color : Color.white
-            };
-        }
-
-        public virtual bool HasEmission()
-        {
-            return material.shaderKeywords.Contains("_EMISSION");
-        }
-
-        public virtual Layer GetEmissionLayer()
-        {
-            if (!HasEmission()) return null;
-            return new Layer
-            {
-                image = MaterialUtils.GetMagickImage(material, "_EmissionMap"),
-                color = material.GetColor("_EmissionColor")
-            };
-        }
-
-        public override MagickImage CompositeLayers()
+        /// <inheritdoc/>
+        internal override MagickImage GenerateToonLitImage()
         {
             using (var main = GetMainLayer())
             using (var emission = GetEmissionLayer())
@@ -75,16 +58,56 @@ namespace KRT.VRCQuestTools
             }
         }
 
+        /// <summary>
+        /// Whether the material uses emission.
+        /// </summary>
+        /// <returns>true when using emission.</returns>
+        protected virtual bool HasEmission()
+        {
+            return Material.shaderKeywords.Contains("_EMISSION");
+        }
+
+        /// <summary>
+        /// Return emission layer.
+        /// </summary>
+        /// <returns>Emission layer.</returns>
+        protected virtual Layer GetEmissionLayer()
+        {
+            if (!HasEmission())
+            {
+                return null;
+            }
+
+            return new Layer
+            {
+                image = MagickImageUtility.GetMagickImage(Material.GetTexture("_EmissionMap")),
+                color = Material.GetColor("_EmissionColor"),
+            };
+        }
+
+        private Layer GetMainLayer()
+        {
+            return new Layer
+            {
+                image = MagickImageUtility.GetMagickImage(Material.mainTexture),
+                color = Material.HasProperty("_Color") ? Material.color : Color.white,
+            };
+        }
+
         private Tuple<int, int> DecideCompositionSize(Layer main, Layer emission)
         {
             var layers = new List<Layer>
             {
                 main,
-                emission
+                emission,
             };
             foreach (var l in layers)
             {
-                if (l == null) continue;
+                if (l == null)
+                {
+                    continue;
+                }
+
                 if (l.image != null)
                 {
                     return new Tuple<int, int>(l.image.Width, l.image.Height);

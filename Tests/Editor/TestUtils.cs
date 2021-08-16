@@ -7,6 +7,7 @@ using ImageMagick;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using KRT.VRCQuestTools.Models.Unity;
 
 namespace KRT.VRCQuestTools
 {
@@ -23,10 +24,10 @@ namespace KRT.VRCQuestTools
             return material;
         }
 
-        internal static MaterialWrapper LoadMaterialWrapper(string file)
+        internal static MaterialBase LoadMaterialWrapper(string file)
         {
             var material = LoadMaterial(file);
-            var wrapper = MaterialUtils.CreateWrapper(material);
+            var wrapper = MaterialBase.Create(material);
             Assert.NotNull(wrapper);
             return wrapper;
         }

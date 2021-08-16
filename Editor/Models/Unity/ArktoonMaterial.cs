@@ -4,28 +4,35 @@
 // </copyright>
 
 using ImageMagick;
+using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
-namespace KRT.VRCQuestTools
+namespace KRT.VRCQuestTools.Models.Unity
 {
-    public class ArktoonMaterial : StandardMaterial
+    /// <summary>
+    /// Represents arctoon-Shaders material.
+    /// </summary>
+    internal class ArktoonMaterial : StandardMaterial
     {
-        internal ArktoonMaterial(Material material) : base(material) { }
-
-        public override bool HasEmission()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArktoonMaterial"/> class.
+        /// </summary>
+        /// <param name="material">Material.</param>
+        internal ArktoonMaterial(Material material)
+            : base(material)
         {
-            return true;
         }
 
-        public override MagickImage CompositeLayers()
+        /// <inheritdoc/>
+        internal override MagickImage GenerateToonLitImage()
         {
             if (HasEmissiveFreak())
             {
-                using (var baseImage = base.CompositeLayers())
+                using (var baseImage = base.GenerateToonLitImage())
                 {
                     var image = new MagickImage(baseImage)
                     {
-                        HasAlpha = false
+                        HasAlpha = false,
                     };
                     for (var i = 0; i < 2; i++)
                     {
@@ -45,12 +52,18 @@ namespace KRT.VRCQuestTools
                     return image;
                 }
             }
-            return base.CompositeLayers();
+            return base.GenerateToonLitImage();
+        }
+
+        /// <inheritdoc/>
+        protected override bool HasEmission()
+        {
+            return true;
         }
 
         private bool HasEmissiveFreak()
         {
-            return material.shader.name.Contains("/EmissiveFreak/");
+            return Material.shader.name.Contains("/EmissiveFreak/");
         }
 
         private Layer GetEmissiveFreakLayer(int index)
@@ -58,8 +71,8 @@ namespace KRT.VRCQuestTools
             var num = index + 1;
             return new Layer
             {
-                image = MaterialUtils.GetMagickImage(material, $"_EmissiveFreak{num}Tex"),
-                color = material.GetColor($"_EmissiveFreak{num}Color")
+                image = MagickImageUtility.GetMagickImage(Material.GetTexture($"_EmissiveFreak{num}Tex")),
+                color = Material.GetColor($"_EmissiveFreak{num}Color"),
             };
         }
     }

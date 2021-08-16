@@ -107,5 +107,14 @@ namespace KRT.VRCQuestTools
             }
             return avatars.ToArray();
         }
+
+        internal static bool IsUsableForQuestAvatar(Material material)
+        {
+            var usableShaders = new string[] {
+                "Standard Lite", "Bumped Diffuse", "Bumped Mapped Specular", "Diffuse",
+                "MatCap Lit", "Toon Lit", "Particles/Additive", "Particles/Multiply"
+            }.Select(s => $"VRChat/Mobile/{s}");
+            return usableShaders.Contains(material.shader.name);
+        }
     }
 }

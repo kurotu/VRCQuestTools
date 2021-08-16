@@ -3,85 +3,109 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using ImageMagick;
 using System;
 using System.Threading.Tasks;
+using ImageMagick;
+using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
-namespace KRT.VRCQuestTools
+namespace KRT.VRCQuestTools.Models.Unity
 {
-    class SunaoMaterial : MaterialWrapper
+    /// <summary>
+    /// Sunao Shader material.
+    /// </summary>
+    internal class SunaoMaterial : MaterialBase
     {
-        private Material material;
-
-        internal SunaoMaterial(Material material) : base()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SunaoMaterial"/> class.
+        /// </summary>
+        /// <param name="material">Material.</param>
+        internal SunaoMaterial(Material material)
+            : base(material)
         {
-            this.material = material;
         }
 
-        // Main Color & Texture Maps
+#pragma warning disable SA1136 // Enum values should be on separate lines
+        private enum SunaoDecalMode
+        {
+            Override, Add, Multiply, MultiplyMono, EmissiveAdd, EmissiveOverride,
+        }
 
-        float Brightness => material.GetFloat("_Bright");
-        float AnimationSpeed => material.GetFloat("_UVAnimation");
-        bool UseTextureAnimation => AnimationSpeed > 0.0f;
-        int AnimationXSize => Mathf.FloorToInt(material.GetFloat("_UVAnimX"));
-        int AnimationYSize => Mathf.FloorToInt(material.GetFloat("_UVAnimY"));
-        bool AnimationOtherTextureMaps => material.GetFloat("_UVAnimOtherTex") > 0.0f;
+        private enum SunaoDecalMirrorMode
+        {
+            Normal, Fixed, Mirror1, Mirror2, CopyMirror, CopyFixed,
+        }
+
+        private enum SunaoEmissionMode
+        {
+            Add, Multiply, Minus,
+        }
+#pragma warning restore SA1136 // Enum values should be on separate lines
+
+#pragma warning disable SA1516 // Elements should be separated by blank line
+
+        // Main Color & Texture Maps
+        private float Brightness => Material.GetFloat("_Bright");
+        private float AnimationSpeed => Material.GetFloat("_UVAnimation");
+        private bool UseTextureAnimation => AnimationSpeed > 0.0f;
+        private int AnimationXSize => Mathf.FloorToInt(Material.GetFloat("_UVAnimX"));
+        private int AnimationYSize => Mathf.FloorToInt(Material.GetFloat("_UVAnimY"));
+        private bool AnimationOtherTextureMaps => Material.GetFloat("_UVAnimOtherTex") > 0.0f;
 
         // Decal
+        private bool DecalEnable => Material.GetFloat("_DecalEnable") > 0.0f;
+        private Texture DecalTexture => Material.GetTexture("_DecalTex");
+        private Color DecalColor => Material.GetColor("_DecalColor");
+        private float DecalPositionX => Material.GetFloat("_DecalPosX");
+        private float DecalPositionY => Material.GetFloat("_DecalPosY");
+        private float DecalScaleX => Material.GetFloat("_DecalSizeX");
+        private float DecalScaleY => Material.GetFloat("_DecalSizeY");
 
-        bool DecalEnable => material.GetFloat("_DecalEnable") > 0.0f;
-        Texture DecalTexture => material.GetTexture("_DecalTex");
-        Color DecalColor => material.GetColor("_DecalColor");
-        float DecalPositionX => material.GetFloat("_DecalPosX");
-        float DecalPositionY => material.GetFloat("_DecalPosY");
-        float DecalScaleX => material.GetFloat("_DecalSizeX");
-        float DecalScaleY => material.GetFloat("_DecalSizeY");
-        /// <summary>In degree, clockwise.</summary>
-        float DecalRotation => material.GetFloat("_DecalRotation");
-        SunaoDecalMode DecalMode => GetEnum<SunaoDecalMode>(material.GetFloat("_DecalMode"));
-        SunaoDecalMirrorMode DecalMirrorMode => GetEnum<SunaoDecalMirrorMode>(material.GetFloat("_DecalMirror"));
-        /// <summary>Use with MultiplyMono.</summary>
-        float DecalBrightnessOffset => material.GetFloat("_DecalBright");
-        /// <summary>Use with EmissiveAdd, EmissiveOverride.</summary>
-        float DecalEmissionIntensity => material.GetFloat("_DecalEmission");
-        float DecalAnimationSpeed => material.GetFloat("_DecalAnimation");
-        bool UseDecalAnimation => DecalAnimationSpeed > 0.0f;
-        int DecalAnimationXSize => Mathf.FloorToInt(material.GetFloat("_DecalAnimX"));
-        int DecalAnimationYSize => Mathf.FloorToInt(material.GetFloat("_DecalAnimY"));
+        /// <summary>Gets decal rotation in degree, clockwise.</summary>
+        private float DecalRotation => Material.GetFloat("_DecalRotation");
+        private SunaoDecalMode DecalMode => GetEnum<SunaoDecalMode>(Material.GetFloat("_DecalMode"));
+        private SunaoDecalMirrorMode DecalMirrorMode => GetEnum<SunaoDecalMirrorMode>(Material.GetFloat("_DecalMirror"));
+
+        /// <summary>Gets decal brightness offset. Use with MultiplyMono.</summary>
+        private float DecalBrightnessOffset => Material.GetFloat("_DecalBright");
+
+        /// <summary>Gets decal emission intensity. Use with EmissiveAdd or EmissiveOverride.</summary>
+        private float DecalEmissionIntensity => Material.GetFloat("_DecalEmission");
+        private float DecalAnimationSpeed => Material.GetFloat("_DecalAnimation");
+        private bool UseDecalAnimation => DecalAnimationSpeed > 0.0f;
+        private int DecalAnimationXSize => Mathf.FloorToInt(Material.GetFloat("_DecalAnimX"));
+        private int DecalAnimationYSize => Mathf.FloorToInt(Material.GetFloat("_DecalAnimY"));
 
         // Emission
-
-        bool EmissionEnable => material.GetFloat("_EmissionEnable") > 0.0f;
-        Texture EmissionMap => material.GetTexture("_EmissionMap");
-        Color EmissionColor => material.GetColor("_EmissionColor");
-        float EmissionIntensity => material.GetFloat("_Emission");
-        Texture SecondEmissionMap => material.GetTexture("_EmissionMap2");
-        SunaoEmissionMode EmissionMode => GetEnum<SunaoEmissionMode>(material.GetFloat("_EmissionMode"));
-        float EmissionAnimationSpeed => material.GetFloat("_EmissionAnimation");
-        bool UseEmissionAnimation => EmissionAnimationSpeed > 0.0f;
-        int EmissionAnimationXSize => Mathf.FloorToInt(material.GetFloat("_EmissionAnimX"));
-        int EmissionAnimationYSize => Mathf.FloorToInt(material.GetFloat("_EmissionAnimY"));
+        private bool EmissionEnable => Material.GetFloat("_EmissionEnable") > 0.0f;
+        private Texture EmissionMap => Material.GetTexture("_EmissionMap");
+        private Color EmissionColor => Material.GetColor("_EmissionColor");
+        private float EmissionIntensity => Material.GetFloat("_Emission");
+        private Texture SecondEmissionMap => Material.GetTexture("_EmissionMap2");
+        private SunaoEmissionMode EmissionMode => GetEnum<SunaoEmissionMode>(Material.GetFloat("_EmissionMode"));
+        private float EmissionAnimationSpeed => Material.GetFloat("_EmissionAnimation");
+        private bool UseEmissionAnimation => EmissionAnimationSpeed > 0.0f;
+        private int EmissionAnimationXSize => Mathf.FloorToInt(Material.GetFloat("_EmissionAnimX"));
+        private int EmissionAnimationYSize => Mathf.FloorToInt(Material.GetFloat("_EmissionAnimY"));
 
         // Gamma Fix
-
-        bool GammaFixEnable => material.GetFloat("_EnableGammaFix") > 0.5f;
-        float GammaR => material.GetFloat("_GammaR");
-        float GammaG => material.GetFloat("_GammaG");
-        float GammaB => material.GetFloat("_GammaB");
+        private bool GammaFixEnable => Material.GetFloat("_EnableGammaFix") > 0.5f;
+        private float GammaR => Material.GetFloat("_GammaR");
+        private float GammaG => Material.GetFloat("_GammaG");
+        private float GammaB => Material.GetFloat("_GammaB");
 
         // Brightness Fix
-
-        bool BrightnessFixEnable => material.GetFloat("_EnableBlightFix") > 0.5;
-        float OutputBrightness => material.GetFloat("_BlightOutput");
-        float BrightnessOffset => material.GetFloat("_BlightOffset");
+        private bool BrightnessFixEnable => Material.GetFloat("_EnableBlightFix") > 0.5;
+        private float OutputBrightness => Material.GetFloat("_BlightOutput");
+        private float BrightnessOffset => Material.GetFloat("_BlightOffset");
 
         // Output Limitter
+        private bool OutputLimitterEnable => Material.GetFloat("_LimitterEnable") > 0.5;
+        private float LimitterMax => Material.GetFloat("_LimitterMax");
+#pragma warning restore SA1516 // Elements should be separated by blank line
 
-        bool OutputLimitterEnable => material.GetFloat("_LimitterEnable") > 0.5;
-        float LimitterMax => material.GetFloat("_LimitterMax");
-
-        public override MagickImage CompositeLayers()
+        /// <inheritdoc/>
+        internal override MagickImage GenerateToonLitImage()
         {
             using (var disposables = new CompositeDisposable())
             {
@@ -108,11 +132,13 @@ namespace KRT.VRCQuestTools
                     switch (DecalMirrorMode)
                     {
                         case SunaoDecalMirrorMode.Normal:
+
                         // 仕様上、ミラー側をコントロールすることができないので通常と同じにする
                         case SunaoDecalMirrorMode.Fixed:
                         case SunaoDecalMirrorMode.Mirror1:
                             decalCanvas.Composite(decal, decalX, decalY, CompositeOperator.Over);
                             break;
+
                         // ミラー側のデカールを反転させることが設定の意図なので、反転させる
                         case SunaoDecalMirrorMode.Mirror2:
                             decal.Flop();
@@ -350,8 +376,7 @@ namespace KRT.VRCQuestTools
                             var c = new Color(
                                 r / (float)Quantum.Max,
                                 g / (float)Quantum.Max,
-                                b / (float)Quantum.Max
-                            );
+                                b / (float)Quantum.Max);
                             Color.RGBToHSV(c, out float h, out float s, out float v);
                             var limitedV2 = Mathf.Min(limit, v * v);
                             var limited = Color.HSVToRGB(h, s, (float)Math.Sqrt(limitedV2));
@@ -367,18 +392,32 @@ namespace KRT.VRCQuestTools
             }
         }
 
+        private static ushort Saturate(float value)
+        {
+            var rounded = Mathf.RoundToInt(value);
+            if (rounded > Quantum.Max)
+            {
+                return Quantum.Max;
+            }
+            if (rounded < 0.0f)
+            {
+                return 0;
+            }
+            return (ushort)rounded;
+        }
+
         private MagickImage CompositeMainImage()
         {
             using (var disposables = new CompositeDisposable())
             {
-                var mainTexture = MaterialUtils.GetMagickImage(material.mainTexture);
+                var mainTexture = MagickImageUtility.GetMagickImage(Material.mainTexture);
                 disposables.Add(mainTexture);
 
-                var coloredMain = ImgProc.Multiply(mainTexture, material.color);
+                var coloredMain = MagickImageUtility.Multiply(mainTexture, Material.color);
                 disposables.Add(coloredMain);
 
                 var brightnessColor = new Color(Brightness, Brightness, Brightness);
-                var brightnessApplied = ImgProc.Multiply(coloredMain, brightnessColor);
+                var brightnessApplied = MagickImageUtility.Multiply(coloredMain, brightnessColor);
                 disposables.Add(brightnessApplied);
 
                 if (UseTextureAnimation)
@@ -386,7 +425,7 @@ namespace KRT.VRCQuestTools
                     int newW = brightnessApplied.Width / AnimationXSize;
                     int newH = brightnessApplied.Height / AnimationYSize;
                     brightnessApplied.Crop(newW, newH);
-                    ImgProc.ResizeToSquare(brightnessApplied);
+                    MagickImageUtility.ResizeToSquare(brightnessApplied);
                 }
 
                 using (var result = brightnessApplied.Clone())
@@ -398,9 +437,9 @@ namespace KRT.VRCQuestTools
 
         private MagickImage CompositeDecalImage()
         {
-            using (var decalTexture = MaterialUtils.GetMagickImage(DecalTexture))
+            using (var decalTexture = MagickImageUtility.GetMagickImage(DecalTexture))
             {
-                var coloredDecal = ImgProc.Multiply(decalTexture, DecalColor);
+                var coloredDecal = MagickImageUtility.Multiply(decalTexture, DecalColor);
                 if (UseDecalAnimation)
                 {
                     int newW = coloredDecal.Width / DecalAnimationXSize;
@@ -438,16 +477,16 @@ namespace KRT.VRCQuestTools
 
         private MagickImage CompositeEmissionImage()
         {
-            using (var emap = MaterialUtils.GetMagickImage(EmissionMap) ?? new MagickImage(MagickColors.White, 2, 2))
-            using (var e1 = ImgProc.Multiply(emap, EmissionColor))
-            using (var e2 = MaterialUtils.GetMagickImage(SecondEmissionMap) ?? new MagickImage(MagickColors.White, 2, 2))
+            using (var emap = MagickImageUtility.GetMagickImage(EmissionMap) ?? new MagickImage(MagickColors.White, 2, 2))
+            using (var e1 = MagickImageUtility.Multiply(emap, EmissionColor))
+            using (var e2 = MagickImageUtility.GetMagickImage(SecondEmissionMap) ?? new MagickImage(MagickColors.White, 2, 2))
             {
                 if (UseEmissionAnimation)
                 {
                     int newW = e1.Width / EmissionAnimationXSize;
                     int newH = e1.Height / EmissionAnimationYSize;
                     e1.Crop(newW, newH);
-                    ImgProc.ResizeToSquare(e1);
+                    MagickImageUtility.ResizeToSquare(e1);
                 }
 
                 var size = Math.Max(e1.Width, e2.Width);
@@ -484,38 +523,9 @@ namespace KRT.VRCQuestTools
             }
         }
 
-        private static ushort Saturate(float value)
-        {
-            var rounded = Mathf.RoundToInt(value);
-            if (rounded > Quantum.Max)
-            {
-                return Quantum.Max;
-            }
-            if (rounded < 0.0f)
-            {
-                return 0;
-            }
-            return (ushort)rounded;
-        }
-
         private T GetEnum<T>(float value)
         {
             return (T)Enum.ToObject(typeof(T), (int)value);
         }
-    }
-
-    enum SunaoDecalMode
-    {
-        Override, Add, Multiply, MultiplyMono, EmissiveAdd, EmissiveOverride
-    }
-
-    enum SunaoDecalMirrorMode
-    {
-        Normal, Fixed, Mirror1, Mirror2, CopyMirror, CopyFixed
-    }
-
-    enum SunaoEmissionMode
-    {
-        Add, Multiply, Minus
     }
 }
