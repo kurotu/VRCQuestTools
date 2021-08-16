@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace KRT.VRCQuestTools.Menus
         private static void InitFromMenu()
         {
             var target = Selection.activeGameObject;
-            if (target != null && VRCSDKUtils.IsAvatar(target))
+            if (target != null && VRCSDKUtility.IsAvatarRoot(target))
             {
                 var avatar = target.GetComponent<VRC_AvatarDescriptor>();
                 AvatarConverterWindow.ShowWindow(avatar);
@@ -40,7 +41,7 @@ namespace KRT.VRCQuestTools.Menus
         private static bool ValidateContextForGameObject()
         {
             var obj = Selection.activeGameObject;
-            return VRCSDKUtils.IsAvatar(obj);
+            return VRCSDKUtility.IsAvatarRoot(obj);
         }
     }
 }

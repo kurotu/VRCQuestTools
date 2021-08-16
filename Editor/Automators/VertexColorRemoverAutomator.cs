@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
@@ -57,7 +58,7 @@ namespace KRT.VRCQuestTools.Automators
         private static void RemoveAllVertexColorsFromAvatars(Scene scene)
         {
             var model = new VertexColorRemoverViewModel();
-            var avatars = VRCSDKUtils.GetAvatarsFromScene(scene);
+            var avatars = VRCSDKUtility.GetAvatarsFromScene(scene);
             foreach (var a in avatars)
             {
                 model.target = a.gameObject;

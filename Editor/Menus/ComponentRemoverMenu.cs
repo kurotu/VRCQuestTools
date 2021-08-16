@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using KRT.VRCQuestTools.Utils;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -24,7 +25,7 @@ namespace KRT.VRCQuestTools.Menus
             var i18n = VRCQuestToolsSettings.I18nResource;
             var obj = Selection.activeGameObject;
 
-            var components = VRCSDKUtils.GetUnsupportedComponentsInChildren(obj, true);
+            var components = VRCSDKUtility.GetUnsupportedComponentsInChildren(obj, true);
             if (components.Length == 0)
             {
                 EditorUtility.DisplayDialog("VRCQuestTools", i18n.NoUnsupportedComponentsMessage(obj.name), "OK");
@@ -38,7 +39,7 @@ namespace KRT.VRCQuestTools.Menus
             }
 
             Undo.SetCurrentGroupName("Remove Unsupported Components");
-            VRCSDKUtils.RemoveUnsupportedComponentsInChildren(obj, true, true);
+            VRCSDKUtility.RemoveUnsupportedComponentsInChildren(obj, true, true);
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace KRT.VRCQuestTools.Menus
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
             var obj = Selection.activeGameObject;
-            var count = VRCSDKUtils.CountMissingComponentsInChildren(obj, true);
+            var count = VRCSDKUtility.CountMissingComponentsInChildren(obj, true);
             Debug.Log($"[VRCQuestTools] {obj.name} has {count} missing scripts in children");
             if (count == 0)
             {
@@ -77,7 +78,7 @@ namespace KRT.VRCQuestTools.Menus
                 PrefabUtility.UnpackPrefabInstance(obj, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
                 Debug.Log($"[VRCQuestTools] {obj.name} has been unpacked");
             }
-            VRCSDKUtils.RemoveMissingComponentsInChildren(obj, true);
+            VRCSDKUtility.RemoveMissingComponentsInChildren(obj, true);
         }
 
         [MenuItem(VRCQuestTools.MenuPaths.RemoveMissingComponents, true)]

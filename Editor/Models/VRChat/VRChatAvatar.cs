@@ -59,7 +59,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <summary>
         /// Gets unsupported components for Quest.
         /// </summary>
-        internal Component[] UnsupportedComponents => VRCSDKUtils.GetUnsupportedComponentsInChildren(AvatarDescriptor.gameObject, true);
+        internal Component[] UnsupportedComponents => VRCSDKUtility.GetUnsupportedComponentsInChildren(AvatarDescriptor.gameObject, true);
 
         /// <summary>
         /// Covert the avatar for Quest.
@@ -138,8 +138,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
             }
 
-            VRCSDKUtils.RemoveMissingComponentsInChildren(questAvatarObject, true);
-            VRCSDKUtils.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
+            VRCSDKUtility.RemoveMissingComponentsInChildren(questAvatarObject, true);
+            VRCSDKUtility.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
 
             questAvatarObject.name = AvatarDescriptor.gameObject.name + " (Quest)";
             questAvatarObject.SetActive(true);
@@ -160,7 +160,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Directory.CreateDirectory(saveDirectory);
             AssetDatabase.Refresh();
 
-            var materials = Materials.Where(m => !VRCSDKUtils.IsUsableForQuestAvatar(m)).ToArray();
+            var materials = Materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedTextures = new Dictionary<string, Texture2D>();
             for (int i = 0; i < materials.Length; i++)
             {
@@ -195,7 +195,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Directory.CreateDirectory(saveDirectory);
             AssetDatabase.Refresh();
 
-            var materials = Materials.Where(m => !VRCSDKUtils.IsUsableForQuestAvatar(m)).ToArray();
+            var materials = Materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedMaterials = new Dictionary<string, Material>();
             for (int i = 0; i < materials.Length; i++)
             {
