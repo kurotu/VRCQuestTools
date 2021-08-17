@@ -16,7 +16,9 @@ namespace KRT.VRCQuestTools.Utils
     {
         private List<IDisposable> disposables = new List<IDisposable>();
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Dispose internal IDisposable.
+        /// </summary>
         public void Dispose()
         {
             foreach (var d in disposables)

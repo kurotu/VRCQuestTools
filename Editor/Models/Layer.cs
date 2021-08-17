@@ -25,7 +25,9 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         internal Color color = Color.white;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Dispose internal IDisposable.
+        /// </summary>
         public void Dispose()
         {
             if (image != null && !image.IsDisposed)

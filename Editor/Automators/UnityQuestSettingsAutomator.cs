@@ -1,4 +1,9 @@
-﻿using KRT.VRCQuestTools.ViewModels;
+﻿// <copyright file="UnityQuestSettingsAutomator.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+using KRT.VRCQuestTools.ViewModels;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
 

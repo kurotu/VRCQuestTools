@@ -5,10 +5,24 @@
 
 namespace KRT.VRCQuestTools
 {
+    /// <summary>
+    /// VRCQuestTools configuration.
+    /// </summary>
     public static class VRCQuestTools
     {
+        /// <summary>
+        /// VRCQuestTools version (semver).
+        /// </summary>
         public const string Version = "0.7.0";
+
+        /// <summary>
+        /// GitHub repository (username/reponame).
+        /// </summary>
         internal const string GitHubRepository = "kurotu/VRCQuestTools";
-        internal const string BoothURL = "https://booth.pm/ja/items/2436054";
+
+        /// <summary>
+        /// Booth URL.
+        /// </summary>
+        internal const string BoothURL = "https://kurotu.booth.pm/items/2436054";
     }
 }

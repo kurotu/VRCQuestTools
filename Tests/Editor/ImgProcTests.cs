@@ -8,8 +8,14 @@ using NUnit.Framework;
 
 namespace KRT.VRCQuestTools
 {
+    /// <summary>
+    /// Tests for MagickImage manipulation.
+    /// </summary>
     public class ImgProcTests
     {
+        /// <summary>
+        /// Test alpha channel after screen composition.
+        /// </summary>
         [Test]
         public void TestAlphaChannel()
         {

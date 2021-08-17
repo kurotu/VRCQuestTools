@@ -15,18 +15,6 @@ namespace KRT.VRCQuestTools.Models.Unity
     internal abstract class MaterialBase
     {
         /// <summary>
-        /// Shader categories.
-        /// </summary>
-        internal enum ShaderCategory
-        {
-#pragma warning disable SA1136 // Enum values should be on separate lines
-#pragma warning disable SA1602 // Enumeration items should be documented
-            UTS2, Arktoon, Standard, Unlit, Quest, Sunao, Unverified,
-#pragma warning restore SA1602 // Enumeration items should be documented
-#pragma warning restore SA1136 // Enum values should be on separate lines
-        }
-
-        /// <summary>
         /// Internal material.
         /// </summary>
         protected readonly Material Material;
@@ -38,6 +26,18 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal MaterialBase(Material material)
         {
             Material = material;
+        }
+
+        /// <summary>
+        /// Shader categories.
+        /// </summary>
+        internal enum ShaderCategory
+        {
+#pragma warning disable SA1136 // Enum values should be on separate lines
+#pragma warning disable SA1602 // Enumeration items should be documented
+            UTS2, Arktoon, Standard, Unlit, Quest, Sunao, Unverified,
+#pragma warning restore SA1602 // Enumeration items should be documented
+#pragma warning restore SA1136 // Enum values should be on separate lines
         }
 
         /// <summary>

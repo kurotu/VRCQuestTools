@@ -3,9 +3,9 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
