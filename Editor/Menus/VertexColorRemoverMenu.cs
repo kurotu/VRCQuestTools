@@ -4,6 +4,7 @@
 // </copyright>
 
 using KRT.VRCQuestTools.Automators;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace KRT.VRCQuestTools.Menus
         {
             EditorApplication.delayCall += () =>
             {
-                Menu.SetChecked(VRCQuestTools.MenuPaths.AutoRemoveVertexColors, VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled);
+                Menu.SetChecked(VRCQuestTools.MenuPaths.AutoRemoveVertexColors, VRCQuestToolsSettings.IsVertexColorRemoverAutomatorEnabled);
             };
         }
 
@@ -35,7 +36,7 @@ namespace KRT.VRCQuestTools.Menus
         private static void ToggleVertexColorRemoverAutomatorMenu()
         {
             var enabled = !Menu.GetChecked(VRCQuestTools.MenuPaths.AutoRemoveVertexColors);
-            VRCQuestToolsSettings.IsAutoRemoveVertexColorsEnabled = enabled;
+            VRCQuestToolsSettings.IsVertexColorRemoverAutomatorEnabled = enabled;
             Menu.SetChecked(VRCQuestTools.MenuPaths.AutoRemoveVertexColors, enabled);
             VertexColorRemoverAutomator.Enable(enabled);
         }

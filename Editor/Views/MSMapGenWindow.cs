@@ -4,7 +4,7 @@
 // </copyright>
 
 using System;
-using KRT.VRCQuestTools.I18n;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
@@ -17,7 +17,6 @@ namespace KRT.VRCQuestTools.Views
     internal class MSMapGenWindow : EditorWindow
     {
         private MSMapGenViewModel model = new MSMapGenViewModel();
-        private I18nBase i18n;
 
         /// <summary>
         /// Show a MSMapGenWindow.
@@ -31,11 +30,11 @@ namespace KRT.VRCQuestTools.Views
         private void OnEnable()
         {
             titleContent.text = "Metallic Smoothness";
-            i18n = VRCQuestToolsSettings.I18nResource;
         }
 
         private void OnGUI()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             EditorGUILayout.BeginVertical("HelpBox");
             {
                 EditorGUILayout.LabelField("Metallic", EditorStyles.boldLabel);
@@ -67,6 +66,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnClickGenerateButton()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var dest = EditorUtility.SaveFilePanelInProject(i18n.SaveFileDialogTitle("Metallic Smoothness"), "MetallicSmoothness", "png", i18n.SaveFileDialogMessage);
             if (dest != string.Empty)
             {

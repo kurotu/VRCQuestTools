@@ -5,7 +5,7 @@
 
 using System;
 using System.Collections.Generic;
-using KRT.VRCQuestTools.I18n;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
@@ -18,7 +18,6 @@ namespace KRT.VRCQuestTools.Views
     internal class UnityQuestSettingsWindow : EditorWindow
     {
         private UnityQuestSettingsViewModel model = new UnityQuestSettingsViewModel();
-        private I18nBase i18n;
 
         /// <summary>
         /// Show a UnityQuestSettingsWindow.
@@ -31,12 +30,12 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnEnable()
         {
-            i18n = VRCQuestToolsSettings.I18nResource;
             titleContent.text = "Unity Settings for Quest";
         }
 
         private void OnGUI()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var allActions = new List<Action>();
 
 #if !UNITY_2019_3_OR_NEWER

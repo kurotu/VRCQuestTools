@@ -4,7 +4,7 @@
 // </copyright>
 
 using System.Linq;
-using KRT.VRCQuestTools.I18n;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
@@ -20,7 +20,6 @@ namespace KRT.VRCQuestTools.Views
     {
         [SerializeField]
         private AvatarConverterViewModel model = new AvatarConverterViewModel();
-        private I18nBase i18n;
         private Vector2 scrollPosition;
         private VRChatAvatar.ProgressCallback progressCallback;
 
@@ -48,11 +47,11 @@ namespace KRT.VRCQuestTools.Views
         private void OnEnable()
         {
             titleContent.text = "Convert Avatar for Quest";
-            i18n = VRCQuestToolsSettings.I18nResource;
             progressCallback = new Models.VRChat.VRChatAvatar.ProgressCallback
             {
                 onTextureProgress = (total, index, exception, material) =>
                 {
+                    var i18n = VRCQuestToolsSettings.I18nResource;
                     if (exception != null)
                     {
                         var message = $"{i18n.MaterialExceptionDialogMessage}\n" +
@@ -72,6 +71,7 @@ namespace KRT.VRCQuestTools.Views
                 },
                 onAnimationClipProgress = (total, index, exception, clip) =>
                 {
+                    var i18n = VRCQuestToolsSettings.I18nResource;
                     if (exception != null)
                     {
                         var message = $"{i18n.AnimationClipExceptionDialogMessage}\n" +
@@ -90,6 +90,7 @@ namespace KRT.VRCQuestTools.Views
                 },
                 onRuntimeAnimatorProgress = (total, index, exception, controller) =>
                 {
+                    var i18n = VRCQuestToolsSettings.I18nResource;
                     if (exception != null)
                     {
                         var message = $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
@@ -111,6 +112,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnGUI()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var selectedAvatar = (VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, model.targetAvatar, typeof(VRC_AvatarDescriptor), true);
             if (selectedAvatar == null)
             {
@@ -228,6 +230,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnClickConvertButton()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var questAvatar = model.ConvertAvatar(
                 () =>
                 {

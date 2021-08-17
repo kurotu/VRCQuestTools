@@ -3,7 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using KRT.VRCQuestTools.I18n;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
@@ -16,7 +16,6 @@ namespace KRT.VRCQuestTools.Views
     internal class BlendShapesCopyWindow : EditorWindow
     {
         private BlendShapesCopyViewModel model = new BlendShapesCopyViewModel();
-        private I18nBase i18n;
 
         /// <summary>
         /// Show a BlendShapes Copy window.
@@ -41,11 +40,11 @@ namespace KRT.VRCQuestTools.Views
         private void OnEnable()
         {
             titleContent.text = "BlendShapes Copy";
-            i18n = VRCQuestToolsSettings.I18nResource;
         }
 
         private void OnGUI()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             model.sourceMesh = (SkinnedMeshRenderer)EditorGUILayout.ObjectField(i18n.SourceMeshLabel, model.sourceMesh, typeof(SkinnedMeshRenderer), true);
             model.targetMesh = (SkinnedMeshRenderer)EditorGUILayout.ObjectField(i18n.TargetMeshLabel, model.targetMesh, typeof(SkinnedMeshRenderer), true);
 

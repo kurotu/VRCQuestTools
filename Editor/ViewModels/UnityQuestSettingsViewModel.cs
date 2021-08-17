@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using UnityEditor;
 
@@ -30,10 +31,10 @@ namespace KRT.VRCQuestTools.ViewModels
         /// </summary>
         internal bool ShowWindowOnLoad
         {
-            get => VRCQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled;
+            get => VRCQuestToolsSettings.IsShowUnitySettingsWindowOnLoadEnabled;
             set
             {
-                VRCQuestToolsSettings.IsShowSettingsWindowOnLoadEnabled = value;
+                VRCQuestToolsSettings.IsShowUnitySettingsWindowOnLoadEnabled = value;
             }
         }
 
