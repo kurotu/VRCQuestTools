@@ -15,7 +15,7 @@ namespace KRT.VRCQuestTools.Menus
     /// </summary>
     internal static class UpdateCheckerMenu
     {
-        [MenuItem(VRCQuestTools.MenuPaths.CheckForUpdate, false, (int)VRCQuestTools.MenuPriorities.CheckForUpdate)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.CheckForUpdate, false, (int)VRCQuestToolsMenus.MenuPriorities.CheckForUpdate)]
         private static void InitFromMenu()
         {
             var viewModel = new UpdateCheckerViewModel(VRCQuestTools.GitHubRepository);

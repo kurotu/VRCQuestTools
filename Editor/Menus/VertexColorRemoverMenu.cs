@@ -23,11 +23,11 @@ namespace KRT.VRCQuestTools.Menus
         {
             EditorApplication.delayCall += () =>
             {
-                Menu.SetChecked(VRCQuestTools.MenuPaths.AutoRemoveVertexColors, VRCQuestToolsSettings.IsVertexColorRemoverAutomatorEnabled);
+                Menu.SetChecked(VRCQuestToolsMenus.MenuPaths.AutoRemoveVertexColors, VRCQuestToolsSettings.IsVertexColorRemoverAutomatorEnabled);
             };
         }
 
-        [MenuItem(VRCQuestTools.MenuPaths.AutoRemoveVertexColors, false, (int)VRCQuestTools.MenuPriorities.AutoRemoveVertexColors)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.AutoRemoveVertexColors, false, (int)VRCQuestToolsMenus.MenuPriorities.AutoRemoveVertexColors)]
         private static void InitFromMenu()
         {
             ToggleVertexColorRemoverAutomatorMenu();
@@ -35,13 +35,13 @@ namespace KRT.VRCQuestTools.Menus
 
         private static void ToggleVertexColorRemoverAutomatorMenu()
         {
-            var enabled = !Menu.GetChecked(VRCQuestTools.MenuPaths.AutoRemoveVertexColors);
+            var enabled = !Menu.GetChecked(VRCQuestToolsMenus.MenuPaths.AutoRemoveVertexColors);
             VRCQuestToolsSettings.IsVertexColorRemoverAutomatorEnabled = enabled;
-            Menu.SetChecked(VRCQuestTools.MenuPaths.AutoRemoveVertexColors, enabled);
+            Menu.SetChecked(VRCQuestToolsMenus.MenuPaths.AutoRemoveVertexColors, enabled);
             VertexColorRemoverAutomator.Enable(enabled);
         }
 
-        [MenuItem(GameObjectMenu.GameObjectRemoveAllVertexColors)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveAllVertexColors, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectRemoveAllVertexColors)]
         private static void InitFromGameObject()
         {
             var model = new VertexColorRemoverViewModel
@@ -52,7 +52,7 @@ namespace KRT.VRCQuestTools.Menus
             Debug.LogFormat("[{0}] All vertex colors are removed from {1}", "VRCQuestTools", model.target);
         }
 
-        [MenuItem(GameObjectMenu.GameObjectRemoveAllVertexColors, true)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveAllVertexColors, true)]
         private static bool ValidateMenu()
         {
             return Selection.activeGameObject != null;

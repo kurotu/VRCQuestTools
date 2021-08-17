@@ -19,8 +19,8 @@ namespace KRT.VRCQuestTools.Menus
         /// <summary>
         /// Remove Unsupported Components.
         /// </summary>
-        [MenuItem(VRCQuestTools.MenuPaths.RemoveUnsupportedComponents, false, (int)VRCQuestTools.MenuPriorities.RemoveUnsupportedComponents)]
-        [MenuItem(GameObjectMenu.GameObjectRemoveUnsupportedComponents, false)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.RemoveUnsupportedComponents, false, (int)VRCQuestToolsMenus.MenuPriorities.RemoveUnsupportedComponents)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveUnsupportedComponents, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectRemoveUnsupportedComponents)]
         private static void RemoveUnsupportedComponents()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
@@ -46,8 +46,8 @@ namespace KRT.VRCQuestTools.Menus
         /// <summary>
         /// Remove Missing Components.
         /// </summary>
-        [MenuItem(VRCQuestTools.MenuPaths.RemoveMissingComponents, false, (int)VRCQuestTools.MenuPriorities.RemoveMissingComponents)]
-        [MenuItem(GameObjectMenu.GameObjectRemoveMissingComponents, false)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.RemoveMissingComponents, false, (int)VRCQuestToolsMenus.MenuPriorities.RemoveMissingComponents)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveMissingComponents, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectRemoveMissingComponents)]
         private static void RemoveMissingComponents()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
@@ -82,10 +82,10 @@ namespace KRT.VRCQuestTools.Menus
             VRCSDKUtility.RemoveMissingComponentsInChildren(obj, true);
         }
 
-        [MenuItem(VRCQuestTools.MenuPaths.RemoveMissingComponents, true)]
-        [MenuItem(VRCQuestTools.MenuPaths.RemoveUnsupportedComponents, true)]
-        [MenuItem(GameObjectMenu.GameObjectRemoveMissingComponents, true)]
-        [MenuItem(GameObjectMenu.GameObjectRemoveUnsupportedComponents, true)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.RemoveMissingComponents, true)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.RemoveUnsupportedComponents, true)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveMissingComponents, true)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveUnsupportedComponents, true)]
         private static bool ValidateGameObjectMenu()
         {
             return Selection.activeGameObject != null;

@@ -13,7 +13,7 @@ namespace KRT.VRCQuestTools.Menus
     /// </summary>
     internal static class UnityQuestSettingsMenu
     {
-        [MenuItem(VRCQuestTools.MenuPaths.UnitySettings, false, (int)VRCQuestTools.MenuPriorities.UnitySettings)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.UnitySettings, false, (int)VRCQuestToolsMenus.MenuPriorities.UnitySettings)]
         private static void InitFromMenu()
         {
             UnityQuestSettingsWindow.ShowWindow();

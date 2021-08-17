@@ -13,7 +13,7 @@ namespace KRT.VRCQuestTools.Menus
     /// </summary>
     internal static class MSMapGenMenu
     {
-        [MenuItem(VRCQuestTools.MenuPaths.MSMapGenerator, false, (int)VRCQuestTools.MenuPriorities.MSMapGenerator)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.MSMapGenerator, false, (int)VRCQuestToolsMenus.MenuPriorities.MSMapGenerator)]
         private static void InitOnMenu()
         {
             MSMapGenWindow.ShowWindow();

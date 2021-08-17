@@ -28,7 +28,7 @@ namespace KRT.VRCQuestTools.Menus
         /// <summary>
         /// Use auto.
         /// </summary>
-        [MenuItem(VRCQuestTools.MenuPaths.LanguageAuto, false, (int)VRCQuestTools.MenuPriorities.LanguageAuto)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.LanguageAuto, false, (int)VRCQuestToolsMenus.MenuPriorities.LanguageAuto)]
         private static void LanguageAuto()
         {
             SetLanguage(DisplayLanguage.Auto);
@@ -37,7 +37,7 @@ namespace KRT.VRCQuestTools.Menus
         /// <summary>
         /// Use English.
         /// </summary>
-        [MenuItem(VRCQuestTools.MenuPaths.LanguageEnglish, false, (int)VRCQuestTools.MenuPriorities.LanguageEnglish)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.LanguageEnglish, false, (int)VRCQuestToolsMenus.MenuPriorities.LanguageEnglish)]
         private static void LanguageEnglish()
         {
             SetLanguage(DisplayLanguage.English);
@@ -46,7 +46,7 @@ namespace KRT.VRCQuestTools.Menus
         /// <summary>
         /// Use Japanese.
         /// </summary>
-        [MenuItem(VRCQuestTools.MenuPaths.LanguageJapanese, false, (int)VRCQuestTools.MenuPriorities.LanguageJapanese)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.LanguageJapanese, false, (int)VRCQuestToolsMenus.MenuPriorities.LanguageJapanese)]
         private static void LanguageJapanese()
         {
             SetLanguage(DisplayLanguage.Japanese);
@@ -62,9 +62,9 @@ namespace KRT.VRCQuestTools.Menus
         {
             var menus = new Dictionary<DisplayLanguage, string>
             {
-                { DisplayLanguage.Auto, VRCQuestTools.MenuPaths.LanguageAuto },
-                { DisplayLanguage.English, VRCQuestTools.MenuPaths.LanguageEnglish },
-                { DisplayLanguage.Japanese, VRCQuestTools.MenuPaths.LanguageJapanese },
+                { DisplayLanguage.Auto, VRCQuestToolsMenus.MenuPaths.LanguageAuto },
+                { DisplayLanguage.English, VRCQuestToolsMenus.MenuPaths.LanguageEnglish },
+                { DisplayLanguage.Japanese, VRCQuestToolsMenus.MenuPaths.LanguageJapanese },
             };
             Debug.Assert(menus.Count == Enum.GetValues(typeof(DisplayLanguage)).Length);
 

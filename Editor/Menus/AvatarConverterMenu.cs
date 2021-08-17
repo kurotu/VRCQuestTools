@@ -16,7 +16,7 @@ namespace KRT.VRCQuestTools.Menus
     /// </summary>
     internal static class AvatarConverterMenu
     {
-        [MenuItem(VRCQuestTools.MenuPaths.ConvertAvatarForQuest, false, (int)VRCQuestTools.MenuPriorities.ConvertAvatarForQuest)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.ConvertAvatarForQuest, false, (int)VRCQuestToolsMenus.MenuPriorities.ConvertAvatarForQuest)]
         private static void InitFromMenu()
         {
             var target = Selection.activeGameObject;
@@ -31,13 +31,13 @@ namespace KRT.VRCQuestTools.Menus
             }
         }
 
-        [MenuItem(GameObjectMenu.GameObjectConvertAvatarForQuest, false, 30)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.ConvertAvatarForQuest, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectConvertAvatarForQuest)]
         private static void InitFromContextForGameObject()
         {
             InitFromMenu();
         }
 
-        [MenuItem(GameObjectMenu.GameObjectConvertAvatarForQuest, true)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.ConvertAvatarForQuest, true)]
         private static bool ValidateContextForGameObject()
         {
             var obj = Selection.activeGameObject;

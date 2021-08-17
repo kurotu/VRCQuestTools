@@ -14,13 +14,13 @@ namespace KRT.VRCQuestTools.Menus
     /// </summary>
     internal static class BlendShapesCopyMenu
     {
-        [MenuItem(VRCQuestTools.MenuPaths.BlendShapesCopy, false, (int)VRCQuestTools.MenuPriorities.BlendShapesCopy)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.BlendShapesCopy, false, (int)VRCQuestToolsMenus.MenuPriorities.BlendShapesCopy)]
         private static void InitOnMenu()
         {
             BlendShapesCopyWindow.ShowWindow();
         }
 
-        [MenuItem("CONTEXT/SkinnedMeshRenderer/Copy BlendShape Weights")]
+        [MenuItem(VRCQuestToolsMenus.ContextMenuPaths.CopyBlendShapeWeights)]
         private static void InitOnContext(MenuCommand command)
         {
             BlendShapesCopyWindow.ShowWindow(command.context as SkinnedMeshRenderer);
