@@ -94,6 +94,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 renderer.sharedMaterials = renderer.sharedMaterials.Select(m =>
                 {
+                    if (m == null)
+                    {
+                        return null;
+                    }
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
                     if (convertedMaterials.ContainsKey(guid))
                     {
@@ -114,12 +118,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 var layers = questAvatarObject.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
                 for (int i = 0; i < layers.Length; i++)
                 {
-                    if (!layers[i].isDefault)
+                    var layer = layers[i];
+                    if (!layer.isDefault && layer.animatorController != null)
                     {
-                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(layers[i].animatorController, out string guid, out long localId);
+                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(layer.animatorController, out string guid, out long localId);
                         if (convertedAnimatorControllers.ContainsKey(guid))
                         {
-                            layers[i].animatorController = convertedAnimatorControllers[guid];
+                            layer.animatorController = convertedAnimatorControllers[guid];
                         }
                     }
                 }
