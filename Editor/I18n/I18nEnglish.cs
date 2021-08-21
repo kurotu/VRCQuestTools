@@ -1,14 +1,26 @@
-﻿namespace KRT.VRCQuestTools
+﻿// <copyright file="I18nEnglish.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+#pragma warning disable SA1201 // Elements should appear in the correct order
+#pragma warning disable SA1516 // Elements should be separated by blank line
+#pragma warning disable SA1600 // Elements should be documented
+
+namespace KRT.VRCQuestTools.I18n
 {
-    class I18nEnglish : I18nBase
+    /// <summary>
+    /// English strings.
+    /// </summary>
+    internal class I18nEnglish : I18nBase
     {
         internal override string CancelLabel => "Cancel";
 
         // Convert Avatar for Quest
         internal override string OverwriteWarningDialogButtonCancel => "Cancel";
         internal override string OverwriteWarningDialogButtonOK => "OK";
-        internal override string OverwriteWarningDialogButtonUseAltDir(string altDir)=> $"Use \"{altDir}\"";
-        internal override string OverwriteWarningDialogMessage(string artifactsDir)=> $"\"{artifactsDir}\" already exists. Do you want to overwrite?";
+        internal override string OverwriteWarningDialogButtonUseAltDir(string altDir) => $"Use \"{altDir}\"";
+        internal override string OverwriteWarningDialogMessage(string artifactsDir) => $"\"{artifactsDir}\" already exists. Do you want to overwrite?";
         internal override string OverwriteWarningDialogTitle => "VRCQuestTools Warning";
         internal override string AvatarLabel => "Avatar";
         internal override string GenerateQuestTexturesLabel => "Generate Textures for Quest";

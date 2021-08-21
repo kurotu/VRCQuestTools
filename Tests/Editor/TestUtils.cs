@@ -1,22 +1,41 @@
 ﻿// <copyright file="TestUtils.cs" company="kurotu">
 // Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
-// <author>kurotu</author>
-// <remarks>Licensed under the MIT license.</remarks>
 
 using ImageMagick;
+using KRT.VRCQuestTools.Models.Unity;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools
 {
-    static class TestUtils
+    /// <summary>
+    /// Test utility.
+    /// </summary>
+    internal static class TestUtils
     {
+        /// <summary>
+        /// Test fixtures folder.
+        /// </summary>
         internal const string FixturesFolder = "Assets/KRT/VRCQuestTools/Tests/Fixtures";
+
+        /// <summary>
+        /// Materials folder.
+        /// </summary>
         internal const string MaterialsFolder = FixturesFolder + "/Materials";
+
+        /// <summary>
+        /// Textures folder.
+        /// </summary>
         internal const string TexturesFolder = FixturesFolder + "/Textures";
 
+        /// <summary>
+        /// Load material from materials folder.
+        /// </summary>
+        /// <param name="file">File name.</param>
+        /// <returns>Material.</returns>
         internal static Material LoadMaterial(string file)
         {
             var material = AssetDatabase.LoadAssetAtPath<Material>(MaterialsFolder + "/" + file);
@@ -24,14 +43,24 @@ namespace KRT.VRCQuestTools
             return material;
         }
 
-        internal static MaterialWrapper LoadMaterialWrapper(string file)
+        /// <summary>
+        /// Load MaterialBase from materials folder.
+        /// </summary>
+        /// <param name="file">File name.</param>
+        /// <returns>MaterialBase.</returns>
+        internal static MaterialBase LoadMaterialWrapper(string file)
         {
             var material = LoadMaterial(file);
-            var wrapper = MaterialUtils.CreateWrapper(material);
+            var wrapper = MaterialBase.Create(material);
             Assert.NotNull(wrapper);
             return wrapper;
         }
 
+        /// <summary>
+        /// Load MagickImage from textures folder.
+        /// </summary>
+        /// <param name="file">File name.</param>
+        /// <returns>MagickImage.</returns>
         internal static MagickImage LoadMagickImage(string file)
         {
             var image = new MagickImage(TexturesFolder + "/" + file);

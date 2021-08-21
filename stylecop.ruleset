@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="StyleCop.Analyzers rules for VRCQuestTools" Description="StyleCop.Analyzers for VRCQuestTools. Some rules are disabled." ToolsVersion="15.0">
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1101" Action="None" />
+    <Rule Id="SA1200" Action="None" />
+    <Rule Id="SA1307" Action="None" />
+    <Rule Id="SA1401" Action="None" />
+    <Rule Id="SA1407" Action="None" />
+    <Rule Id="SA1513" Action="None" />
+    <Rule Id="SA1639" Action="None" />
+  </Rules>
+</RuleSet>

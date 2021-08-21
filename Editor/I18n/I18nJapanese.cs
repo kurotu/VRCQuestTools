@@ -1,6 +1,18 @@
-﻿namespace KRT.VRCQuestTools
+﻿// <copyright file="I18nJapanese.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+#pragma warning disable SA1201 // Elements should appear in the correct order
+#pragma warning disable SA1516 // Elements should be separated by blank line
+#pragma warning disable SA1600 // Elements should be documented
+
+namespace KRT.VRCQuestTools.I18n
 {
-    class I18nJapanese : I18nBase
+    /// <summary>
+    /// Japanese strings.
+    /// </summary>
+    internal class I18nJapanese : I18nBase
     {
         internal override string CancelLabel => "キャンセル";
 
@@ -54,7 +66,6 @@
         internal override string SaveFileDialogTitle(string thing) => $"{thing} を保存";
         internal override string SaveFileDialogMessage => "テクスチャの保存先を選択してください";
         internal override string GenerateButtonLabel => "Metallic Smoothness を生成";
-
 
         // Unity Settings
         internal override string CacheServerModeLabel => "キャッシュサーバー";

@@ -1,16 +1,21 @@
 ﻿// <copyright file="ImgProcTests.cs" company="kurotu">
 // Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
-// <author>kurotu</author>
-// <remarks>Licensed under the MIT license.</remarks>
 
 using ImageMagick;
 using NUnit.Framework;
 
 namespace KRT.VRCQuestTools
 {
+    /// <summary>
+    /// Tests for MagickImage manipulation.
+    /// </summary>
     public class ImgProcTests
     {
+        /// <summary>
+        /// Test alpha channel after screen composition.
+        /// </summary>
         [Test]
         public void TestAlphaChannel()
         {
