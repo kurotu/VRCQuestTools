@@ -118,13 +118,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 var layers = questAvatarObject.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
                 for (int i = 0; i < layers.Length; i++)
                 {
-                    var layer = layers[i];
-                    if (!layer.isDefault && layer.animatorController != null)
+                    if (!layers[i].isDefault && layers[i].animatorController != null)
                     {
-                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(layer.animatorController, out string guid, out long localId);
+                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(layers[i].animatorController, out string guid, out long localId);
                         if (convertedAnimatorControllers.ContainsKey(guid))
                         {
-                            layer.animatorController = convertedAnimatorControllers[guid];
+                            layers[i].animatorController = convertedAnimatorControllers[guid];
                         }
                     }
                 }
@@ -134,7 +133,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     if (animator.runtimeAnimatorController != null)
                     {
-                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animator, out string guid, out long localId);
+                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animator.runtimeAnimatorController, out string guid, out long localId);
                         if (convertedAnimatorControllers.ContainsKey(guid))
                         {
                             animator.runtimeAnimatorController = convertedAnimatorControllers[guid];
@@ -260,6 +259,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
             for (var i = 0; i < animationClips.Length; i++)
             {
                 var clip = animationClips[i];
+                if (VRCSDKUtility.IsProxyAnimationClip(clip))
+                {
+                    continue;
+                }
                 progressCallback(animationClips.Length, i, null, clip);
                 try
                 {

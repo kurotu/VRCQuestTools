@@ -258,6 +258,7 @@ namespace KRT.VRCQuestTools.Views
             if (questAvatar != null)
             {
                 EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(model.targetAvatar.name), "OK");
+                Selection.activeGameObject = questAvatar;
             }
         }
     }
