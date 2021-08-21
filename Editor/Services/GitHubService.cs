@@ -26,6 +26,7 @@ namespace KRT.VRCQuestTools.Services
         {
             this.repository = repository;
             Client.DefaultRequestHeaders.Add("User-Agent", "VRCQuestTools");
+            Client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
         }
 
         /// <summary>

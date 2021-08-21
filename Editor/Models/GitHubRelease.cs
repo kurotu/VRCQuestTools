@@ -19,5 +19,15 @@ namespace KRT.VRCQuestTools.Models
         /// Git tag name.
         /// </summary>
         public string tag_name = null;
+
+        /// <summary>
+        /// Published date.
+        /// </summary>
+        public string published_at = null;
+
+        /// <summary>
+        /// Gets published date.
+        /// </summary>
+        public DateTime PublishedDateTime => DateTime.Parse(published_at).ToUniversalTime();
     }
 }
