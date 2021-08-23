@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using KRT.VRCQuestTools.Models;
@@ -14,49 +15,48 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for UpdateChecker.
     /// </summary>
+    [Serializable]
     internal class UpdateCheckerViewModel
     {
-        private const bool IsDebug = false;
+        /// <summary>
+        /// Latest GitHub release.
+        /// </summary>
+        internal GitHubRelease LatestRelease = new GitHubRelease();
 
-        private GitHubService github;
+        private readonly GitHubService github;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCheckerViewModel"/> class with github repository.
         /// </summary>
-        /// <param name="repository">GitHub repository (username/reponame).</param>
-        internal UpdateCheckerViewModel(string repository)
+        /// <param name="github">GitHub API service.</param>
+        internal UpdateCheckerViewModel(GitHubService github)
         {
-            github = new GitHubService(repository);
+            this.github = github;
         }
 
         /// <summary>
-        /// Callback for CheckForUpdates().
+        /// Gets a value indicating whether latest release is an update for current version.
         /// </summary>
-        /// <param name="hasUpdate">Whether there is update.</param>
-        /// <param name="currentVersion">Current version.</param>
-        /// <param name="latestVersion">Latest version.</param>
-        internal delegate void Callback(bool hasUpdate, SemVer currentVersion, SemVer latestVersion);
+        internal bool HasUpdates => GitHubRelease.HasUpdates(CurrentVersion, DateTime.UtcNow, VRCQuestTools.DaysToDelayUpdateNotification, LatestRelease);
+
+        private SemVer CurrentVersion => new SemVer(VRCQuestTools.Version);
 
         /// <summary>
         /// Check latest version.
         /// </summary>
-        /// <param name="callback">Callback on completion.</param>
-        internal void CheckForUpdates(Callback callback)
+        internal void CheckForUpdates()
         {
             var mainContext = SynchronizationContext.Current;
             Task.Run(async () =>
             {
-                var latest = await github.GetLatestRelease();
-                var latestVersion = new SemVer(latest.tag_name);
-                var currentVersion = IsDebug ? new SemVer("0.0.0") : new SemVer(VRCQuestTools.Version);
-                Debug.Log($"[VRCQuestTools] Current: {currentVersion}, Latest: {latestVersion}");
-                mainContext.Post(
-                    state =>
-                    {
-                        VRCQuestToolsSettings.LastVersionCheckDateTime = System.DateTime.UtcNow;
-                        callback(latestVersion > currentVersion, currentVersion, latestVersion);
-                    },
-                    null);
+                try
+                {
+                    LatestRelease = await github.GetLatestRelease();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
             });
         }
     }

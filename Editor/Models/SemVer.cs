@@ -3,15 +3,22 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
+using UnityEngine;
+
 namespace KRT.VRCQuestTools.Models
 {
     /// <summary>
     /// Represents semantic versioning.
     /// </summary>
+    [Serializable]
     internal class SemVer
     {
+        [SerializeField]
         private readonly int major;
+        [SerializeField]
         private readonly int minor;
+        [SerializeField]
         private readonly int patch;
 
         /// <summary>
@@ -25,6 +32,19 @@ namespace KRT.VRCQuestTools.Models
             major = int.Parse(split[0]);
             minor = int.Parse(split[1]);
             patch = int.Parse(split[2]);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SemVer"/> class.
+        /// </summary>
+        /// <param name="major">Major.</param>
+        /// <param name="minor">Minor.</param>
+        /// <param name="patch">Patch.</param>
+        internal SemVer(int major, int minor, int patch)
+        {
+            this.major = major;
+            this.minor = minor;
+            this.patch = patch;
         }
 
         public static bool operator >(SemVer a, SemVer b)

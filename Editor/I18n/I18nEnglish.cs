@@ -15,6 +15,7 @@ namespace KRT.VRCQuestTools.I18n
     internal class I18nEnglish : I18nBase
     {
         internal override string CancelLabel => "Cancel";
+        internal override string CloseLabel => "Close";
 
         // Convert Avatar for Quest
         internal override string OverwriteWarningDialogButtonCancel => "Cancel";
@@ -79,9 +80,9 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AllAppliedHelp => "OK, all recommended settings are applied.";
 
         // Check for Update
-        internal override string CheckLater => "Check later";
-        internal override string GetUpdate => "Get update";
-        internal override string NewVersionIsAvailable(string latestVersion) => $"VRCQuestTools {latestVersion} is available.";
+        internal override string CheckLater => "Check Later";
+        internal override string GetUpdate => "Get Update";
+        internal override string NewVersionIsAvailable(string latestVersion) => $"New version {latestVersion} is available.";
         internal override string ThereIsNoUpdate => "There is no update.";
     }
 }

@@ -16,6 +16,11 @@ namespace KRT.VRCQuestTools
         public const string Version = "0.7.0";
 
         /// <summary>
+        /// Days to delay update notification.
+        /// </summary>
+        internal const int DaysToDelayUpdateNotification = 1;
+
+        /// <summary>
         /// GitHub repository (username/reponame).
         /// </summary>
         internal const string GitHubRepository = "kurotu/VRCQuestTools";

@@ -25,7 +25,9 @@ namespace KRT.VRCQuestTools.Services
         internal GitHubService(string repository)
         {
             this.repository = repository;
+            Client.Timeout = System.TimeSpan.FromSeconds(10);
             Client.DefaultRequestHeaders.Add("User-Agent", "VRCQuestTools");
+            Client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
         }
 
         /// <summary>

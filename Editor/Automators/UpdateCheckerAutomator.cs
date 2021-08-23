@@ -3,9 +3,8 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using KRT.VRCQuestTools.ViewModels;
+using KRT.VRCQuestTools.Views;
 using UnityEditor;
-using UnityEngine;
 
 namespace KRT.VRCQuestTools.Automators
 {
@@ -25,14 +24,8 @@ namespace KRT.VRCQuestTools.Automators
         /// </summary>
         private static void DelayCall()
         {
-            var viewModel = new UpdateCheckerViewModel(VRCQuestTools.GitHubRepository);
-            viewModel.CheckForUpdates((hasUpdate, currentVersion, latestVersion) =>
-            {
-                if (hasUpdate)
-                {
-                    Debug.LogWarning($"[VRCQuestTools] New version {latestVersion} is available, see {VRCQuestTools.BoothURL}");
-                }
-            });
+            UpdateCheckerWindow.instance.CheckForUpdates();
+            UpdateCheckerWindow.instance.Show();
         }
     }
 }
