@@ -29,12 +29,12 @@ namespace KRT.VRCQuestTools.Menus
             var components = VRCSDKUtility.GetUnsupportedComponentsInChildren(obj, true);
             if (components.Length == 0)
             {
-                EditorUtility.DisplayDialog("VRCQuestTools", i18n.NoUnsupportedComponentsMessage(obj.name), "OK");
+                EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NoUnsupportedComponentsMessage(obj.name), "OK");
                 return;
             }
             var message = i18n.UnsupportedRemoverConfirmationMessage(obj.name) + "\n\n" +
                 string.Join("\n", components.Select(c => c.GetType()).Distinct().Select(c => $"  - {c.Name}").OrderBy(c => c));
-            if (!EditorUtility.DisplayDialog("VRCQuestTools", message, "OK", i18n.CancelLabel))
+            if (!EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK", i18n.CancelLabel))
             {
                 return;
             }
@@ -53,10 +53,10 @@ namespace KRT.VRCQuestTools.Menus
             var i18n = VRCQuestToolsSettings.I18nResource;
             var obj = Selection.activeGameObject;
             var count = VRCSDKUtility.CountMissingComponentsInChildren(obj, true);
-            Debug.Log($"[VRCQuestTools] {obj.name} has {count} missing scripts in children");
+            Debug.Log($"[{VRCQuestTools.Name}] {obj.name} has {count} missing scripts in children");
             if (count == 0)
             {
-                EditorUtility.DisplayDialog("VRCQuestTools", i18n.NoMissingComponentsMessage(obj.name), "OK");
+                EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NoMissingComponentsMessage(obj.name), "OK");
                 return;
             }
 
@@ -66,7 +66,7 @@ namespace KRT.VRCQuestTools.Menus
             {
                 message += $" ({i18n.UnpackPrefabMessage})";
             }
-            if (!EditorUtility.DisplayDialog("VRCQuestTools", message, "OK", i18n.CancelLabel))
+            if (!EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK", i18n.CancelLabel))
             {
                 return;
             }
@@ -77,7 +77,7 @@ namespace KRT.VRCQuestTools.Menus
 
                 // Somehow unpacking is needed to apply changes to the scene file.
                 PrefabUtility.UnpackPrefabInstance(obj, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
-                Debug.Log($"[VRCQuestTools] {obj.name} has been unpacked");
+                Debug.Log($"[{VRCQuestTools.Name}] {obj.name} has been unpacked");
             }
             VRCSDKUtility.RemoveMissingComponentsInChildren(obj, true);
         }

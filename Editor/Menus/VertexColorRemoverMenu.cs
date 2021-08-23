@@ -49,7 +49,7 @@ namespace KRT.VRCQuestTools.Menus
                 target = Selection.activeGameObject,
             };
             model.RemoveVertexColor();
-            Debug.LogFormat("[{0}] All vertex colors are removed from {1}", "VRCQuestTools", model.target);
+            Debug.LogFormat("[{0}] All vertex colors are removed from {1}", VRCQuestTools.Name, model.target);
         }
 
         [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveAllVertexColors, true)]

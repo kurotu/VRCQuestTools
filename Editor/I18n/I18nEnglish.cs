@@ -22,7 +22,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string OverwriteWarningDialogButtonOK => "OK";
         internal override string OverwriteWarningDialogButtonUseAltDir(string altDir) => $"Use \"{altDir}\"";
         internal override string OverwriteWarningDialogMessage(string artifactsDir) => $"\"{artifactsDir}\" already exists. Do you want to overwrite?";
-        internal override string OverwriteWarningDialogTitle => "VRCQuestTools Warning";
+        internal override string OverwriteWarningDialogTitle => $"{VRCQuestTools.Name} Warning";
         internal override string AvatarLabel => "Avatar";
         internal override string GenerateQuestTexturesLabel => "Generate Textures for Quest";
         internal override string QuestTexturesDescription => "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar";
@@ -43,7 +43,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
         internal override string AlertForMaterialAnimation => "There are Animation clips which change avatar's materials. Animator Controllers and Animation clips will be duplicated then converted for Quest.";
         internal override string TexturesSizeLimitLabel => "Textures Size Limit";
-        internal override string CompletedDialogTitle => "VRCQuestTools";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
 
         // Remove Missing Components

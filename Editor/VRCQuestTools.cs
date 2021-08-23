@@ -11,6 +11,11 @@ namespace KRT.VRCQuestTools
     public static class VRCQuestTools
     {
         /// <summary>
+        /// Tool name.
+        /// </summary>
+        public const string Name = "VRCQuestTools";
+
+        /// <summary>
         /// VRCQuestTools version (semver).
         /// </summary>
         public const string Version = "0.7.0";

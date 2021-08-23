@@ -60,13 +60,13 @@ namespace KRT.VRCQuestTools.Views
                             $"Shader: {material.shader.name}\n" +
                             "\n" +
                             $"Exception: {exception.Message}";
-                        EditorUtility.DisplayDialog("VRCQuestTools", message, "OK");
+                        EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
                         EditorUtility.ClearProgressBar();
                     }
                     else
                     {
                         var progress = (float)index / total;
-                        EditorUtility.DisplayProgressBar("VRCQuestTools", $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
+                        EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
                     }
                 },
                 onAnimationClipProgress = (total, index, exception, clip) =>
@@ -79,13 +79,13 @@ namespace KRT.VRCQuestTools.Views
                             $"AnimationClip: {clip.name}\n" +
                             $"\n" +
                             $"Exception: {exception.Message}";
-                        EditorUtility.DisplayDialog("VRCQuestTools", message, "OK");
+                        EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
                         EditorUtility.ClearProgressBar();
                     }
                     else
                     {
                         var progress = (float)index / total;
-                        EditorUtility.DisplayProgressBar("VRCQuestTools", $"Converting AnimationCilps : {index}/{total}", progress);
+                        EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimationCilps : {index}/{total}", progress);
                     }
                 },
                 onRuntimeAnimatorProgress = (total, index, exception, controller) =>
@@ -98,13 +98,13 @@ namespace KRT.VRCQuestTools.Views
                             $"AnimatorController: {controller.name}\n" +
                             $"\n" +
                             $"Exception: {exception.Message}";
-                        EditorUtility.DisplayDialog("VRCQuestTools", message, "OK");
+                        EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
                         EditorUtility.ClearProgressBar();
                     }
                     else
                     {
                         var progress = (float)index / total;
-                        EditorUtility.DisplayProgressBar("VRCQuestTools", $"Converting AnimatorControllers : {index + 1}/{total}", progress);
+                        EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimatorControllers : {index + 1}/{total}", progress);
                     }
                 },
             };
@@ -257,7 +257,7 @@ namespace KRT.VRCQuestTools.Views
             EditorUtility.ClearProgressBar();
             if (questAvatar != null)
             {
-                EditorUtility.DisplayDialog(i18n.CompletedDialogTitle, i18n.CompletedDialogMessage(model.targetAvatar.name), "OK");
+                EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.CompletedDialogMessage(model.targetAvatar.name), "OK");
                 Selection.activeGameObject = questAvatar;
             }
         }

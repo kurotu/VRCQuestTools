@@ -89,7 +89,7 @@ namespace KRT.VRCQuestTools.Utils
         {
             foreach (var c in GetUnsupportedComponentsInChildren(gameObject, includeInactive))
             {
-                var message = $"[VRCQuestTools] Removed {c.GetType().Name} from {c.gameObject.name}";
+                var message = $"[{VRCQuestTools.Name}] Removed {c.GetType().Name} from {c.gameObject.name}";
                 if (canUndo)
                 {
                     Undo.DestroyObjectImmediate(c);

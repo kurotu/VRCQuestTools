@@ -22,7 +22,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string OverwriteWarningDialogButtonOK => "OK";
         internal override string OverwriteWarningDialogButtonUseAltDir(string altDir) => $"\"{altDir}\" を使用する";
         internal override string OverwriteWarningDialogMessage(string artifactsDir) => $"\"{artifactsDir}\" が既に存在します。上書きしますか？";
-        internal override string OverwriteWarningDialogTitle => "VRCAvatarQuestConverter 警告";
+        internal override string OverwriteWarningDialogTitle => $"{VRCQuestTools.Name} 警告";
         internal override string AvatarLabel => "アバター";
         internal override string GenerateQuestTexturesLabel => "Quest用のテクスチャを生成する";
         internal override string QuestTexturesDescription => "メインテクスチャ以外にもマテリアルのパラメーターを参照してテクスチャを生成し、PC版アバターの外観に近づけます。";
@@ -43,7 +43,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";
         internal override string AlertForMaterialAnimation => "マテリアルを変更するアニメーションがあるため、Animator ControllerおよびアニメーションをQuest用に複製・変換します。";
         internal override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
-        internal override string CompletedDialogTitle => "VRCQuestTools";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";
 
         // Remove Missing Components

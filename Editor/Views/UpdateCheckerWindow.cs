@@ -68,7 +68,7 @@ namespace KRT.VRCQuestTools.Views
             }
 
             Handles.BeginGUI();
-            windowRect = GUILayout.Window(0, windowRect, OnWindow, "VRCQuestTools");
+            windowRect = GUILayout.Window(0, windowRect, OnWindow, VRCQuestTools.Name);
             Handles.EndGUI();
         }
 

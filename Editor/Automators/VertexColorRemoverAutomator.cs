@@ -18,7 +18,7 @@ namespace KRT.VRCQuestTools.Automators
     [InitializeOnLoad]
     public class VertexColorRemoverAutomator
     {
-        private static readonly string Tag = "VRCQuestTools";
+        private static readonly string Tag = VRCQuestTools.Name;
         private static readonly string ClassName = typeof(VertexColorRemoverAutomator).Name;
 
         static VertexColorRemoverAutomator()

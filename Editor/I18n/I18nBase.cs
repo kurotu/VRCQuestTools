@@ -40,7 +40,6 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string WarningForAppearance { get; }
         internal abstract string WarningForUnverifiedShaders { get; }
         internal abstract string TexturesSizeLimitLabel { get; }
-        internal abstract string CompletedDialogTitle { get; }
         internal abstract string AlertForComponents { get; }
         internal abstract string AlertForMaterialAnimation { get; }
         internal abstract string CompletedDialogMessage(string originalName);

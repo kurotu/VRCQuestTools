@@ -37,15 +37,15 @@ namespace KRT.VRCQuestTools.Menus
                             {
                                 UpdateCheckerWindow.instance.SetLatestRelease(release);
                                 UpdateCheckerWindow.instance.Show();
-                                Debug.LogWarning($"[VRCQuestTools] New version {release.Version} is available, see {VRCQuestTools.BoothURL}");
-                                if (EditorUtility.DisplayDialog("VRCQuestTools", i18n.NewVersionIsAvailable(release.Version.ToString()), i18n.GetUpdate, i18n.CheckLater))
+                                Debug.LogWarning($"[{VRCQuestTools.Name}] New version {release.Version} is available, see {VRCQuestTools.BoothURL}");
+                                if (EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NewVersionIsAvailable(release.Version.ToString()), i18n.GetUpdate, i18n.CheckLater))
                                 {
                                     Application.OpenURL(VRCQuestTools.BoothURL);
                                 }
                             }
                             else
                             {
-                                EditorUtility.DisplayDialog("VRCQuestTools", i18n.ThereIsNoUpdate, "OK");
+                                EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ThereIsNoUpdate, "OK");
                             }
                         },
                         null);
