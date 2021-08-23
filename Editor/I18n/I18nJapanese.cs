@@ -15,6 +15,7 @@ namespace KRT.VRCQuestTools.I18n
     internal class I18nJapanese : I18nBase
     {
         internal override string CancelLabel => "キャンセル";
+        internal override string CloseLabel => "閉じる";
 
         // Convert Avatar for Quest
         internal override string OverwriteWarningDialogButtonCancel => "キャンセル";
@@ -81,7 +82,7 @@ namespace KRT.VRCQuestTools.I18n
         // Check for Update
         internal override string CheckLater => "後で確認";
         internal override string GetUpdate => "アップデート";
-        internal override string NewVersionIsAvailable(string latestVersion) => $"VRCQuestTools {latestVersion} が公開されています。";
+        internal override string NewVersionIsAvailable(string latestVersion) => $"新しいバージョン {latestVersion} があります。";
         internal override string ThereIsNoUpdate => "アップデートはありません。";
     }
 }

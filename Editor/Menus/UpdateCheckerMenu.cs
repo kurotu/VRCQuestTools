@@ -3,8 +3,12 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using KRT.VRCQuestTools.Models;
-using KRT.VRCQuestTools.ViewModels;
+using KRT.VRCQuestTools.Services;
+using KRT.VRCQuestTools.Views;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,21 +22,37 @@ namespace KRT.VRCQuestTools.Menus
         [MenuItem(VRCQuestToolsMenus.MenuPaths.CheckForUpdate, false, (int)VRCQuestToolsMenus.MenuPriorities.CheckForUpdate)]
         private static void InitFromMenu()
         {
-            var viewModel = new UpdateCheckerViewModel(VRCQuestTools.GitHubRepository);
-            viewModel.CheckForUpdates((hasUpdate, currentVersion, latestVersion) =>
+            var mainContext = SynchronizationContext.Current;
+            var i18n = VRCQuestToolsSettings.I18nResource;
+            Task.Run(async () =>
             {
-                var i18n = VRCQuestToolsSettings.I18nResource;
-                if (hasUpdate)
+                try
                 {
-                    Debug.LogWarning($"[VRCQuestTools] New version {latestVersion} is available, see {VRCQuestTools.BoothURL}");
-                    if (EditorUtility.DisplayDialog("VRCQuestTools", i18n.NewVersionIsAvailable(latestVersion.ToString()), i18n.GetUpdate, i18n.CheckLater))
-                    {
-                        Application.OpenURL(VRCQuestTools.BoothURL);
-                    }
+                    var github = new GitHubService(VRCQuestTools.GitHubRepository);
+                    var release = await github.GetLatestRelease();
+                    mainContext.Post(
+                        (state) =>
+                        {
+                            if (GitHubRelease.HasUpdates(new SemVer(VRCQuestTools.Version), DateTime.UtcNow, VRCQuestTools.DaysToDelayUpdateNotification, release))
+                            {
+                                UpdateCheckerWindow.instance.SetLatestRelease(release);
+                                UpdateCheckerWindow.instance.Show();
+                                Debug.LogWarning($"[VRCQuestTools] New version {release.Version} is available, see {VRCQuestTools.BoothURL}");
+                                if (EditorUtility.DisplayDialog("VRCQuestTools", i18n.NewVersionIsAvailable(release.Version.ToString()), i18n.GetUpdate, i18n.CheckLater))
+                                {
+                                    Application.OpenURL(VRCQuestTools.BoothURL);
+                                }
+                            }
+                            else
+                            {
+                                EditorUtility.DisplayDialog("VRCQuestTools", i18n.ThereIsNoUpdate, "OK");
+                            }
+                        },
+                        null);
                 }
-                else
+                catch (Exception e)
                 {
-                    EditorUtility.DisplayDialog("VRCQuestTools", i18n.ThereIsNoUpdate, "OK");
+                    Debug.LogException(e);
                 }
             });
         }
