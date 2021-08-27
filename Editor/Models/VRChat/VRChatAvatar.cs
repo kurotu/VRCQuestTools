@@ -89,24 +89,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
             // Duplicate the original gameobject.
             var questAvatarObject = UnityEngine.Object.Instantiate(AvatarDescriptor.gameObject);
 
-            // Apply converted materials to renderers.
-            foreach (var renderer in questAvatarObject.GetComponentsInChildren<Renderer>(true))
-            {
-                renderer.sharedMaterials = renderer.sharedMaterials.Select(m =>
-                {
-                    if (m == null)
-                    {
-                        return null;
-                    }
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
-                    if (convertedMaterials.ContainsKey(guid))
-                    {
-                        return convertedMaterials[guid];
-                    }
-                    return m;
-                }).ToArray();
-            }
-
             // Convert animator controllers and their animation clips.
             if (HasAnimatedMaterials)
             {
@@ -140,6 +122,25 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         }
                     }
                 }
+            }
+
+            // Apply converted materials to renderers.
+            // Apply AFTER animator controllers because original animation clips overwrite sharedMaterials.
+            foreach (var renderer in questAvatarObject.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.sharedMaterials = renderer.sharedMaterials.Select(m =>
+                {
+                    if (m == null)
+                    {
+                        return null;
+                    }
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
+                    if (convertedMaterials.ContainsKey(guid))
+                    {
+                        return convertedMaterials[guid];
+                    }
+                    return m;
+                }).ToArray();
             }
 
             VRCSDKUtility.RemoveMissingComponentsInChildren(questAvatarObject, true);
