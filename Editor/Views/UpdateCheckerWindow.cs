@@ -31,7 +31,11 @@ namespace KRT.VRCQuestTools.Views
         /// </summary>
         internal void Show()
         {
+#if UNITY_2019_1_OR_NEWER
             SceneView.duringSceneGui += OnSceneGUI;
+#else
+            SceneView.onSceneGUIDelegate += OnSceneGUI;
+#endif
         }
 
         /// <summary>
@@ -39,7 +43,11 @@ namespace KRT.VRCQuestTools.Views
         /// </summary>
         internal void Close()
         {
+#if UNITY_2019_1_OR_NEWER
             SceneView.duringSceneGui -= OnSceneGUI;
+#else
+            SceneView.onSceneGUIDelegate -= OnSceneGUI;
+#endif
         }
 
         /// <summary>
