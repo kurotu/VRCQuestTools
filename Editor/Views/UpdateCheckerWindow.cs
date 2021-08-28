@@ -21,15 +21,22 @@ namespace KRT.VRCQuestTools.Views
         private static readonly Rect DefaultRect = new Rect(WindowMargin, SceneToolBarHeight + WindowMargin, 200, 80);
 
         [SerializeField]
-        private UpdateCheckerViewModel model = new UpdateCheckerViewModel(new GitHubService(VRCQuestTools.GitHubRepository));
+        private UpdateCheckerViewModel model = new UpdateCheckerViewModel();
 
         [SerializeField]
         private Rect windowRect = DefaultRect;
 
+        private void OnEnable()
+        {
+            model.github = new GitHubService(VRCQuestTools.GitHubRepository);
+        }
+
         /// <summary>
         /// Show window.
         /// </summary>
+#pragma warning disable SA1202 // Elements should be ordered by access
         internal void Show()
+#pragma warning restore SA1202 // Elements should be ordered by access
         {
 #if UNITY_2019_1_OR_NEWER
             SceneView.duringSceneGui += OnSceneGUI;

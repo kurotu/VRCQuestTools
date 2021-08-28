@@ -4,7 +4,6 @@
 // </copyright>
 
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Services;
@@ -22,21 +21,26 @@ namespace KRT.VRCQuestTools.ViewModels
         /// </summary>
         internal GitHubRelease LatestRelease = new GitHubRelease();
 
-        private readonly GitHubService github;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateCheckerViewModel"/> class with github repository.
+        /// GitHub API service.
         /// </summary>
-        /// <param name="github">GitHub API service.</param>
-        internal UpdateCheckerViewModel(GitHubService github)
-        {
-            this.github = github;
-        }
+        [NonSerialized]
+        internal GitHubService github;
 
         /// <summary>
         /// Gets a value indicating whether latest release is an update for current version.
         /// </summary>
-        internal bool HasUpdates => GitHubRelease.HasUpdates(CurrentVersion, DateTime.UtcNow, VRCQuestTools.DaysToDelayUpdateNotification, LatestRelease);
+        internal bool HasUpdates
+        {
+            get
+            {
+                if (LatestRelease == null)
+                {
+                    return false;
+                }
+                return GitHubRelease.HasUpdates(CurrentVersion, DateTime.UtcNow, VRCQuestTools.DaysToDelayUpdateNotification, LatestRelease);
+            }
+        }
 
         private SemVer CurrentVersion => new SemVer(VRCQuestTools.Version);
 
@@ -45,7 +49,6 @@ namespace KRT.VRCQuestTools.ViewModels
         /// </summary>
         internal void CheckForUpdates()
         {
-            var mainContext = SynchronizationContext.Current;
             Task.Run(async () =>
             {
                 try
