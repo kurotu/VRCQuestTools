@@ -9,7 +9,12 @@ using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
-using VRC.SDKBase;
+
+#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
+#else
+using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
+#endif
 
 namespace KRT.VRCQuestTools.Views
 {

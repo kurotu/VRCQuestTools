@@ -9,6 +9,12 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
+#else
+using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
+#endif
+
 namespace KRT.VRCQuestTools.Utils
 {
     /// <summary>
@@ -38,7 +44,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 return false;
             }
-            if (obj.GetComponent<VRC.SDKBase.VRC_AvatarDescriptor>() == null)
+            if (obj.GetComponent<VRC_AvatarDescriptor>() == null)
             {
                 return false;
             }
@@ -133,13 +139,13 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="scene">Target scene.</param>
         /// <returns>Avatar root objects.</returns>
-        internal static VRC.SDKBase.VRC_AvatarDescriptor[] GetAvatarsFromScene(Scene scene)
+        internal static VRC_AvatarDescriptor[] GetAvatarsFromScene(Scene scene)
         {
-            var avatars = new List<VRC.SDKBase.VRC_AvatarDescriptor>();
+            var avatars = new List<VRC_AvatarDescriptor>();
             var rootGameObjects = scene.GetRootGameObjects();
             foreach (var obj in rootGameObjects)
             {
-                avatars.AddRange(obj.GetComponentsInChildren<VRC.SDKBase.VRC_AvatarDescriptor>());
+                avatars.AddRange(obj.GetComponentsInChildren<VRC_AvatarDescriptor>());
             }
             return avatars.ToArray();
         }
