@@ -12,7 +12,7 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for UnityQuestSettings.
     /// </summary>
-    internal class UnityQuestSettingsViewModel
+    internal class UnityQuestSettingsViewModel : UnityEngine.Object
     {
         private const MobileTextureSubtarget RecommendedAndroidTextureCompression = MobileTextureSubtarget.ASTC;
 

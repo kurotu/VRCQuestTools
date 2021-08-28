@@ -12,7 +12,7 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for VertexColorRemover.
     /// </summary>
-    internal class VertexColorRemoverViewModel
+    internal class VertexColorRemoverViewModel : Object
     {
         /// <summary>
         /// Target game object.

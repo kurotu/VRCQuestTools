@@ -12,7 +12,7 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for MSMapGenWindow.
     /// </summary>
-    internal class MSMapGenViewModel
+    internal class MSMapGenViewModel : Object
     {
         /// <summary>
         /// Source metallic map.

@@ -15,8 +15,7 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for UpdateChecker.
     /// </summary>
-    [Serializable]
-    internal class UpdateCheckerViewModel
+    internal class UpdateCheckerViewModel : UnityEngine.Object
     {
         /// <summary>
         /// Latest GitHub release.

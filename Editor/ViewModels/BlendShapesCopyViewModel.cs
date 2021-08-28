@@ -12,7 +12,7 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for BlendShapesCopyWindow.
     /// </summary>
-    internal class BlendShapesCopyViewModel
+    internal class BlendShapesCopyViewModel : Object
     {
         /// <summary>
         /// Source skinned mesh to copy weights.

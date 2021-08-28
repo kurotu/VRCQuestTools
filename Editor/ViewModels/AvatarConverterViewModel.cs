@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System;
 using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
@@ -16,8 +15,7 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for AvatarConverter.
     /// </summary>
-    [Serializable]
-    internal class AvatarConverterViewModel
+    internal class AvatarConverterViewModel : Object
     {
         /// <summary>
         /// Target PC avatar.
