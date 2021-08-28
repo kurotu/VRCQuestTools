@@ -3,6 +3,8 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using UnityEditor;
+
 namespace KRT.VRCQuestTools
 {
     /// <summary>
@@ -34,5 +36,21 @@ namespace KRT.VRCQuestTools
         /// Booth URL.
         /// </summary>
         internal const string BoothURL = "https://kurotu.booth.pm/items/2436054";
+
+        private const string AssetRoot = "Assets/KRT/VRCQuestTools";
+
+        /// <summary>
+        /// Export as .unitypackage for release.
+        /// </summary>
+        /// <param name="filename">File to export.</param>
+        public static void ExportUnityPackage(string filename)
+        {
+            AssetDatabase.ExportPackage(AssetRoot, filename, ExportPackageOptions.Recurse);
+        }
+
+        private static void Export()
+        {
+            ExportUnityPackage("VRCQuestTools.unitypackage");
+        }
     }
 }

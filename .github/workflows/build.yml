@@ -1,0 +1,44 @@
+name: Build
+
+# Controls when the workflow will run
+on:
+  push:
+  pull_request:
+
+  workflow_dispatch:
+
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Move files to Assets/
+        run: |
+          shopt -s extglob
+          mkdir -p Assets/KRT/VRCQuestTools
+          mv !(Assets) Assets/KRT/VRCQuestTools/
+
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ github.ref }}
+
+      - uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: StandaloneWindows
+          unityVersion: 2018.4.20f1
+          buildMethod: KRT.VRCQuestTools.VRCQuestTools.Export
+          allowDirtyBuild: true
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: VRCQuestTools
+          path: VRCQuestTools.unitypackage
