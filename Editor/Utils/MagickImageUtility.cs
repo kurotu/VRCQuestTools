@@ -171,6 +171,10 @@ namespace KRT.VRCQuestTools.Utils
             importer.sRGBTexture = isSRGB;
             importer.alphaIsTransparency = isSRGB;
             importer.alphaSource = TextureImporterAlphaSource.FromInput;
+            if (importer.mipmapEnabled)
+            {
+                importer.streamingMipmaps = true;
+            }
             importer.SaveAndReimport();
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
