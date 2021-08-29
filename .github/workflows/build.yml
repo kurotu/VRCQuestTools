@@ -3,12 +3,11 @@ name: Build
 # Controls when the workflow will run
 on:
   push:
-  pull_request:
+# pull_request:
 
   workflow_dispatch:
 
 jobs:
-  # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -40,5 +39,36 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: VRCQuestTools
+          name: artifacts
           path: VRCQuestTools.unitypackage
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifacts
+
+      - name: Create release artifact
+        id: artifact
+        run: |
+          NAME=VRCQuestTools-${GITHUB_REF#refs/tags/}
+          mkdir ${NAME}
+          cp VRCQuestTools.unitypackage ${NAME}/${NAME}.unitypackage
+          cp LICENSE.txt ${NAME}/
+          cp NOTICE.txt ${NAME}/
+          cp README.md ${NAME}/
+          cp README.txt ${NAME}/
+          zip -r ${NAME}.zip ${NAME}
+          echo "::set-output name=artifact-name::${NAME}"
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: |
+            ${{ steps.artifact.outputs.artifact-name }}.zip
+            ${{ steps.artifact.outputs.artifact-name }}/${{ steps.artifact.outputs.artifact-name }}.unitypackage
