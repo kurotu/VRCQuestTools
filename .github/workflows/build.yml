@@ -1,0 +1,74 @@
+name: Build
+
+# Controls when the workflow will run
+on:
+  push:
+# pull_request:
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Move files to Assets/
+        run: |
+          shopt -s extglob
+          mkdir -p Assets/KRT/VRCQuestTools
+          mv !(Assets) Assets/KRT/VRCQuestTools/
+
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ github.ref }}
+
+      - uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: StandaloneWindows
+          unityVersion: 2018.4.20f1
+          buildMethod: KRT.VRCQuestTools.VRCQuestTools.Export
+          allowDirtyBuild: true
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: VRCQuestTools.unitypackage
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifacts
+
+      - name: Create release artifact
+        id: artifact
+        run: |
+          NAME=VRCQuestTools-${GITHUB_REF#refs/tags/}
+          mkdir ${NAME}
+          cp VRCQuestTools.unitypackage ${NAME}/${NAME}.unitypackage
+          cp LICENSE.txt ${NAME}/
+          cp NOTICE.txt ${NAME}/
+          cp README.md ${NAME}/
+          cp README.txt ${NAME}/
+          zip -r ${NAME}.zip ${NAME}
+          echo "::set-output name=artifact-name::${NAME}"
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: |
+            ${{ steps.artifact.outputs.artifact-name }}.zip
+            ${{ steps.artifact.outputs.artifact-name }}/${{ steps.artifact.outputs.artifact-name }}.unitypackage
