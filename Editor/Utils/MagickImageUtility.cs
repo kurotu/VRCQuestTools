@@ -203,7 +203,12 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     return UnityBuiltinExtraToMagickImage(texture as Texture2D);
                 }
-                return new MagickImage(path);
+                var image = new MagickImage(path);
+                if (image.Format == MagickFormat.Tga)
+                {
+                    image.AutoOrient();
+                }
+                return image;
             }
             catch (Exception e)
             {
