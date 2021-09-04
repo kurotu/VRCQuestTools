@@ -116,6 +116,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                     var decal = CompositeDecalImage();
                     disposables.Add(decal);
 
+                    MagickImageUtility.ResizeForLarger(main, decal);
+
                     var decalScaleToAspectFill = main.Width / (float)Math.Min(decal.Width, decal.Height);
                     var decalPercentageX = new Percentage(decalScaleToAspectFill * DecalScaleX * 100.0);
                     var decalPercentageY = new Percentage(decalScaleToAspectFill * DecalScaleY * 100.0);
@@ -283,7 +285,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 {
                     var emission = CompositeEmissionImage();
                     disposables.Add(emission);
-                    emission.Resize(main.Width, main.Height);
+                    MagickImageUtility.ResizeForLarger(main, emission);
                     switch (EmissionMode)
                     {
                         case SunaoEmissionMode.Add:
@@ -410,7 +412,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             using (var disposables = new CompositeDisposable())
             {
-                var mainTexture = MagickImageUtility.GetMagickImage(Material.mainTexture);
+                var mainTexture = MagickImageUtility.GetMagickImage(Material.mainTexture) ?? new MagickImage(MagickColors.White, 2, 2);
                 disposables.Add(mainTexture);
 
                 var coloredMain = MagickImageUtility.Multiply(mainTexture, Material.color);

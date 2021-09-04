@@ -89,6 +89,23 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Resize smaller MagickImage to larger size.
+        /// </summary>
+        /// <param name="image0">Image to resize 0.</param>
+        /// <param name="image1">Image to resize 1.</param>
+        internal static void ResizeForLarger(MagickImage image0, MagickImage image1)
+        {
+            if (image0.Width < image1.Width)
+            {
+                image0.Resize(image1.Width, image1.Height);
+            }
+            else if (image0.Width > image1.Width)
+            {
+                image1.Resize(image0.Width, image0.Height);
+            }
+        }
+
+        /// <summary>
         /// Convert color to MagickColor.
         /// </summary>
         /// <param name="color">Original color.</param>
