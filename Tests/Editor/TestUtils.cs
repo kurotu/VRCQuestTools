@@ -67,5 +67,16 @@ namespace KRT.VRCQuestTools
             Assert.NotNull(image);
             return image;
         }
+
+        /// <summary>
+        /// Get GUID for an asset.
+        /// </summary>
+        /// <param name="obj">Object of target asset.</param>
+        /// <returns>GUID.</returns>
+        internal static string GetAssetGUID(Object obj)
+        {
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(obj, out string guid, out long localId);
+            return guid;
+        }
     }
 }
