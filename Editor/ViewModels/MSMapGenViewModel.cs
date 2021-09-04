@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using ImageMagick;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
@@ -12,22 +13,23 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for MSMapGenWindow.
     /// </summary>
-    internal class MSMapGenViewModel : Object
+    [Serializable]
+    internal class MSMapGenViewModel
     {
         /// <summary>
         /// Source metallic map.
         /// </summary>
-        internal Texture2D metallicMap;
+        public Texture2D metallicMap;
 
         /// <summary>
         /// Source smoothness / roughness map.
         /// </summary>
-        internal Texture2D smoothnessMap;
+        public Texture2D smoothnessMap;
 
         /// <summary>
         /// Should invert smoothness map.
         /// </summary>
-        internal bool invertSmoothness;
+        public bool invertSmoothness;
 
         /// <summary>
         /// Gets a value indicating whether a window shows a generate button.

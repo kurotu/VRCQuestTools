@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
@@ -12,12 +13,13 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for VertexColorRemover.
     /// </summary>
-    internal class VertexColorRemoverViewModel : Object
+    [Serializable]
+    internal class VertexColorRemoverViewModel
     {
         /// <summary>
         /// Target game object.
         /// </summary>
-        internal GameObject target;
+        public GameObject target;
 
         /// <summary>
         /// Remove vertex color from the target.

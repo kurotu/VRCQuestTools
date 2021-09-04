@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
@@ -20,27 +21,30 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for AvatarConverter.
     /// </summary>
-    internal class AvatarConverterViewModel : Object
+    [Serializable]
+    internal class AvatarConverterViewModel
     {
-        /// <summary>
-        /// Target PC avatar.
-        /// </summary>
-        internal VRC_AvatarDescriptor targetAvatar;
-
         /// <summary>
         /// Root path to save converted data.
         /// </summary>
-        internal string outputPath = string.Empty;
+        public string outputPath = string.Empty;
 
         /// <summary>
         /// Whether the converter generates textures for Quest.
         /// </summary>
-        internal bool generateQuestTextures = true;
+        public bool generateQuestTextures = true;
 
         /// <summary>
         /// Maximum texture size.
         /// </summary>
-        internal TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.Max1024x1024;
+        public TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.Max1024x1024;
+
+        /// <summary>
+        /// VRC_AvatarDescriptor game object.
+        /// Unity can't serialize VRC_AvatarDescriptor well, so keep as a game object.
+        /// </summary>
+        [SerializeField]
+        private GameObject targetAvatarObject;
 
         /// <summary>
         /// Callback delegate to check overwriting.
@@ -67,6 +71,26 @@ namespace KRT.VRCQuestTools.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets target PC avatar's VRC_AvatarDescriptor.
+        /// </summary>
+        internal VRC_AvatarDescriptor TargetAvatarDescriptor
+        {
+            get
+            {
+                if (targetAvatarObject == null)
+                {
+                    return null;
+                }
+                return targetAvatarObject.GetComponent<VRC_AvatarDescriptor>();
+            }
+
+            set
+            {
+                targetAvatarObject = value?.gameObject;
+            }
+        }
+
+        /// <summary>
         /// Gets materials which are not verified in VRCQuestTools.
         /// </summary>
         internal Material[] UnverifiedShaderMaterials => TargetAvatar.Materials
@@ -83,7 +107,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// </summary>
         internal Component[] UnsupportedComponents => TargetAvatar.UnsupportedComponents;
 
-        private VRChatAvatar TargetAvatar => new VRChatAvatar(targetAvatar);
+        private VRChatAvatar TargetAvatar => new VRChatAvatar(TargetAvatarDescriptor);
 
         /// <summary>
         /// Update textures.
@@ -115,10 +139,10 @@ namespace KRT.VRCQuestTools.ViewModels
 
             var questAvatar = TargetAvatar.ConvertForQuest(outputPath, generateQuestTextures, (int)texturesSizeLimit, progressCallback);
 
-            if (targetAvatar.gameObject.activeInHierarchy)
+            if (TargetAvatarDescriptor.gameObject.activeInHierarchy)
             {
-                Undo.RecordObject(targetAvatar.gameObject, "Disable original avatar");
-                targetAvatar.gameObject.SetActive(false);
+                Undo.RecordObject(TargetAvatarDescriptor.gameObject, "Disable original avatar");
+                TargetAvatarDescriptor.gameObject.SetActive(false);
             }
 
             Undo.CollapseUndoOperations(undoGroup);

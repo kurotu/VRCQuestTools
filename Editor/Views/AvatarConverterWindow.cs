@@ -44,7 +44,7 @@ namespace KRT.VRCQuestTools.Views
         internal static void ShowWindow(VRC_AvatarDescriptor avatar)
         {
             var window = (AvatarConverterWindow)GetWindow(typeof(AvatarConverterWindow));
-            window.model.targetAvatar = avatar;
+            window.model.TargetAvatarDescriptor = avatar;
             window.SetArtifactsPath(avatar);
             window.Show();
         }
@@ -118,16 +118,16 @@ namespace KRT.VRCQuestTools.Views
         private void OnGUI()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-            var selectedAvatar = (VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, model.targetAvatar, typeof(VRC_AvatarDescriptor), true);
+            var selectedAvatar = (VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, model.TargetAvatarDescriptor, typeof(VRC_AvatarDescriptor), true);
             if (selectedAvatar == null)
             {
                 model.outputPath = string.Empty;
             }
-            else if (model.targetAvatar != selectedAvatar)
+            else if (model.TargetAvatarDescriptor != selectedAvatar)
             {
                 SetArtifactsPath(selectedAvatar);
             }
-            model.targetAvatar = selectedAvatar;
+            model.TargetAvatarDescriptor = selectedAvatar;
 
             EditorGUILayout.Space();
 
@@ -139,7 +139,7 @@ namespace KRT.VRCQuestTools.Views
                 var message = $"{i18n.QuestTexturesDescription}\n\n" +
                     $"{i18n.VerifiedShadersLabel}: Standard, UTS2, arktoon, Sunao";
                 EditorGUILayout.HelpBox(message, MessageType.Info);
-                if (model.targetAvatar != null)
+                if (model.TargetAvatarDescriptor != null)
                 {
                     var unverifiedMaterials = model.UnverifiedShaderMaterials;
                     if (model.generateQuestTextures && unverifiedMaterials.Length > 0)
@@ -177,7 +177,7 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Info);
             EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
-            if (model.targetAvatar != null)
+            if (model.TargetAvatarDescriptor != null)
             {
                 var componentsToBeAlearted = model.UnsupportedComponents
                     .Select(c => c.GetType().Name)
@@ -195,7 +195,7 @@ namespace KRT.VRCQuestTools.Views
                 }
             }
 
-            EditorGUI.BeginDisabledGroup(model.targetAvatar == null);
+            EditorGUI.BeginDisabledGroup(model.TargetAvatarDescriptor == null);
             {
                 if (GUILayout.Button(i18n.ConvertButtonLabel))
                 {
@@ -262,7 +262,7 @@ namespace KRT.VRCQuestTools.Views
             EditorUtility.ClearProgressBar();
             if (questAvatar != null)
             {
-                EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.CompletedDialogMessage(model.targetAvatar.name), "OK");
+                EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.CompletedDialogMessage(model.TargetAvatarDescriptor.name), "OK");
                 Selection.activeGameObject = questAvatar;
             }
         }

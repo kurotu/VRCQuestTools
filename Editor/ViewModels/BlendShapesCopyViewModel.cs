@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -12,17 +13,18 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for BlendShapesCopyWindow.
     /// </summary>
-    internal class BlendShapesCopyViewModel : Object
+    [Serializable]
+    internal class BlendShapesCopyViewModel
     {
         /// <summary>
         /// Source skinned mesh to copy weights.
         /// </summary>
-        internal SkinnedMeshRenderer sourceMesh;
+        public SkinnedMeshRenderer sourceMesh;
 
         /// <summary>
         /// Target skinned mesh to paste weights.
         /// </summary>
-        internal SkinnedMeshRenderer targetMesh;
+        public SkinnedMeshRenderer targetMesh;
 
         /// <summary>
         /// Gets a value indicating whether a window disables a copy button.

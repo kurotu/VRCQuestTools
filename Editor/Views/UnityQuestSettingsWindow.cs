@@ -17,6 +17,7 @@ namespace KRT.VRCQuestTools.Views
     /// </summary>
     internal class UnityQuestSettingsWindow : EditorWindow
     {
+        [SerializeField]
         private UnityQuestSettingsViewModel model = new UnityQuestSettingsViewModel();
 
         /// <summary>

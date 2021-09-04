@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using UnityEditor;
@@ -12,7 +13,8 @@ namespace KRT.VRCQuestTools.ViewModels
     /// <summary>
     /// ViewModel for UnityQuestSettings.
     /// </summary>
-    internal class UnityQuestSettingsViewModel : UnityEngine.Object
+    [Serializable]
+    internal class UnityQuestSettingsViewModel
     {
         private const MobileTextureSubtarget RecommendedAndroidTextureCompression = MobileTextureSubtarget.ASTC;
 

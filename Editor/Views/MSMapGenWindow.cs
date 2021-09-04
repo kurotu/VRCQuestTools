@@ -16,6 +16,7 @@ namespace KRT.VRCQuestTools.Views
     /// </summary>
     internal class MSMapGenWindow : EditorWindow
     {
+        [SerializeField]
         private MSMapGenViewModel model = new MSMapGenViewModel();
 
         /// <summary>

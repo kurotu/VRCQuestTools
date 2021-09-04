@@ -15,6 +15,7 @@ namespace KRT.VRCQuestTools.Views
     /// </summary>
     internal class BlendShapesCopyWindow : EditorWindow
     {
+        [SerializeField]
         private BlendShapesCopyViewModel model = new BlendShapesCopyViewModel();
 
         /// <summary>
