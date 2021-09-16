@@ -67,28 +67,30 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <returns>Detected shader category.</returns>
         internal static ShaderCategory DetectShaderCategory(Material material)
         {
-            var shaderName = material.shader.name;
-            if (shaderName == "Standard" || shaderName == "Standard (Specular setup)" || shaderName.StartsWith("Standard/"))
+            // Shader name may be changed for Shader Blocking System (case sensitive). So compare shader name case insensitive.
+            // https://niwaka.fanbox.cc/posts/1612078
+            var shaderName = material.shader.name.ToLower();
+            if (shaderName == "Standard".ToLower() || shaderName == "Standard (Specular setup)".ToLower() || shaderName.StartsWith("Standard/".ToLower()))
             {
                 return ShaderCategory.Standard;
             }
-            if (shaderName.StartsWith("UnityChanToonShader"))
+            if (shaderName.StartsWith("UnityChanToonShader".ToLower()))
             {
                 return ShaderCategory.UTS2;
             }
-            if (shaderName.StartsWith("arktoon/"))
+            if (shaderName.StartsWith("arktoon/".ToLower()))
             {
                 return ShaderCategory.Arktoon;
             }
-            if (shaderName.StartsWith("Unlit/"))
+            if (shaderName.StartsWith("Unlit/".ToLower()))
             {
                 return ShaderCategory.Unlit;
             }
-            if (shaderName.StartsWith("VRChat/Mobile/"))
+            if (shaderName.StartsWith("VRChat/Mobile/".ToLower()))
             {
                 return ShaderCategory.Quest;
             }
-            if (shaderName.StartsWith("Sunao Shader/"))
+            if (shaderName.StartsWith("Sunao Shader/".ToLower()))
             {
                 return ShaderCategory.Sunao;
             }
