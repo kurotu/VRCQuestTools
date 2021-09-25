@@ -17,19 +17,19 @@ namespace KRT.VRCQuestTools
     internal static class TestUtils
     {
         /// <summary>
-        /// Test fixtures folder.
+        /// Gets Test fixtures folder.
         /// </summary>
-        internal const string FixturesFolder = "Assets/KRT/VRCQuestTools/Tests/Fixtures";
+        internal static string FixturesFolder => VRCQuestTools.AssetRoot + "/Tests/Fixtures";
 
         /// <summary>
-        /// Materials folder.
+        /// Gets Materials folder.
         /// </summary>
-        internal const string MaterialsFolder = FixturesFolder + "/Materials";
+        internal static string MaterialsFolder => FixturesFolder + "/Materials";
 
         /// <summary>
-        /// Textures folder.
+        /// Gets Textures folder.
         /// </summary>
-        internal const string TexturesFolder = FixturesFolder + "/Textures";
+        internal static string TexturesFolder => FixturesFolder + "/Textures";
 
         /// <summary>
         /// Load material from materials folder.

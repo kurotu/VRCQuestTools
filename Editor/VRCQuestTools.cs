@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -39,7 +40,7 @@ namespace KRT.VRCQuestTools
         /// </summary>
         internal const string BoothURL = "https://kurotu.booth.pm/items/2436054";
 
-        private const string AssetRoot = "Assets/KRT/VRCQuestTools";
+        private const string PackageJsonGUID = "a965857078462df4a879e07cb70812bb";
 
         static VRCQuestTools()
         {
@@ -51,6 +52,11 @@ namespace KRT.VRCQuestTools
             Debug.LogError($"[{Name}] VRCSDK is not imported. Please import VRCSDK.");
 #endif
         }
+
+        /// <summary>
+        /// Gets root folder in Assets.
+        /// </summary>
+        internal static string AssetRoot => Path.GetDirectoryName(AssetDatabase.GUIDToAssetPath(PackageJsonGUID));
 
         /// <summary>
         /// Export as .unitypackage for release.
