@@ -107,10 +107,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     if (!layers[i].isDefault && layers[i].animatorController != null)
                     {
-                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(layers[i].animatorController, out string guid, out long localId);
-                        if (convertedAnimatorControllers.ContainsKey(guid))
+                        if (convertedAnimatorControllers.ContainsKey(layers[i].animatorController))
                         {
-                            layers[i].animatorController = convertedAnimatorControllers[guid];
+                            layers[i].animatorController = convertedAnimatorControllers[layers[i].animatorController];
                         }
                     }
                 }
@@ -120,10 +119,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     if (animator.runtimeAnimatorController != null)
                     {
-                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animator.runtimeAnimatorController, out string guid, out long localId);
-                        if (convertedAnimatorControllers.ContainsKey(guid))
+                        if (convertedAnimatorControllers.ContainsKey(animator.runtimeAnimatorController))
                         {
-                            animator.runtimeAnimatorController = convertedAnimatorControllers[guid];
+                            animator.runtimeAnimatorController = convertedAnimatorControllers[animator.runtimeAnimatorController];
                         }
                     }
                 }
@@ -139,10 +137,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     {
                         return null;
                     }
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
-                    if (convertedMaterials.ContainsKey(guid))
+                    if (convertedMaterials.ContainsKey(m))
                     {
-                        return convertedMaterials[guid];
+                        return convertedMaterials[m];
                     }
                     return m;
                 }).ToArray();
@@ -163,15 +160,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="maxTextureSize">Max texture size. 0 for no limits.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
-        /// <returns>Converted textures (key: original material's GUID).</returns>
-        internal Dictionary<string, Texture2D> GenrateToonLitTextures(string assetsDirectory, int maxTextureSize, TextureProgressCallback progressCallback)
+        /// <returns>Converted textures (key: original material).</returns>
+        internal Dictionary<Material, Texture2D> GenrateToonLitTextures(string assetsDirectory, int maxTextureSize, TextureProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Textures";
             Directory.CreateDirectory(saveDirectory);
             AssetDatabase.Refresh();
 
             var materials = Materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
-            var convertedTextures = new Dictionary<string, Texture2D>();
+            var convertedTextures = new Dictionary<Material, Texture2D>();
             for (int i = 0; i < materials.Length; i++)
             {
                 var m = materials[i];
@@ -187,7 +184,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             image.Resize(maxTextureSize, maxTextureSize);
                         }
                         var texture = MagickImageUtility.SaveAsAsset($"{saveDirectory}/{m.name}_from_{guid}.png", image);
-                        convertedTextures.Add(guid, texture);
+                        convertedTextures.Add(m, texture);
                     }
                 }
                 catch (Exception e)
@@ -199,14 +196,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return convertedTextures;
         }
 
-        private Dictionary<string, Material> ConvertMaterialsForToonLit(string assetsDirectory)
+        private Dictionary<Material, Material> ConvertMaterialsForToonLit(string assetsDirectory)
         {
             var saveDirectory = $"{assetsDirectory}/Materials";
             Directory.CreateDirectory(saveDirectory);
             AssetDatabase.Refresh();
 
             var materials = Materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
-            var convertedMaterials = new Dictionary<string, Material>();
+            var convertedMaterials = new Dictionary<Material, Material>();
             for (int i = 0; i < materials.Length; i++)
             {
                 var m = materials[i];
@@ -214,19 +211,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 var material = MaterialBase.Create(m);
                 var toonlit = material.ConvertToToonLit();
                 AssetDatabase.CreateAsset(toonlit, $"{saveDirectory}/{m.name}_from_{guid}.mat");
-                convertedMaterials.Add(guid, toonlit);
+                convertedMaterials.Add(m, toonlit);
             }
             return convertedMaterials;
         }
 
-        private Dictionary<string, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(string assetsDirectory, Dictionary<string, AnimationClip> convertedAnimationClips, RuntimeAnimatorProgressCallback progressCallback)
+        private Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(string assetsDirectory, Dictionary<AnimationClip, AnimationClip> convertedAnimationClips, RuntimeAnimatorProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/AnimatorControllers";
             Directory.CreateDirectory(saveDirectory);
             AssetDatabase.Refresh();
 
             var controllers = GetRuntimeAnimatorControllers();
-            var convertedControllers = new Dictionary<string, RuntimeAnimatorController>();
+            var convertedControllers = new Dictionary<RuntimeAnimatorController, RuntimeAnimatorController>();
             var index = 0;
             foreach (var controller in controllers)
             {
@@ -236,7 +233,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(controller, out string guid, out long localId);
                     var outFile = $"{saveDirectory}/{controller.name}_from_{guid}.controller";
                     AnimatorController cloneController = UnityAnimationUtility.ReplaceAnimationClips(controller, outFile, convertedAnimationClips);
-                    convertedControllers.Add(guid, cloneController);
+                    convertedControllers.Add(controller, cloneController);
                 }
                 catch (Exception e)
                 {
@@ -248,7 +245,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return convertedControllers;
         }
 
-        private Dictionary<string, AnimationClip> ConvertAnimationClipsForQuest(string assetsDirectory, Dictionary<string, Material> convertedMaterials, AnimationClipProgressCallback progressCallback)
+        private Dictionary<AnimationClip, AnimationClip> ConvertAnimationClipsForQuest(string assetsDirectory, Dictionary<Material, Material> convertedMaterials, AnimationClipProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Animations";
             Directory.CreateDirectory(saveDirectory);
@@ -261,7 +258,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 .Distinct()
                 .ToArray();
 
-            var convertedAnimationClips = new Dictionary<string, AnimationClip>();
+            var convertedAnimationClips = new Dictionary<AnimationClip, AnimationClip>();
             for (var i = 0; i < animationClips.Length; i++)
             {
                 var clip = animationClips[i];
@@ -277,7 +274,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     var anim = UnityAnimationUtility.ReplaceAnimationClipMaterials(animationClips[i], convertedMaterials);
 
                     AssetDatabase.CreateAsset(anim, outFile);
-                    convertedAnimationClips.Add(guid, anim);
+                    convertedAnimationClips.Add(clip, anim);
                     Debug.Log("create asset: " + outFile);
                 }
                 catch (System.Exception e)

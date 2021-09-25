@@ -33,9 +33,9 @@ namespace KRT.VRCQuestTools.Utils
         /// Replace animation clip's materials with new materials.
         /// </summary>
         /// <param name="clip">AnimationClip.</param>
-        /// <param name="newMaterials">Materials to replace (key: original material's GUID).</param>
+        /// <param name="newMaterials">Materials to replace (key: original material).</param>
         /// <returns>New animation clip.</returns>
-        internal static AnimationClip ReplaceAnimationClipMaterials(AnimationClip clip, Dictionary<string, Material> newMaterials)
+        internal static AnimationClip ReplaceAnimationClipMaterials(AnimationClip clip, Dictionary<Material, Material> newMaterials)
         {
             var anim = Object.Instantiate(clip);
             EditorCurveBinding[] binding = AnimationUtility.GetObjectReferenceCurveBindings(anim);
@@ -48,11 +48,11 @@ namespace KRT.VRCQuestTools.Utils
                     {
                         if (keyframes[k].value && keyframes[k].value.GetType() == typeof(Material))
                         {
-                            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(keyframes[k].value, out string guid, out long localId);
-                            if (newMaterials.ContainsKey(guid))
+                            var material = (Material)keyframes[k].value;
+                            if (newMaterials.ContainsKey(material))
                             {
-                                keyframes[k].value = newMaterials[guid];
-                                Debug.Log("replace animationClip: " + newMaterials[guid]);
+                                keyframes[k].value = newMaterials[material];
+                                Debug.Log("replace animationClip: " + newMaterials[material]);
                             }
                         }
                     }
@@ -67,9 +67,9 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="controller">Target controller.</param>
         /// <param name="outFile">Asset path for new controller.</param>
-        /// <param name="newAnimationClips">Animation clips to replace (key: original clip's GUID).</param>
+        /// <param name="newAnimationClips">Animation clips to replace (key: original clip).</param>
         /// <returns>New animator controller.</returns>
-        internal static AnimatorController ReplaceAnimationClips(RuntimeAnimatorController controller, string outFile, Dictionary<string, AnimationClip> newAnimationClips)
+        internal static AnimatorController ReplaceAnimationClips(RuntimeAnimatorController controller, string outFile, Dictionary<AnimationClip, AnimationClip> newAnimationClips)
         {
             Debug.Log("originalPath :" + AssetDatabase.GetAssetPath(controller));
             Debug.Log("copy Path    :" + outFile);
@@ -99,11 +99,10 @@ namespace KRT.VRCQuestTools.Utils
 
                     AnimationClip anim = (AnimationClip)animState.motion;
                     Debug.Log("am :" + anim.name);
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(anim, out string clipGUID, out long localId1);
-                    if (newAnimationClips.ContainsKey(clipGUID))
+                    if (newAnimationClips.ContainsKey(anim))
                     {
-                        cloneController.layers[i].stateMachine.states[j].state.motion = newAnimationClips[clipGUID];
-                        Debug.Log("replace animationClip : " + newAnimationClips[clipGUID].name);
+                        cloneController.layers[i].stateMachine.states[j].state.motion = newAnimationClips[anim];
+                        Debug.Log("replace animationClip : " + newAnimationClips[anim].name);
                     }
                 }
             }
