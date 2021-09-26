@@ -15,6 +15,15 @@ namespace KRT.VRCQuestTools
     public class UTS2MaterialTests
     {
         /// <summary>
+        /// Set up tests.
+        /// </summary>
+        [SetUp]
+        public void SetUp()
+        {
+            TestUtils.AssertIgnoreOnMissingShader("UnityChanToonShader/Toon_DoubleShadeWithFeather");
+        }
+
+        /// <summary>
         /// Test UTS2 with emission.
         /// </summary>
         [Test]

@@ -26,7 +26,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: Library
-          key: Library-${{ github.ref }}
+          key: Library-${{ github.ref }}-build
+          restore-keys: |
+            Library-master-build
 
       - uses: game-ci/unity-builder@v2
         env:
@@ -42,9 +44,40 @@ jobs:
           name: artifacts
           path: VRCQuestTools.unitypackage
 
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        unityVersion:
+          - 2018.4.20f1
+          - 2019.4.30f1
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Move files to Assets/
+        run: |
+          shopt -s extglob
+          mkdir -p Assets/KRT/VRCQuestTools
+          mv !(Assets) Assets/KRT/VRCQuestTools/
+
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ github.ref }}-${{ matrix.unityVersion }}-test
+          restore-keys: |
+            Library-master-${{ matrix.unityVersion }}-test
+
+      - uses: game-ci/unity-test-runner@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          unityVersion: ${{ matrix.unityVersion }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
   release:
     if: startsWith(github.ref, 'refs/tags/')
-    needs: build
+    needs: [build, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

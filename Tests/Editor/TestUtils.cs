@@ -78,5 +78,18 @@ namespace KRT.VRCQuestTools
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(obj, out string guid, out long localId);
             return guid;
         }
+
+        /// <summary>
+        /// Check the shader exists. If the shader is missing, test is ignored.
+        /// </summary>
+        /// <param name="name">Shader name.</param>
+        internal static void AssertIgnoreOnMissingShader(string name)
+        {
+            var shader = Shader.Find(name);
+            if (shader == null)
+            {
+                Assert.Ignore($"\"{name}\" shader not found");
+            }
+        }
     }
 }

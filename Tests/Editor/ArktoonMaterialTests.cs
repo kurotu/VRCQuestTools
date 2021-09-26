@@ -15,6 +15,15 @@ namespace KRT.VRCQuestTools
     public class ArktoonMaterialTests
     {
         /// <summary>
+        /// Set up tests.
+        /// </summary>
+        [SetUp]
+        public void SetUp()
+        {
+            TestUtils.AssertIgnoreOnMissingShader("arktoon/Opaque");
+        }
+
+        /// <summary>
         /// Arctoon with emission.
         /// </summary>
         [Test]
