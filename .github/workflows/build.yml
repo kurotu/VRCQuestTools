@@ -26,9 +26,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: Library
-          key: Library-${{ github.ref }}-build
+          key: Library-build-${{ github.ref }}
           restore-keys: |
-            Library-master-build
+            Library-build-
 
       - uses: game-ci/unity-builder@v2
         env:
@@ -64,9 +64,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: Library
-          key: Library-${{ github.ref }}-${{ matrix.unityVersion }}-test
+          key: Library-test-${{ matrix.unityVersion }}-${{ github.ref }}
           restore-keys: |
-            Library-master-${{ matrix.unityVersion }}-test
+            Library-test-${{ matrix.unityVersion }}-
 
       - uses: game-ci/unity-test-runner@v2
         env:
