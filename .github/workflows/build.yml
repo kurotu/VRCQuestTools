@@ -16,12 +16,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      - name: Move files to Assets/
-        run: |
-          shopt -s extglob
-          mkdir -p Assets/KRT/VRCQuestTools
-          mv !(Assets) Assets/KRT/VRCQuestTools/
+        with:
+          path: Assets/KRT/VRCQuestTools
 
       - uses: actions/cache@v2
         with:
@@ -38,6 +34,7 @@ jobs:
           unityVersion: 2018.4.20f1
           buildMethod: KRT.VRCQuestTools.VRCQuestTools.Export
           allowDirtyBuild: true
+          versioning: None
 
       - uses: actions/upload-artifact@v2
         with:
@@ -54,12 +51,8 @@ jobs:
           - 2019.4.30f1
     steps:
       - uses: actions/checkout@v2
-
-      - name: Move files to Assets/
-        run: |
-          shopt -s extglob
-          mkdir -p Assets/KRT/VRCQuestTools
-          mv !(Assets) Assets/KRT/VRCQuestTools/
+        with:
+          path: Assets/KRT/VRCQuestTools
 
       - uses: actions/cache@v2
         with:
