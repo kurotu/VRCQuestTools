@@ -6,5 +6,5 @@
 #if UNITY_EDITOR
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("VRCQuestToolsTests")]
+[assembly: InternalsVisibleTo("VRCQuestTools-EditorTests")]
 #endif

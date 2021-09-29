@@ -1,5 +1,5 @@
 {
-    "name": "VRCQuestToolsTests",
+    "name": "VRCQuestTools-EditorTests",
     "references": [
         "VRCQuestTools-Editor"
     ],
