@@ -62,19 +62,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal bool HasAnimatedMaterials => GetAnimatedMaterials().Length > 0;
 
         /// <summary>
-        /// Gets unsupported components for Quest.
-        /// </summary>
-        internal Component[] UnsupportedComponents => VRCSDKUtility.GetUnsupportedComponentsInChildren(AvatarDescriptor.gameObject, true);
-
-        /// <summary>
         /// Covert the avatar for Quest.
         /// </summary>
         /// <param name="assetsDirectory">Root directory to save.</param>
         /// <param name="generateQuestTextures">Whether to generate textures.</param>
         /// <param name="maxTextureSize">Max textures size. 0 for no limits.</param>
+        /// <param name="remover">ComponentRemover object.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted avatar.</returns>
-        internal VRChatAvatar ConvertForQuest(string assetsDirectory, bool generateQuestTextures, int maxTextureSize, ProgressCallback progressCallback)
+        internal VRChatAvatar ConvertForQuest(string assetsDirectory, bool generateQuestTextures, int maxTextureSize, ComponentRemover remover, ProgressCallback progressCallback)
         {
             // Convert materials and generate textures.
             var convertedMaterials = ConvertMaterialsForToonLit(assetsDirectory);
@@ -146,7 +142,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             VRCSDKUtility.RemoveMissingComponentsInChildren(questAvatarObject, true);
-            VRCSDKUtility.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
+            remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
 
             questAvatarObject.name = AvatarDescriptor.gameObject.name + " (Quest)";
             questAvatarObject.SetActive(true);

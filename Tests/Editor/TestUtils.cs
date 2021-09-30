@@ -17,6 +17,16 @@ namespace KRT.VRCQuestTools
     internal static class TestUtils
     {
         /// <summary>
+        /// Gets a value indicating whether DynamicBone is imported.
+        /// </summary>
+        internal static bool HasDynamicBone => AssetDatabase.GUIDToAssetPath("f9ac8d30c6a0d9642a11e5be4c440740") != string.Empty; // DynamicBone.cs
+
+        /// <summary>
+        /// Gets a value indicating whether FinalIK is imported.
+        /// </summary>
+        internal static bool HasFinalIK => AssetDatabase.GUIDToAssetPath("e8ad84abaddc346b9a51365d3dc292e7") != string.Empty; // IK.cs
+
+        /// <summary>
         /// Gets Test fixtures folder.
         /// </summary>
         internal static string FixturesFolder => VRCQuestTools.AssetRoot + "/Tests/Fixtures";

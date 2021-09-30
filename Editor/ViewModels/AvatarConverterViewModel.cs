@@ -1,10 +1,11 @@
-﻿// <copyright file="AvatarConverterViewModel.cs" company="kurotu">
+// <copyright file="AvatarConverterViewModel.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
 using System;
 using System.Linq;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
@@ -105,9 +106,11 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <summary>
         /// Gets unsupported components for Quest.
         /// </summary>
-        internal Component[] UnsupportedComponents => TargetAvatar.UnsupportedComponents;
+        internal Component[] UnsupportedComponents => Remover.GetUnsupportedComponentsInChildren(TargetAvatar.AvatarDescriptor.gameObject, true);
 
         private VRChatAvatar TargetAvatar => new VRChatAvatar(TargetAvatarDescriptor);
+
+        private ComponentRemover Remover => VRCQuestTools.ComponentRemover;
 
         /// <summary>
         /// Update textures.
@@ -137,7 +140,7 @@ namespace KRT.VRCQuestTools.ViewModels
             var undoGroup = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName("Convert Avatar for Quest");
 
-            var questAvatar = TargetAvatar.ConvertForQuest(outputPath, generateQuestTextures, (int)texturesSizeLimit, progressCallback);
+            var questAvatar = TargetAvatar.ConvertForQuest(outputPath, generateQuestTextures, (int)texturesSizeLimit, Remover, progressCallback);
 
             if (TargetAvatarDescriptor.gameObject.activeInHierarchy)
             {

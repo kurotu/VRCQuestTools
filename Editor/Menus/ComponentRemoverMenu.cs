@@ -23,10 +23,11 @@ namespace KRT.VRCQuestTools.Menus
         [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveUnsupportedComponents, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectRemoveUnsupportedComponents)]
         private static void RemoveUnsupportedComponents()
         {
+            var remover = VRCQuestTools.ComponentRemover;
             var i18n = VRCQuestToolsSettings.I18nResource;
             var obj = Selection.activeGameObject;
 
-            var components = VRCSDKUtility.GetUnsupportedComponentsInChildren(obj, true);
+            var components = remover.GetUnsupportedComponentsInChildren(obj, true);
             if (components.Length == 0)
             {
                 EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NoUnsupportedComponentsMessage(obj.name), "OK");
@@ -40,7 +41,7 @@ namespace KRT.VRCQuestTools.Menus
             }
 
             Undo.SetCurrentGroupName("Remove Unsupported Components");
-            VRCSDKUtility.RemoveUnsupportedComponentsInChildren(obj, true, true);
+            remover.RemoveUnsupportedComponentsInChildren(obj, true, true);
         }
 
         /// <summary>

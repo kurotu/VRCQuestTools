@@ -7,4 +7,5 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("VRCQuestTools-EditorTests")]
+[assembly: InternalsVisibleTo("VRCQuestToolsExtra-Editor")]
 #endif

@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Utils
     {
         private static readonly System.Type[] UnsupportedComponentTypes = new System.Type[]
         {
-            GetTypeByName("DynamicBoneColliderBase"), GetTypeByName("DynamicBone"), // DynamicBone may be missing
+            SystemUtility.GetTypeByName("DynamicBoneColliderBase"), SystemUtility.GetTypeByName("DynamicBone"), // DynamicBone may be missing
             typeof(Cloth),
             typeof(Camera),
             typeof(Light),
@@ -75,37 +75,16 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Gets unsupported components for Quest.
+        /// Whether a component type is unsupported for Quest.
         /// </summary>
-        /// <param name="gameObject">Target object.</param>
-        /// <param name="includeInactive">Whether to include inactive objects.</param>
-        /// <returns>Unsupported components.</returns>
-        internal static Component[] GetUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive)
+        /// <param name="type">Compoent type to check.</param>
+        /// <returns>true when unsupported.</returns>
+        internal static bool IsUnsupportedComponentType(System.Type type)
         {
-            return UnsupportedComponentTypes.SelectMany(type => gameObject.GetComponentsInChildren(type, includeInactive)).ToArray();
-        }
-
-        /// <summary>
-        /// Remove unsupported components for Quest.
-        /// </summary>
-        /// <param name="gameObject">Target object.</param>
-        /// <param name="includeInactive">Whether to include inactive objects.</param>
-        /// <param name="canUndo">Whether can undo.</param>
-        internal static void RemoveUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive, bool canUndo = false)
-        {
-            foreach (var c in GetUnsupportedComponentsInChildren(gameObject, includeInactive))
+            return UnsupportedComponentTypes.FirstOrDefault(t =>
             {
-                var message = $"[{VRCQuestTools.Name}] Removed {c.GetType().Name} from {c.gameObject.name}";
-                if (canUndo)
-                {
-                    Undo.DestroyObjectImmediate(c);
-                }
-                else
-                {
-                    Object.DestroyImmediate(c);
-                }
-                Debug.Log(message);
-            }
+                return t.IsAssignableFrom(type);
+            }) != null;
         }
 
         /// <summary>
@@ -163,21 +142,6 @@ namespace KRT.VRCQuestTools.Utils
                 "MatCap Lit", "Toon Lit", "Particles/Additive", "Particles/Multiply",
             }.Select(s => $"VRChat/Mobile/{s}");
             return usableShaders.Contains(material.shader.name);
-        }
-
-        private static System.Type GetTypeByName(string fullName)
-        {
-            foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (var type in asm.GetTypes())
-                {
-                    if (type.FullName == fullName)
-                    {
-                        return type;
-                    }
-                }
-            }
-            return null;
         }
     }
 }
