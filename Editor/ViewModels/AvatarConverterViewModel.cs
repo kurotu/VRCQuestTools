@@ -41,6 +41,12 @@ namespace KRT.VRCQuestTools.ViewModels
         public TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.Max1024x1024;
 
         /// <summary>
+        /// AvatarConverter to use.
+        /// </summary>
+        [NonSerialized]
+        internal AvatarConverter AvatarConverter;
+
+        /// <summary>
         /// VRC_AvatarDescriptor game object.
         /// Unity can't serialize VRC_AvatarDescriptor well, so keep as a game object.
         /// </summary>
@@ -95,7 +101,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// Gets materials which are not verified in VRCQuestTools.
         /// </summary>
         internal Material[] UnverifiedShaderMaterials => TargetAvatar.Materials
-            .Where(m => MaterialBase.DetectShaderCategory(m) == MaterialBase.ShaderCategory.Unverified)
+            .Where(m => AvatarConverter.MaterialWrapperBuilder.DetectShaderCategory(m) == MaterialWrapperBuilder.ShaderCategory.Unverified)
             .ToArray();
 
         /// <summary>
@@ -116,9 +122,9 @@ namespace KRT.VRCQuestTools.ViewModels
         /// Update textures.
         /// </summary>
         /// <param name="progressCallback">Callback to show progress.</param>
-        internal void UpdateTextures(VRChatAvatar.TextureProgressCallback progressCallback)
+        internal void UpdateTextures(AvatarConverter.TextureProgressCallback progressCallback)
         {
-            TargetAvatar.GenrateToonLitTextures(outputPath, (int)texturesSizeLimit, progressCallback);
+            AvatarConverter.GenrateToonLitTextures(TargetAvatar.Materials, outputPath, (int)texturesSizeLimit, progressCallback);
         }
 
         /// <summary>
@@ -127,7 +133,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <param name="canOverwrite">Callback to check overwriting.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted avatar's game object.</returns>
-        internal GameObject ConvertAvatar(CanOverwriteCallback canOverwrite, VRChatAvatar.ProgressCallback progressCallback)
+        internal GameObject ConvertAvatar(CanOverwriteCallback canOverwrite, AvatarConverter.ProgressCallback progressCallback)
         {
             if (AssetDatabase.IsValidFolder(outputPath))
             {
@@ -140,7 +146,8 @@ namespace KRT.VRCQuestTools.ViewModels
             var undoGroup = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName("Convert Avatar for Quest");
 
-            var questAvatar = TargetAvatar.ConvertForQuest(outputPath, generateQuestTextures, (int)texturesSizeLimit, Remover, progressCallback);
+            var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, generateQuestTextures, (int)texturesSizeLimit, Remover, progressCallback);
+            PrefabUtility.SaveAsPrefabAssetAndConnect(questAvatar.AvatarDescriptor.gameObject, prefabName, InteractionMode.UserAction);
 
             if (TargetAvatarDescriptor.gameObject.activeInHierarchy)
             {

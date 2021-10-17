@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.Views
         [SerializeField]
         private AvatarConverterViewModel model = new AvatarConverterViewModel();
         private Vector2 scrollPosition;
-        private VRChatAvatar.ProgressCallback progressCallback;
+        private AvatarConverter.ProgressCallback progressCallback;
 
         /// <summary>
         /// Show a window.
@@ -52,7 +52,7 @@ namespace KRT.VRCQuestTools.Views
         private void OnEnable()
         {
             titleContent.text = "Convert Avatar for Quest";
-            progressCallback = new Models.VRChat.VRChatAvatar.ProgressCallback
+            progressCallback = new AvatarConverter.ProgressCallback
             {
                 onTextureProgress = (total, index, exception, material) =>
                 {
@@ -113,6 +113,7 @@ namespace KRT.VRCQuestTools.Views
                     }
                 },
             };
+            model.AvatarConverter = VRCQuestTools.AvatarConverter;
         }
 
         private void OnGUI()

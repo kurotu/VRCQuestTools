@@ -4,6 +4,8 @@
 // </copyright>
 
 using System.IO;
+using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
 using UnityEngine;
 
@@ -44,6 +46,11 @@ namespace KRT.VRCQuestTools
         /// ComponentRemover object to use in application.
         /// </summary>
         internal static Models.ComponentRemover ComponentRemover = new Models.ComponentRemover();
+
+        /// <summary>
+        /// AvatarConverter object to use in application.
+        /// </summary>
+        internal static AvatarConverter AvatarConverter = new AvatarConverter(new MaterialWrapperBuilder());
 
         private const string PackageJsonGUID = "a965857078462df4a879e07cb70812bb";
 

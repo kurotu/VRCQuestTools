@@ -61,7 +61,7 @@ namespace KRT.VRCQuestTools
         internal static MaterialBase LoadMaterialWrapper(string file)
         {
             var material = LoadMaterial(file);
-            var wrapper = MaterialBase.Create(material);
+            var wrapper = new MaterialWrapperBuilder().Build(material);
             Assert.NotNull(wrapper);
             return wrapper;
         }
