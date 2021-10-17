@@ -22,7 +22,10 @@ namespace KRT.VRCQuestTools.Utils
     /// </summary>
     internal static class VRCSDKUtility
     {
-        private static readonly System.Type[] UnsupportedComponentTypes = new System.Type[]
+        /// <summary>
+        /// Types which is not allowed for Quest avatars.
+        /// </summary>
+        internal static readonly System.Type[] UnsupportedComponentTypes = new System.Type[]
         {
             SystemUtility.GetTypeByName("DynamicBoneColliderBase"), SystemUtility.GetTypeByName("DynamicBone"), // DynamicBone may be missing
             typeof(Cloth),
