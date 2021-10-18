@@ -8,13 +8,15 @@
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable SA1602 // Enumeration items should be documented
 
+using UnityEditor;
+
 namespace KRT.VRCQuestTools.Menus
 {
     internal static class VRCQuestToolsMenus
     {
         internal static class MenuPaths
         {
-            private const string RootMenu = VRCQuestTools.Name + "/";
+            internal const string RootMenu = VRCQuestTools.Name + "/";
             internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar for Quest";
             internal const string RemoveUnsupportedComponents = RootMenu + "Tools/Remove Unsupported Components";
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
@@ -27,6 +29,7 @@ namespace KRT.VRCQuestTools.Menus
             internal const string LanguageEnglish = LanguageMenu + "English";
             internal const string LanguageJapanese = LanguageMenu + "日本語";
             internal const string CheckForUpdate = RootMenu + "Check for Update";
+            internal const string Version = RootMenu + "Version " + VRCQuestTools.Version;
         }
 
         internal enum MenuPriorities : int
@@ -42,6 +45,7 @@ namespace KRT.VRCQuestTools.Menus
             LanguageEnglish,
             LanguageJapanese,
             CheckForUpdate = 1100,
+            Version,
         }
 
         internal static class GameObjectMenuPaths
@@ -64,6 +68,17 @@ namespace KRT.VRCQuestTools.Menus
         internal static class ContextMenuPaths
         {
             internal const string CopyBlendShapeWeights = "CONTEXT/SkinnedMeshRenderer/Copy BlendShape Weights";
+        }
+
+        [MenuItem(MenuPaths.Version, false, (int)MenuPriorities.Version)]
+        private static void Dummy()
+        {
+        }
+
+        [MenuItem(MenuPaths.Version, true)]
+        private static bool DummyValidation()
+        {
+            return false;
         }
     }
 }
