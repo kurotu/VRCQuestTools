@@ -63,7 +63,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
         private bool HasEmissiveFreak()
         {
-            return Material.shader.name.Contains("/EmissiveFreak/");
+            return Material.shader.name.Contains("EmissiveFreak/");
         }
 
         private Layer GetEmissiveFreakLayer(int index)
