@@ -68,9 +68,24 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+      - name: Restore dependencies
+        run: dotnet tool restore
+      - name: Check style
+        run: dotnet style check -r stylecop.ruleset -j stylecop.json . > result.txt
+      - name: Report result
+        run: if [ "$(wc -l < result.txt)" = "0" ]; then true; else cat result.txt && false; fi
+
   release:
     if: startsWith(github.ref, 'refs/tags/')
-    needs: [build, test]
+    needs: [build, test, lint]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
