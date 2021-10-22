@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarLabel => "Avatar";
         internal override string GenerateQuestTexturesLabel => "Generate Textures for Quest";
         internal override string QuestTexturesDescription => "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar";
-        internal override string VerifiedShadersLabel => "Verified Shaders";
+        internal override string SupportedShadersLabel => "Supported Shaders";
         internal override string SaveToLabel => "Folder to Save";
         internal override string SelectButtonLabel => "Select";
         internal override string ConvertButtonLabel => "Convert";
@@ -39,7 +39,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string WarningForPerformance => "In many cases, the converted avatar's performance rank will be \"Very Poor\" for Quest. Quest users need to use \"Show Avatar\" due to Performance Options limitation.";
         internal override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n\n" +
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
-        internal override string WarningForUnverifiedShaders => "Following materials are using unverified shaders. Textures might not properly be generated.";
+        internal override string WarningForUnsupportedShaders => $"Following materials are using unsupported shaders. Textures might not properly be generated.\nDisabling \"{GenerateQuestTexturesLabel}\" option changes only shader.";
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
         internal override string AlertForMaterialAnimation => "There are Animation clips which change avatar's materials. Animator Controllers and Animation clips will be duplicated then converted for Quest.";
         internal override string TexturesSizeLimitLabel => "Textures Size Limit";

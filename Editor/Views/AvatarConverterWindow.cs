@@ -138,14 +138,14 @@ namespace KRT.VRCQuestTools.Views
             {
                 model.generateQuestTextures = EditorGUILayout.BeginToggleGroup(i18n.GenerateQuestTexturesLabel, model.generateQuestTextures);
                 var message = $"{i18n.QuestTexturesDescription}\n\n" +
-                    $"{i18n.VerifiedShadersLabel}: Standard, UTS2, arktoon, Sunao";
+                    $"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon, AXCS, Sunao";
                 EditorGUILayout.HelpBox(message, MessageType.Info);
                 if (model.TargetAvatarDescriptor != null)
                 {
                     var unverifiedMaterials = model.UnverifiedShaderMaterials;
                     if (model.generateQuestTextures && unverifiedMaterials.Length > 0)
                     {
-                        var message2 = $"{i18n.WarningForUnverifiedShaders}\n\n" +
+                        var message2 = $"{i18n.WarningForUnsupportedShaders}\n\n" +
                             $"{string.Join("\n", unverifiedMaterials.Select(m => $"  - {m.name} ({m.shader.name})"))}";
                         EditorGUILayout.HelpBox(message2, MessageType.Error);
                     }

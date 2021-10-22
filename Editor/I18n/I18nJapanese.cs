@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarLabel => "アバター";
         internal override string GenerateQuestTexturesLabel => "Quest用のテクスチャを生成する";
         internal override string QuestTexturesDescription => "メインテクスチャ以外にもマテリアルのパラメーターを参照してテクスチャを生成し、PC版アバターの外観に近づけます。";
-        internal override string VerifiedShadersLabel => "動作確認済みシェーダー";
+        internal override string SupportedShadersLabel => "対応シェーダー";
         internal override string SaveToLabel => "保存先フォルダ";
         internal override string SelectButtonLabel => "選択";
         internal override string ConvertButtonLabel => "変換";
@@ -39,7 +39,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string WarningForPerformance => "多くの場合、Questから見た場合のパフォーマンスランクはVery Poorになります。Performance Optionsによる制限があるためQuestから見るにはShow Avatarの操作をする必要があります。";
         internal override string WarningForAppearance => "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n\n" +
             "別のBlueprint IDでのアップロードやAvatars 3.0のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
-        internal override string WarningForUnverifiedShaders => "以下のマテリアルは動作未確認のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。";
+        internal override string WarningForUnsupportedShaders => $"以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n「{GenerateQuestTexturesLabel}」をオフにするとシェーダーのみを変更します。";
         internal override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";
         internal override string AlertForMaterialAnimation => "マテリアルを変更するアニメーションがあるため、Animator ControllerおよびアニメーションをQuest用に複製・変換します。";
         internal override string TexturesSizeLimitLabel => "最大テクスチャサイズ";

@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AvatarLabel { get; }
         internal abstract string GenerateQuestTexturesLabel { get; }
         internal abstract string QuestTexturesDescription { get; }
-        internal abstract string VerifiedShadersLabel { get; }
+        internal abstract string SupportedShadersLabel { get; }
         internal abstract string SaveToLabel { get; }
         internal abstract string SelectButtonLabel { get; }
         internal abstract string ConvertButtonLabel { get; }
@@ -38,7 +38,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AnimatorControllerExceptionDialogMessage { get; }
         internal abstract string WarningForPerformance { get; }
         internal abstract string WarningForAppearance { get; }
-        internal abstract string WarningForUnverifiedShaders { get; }
+        internal abstract string WarningForUnsupportedShaders { get; }
         internal abstract string TexturesSizeLimitLabel { get; }
         internal abstract string AlertForComponents { get; }
         internal abstract string AlertForMaterialAnimation { get; }
