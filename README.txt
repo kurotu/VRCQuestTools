@@ -13,6 +13,7 @@ VRChat アバターの Oculus Quest 対応を想定した Unity Editor 拡張で
 - 元々のマテリアルの Color, Emission を反映したテクスチャの生成
 - DynamicBone や Cloth などの使用不可コンポーネントの削除
 - (Avatars 3.0 のみ) マテリアル変更アニメーションがある場合に Animator Controller とアニメーションを複製・変換
+- VRCQuestTools Extra https://kurotu.booth.pm/items/3375621 を導入していると、対応しているPC専用アセット向けの追加処理を実施
 
 コピーを作成することで元のアバターに変更を加えないため、既存のプロジェクトでそのまま使用することができます。
 
@@ -92,6 +93,9 @@ GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2021/10/23: v1.1.0
+    - ArxCharacterShadersのマテリアルからのテクスチャ生成に対応
+    - VRCQuestTools Extra https://kurotu.booth.pm/items/3375621 との連携機能を追加
 - 2021/9/25: v1.0.1
     - マテリアルの種類を判定する際にシェーダー名の大文字と小文字を区別しないように変更
     - 単一アセット内に含まれる複数のアニメーションやマテリアルを変換するとエラーになる問題を修正
