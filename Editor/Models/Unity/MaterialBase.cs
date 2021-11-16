@@ -42,7 +42,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 enableInstancing = true, // https://docs.vrchat.com/docs/quest-content-optimization#avatars-and-worlds
                 globalIlluminationFlags = Material.globalIlluminationFlags,
                 hideFlags = Material.hideFlags,
-                mainTexture = Material.mainTexture,
+                mainTexture = Material.mainTexture ?? Material.GetTexture("_MainTex"), // mainTexture may return null in some cases (e.g. After upgrading lilToon).
                 mainTextureOffset = Material.mainTextureOffset,
                 mainTextureScale = Material.mainTextureScale,
                 name = $"{Material.name}_{newShader.name.Split('/').Last()}",

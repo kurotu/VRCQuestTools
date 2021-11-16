@@ -89,7 +89,8 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             return new Layer
             {
-                image = MagickImageUtility.GetMagickImage(Material.mainTexture),
+                // mainTexture may return null in some cases (e.g. After upgrading lilToon)
+                image = MagickImageUtility.GetMagickImage(Material.mainTexture ?? Material.GetTexture("_MainTex")),
                 color = Material.HasProperty("_Color") ? Material.color : Color.white,
             };
         }
