@@ -93,6 +93,8 @@ GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2021/11/17: v1.1.1
+    - lilToonのマテリアルを変換するときにメインテクスチャの取得に失敗することがある問題を修正
 - 2021/10/23: v1.1.0
     - ArxCharacterShadersのマテリアルからのテクスチャ生成に対応
     - VRCQuestTools Extra https://kurotu.booth.pm/items/3375621 との連携機能を追加
