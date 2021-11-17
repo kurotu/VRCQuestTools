@@ -36,7 +36,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MaterialExceptionDialogMessage => "An error occured when converting materials. Aborted.";
         internal override string AnimationClipExceptionDialogMessage => "An error occured when converting Animation Clips. Aborted.";
         internal override string AnimatorControllerExceptionDialogMessage => "An error occured when converting Animator Controllers. Aborted.";
-        internal override string WarningForPerformance => "In many cases, the converted avatar's performance rank will be \"Very Poor\" for Quest. Because of Operformance Options limitation, Quest users see your fallback avatar and need to use \"Show Avatar\" action.";
+        internal override string WarningForPerformance => "In most cases, the converted avatar's performance rank will be \"Very Poor\" for Quest. Quest users see your fallback avatar by default, and need to change \"Avatar Display\" setting.";
         internal override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n\n" +
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
         internal override string WarningForUnsupportedShaders => $"Following materials are using unsupported shaders. Textures might not properly be generated.\nDisabling \"{GenerateQuestTexturesLabel}\" option changes only shader.";
