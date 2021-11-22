@@ -86,29 +86,57 @@ namespace KRT.VRCQuestTools.Utils
                 for (int j = 0; j < stateMachine.states.Length; j++)
                 {
                     AnimatorState animState = stateMachine.states[j].state;
-                    if (animState.motion == null)
+                    switch (animState.motion)
                     {
-                        continue;
-                    }
-
-                    // BlendTreeも設定できるので型チェック
-                    if (animState.motion.GetType() != typeof(AnimationClip))
-                    {
-                        continue;
-                    }
-
-                    AnimationClip anim = (AnimationClip)animState.motion;
-                    Debug.Log("am :" + anim.name);
-                    if (newAnimationClips.ContainsKey(anim))
-                    {
-                        cloneController.layers[i].stateMachine.states[j].state.motion = newAnimationClips[anim];
-                        Debug.Log("replace animationClip : " + newAnimationClips[anim].name);
+                        case null:
+                            continue;
+                        case AnimationClip anim:
+                            Debug.Log("am :" + anim.name);
+                            if (newAnimationClips.ContainsKey(anim))
+                            {
+                                cloneController.layers[i].stateMachine.states[j].state.motion = newAnimationClips[anim];
+                                Debug.Log("replace animationClip : " + newAnimationClips[anim].name);
+                            }
+                            break;
+                        case BlendTree blendTree:
+                            cloneController.layers[i].stateMachine.states[j].state.motion = ReplaceAnimationClips(blendTree, newAnimationClips);
+                            break;
                     }
                 }
             }
 
             AssetDatabase.SaveAssets();
             return cloneController;
+        }
+
+        /// <summary>
+        /// Replace blend tree's animation clips with new clips.
+        /// </summary>
+        /// <param name="blendTree">Target blend tree.</param>
+        /// <param name="newAnimationClips">Animation clips to replace (key: original clip).</param>
+        /// <returns>New blend tree.</returns>
+        internal static BlendTree ReplaceAnimationClips(BlendTree blendTree, Dictionary<AnimationClip, AnimationClip> newAnimationClips)
+        {
+            var newTree = blendTree; // Object.Instantiate() raises an assertion error.
+            var newChildren = blendTree.children.Select(child =>
+            {
+                switch (child.motion)
+                {
+                    case AnimationClip clip:
+                        if (newAnimationClips.ContainsKey(clip))
+                        {
+                            child.motion = newAnimationClips[clip];
+                        }
+                        break;
+                    case BlendTree tree:
+                        child.motion = ReplaceAnimationClips(tree, newAnimationClips);
+                        break;
+                }
+                return child;
+            }).ToArray();
+
+            newTree.children = newChildren;
+            return newTree;
         }
 
         private static Material[] GetMaterials(AnimationClip clip)
