@@ -93,10 +93,12 @@ GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2021/11/25: v1.1.2
+    - マテリアルを変更する BlendTree が変換されない問題を修正
 - 2021/11/17: v1.1.1
-    - lilToonのマテリアルを変換するときにメインテクスチャの取得に失敗することがある問題を修正
+    - lilToon でセットアップしたアバターを変換すると真っ白になることがある問題を修正
 - 2021/10/23: v1.1.0
-    - ArxCharacterShadersのマテリアルからのテクスチャ生成に対応
+    - ArxCharacterShaders のマテリアルからのテクスチャ生成に対応
     - VRCQuestTools Extra https://kurotu.booth.pm/items/3375621 との連携機能を追加
 - 2021/9/25: v1.0.1
     - マテリアルの種類を判定する際にシェーダー名の大文字と小文字を区別しないように変更
