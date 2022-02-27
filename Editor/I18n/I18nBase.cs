@@ -15,6 +15,7 @@ namespace KRT.VRCQuestTools.I18n
     internal abstract class I18nBase
     {
         internal abstract string CancelLabel { get; }
+        internal abstract string CloseLabel { get; }
         internal abstract string DismissLabel { get; }
 
         // Convert Avatar for Quest

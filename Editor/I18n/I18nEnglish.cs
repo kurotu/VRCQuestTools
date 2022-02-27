@@ -15,6 +15,7 @@ namespace KRT.VRCQuestTools.I18n
     internal class I18nEnglish : I18nBase
     {
         internal override string CancelLabel => "Cancel";
+        internal override string CloseLabel => "Close";
         internal override string DismissLabel => "Dismiss";
 
         // Convert Avatar for Quest
