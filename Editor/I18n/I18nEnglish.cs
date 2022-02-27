@@ -83,5 +83,12 @@ namespace KRT.VRCQuestTools.I18n
         internal override string GetUpdate => "Get Update";
         internal override string NewVersionIsAvailable(string latestVersion) => $"New version {latestVersion} is available.";
         internal override string ThereIsNoUpdate => "There is no update.";
+
+        // Validations
+        internal override string Deactivate => "Deactivate";
+        internal override string IncompatibleForQuest => "You can't upload Quest avatars because this avatar can't be uploaded for Quest. Please deactivate PC avatars.";
+        internal override string MissingScripts => "You can't upload an avatar which has \"missing\" scripts. Please remove these components to build.";
+        internal override string MissingDynamicBone => "Dynamic Bone is missing in the project. Please import Dynamic Bone or remove \"missing\" components to build.";
+        internal override string RemoveMissing => "Remove missing components";
     }
 }

@@ -82,5 +82,12 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string GetUpdate { get; }
         internal abstract string NewVersionIsAvailable(string latestVersion);
         internal abstract string ThereIsNoUpdate { get; }
+
+        // Validations
+        internal abstract string Deactivate { get; }
+        internal abstract string IncompatibleForQuest { get; }
+        internal abstract string MissingScripts { get; }
+        internal abstract string MissingDynamicBone { get; }
+        internal abstract string RemoveMissing { get; }
     }
 }

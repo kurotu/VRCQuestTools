@@ -83,5 +83,12 @@ namespace KRT.VRCQuestTools.I18n
         internal override string GetUpdate => "アップデート";
         internal override string NewVersionIsAvailable(string latestVersion) => $"新しいバージョン {latestVersion} があります。";
         internal override string ThereIsNoUpdate => "アップデートはありません。";
+
+        // Validations
+        internal override string Deactivate => "非表示";
+        internal override string IncompatibleForQuest => $"Quest用にアップロードできないアバターがシーン内にあるとアバターをアップロードできません。PC用のアバターを非表示にしてください。";
+        internal override string MissingScripts => "\"Missing\"\u00A0状態のコンポーネントのあるアバターはアップロードできません。 ビルド前にコンポーネントを削除してください。";
+        internal override string MissingDynamicBone => "Dynamic\u00A0Bone がインポートされていません。 Dynamic Bone をインポートするか \"missing\" 状態のコンポーネントを削除してください。";
+        internal override string RemoveMissing => "\"Missing\" 状態のコンポーネントを削除";
     }
 }
