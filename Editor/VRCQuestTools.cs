@@ -1,4 +1,4 @@
-﻿// <copyright file="VRCQuestTools.cs" company="kurotu">
+// <copyright file="VRCQuestTools.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -6,6 +6,7 @@
 using System.IO;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Services;
 using UnityEditor;
 using UnityEngine;
 
@@ -51,6 +52,11 @@ namespace KRT.VRCQuestTools
         /// AvatarConverter object to use in application.
         /// </summary>
         internal static AvatarConverter AvatarConverter = new AvatarConverter(new MaterialWrapperBuilder());
+
+        /// <summary>
+        /// GitHub API service instance.
+        /// </summary>
+        internal static GitHubService GitHub = new GitHubService(GitHubRepository);
 
         private const string PackageJsonGUID = "a965857078462df4a879e07cb70812bb";
 
