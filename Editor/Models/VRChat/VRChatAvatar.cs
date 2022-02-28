@@ -85,7 +85,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return layers.Concat(avatercontrollers).Where(c => c != null).Distinct().ToArray();
         }
 
-        private Material[] GetRendererMaterials()
+        /// <summary>
+        /// Gets materials which are refered by Renderers.
+        /// </summary>
+        /// <returns>Renderers' materials.</returns>
+        internal Material[] GetRendererMaterials()
         {
             var renderers = AvatarDescriptor.GetComponentsInChildren<Renderer>(true);
             return renderers.SelectMany(r => r.sharedMaterials).Where(m => m != null).Distinct().ToArray();

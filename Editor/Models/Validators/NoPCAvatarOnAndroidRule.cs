@@ -34,7 +34,7 @@ namespace KRT.VRCQuestTools.Models.Validators
                     var i18n = VRCQuestToolsSettings.I18nResource;
                     GUILayout.Label(i18n.IncompatibleForQuest, EditorStyles.wordWrappedLabel);
                     GUILayout.Label($"- {avatar.GameObject.name}", EditorStyles.wordWrappedLabel);
-                    if (GUILayout.Button(i18n.Deactivate))
+                    if (GUILayout.Button(i18n.DeactivateAvatar))
                     {
                         avatar.GameObject.SetActive(false);
                         return true;
@@ -57,7 +57,7 @@ namespace KRT.VRCQuestTools.Models.Validators
             {
                 return false;
             }
-            foreach (var m in avatar.Materials)
+            foreach (var m in avatar.GetRendererMaterials())
             {
                 if (!VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m))
                 {

@@ -85,7 +85,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string ThereIsNoUpdate { get; }
 
         // Validations
-        internal abstract string Deactivate { get; }
+        internal abstract string DeactivateAvatar { get; }
         internal abstract string IncompatibleForQuest { get; }
         internal abstract string MissingScripts { get; }
         internal abstract string MissingDynamicBone { get; }
