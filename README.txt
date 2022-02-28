@@ -44,6 +44,10 @@ Metallic マップや Smoothness/Roughness マップから Metallic Smoothness �
 
 Quest 対応に有用な Unity の設定を有効化します。
 
+### Scene の自動検証
+
+Scene 内のアバターをアップロードできない状態になっている場合に警告を表示します。
+
 ## 使用方法
 
 unitypackage を導入後、ヒエラルキーでアバターを選択した状態でメニューから「VRCQuestTools」を選択すると各機能を使用できます。
@@ -93,6 +97,10 @@ GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- 2022/3/1: v1.2.0
+    - Scene 内のアバターをアップロードできない状態になっている場合に警告を表示
+        - アバターに Missing 状態のコンポーネントがある場合
+        - Android ビルドターゲットで Quest 用にアップロードできないアバターがある場合
 - 2021/11/25: v1.1.2
     - マテリアルを変更する BlendTree が変換されない問題を修正
 - 2021/11/17: v1.1.1

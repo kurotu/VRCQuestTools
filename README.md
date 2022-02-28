@@ -56,6 +56,10 @@ Automatically remove vertex colors from scene's avatars. By using this, this wou
 
 Enable useful settings of Unity.
 
+### Automated Scene Validation
+
+Shows alerts when a Scene can't upload avatars.
+
 ## License
 
 The MIT License.
