@@ -138,7 +138,7 @@ namespace KRT.VRCQuestTools.Views
             {
                 model.generateQuestTextures = EditorGUILayout.BeginToggleGroup(i18n.GenerateQuestTexturesLabel, model.generateQuestTextures);
                 var message = $"{i18n.QuestTexturesDescription}\n\n" +
-                    $"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon, AXCS, Sunao";
+                    $"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon, AXCS, Sunao, lilToon";
                 EditorGUILayout.HelpBox(message, MessageType.Info);
                 if (model.TargetAvatarDescriptor != null)
                 {

@@ -19,7 +19,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
 #pragma warning disable SA1136 // Enum values should be on separate lines
 #pragma warning disable SA1602 // Enumeration items should be documented
-            UTS2, Arktoon, Standard, Unlit, Quest, Sunao, AXCS, ExtraSupport, Unverified,
+            UTS2, Arktoon, Standard, Unlit, Quest, Sunao, AXCS, LilToon, ExtraSupport, Unverified,
 #pragma warning restore SA1602 // Enumeration items should be documented
 #pragma warning restore SA1136 // Enum values should be on separate lines
         }
@@ -31,7 +31,8 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <returns>Material wrapper object.</returns>
         internal virtual MaterialBase Build(Material material)
         {
-            switch (DetectShaderCategory(material))
+            var category = DetectShaderCategory(material);
+            switch (category)
             {
                 case ShaderCategory.UTS2:
                     return new UTS2Material(material);
@@ -40,8 +41,16 @@ namespace KRT.VRCQuestTools.Models.Unity
                     return new ArktoonMaterial(material);
                 case ShaderCategory.Sunao:
                     return new SunaoMaterial(material);
-                default:
+                case ShaderCategory.LilToon:
+                    return new LilToonMaterial(material);
+                case ShaderCategory.Standard:
+                case ShaderCategory.Unlit:
+                case ShaderCategory.Quest:
+                case ShaderCategory.ExtraSupport:
+                case ShaderCategory.Unverified:
                     return new StandardMaterial(material);
+                default:
+                    throw new System.NotImplementedException($"MaterialWrapperBuilder.Build() not implemented for {typeof(ShaderCategory).Name}.{System.Enum.GetName(typeof(ShaderCategory), category)}");
             }
         }
 
@@ -82,6 +91,10 @@ namespace KRT.VRCQuestTools.Models.Unity
             if (shaderName.StartsWith("Sunao Shader/".ToLower()))
             {
                 return ShaderCategory.Sunao;
+            }
+            if (shaderName.Contains("liltoon"))
+            {
+                return ShaderCategory.LilToon;
             }
             return ShaderCategory.Unverified;
         }
