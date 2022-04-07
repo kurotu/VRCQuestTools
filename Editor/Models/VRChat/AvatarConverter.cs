@@ -178,8 +178,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
                 catch (Exception e)
                 {
+                    Debug.LogException(e);
                     progressCallback(materialsToConvert.Length, i, e, m);
-                    throw e;
+                    throw new InvalidOperationException();
                 }
             }
             return convertedTextures;
