@@ -97,7 +97,7 @@ GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
-- NEXT: v1.3.0
+- 2022/4/9: v1.3.0
     - lilToon のマテリアルからのテクスチャ生成に対応
 - 2022/3/1: v1.2.1
     - 不要なテストコードを削除
