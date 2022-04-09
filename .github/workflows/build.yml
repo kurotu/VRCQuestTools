@@ -16,8 +16,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-        with:
-          path: Assets/KRT/VRCQuestTools
+
+      - name: Move files into Assets
+        run: |
+          mkdir -p Assets/KRT/VRCQuestTools
+          mv $(ls . | grep -v Assets) Assets/KRT/VRCQuestTools/
 
       - uses: actions/cache@v2
         with:
