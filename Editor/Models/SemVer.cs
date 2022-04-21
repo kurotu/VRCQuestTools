@@ -95,5 +95,20 @@ namespace KRT.VRCQuestTools.Models
         {
             return $"{major}.{minor}.{patch}";
         }
+
+        /// <summary>
+        /// Gets whether the version is a major update against to old one.
+        /// </summary>
+        /// <param name="old">An old version to compare.</param>
+        /// <returns>true when the major version is larger than old one.</returns>
+        internal bool IsMajorUpdate(SemVer old)
+        {
+            if (this > old)
+            {
+                return major > old.major;
+            }
+
+            return false;
+        }
     }
 }

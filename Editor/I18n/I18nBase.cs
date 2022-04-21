@@ -82,6 +82,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string CheckLater { get; }
         internal abstract string GetUpdate { get; }
         internal abstract string NewVersionIsAvailable(string latestVersion);
+        internal abstract string NewVersionHasBreakingChanges { get; }
         internal abstract string ThereIsNoUpdate { get; }
 
         // Validations

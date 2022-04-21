@@ -44,6 +44,10 @@ namespace KRT.VRCQuestTools.Automators
                             var i18n = VRCQuestToolsSettings.I18nResource;
 
                             GUILayout.Label(i18n.NewVersionIsAvailable(latestRelease.Version.ToString()));
+                            if (latestRelease.Version.IsMajorUpdate(CurrentVersion))
+                            {
+                                EditorGUILayout.HelpBox(i18n.NewVersionHasBreakingChanges, MessageType.Warning);
+                            }
                             GUILayout.BeginHorizontal();
                             if (GUILayout.Button(i18n.GetUpdate))
                             {
