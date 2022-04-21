@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
@@ -13,12 +14,17 @@ namespace KRT.VRCQuestTools.Utils
     internal static class AssetUtility
     {
         /// <summary>
+        /// Type object of DynamicBone.
+        /// </summary>
+        internal static Type DynamicBoneType = SystemUtility.GetTypeByName("DynamicBone");
+
+        /// <summary>
         /// Gets whether Dynamic Bone is imported.
         /// </summary>
         /// <returns>true when Dynamic Bone is imported.</returns>
         internal static bool IsDynamicBoneImported()
         {
-            return SystemUtility.GetTypeByName("DynamicBone") != null;
+            return DynamicBoneType != null;
         }
 
         /// <summary>

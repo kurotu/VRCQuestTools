@@ -6,6 +6,7 @@
 using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
@@ -180,6 +181,11 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
             if (model.TargetAvatarDescriptor != null)
             {
+                if (VRCSDKUtility.IsPhysBonesImported() && model.HasDynamicBones)
+                {
+                    EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Error);
+                }
+
                 var componentsToBeAlearted = model.UnsupportedComponents
                     .Select(c => c.GetType().Name)
                     .Distinct()

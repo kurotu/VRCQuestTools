@@ -146,5 +146,14 @@ namespace KRT.VRCQuestTools.Utils
             }.Select(s => $"VRChat/Mobile/{s}");
             return usableShaders.Contains(material.shader.name);
         }
+
+        /// <summary>
+        /// Whether VRCSDK has PhysBones.
+        /// </summary>
+        /// <returns>true when PhysBones exists in the project.</returns>
+        internal static bool IsPhysBonesImported()
+        {
+            return SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone") != null;
+        }
     }
 }

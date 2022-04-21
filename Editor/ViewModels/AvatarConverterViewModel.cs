@@ -8,6 +8,7 @@ using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -108,6 +109,22 @@ namespace KRT.VRCQuestTools.ViewModels
         /// Gets a value indicating whether there are materials which are changed by animation clips.
         /// </summary>
         internal bool HasAnimatedMaterials => TargetAvatar.HasAnimatedMaterials;
+
+        /// <summary>
+        /// Gets a value indicating whether the avatar has Dynamic Bones.
+        /// </summary>
+        internal bool HasDynamicBones
+        {
+            get
+            {
+                if (AssetUtility.IsDynamicBoneImported())
+                {
+                    var dbs = TargetAvatar.GameObject.GetComponentsInChildren(AssetUtility.DynamicBoneType, true);
+                    return dbs.Length > 0;
+                }
+                return false;
+            }
+        }
 
         /// <summary>
         /// Gets unsupported components for Quest.
