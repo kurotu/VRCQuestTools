@@ -37,6 +37,11 @@ namespace KRT.VRCQuestTools.Utils
         }.Where(e => e != null).ToArray();
 
         /// <summary>
+        /// Type object of VRCPhysBone.
+        /// </summary>
+        internal static readonly System.Type PhysBoneType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
+
+        /// <summary>
         /// Whether the game object is a VRC avatar root.
         /// </summary>
         /// <param name="obj">Target object.</param>
@@ -153,7 +158,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when PhysBones exists in the project.</returns>
         internal static bool IsPhysBonesImported()
         {
-            return SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone") != null;
+            return PhysBoneType != null;
         }
     }
 }

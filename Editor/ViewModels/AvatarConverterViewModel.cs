@@ -127,6 +127,21 @@ namespace KRT.VRCQuestTools.ViewModels
         }
 
         /// <summary>
+        /// Gets a number of attached VRCPhysBones.
+        /// </summary>
+        internal int PhysBonesCount
+        {
+            get
+            {
+                if (VRCSDKUtility.IsPhysBonesImported())
+                {
+                    return TargetAvatar.GameObject.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true).Length;
+                }
+                return 0;
+            }
+        }
+
+        /// <summary>
         /// Gets unsupported components for Quest.
         /// </summary>
         internal Component[] UnsupportedComponents => Remover.GetUnsupportedComponentsInChildren(TargetAvatar.AvatarDescriptor.gameObject, true);

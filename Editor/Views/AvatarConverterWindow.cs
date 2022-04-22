@@ -181,9 +181,16 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
             if (model.TargetAvatarDescriptor != null)
             {
-                if (VRCSDKUtility.IsPhysBonesImported() && model.HasDynamicBones)
+                if (VRCSDKUtility.IsPhysBonesImported())
                 {
-                    EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Error);
+                    if (model.HasDynamicBones)
+                    {
+                        EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Error);
+                    }
+                    if (model.PhysBonesCount > 8)
+                    {
+                        EditorGUILayout.HelpBox(i18n.AlertForPhysBonesPerformance, MessageType.Error);
+                    }
                 }
 
                 var componentsToBeAlearted = model.UnsupportedComponents

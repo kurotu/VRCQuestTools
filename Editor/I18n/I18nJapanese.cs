@@ -44,6 +44,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";
         internal override string AlertForMaterialAnimation => "マテリアルを変更するアニメーションがあるため、Animator ControllerおよびアニメーションをQuest用に複製・変換します。";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} は Dynamic Bone を PhysBones に変換しません。アバターを変換する前に PhysBones を設定してください。";
+        internal override string AlertForPhysBonesPerformance => "PhysBone の数が 8 を超えています (Very Poor)。変換後に PhysBones 関連のパフォーマンスランクが Poor に収まるようコンポーネントを削除してください。 (目安: PhysBone 8 以下, コライダー 16 以下)";
         internal override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";
 
