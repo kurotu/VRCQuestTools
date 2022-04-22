@@ -44,7 +44,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
         internal override string AlertForMaterialAnimation => "There are Animation clips which change avatar's materials. Animator Controllers and Animation clips will be duplicated then converted for Quest.";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
-        internal override string AlertForPhysBonesPerformance => "More than 8 PhysBones are attached (Very Poor). Please kepp \"Poor\" rating after conversion. (Rough limits: 8 PhysBones, 16 Colliders)";
+        internal override string AlertForPhysBonesPerformance => "More than 8 PhysBones are attached (Very Poor). Please keep \"Poor\" rating by removing PhysBones after conversion. (Rough limits: 8 PhysBones, 16 Colliders)";
         internal override string TexturesSizeLimitLabel => "Textures Size Limit";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
 
@@ -85,7 +85,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string CheckLater => "Check Later";
         internal override string GetUpdate => "Get Update";
         internal override string NewVersionIsAvailable(string latestVersion) => $"New version {latestVersion} is available.";
-        internal override string NewVersionHasBreakingChanges => $"This version has breaking changes about compatibility. Please make sure that you use the latest VRCSDK then remove existing VRCQuestTools from assets before upgrading.";
+        internal override string NewVersionHasBreakingChanges => $"This version has breaking changes about compatibility. Please make sure that you use the latest VRCSDK then remove the existing tool from assets before upgrading.";
         internal override string ThereIsNoUpdate => "There is no update.";
 
         // Validations
