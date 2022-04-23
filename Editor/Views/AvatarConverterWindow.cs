@@ -1,4 +1,4 @@
-﻿// <copyright file="AvatarConverterWindow.cs" company="kurotu">
+// <copyright file="AvatarConverterWindow.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -185,7 +185,14 @@ namespace KRT.VRCQuestTools.Views
                 {
                     if (model.HasDynamicBones)
                     {
-                        EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Error);
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Error);
+                            if (GUILayout.Button(i18n.ConvertButtonLabel, GUILayout.Height(38), GUILayout.MinWidth(60)))
+                            {
+                                OnClickConvertToPhysBonesButton();
+                            }
+                        }
                     }
                     if (model.PhysBonesCount > 8)
                     {
@@ -279,6 +286,11 @@ namespace KRT.VRCQuestTools.Views
                 EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.CompletedDialogMessage(model.TargetAvatarDescriptor.name), "OK");
                 Selection.activeGameObject = questAvatar;
             }
+        }
+
+        private void OnClickConvertToPhysBonesButton()
+        {
+            model.ConvertDynamicBonesToPhysBones();
         }
     }
 }

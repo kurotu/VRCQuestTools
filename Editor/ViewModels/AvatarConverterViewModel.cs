@@ -191,5 +191,14 @@ namespace KRT.VRCQuestTools.ViewModels
 
             return questAvatar.AvatarDescriptor.gameObject;
         }
+
+        /// <summary>
+        /// Convert Bynamic Bones to PhysBones via menu item.
+        /// </summary>
+        internal void ConvertDynamicBonesToPhysBones()
+        {
+            Selection.activeGameObject = targetAvatarObject;
+            EditorApplication.ExecuteMenuItem("VRChat SDK/Utilities/Convert DynamicBones To PhysBones");
+        }
     }
 }
