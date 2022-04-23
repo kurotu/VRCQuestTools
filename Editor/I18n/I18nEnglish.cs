@@ -66,10 +66,11 @@ namespace KRT.VRCQuestTools.I18n
         // Remove PhysBones
         internal override string PhysBonesSDKRequired => "VRCSDK which supports Avatar Dynamics is required.";
         internal override string SelectComponentsToKeep => "Select components to keep.";
+        internal override string PhysBonesListTooltip => "The list of components and their root transforms.";
         internal override string KeepAll => "Keep All";
-        internal override string PhysBonesWillBeRemovedAtRunTime => "All PhysBone components will be removed at runtime on Quest.";
-        internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "All PhysBone colliders will be removed at runtime on Quest.";
-        internal override string ContactsWillBeRemovedAtRunTime => "All VRCContact components will be removed at runtime on Quest.";
+        internal override string PhysBonesWillBeRemovedAtRunTime => "You can't upload this avatar for Quest. Please reduce PhysBone components.";
+        internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "All PhysBone colliders will be removed at runtime on Quest. Please reduce PhysBoneCollider components.";
+        internal override string ContactsWillBeRemovedAtRunTime => "You can't upload this avatar for Quest. Please reduce VRCContact components.";
         internal override string DeleteUnselectedComponents => "Delete Unselected Components";
 
         // Metallic Smoothness

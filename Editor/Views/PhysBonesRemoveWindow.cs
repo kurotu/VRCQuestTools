@@ -114,13 +114,13 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField(i18n.SelectComponentsToKeep);
+            EditorGUILayout.LabelField(i18n.SelectComponentsToKeep, EditorStyles.wordWrappedLabel);
 
             using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPosition))
             {
                 scrollPosition = scrollView.scrollPosition;
 
-                if (showPhysBones = EditorGUILayout.BeginFoldoutHeaderGroup(showPhysBones, $"PhysBones Components ({model.PhysBonesToKeep.Count()}/{model.PoorPhysBonesCount})"))
+                if (showPhysBones = EditorGUILayout.BeginFoldoutHeaderGroup(showPhysBones, new GUIContent($"PhysBones Components ({model.PhysBonesToKeep.Count()}/{model.PoorPhysBonesCount})", i18n.PhysBonesListTooltip)))
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
@@ -151,7 +151,7 @@ namespace KRT.VRCQuestTools.Views
                 }
                 EditorGUILayout.EndFoldoutHeaderGroup();
 
-                if (showPhysBoneColliders = EditorGUILayout.BeginFoldoutHeaderGroup(showPhysBoneColliders, $"PhysBones Colliders ({model.PhysBoneCollidersToKeep.Count()}/{model.PoorPhysBoneCollidersCount})"))
+                if (showPhysBoneColliders = EditorGUILayout.BeginFoldoutHeaderGroup(showPhysBoneColliders, new GUIContent($"PhysBones Colliders ({model.PhysBoneCollidersToKeep.Count()}/{model.PoorPhysBoneCollidersCount})", i18n.PhysBonesListTooltip)))
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
@@ -182,7 +182,7 @@ namespace KRT.VRCQuestTools.Views
                 }
                 EditorGUILayout.EndFoldoutHeaderGroup();
 
-                if (showContacts = EditorGUILayout.BeginFoldoutHeaderGroup(showContacts, $"Avatar Dynamics Contacts ({model.ContactsToKeep.Count()}/{model.PoorContactsCount})"))
+                if (showContacts = EditorGUILayout.BeginFoldoutHeaderGroup(showContacts, new GUIContent($"Avatar Dynamics Contacts ({model.ContactsToKeep.Count()}/{model.PoorContactsCount})", i18n.PhysBonesListTooltip)))
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
@@ -218,15 +218,15 @@ namespace KRT.VRCQuestTools.Views
 
             if (model.PhysBonesToKeep.Count() > model.PoorPhysBonesCount)
             {
-                EditorGUILayout.HelpBox("PhysBones Components: Very Poor (Quest)\n" + i18n.PhysBonesWillBeRemovedAtRunTime, MessageType.Warning);
+                EditorGUILayout.HelpBox("PhysBones Components: Very Poor (Quest)\n" + i18n.PhysBonesWillBeRemovedAtRunTime, MessageType.Error);
             }
             if (model.PhysBoneCollidersToKeep.Count() > model.PoorPhysBoneCollidersCount)
             {
-                EditorGUILayout.HelpBox("PhysBones Colliders: Very Poor (Quest)\n" + i18n.PhysBoneCollidersWillBeRemovedAtRunTime, MessageType.Warning);
+                EditorGUILayout.HelpBox("PhysBones Colliders: Very Poor (Quest)\n" + i18n.PhysBoneCollidersWillBeRemovedAtRunTime, MessageType.Error);
             }
             if (model.ContactsToKeep.Count() > model.PoorContactsCount)
             {
-                EditorGUILayout.HelpBox("Avatar Dynamics Contacts: Very Poor (Quest)\n" + i18n.ContactsWillBeRemovedAtRunTime, MessageType.Warning);
+                EditorGUILayout.HelpBox("Avatar Dynamics Contacts: Very Poor (Quest)\n" + i18n.ContactsWillBeRemovedAtRunTime, MessageType.Error);
             }
 
             if (GUILayout.Button(i18n.DeleteUnselectedComponents))

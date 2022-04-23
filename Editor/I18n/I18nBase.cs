@@ -65,6 +65,7 @@ namespace KRT.VRCQuestTools.I18n
         // Remove PhysBones
         internal abstract string PhysBonesSDKRequired { get; }
         internal abstract string SelectComponentsToKeep { get; }
+        internal abstract string PhysBonesListTooltip { get; }
         internal abstract string KeepAll { get; }
         internal abstract string PhysBonesWillBeRemovedAtRunTime { get; }
         internal abstract string PhysBoneCollidersWillBeRemovedAtRunTime { get; }
