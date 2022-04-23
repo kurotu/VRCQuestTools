@@ -94,6 +94,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnGUI()
         {
+#if UNITY_2019_1_OR_NEWER
             var i18n = VRCQuestToolsSettings.I18nResource;
             if (!VRCSDKUtility.IsPhysBonesImported())
             {
@@ -234,6 +235,9 @@ namespace KRT.VRCQuestTools.Views
             }
 
             EditorGUILayout.Space();
+#else
+            EditorGUILayout.LabelField("Unity 2019 is required.");
+#endif
         }
 
         private bool GUIToggleAllField(string label, bool allSelected)
