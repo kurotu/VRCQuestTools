@@ -62,6 +62,15 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string NoUnsupportedComponentsMessage(string objectName);
         internal abstract string UnsupportedRemoverConfirmationMessage(string objectName);
 
+        // Remove PhysBones
+        internal abstract string PhysBonesSDKRequired { get; }
+        internal abstract string SelectComponentsToKeep { get; }
+        internal abstract string KeepAll { get; }
+        internal abstract string PhysBonesWillBeRemovedAtRunTime { get; }
+        internal abstract string PhysBoneCollidersWillBeRemovedAtRunTime { get; }
+        internal abstract string ContactsWillBeRemovedAtRunTime { get; }
+        internal abstract string DeleteUnselectedComponents { get; }
+
         // Metallic Smoothness
         internal abstract string TextureLabel { get; }
         internal abstract string InvertLabel { get; }

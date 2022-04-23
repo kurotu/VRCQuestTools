@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -40,6 +41,21 @@ namespace KRT.VRCQuestTools.Utils
         /// Type object of VRCPhysBone.
         /// </summary>
         internal static readonly System.Type PhysBoneType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
+
+        /// <summary>
+        /// Type object of VRCPhysBoneCollider.
+        /// </summary>
+        internal static readonly System.Type PhysBoneColliderType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBoneCollider");
+
+        /// <summary>
+        /// Type object of VRCContactReceiver.
+        /// </summary>
+        internal static readonly System.Type ContactReceiverType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.Contact.Components.VRCContactReceiver");
+
+        /// <summary>
+        /// Type object of VRCContactSender.
+        /// </summary>
+        internal static readonly System.Type ContactSenderType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.Contact.Components.VRCContactSender");
 
         /// <summary>
         /// Whether the game object is a VRC avatar root.
@@ -159,6 +175,82 @@ namespace KRT.VRCQuestTools.Utils
         internal static bool IsPhysBonesImported()
         {
             return PhysBoneType != null;
+        }
+
+        /// <summary>
+        /// Reflection to use VRCSDK features.
+        /// </summary>
+        internal class Reflection
+        {
+            /// <summary>
+            /// Reflection wrapper for VRCPhysBone.
+            /// </summary>
+            internal class PhysBone
+            {
+                private static readonly FieldInfo RootTransformField = PhysBoneType?.GetField("rootTransform");
+                private readonly Component component;
+
+                /// <summary>
+                /// Initializes a new instance of the <see cref="PhysBone"/> class.
+                /// </summary>
+                /// <param name="component">Component to wrap.</param>
+                internal PhysBone(Component component)
+                {
+                    this.component = component;
+                }
+
+                /// <summary>
+                /// Gets root tansform set by inspector.
+                /// </summary>
+                internal Transform RootTransform => (Transform)RootTransformField.GetValue(component);
+            }
+
+            /// <summary>
+            /// Reflection wrapper for VRCPhysBoneCollider.
+            /// </summary>
+            internal class PhysBoneCollider
+            {
+                private static readonly FieldInfo RootTransformField = PhysBoneColliderType?.GetField("rootTransform");
+                private readonly Component component;
+
+                /// <summary>
+                /// Initializes a new instance of the <see cref="PhysBoneCollider"/> class.
+                /// </summary>
+                /// <param name="component">Component to wrap.</param>
+                internal PhysBoneCollider(Component component)
+                {
+                    this.component = component;
+                }
+
+                /// <summary>
+                /// Gets root tansform set by inspector.
+                /// </summary>
+                internal Transform RootTransform => (Transform)RootTransformField.GetValue(component);
+            }
+
+            /// <summary>
+            /// Reflection wrapper for ContactBase.
+            /// </summary>
+            internal class ContactBase
+            {
+                private static readonly System.Type ContactBaseType = SystemUtility.GetTypeByName("VRC.Dynamics.ContactBase");
+                private static readonly FieldInfo RootTransformField = ContactBaseType?.GetField("rootTransform");
+                private readonly Component component;
+
+                /// <summary>
+                /// Initializes a new instance of the <see cref="ContactBase"/> class.
+                /// </summary>
+                /// <param name="component">Component to wrap.</param>
+                internal ContactBase(Component component)
+                {
+                    this.component = component;
+                }
+
+                /// <summary>
+                /// Gets root tansform set by inspector.
+                /// </summary>
+                internal Transform RootTransform => (Transform)RootTransformField.GetValue(component);
+            }
         }
     }
 }

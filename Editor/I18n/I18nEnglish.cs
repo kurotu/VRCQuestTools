@@ -63,6 +63,15 @@ namespace KRT.VRCQuestTools.I18n
         internal override string NoUnsupportedComponentsMessage(string objectName) => $"There are no unsupported components in {objectName}.";
         internal override string UnsupportedRemoverConfirmationMessage(string objectName) => $"Remove following unsupported components from {objectName}.";
 
+        // Remove PhysBones
+        internal override string PhysBonesSDKRequired => "VRCSDK which supports Avatar Dynamics is required.";
+        internal override string SelectComponentsToKeep => "Select components to keep.";
+        internal override string KeepAll => "Keep All";
+        internal override string PhysBonesWillBeRemovedAtRunTime => "All PhysBone components will be removed at runtime on Quest.";
+        internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "All PhysBone colliders will be removed at runtime on Quest.";
+        internal override string ContactsWillBeRemovedAtRunTime => "All VRCContact components will be removed at runtime on Quest.";
+        internal override string DeleteUnselectedComponents => "Delete Unselected Components";
+
         // Metallic Smoothness
         internal override string TextureLabel => "Texture";
         internal override string InvertLabel => "Invert";

@@ -63,6 +63,15 @@ namespace KRT.VRCQuestTools.I18n
         internal override string NoUnsupportedComponentsMessage(string objectName) => $"{objectName} に非対応コンポーネントはありません。";
         internal override string UnsupportedRemoverConfirmationMessage(string objectName) => $"{objectName} から以下の非対応コンポーネントを削除します。";
 
+        // Remove PhysBones
+        internal override string PhysBonesSDKRequired => "Avatar Dynamics に対応した VRCSDK が必要です。";
+        internal override string SelectComponentsToKeep => "削除せずに残すコンポーネントを選択してください。";
+        internal override string KeepAll => "すべて残す";
+        internal override string PhysBonesWillBeRemovedAtRunTime => "Quest用にアップロードしても PhysBone は動作しません。";
+        internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "Quest用にアップロードしても PhysBoneCollider は動作しません。";
+        internal override string ContactsWillBeRemovedAtRunTime => "Quest用にアップロードしても ContactReceiver / ContactSender は動作しません。";
+        internal override string DeleteUnselectedComponents => "選択していないコンポーネントを削除";
+
         // Metallic Smoothness
         internal override string TextureLabel => "テクスチャ";
         internal override string InvertLabel => "反転";
