@@ -101,7 +101,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>All attached PhysBones.</returns>
         internal Component[] GetPhysBones()
         {
-            return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
+            if (VRCSDKUtility.IsPhysBonesImported())
+            {
+                return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
+            }
+            return new Component[] { };
         }
 
         /// <summary>
@@ -110,7 +114,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>All attached PhysBoneColliders.</returns>
         internal Component[] GetPhysBoneColliders()
         {
-            return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneColliderType, true);
+            if (VRCSDKUtility.IsPhysBonesImported())
+            {
+                return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneColliderType, true);
+            }
+            return new Component[] { };
         }
 
         /// <summary>
@@ -119,9 +127,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>All attached ContactReceivers and ContactSenders.</returns>
         internal Component[] GetContacts()
         {
-            return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.ContactReceiverType, true)
-                .Concat(AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.ContactSenderType, true))
-                .ToArray();
+            if (VRCSDKUtility.IsPhysBonesImported())
+            {
+                return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.ContactReceiverType, true)
+                    .Concat(AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.ContactSenderType, true))
+                    .ToArray();
+            }
+            return new Component[] { };
         }
 
         private Material[] GetAnimatedMaterials()
