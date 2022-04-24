@@ -181,22 +181,15 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
             if (model.TargetAvatarDescriptor != null)
             {
-                if (VRCSDKUtility.IsPhysBonesImported())
+                if (VRCSDKUtility.IsPhysBonesImported() && model.HasDynamicBones)
                 {
-                    if (model.HasDynamicBones)
+                    using (var horizontal = new EditorGUILayout.HorizontalScope())
                     {
-                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Error);
+                        if (GUILayout.Button(i18n.ConvertButtonLabel, GUILayout.Height(38), GUILayout.MinWidth(60)))
                         {
-                            EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Error);
-                            if (GUILayout.Button(i18n.ConvertButtonLabel, GUILayout.Height(38), GUILayout.MinWidth(60)))
-                            {
-                                OnClickConvertToPhysBonesButton();
-                            }
+                            OnClickConvertToPhysBonesButton();
                         }
-                    }
-                    if (model.PhysBonesCount > 8)
-                    {
-                        EditorGUILayout.HelpBox(i18n.AlertForPhysBonesPerformance, MessageType.Error);
                     }
                 }
 
@@ -285,6 +278,15 @@ namespace KRT.VRCQuestTools.Views
             {
                 EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.CompletedDialogMessage(model.TargetAvatarDescriptor.name), "OK");
                 Selection.activeGameObject = questAvatar;
+
+                var converted = new VRChatAvatar(questAvatar.GetComponent<VRC_AvatarDescriptor>());
+                if (converted.GetPhysBones().Length > VRCSDKUtility.PoorPhysBonesCountLimit
+                    || converted.GetPhysBoneColliders().Length > VRCSDKUtility.PoorPhysBoneCollidersCountLimit
+                    || converted.GetContacts().Length > VRCSDKUtility.PoorContactsCountLimit)
+                {
+                    EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.AlertForAvatarDynamicsPerformance, "OK");
+                    PhysBonesRemoveWindow.ShowWindow(converted.AvatarDescriptor);
+                }
             }
         }
 

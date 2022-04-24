@@ -24,21 +24,6 @@ namespace KRT.VRCQuestTools.ViewModels
     [Serializable]
     internal class PhysBonesRemoveViewModel
     {
-        /// <summary>
-        /// Limit for Quest Poor.
-        /// </summary>
-        internal readonly int PoorPhysBonesCount = 8;
-
-        /// <summary>
-        /// Limit for Quest Poor.
-        /// </summary>
-        internal readonly int PoorPhysBoneCollidersCount = 16;
-
-        /// <summary>
-        /// Limit for Quest Poor.
-        /// </summary>
-        internal readonly int PoorContactsCount = 16;
-
         [SerializeField]
         private GameObject avatarRoot;
 

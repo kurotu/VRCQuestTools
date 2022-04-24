@@ -42,7 +42,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string WarningForUnsupportedShaders { get; }
         internal abstract string TexturesSizeLimitLabel { get; }
         internal abstract string AlertForDynamicBoneConversion { get; }
-        internal abstract string AlertForPhysBonesPerformance { get; }
+        internal abstract string AlertForAvatarDynamicsPerformance { get; }
         internal abstract string AlertForComponents { get; }
         internal abstract string AlertForMaterialAnimation { get; }
         internal abstract string CompletedDialogMessage(string originalName);

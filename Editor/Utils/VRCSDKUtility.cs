@@ -24,6 +24,21 @@ namespace KRT.VRCQuestTools.Utils
     internal static class VRCSDKUtility
     {
         /// <summary>
+        /// Limit for Quest Poor.
+        /// </summary>
+        internal const int PoorPhysBonesCountLimit = 8;
+
+        /// <summary>
+        /// Limit for Quest Poor.
+        /// </summary>
+        internal const int PoorPhysBoneCollidersCountLimit = 16;
+
+        /// <summary>
+        /// Limit for Quest Poor.
+        /// </summary>
+        internal const int PoorContactsCountLimit = 16;
+
+        /// <summary>
         /// Types which is not allowed for Quest avatars.
         /// </summary>
         internal static readonly System.Type[] UnsupportedComponentTypes = new System.Type[]
