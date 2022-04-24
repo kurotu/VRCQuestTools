@@ -29,9 +29,9 @@ namespace KRT.VRCQuestTools.Views
         [SerializeField]
         private PhysBonesRemoveViewModel model = new PhysBonesRemoveViewModel();
         private Vector2 scrollPosition;
-        private bool showPhysBones;
-        private bool showPhysBoneColliders;
-        private bool showContacts;
+        private bool showPhysBones = true;
+        private bool showPhysBoneColliders = true;
+        private bool showContacts = true;
 
         /// <summary>
         /// Show a window then set the avatar as a target.
