@@ -221,5 +221,20 @@ namespace KRT.VRCQuestTools.ViewModels
             }
             Undo.IncrementCurrentGroup();
         }
+
+        /// <summary>
+        /// Deselect all components which doen't exist in the target avatar.
+        /// </summary>
+        internal void DeselectRemovedComponents()
+        {
+            var physbones = Avatar.GetPhysBones();
+            physBonesToKeep.RemoveAll(c => !physbones.Contains(c));
+
+            var colliders = Avatar.GetPhysBoneColliders();
+            physBoneCollidersToKeep.RemoveAll(c => !colliders.Contains(c));
+
+            var contacts = Avatar.GetContacts();
+            contactsToKeep.RemoveAll(c => !contacts.Contains(c));
+        }
     }
 }

@@ -111,6 +111,7 @@ namespace KRT.VRCQuestTools.Views
             {
                 return;
             }
+            model.DeselectRemovedComponents();
 
             EditorGUILayout.Space();
 
