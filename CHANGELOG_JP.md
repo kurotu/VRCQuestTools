@@ -5,27 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.5.0] - 2022-04-25
 ### 追加
 - 「Remove PhysBones」メニューを追加
 - PhysBones の変換に関する説明文に VRCSDK による自動変換を実行するボタンを追加
 - アバターの変換後に Avatar Dynamics のコンポーネント数が Poor 制限値を超えている場合「Remove PhysBones」を実行する機能を追加
 - Android ビルドターゲットでアバターにエラーがあるとする条件に Avatar Dynamics のコンポーネント数を追加
 
-## [1.4.0] - 2022-4-22
+## [1.4.0] - 2022-04-22
 ### 追加
 - PhysBones の変換に関する説明文を追加
 - 互換性のないアップデートがある場合の警告文を追加
 
-## [1.3.0] - 2022-4-9
+## [1.3.0] - 2022-04-09
 ### 追加
 - lilToon のマテリアルからのテクスチャ生成に対応
 
-## [1.2.1] - 2022-3-1
+## [1.2.1] - 2022-03-01
 ### 修正
 - 不要なテストコードを削除
 
-## [1.2.0] - 2022-3-1
+## [1.2.0] - 2022-03-01
 ### 追加
 - Scene 内のアバターをアップロードできない状態になっている場合に警告を表示
     - アバターに Missing 状態のコンポーネントがある場合
@@ -44,13 +44,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ArxCharacterShaders のマテリアルからのテクスチャ生成に対応
 - VRCQuestTools Extra https://kurotu.booth.pm/items/3375621 との連携機能を追加
 
-## [1.0.2] - 2021-9-25
+## [1.0.2] - 2021-09-25
 ### 変更
 - マテリアルの種類を判定する際にシェーダー名の大文字と小文字を区別しないように変更
 ### 修正
 - 単一アセット内に含まれる複数のアニメーションやマテリアルを変換するとエラーになる問題を修正
 
-## [1.0.0] - 2021-9-10
+## [1.0.0] - 2021-09-10
 ### 追加
 - 更新通知ウィンドウを追加
 ### 変更
@@ -61,28 +61,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sunao Shaderのマテリアルでメインテクスチャを指定していない場合にテクスチャが正しく生成されない問題を修正
 - Edit Mode と Play Mode を切り替えるとウィンドウの内容の一部がリセットされる問題を修正
 
-## [0.7.0] - 2021-8-8
+## [0.7.0] - 2021-08-08
 ### 追加
 - Sunao Shaderのマテリアルからのテクスチャ生成に対応
 
-## [0.6.0] - 2021-8-5
+## [0.6.0] - 2021-08-05
 ### 削除
 - Unity 2019 では Local Cache Server が不要なため推奨設定から削除
 ### 修正
 - (macOS) 内部プラグインを Unity 2019 用にリネーム
 
-## [0.5.2] - 2021-8-4
+## [0.5.2] - 2021-08-04
 ### 追加
 - 「Quest用テクスチャのみ更新」にエラーダイアログを追加
 ### 修正
 - Resources/unity_builtin_extra を使用するマテリアルの変換に失敗する問題を修正
 - Standard シェーダーが動作未確認のシェーダーとして警告される問題を修正
 
-## [0.5.1] - 2021-6-30
+## [0.5.1] - 2021-06-30
 ### 修正
 - VRCSDK2のプロジェクトでコンパイルエラーになる問題を修正
 
-## [0.5.0] - 2021-6-27
+## [0.5.0] - 2021-06-27
 ### 追加
 - (Avatars 3.0) マテリアル変更アニメーションがある場合に Animator Controller とアニメーションを変換する機能を追加 (Thanks zin3)
 - 表示言語の選択機能を追加 (日/英)
@@ -93,12 +93,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 修正
 - 空のマテリアルスロットがある場合にテクスチャのみの更新に失敗する問題を修正
 
-## [0.4.1] - 2021-5-23
+## [0.4.1] - 2021-05-23
 ### 変更
 - マテリアル変換時のエラーをより詳細に表示するよう変更
 - 「Quest用テクスチャを更新」ボタンの配置を変更
 
-## [0.4.0] - 2021-4-1
+## [0.4.0] - 2021-04-01
 ### 追加
 - 「Metallic Smoothness Map」を追加
 - 変換済みアバターのテクスチャのみを更新する機能を追加
@@ -107,7 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 変換後のマテリアルから不要なプロパティを削除するように変更
 - 変換後のマテリアルでは GPU インスタンシングを有効にするように変更
 
-## [0.3.0] - 2021-2-6
+## [0.3.0] - 2021-02-06
 ### 追加
 - 更新確認機能を追加
 - macOS, Linux で「Quest用のテクスチャを生成する」機能が動作するように変更
@@ -118,7 +118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 「Remove Missing Components」で Unpack Prefab が不要な場合には実行しないように変更
 - メニューの表示順を調整
 
-## [0.2.1] - 2021-1-24
+## [0.2.1] - 2021-01-24
 ### 修正
 - プロジェクトを開いたときに「Auto Remove Vertex Colors」のチェックが反映されない問題を修正
 
