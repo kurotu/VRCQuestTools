@@ -44,7 +44,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
         internal override string AlertForMaterialAnimation => "There are Animation clips which change avatar's materials. Animator Controllers and Animation clips will be duplicated then converted for Quest.";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
-        internal override string AlertForPhysBonesPerformance => "More than 8 PhysBones are attached (Very Poor). Please keep \"Poor\" rating by removing PhysBones after conversion. (Rough limits: 8 PhysBones, 16 Colliders)";
+        internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics components exceed \"Poor\" limits (Very Poor). Please keep \"Poor\" rating by removing them.";
         internal override string TexturesSizeLimitLabel => "Textures Size Limit";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
 
@@ -62,6 +62,16 @@ namespace KRT.VRCQuestTools.I18n
         // Remove Unsupported Components
         internal override string NoUnsupportedComponentsMessage(string objectName) => $"There are no unsupported components in {objectName}.";
         internal override string UnsupportedRemoverConfirmationMessage(string objectName) => $"Remove following unsupported components from {objectName}.";
+
+        // Remove PhysBones
+        internal override string PhysBonesSDKRequired => "VRCSDK which supports Avatar Dynamics is required.";
+        internal override string SelectComponentsToKeep => "Select components to keep.";
+        internal override string PhysBonesListTooltip => "The list of components and their root transforms.";
+        internal override string KeepAll => "Keep All";
+        internal override string PhysBonesWillBeRemovedAtRunTime => "You can't upload this avatar for Quest. Please reduce PhysBone components.";
+        internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "All PhysBone colliders will be removed at runtime on Quest. Please reduce PhysBoneCollider components.";
+        internal override string ContactsWillBeRemovedAtRunTime => "You can't upload this avatar for Quest. Please reduce VRCContact components.";
+        internal override string DeleteUnselectedComponents => "Delete Unselected Components";
 
         // Metallic Smoothness
         internal override string TextureLabel => "Texture";
@@ -90,7 +100,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // Validations
         internal override string DeactivateAvatar => "Deactivate avatar";
-        internal override string IncompatibleForQuest => "You can't upload Quest avatars because this avatar can't be uploaded for Quest. Please deactivate PC avatars.";
+        internal override string IncompatibleForQuest => "You can't upload Quest avatars because this avatar can't be uploaded for Quest. Please deactivate such avatars.";
         internal override string MissingScripts => "You can't upload an avatar which has \"missing\" scripts. Please remove these components to build.";
         internal override string MissingDynamicBone => "Dynamic Bone is missing in the project. Please import Dynamic Bone or remove \"missing\" components to build.";
         internal override string RemoveMissing => "Remove missing components";

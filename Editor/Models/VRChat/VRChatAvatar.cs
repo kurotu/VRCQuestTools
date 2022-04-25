@@ -95,6 +95,47 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return renderers.SelectMany(r => r.sharedMaterials).Where(m => m != null).Distinct().ToArray();
         }
 
+        /// <summary>
+        /// Gets PhysBones.
+        /// </summary>
+        /// <returns>All attached PhysBones.</returns>
+        internal Component[] GetPhysBones()
+        {
+            if (VRCSDKUtility.IsPhysBonesImported())
+            {
+                return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
+            }
+            return new Component[] { };
+        }
+
+        /// <summary>
+        /// Gets PhysBoneColliders.
+        /// </summary>
+        /// <returns>All attached PhysBoneColliders.</returns>
+        internal Component[] GetPhysBoneColliders()
+        {
+            if (VRCSDKUtility.IsPhysBonesImported())
+            {
+                return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneColliderType, true);
+            }
+            return new Component[] { };
+        }
+
+        /// <summary>
+        /// Gets ContactReceivers and ContactSenders.
+        /// </summary>
+        /// <returns>All attached ContactReceivers and ContactSenders.</returns>
+        internal Component[] GetContacts()
+        {
+            if (VRCSDKUtility.IsPhysBonesImported())
+            {
+                return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.ContactReceiverType, true)
+                    .Concat(AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.ContactSenderType, true))
+                    .ToArray();
+            }
+            return new Component[] { };
+        }
+
         private Material[] GetAnimatedMaterials()
         {
             var animMats = GetRuntimeAnimatorControllers()

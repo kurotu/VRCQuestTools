@@ -70,6 +70,13 @@ namespace KRT.VRCQuestTools.Models.Validators
                 return true;
             }
 
+            if (avatar.GetPhysBones().Length > VRCSDKUtility.PoorPhysBonesCountLimit
+                || avatar.GetPhysBoneColliders().Length > VRCSDKUtility.PoorPhysBoneCollidersCountLimit
+                || avatar.GetContacts().Length > VRCSDKUtility.PoorContactsCountLimit)
+            {
+                return true;
+            }
+
             return false;
         }
     }

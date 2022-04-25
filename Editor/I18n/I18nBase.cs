@@ -42,7 +42,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string WarningForUnsupportedShaders { get; }
         internal abstract string TexturesSizeLimitLabel { get; }
         internal abstract string AlertForDynamicBoneConversion { get; }
-        internal abstract string AlertForPhysBonesPerformance { get; }
+        internal abstract string AlertForAvatarDynamicsPerformance { get; }
         internal abstract string AlertForComponents { get; }
         internal abstract string AlertForMaterialAnimation { get; }
         internal abstract string CompletedDialogMessage(string originalName);
@@ -61,6 +61,16 @@ namespace KRT.VRCQuestTools.I18n
         // Remove Unsupported Components
         internal abstract string NoUnsupportedComponentsMessage(string objectName);
         internal abstract string UnsupportedRemoverConfirmationMessage(string objectName);
+
+        // Remove PhysBones
+        internal abstract string PhysBonesSDKRequired { get; }
+        internal abstract string SelectComponentsToKeep { get; }
+        internal abstract string PhysBonesListTooltip { get; }
+        internal abstract string KeepAll { get; }
+        internal abstract string PhysBonesWillBeRemovedAtRunTime { get; }
+        internal abstract string PhysBoneCollidersWillBeRemovedAtRunTime { get; }
+        internal abstract string ContactsWillBeRemovedAtRunTime { get; }
+        internal abstract string DeleteUnselectedComponents { get; }
 
         // Metallic Smoothness
         internal abstract string TextureLabel { get; }

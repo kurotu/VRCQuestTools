@@ -22,6 +22,10 @@ VRChat アバターの Oculus Quest 対応を想定した Unity Editor 拡張で
 オブジェクトから "Missing" 状態のコンポーネントを削除します。
 DynamicBone を導入していないプロジェクトでアバターをアップロードできないときに使用します。
 
+### Remove PhysBones
+
+アバターから Avatar Dynamics のコンポーネント (PhysBone など) を選んで削除します。
+
 ### Tools/Remove Unsupported Components
 
 DynamicBone や Cloth など、Quest 用アバターで使用できないコンポーネントを削除します。
@@ -97,6 +101,11 @@ GitHub: https://github.com/kurotu/VRCQuestTools
 
 ## 更新履歴
 
+- Next: v1.5.0
+    - 「Remove PhysBones」メニューを追加
+    - PhysBones の変換に関する説明文に VRCSDK による自動変換を実行するボタンを追加
+    - アバターの変換後に Avatar Dynamics のコンポーネント数が Poor 制限値を超えている場合「Remove PhysBones」を実行するよう変更
+    - Android ビルドターゲットでアバターにエラーがあるとする条件に Avatar Dynamics のコンポーネント数を追加
 - 2022/4/22: v1.4.0
     - PhysBones の変換に関する説明文を追加
     - 互換性のないアップデートがある場合の警告文を追加

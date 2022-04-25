@@ -44,7 +44,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";
         internal override string AlertForMaterialAnimation => "マテリアルを変更するアニメーションがあるため、Animator ControllerおよびアニメーションをQuest用に複製・変換します。";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} は Dynamic Bone を PhysBones に変換しません。アバターを変換する前に PhysBones を設定してください。";
-        internal override string AlertForPhysBonesPerformance => "PhysBone の数が 8 を超えています (Very Poor)。変換後に PhysBones 関連のパフォーマンスランクが Poor に収まるようコンポーネントを削除してください。 (目安: PhysBone 8 以下, コライダー 16 以下)";
+        internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics コンポーネントの数が Poor の制限値を超えています (Very Poor)。 Avatar Dynamics 関連のパフォーマンスランクが Poor に収まるようコンポーネントを削除してください。";
         internal override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";
 
@@ -62,6 +62,16 @@ namespace KRT.VRCQuestTools.I18n
         // Remove Unsupported Components
         internal override string NoUnsupportedComponentsMessage(string objectName) => $"{objectName} に非対応コンポーネントはありません。";
         internal override string UnsupportedRemoverConfirmationMessage(string objectName) => $"{objectName} から以下の非対応コンポーネントを削除します。";
+
+        // Remove PhysBones
+        internal override string PhysBonesSDKRequired => "Avatar Dynamics に対応した VRCSDK が必要です。";
+        internal override string SelectComponentsToKeep => "削除せずに残すコンポーネントを選択してください。";
+        internal override string PhysBonesListTooltip => "コンポーネントと Root Transform の一覧";
+        internal override string KeepAll => "すべて残す";
+        internal override string PhysBonesWillBeRemovedAtRunTime => "Quest用にアップロードできません。 PhysBone の数を減らしてください。";
+        internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "Quest用にアップロードしても PhysBoneCollider は動作しません。 PhysBoneCollider の数を減らしてください。";
+        internal override string ContactsWillBeRemovedAtRunTime => "Quest用にアップロードできません。 ContactReceiver と ContactSender の数を減らしてください。";
+        internal override string DeleteUnselectedComponents => "選択していないコンポーネントを削除";
 
         // Metallic Smoothness
         internal override string TextureLabel => "テクスチャ";
@@ -90,7 +100,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // Validations
         internal override string DeactivateAvatar => "アバターを非表示";
-        internal override string IncompatibleForQuest => $"Quest用にアップロードできないアバターがシーン内にあるとアバターをアップロードできません。PC用のアバターを非表示にしてください。";
+        internal override string IncompatibleForQuest => $"Quest用にアップロードできないアバターがシーン内にあるとアバターをアップロードできません。エラーのあるアバターを非表示にしてください。";
         internal override string MissingScripts => "\"Missing\"\u00A0状態のコンポーネントのあるアバターはアップロードできません。 ビルド前にコンポーネントを削除してください。";
         internal override string MissingDynamicBone => "Dynamic\u00A0Bone がインポートされていません。 Dynamic Bone をインポートするか \"missing\" 状態のコンポーネントを削除してください。";
         internal override string RemoveMissing => "\"Missing\" 状態のコンポーネントを削除";
