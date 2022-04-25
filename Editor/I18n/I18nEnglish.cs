@@ -100,7 +100,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // Validations
         internal override string DeactivateAvatar => "Deactivate avatar";
-        internal override string IncompatibleForQuest => "You can't upload Quest avatars because this avatar can't be uploaded for Quest. Please deactivate such avatars.";
+        internal override string IncompatibleForQuest => "On Android build target, you can't upload Quest avatars because this avatar can't be uploaded for Quest. Please deactivate such avatars or switch platfrom back to PC.";
         internal override string MissingScripts => "You can't upload an avatar which has \"missing\" scripts. Please remove these components to build.";
         internal override string MissingDynamicBone => "Dynamic Bone is missing in the project. Please import Dynamic Bone or remove \"missing\" components to build.";
         internal override string RemoveMissing => "Remove missing components";
