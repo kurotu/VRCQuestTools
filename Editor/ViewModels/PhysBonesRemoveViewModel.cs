@@ -130,6 +130,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <param name="select">true to select, false to deselect.</param>
         internal void SelectAllPhysBones(bool select)
         {
+            physBonesToKeep.Clear();
             foreach (var b in Avatar.GetPhysBones())
             {
                 SelectPhysBone(b, select);
@@ -235,6 +236,15 @@ namespace KRT.VRCQuestTools.ViewModels
 
             var contacts = Avatar.GetContacts();
             contactsToKeep.RemoveAll(c => !contacts.Contains(c));
+        }
+
+        /// <summary>
+        /// Gets whether selected physbones order matches with the orignal list.
+        /// </summary>
+        /// <returns>true when matched.</returns>
+        internal bool SelectedPhysBonesOrderMatchesWithOriginal()
+        {
+            return PhysBonesToKeep.SequenceEqual(Avatar.GetPhysBones().Take(PhysBonesToKeep.Count()));
         }
     }
 }

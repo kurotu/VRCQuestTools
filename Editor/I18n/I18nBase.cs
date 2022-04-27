@@ -70,6 +70,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string PhysBonesWillBeRemovedAtRunTime { get; }
         internal abstract string PhysBoneCollidersWillBeRemovedAtRunTime { get; }
         internal abstract string ContactsWillBeRemovedAtRunTime { get; }
+        internal abstract string PhysBonesOrderMustMatchWithPC { get; }
         internal abstract string DeleteUnselectedComponents { get; }
 
         // Metallic Smoothness

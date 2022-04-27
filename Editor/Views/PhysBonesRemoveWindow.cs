@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
@@ -137,10 +138,19 @@ namespace KRT.VRCQuestTools.Views
                             {
                                 model.SelectAllPhysBones(false);
                             }
+                            var newSelectedPhysBones = new List<Component>();
                             foreach (var c in physBones)
                             {
                                 var selected = GUIToggleComponentField(model.PhysBonesToKeep.Contains(c), c);
-                                model.SelectPhysBone(c, selected);
+                                if (selected)
+                                {
+                                    newSelectedPhysBones.Add(c);
+                                }
+                            }
+                            model.SelectAllPhysBones(false);
+                            foreach (var c in newSelectedPhysBones)
+                            {
+                                model.SelectPhysBone(c, true);
                             }
                         }
                         else
@@ -217,6 +227,10 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space();
 
+            if (!model.SelectedPhysBonesOrderMatchesWithOriginal())
+            {
+                EditorGUILayout.HelpBox(i18n.PhysBonesOrderMustMatchWithPC, MessageType.Warning);
+            }
             if (model.PhysBonesToKeep.Count() > VRCSDKUtility.PoorPhysBonesCountLimit)
             {
                 EditorGUILayout.HelpBox("PhysBones Components: Very Poor (Quest)\n" + i18n.PhysBonesWillBeRemovedAtRunTime, MessageType.Error);

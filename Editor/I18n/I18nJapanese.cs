@@ -71,6 +71,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PhysBonesWillBeRemovedAtRunTime => "Quest用にアップロードできません。 PhysBone の数を減らしてください。";
         internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "Quest用にアップロードしても PhysBoneCollider は動作しません。 PhysBoneCollider の数を減らしてください。";
         internal override string ContactsWillBeRemovedAtRunTime => "Quest用にアップロードできません。 ContactReceiver と ContactSender の数を減らしてください。";
+        internal override string PhysBonesOrderMustMatchWithPC => "PhysBones を正しく同期させるには PhysBones の順番をPC版と一致させる必要があります。残すコンポーネントをリスト先頭から順番に選んでください。";
         internal override string DeleteUnselectedComponents => "選択していないコンポーネントを削除";
 
         // Metallic Smoothness
