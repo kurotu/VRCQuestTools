@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="VRCQuestTools" src=".images/VRCQuestTools.png">
+  <img alt="VRCQuestTools" src=".images/VRCQuestTools.png" width="670px">
 </p>
 
 <p align="center">
