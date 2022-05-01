@@ -1,9 +1,21 @@
+<p align="center">
+  <img alt="VRCQuestTools" src=".images/VRCQuestTools.png">
+</p>
+
+<p align="center">
+  <a href="https://kurotu.booth.pm/items/2436054">
+    <img alt="Booth" src="https://asset.booth.pm/static-images/banner/200x40_01.png">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/kurotu/VRCQuestTools/releases/latest">
+    <img alt="Release" src="https://img.shields.io/github/v/release/kurotu/VRCQuestTools">
+  </a>
+</p>
+
 # VRCQuestTools
 Unity editor extension to support uploading VRChat avatars for Oculus Quest. Compatible for both of VRCSDK2 and 3.
-
-[![Booth](https://asset.booth.pm/static-images/banner/200x40_01.png)](https://kurotu.booth.pm/items/2436054)
-
-![VRCQuestTools](.images/VRCQuestTools.png)
 
 ## Usage
 
