@@ -4,6 +4,8 @@
 // </copyright>
 
 using System;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
@@ -36,6 +38,70 @@ namespace KRT.VRCQuestTools.Utils
             var shader = Shader.Find("lilToon");
             var inspector = SystemUtility.GetTypeByName("lilToon.lilToonInspector");
             return (shader != null) && (inspector != null);
+        }
+
+        /// <summary>
+        /// Loads uncompressed image as Texture2D.
+        /// </summary>
+        /// <see href="https://github.com/lilxyzw/lilToon/issues/17">lilxyzw/lilToon#17.</see>
+        /// <param name="path">path to image.</param>
+        /// <returns>Loaded texture.</returns>
+        internal static Texture2D LoadUncompressedTexture(string path)
+        {
+            var extension = Path.GetExtension(path).ToLower();
+            if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
+            {
+                var tex = new Texture2D(2, 2);
+                var bytes = File.ReadAllBytes(Path.GetFullPath(path));
+                tex.LoadImage(bytes);
+                tex.filterMode = FilterMode.Bilinear;
+                return tex;
+            }
+
+            const string AndroidPlatform = "Android";
+            const string StandalonePlatform = "Standalone";
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            var isReadable = importer.isReadable;
+            var textureCompression = importer.textureCompression;
+            var standaloneTextureSettings = importer.GetPlatformTextureSettings(StandalonePlatform);
+            var androidTextureSettings = importer.GetPlatformTextureSettings(AndroidPlatform);
+
+            // Set uncompressed settings.
+            importer.isReadable = true;
+            importer.textureCompression = TextureImporterCompression.Uncompressed;
+            if (standaloneTextureSettings.overridden)
+            {
+                var tmp = new TextureImporterPlatformSettings();
+                standaloneTextureSettings.CopyTo(tmp);
+                tmp.overridden = false;
+                importer.SetPlatformTextureSettings(tmp);
+            }
+            if (androidTextureSettings.overridden)
+            {
+                var tmp = new TextureImporterPlatformSettings();
+                androidTextureSettings.CopyTo(tmp);
+                tmp.overridden = false;
+                importer.SetPlatformTextureSettings(tmp);
+            }
+            importer.SaveAndReimport();
+
+            var psd = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            var ret = UnityEngine.Object.Instantiate(psd);
+
+            // Restore compression settings.
+            importer.isReadable = isReadable;
+            importer.textureCompression = textureCompression;
+            if (standaloneTextureSettings.overridden)
+            {
+                importer.SetPlatformTextureSettings(standaloneTextureSettings);
+            }
+            if (androidTextureSettings.overridden)
+            {
+                importer.SetPlatformTextureSettings(androidTextureSettings);
+            }
+            importer.SaveAndReimport();
+
+            return ret;
         }
     }
 }

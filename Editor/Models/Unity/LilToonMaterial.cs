@@ -157,9 +157,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                 path = AssetDatabase.GetAssetPath(material.GetTexture(mainTex.name));
                 if (!string.IsNullOrEmpty(path))
                 {
-                    bytes = File.ReadAllBytes(Path.GetFullPath(path));
-                    srcTexture.LoadImage(bytes);
-                    srcTexture.filterMode = FilterMode.Bilinear;
+                    Object.DestroyImmediate(srcTexture);
+                    srcTexture = AssetUtility.LoadUncompressedTexture(path);
                     hsvgMaterial.SetTexture(mainTex.name, srcTexture);
                 }
                 else
@@ -188,9 +187,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                     path = AssetDatabase.GetAssetPath(material.GetTexture(main2ndTex.name));
                     if (!string.IsNullOrEmpty(path))
                     {
-                        bytes = File.ReadAllBytes(Path.GetFullPath(path));
-                        srcMain2.LoadImage(bytes);
-                        srcMain2.filterMode = FilterMode.Bilinear;
+                        Object.DestroyImmediate(srcMain2);
+                        srcMain2 = AssetUtility.LoadUncompressedTexture(path);
                         hsvgMaterial.SetTexture(main2ndTex.name, srcMain2);
                     }
                     else
@@ -201,9 +199,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                     path = AssetDatabase.GetAssetPath(material.GetTexture(main2ndBlendMask.name));
                     if (!string.IsNullOrEmpty(path))
                     {
-                        bytes = File.ReadAllBytes(Path.GetFullPath(path));
-                        srcMask2.LoadImage(bytes);
-                        srcMask2.filterMode = FilterMode.Bilinear;
+                        Object.DestroyImmediate(srcMask2);
+                        srcMask2 = AssetUtility.LoadUncompressedTexture(path);
                         hsvgMaterial.SetTexture(main2ndBlendMask.name, srcMask2);
                     }
                     else
@@ -233,9 +230,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                     path = AssetDatabase.GetAssetPath(material.GetTexture(main3rdTex.name));
                     if (!string.IsNullOrEmpty(path))
                     {
-                        bytes = File.ReadAllBytes(Path.GetFullPath(path));
-                        srcMain3.LoadImage(bytes);
-                        srcMain3.filterMode = FilterMode.Bilinear;
+                        Object.DestroyImmediate(srcMain3);
+                        srcMain3 = AssetUtility.LoadUncompressedTexture(path);
                         hsvgMaterial.SetTexture(main3rdTex.name, srcMain3);
                     }
                     else
@@ -246,9 +242,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                     path = AssetDatabase.GetAssetPath(material.GetTexture(main3rdBlendMask.name));
                     if (!string.IsNullOrEmpty(path))
                     {
-                        bytes = File.ReadAllBytes(Path.GetFullPath(path));
-                        srcMask3.LoadImage(bytes);
-                        srcMask3.filterMode = FilterMode.Bilinear;
+                        Object.DestroyImmediate(srcMask3);
+                        srcMask3 = AssetUtility.LoadUncompressedTexture(path);
                         hsvgMaterial.SetTexture(main3rdBlendMask.name, srcMask3);
                     }
                     else
@@ -294,6 +289,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             {
                 var baked = new Texture2D(2, 2);
                 baked.LoadImage(main.EncodeToPNG());
+                baked.filterMode = FilterMode.Bilinear;
                 return baked;
             }
 
@@ -358,10 +354,11 @@ namespace KRT.VRCQuestTools.Models.Unity
             string path = AssetDatabase.GetAssetPath(prop.textureValue);
             if (!string.IsNullOrEmpty(path))
             {
-                var bytes = File.ReadAllBytes(Path.GetFullPath(path));
-                srcTexture.Object.LoadImage(bytes);
+                var tex = AssetUtility.LoadUncompressedTexture(path);
+                srcTexture.Object.LoadImage(tex.EncodeToPNG());
                 srcTexture.Object.filterMode = FilterMode.Bilinear;
                 mat.Object.SetTexture(prop.name, srcTexture.Object);
+                Object.DestroyImmediate(tex);
             }
             else
             {

@@ -15,7 +15,7 @@ namespace KRT.VRCQuestTools.Utils
     /// </summary>
     public class MagickImageUtilityTests
     {
-        private string albedo1024pxPngPath = TestUtils.TexturesFolder + "/albedo_1024px.png";
+        private string albedo1024pxPngPath = TestUtils.TexturesFolder + "/albedo_1024px_png.png";
         private string originLeftBottomTgaPath = TestUtils.TexturesFolder + "/albedo_1024px_tga_origin_left_bottom.tga";
         private string originLeftTopTgaPath = TestUtils.TexturesFolder + "/albedo_1024px_tga_origin_left_top.tga";
 
