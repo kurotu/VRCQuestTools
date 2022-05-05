@@ -79,14 +79,18 @@ namespace KRT.VRCQuestTools.Utils
 
             // コピーしたコントローラーに修正したアニメーションクリップを反映
             // レイヤー→ステートマシン→ステート→アニメーションクリップ
-            for (int i = 0; i < cloneController.layers.Length; i++)
+            for (int layerIndex = 0; layerIndex < cloneController.layers.Length; layerIndex++)
             {
-                AnimatorControllerLayer layer = cloneController.layers[i];
+                AnimatorControllerLayer layer = cloneController.layers[layerIndex];
                 AnimatorStateMachine stateMachine = layer.stateMachine;
-                for (int j = 0; j < stateMachine.states.Length; j++)
+                if (layer.syncedLayerIndex >= 0)
                 {
-                    AnimatorState animState = stateMachine.states[j].state;
-                    switch (animState.motion)
+                    stateMachine = cloneController.layers[layer.syncedLayerIndex].stateMachine;
+                }
+                foreach (var childState in stateMachine.states)
+                {
+                    var motion = cloneController.GetStateEffectiveMotion(childState.state, layerIndex);
+                    switch (motion)
                     {
                         case null:
                             continue;
@@ -94,12 +98,12 @@ namespace KRT.VRCQuestTools.Utils
                             Debug.Log("am :" + anim.name);
                             if (newAnimationClips.ContainsKey(anim))
                             {
-                                cloneController.layers[i].stateMachine.states[j].state.motion = newAnimationClips[anim];
+                                cloneController.SetStateEffectiveMotion(childState.state, newAnimationClips[anim], layerIndex);
                                 Debug.Log("replace animationClip : " + newAnimationClips[anim].name);
                             }
                             break;
                         case BlendTree blendTree:
-                            cloneController.layers[i].stateMachine.states[j].state.motion = ReplaceAnimationClips(blendTree, newAnimationClips);
+                            cloneController.SetStateEffectiveMotion(childState.state, ReplaceAnimationClips(blendTree, newAnimationClips), layerIndex);
                             break;
                     }
                 }
