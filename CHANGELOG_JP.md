@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 修正
-- lilToon マテリアルの変換で PNG/JPG 以外のテクスチャを使用しているとテクスチャが正しく変換されない問題を修正
+- lilToon マテリアルで PNG/JPG 以外のテクスチャを使用しているとテクスチャが正しく変換されない問題を修正
 - lilToon マテリアルの変換でテクスチャの Wrap Mode が反映されない問題を修正
 - Animator Controller の Synced Layer が変換されない問題を修正
 
-## [1.6.0]
+## [1.6.0] - 2022-04-29
 ### 追加
 - PhysBones を削除するときに PC/Quest 間の同期に問題が出る選択をしている場合の警告を表示
 
