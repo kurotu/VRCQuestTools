@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 修正
 - lilToon のマテリアルで PNG/JPG 以外のテクスチャを使用しているとテクスチャが読み込まれない問題を修正
+- Animator Controller の Synced Layer が変換されない問題を修正
 
 ## [1.6.0]
 ### 追加
