@@ -43,6 +43,41 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Loads uncompressed image as Texture2D.
         /// </summary>
+        /// <param name="texture">original texture.</param>
+        /// <returns>Loaded texture.</returns>
+        internal static Texture2D LoadUncompressedTexture(Texture texture)
+        {
+            if (texture == null)
+            {
+                return null;
+            }
+
+            if (texture.GetType() == typeof(RenderTexture))
+            {
+                var tex = new Texture2D(2, 2);
+                var pixels = tex.GetPixels32();
+                for (var i = 0; i < pixels.Length; i++)
+                {
+                    pixels[i].r = 0;
+                    pixels[i].g = 0;
+                    pixels[i].b = 0;
+                }
+                tex.SetPixels32(pixels);
+                return tex;
+            }
+
+            var path = AssetDatabase.GetAssetPath(texture);
+            if (path == "Resources/unity_builtin_extra")
+            {
+                return (Texture2D)UnityEngine.Object.Instantiate(texture);
+            }
+
+            return LoadUncompressedTexture(path);
+        }
+
+        /// <summary>
+        /// Loads uncompressed image as Texture2D.
+        /// </summary>
         /// <see href="https://github.com/lilxyzw/lilToon/issues/17">lilxyzw/lilToon#17.</see>
         /// <param name="path">path to image.</param>
         /// <returns>Loaded texture.</returns>

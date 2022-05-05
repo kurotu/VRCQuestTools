@@ -135,14 +135,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                 Texture2D bufMainTexture = (Texture2D)mainTex.textureValue;
                 Material hsvgMaterial = new Material(ltsbaker);
 
-                string path;
-                byte[] bytes;
-
-                Texture2D srcTexture = new Texture2D(2, 2);
-                Texture2D srcMain2 = new Texture2D(2, 2);
-                Texture2D srcMain3 = new Texture2D(2, 2);
-                Texture2D srcMask2 = new Texture2D(2, 2);
-                Texture2D srcMask3 = new Texture2D(2, 2);
+                Texture srcTexture = new Texture2D(2, 2);
+                Texture srcMain2 = new Texture2D(2, 2);
+                Texture srcMain3 = new Texture2D(2, 2);
+                Texture srcMask2 = new Texture2D(2, 2);
+                Texture srcMask3 = new Texture2D(2, 2);
 
                 hsvgMaterial.SetColor(mainColor.name, mainColor.colorValue);
                 hsvgMaterial.SetVector(mainTexHSVG.name, mainTexHSVG.vectorValue);
@@ -154,15 +151,14 @@ namespace KRT.VRCQuestTools.Models.Unity
                     hsvgMaterial.SetTexture(mainGradationTex.name, mainGradationTex.textureValue);
                 }
 
-                path = AssetDatabase.GetAssetPath(material.GetTexture(mainTex.name));
-                if (!string.IsNullOrEmpty(path))
+                srcTexture = AssetUtility.LoadUncompressedTexture(material.GetTexture(mainTex.name));
+                if (srcTexture != null)
                 {
-                    Object.DestroyImmediate(srcTexture);
-                    srcTexture = AssetUtility.LoadUncompressedTexture(path);
                     hsvgMaterial.SetTexture(mainTex.name, srcTexture);
                 }
                 else
                 {
+                    srcTexture = new Texture2D(2, 2);
                     hsvgMaterial.SetTexture(mainTex.name, Texture2D.whiteTexture);
                 }
 
@@ -184,27 +180,27 @@ namespace KRT.VRCQuestTools.Models.Unity
                     hsvgMaterial.SetTextureOffset(main2ndBlendMask.name, material.GetTextureOffset(main2ndBlendMask.name));
                     hsvgMaterial.SetTextureScale(main2ndBlendMask.name, material.GetTextureScale(main2ndBlendMask.name));
 
-                    path = AssetDatabase.GetAssetPath(material.GetTexture(main2ndTex.name));
-                    if (!string.IsNullOrEmpty(path))
+                    Object.DestroyImmediate(srcMain2);
+                    srcMain2 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main2ndTex.name));
+                    if (srcMain2 != null)
                     {
-                        Object.DestroyImmediate(srcMain2);
-                        srcMain2 = AssetUtility.LoadUncompressedTexture(path);
                         hsvgMaterial.SetTexture(main2ndTex.name, srcMain2);
                     }
                     else
                     {
+                        srcMain2 = new Texture2D(2, 2);
                         hsvgMaterial.SetTexture(main2ndTex.name, Texture2D.whiteTexture);
                     }
 
-                    path = AssetDatabase.GetAssetPath(material.GetTexture(main2ndBlendMask.name));
-                    if (!string.IsNullOrEmpty(path))
+                    Object.DestroyImmediate(srcMask2);
+                    srcMask2 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main2ndBlendMask.name));
+                    if (srcMask2 != null)
                     {
-                        Object.DestroyImmediate(srcMask2);
-                        srcMask2 = AssetUtility.LoadUncompressedTexture(path);
                         hsvgMaterial.SetTexture(main2ndBlendMask.name, srcMask2);
                     }
                     else
                     {
+                        srcMask2 = new Texture2D(2, 2);
                         hsvgMaterial.SetTexture(main2ndBlendMask.name, Texture2D.whiteTexture);
                     }
                 }
@@ -227,27 +223,27 @@ namespace KRT.VRCQuestTools.Models.Unity
                     hsvgMaterial.SetTextureOffset(main3rdBlendMask.name, material.GetTextureOffset(main3rdBlendMask.name));
                     hsvgMaterial.SetTextureScale(main3rdBlendMask.name, material.GetTextureScale(main3rdBlendMask.name));
 
-                    path = AssetDatabase.GetAssetPath(material.GetTexture(main3rdTex.name));
-                    if (!string.IsNullOrEmpty(path))
+                    Object.DestroyImmediate(srcMain3);
+                    srcMain3 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main3rdTex.name));
+                    if (srcMain3 != null)
                     {
-                        Object.DestroyImmediate(srcMain3);
-                        srcMain3 = AssetUtility.LoadUncompressedTexture(path);
                         hsvgMaterial.SetTexture(main3rdTex.name, srcMain3);
                     }
                     else
                     {
+                        srcMain3 = new Texture2D(2, 2);
                         hsvgMaterial.SetTexture(main3rdTex.name, Texture2D.whiteTexture);
                     }
 
-                    path = AssetDatabase.GetAssetPath(material.GetTexture(main3rdBlendMask.name));
-                    if (!string.IsNullOrEmpty(path))
+                    Object.DestroyImmediate(srcMask3);
+                    srcMask3 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main3rdBlendMask.name));
+                    if (srcMask3 != null)
                     {
-                        Object.DestroyImmediate(srcMask3);
-                        srcMask3 = AssetUtility.LoadUncompressedTexture(path);
                         hsvgMaterial.SetTexture(main3rdBlendMask.name, srcMask3);
                     }
                     else
                     {
+                        srcMask3 = new Texture2D(2, 2);
                         hsvgMaterial.SetTexture(main3rdBlendMask.name, Texture2D.whiteTexture);
                     }
                 }
@@ -293,7 +289,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 return baked;
             }
 
-            var mats = new[] { Material };
+            var mats = new[] { material };
             var emissionMap = MaterialEditor.GetMaterialProperty(mats, "_EmissionMap");
             var emissionBlendMask = MaterialEditor.GetMaterialProperty(mats, "_EmissionBlendMask");
             var emissionGradTex = MaterialEditor.GetMaterialProperty(mats, "_EmissionGradTex");
@@ -301,13 +297,13 @@ namespace KRT.VRCQuestTools.Models.Unity
             var emission2ndBlendMask = MaterialEditor.GetMaterialProperty(mats, "_Emission2ndBlendMask");
             var emission2ndGradTex = MaterialEditor.GetMaterialProperty(mats, "_Emission2ndGradTex");
 
-            using (var baker = DisposableObject.New(Object.Instantiate(Material)))
-            using (var srcEmissionMap = DisposableObject.New(new Texture2D(2, 2)))
-            using (var srcEmissionBlendMask = DisposableObject.New(new Texture2D(2, 2)))
-            using (var srcEmissionGradTex = DisposableObject.New(new Texture2D(2, 2)))
-            using (var srcEmission2ndMap = DisposableObject.New(new Texture2D(2, 2)))
-            using (var srcEmission2ndBlendMask = DisposableObject.New(new Texture2D(2, 2)))
-            using (var srcEmission2ndGradTex = DisposableObject.New(new Texture2D(2, 2)))
+            using (var baker = DisposableObject.New(Object.Instantiate(material)))
+            using (var srcEmissionMap = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emissionMap.textureValue)))
+            using (var srcEmissionBlendMask = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emissionBlendMask.textureValue)))
+            using (var srcEmissionGradTex = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emissionGradTex.textureValue)))
+            using (var srcEmission2ndMap = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndMap.textureValue)))
+            using (var srcEmission2ndBlendMask = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndBlendMask.textureValue)))
+            using (var srcEmission2ndGradTex = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndGradTex.textureValue)))
             using (var dstTexture = DisposableObject.New(new RenderTexture(main.width, main.height, 0, RenderTextureFormat.ARGB32)))
             {
                 var lilBaker = Shader.Find("Hidden/VRCQuestTools/lilToon");
@@ -322,12 +318,12 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetFloat("_LIL_FEATURE_ANIMATE_EMISSION_MASK_UV", shaderSetting.LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? 1.0f : 0.0f);
                 baker.Object.SetFloat("_LIL_FEATURE_EMISSION_GRADATION", shaderSetting.LIL_FEATURE_EMISSION_GRADATION ? 1.0f : 0.0f);
 
-                SetSrcTexture(baker, emissionMap, srcEmissionMap);
-                SetSrcTexture(baker, emissionBlendMask, srcEmissionBlendMask);
-                SetSrcTexture(baker, emissionGradTex, srcEmissionGradTex);
-                SetSrcTexture(baker, emission2ndMap, srcEmission2ndMap);
-                SetSrcTexture(baker, emission2ndBlendMask, srcEmission2ndBlendMask);
-                SetSrcTexture(baker, emission2ndGradTex, srcEmission2ndGradTex);
+                baker.Object.SetTexture(emissionMap.name, srcEmissionMap.Object);
+                baker.Object.SetTexture(emissionBlendMask.name, srcEmissionBlendMask.Object);
+                baker.Object.SetTexture(emissionGradTex.name, srcEmissionGradTex.Object);
+                baker.Object.SetTexture(emission2ndMap.name, srcEmission2ndMap.Object);
+                baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
+                baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
                 // Remember active render texture
                 var activeRenderTexture = RenderTexture.active;
@@ -347,23 +343,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             var isMulti = false;
             return isMulti || feature;
-        }
-
-        private void SetSrcTexture(DisposableObject<Material> mat, MaterialProperty prop, DisposableObject<Texture2D> srcTexture)
-        {
-            string path = AssetDatabase.GetAssetPath(prop.textureValue);
-            if (!string.IsNullOrEmpty(path))
-            {
-                var tex = AssetUtility.LoadUncompressedTexture(path);
-                srcTexture.Object.LoadImage(tex.EncodeToPNG());
-                srcTexture.Object.filterMode = FilterMode.Bilinear;
-                mat.Object.SetTexture(prop.name, srcTexture.Object);
-                Object.DestroyImmediate(tex);
-            }
-            else
-            {
-                mat.Object.SetTexture(prop.name, Texture2D.whiteTexture);
-            }
         }
 
         private class LilToonSetting

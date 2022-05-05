@@ -31,7 +31,10 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         public void Dispose()
         {
-            UnityEngine.Object.DestroyImmediate(this.Object);
+            if (this.Object != null)
+            {
+                UnityEngine.Object.DestroyImmediate(this.Object);
+            }
         }
     }
 }
