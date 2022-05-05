@@ -72,7 +72,9 @@ namespace KRT.VRCQuestTools.Utils
                 return (Texture2D)UnityEngine.Object.Instantiate(texture);
             }
 
-            return LoadUncompressedTexture(path);
+            var tex2 = LoadUncompressedTexture(path);
+            tex2.wrapMode = texture.wrapMode;
+            return tex2;
         }
 
         /// <summary>
