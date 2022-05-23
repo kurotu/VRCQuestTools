@@ -121,7 +121,11 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>New blend tree.</returns>
         internal static BlendTree ReplaceAnimationClips(BlendTree blendTree, Dictionary<AnimationClip, AnimationClip> newAnimationClips)
         {
-            var newTree = blendTree; // Object.Instantiate() raises an assertion error.
+            var newTree = CloneBlendTree(blendTree);
+            if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(blendTree, out string guid, out long localId))
+            {
+                newTree.name += $"_from_{guid}";
+            }
             var newChildren = blendTree.children.Select(child =>
             {
                 switch (child.motion)
@@ -140,6 +144,23 @@ namespace KRT.VRCQuestTools.Utils
             }).ToArray();
 
             newTree.children = newChildren;
+            return newTree;
+        }
+
+        private static BlendTree CloneBlendTree(BlendTree blendTree)
+        {
+            var newTree = new BlendTree()
+            {
+                blendParameter = blendTree.blendParameter,
+                blendParameterY = blendTree.blendParameterY,
+                blendType = blendTree.blendType,
+                children = blendTree.children,
+                maxThreshold = blendTree.maxThreshold,
+                minThreshold = blendTree.minThreshold,
+                useAutomaticThresholds = blendTree.useAutomaticThresholds,
+                hideFlags = blendTree.hideFlags,
+                name = blendTree.name,
+            };
             return newTree;
         }
 
