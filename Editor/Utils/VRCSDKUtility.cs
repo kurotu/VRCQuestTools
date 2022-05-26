@@ -114,6 +114,27 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Whether the asset object is an example from VRCSDK.
+        /// </summary>
+        /// <param name="obj">Asset object.</param>
+        /// <returns>true when the object exists in VRCSDK examples folder.</returns>
+        internal static bool IsExampleAsset(Object obj)
+        {
+            var path = AssetDatabase.GetAssetPath(obj);
+            return IsExampleAsset(path);
+        }
+
+        /// <summary>
+        /// Whether the asset path is an example from VRCSDK.
+        /// </summary>
+        /// <param name="path">Asset path.</param>
+        /// <returns>true when the path exists in VRCSDK examples folder.</returns>
+        internal static bool IsExampleAsset(string path)
+        {
+            return path.StartsWith("Assets/VRCSDK/Examples3/");
+        }
+
+        /// <summary>
         /// Whether a component type is unsupported for Quest.
         /// </summary>
         /// <param name="type">Compoent type to check.</param>

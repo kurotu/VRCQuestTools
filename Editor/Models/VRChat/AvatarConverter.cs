@@ -82,7 +82,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
             if (avatar.HasAnimatedMaterials)
             {
                 var convertedAnimationClips = ConvertAnimationClipsForQuest(avatar.GetRuntimeAnimatorControllers(), assetsDirectory, convertedMaterials, progressCallback.onAnimationClipProgress);
-                var convertedAnimatorControllers = ConvertAnimatorControllersForQuest(avatar.GetRuntimeAnimatorControllers(), assetsDirectory, convertedAnimationClips, progressCallback.onRuntimeAnimatorProgress);
+                var convertedBlendTrees = ConvertBlendTreesForQuest(avatar.GetRuntimeAnimatorControllers().Select(c => (AnimatorController)c).ToArray(), assetsDirectory, convertedAnimationClips);
+                var convertedAnimMotions = convertedAnimationClips.ToDictionary(c => (Motion)c.Key, c => (Motion)c.Value);
+                var convertedTreeMotions = convertedBlendTrees.ToDictionary(c => (Motion)c.Key, c => (Motion)c.Value);
+                var convertedMotions = convertedAnimMotions.Concat(convertedTreeMotions).ToDictionary(c => c.Key, c => c.Value);
+                var convertedAnimatorControllers = ConvertAnimatorControllersForQuest(avatar.GetRuntimeAnimatorControllers(), assetsDirectory, convertedMotions, progressCallback.onRuntimeAnimatorProgress);
 
                 // Apply converted animator controllers.
 #if VRC_SDK_VRCSDK3
@@ -217,15 +221,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// </summary>
         /// <param name="controllers">Controllers to convert.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
-        /// <param name="convertedAnimationClips">Converted animation clips.</param>
+        /// <param name="convertedMotions">Converted motions.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted controllers (key: original controller).</returns>
-        internal Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, string assetsDirectory, Dictionary<AnimationClip, AnimationClip> convertedAnimationClips, RuntimeAnimatorProgressCallback progressCallback)
+        internal Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, string assetsDirectory, Dictionary<Motion, Motion> convertedMotions, RuntimeAnimatorProgressCallback progressCallback)
         {
-            var saveDirectory = $"{assetsDirectory}/AnimatorControllers";
-            Directory.CreateDirectory(saveDirectory);
-            AssetDatabase.Refresh();
-
             var convertedControllers = new Dictionary<RuntimeAnimatorController, RuntimeAnimatorController>();
             var index = 0;
             foreach (var controller in controllers)
@@ -233,9 +233,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 progressCallback(controllers.Length, index, null, controller);
                 try
                 {
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(controller, out string guid, out long localId);
-                    var outFile = $"{saveDirectory}/{controller.name}_from_{guid}.controller";
-                    AnimatorController cloneController = UnityAnimationUtility.ReplaceAnimationClips(controller, outFile, convertedAnimationClips);
+                    AnimatorController cloneController = UnityAnimationUtility.ReplaceAnimationClips(controller, assetsDirectory, convertedMotions);
                     convertedControllers.Add(controller, cloneController);
                 }
                 catch (Exception e)
@@ -246,6 +244,69 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 index++;
             }
             return convertedControllers;
+        }
+
+        /// <summary>
+        /// Converts blend trees.
+        /// </summary>
+        /// <param name="controllers">Original controllers.</param>
+        /// <param name="assetsDirectory">Root directory for converted blend trees.</param>
+        /// <param name="convertedAnimationClips">Converted animation clips.</param>
+        /// <returns>Converted blend trees (key: original blend tree).</returns>
+        internal Dictionary<BlendTree, BlendTree> ConvertBlendTreesForQuest(AnimatorController[] controllers, string assetsDirectory, Dictionary<AnimationClip, AnimationClip> convertedAnimationClips)
+        {
+            var saveDirectory = $"{assetsDirectory}/BlendTrees";
+            Directory.CreateDirectory(saveDirectory);
+            AssetDatabase.Refresh();
+
+            var trees = controllers.SelectMany(c => UnityAnimationUtility.GetBlendTrees(c)).Distinct().ToList();
+            trees.Sort((a, b) => UnityAnimationUtility.DoesTreeExistInDescendants(a, b) ? 1 : 0); // Sort because trees have dependency.
+
+            var dict = new Dictionary<BlendTree, BlendTree>();
+            for (var i = 0; i < trees.Count; i++)
+            {
+                var tree = trees[i];
+                if (VRCSDKUtility.IsExampleAsset(tree))
+                {
+                    continue;
+                }
+                var newTree = UnityAnimationUtility.DeepCopyBlendTree(tree);
+                var newChildren = newTree.children.Select(child =>
+                {
+                    switch (child.motion)
+                    {
+                        case BlendTree childTree:
+                            if (dict.ContainsKey(childTree))
+                            {
+                                child.motion = dict[childTree];
+                            }
+                            break;
+                        case AnimationClip clip:
+                            if (convertedAnimationClips.ContainsKey(clip))
+                            {
+                                child.motion = convertedAnimationClips[clip];
+                            }
+                            break;
+                        default:
+                            // do nothing
+                            break;
+                    }
+                    return child;
+                });
+                newTree.children = newChildren.ToArray();
+
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(tree, out string guid, out long localId);
+                newTree.name += $"_from_{guid}";
+
+                var originalAssetPath = AssetDatabase.GUIDToAssetPath(guid);
+                if (!originalAssetPath.EndsWith(".controller"))
+                {
+                    var asset = $"{saveDirectory}/{newTree.name}.asset";
+                    AssetDatabase.CreateAsset(newTree, asset);
+                }
+                dict.Add(tree, newTree);
+            }
+            return dict;
         }
 
         /// <summary>

@@ -4,6 +4,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -27,6 +28,77 @@ namespace KRT.VRCQuestTools.Utils
                 .SelectMany(clip => GetMaterials(clip))
                 .Distinct()
                 .ToArray();
+        }
+
+        /// <summary>
+        /// Gets blend trees from AnimatorController.
+        /// </summary>
+        /// <param name="controller">AnimatorController.</param>
+        /// <returns>Blend trees.</returns>
+        internal static BlendTree[] GetBlendTrees(AnimatorController controller)
+        {
+            var trees = controller.layers
+                .SelectMany(layer =>
+                {
+                    var t = new BlendTree[] { };
+                    t = GetBlendTrees(layer.stateMachine, t);
+                    return t;
+                })
+                .Distinct()
+                .ToArray();
+            return trees;
+        }
+
+        /// <summary>
+        /// Gets blend trees recursively.
+        /// </summary>
+        /// <param name="stateMachine">State machine.</param>
+        /// <param name="currentTrees">Blend trees state.</param>
+        /// <returns>New blend trees state.</returns>
+        internal static BlendTree[] GetBlendTrees(AnimatorStateMachine stateMachine, BlendTree[] currentTrees)
+        {
+            List<BlendTree> trees = new List<BlendTree>(currentTrees);
+            if (stateMachine.stateMachines.Length > 0)
+            {
+                var childStateMachineTrees = stateMachine.stateMachines
+                    .SelectMany(child => GetBlendTrees(child.stateMachine, currentTrees))
+                    .Distinct();
+                trees.AddRange(childStateMachineTrees);
+            }
+            var directTrees = stateMachine.states
+                .Select(state =>
+                {
+                    if (state.state.motion is BlendTree tree)
+                    {
+                        return tree;
+                    }
+                    return null;
+                })
+               .Where(t => t != null);
+            trees.AddRange(directTrees);
+            return trees.Distinct().ToArray();
+        }
+
+        /// <summary>
+        /// Whether a blend tree exists in descendants of another blend tree.
+        /// </summary>
+        /// <param name="rootTree">Root blend tree.</param>
+        /// <param name="targetTree">Descendants blend tree.</param>
+        /// <returns>true when targetTree exists in rootTree descendants.</returns>
+        internal static bool DoesTreeExistInDescendants(BlendTree rootTree, BlendTree targetTree)
+        {
+            if (rootTree.children.Count(c => c.motion == targetTree) > 0)
+            {
+                return true;
+            }
+            return rootTree.children.Count(c =>
+            {
+                if (c.motion is BlendTree tree)
+                {
+                    return DoesTreeExistInDescendants(tree, targetTree);
+                }
+                return false;
+            }) > 0;
         }
 
         /// <summary>
@@ -66,13 +138,16 @@ namespace KRT.VRCQuestTools.Utils
         /// Replace animator controller's animation clips with new clips.
         /// </summary>
         /// <param name="controller">Target controller.</param>
-        /// <param name="outFile">Asset path for new controller.</param>
-        /// <param name="newAnimationClips">Animation clips to replace (key: original clip).</param>
+        /// <param name="saveDir">Asset directory for new controller.</param>
+        /// <param name="newMotions">Animation clips to replace (key: original clip).</param>
         /// <returns>New animator controller.</returns>
-        internal static AnimatorController ReplaceAnimationClips(RuntimeAnimatorController controller, string outFile, Dictionary<AnimationClip, AnimationClip> newAnimationClips)
+        internal static AnimatorController ReplaceAnimationClips(RuntimeAnimatorController controller, string saveDir, Dictionary<Motion, Motion> newMotions)
         {
-            Debug.Log("originalPath :" + AssetDatabase.GetAssetPath(controller));
-            Debug.Log("copy Path    :" + outFile);
+            Directory.CreateDirectory($"{saveDir}/AnimatorControllers");
+            AssetDatabase.Refresh();
+
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(controller, out string guid, out long localId);
+            var outFile = $"{saveDir}/AnimatorControllers/{controller.name}_from_{guid}.controller";
             AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(controller), outFile);
             AssetDatabase.Refresh();
             AnimatorController cloneController = (AnimatorController)AssetDatabase.LoadAssetAtPath(outFile, typeof(AnimatorController));
@@ -90,22 +165,30 @@ namespace KRT.VRCQuestTools.Utils
                 foreach (var childState in stateMachine.states)
                 {
                     var motion = cloneController.GetStateEffectiveMotion(childState.state, layerIndex);
-                    switch (motion)
+                    if (VRCSDKUtility.IsExampleAsset(motion))
                     {
-                        case null:
-                            continue;
-                        case AnimationClip anim:
-                            Debug.Log("am :" + anim.name);
-                            if (newAnimationClips.ContainsKey(anim))
-                            {
-                                cloneController.SetStateEffectiveMotion(childState.state, newAnimationClips[anim], layerIndex);
-                                Debug.Log("replace animationClip : " + newAnimationClips[anim].name);
-                            }
-                            break;
-                        case BlendTree blendTree:
-                            cloneController.SetStateEffectiveMotion(childState.state, ReplaceAnimationClips(blendTree, newAnimationClips), layerIndex);
-                            break;
+                        continue;
                     }
+                    if (motion != null && newMotions.ContainsKey(motion))
+                    {
+                        motion = newMotions[motion];
+                    }
+                    else if (motion is BlendTree tree)
+                    {
+                        // embedded blend tree
+                        var newTree = DeepCopyBlendTree(tree);
+                        newTree.children = newTree.children.Select(child =>
+                        {
+                            if (newMotions.ContainsKey(child.motion))
+                            {
+                                child.motion = newMotions[child.motion];
+                            }
+                            return child;
+                        }).ToArray();
+                        motion = newTree;
+                        AssetDatabase.AddObjectToAsset(newTree, outFile);
+                    }
+                    cloneController.SetStateEffectiveMotion(childState.state, motion, layerIndex);
                 }
             }
 
@@ -114,47 +197,31 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Replace blend tree's animation clips with new clips.
+        /// Gets deep copy of blend tree.
         /// </summary>
-        /// <param name="blendTree">Target blend tree.</param>
-        /// <param name="newAnimationClips">Animation clips to replace (key: original clip).</param>
-        /// <returns>New blend tree.</returns>
-        internal static BlendTree ReplaceAnimationClips(BlendTree blendTree, Dictionary<AnimationClip, AnimationClip> newAnimationClips)
-        {
-            var newTree = CloneBlendTree(blendTree);
-            if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(blendTree, out string guid, out long localId))
-            {
-                newTree.name += $"_from_{guid}";
-            }
-            var newChildren = blendTree.children.Select(child =>
-            {
-                switch (child.motion)
-                {
-                    case AnimationClip clip:
-                        if (newAnimationClips.ContainsKey(clip))
-                        {
-                            child.motion = newAnimationClips[clip];
-                        }
-                        break;
-                    case BlendTree tree:
-                        child.motion = ReplaceAnimationClips(tree, newAnimationClips);
-                        break;
-                }
-                return child;
-            }).ToArray();
-
-            newTree.children = newChildren;
-            return newTree;
-        }
-
-        private static BlendTree CloneBlendTree(BlendTree blendTree)
+        /// <param name="blendTree">Blend tree to copy.</param>
+        /// <returns>Copied blend tree.</returns>
+        internal static BlendTree DeepCopyBlendTree(BlendTree blendTree)
         {
             var newTree = new BlendTree()
             {
                 blendParameter = blendTree.blendParameter,
                 blendParameterY = blendTree.blendParameterY,
                 blendType = blendTree.blendType,
-                children = blendTree.children,
+                children = blendTree.children.Select(child =>
+                {
+                    var newChild = new ChildMotion()
+                    {
+                        cycleOffset = child.cycleOffset,
+                        directBlendParameter = child.directBlendParameter,
+                        mirror = child.mirror,
+                        motion = child.motion,
+                        position = child.position,
+                        threshold = child.threshold,
+                        timeScale = child.timeScale,
+                    };
+                    return newChild;
+                }).ToArray(),
                 maxThreshold = blendTree.maxThreshold,
                 minThreshold = blendTree.minThreshold,
                 useAutomaticThresholds = blendTree.useAutomaticThresholds,
