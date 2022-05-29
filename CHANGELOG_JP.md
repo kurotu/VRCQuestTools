@@ -6,8 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### 変更
+- Blend Tree が Animator Controller から独立したアセットの場合、変換結果を `BlendTrees` フォルダに保存するように変更
+
 ### 修正
-- Blend Tree を変換するとき誤って変換前の Blend Tree を上書きすることがある問題を修正
+- Blend Tree を変換するとき誤って変換前の Blend Tree を上書きし、変換を繰り返すとアバターの変換に失敗する問題を修正
+- VRCSDK 付属の Blend Tree を変換してしまう問題を修正
 
 ## [1.6.1] - 2022-05-05
 ### 修正
