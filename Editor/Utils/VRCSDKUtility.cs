@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -72,6 +73,9 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         internal static readonly System.Type ContactSenderType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.Contact.Components.VRCContactSender");
 
+        private static readonly Regex VpmSdk3ProxyAnimPattern = new Regex("Assets/Samples/VRChat SDK - Avatars/.*/AV3 Demo Assets/Animation/ProxyAnim/.*\\.anim", RegexOptions.Compiled);
+        private static readonly Regex VpmSdk3DemoPattern = new Regex("Assets/Samples/VRChat SDK - Avatars/.*/AV3 Demo Assets/.*", RegexOptions.Compiled);
+
         /// <summary>
         /// Whether the game object is a VRC avatar root.
         /// </summary>
@@ -98,6 +102,12 @@ namespace KRT.VRCQuestTools.Utils
         internal static bool IsProxyAnimationClip(AnimationClip animationClip)
         {
             var path = AssetDatabase.GetAssetPath(animationClip);
+
+            // VPM SDK3
+            if (VpmSdk3ProxyAnimPattern.IsMatch(path))
+            {
+                return true;
+            }
 
             // SDK3
             if (path.StartsWith("Assets/VRCSDK/Examples3/Animation/ProxyAnim/"))
@@ -131,6 +141,13 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when the path exists in VRCSDK examples folder.</returns>
         internal static bool IsExampleAsset(string path)
         {
+            // VPM SDK3
+            if (VpmSdk3DemoPattern.IsMatch(path))
+            {
+                return true;
+            }
+
+            // SDK3
             return path.StartsWith("Assets/VRCSDK/Examples3/");
         }
 
