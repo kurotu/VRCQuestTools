@@ -28,11 +28,19 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <inheritdoc/>
         internal override MagickImage GenerateToonLitImage()
         {
-            using (var main = DisposableObject.New(TextureBake(Material, 0)))
-            using (var baked = DisposableObject.New(EmissionBake(main.Object, Material)))
+            try
             {
-                var image = new MagickImage(baked.Object.EncodeToPNG());
-                return image;
+                using (var main = DisposableObject.New(TextureBake(Material, 0)))
+                using (var baked = DisposableObject.New(EmissionBake(main.Object, Material)))
+                {
+                    var image = new MagickImage(baked.Object.EncodeToPNG());
+                    return image;
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogException(e);
+                throw new System.Exception($"Compatibility issue for lilToon {AssetUtility.LilToonVersion}. Please report this. (Inner Exception: {e.Message})", e);
             }
         }
 
