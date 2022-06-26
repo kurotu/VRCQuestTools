@@ -87,6 +87,24 @@ namespace KRT.VRCQuestTools.Models
             return false;
         }
 
+        public static bool operator >=(SemVer a, SemVer b)
+        {
+            if (a > b)
+            {
+                return true;
+            }
+            return a.HasSameVersion(b);
+        }
+
+        public static bool operator <=(SemVer a, SemVer b)
+        {
+            if (a < b)
+            {
+                return true;
+            }
+            return a.HasSameVersion(b);
+        }
+
         /// <summary>
         /// Make semver string.
         /// </summary>
@@ -109,6 +127,11 @@ namespace KRT.VRCQuestTools.Models
             }
 
             return false;
+        }
+
+        private bool HasSameVersion(SemVer a)
+        {
+            return ToString() == a.ToString();
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿// <copyright file="AssetUtility.cs" company="kurotu">
+// <copyright file="AssetUtility.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
 using System;
 using System.IO;
+using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,9 +17,28 @@ namespace KRT.VRCQuestTools.Utils
     internal static class AssetUtility
     {
         /// <summary>
+        /// Gets version of lilToon.
+        /// </summary>
+        internal static readonly SemVer LilToonVersion;
+
+        /// <summary>
         /// Type object of DynamicBone.
         /// </summary>
         internal static Type DynamicBoneType = SystemUtility.GetTypeByName("DynamicBone");
+
+        static AssetUtility()
+        {
+            if (IsLilToonImported())
+            {
+                var str = File.ReadAllText("Assets/lilToon/package.json");
+                var package = JsonUtility.FromJson<PackageJson>(str);
+                LilToonVersion = new SemVer(package.version);
+            }
+            else
+            {
+                LilToonVersion = new SemVer("0.0.0");
+            }
+        }
 
         /// <summary>
         /// Gets whether Dynamic Bone is imported.
@@ -139,6 +159,15 @@ namespace KRT.VRCQuestTools.Utils
             importer.SaveAndReimport();
 
             return ret;
+        }
+
+        [Serializable]
+        private class PackageJson
+        {
+            /// <summary>
+            /// package version.
+            /// </summary>
+            public string version;
         }
     }
 }

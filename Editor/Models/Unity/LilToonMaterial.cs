@@ -347,6 +347,8 @@ namespace KRT.VRCQuestTools.Models.Unity
 
         private class LilToonSetting
         {
+            private static readonly SemVer LilToon130 = new SemVer("1.3.0");
+
             private Object settingObject;
 
             public LilToonSetting(Object obj)
@@ -354,17 +356,27 @@ namespace KRT.VRCQuestTools.Models.Unity
                 settingObject = obj;
             }
 
-            public bool LIL_FEATURE_MAIN_GRADATION_MAP => GetFieldValue<bool>("LIL_FEATURE_MAIN_GRADATION_MAP");
+            public bool LIL_FEATURE_MAIN_GRADATION_MAP => IsFeatureEnabled("LIL_FEATURE_MAIN_GRADATION_MAP");
 
-            public bool LIL_FEATURE_EMISSION_1ST => GetFieldValue<bool>("LIL_FEATURE_EMISSION_1ST");
+            public bool LIL_FEATURE_EMISSION_1ST => IsFeatureEnabled("LIL_FEATURE_EMISSION_1ST");
 
-            public bool LIL_FEATURE_EMISSION_2ND => GetFieldValue<bool>("LIL_FEATURE_EMISSION_2ND");
+            public bool LIL_FEATURE_EMISSION_2ND => IsFeatureEnabled("LIL_FEATURE_EMISSION_2ND");
 
-            public bool LIL_FEATURE_ANIMATE_EMISSION_UV => GetFieldValue<bool>("LIL_FEATURE_ANIMATE_EMISSION_UV");
+            public bool LIL_FEATURE_ANIMATE_EMISSION_UV => IsFeatureEnabled("LIL_FEATURE_ANIMATE_EMISSION_UV");
 
-            public bool LIL_FEATURE_ANIMATE_EMISSION_MASK_UV => GetFieldValue<bool>("LIL_FEATURE_ANIMATE_EMISSION_MASK_UV");
+            public bool LIL_FEATURE_ANIMATE_EMISSION_MASK_UV => IsFeatureEnabled("LIL_FEATURE_ANIMATE_EMISSION_MASK_UV");
 
-            public bool LIL_FEATURE_EMISSION_GRADATION => GetFieldValue<bool>("LIL_FEATURE_EMISSION_GRADATION");
+            public bool LIL_FEATURE_EMISSION_GRADATION => IsFeatureEnabled("LIL_FEATURE_EMISSION_GRADATION");
+
+            private bool IsFeatureEnabled(string name)
+            {
+                // lilToon v1.3.0 no longer needs shader setting in edit mode.
+                if (AssetUtility.LilToonVersion >= LilToon130)
+                {
+                    return true;
+                }
+                return GetFieldValue<bool>(name);
+            }
 
             private T GetFieldValue<T>(string name)
             {
