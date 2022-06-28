@@ -53,6 +53,24 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
+        /// Gets or sets the skipped version.
+        /// </summary>
+        internal static SemVer SkippedVersion
+        {
+            get
+            {
+                var str = EditorUserSettings.GetConfigValue(Keys.SkippedVersion) ?? "0.0.0";
+                return new SemVer(str);
+            }
+
+            set
+            {
+                var str = value.ToString();
+                EditorUserSettings.SetConfigValue(Keys.SkippedVersion, str);
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the last date time which the version checker checked.
         /// </summary>
         internal static DateTime LastVersionCheckDateTime
@@ -120,6 +138,7 @@ namespace KRT.VRCQuestTools.Models
             internal const string LastVersion = PREFIX + "LastQuestToolsVersion";
             internal const string ShowSettingsOnLoad = PREFIX + "ShowSettingsOnLoad";
             internal const string AutoRemoveVertexColors = PREFIX + "AutoRemoveVertexColors";
+            internal const string SkippedVersion = PREFIX + "SkippedVersion";
             internal const string LastVersionCheckData = PREFIX + "LastVersionCheckDate";
             internal const string DisplayLanguage = PREFIX + "DisplayLanguage";
             private const string PREFIX = "dev.kurotu.VRCQuestTools.";

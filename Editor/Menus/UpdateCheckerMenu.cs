@@ -3,7 +3,9 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using KRT.VRCQuestTools.Automators;
+using KRT.VRCQuestTools.Models;
 using UnityEditor;
 
 namespace KRT.VRCQuestTools.Menus
@@ -16,6 +18,8 @@ namespace KRT.VRCQuestTools.Menus
         [MenuItem(VRCQuestToolsMenus.MenuPaths.CheckForUpdate, false, (int)VRCQuestToolsMenus.MenuPriorities.CheckForUpdate)]
         private static void InitFromMenu()
         {
+            VRCQuestToolsSettings.SkippedVersion = new SemVer("0.0.0");
+            VRCQuestToolsSettings.LastVersionCheckDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             UpdateCheckerAutomator.CheckForUpdates();
         }
     }

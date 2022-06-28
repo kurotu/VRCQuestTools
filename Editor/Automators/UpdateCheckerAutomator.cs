@@ -18,6 +18,8 @@ namespace KRT.VRCQuestTools.Automators
     [InitializeOnLoad]
     internal static class UpdateCheckerAutomator
     {
+        private const int DelayDays = 1;
+
         static UpdateCheckerAutomator()
         {
             EditorApplication.delayCall += CheckForUpdates;
@@ -30,6 +32,8 @@ namespace KRT.VRCQuestTools.Automators
         /// </summary>
         internal static void CheckForUpdates()
         {
+            var skippedVersion = VRCQuestToolsSettings.SkippedVersion;
+            var lastVersionCheckDate = VRCQuestToolsSettings.LastVersionCheckDateTime;
             Task.Run(async () =>
             {
                 try
@@ -39,6 +43,18 @@ namespace KRT.VRCQuestTools.Automators
                     if (hasUpdate)
                     {
                         Debug.LogWarning($"[{VRCQuestTools.Name}] New version {latestRelease.Version} is available, see {VRCQuestTools.BoothURL}");
+                        if (latestRelease.Version.ToString() == skippedVersion.ToString())
+                        {
+                            Debug.Log($"[{VRCQuestTools.Name}] Notification was skipped because {skippedVersion} was marked as \"skipped\"");
+                            return;
+                        }
+                        var noNotificationDate = lastVersionCheckDate.AddDays(1);
+                        if (DateTime.Now < noNotificationDate)
+                        {
+                            Debug.Log($"[{VRCQuestTools.Name}] Notification was skipped until {noNotificationDate.ToLocalTime()}");
+                            return;
+                        }
+
                         NotificationWindow.instance.RegisterNotification("vrcquesttools-update", new NotificationItem(() =>
                         {
                             var i18n = VRCQuestToolsSettings.I18nResource;
@@ -48,14 +64,21 @@ namespace KRT.VRCQuestTools.Automators
                             {
                                 EditorGUILayout.HelpBox(i18n.NewVersionHasBreakingChanges, MessageType.Warning);
                             }
+                            GUILayout.Space(8);
                             GUILayout.BeginHorizontal();
                             if (GUILayout.Button(i18n.GetUpdate))
                             {
                                 Application.OpenURL(VRCQuestTools.BoothURL);
                                 return true;
                             }
-                            if (GUILayout.Button(i18n.DismissLabel))
+                            if (GUILayout.Button(i18n.CheckLater))
                             {
+                                VRCQuestToolsSettings.LastVersionCheckDateTime = DateTime.Now;
+                                return true;
+                            }
+                            if (GUILayout.Button(i18n.SkipThisVersion))
+                            {
+                                VRCQuestToolsSettings.SkippedVersion = latestRelease.Version;
                                 return true;
                             }
                             GUILayout.EndHorizontal();
