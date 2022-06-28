@@ -32,8 +32,15 @@ namespace KRT.VRCQuestTools.Automators
         /// </summary>
         internal static void CheckForUpdates()
         {
-            var skippedVersion = VRCQuestToolsSettings.SkippedVersion;
             var lastVersionCheckDate = VRCQuestToolsSettings.LastVersionCheckDateTime;
+            var noNotificationDate = lastVersionCheckDate.AddDays(1);
+            if (DateTime.Now < noNotificationDate)
+            {
+                Debug.Log($"[{VRCQuestTools.Name}] Version check is skipped until {noNotificationDate.ToLocalTime()}");
+                return;
+            }
+
+            var skippedVersion = VRCQuestToolsSettings.SkippedVersion;
             Task.Run(async () =>
             {
                 try
@@ -46,12 +53,6 @@ namespace KRT.VRCQuestTools.Automators
                         if (latestRelease.Version.ToString() == skippedVersion.ToString())
                         {
                             Debug.Log($"[{VRCQuestTools.Name}] Notification was skipped because {skippedVersion} was marked as \"skipped\"");
-                            return;
-                        }
-                        var noNotificationDate = lastVersionCheckDate.AddDays(1);
-                        if (DateTime.Now < noNotificationDate)
-                        {
-                            Debug.Log($"[{VRCQuestTools.Name}] Notification was skipped until {noNotificationDate.ToLocalTime()}");
                             return;
                         }
 
