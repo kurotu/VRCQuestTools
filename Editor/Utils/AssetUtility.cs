@@ -26,13 +26,25 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         internal static Type DynamicBoneType = SystemUtility.GetTypeByName("DynamicBone");
 
+        private const string LilToonPackageJsonGUID = "397d2fa9e93fb5d44a9540d5f01437fc";
+
         static AssetUtility()
         {
             if (IsLilToonImported())
             {
-                var str = File.ReadAllText("Assets/lilToon/package.json");
-                var package = JsonUtility.FromJson<PackageJson>(str);
-                LilToonVersion = new SemVer(package.version);
+                try
+                {
+                    var path = AssetDatabase.GUIDToAssetPath(LilToonPackageJsonGUID);
+                    var str = File.ReadAllText(path);
+                    var package = JsonUtility.FromJson<PackageJson>(str);
+                    LilToonVersion = new SemVer(package.version);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                    EditorUtility.DisplayDialog(VRCQuestTools.Name, $"Error occurred when detecting lilToon version.\nPlease report this message and the console error log.\n\nException: {e.Message}", "OK");
+                    LilToonVersion = new SemVer("0.0.0");
+                }
             }
             else
             {
