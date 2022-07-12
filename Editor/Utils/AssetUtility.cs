@@ -42,7 +42,7 @@ namespace KRT.VRCQuestTools.Utils
                 catch (Exception e)
                 {
                     Debug.LogException(e);
-                    EditorUtility.DisplayDialog(VRCQuestTools.Name, $"Error occurred when detecting lilToon version.\nPlease report this message and the console error log.\n\nException: {e.Message}", "OK");
+                    EditorUtility.DisplayDialog(VRCQuestTools.Name, $"Error occurred when detecting lilToon version.\nPlease report this message and the console error log.\n\n{e.GetType().Name}: {e.Message}", "OK");
                     LilToonVersion = new SemVer("0.0.0");
                 }
             }
