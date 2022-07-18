@@ -65,7 +65,7 @@ namespace KRT.VRCQuestTools.Views
                             $"Material: {AssetDatabase.GetAssetPath(material)}\n" +
                             $"Shader: {material.shader.name}\n" +
                             "\n" +
-                            $"Exception: {exception.Message}";
+                            $"{exception.GetType().Name}: {exception.Message}";
                         EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
                         EditorUtility.ClearProgressBar();
                     }
@@ -84,7 +84,7 @@ namespace KRT.VRCQuestTools.Views
                             $"\n" +
                             $"AnimationClip: {clip.name}\n" +
                             $"\n" +
-                            $"Exception: {exception.Message}";
+                            $"{exception.GetType().Name}: {exception.Message}";
                         EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
                         EditorUtility.ClearProgressBar();
                     }
@@ -103,7 +103,7 @@ namespace KRT.VRCQuestTools.Views
                             $"\n" +
                             $"AnimatorController: {controller.name}\n" +
                             $"\n" +
-                            $"Exception: {exception.Message}";
+                            $"{exception.GetType().Name}: {exception.Message}";
                         EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
                         EditorUtility.ClearProgressBar();
                     }
