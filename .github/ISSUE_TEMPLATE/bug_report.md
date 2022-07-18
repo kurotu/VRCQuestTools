@@ -23,6 +23,9 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
+**Console log**
+If Unity's console has any errors, please attach their message and detail.
+
 **Used assets**
 URLs for assets you used (avatars, costumes, tools, etc.)
 
