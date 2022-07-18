@@ -142,11 +142,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 .SelectMany(controller => UnityAnimationUtility.GetMaterials(controller))
                 .Distinct()
                 .ToArray();
-
-            foreach (var a in animMats)
-            {
-                Debug.Log(a.name);
-            }
             return animMats;
         }
     }
