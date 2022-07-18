@@ -179,7 +179,7 @@ namespace KRT.VRCQuestTools.Utils
                         var newTree = DeepCopyBlendTree(tree);
                         newTree.children = newTree.children.Select(child =>
                         {
-                            if (newMotions.ContainsKey(child.motion))
+                            if (child.motion != null && newMotions.ContainsKey(child.motion))
                             {
                                 child.motion = newMotions[child.motion];
                             }
