@@ -32,6 +32,7 @@ namespace KRT.VRCQuestTools.Automators
         /// </summary>
         internal static void CheckForUpdates()
         {
+            var instance = NotificationWindow.instance;
             var lastVersionCheckDate = VRCQuestToolsSettings.LastVersionCheckDateTime;
             var noNotificationDate = lastVersionCheckDate.AddDays(1);
             if (DateTime.Now < noNotificationDate)
