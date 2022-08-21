@@ -53,19 +53,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// </summary>
         /// <param name="avatar">Avatar to convert.</param>
         /// <param name="assetsDirectory">Root directory to save.</param>
-        /// <param name="generateQuestTextures">Whether to generate textures.</param>
-        /// <param name="maxTextureSize">Max textures size. 0 for no limits.</param>
         /// <param name="remover">ComponentRemover object.</param>
-        /// <param name="overrideControllers">Animator Override Controllers to apply.</param>
+        /// <param name="setting">Converter setting object.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted avatar.</returns>
-        internal virtual Tuple<VRChatAvatar, string> ConvertForQuest(VRChatAvatar avatar, string assetsDirectory, bool generateQuestTextures, int maxTextureSize, ComponentRemover remover, AnimatorOverrideController[] overrideControllers, ProgressCallback progressCallback)
+        internal virtual Tuple<VRChatAvatar, string> ConvertForQuest(VRChatAvatar avatar, string assetsDirectory, ComponentRemover remover, AvatarConverterSetting setting, ProgressCallback progressCallback)
         {
             // Convert materials and generate textures.
             var convertedMaterials = ConvertMaterialsForToonLit(avatar.Materials, assetsDirectory);
-            if (generateQuestTextures)
+            if (setting.generateQuestTextures)
             {
-                var generatedTextures = GenrateToonLitTextures(avatar.Materials, assetsDirectory, maxTextureSize, progressCallback.onTextureProgress);
+                var generatedTextures = GenrateToonLitTextures(avatar.Materials, assetsDirectory, setting.maxTextureSize, progressCallback.onTextureProgress);
                 foreach (var tex in generatedTextures)
                 {
                     if (convertedMaterials.ContainsKey(tex.Key))
@@ -80,12 +78,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var questAvatarObject = UnityEngine.Object.Instantiate(avatar.AvatarDescriptor.gameObject);
 
             // Convert animator controllers and their animation clips.
-            if (avatar.HasAnimatedMaterials || overrideControllers.Count(oc => oc != null) > 0)
+            if (avatar.HasAnimatedMaterials || setting.overrideControllers.Count(oc => oc != null) > 0)
             {
                 var convertedAnimationClips = ConvertAnimationClipsForQuest(avatar.GetRuntimeAnimatorControllers(), assetsDirectory, convertedMaterials, progressCallback.onAnimationClipProgress);
 
                 // Inject animation override.
-                foreach (var oc in overrideControllers)
+                foreach (var oc in setting.overrideControllers)
                 {
                     if (oc == null)
                     {

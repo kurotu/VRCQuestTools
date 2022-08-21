@@ -168,7 +168,13 @@ namespace KRT.VRCQuestTools.ViewModels
             var undoGroup = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName("Convert Avatar for Quest");
 
-            var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, generateQuestTextures, (int)texturesSizeLimit, Remover, overrideControllers, progressCallback);
+            var converterSetting = new AvatarConverterSetting
+            {
+                generateQuestTextures = generateQuestTextures,
+                maxTextureSize = (int)texturesSizeLimit,
+                overrideControllers = overrideControllers,
+            };
+            var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, Remover, converterSetting, progressCallback);
             PrefabUtility.SaveAsPrefabAssetAndConnect(questAvatar.AvatarDescriptor.gameObject, prefabName, InteractionMode.UserAction);
 
             if (TargetAvatarDescriptor.gameObject.activeInHierarchy)
