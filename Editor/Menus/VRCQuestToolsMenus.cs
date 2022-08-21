@@ -25,6 +25,10 @@ namespace KRT.VRCQuestTools.Menus
             internal const string MSMapGenerator = RootMenu + "Tools/Metallic Smoothness Map";
             internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
             internal const string UnitySettings = RootMenu + "Unity Settings for Quest";
+            private const string ExperimentalMenu = RootMenu + "Experimental/";
+            private const string SwitchPlatformMenu = ExperimentalMenu + "Switch Platform/";
+            internal const string SwitchPlatformToPC = SwitchPlatformMenu + "PC (Windows)";
+            internal const string SwitchPlatformToAndroid = SwitchPlatformMenu + "Quest (Android)";
             private const string LanguageMenu = RootMenu + "Languages/";
             internal const string LanguageAuto = LanguageMenu + "Auto (default)";
             internal const string LanguageEnglish = LanguageMenu + "English";
@@ -43,10 +47,12 @@ namespace KRT.VRCQuestTools.Menus
             MSMapGenerator,
             AutoRemoveVertexColors = 800,
             UnitySettings = 900,
-            LanguageAuto = 1000,
+            SwitchPlatformToPC = 1000,
+            SwitchPlatformToAndroid,
+            LanguageAuto = 1100,
             LanguageEnglish,
             LanguageJapanese,
-            CheckForUpdate = 1100,
+            CheckForUpdate = 1200,
             Version,
         }
 
