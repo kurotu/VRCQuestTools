@@ -42,6 +42,11 @@ namespace KRT.VRCQuestTools.ViewModels
         public TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.Max1024x1024;
 
         /// <summary>
+        /// Animator Override Controller for base layers.
+        /// </summary>
+        public AnimatorOverrideController[] overrideControllers = new AnimatorOverrideController[] { };
+
+        /// <summary>
         /// AvatarConverter to use.
         /// </summary>
         [NonSerialized]
@@ -163,7 +168,7 @@ namespace KRT.VRCQuestTools.ViewModels
             var undoGroup = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName("Convert Avatar for Quest");
 
-            var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, generateQuestTextures, (int)texturesSizeLimit, Remover, progressCallback);
+            var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, generateQuestTextures, (int)texturesSizeLimit, Remover, overrideControllers, progressCallback);
             PrefabUtility.SaveAsPrefabAssetAndConnect(questAvatar.AvatarDescriptor.gameObject, prefabName, InteractionMode.UserAction);
 
             if (TargetAvatarDescriptor.gameObject.activeInHierarchy)

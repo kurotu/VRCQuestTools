@@ -56,9 +56,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="generateQuestTextures">Whether to generate textures.</param>
         /// <param name="maxTextureSize">Max textures size. 0 for no limits.</param>
         /// <param name="remover">ComponentRemover object.</param>
+        /// <param name="overrideControllers">Animator Override Controllers to apply.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted avatar.</returns>
-        internal virtual Tuple<VRChatAvatar, string> ConvertForQuest(VRChatAvatar avatar, string assetsDirectory, bool generateQuestTextures, int maxTextureSize, ComponentRemover remover, ProgressCallback progressCallback)
+        internal virtual Tuple<VRChatAvatar, string> ConvertForQuest(VRChatAvatar avatar, string assetsDirectory, bool generateQuestTextures, int maxTextureSize, ComponentRemover remover, AnimatorOverrideController[] overrideControllers, ProgressCallback progressCallback)
         {
             // Convert materials and generate textures.
             var convertedMaterials = ConvertMaterialsForToonLit(avatar.Materials, assetsDirectory);
@@ -79,9 +80,29 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var questAvatarObject = UnityEngine.Object.Instantiate(avatar.AvatarDescriptor.gameObject);
 
             // Convert animator controllers and their animation clips.
-            if (avatar.HasAnimatedMaterials)
+            if (avatar.HasAnimatedMaterials || overrideControllers.Count(oc => oc != null) > 0)
             {
                 var convertedAnimationClips = ConvertAnimationClipsForQuest(avatar.GetRuntimeAnimatorControllers(), assetsDirectory, convertedMaterials, progressCallback.onAnimationClipProgress);
+
+                // Inject animation override.
+                foreach (var oc in overrideControllers)
+                {
+                    if (oc == null)
+                    {
+                        continue;
+                    }
+
+                    var overrides = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+                    oc.GetOverrides(overrides);
+                    foreach (var pair in overrides)
+                    {
+                        if (pair.Value)
+                        {
+                            convertedAnimationClips[pair.Key] = pair.Value;
+                        }
+                    }
+                }
+
                 var convertedBlendTrees = ConvertBlendTreesForQuest(avatar.GetRuntimeAnimatorControllers().Select(c => (AnimatorController)c).ToArray(), assetsDirectory, convertedAnimationClips);
                 var convertedAnimMotions = convertedAnimationClips.ToDictionary(c => (Motion)c.Key, c => (Motion)c.Value);
                 var convertedTreeMotions = convertedBlendTrees.ToDictionary(c => (Motion)c.Key, c => (Motion)c.Value);
@@ -230,7 +251,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             for (var index = 0; index < controllers.Length; index++)
             {
                 var controller = controllers[index];
-                if (UnityAnimationUtility.GetMaterials(controller).Length == 0)
+                if (controller.animationClips.Where(c => c != null).Count(clip => convertedMotions.ContainsKey(clip) && convertedMotions[clip] != null) == 0)
                 {
                     continue;
                 }

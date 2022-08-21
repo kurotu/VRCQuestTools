@@ -32,6 +32,9 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SelectButtonLabel => "選択";
         internal override string ConvertButtonLabel => "変換";
         internal override string UpdateTexturesLabel => "Quest用テクスチャのみ更新";
+        internal override string AdvancedConverterSettingsLabel => "高度な変換設定";
+        internal override string AnimationOverrideLabel => "アニメーションオーバーライド";
+        internal override string AnimationOverrideTooltip => "Animator Override Controller で指定したアニメーションを使用して Animator Controller を変換します。";
         internal override string ConvertingMaterialsDialogMessage => "マテリアルを変換中";
         internal override string GeneratingTexturesDialogMessage => "テクスチャを生成中";
         internal override string MaterialExceptionDialogMessage => "マテリアルの変換中にエラーが発生しました。変換を中止します。";

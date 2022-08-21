@@ -32,6 +32,9 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SelectButtonLabel => "Select";
         internal override string ConvertButtonLabel => "Convert";
         internal override string UpdateTexturesLabel => "Update Only Quest Textures";
+        internal override string AdvancedConverterSettingsLabel => "Advanced Converter Settings";
+        internal override string AnimationOverrideLabel => "Animation Override";
+        internal override string AnimationOverrideTooltip => "Convert Animator Controllers with Animator Override Controller's animations.";
         internal override string ConvertingMaterialsDialogMessage => "Converting materials...";
         internal override string GeneratingTexturesDialogMessage => "Generating textures...";
         internal override string MaterialExceptionDialogMessage => "An error occured when converting materials. Aborted.";
