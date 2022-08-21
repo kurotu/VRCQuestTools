@@ -1,4 +1,4 @@
-﻿// <copyright file="AvatarConverter.cs" company="kurotu">
+// <copyright file="AvatarConverter.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -227,9 +227,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, string assetsDirectory, Dictionary<Motion, Motion> convertedMotions, RuntimeAnimatorProgressCallback progressCallback)
         {
             var convertedControllers = new Dictionary<RuntimeAnimatorController, RuntimeAnimatorController>();
-            var index = 0;
-            foreach (var controller in controllers)
+            for (var index = 0; index < controllers.Length; index++)
             {
+                var controller = controllers[index];
+                if (UnityAnimationUtility.GetMaterials(controller).Length == 0)
+                {
+                    continue;
+                }
+
                 progressCallback(controllers.Length, index, null, controller);
                 try
                 {
@@ -242,7 +247,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     progressCallback(controllers.Length, index, e, controller);
                     throw new InvalidOperationException($"Failed to convert an animator controller \"{controller.name}\". See the previous error log for detail.");
                 }
-                index++;
             }
             return convertedControllers;
         }
@@ -256,12 +260,22 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>Converted blend trees (key: original blend tree).</returns>
         internal Dictionary<BlendTree, BlendTree> ConvertBlendTreesForQuest(AnimatorController[] controllers, string assetsDirectory, Dictionary<AnimationClip, AnimationClip> convertedAnimationClips)
         {
-            var saveDirectory = $"{assetsDirectory}/BlendTrees";
-            Directory.CreateDirectory(saveDirectory);
-            AssetDatabase.Refresh();
+            var trees = controllers
+                .SelectMany(c => UnityAnimationUtility.GetBlendTrees(c))
+                .Distinct()
+                .Where(tree =>
+                {
+                    return convertedAnimationClips.Keys.FirstOrDefault(clip => UnityAnimationUtility.DoesMotionExistInBlendTreeDescendants(tree, clip)) != null;
+                })
+                .ToList();
+            trees.Sort((a, b) => UnityAnimationUtility.DoesMotionExistInBlendTreeDescendants(a, b) ? 1 : 0); // Sort because trees have dependency.
 
-            var trees = controllers.SelectMany(c => UnityAnimationUtility.GetBlendTrees(c)).Distinct().ToList();
-            trees.Sort((a, b) => UnityAnimationUtility.DoesTreeExistInDescendants(a, b) ? 1 : 0); // Sort because trees have dependency.
+            var saveDirectory = $"{assetsDirectory}/BlendTrees";
+            if (trees.Count > 0)
+            {
+                Directory.CreateDirectory(saveDirectory);
+                AssetDatabase.Refresh();
+            }
 
             var dict = new Dictionary<BlendTree, BlendTree>();
             for (var i = 0; i < trees.Count; i++)
@@ -328,6 +342,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 .SelectMany(c => c.animationClips)
                 .Where(a => a != null)
                 .Distinct()
+                .Where(a => UnityAnimationUtility.GetMaterials(a).Length > 0)
                 .ToArray();
 
             var convertedAnimationClips = new Dictionary<AnimationClip, AnimationClip>();
