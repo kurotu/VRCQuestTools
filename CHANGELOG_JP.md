@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 追加
 - アップデート通知で「スキップ」ボタンにより次のアップデートまで通知を表示しない機能を追加
 
+### 変更
+- 警告メッセージの軽微な変更
+
 ### 修正
 - アップデートがあっても通知が表示されないことがある問題を修正
 
