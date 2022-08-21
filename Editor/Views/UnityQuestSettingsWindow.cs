@@ -45,7 +45,7 @@ namespace KRT.VRCQuestTools.Views
 
             if (!model.HasValidLegacyCacheServerMode)
             {
-                EditorGUILayout.HelpBox(i18n.CacheServerHelp, MessageType.Warning);
+                EditorGUILayout.HelpBox(i18n.CacheServerHelp, MessageType.Info);
                 allActions.Add(OnClickCacheServerButton);
                 if (GUILayout.Button(i18n.CacheServerButtonLabel))
                 {
@@ -61,7 +61,7 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.LabelField($"{i18n.TextureCompressionLabel}: {model.DefaultAndroidTextureCompression}");
             if (!model.HasValidAndroidTextureCompression)
             {
-                EditorGUILayout.HelpBox(i18n.TextureCompressionHelp, MessageType.Warning);
+                EditorGUILayout.HelpBox(i18n.TextureCompressionHelp, MessageType.Info);
                 allActions.Add(OnClickTextureCompressionButton);
                 if (GUILayout.Button(i18n.TextureCompressionButtonLabel))
                 {

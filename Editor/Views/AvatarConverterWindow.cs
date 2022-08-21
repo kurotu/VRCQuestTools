@@ -148,7 +148,7 @@ namespace KRT.VRCQuestTools.Views
                     {
                         var message2 = $"{i18n.WarningForUnsupportedShaders}\n\n" +
                             $"{string.Join("\n", unverifiedMaterials.Select(m => $"  - {m.name} ({m.shader.name})"))}";
-                        EditorGUILayout.HelpBox(message2, MessageType.Error);
+                        EditorGUILayout.HelpBox(message2, MessageType.Warning);
                     }
                 }
 
@@ -178,14 +178,14 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Info);
-            EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Warning);
+            EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Info);
             if (model.TargetAvatarDescriptor != null)
             {
                 if (VRCSDKUtility.IsPhysBonesImported() && model.HasDynamicBones)
                 {
                     using (var horizontal = new EditorGUILayout.HorizontalScope())
                     {
-                        EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Error);
+                        EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Warning);
                         if (GUILayout.Button(i18n.ConvertButtonLabel, GUILayout.Height(38), GUILayout.MinWidth(60)))
                         {
                             OnClickConvertToPhysBonesButton();
@@ -200,12 +200,12 @@ namespace KRT.VRCQuestTools.Views
                     .ToArray();
                 if (componentsToBeAlearted.Count() > 0)
                 {
-                    EditorGUILayout.HelpBox(i18n.AlertForComponents + "\n\n" + string.Join("\n", componentsToBeAlearted.Select(c => $"  - {c}")), MessageType.Error);
+                    EditorGUILayout.HelpBox(i18n.AlertForComponents + "\n\n" + string.Join("\n", componentsToBeAlearted.Select(c => $"  - {c}")), MessageType.Warning);
                 }
 
                 if (model.HasAnimatedMaterials)
                 {
-                    EditorGUILayout.HelpBox(i18n.AlertForMaterialAnimation, MessageType.Error);
+                    EditorGUILayout.HelpBox(i18n.AlertForMaterialAnimation, MessageType.Info);
                 }
             }
 
