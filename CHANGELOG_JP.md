@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 追加
 - アップデート通知で「スキップ」ボタンにより次のアップデートまで通知を表示しない機能を追加
+- (実験的機能) Switch Platform を実行するメニューを追加 (VRCQuestTools -> Experimental -> Switch Platform)
 
 ### 変更
 - 警告メッセージの軽微な変更
