@@ -188,6 +188,11 @@ namespace KRT.VRCQuestTools.Views
                 var m_overrideControllers = m_model.FindPropertyRelative("overrideControllers");
                 EditorGUILayout.PropertyField(m_overrideControllers, new GUIContent(i18n.AnimationOverrideLabel, i18n.AnimationOverrideTooltip));
                 so.ApplyModifiedProperties();
+
+                if (model.OverrideControllersHasUnsupportedMaterials)
+                {
+                    EditorGUILayout.HelpBox(i18n.AnimationOverrideMaterialErrorMessage, MessageType.Error);
+                }
             }
 #endif
 
@@ -224,7 +229,7 @@ namespace KRT.VRCQuestTools.Views
                 }
             }
 
-            EditorGUI.BeginDisabledGroup(model.TargetAvatarDescriptor == null);
+            EditorGUI.BeginDisabledGroup(!model.CanConvertAvatar);
             {
                 if (GUILayout.Button(i18n.ConvertButtonLabel))
                 {

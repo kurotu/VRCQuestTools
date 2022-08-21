@@ -35,6 +35,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AdvancedConverterSettingsLabel => "高度な変換設定";
         internal override string AnimationOverrideLabel => "アニメーションオーバーライド";
         internal override string AnimationOverrideTooltip => "Animator Override Controller で指定したアニメーションを使用して Animator Controller を変換します。";
+        internal override string AnimationOverrideMaterialErrorMessage => "Animator Override Controller に Quest で使用できないマテリアルへ変更するアニメーションがあります。";
         internal override string ConvertingMaterialsDialogMessage => "マテリアルを変換中";
         internal override string GeneratingTexturesDialogMessage => "テクスチャを生成中";
         internal override string MaterialExceptionDialogMessage => "マテリアルの変換中にエラーが発生しました。変換を中止します。";

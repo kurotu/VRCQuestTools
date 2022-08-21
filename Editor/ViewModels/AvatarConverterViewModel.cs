@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
@@ -135,6 +136,34 @@ namespace KRT.VRCQuestTools.ViewModels
         /// Gets unsupported components for Quest.
         /// </summary>
         internal Component[] UnsupportedComponents => Remover.GetUnsupportedComponentsInChildren(TargetAvatar.AvatarDescriptor.gameObject, true);
+
+        /// <summary>
+        /// Gets a value indicating whether overrideControllers contains animated materials which uses unsupported shaders for Quest.
+        /// </summary>
+        internal bool OverrideControllersHasUnsupportedMaterials => overrideControllers
+            .Where(oc => oc != null)
+            .FirstOrDefault(oc =>
+            {
+                var overrides = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+                oc.GetOverrides(overrides);
+                return overrides
+                    .Where(pair => pair.Value != null)
+                    .SelectMany(pair => UnityAnimationUtility.GetMaterials(pair.Value))
+                    .Where(m => m != null)
+                    .FirstOrDefault(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)) != null;
+            }) != null;
+
+        /// <summary>
+        /// Gets a value indicating whether the converter can convert the target avatar.
+        /// </summary>
+        internal bool CanConvertAvatar
+        {
+            get
+            {
+                var hasTarget = TargetAvatarDescriptor != null;
+                return hasTarget && !OverrideControllersHasUnsupportedMaterials;
+            }
+        }
 
         private VRChatAvatar TargetAvatar => new VRChatAvatar(TargetAvatarDescriptor);
 
