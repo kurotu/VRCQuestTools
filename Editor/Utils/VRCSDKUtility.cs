@@ -73,8 +73,12 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         internal static readonly System.Type ContactSenderType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.Contact.Components.VRCContactSender");
 
-        private static readonly Regex VpmSdk3ProxyAnimPattern = new Regex("Assets/Samples/VRChat SDK - Avatars/.*/AV3 Demo Assets/Animation/ProxyAnim/.*\\.anim", RegexOptions.Compiled);
-        private static readonly Regex VpmSdk3DemoPattern = new Regex("Assets/Samples/VRChat SDK - Avatars/.*/AV3 Demo Assets/.*", RegexOptions.Compiled);
+        private const string VpmSdk3DemoFolder = "Packages/com.vrchat.avatars/Samples/AV3 Demo Assets";
+
+        private static readonly Regex VpmSdk3ProxyAnimPattern = new Regex($"{VpmSdk3DemoFolder}/Animation/ProxyAnim/.*\\.anim", RegexOptions.Compiled);
+        private static readonly Regex VpmSdk3DemoPattern = new Regex($"{VpmSdk3DemoFolder}/.*", RegexOptions.Compiled);
+        private static readonly Regex VpmBetaSdk3ProxyAnimPattern = new Regex("Assets/Samples/VRChat SDK - Avatars/.*/AV3 Demo Assets/Animation/ProxyAnim/.*\\.anim", RegexOptions.Compiled);
+        private static readonly Regex VpmBetaSdk3DemoPattern = new Regex("Assets/Samples/VRChat SDK - Avatars/.*/AV3 Demo Assets/.*", RegexOptions.Compiled);
 
         /// <summary>
         /// Whether the game object is a VRC avatar root.
@@ -105,6 +109,12 @@ namespace KRT.VRCQuestTools.Utils
 
             // VPM SDK3
             if (VpmSdk3ProxyAnimPattern.IsMatch(path))
+            {
+                return true;
+            }
+
+            // VPM beta SDK3
+            if (VpmBetaSdk3ProxyAnimPattern.IsMatch(path))
             {
                 return true;
             }
@@ -143,6 +153,12 @@ namespace KRT.VRCQuestTools.Utils
         {
             // VPM SDK3
             if (VpmSdk3DemoPattern.IsMatch(path))
+            {
+                return true;
+            }
+
+            // VPM beta SDK3
+            if (VpmBetaSdk3DemoPattern.IsMatch(path))
             {
                 return true;
             }

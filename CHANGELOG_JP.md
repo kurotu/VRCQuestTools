@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 修正
 - アップデートがあっても通知が表示されないことがある問題を修正
 
+## [1.6.6] - 2022-08-31
+### 修正
+- VCC 1.0.0 のプロジェクトで VPM 版 VRCSDK3 付属のアニメーションを変換してしまう問題を修正
+
 ## [1.6.5] - 2022-07-18
 ### 修正
 - Blend Tree のモーションが空の場合に Animator Controller の変換に失敗する問題を修正
