@@ -8,9 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 追加
 - アップデート通知で「スキップ」ボタンにより次のアップデートまで通知を表示しない機能を追加
+- 高度な変換設定：変換時に Animator Override Controller を使用して Quest 用の Animator Controller を生成する機能を追加
 - (実験的機能) Switch Platform を実行するメニューを追加 (VRCQuestTools -> Experimental -> Switch Platform)
 
 ### 変更
+- マテリアルを変更しない変換不要なアニメーションをそのまま使用するように変更
 - 警告メッセージの軽微な変更
 
 ### 修正
