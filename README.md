@@ -28,8 +28,7 @@ Select your avatar from a scene, then use *VRCQuestTools* menu item from the men
 ### Convert Avatar for Quest
 
 Convert a PC avatar to be ready to upload for Quest by automating following operations.
-
-⚠ In many cases, the converted avatar would have **Very Poor** performance rank because of [Quest Limits](https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits).
+VRCQuestTools doesn't make any changes to the original avatar, so you can use the tool in existing projects as is.
 
 - Duplicate the avatar and its materials.
 - Change duplicated materials' shader to *VRChat/Mobile/Toon Lit*.
@@ -37,7 +36,8 @@ Convert a PC avatar to be ready to upload for Quest by automating following oper
 - Remove prohibited components such as Dynamic Bone.
 - (Avatars 3.0 only) Convert animator controllers and animation clips when the avatar has animation clips which change materials.
 
-VRCQuestTools doesn't make any changes to the original avatar, so you can use the tool in existing projects as is.
+⚠ The tool never optimize performance rank. In many cases, the converted avatar would have **Very Poor** for Quest and require *Show Avatar* operation.
+See [Quest Limits](https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits) for details.
 
 ### Remove Missing Components
 

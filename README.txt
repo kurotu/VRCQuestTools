@@ -6,7 +6,8 @@ VRChat アバターの Oculus Quest 対応を想定した Unity Editor 拡張で
 
 ### Convert Avatar for Quest
 
-選択したアバターに以下の操作を自動的に行い、Quest 用にアップロードできるように変換します (大抵は Very Poor)。
+選択したアバターに以下の操作を自動的に行い、Quest 用にアップロードできるように変換します。
+コピーを作成することで元のアバターに変更を加えないため、既存のプロジェクトでそのまま使用することができます。
 
 - アバターとマテリアルの複製
 - シェーダーを VRChat/Mobile/Toon Lit に変更
@@ -15,7 +16,7 @@ VRChat アバターの Oculus Quest 対応を想定した Unity Editor 拡張で
 - (Avatars 3.0 のみ) マテリアル変更アニメーションがある場合に Animator Controller とアニメーションを複製・変換
 - VRCQuestTools Extra https://kurotu.booth.pm/items/3375621 を導入していると、対応しているPC専用アセット向けの追加処理を実施
 
-コピーを作成することで元のアバターに変更を加えないため、既存のプロジェクトでそのまま使用することができます。
+⚠ パフォーマンスランクを最適化しません。そのため大抵はQuest基準でVery Poorとなり、表示には「Show Avatar」操作が必要です。
 
 ### Remove Missing Components
 
