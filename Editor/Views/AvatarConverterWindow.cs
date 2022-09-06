@@ -176,6 +176,26 @@ namespace KRT.VRCQuestTools.Views
             }
             EditorGUILayout.EndVertical();
 
+#if VRC_SDK_VRCSDK3
+            EditorGUILayout.Space();
+            using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+            {
+                EditorGUILayout.LabelField(i18n.AdvancedConverterSettingsLabel);
+                EditorGUILayout.Space();
+                var so = new SerializedObject(this);
+                so.Update();
+                var m_model = so.FindProperty("model");
+                var m_overrideControllers = m_model.FindPropertyRelative("overrideControllers");
+                EditorGUILayout.PropertyField(m_overrideControllers, new GUIContent(i18n.AnimationOverrideLabel, i18n.AnimationOverrideTooltip));
+                so.ApplyModifiedProperties();
+
+                if (model.OverrideControllersHasUnsupportedMaterials)
+                {
+                    EditorGUILayout.HelpBox(i18n.AnimationOverrideMaterialErrorMessage, MessageType.Error);
+                }
+            }
+#endif
+
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox(i18n.WarningForPerformance, MessageType.Info);
             EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Info);
@@ -209,7 +229,7 @@ namespace KRT.VRCQuestTools.Views
                 }
             }
 
-            EditorGUI.BeginDisabledGroup(model.TargetAvatarDescriptor == null);
+            EditorGUI.BeginDisabledGroup(!model.CanConvertAvatar);
             {
                 if (GUILayout.Button(i18n.ConvertButtonLabel))
                 {

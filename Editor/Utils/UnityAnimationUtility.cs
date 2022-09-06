@@ -1,4 +1,4 @@
-﻿// <copyright file="UnityAnimationUtility.cs" company="kurotu">
+// <copyright file="UnityAnimationUtility.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -80,14 +80,14 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Whether a blend tree exists in descendants of another blend tree.
+        /// Whether a motion exists in descendants of a blend tree.
         /// </summary>
         /// <param name="rootTree">Root blend tree.</param>
-        /// <param name="targetTree">Descendants blend tree.</param>
+        /// <param name="targetMotion">Motion to search.</param>
         /// <returns>true when targetTree exists in rootTree descendants.</returns>
-        internal static bool DoesTreeExistInDescendants(BlendTree rootTree, BlendTree targetTree)
+        internal static bool DoesMotionExistInBlendTreeDescendants(BlendTree rootTree, Motion targetMotion)
         {
-            if (rootTree.children.Count(c => c.motion == targetTree) > 0)
+            if (rootTree.children.Count(c => c.motion == targetMotion) > 0)
             {
                 return true;
             }
@@ -95,7 +95,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 if (c.motion is BlendTree tree)
                 {
-                    return DoesTreeExistInDescendants(tree, targetTree);
+                    return DoesMotionExistInBlendTreeDescendants(tree, targetMotion);
                 }
                 return false;
             }) > 0;
@@ -231,7 +231,12 @@ namespace KRT.VRCQuestTools.Utils
             return newTree;
         }
 
-        private static Material[] GetMaterials(AnimationClip clip)
+        /// <summary>
+        /// Gets materials which a clip uses.
+        /// </summary>
+        /// <param name="clip">Animation Clip.</param>
+        /// <returns>Materials.</returns>
+        internal static Material[] GetMaterials(AnimationClip clip)
         {
             EditorCurveBinding[] binding = AnimationUtility.GetObjectReferenceCurveBindings(clip); // Animationに設定されているオブジェクト
             binding = binding.Where(b => b.type == typeof(MeshRenderer) || b.type == typeof(SkinnedMeshRenderer)).ToArray(); // Renderer系のみ

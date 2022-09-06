@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
@@ -40,6 +41,11 @@ namespace KRT.VRCQuestTools.ViewModels
         /// Maximum texture size.
         /// </summary>
         public TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.Max1024x1024;
+
+        /// <summary>
+        /// Animator Override Controller for base layers.
+        /// </summary>
+        public AnimatorOverrideController[] overrideControllers = new AnimatorOverrideController[] { };
 
         /// <summary>
         /// AvatarConverter to use.
@@ -131,6 +137,34 @@ namespace KRT.VRCQuestTools.ViewModels
         /// </summary>
         internal Component[] UnsupportedComponents => Remover.GetUnsupportedComponentsInChildren(TargetAvatar.AvatarDescriptor.gameObject, true);
 
+        /// <summary>
+        /// Gets a value indicating whether overrideControllers contains animated materials which uses unsupported shaders for Quest.
+        /// </summary>
+        internal bool OverrideControllersHasUnsupportedMaterials => overrideControllers
+            .Where(oc => oc != null)
+            .FirstOrDefault(oc =>
+            {
+                var overrides = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+                oc.GetOverrides(overrides);
+                return overrides
+                    .Where(pair => pair.Value != null)
+                    .SelectMany(pair => UnityAnimationUtility.GetMaterials(pair.Value))
+                    .Where(m => m != null)
+                    .FirstOrDefault(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)) != null;
+            }) != null;
+
+        /// <summary>
+        /// Gets a value indicating whether the converter can convert the target avatar.
+        /// </summary>
+        internal bool CanConvertAvatar
+        {
+            get
+            {
+                var hasTarget = TargetAvatarDescriptor != null;
+                return hasTarget && !OverrideControllersHasUnsupportedMaterials;
+            }
+        }
+
         private VRChatAvatar TargetAvatar => new VRChatAvatar(TargetAvatarDescriptor);
 
         private ComponentRemover Remover => VRCQuestTools.ComponentRemover;
@@ -163,7 +197,13 @@ namespace KRT.VRCQuestTools.ViewModels
             var undoGroup = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName("Convert Avatar for Quest");
 
-            var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, generateQuestTextures, (int)texturesSizeLimit, Remover, progressCallback);
+            var converterSetting = new AvatarConverterSetting
+            {
+                generateQuestTextures = generateQuestTextures,
+                maxTextureSize = (int)texturesSizeLimit,
+                overrideControllers = overrideControllers,
+            };
+            var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, Remover, converterSetting, progressCallback);
             PrefabUtility.SaveAsPrefabAssetAndConnect(questAvatar.AvatarDescriptor.gameObject, prefabName, InteractionMode.UserAction);
 
             if (TargetAvatarDescriptor.gameObject.activeInHierarchy)

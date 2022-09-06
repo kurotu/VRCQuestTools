@@ -32,6 +32,10 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string SelectButtonLabel { get; }
         internal abstract string ConvertButtonLabel { get; }
         internal abstract string UpdateTexturesLabel { get; }
+        internal abstract string AdvancedConverterSettingsLabel { get; }
+        internal abstract string AnimationOverrideLabel { get; }
+        internal abstract string AnimationOverrideTooltip { get; }
+        internal abstract string AnimationOverrideMaterialErrorMessage { get; }
         internal abstract string ConvertingMaterialsDialogMessage { get; }
         internal abstract string GeneratingTexturesDialogMessage { get; }
         internal abstract string MaterialExceptionDialogMessage { get; }
