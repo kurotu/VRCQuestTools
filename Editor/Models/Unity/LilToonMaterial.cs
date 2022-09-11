@@ -26,7 +26,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override MagickImage GenerateToonLitImage()
+        internal override Texture2D GenerateToonLitImage()
+        {
+            using (var image = GenerateToonLitMagickImage())
+            {
+                return MagickImageUtility.MagickImageToTexture2D(image);
+            }
+        }
+
+        private MagickImage GenerateToonLitMagickImage()
         {
             try
             {

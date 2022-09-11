@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ImageMagick;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
@@ -185,7 +186,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
                     var material = MaterialWrapperBuilder.Build(m);
-                    using (var image = material.GenerateToonLitImage())
+                    using (var tex = DisposableObject.New(material.GenerateToonLitImage()))
+                    using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
                     {
                         Texture2D texture = null;
                         if (image != null)

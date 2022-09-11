@@ -24,11 +24,20 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override MagickImage GenerateToonLitImage()
+        internal override Texture2D GenerateToonLitImage()
+        {
+            using (var image = GenerateToonLitMagickImage())
+            {
+                return MagickImageUtility.MagickImageToTexture2D(image);
+            }
+        }
+
+        private MagickImage GenerateToonLitMagickImage()
         {
             if (HasEmissiveFreak())
             {
-                using (var baseImage = base.GenerateToonLitImage())
+                using (var baseTexture = DisposableObject.New(base.GenerateToonLitImage()))
+                using (var baseImage = new MagickImage(baseTexture.Object.EncodeToPNG()))
                 {
                     var image = new MagickImage(baseImage)
                     {
@@ -52,7 +61,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                     return image;
                 }
             }
-            return base.GenerateToonLitImage();
+
+            using (var baseTexture = DisposableObject.New(base.GenerateToonLitImage()))
+            {
+                return MagickImageUtility.Texture2DToMagickImage(baseTexture.Object);
+            }
         }
 
         /// <inheritdoc/>

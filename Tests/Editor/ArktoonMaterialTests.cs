@@ -5,6 +5,7 @@
 
 using ImageMagick;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 
 namespace KRT.VRCQuestTools
@@ -31,7 +32,8 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("arktoon.mat");
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
-            using (var image = wrapper.GenerateToonLitImage())
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
             using (var original = TestUtils.LoadMagickImage("albedo_1024px_png.png"))
             using (var emission = new MagickImage(new MagickColorFactory().Create("#1F1F1F"), original.Width, original.Height))
             {
@@ -49,7 +51,8 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("arktoon_EmissiveFreak.mat");
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
-            using (var image = wrapper.GenerateToonLitImage())
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
             using (var main = TestUtils.LoadMagickImage("albedo_1024px_png.png"))
             using (var emission = TestUtils.LoadMagickImage("emission_1024px.png"))
             using (var ef1 = TestUtils.LoadMagickImage("emissive_freak_1_1024px.png"))

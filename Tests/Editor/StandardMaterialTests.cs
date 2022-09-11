@@ -5,6 +5,7 @@
 
 using ImageMagick;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 
 namespace KRT.VRCQuestTools
@@ -22,7 +23,8 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_NoEmission.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            using (var image = wrapper.GenerateToonLitImage())
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
             using (var original = TestUtils.LoadMagickImage("albedo_1024px_png.png"))
             {
                 var result = image.Compare(original);
@@ -38,7 +40,8 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_Emission.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            using (var image = wrapper.GenerateToonLitImage())
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
             using (var main = TestUtils.LoadMagickImage("albedo_1024px_png.png"))
             using (var emission = TestUtils.LoadMagickImage("emission_1024px.png"))
             {
@@ -56,7 +59,8 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Unlit_Transparent.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            using (var image = wrapper.GenerateToonLitImage())
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
             using (var main = TestUtils.LoadMagickImage("alpha_test.png"))
             {
                 var result = image.Compare(main);
@@ -72,7 +76,8 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Unlit_Color.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            using (var image = wrapper.GenerateToonLitImage())
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
             using (var main = new MagickImage(MagickColor.FromRgb(255, 0, 0), 1, 1))
             {
                 var result = image.Compare(main);
@@ -88,7 +93,8 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("render_texture.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            using (var image = wrapper.GenerateToonLitImage())
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
             using (var main = new MagickImage(MagickColor.FromRgb(0, 0, 0), 1, 1))
             {
                 var result = image.Compare(main);

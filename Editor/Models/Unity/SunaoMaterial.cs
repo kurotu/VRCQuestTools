@@ -105,7 +105,15 @@ namespace KRT.VRCQuestTools.Models.Unity
 #pragma warning restore SA1516 // Elements should be separated by blank line
 
         /// <inheritdoc/>
-        internal override MagickImage GenerateToonLitImage()
+        internal override Texture2D GenerateToonLitImage()
+        {
+            using (var image = GenerateToonLitMagickImage())
+            {
+                return MagickImageUtility.MagickImageToTexture2D(image);
+            }
+        }
+
+        private MagickImage GenerateToonLitMagickImage()
         {
             using (var disposables = new CompositeDisposable())
             {

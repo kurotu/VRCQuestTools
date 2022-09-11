@@ -233,6 +233,28 @@ namespace KRT.VRCQuestTools.Utils
             }
         }
 
+        /// <summary>
+        /// Converts MagickImage to Texture2D.
+        /// </summary>
+        /// <param name="image">Input image.</param>
+        /// <returns>Converted texture.</returns>
+        internal static Texture2D MagickImageToTexture2D(MagickImage image)
+        {
+            var tex = new Texture2D(2, 2);
+            tex.LoadImage(image.ToByteArray(MagickFormat.Png));
+            return tex;
+        }
+
+        /// <summary>
+        /// Converts Texture2D to MagickImage.
+        /// </summary>
+        /// <param name="texture">Input texture.</param>
+        /// <returns>Converted image.</returns>
+        internal static MagickImage Texture2DToMagickImage(Texture2D texture)
+        {
+            return new MagickImage(texture.EncodeToPNG());
+        }
+
         private static MagickImage UnityBuiltinExtraToMagickImage(Texture2D texture)
         {
             var copy = new Texture2D(texture.width, texture.height);

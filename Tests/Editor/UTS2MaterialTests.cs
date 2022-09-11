@@ -5,6 +5,7 @@
 
 using ImageMagick;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 
 namespace KRT.VRCQuestTools
@@ -31,7 +32,8 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("UTS2.mat");
             Assert.AreEqual(typeof(UTS2Material), wrapper.GetType());
-            using (var image = wrapper.GenerateToonLitImage())
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
             using (var main = TestUtils.LoadMagickImage("albedo_1024px_png.png"))
             using (var emission = TestUtils.LoadMagickImage("emission_1024px.png"))
             {
