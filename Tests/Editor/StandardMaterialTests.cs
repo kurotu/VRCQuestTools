@@ -3,10 +3,11 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using ImageMagick;
+using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace KRT.VRCQuestTools
 {
@@ -15,6 +16,8 @@ namespace KRT.VRCQuestTools
     /// </summary>
     public class StandardMaterialTests
     {
+        private const float Threshold = 1e-10f;
+
         /// <summary>
         /// Test standard without emission.
         /// </summary>
@@ -24,11 +27,9 @@ namespace KRT.VRCQuestTools
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_NoEmission.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
-            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
-            using (var original = TestUtils.LoadMagickImage("albedo_1024px_png.png"))
+            using (var original = DisposableObject.New(TestUtils.LoadUmcompressedTexture("albedo_1024px_png.png")))
             {
-                var result = image.Compare(original);
-                Assert.AreEqual(0.0, result.MeanErrorPerPixel);
+                Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
             }
         }
 
@@ -41,13 +42,23 @@ namespace KRT.VRCQuestTools
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_Emission.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
-            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
-            using (var main = TestUtils.LoadMagickImage("albedo_1024px_png.png"))
-            using (var emission = TestUtils.LoadMagickImage("emission_1024px.png"))
+            using (var main = DisposableObject.New(TestUtils.LoadUmcompressedTexture("albedo_1024px_png.png")))
+            using (var emission = DisposableObject.New(TestUtils.LoadUmcompressedTexture("emission_1024px.png")))
+            using (var composed = DisposableObject.New(new Texture2D(main.Object.width, main.Object.height)))
             {
-                main.Composite(emission, CompositeOperator.Screen);
-                var result = image.Compare(main);
-                Assert.AreEqual(0.0, result.MeanErrorPerPixel);
+                var mainPixels = main.Object.GetPixels32();
+                var emissionPixels = emission.Object.GetPixels32();
+                var compose = mainPixels.Select((p, i) =>
+                {
+                    var e = emissionPixels[i];
+                    var r = (byte)System.Math.Min(p.r + e.r, 255);
+                    var g = (byte)System.Math.Min(p.g + e.g, 255);
+                    var b = (byte)System.Math.Min(p.b + e.b, 255);
+                    var a = (byte)System.Math.Min(p.a + e.a, 255);
+                    return new Color32(r, g, b, a);
+                }).ToArray();
+                composed.Object.SetPixels32(compose);
+                Assert.Less(TestUtils.Difference(tex.Object, composed.Object), Threshold);
             }
         }
 
@@ -60,11 +71,9 @@ namespace KRT.VRCQuestTools
             var wrapper = TestUtils.LoadMaterialWrapper("Unlit_Transparent.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
-            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
-            using (var main = TestUtils.LoadMagickImage("alpha_test.png"))
+            using (var original = DisposableObject.New(TestUtils.LoadUmcompressedTexture("alpha_test.png")))
             {
-                var result = image.Compare(main);
-                Assert.AreEqual(0.0, result.MeanErrorPerPixel);
+                Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
             }
         }
 
@@ -77,11 +86,9 @@ namespace KRT.VRCQuestTools
             var wrapper = TestUtils.LoadMaterialWrapper("Unlit_Color.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
-            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
-            using (var main = new MagickImage(MagickColor.FromRgb(255, 0, 0), 1, 1))
+            using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(Color.red)))
             {
-                var result = image.Compare(main);
-                Assert.AreEqual(0.0, result.MeanErrorPerPixel);
+                Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
             }
         }
 
@@ -94,11 +101,9 @@ namespace KRT.VRCQuestTools
             var wrapper = TestUtils.LoadMaterialWrapper("render_texture.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
-            using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
-            using (var main = new MagickImage(MagickColor.FromRgb(0, 0, 0), 1, 1))
+            using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(new Color32(205, 205, 205, 205), 256, 256)))
             {
-                var result = image.Compare(main);
-                Assert.AreEqual(0.0, result.MeanErrorPerPixel);
+                Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
             }
         }
     }

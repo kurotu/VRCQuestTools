@@ -3,10 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using ImageMagick;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
@@ -29,40 +26,34 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <inheritdoc/>
         internal override Texture2D GenerateToonLitImage()
         {
-            using (var image = GenerateToonLitMagickImage())
-            {
-                return MagickImageUtility.MagickImageToTexture2D(image);
-            }
-        }
+            var width = Material.mainTexture?.width ?? 4;
+            var height = Material.mainTexture?.height ?? 4;
 
-        private MagickImage GenerateToonLitMagickImage()
-        {
-            using (var main = GetMainLayer())
-            using (var emission = GetEmissionLayer())
+            using (var disposables = new CompositeDisposable())
+            using (var baker = DisposableObject.New(Object.Instantiate(Material)))
+            using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
             {
-                var (width, height) = DecideCompositionSize(main, emission);
-                var newImage = new MagickImage(MagickColors.Black, width, height);
-                using (var mainImage = main.GetMagickImage())
+                baker.Object.shader = Shader.Find("Hidden/VRCQuestTools/Standard");
+                foreach (var name in Material.GetTexturePropertyNames())
                 {
-                    mainImage.HasAlpha = false;
-                    mainImage.Resize(width, height);
-                    newImage.Composite(mainImage, CompositeOperator.Plus);
+                    var tex = AssetUtility.LoadUncompressedTexture(Material.GetTexture(name));
+                    disposables.Add(DisposableObject.New(tex));
+                    baker.Object.SetTexture(name, tex);
                 }
-                if (HasEmission())
-                {
-                    using (var emissionImage = emission.GetMagickImage())
-                    {
-                        emissionImage.Resize(width, height);
-                        emissionImage.HasAlpha = false;
-                        newImage.Composite(emissionImage, CompositeOperator.Screen);
-                    }
-                }
-                if (main.image != null && main.image.HasAlpha)
-                {
-                    newImage.HasAlpha = true;
-                    newImage.CopyPixels(main.image, Channels.Alpha);
-                }
-                return newImage;
+
+                var main = baker.Object.mainTexture;
+
+                // Remember active render texture
+                var activeRenderTexture = RenderTexture.active;
+                Graphics.Blit(main, dstTexture.Object, baker.Object);
+
+                Texture2D outTexture = new Texture2D(width, height);
+                outTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                outTexture.Apply();
+
+                // Restore active render texture
+                RenderTexture.active = activeRenderTexture;
+                return outTexture;
             }
         }
 
@@ -91,38 +82,6 @@ namespace KRT.VRCQuestTools.Models.Unity
                 image = MagickImageUtility.GetMagickImage(Material.GetTexture("_EmissionMap")),
                 color = Material.GetColor("_EmissionColor"),
             };
-        }
-
-        private Layer GetMainLayer()
-        {
-            return new Layer
-            {
-                // mainTexture may return null in some cases (e.g. After upgrading lilToon)
-                image = MagickImageUtility.GetMagickImage(Material.mainTexture ?? Material.GetTexture("_MainTex")),
-                color = Material.HasProperty("_Color") ? Material.color : Color.white,
-            };
-        }
-
-        private Tuple<int, int> DecideCompositionSize(Layer main, Layer emission)
-        {
-            var layers = new List<Layer>
-            {
-                main,
-                emission,
-            };
-            foreach (var l in layers)
-            {
-                if (l == null)
-                {
-                    continue;
-                }
-
-                if (l.image != null)
-                {
-                    return new Tuple<int, int>(l.image.Width, l.image.Height);
-                }
-            }
-            return new Tuple<int, int>(1, 1);
         }
     }
 }

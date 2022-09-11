@@ -86,16 +86,7 @@ namespace KRT.VRCQuestTools.Utils
 
             if (texture.GetType() == typeof(RenderTexture))
             {
-                var tex = new Texture2D(2, 2);
-                var pixels = tex.GetPixels32();
-                for (var i = 0; i < pixels.Length; i++)
-                {
-                    pixels[i].r = 0;
-                    pixels[i].g = 0;
-                    pixels[i].b = 0;
-                }
-                tex.SetPixels32(pixels);
-                return tex;
+                return CreateColorTexture(Color.black);
             }
 
             var path = AssetDatabase.GetAssetPath(texture);
@@ -171,6 +162,35 @@ namespace KRT.VRCQuestTools.Utils
             importer.SaveAndReimport();
 
             return ret;
+        }
+
+        /// <summary>
+        /// Creates a single color texture.
+        /// </summary>
+        /// <param name="color">Color to use.</param>
+        /// <param name="width">Texture width.</param>
+        /// <param name="height">Texture height.</param>
+        /// <returns>Created texture.</returns>
+        internal static Texture2D CreateColorTexture(Color32 color, int width, int height)
+        {
+            var tex = new Texture2D(width, height);
+            var pixels = tex.GetPixels32();
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                pixels[i] = color;
+            }
+            tex.SetPixels32(pixels);
+            return tex;
+        }
+
+        /// <summary>
+        /// Creates a single color 4x4 texture.
+        /// </summary>
+        /// <param name="color">Color to use.</param>
+        /// <returns>Created texture.</returns>
+        internal static Texture2D CreateColorTexture(Color32 color)
+        {
+            return CreateColorTexture(color, 4, 4);
         }
 
         [Serializable]
