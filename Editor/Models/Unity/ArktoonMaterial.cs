@@ -69,7 +69,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        protected override bool HasEmission()
+        protected bool HasEmission()
         {
             return true;
         }

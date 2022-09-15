@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
@@ -55,33 +54,6 @@ namespace KRT.VRCQuestTools.Models.Unity
                 RenderTexture.active = activeRenderTexture;
                 return outTexture;
             }
-        }
-
-        /// <summary>
-        /// Whether the material uses emission.
-        /// </summary>
-        /// <returns>true when using emission.</returns>
-        protected virtual bool HasEmission()
-        {
-            return Material.shaderKeywords.Contains("_EMISSION");
-        }
-
-        /// <summary>
-        /// Return emission layer.
-        /// </summary>
-        /// <returns>Emission layer.</returns>
-        protected virtual Layer GetEmissionLayer()
-        {
-            if (!HasEmission())
-            {
-                return null;
-            }
-
-            return new Layer
-            {
-                image = MagickImageUtility.GetMagickImage(Material.GetTexture("_EmissionMap")),
-                color = Material.GetColor("_EmissionColor"),
-            };
         }
     }
 }
