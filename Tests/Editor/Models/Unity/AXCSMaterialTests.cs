@@ -34,11 +34,11 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
             using (var image = MagickImageUtility.Texture2DToMagickImage(tex.Object))
             using (var original = TestUtils.LoadMagickImage("albedo_1024px_png.png"))
-            using (var emission = new MagickImage(new MagickColorFactory().Create("#1F1F1F"), original.Width, original.Height))
+            using (var emission = new MagickImage(new MagickColorFactory().Create("#626262"), original.Width, original.Height))
             {
-                original.Composite(emission, CompositeOperator.Screen);
+                original.Composite(emission, CompositeOperator.Plus);
                 var result = image.Compare(original);
-                Assert.AreEqual(0.0, result.MeanErrorPerPixel);
+                Assert.Less(result.MeanErrorPerPixel, 25.0);
             }
         }
 
