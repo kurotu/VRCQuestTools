@@ -73,6 +73,30 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Saves Texture2D as png asset.
+        /// </summary>
+        /// <param name="path">Path to save.</param>
+        /// <param name="texture">Texture to save.</param>
+        /// <param name="isSRGB">Texture is sRGB.</param>
+        /// <returns>Saved texture asset.</returns>
+        internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, bool isSRGB = true)
+        {
+            var png = texture.EncodeToPNG();
+            File.WriteAllBytes(path, png);
+            AssetDatabase.Refresh();
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            importer.alphaSource = TextureImporterAlphaSource.FromInput;
+            importer.alphaIsTransparency = isSRGB;
+            importer.sRGBTexture = isSRGB;
+            if (importer.mipmapEnabled)
+            {
+                importer.streamingMipmaps = true;
+            }
+            importer.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
+        /// <summary>
         /// Loads uncompressed image as Texture2D.
         /// </summary>
         /// <param name="texture">original texture.</param>

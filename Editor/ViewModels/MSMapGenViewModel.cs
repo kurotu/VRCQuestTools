@@ -4,8 +4,8 @@
 // </copyright>
 
 using System;
-using ImageMagick;
 using KRT.VRCQuestTools.Utils;
+using UnityEditor;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.ViewModels
@@ -42,11 +42,33 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <param name="destPath">File path to save.</param>
         internal void GenerateMetallicSmoothness(string destPath)
         {
-            using (var metallic = metallicMap ? MagickImageUtility.GetMagickImage(metallicMap) : new MagickImage(MagickColors.White, 2, 2))
-            using (var smoothness = smoothnessMap ? MagickImageUtility.GetMagickImage(smoothnessMap) : new MagickImage(MagickColors.White, 2, 2))
-            using (var msMap = MagickImageUtility.GenerateMetallicSmoothness(metallic, false, smoothness, invertSmoothness && smoothnessMap))
+            using (var baker = DisposableObject.New(new Material(Shader.Find("Hidden/VRCQuestTools/MetallicSmoothnes"))))
+            using (var metallic = DisposableObject.New(AssetUtility.LoadUncompressedTexture(metallicMap)))
+            using (var smoothness = DisposableObject.New(AssetUtility.LoadUncompressedTexture(smoothnessMap)))
             {
-                MagickImageUtility.SaveAsAsset(destPath, msMap, MagickFormat.Png32, false);
+                var width = Math.Max(metallic.Object?.width ?? 4, smoothness.Object?.width ?? 4);
+                var height = Math.Max(metallic.Object?.height ?? 4, smoothness.Object?.height ?? 4);
+
+                using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
+                {
+                    baker.Object.SetTexture("_MetallicMap", metallic.Object);
+                    baker.Object.SetInt("_InvertMetallic", 0);
+                    baker.Object.SetTexture("_SmoothnessMap", smoothness.Object);
+                    baker.Object.SetInt("_InvertSmoothness", invertSmoothness ? 1 : 0);
+
+                    // Remember active render texture
+                    var activeRenderTexture = RenderTexture.active;
+                    Graphics.Blit(metallic.Object, dstTexture.Object, baker.Object);
+
+                    Texture2D outTexture = new Texture2D(width, height);
+                    outTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                    outTexture.Apply();
+
+                    // Restore active render texture
+                    RenderTexture.active = activeRenderTexture;
+
+                    AssetUtility.SaveUncompressedTexture(destPath, outTexture, false);
+                }
             }
         }
     }
