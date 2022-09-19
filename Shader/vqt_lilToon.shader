@@ -9,10 +9,10 @@
         _LIL_FEATURE_EMISSION_GRADATION("LIL_FEATURE_EMISSION_GRADATION", Int) = 0
 
         _MainTex ("Texture", 2D) = "white" {}
-        _Color("Color", Color) = (1,1,1,1)
+        [HDR]_Color("Color", Color) = (1,1,1,1)
 
         _UseEmission("Use Emission", Int) = 0
-        _EmissionColor("Color", Color) = (1,1,1,1)
+        [HDR]_EmissionColor("Color", Color) = (1,1,1,1)
         _EmissionMap("Texture", 2D) = "white" {}
         _EmissionMap_ScrollRotate("Angle|UV Animation|Scroll|Rotate", Vector) = (0,0,0,0)
         // _EmissionMap_UVMode("UV Mode|UV0|UV1|UV2|UV3|Rim", Int) = 0
@@ -27,7 +27,7 @@
         _EmissionFluorescence("Fluorescence", Range(0,1)) = 0
 
         _UseEmission2nd("Use Emission", Int) = 0
-        _Emission2ndColor("Color", Color) = (1,1,1,1)
+        [HDR]_Emission2ndColor("Color", Color) = (1,1,1,1)
         _Emission2ndMap("Texture", 2D) = "white" {}
         _Emission2ndMap_ScrollRotate("Angle|UV Animation|Scroll|Rotate", Vector) = (0,0,0,0)
         // _Emission2ndMap_UVMode("UV Mode|UV0|UV1|UV2|UV3|Rim", Int) = 0

@@ -6,7 +6,7 @@
         _Color("Color", Color) = (1,1,1,1)
 
         _EmissionMap("Emission", 2D) = "white" {}
-        _EmissionColor("EmissionColor", Color) = (1,1,1,1)
+        [HDR]_EmissionColor("EmissionColor", Color) = (1,1,1,1)
     }
     SubShader
     {
