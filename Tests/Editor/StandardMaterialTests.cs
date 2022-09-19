@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_NoEmission.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
-            using (var original = DisposableObject.New(TestUtils.LoadUmcompressedTexture("albedo_1024px_png.png")))
+            using (var original = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
             {
                 Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
             }
@@ -42,8 +42,8 @@ namespace KRT.VRCQuestTools
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_Emission.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
-            using (var main = DisposableObject.New(TestUtils.LoadUmcompressedTexture("albedo_1024px_png.png")))
-            using (var emission = DisposableObject.New(TestUtils.LoadUmcompressedTexture("emission_1024px.png")))
+            using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
+            using (var emission = DisposableObject.New(TestUtils.LoadUncompressedTexture("emission_1024px.png")))
             using (var composed = DisposableObject.New(new Texture2D(main.Object.width, main.Object.height)))
             {
                 var mainPixels = main.Object.GetPixels32();
@@ -71,7 +71,7 @@ namespace KRT.VRCQuestTools
             var wrapper = TestUtils.LoadMaterialWrapper("Unlit_Transparent.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
-            using (var original = DisposableObject.New(TestUtils.LoadUmcompressedTexture("alpha_test.png")))
+            using (var original = DisposableObject.New(TestUtils.LoadUncompressedTexture("alpha_test.png")))
             {
                 Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
             }

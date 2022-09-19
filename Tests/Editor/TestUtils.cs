@@ -58,7 +58,7 @@ namespace KRT.VRCQuestTools
         /// </summary>
         /// <param name="file">File name.</param>
         /// <returns>Texture.</returns>
-        internal static Texture2D LoadUmcompressedTexture(string file)
+        internal static Texture2D LoadUncompressedTexture(string file)
         {
             Assert.True(file.EndsWith(".png"));
             var bytes = System.IO.File.ReadAllBytes(TexturesFolder + "/" + file);
