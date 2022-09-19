@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using ImageMagick;
 using KRT.VRCQuestTools.Models.Unity;
 using NUnit.Framework;
 using UnityEditor;
@@ -54,6 +53,54 @@ namespace KRT.VRCQuestTools
         }
 
         /// <summary>
+        /// Load uncompressed texture from textures folder.
+        /// </summary>
+        /// <param name="file">File name.</param>
+        /// <returns>Texture.</returns>
+        internal static Texture2D LoadUncompressedTexture(string file)
+        {
+            Assert.True(file.EndsWith(".png"));
+            var bytes = System.IO.File.ReadAllBytes(TexturesFolder + "/" + file);
+            Assert.NotZero(bytes.Length);
+            var tex = new Texture2D(4, 4);
+            tex.LoadImage(bytes);
+            return tex;
+        }
+
+        /// <summary>
+        /// Calculates average difference between two textures.
+        /// </summary>
+        /// <param name="tex1">Texture 1.</param>
+        /// <param name="tex2">Texture 2.</param>
+        /// <returns>Average of pixel difference.</returns>
+        internal static float Difference(Texture2D tex1, Texture2D tex2)
+        {
+            var pixels1 = tex1.GetPixels32();
+            var pixels2 = tex2.GetPixels32();
+
+            Assert.AreEqual(pixels1.Length, pixels2.Length);
+
+            long dsum = 0;
+            for (var i = 0; i < pixels1.Length; i++)
+            {
+                var c1 = pixels1[i];
+                var c2 = pixels2[i];
+                var r = c1.r - c2.r;
+                var g = c1.g - c2.g;
+                var b = c1.b - c2.b;
+                var a = c1.a - c2.a;
+                var diff = r * r + g * g + b * b + a * a;
+                dsum += diff;
+                if (diff > 0)
+                {
+                    // Debug.Log($"{i}, {diff}");
+                }
+            }
+
+            return dsum / (float)(255L * 255L * 4L * pixels1.Length);
+        }
+
+        /// <summary>
         /// Load MaterialBase from materials folder.
         /// </summary>
         /// <param name="file">File name.</param>
@@ -64,18 +111,6 @@ namespace KRT.VRCQuestTools
             var wrapper = new MaterialWrapperBuilder().Build(material);
             Assert.NotNull(wrapper);
             return wrapper;
-        }
-
-        /// <summary>
-        /// Load MagickImage from textures folder.
-        /// </summary>
-        /// <param name="file">File name.</param>
-        /// <returns>MagickImage.</returns>
-        internal static MagickImage LoadMagickImage(string file)
-        {
-            var image = new MagickImage(TexturesFolder + "/" + file);
-            Assert.NotNull(image);
-            return image;
         }
 
         /// <summary>

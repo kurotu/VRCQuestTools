@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using ImageMagick;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
@@ -24,56 +23,39 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override MagickImage GenerateToonLitImage()
+        internal override Texture2D GenerateToonLitImage()
         {
-            if (HasEmissiveFreak())
+            var width = Material.mainTexture?.width ?? 4;
+            var height = Material.mainTexture?.height ?? 4;
+
+            using (var disposables = new CompositeDisposable())
+            using (var baker = DisposableObject.New(Object.Instantiate(Material)))
+            using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
             {
-                using (var baseImage = base.GenerateToonLitImage())
+                baker.Object.shader = Material.shader.name.Contains("EmissiveFreak/")
+                    ? Shader.Find("Hidden/VRCQuestTools/arktoon/EmissiveFreak")
+                    : Shader.Find("Hidden/VRCQuestTools/arktoon/Opaque");
+                foreach (var name in Material.GetTexturePropertyNames())
                 {
-                    var image = new MagickImage(baseImage)
-                    {
-                        HasAlpha = false,
-                    };
-                    for (var i = 0; i < 2; i++)
-                    {
-                        using (var ef = GetEmissiveFreakLayer(i))
-                        using (var efImage = ef.GetMagickImage())
-                        {
-                            efImage.HasAlpha = false;
-                            efImage.Resize(image.Width, image.Height);
-                            image.Composite(efImage, CompositeOperator.Screen);
-                        }
-                    }
-                    if (baseImage.HasAlpha)
-                    {
-                        image.HasAlpha = true;
-                        image.CopyPixels(baseImage, Channels.Alpha);
-                    }
-                    return image;
+                    var tex = AssetUtility.LoadUncompressedTexture(Material.GetTexture(name));
+                    disposables.Add(DisposableObject.New(tex));
+                    baker.Object.SetTexture(name, tex);
                 }
+
+                var main = baker.Object.mainTexture;
+
+                // Remember active render texture
+                var activeRenderTexture = RenderTexture.active;
+                Graphics.Blit(main, dstTexture.Object, baker.Object);
+
+                Texture2D outTexture = new Texture2D(width, height);
+                outTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                outTexture.Apply();
+
+                // Restore active render texture
+                RenderTexture.active = activeRenderTexture;
+                return outTexture;
             }
-            return base.GenerateToonLitImage();
-        }
-
-        /// <inheritdoc/>
-        protected override bool HasEmission()
-        {
-            return true;
-        }
-
-        private bool HasEmissiveFreak()
-        {
-            return Material.shader.name.Contains("EmissiveFreak/");
-        }
-
-        private Layer GetEmissiveFreakLayer(int index)
-        {
-            var num = index + 1;
-            return new Layer
-            {
-                image = MagickImageUtility.GetMagickImage(Material.GetTexture($"_EmissiveFreak{num}Tex")),
-                color = Material.GetColor($"_EmissiveFreak{num}Color"),
-            };
         }
     }
 }

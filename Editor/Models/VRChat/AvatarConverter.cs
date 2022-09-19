@@ -185,16 +185,22 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
                     var material = MaterialWrapperBuilder.Build(m);
-                    using (var image = material.GenerateToonLitImage())
+                    using (var tex = DisposableObject.New(material.GenerateToonLitImage()))
                     {
                         Texture2D texture = null;
-                        if (image != null)
+                        if (tex.Object != null)
                         {
-                            if (maxTextureSize > 0 && Math.Max(image.Width, image.Height) > maxTextureSize)
+                            using (var disposables = new CompositeDisposable())
                             {
-                                image.Resize(maxTextureSize, maxTextureSize);
+                                var texToWrite = tex.Object;
+                                if (maxTextureSize > 0 && Math.Max(tex.Object.width, tex.Object.height) > maxTextureSize)
+                                {
+                                    var resized = AssetUtility.ResizeTexture(tex.Object, maxTextureSize, maxTextureSize);
+                                    disposables.Add(DisposableObject.New(resized));
+                                    texToWrite = resized;
+                                }
+                                texture = AssetUtility.SaveUncompressedTexture($"{saveDirectory}/{m.name}_from_{guid}.png", texToWrite);
                             }
-                            texture = MagickImageUtility.SaveAsAsset($"{saveDirectory}/{m.name}_from_{guid}.png", image);
                         }
                         convertedTextures.Add(m, texture);
                     }

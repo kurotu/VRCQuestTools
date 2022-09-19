@@ -3,8 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System.IO;
-using ImageMagick;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -26,15 +24,14 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override MagickImage GenerateToonLitImage()
+        internal override Texture2D GenerateToonLitImage()
         {
             try
             {
                 using (var main = DisposableObject.New(TextureBake(Material, 0)))
-                using (var baked = DisposableObject.New(EmissionBake(main.Object, Material)))
                 {
-                    var image = new MagickImage(baked.Object.EncodeToPNG());
-                    return image;
+                    var baked = EmissionBake(main.Object, Material);
+                    return baked;
                 }
             }
             catch (System.Exception e)

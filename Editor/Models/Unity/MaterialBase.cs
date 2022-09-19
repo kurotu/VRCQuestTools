@@ -4,7 +4,6 @@
 // </copyright>
 
 using System.Linq;
-using ImageMagick;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models.Unity
@@ -56,6 +55,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Generates an image for Toon Lit main texture.
         /// </summary>
         /// <returns>Generated image.</returns>
-        internal abstract MagickImage GenerateToonLitImage();
+        internal abstract Texture2D GenerateToonLitImage();
     }
 }

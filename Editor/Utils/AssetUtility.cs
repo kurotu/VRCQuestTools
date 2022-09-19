@@ -73,6 +73,30 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Saves Texture2D as png asset.
+        /// </summary>
+        /// <param name="path">Path to save.</param>
+        /// <param name="texture">Texture to save.</param>
+        /// <param name="isSRGB">Texture is sRGB.</param>
+        /// <returns>Saved texture asset.</returns>
+        internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, bool isSRGB = true)
+        {
+            var png = texture.EncodeToPNG();
+            File.WriteAllBytes(path, png);
+            AssetDatabase.Refresh();
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            importer.alphaSource = TextureImporterAlphaSource.FromInput;
+            importer.alphaIsTransparency = isSRGB;
+            importer.sRGBTexture = isSRGB;
+            if (importer.mipmapEnabled)
+            {
+                importer.streamingMipmaps = true;
+            }
+            importer.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
+        /// <summary>
         /// Loads uncompressed image as Texture2D.
         /// </summary>
         /// <param name="texture">original texture.</param>
@@ -86,16 +110,7 @@ namespace KRT.VRCQuestTools.Utils
 
             if (texture.GetType() == typeof(RenderTexture))
             {
-                var tex = new Texture2D(2, 2);
-                var pixels = tex.GetPixels32();
-                for (var i = 0; i < pixels.Length; i++)
-                {
-                    pixels[i].r = 0;
-                    pixels[i].g = 0;
-                    pixels[i].b = 0;
-                }
-                tex.SetPixels32(pixels);
-                return tex;
+                return CreateColorTexture(Color.black);
             }
 
             var path = AssetDatabase.GetAssetPath(texture);
@@ -171,6 +186,59 @@ namespace KRT.VRCQuestTools.Utils
             importer.SaveAndReimport();
 
             return ret;
+        }
+
+        /// <summary>
+        /// Creates a single color texture.
+        /// </summary>
+        /// <param name="color">Color to use.</param>
+        /// <param name="width">Texture width.</param>
+        /// <param name="height">Texture height.</param>
+        /// <returns>Created texture.</returns>
+        internal static Texture2D CreateColorTexture(Color32 color, int width, int height)
+        {
+            var tex = new Texture2D(width, height);
+            var pixels = tex.GetPixels32();
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                pixels[i] = color;
+            }
+            tex.SetPixels32(pixels);
+            return tex;
+        }
+
+        /// <summary>
+        /// Resizes a texture to desired size.
+        /// </summary>
+        /// <param name="texture">Texture to resize.</param>
+        /// <param name="width">Width.</param>
+        /// <param name="height">Height.</param>
+        /// <returns>Resized texture.</returns>
+        internal static Texture2D ResizeTexture(Texture2D texture, int width, int height)
+        {
+            using (var rt = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
+            {
+                var activeRT = RenderTexture.active;
+
+                RenderTexture.active = rt.Object;
+                Graphics.Blit(texture, rt.Object);
+                var result = new Texture2D(width, height);
+                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                result.Apply();
+
+                RenderTexture.active = activeRT;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Creates a single color 4x4 texture.
+        /// </summary>
+        /// <param name="color">Color to use.</param>
+        /// <returns>Created texture.</returns>
+        internal static Texture2D CreateColorTexture(Color32 color)
+        {
+            return CreateColorTexture(color, 4, 4);
         }
 
         [Serializable]
