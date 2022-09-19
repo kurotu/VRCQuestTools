@@ -104,7 +104,6 @@ jobs:
           mkdir ${NAME}
           cp VRCQuestTools.unitypackage ${NAME}/${NAME}.unitypackage
           cp LICENSE.txt ${NAME}/
-          cp NOTICE.txt ${NAME}/
           cp README.md ${NAME}/
           cp README.txt ${NAME}/
           zip -r ${NAME}.zip ${NAME}

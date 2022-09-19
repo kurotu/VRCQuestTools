@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### 変更
+- テクスチャの画像処理を Magick.NET からシェーダーに変更
+    - unitypackage のサイズが縮小
+    - CPU・OS への依存が低減
+    - macOS でプラグインを許可する操作が不要
+### 修正
+- テクスチャを生成するときエミッション色が暗く合成されることがある問題を修正
+
 ## [1.7.0] - 2022-09-06
 ### 追加
 - アップデート通知で「スキップ」ボタンにより次のアップデートまで通知を表示しない機能を追加

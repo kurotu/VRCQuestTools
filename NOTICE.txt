@@ -31,6 +31,7 @@ SOFTWARE.
 
 ------------------------------------------------------------------------------
 
+Unitypackages prior to v1.8.0 and past commits of git repository contain
 Magick.NET (by Dirk Lemstra)
 
 - Home Page: https://github.com/dlemstra/Magick.NET
@@ -240,7 +241,8 @@ Magick.NET (by Dirk Lemstra)
 
 ------------------------------------------------------------------------------
 
-Modified version of Magick.Native (by kurotu, original by Dirk Lemstra)
+Unitypackages prior to v1.8.0 and past commits of git repository contain
+modified version of Magick.Native (by kurotu, original by Dirk Lemstra)
 
 - Home Page: https://github.com/kurotu/Magick.Native
 - License: Apache License, Version 2.0
