@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using ImageMagick;
 using KRT.VRCQuestTools.Models.Unity;
 using NUnit.Framework;
 using UnityEditor;
@@ -112,18 +111,6 @@ namespace KRT.VRCQuestTools
             var wrapper = new MaterialWrapperBuilder().Build(material);
             Assert.NotNull(wrapper);
             return wrapper;
-        }
-
-        /// <summary>
-        /// Load MagickImage from textures folder.
-        /// </summary>
-        /// <param name="file">File name.</param>
-        /// <returns>MagickImage.</returns>
-        internal static MagickImage LoadMagickImage(string file)
-        {
-            var image = new MagickImage(TexturesFolder + "/" + file);
-            Assert.NotNull(image);
-            return image;
         }
 
         /// <summary>
