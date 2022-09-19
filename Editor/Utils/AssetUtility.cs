@@ -208,6 +208,30 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Resizes a texture to desired size.
+        /// </summary>
+        /// <param name="texture">Texture to resize.</param>
+        /// <param name="width">Width.</param>
+        /// <param name="height">Height.</param>
+        /// <returns>Resized texture.</returns>
+        internal static Texture2D ResizeTexture(Texture2D texture, int width, int height)
+        {
+            using (var rt = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
+            {
+                var activeRT = RenderTexture.active;
+
+                RenderTexture.active = rt.Object;
+                Graphics.Blit(texture, rt.Object);
+                var result = new Texture2D(width, height);
+                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                result.Apply();
+
+                RenderTexture.active = activeRT;
+                return result;
+            }
+        }
+
+        /// <summary>
         /// Creates a single color 4x4 texture.
         /// </summary>
         /// <param name="color">Color to use.</param>
