@@ -9,8 +9,6 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "Magick.NET.Core.dll",
-        "Magick.NET-Q16-x64.dll",
         "VRCCore-Editor.dll",
         "VRCSDKBase.dll",
         "VRCSDK3A.dll"
