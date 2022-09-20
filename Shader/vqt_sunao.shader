@@ -53,6 +53,8 @@
         // Output Limitter
         _LimitterEnable("Enable Output Limitter", Int) = 0
         _LimitterMax("Limitter Max", Range(0, 5)) = 1
+
+        _VQT_MainTexLevel("VQT Main Texture Level", Range(0, 1)) = 1
     }
     SubShader
     {
@@ -130,6 +132,8 @@
             float _LimitterEnable;
             float _LimitterMax;
 
+            float _VQT_MainTexLevel;
+
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
               half angleCos = cos(angle);
               half angleSin = sin(angle);
@@ -161,6 +165,7 @@
                     ? animateUV(i.uv, _UVAnimX, _UVAnimY)
                     : i.uv;
                 fixed4 col = tex2D(_MainTex, mainUV) * _Color * _Bright;
+                col.rgb *= _VQT_MainTexLevel;
                 fixed4 OUT = col;
 
                 float4 decal = float4(0.0f, 0.0f, 0.0f, 0.0f);

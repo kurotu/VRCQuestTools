@@ -50,6 +50,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics components exceed \"Poor\" limits (Very Poor). Please keep \"Poor\" rating by removing them.";
         internal override string TexturesSizeLimitLabel => "Textures Size Limit";
+        internal override string MainTextureLevelLabel => "Main Texture Brightness";
+        internal override string MainTextureLevelTooltip => "Make main texture color darker for Toon Lit.";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
 
         // Remove Missing Components
