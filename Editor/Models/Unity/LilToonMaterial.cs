@@ -24,13 +24,16 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Texture2D GenerateToonLitImage()
+        internal override Shader BakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
+
+        /// <inheritdoc/>
+        internal override Texture2D GenerateToonLitImage(TextureGeneratorSetting setting)
         {
             try
             {
                 using (var main = DisposableObject.New(TextureBake(Material, 0)))
                 {
-                    var baked = EmissionBake(main.Object, Material);
+                    var baked = EmissionBake(main.Object, Material, setting);
                     return baked;
                 }
             }
@@ -282,7 +285,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </summary>
         /// <param name="main">Baked main texture.</param>
         /// <param name="material">Material to bake.</param>
-        private Texture2D EmissionBake(Texture2D main, Material material)
+        private Texture2D EmissionBake(Texture2D main, Material material, TextureGeneratorSetting setting)
         {
             var shaderSetting = LoadShaderSetting();
 
@@ -313,6 +316,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             {
                 var lilBaker = Shader.Find("Hidden/VRCQuestTools/lilToon");
                 baker.Object.shader = lilBaker;
+                baker.Object.SetFloat("_VQT_MainTexLevel", setting.MainTextureLevel);
                 baker.Object.mainTexture = main;
                 baker.Object.mainTextureOffset = new Vector2(0.0f, 0.0f);
                 baker.Object.mainTextureScale = new Vector2(1.0f, 1.0f);

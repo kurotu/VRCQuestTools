@@ -43,6 +43,11 @@ namespace KRT.VRCQuestTools.ViewModels
         public TexturesSizeLimit texturesSizeLimit = TexturesSizeLimit.Max1024x1024;
 
         /// <summary>
+        /// Main texture level.
+        /// </summary>
+        public float mainTextureLevel = 0.8f;
+
+        /// <summary>
         /// Animator Override Controller for base layers.
         /// </summary>
         public AnimatorOverrideController[] overrideControllers = new AnimatorOverrideController[] { };
@@ -175,7 +180,11 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <param name="progressCallback">Callback to show progress.</param>
         internal void UpdateTextures(AvatarConverter.TextureProgressCallback progressCallback)
         {
-            AvatarConverter.GenrateToonLitTextures(TargetAvatar.Materials, outputPath, (int)texturesSizeLimit, progressCallback);
+            var setting = new TextureGeneratorSetting
+            {
+                MainTextureLevel = mainTextureLevel,
+            };
+            AvatarConverter.GenrateToonLitTextures(TargetAvatar.Materials, outputPath, (int)texturesSizeLimit, setting, progressCallback);
         }
 
         /// <summary>
@@ -201,6 +210,7 @@ namespace KRT.VRCQuestTools.ViewModels
             {
                 generateQuestTextures = generateQuestTextures,
                 maxTextureSize = (int)texturesSizeLimit,
+                mainTextureLevel = mainTextureLevel,
                 overrideControllers = overrideControllers,
             };
             var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, Remover, converterSetting, progressCallback);

@@ -33,7 +33,11 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("arktoon.mat");
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
-            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            var setting = new TextureGeneratorSetting
+            {
+                MainTextureLevel = 1.0f,
+            };
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
             using (var computed = DisposableObject.New(new Texture2D(main.Object.width, main.Object.height)))
             {
@@ -60,7 +64,11 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("arktoon_EmissiveFreak.mat");
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
-            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            var setting = new TextureGeneratorSetting
+            {
+                MainTextureLevel = 1.0f,
+            };
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
             using (var emission = DisposableObject.New(TestUtils.LoadUncompressedTexture("emission_1024px.png")))
             using (var ef1 = DisposableObject.New(TestUtils.LoadUncompressedTexture("emissive_freak_1_1024px.png")))

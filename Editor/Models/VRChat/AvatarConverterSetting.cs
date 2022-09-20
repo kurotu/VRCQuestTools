@@ -18,6 +18,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal int maxTextureSize;
 
         /// <summary>
+        /// Level for main texture brightness, [0:1].
+        /// </summary>
+        internal float mainTextureLevel;
+
+        /// <summary>
         /// Animator Override Controllers to apply.
         /// </summary>
         internal AnimatorOverrideController[] overrideControllers;

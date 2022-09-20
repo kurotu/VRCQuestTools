@@ -63,7 +63,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var convertedMaterials = ConvertMaterialsForToonLit(avatar.Materials, assetsDirectory);
             if (setting.generateQuestTextures)
             {
-                var generatedTextures = GenrateToonLitTextures(avatar.Materials, assetsDirectory, setting.maxTextureSize, progressCallback.onTextureProgress);
+                var genSetting = new TextureGeneratorSetting
+                {
+                    MainTextureLevel = setting.mainTextureLevel,
+                };
+                var generatedTextures = GenrateToonLitTextures(avatar.Materials, assetsDirectory, setting.maxTextureSize, genSetting, progressCallback.onTextureProgress);
                 foreach (var tex in generatedTextures)
                 {
                     if (convertedMaterials.ContainsKey(tex.Key))
@@ -167,9 +171,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="materials">Materials to generate textures.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="maxTextureSize">Max texture size. 0 for no limits.</param>
+        /// <param name="setting">Setting object.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted textures (key: original material).</returns>
-        internal Dictionary<Material, Texture2D> GenrateToonLitTextures(Material[] materials, string assetsDirectory, int maxTextureSize, TextureProgressCallback progressCallback)
+        internal Dictionary<Material, Texture2D> GenrateToonLitTextures(Material[] materials, string assetsDirectory, int maxTextureSize, TextureGeneratorSetting setting, TextureProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Textures";
             Directory.CreateDirectory(saveDirectory);
@@ -185,7 +190,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
                     var material = MaterialWrapperBuilder.Build(m);
-                    using (var tex = DisposableObject.New(material.GenerateToonLitImage()))
+                    using (var tex = DisposableObject.New(material.GenerateToonLitImage(setting)))
                     {
                         Texture2D texture = null;
                         if (tex.Object != null)

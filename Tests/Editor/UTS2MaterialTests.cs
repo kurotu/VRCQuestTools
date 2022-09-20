@@ -33,7 +33,11 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("UTS2.mat");
             Assert.AreEqual(typeof(UTS2Material), wrapper.GetType());
-            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            var setting = new TextureGeneratorSetting
+            {
+                MainTextureLevel = 1.0f,
+            };
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
             using (var emission = DisposableObject.New(TestUtils.LoadUncompressedTexture("emission_1024px.png")))
             using (var computed = DisposableObject.New(new Texture2D(main.Object.width, main.Object.height)))

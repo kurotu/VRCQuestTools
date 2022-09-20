@@ -26,7 +26,11 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_NoEmission.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            var setting = new TextureGeneratorSetting
+            {
+                MainTextureLevel = 1.0f,
+            };
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
             {
                 Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
@@ -41,7 +45,11 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_Emission.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            var setting = new TextureGeneratorSetting
+            {
+                MainTextureLevel = 1.0f,
+            };
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
             using (var emission = DisposableObject.New(TestUtils.LoadUncompressedTexture("emission_1024px.png")))
             using (var composed = DisposableObject.New(new Texture2D(main.Object.width, main.Object.height)))
@@ -70,7 +78,11 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Unlit_Transparent.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            var setting = new TextureGeneratorSetting
+            {
+                MainTextureLevel = 1.0f,
+            };
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(TestUtils.LoadUncompressedTexture("alpha_test.png")))
             {
                 Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
@@ -85,7 +97,11 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Unlit_Color.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            var setting = new TextureGeneratorSetting
+            {
+                MainTextureLevel = 1.0f,
+            };
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(Color.red)))
             {
                 Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
@@ -100,7 +116,11 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("render_texture.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage()))
+            var setting = new TextureGeneratorSetting
+            {
+                MainTextureLevel = 1.0f,
+            };
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(new Color32(205, 205, 205, 205), 256, 256)))
             {
                 Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
