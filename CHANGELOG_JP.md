@@ -6,11 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### 追加
+- Toon Lit 用にメインテクスチャの明るさを調整する機能を追加 (初期設定: 0.8)
+
 ### 変更
 - テクスチャの画像処理を Magick.NET からシェーダーに変更
     - unitypackage のサイズが縮小
-    - CPU・OS への依存が低減
+    - OS・CPU への依存が低減
     - macOS でプラグインを許可する操作が不要
+
 ### 修正
 - テクスチャを生成するときエミッション色が暗く合成されることがある問題を修正
 
