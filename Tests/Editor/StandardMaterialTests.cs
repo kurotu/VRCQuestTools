@@ -28,7 +28,7 @@ namespace KRT.VRCQuestTools
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             var setting = new TextureGeneratorSetting
             {
-                MainTextureLevel = 1.0f,
+                MainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
@@ -47,7 +47,7 @@ namespace KRT.VRCQuestTools
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             var setting = new TextureGeneratorSetting
             {
-                MainTextureLevel = 1.0f,
+                MainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
@@ -80,7 +80,7 @@ namespace KRT.VRCQuestTools
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             var setting = new TextureGeneratorSetting
             {
-                MainTextureLevel = 1.0f,
+                MainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(TestUtils.LoadUncompressedTexture("alpha_test.png")))
@@ -99,7 +99,7 @@ namespace KRT.VRCQuestTools
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             var setting = new TextureGeneratorSetting
             {
-                MainTextureLevel = 1.0f,
+                MainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(Color.red)))
@@ -118,7 +118,7 @@ namespace KRT.VRCQuestTools
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             var setting = new TextureGeneratorSetting
             {
-                MainTextureLevel = 1.0f,
+                MainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(new Color32(205, 205, 205, 205), 256, 256)))

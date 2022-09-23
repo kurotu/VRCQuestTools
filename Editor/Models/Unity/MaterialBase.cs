@@ -72,7 +72,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
             {
                 baker.Object.shader = BakeShader;
-                baker.Object.SetFloat("_VQT_MainTexLevel", setting.MainTextureLevel);
+                baker.Object.SetFloat("_VQT_MainTexBrightness", setting.MainTextureBrightness);
                 foreach (var name in Material.GetTexturePropertyNames())
                 {
                     var tex = AssetUtility.LoadUncompressedTexture(Material.GetTexture(name));

@@ -50,8 +50,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} は Dynamic Bone を PhysBones に変換しません。アバターを変換する前に PhysBones を設定してください。";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics コンポーネントの数が Poor の制限値を超えています (Very Poor)。 Avatar Dynamics 関連のパフォーマンスランクが Poor に収まるようコンポーネントを削除してください。";
         internal override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
-        internal override string MainTextureLevelLabel => "メインテクスチャレベル";
-        internal override string MainTextureLevelTooltip => "Toon Lit 用にメインテクスチャを暗く調整します。";
+        internal override string MainTextureBrightnessLabel => "メインテクスチャの明るさ";
+        internal override string MainTextureBrightnessTooltip => "Toon Lit 用にメインテクスチャの色を調整します。";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";
 
         // Remove Missing Components

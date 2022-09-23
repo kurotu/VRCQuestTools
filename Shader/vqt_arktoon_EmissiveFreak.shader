@@ -14,7 +14,7 @@
         _EmissiveFreak2Tex("EmissiveFreak2Tex", 2D) = "white" {}
         [HDR]_EmissiveFreak2Color("EmissiveFreak2Color", Color) = (1,1,1,1)
 
-        _VQT_MainTexLevel("VQT Main Texture Level", Range(0, 1)) = 1
+        _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
     }
     SubShader
     {
@@ -60,7 +60,7 @@
             float4 _EmissiveFreak2Tex_ST;
             fixed4 _EmissiveFreak2Color;
 
-            float _VQT_MainTexLevel;
+            float _VQT_MainTexBrightness;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
               half angleCos = cos(angle);
@@ -85,7 +85,7 @@
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
                 col *= _Color;
-                col.rgb *= _VQT_MainTexLevel;
+                col.rgb *= _VQT_MainTexBrightness;
                 float4 emi = sampleTex2D(_EmissionMap, i.uv_EmissionMap, 0.0f);
                 col = clamp(col + emi * _EmissionColor, 0, 1);
 

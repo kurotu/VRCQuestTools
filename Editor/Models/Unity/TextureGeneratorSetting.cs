@@ -6,8 +6,8 @@
     internal class TextureGeneratorSetting
     {
         /// <summary>
-        /// Main Texture Level, [0:1].
+        /// Main Texture Brightness, [0:1].
         /// </summary>
-        internal float MainTextureLevel;
+        internal float MainTextureBrightness;
     }
 }

@@ -45,7 +45,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <summary>
         /// Main texture level.
         /// </summary>
-        public float mainTextureLevel = 0.8f;
+        public float mainTextureBrightness = 0.8f;
 
         /// <summary>
         /// Animator Override Controller for base layers.
@@ -182,7 +182,7 @@ namespace KRT.VRCQuestTools.ViewModels
         {
             var setting = new TextureGeneratorSetting
             {
-                MainTextureLevel = mainTextureLevel,
+                MainTextureBrightness = mainTextureBrightness,
             };
             AvatarConverter.GenrateToonLitTextures(TargetAvatar.Materials, outputPath, (int)texturesSizeLimit, setting, progressCallback);
         }
@@ -210,7 +210,7 @@ namespace KRT.VRCQuestTools.ViewModels
             {
                 generateQuestTextures = generateQuestTextures,
                 maxTextureSize = (int)texturesSizeLimit,
-                mainTextureLevel = mainTextureLevel,
+                mainTextureBrightness = mainTextureBrightness,
                 overrideControllers = overrideControllers,
             };
             var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, Remover, converterSetting, progressCallback);

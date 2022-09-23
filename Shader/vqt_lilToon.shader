@@ -41,7 +41,7 @@
         // _Emission2ndParallaxDepth("Parallax Depth", float) = 0
         _Emission2ndFluorescence("Fluorescence", Range(0,1)) = 0
 
-        _VQT_MainTexLevel("VQT Main Texture Level", Range(0, 1)) = 1
+        _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
     }
     SubShader
     {
@@ -106,7 +106,7 @@
             SamplerState sampler_Emission2ndGradTex;
             float _Emission2ndFluorescence;
 
-            float _VQT_MainTexLevel;
+            float _VQT_MainTexBrightness;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
                 half angleCos           = cos(angle);
@@ -135,7 +135,7 @@
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
-                col.rgb *= _VQT_MainTexLevel;
+                col.rgb *= _VQT_MainTexBrightness;
 
                 if (_LIL_FEATURE_EMISSION_1ST && _UseEmission) {
                     float angle;

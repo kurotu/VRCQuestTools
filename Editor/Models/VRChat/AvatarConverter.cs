@@ -65,7 +65,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 var genSetting = new TextureGeneratorSetting
                 {
-                    MainTextureLevel = setting.mainTextureLevel,
+                    MainTextureBrightness = setting.mainTextureBrightness,
                 };
                 var generatedTextures = GenrateToonLitTextures(avatar.Materials, assetsDirectory, setting.maxTextureSize, genSetting, progressCallback.onTextureProgress);
                 foreach (var tex in generatedTextures)

@@ -153,7 +153,7 @@ namespace KRT.VRCQuestTools.Views
                 }
 
                 model.texturesSizeLimit = (AvatarConverterViewModel.TexturesSizeLimit)EditorGUILayout.EnumPopup(i18n.TexturesSizeLimitLabel, model.texturesSizeLimit);
-                model.mainTextureLevel = EditorGUILayout.Slider(new GUIContent(i18n.MainTextureLevelLabel, i18n.MainTextureLevelTooltip), model.mainTextureLevel, 0.0f, 1.0f);
+                model.mainTextureBrightness = EditorGUILayout.Slider(new GUIContent(i18n.MainTextureBrightnessLabel, i18n.MainTextureBrightnessTooltip), model.mainTextureBrightness, 0.0f, 1.0f);
 
                 EditorGUILayout.Space();
 

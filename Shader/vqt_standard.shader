@@ -8,7 +8,7 @@
         _EmissionMap("Emission", 2D) = "white" {}
         [HDR]_EmissionColor("EmissionColor", Color) = (1,1,1,1)
 
-        _VQT_MainTexLevel("VQT Main Texture Level", Range(0, 1)) = 1
+        _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
     }
     SubShader
     {
@@ -45,7 +45,7 @@
             float4 _EmissionMap_ST;
             fixed4 _EmissionColor;
 
-            float _VQT_MainTexLevel;
+            float _VQT_MainTexBrightness;
 
             v2f vert (appdata v)
             {
@@ -60,7 +60,7 @@
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
                 col *= _Color;
-                col.rgb *= _VQT_MainTexLevel;
+                col.rgb *= _VQT_MainTexBrightness;
 #ifdef _EMISSION
                 fixed4 emi = tex2D(_EmissionMap, i.uv);
                 col = clamp(col + emi * _EmissionColor, 0, 1);

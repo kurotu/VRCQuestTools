@@ -35,7 +35,7 @@ namespace KRT.VRCQuestTools
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
             var setting = new TextureGeneratorSetting
             {
-                MainTextureLevel = 1.0f,
+                MainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
@@ -66,7 +66,7 @@ namespace KRT.VRCQuestTools
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
             var setting = new TextureGeneratorSetting
             {
-                MainTextureLevel = 1.0f,
+                MainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
