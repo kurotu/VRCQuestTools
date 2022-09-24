@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Toon Lit 用にメインテクスチャの明るさを調整する機能を追加 (初期設定: 0.83)
 
 ### 変更
-- テクスチャの画像処理を Magick.NET からシェーダーに変更
+- テクスチャの生成処理を Magick.NET からシェーダーと RenderTexture による処理に一新
     - unitypackage のサイズが縮小
     - OS・CPU への依存が低減
     - macOS でプラグインを許可する操作が不要
