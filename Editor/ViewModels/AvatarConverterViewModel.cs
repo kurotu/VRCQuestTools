@@ -45,7 +45,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <summary>
         /// Main texture level.
         /// </summary>
-        public float mainTextureBrightness = 0.8f;
+        public float mainTextureBrightness = 0.83f; // 1 / 1.2 -> 0.8333...
 
         /// <summary>
         /// Animator Override Controller for base layers.
