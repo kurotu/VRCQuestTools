@@ -169,7 +169,7 @@ namespace KRT.VRCQuestTools.Utils
             }
             importer.SaveAndReimport();
 
-            var psd = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            var psd = AssetDatabase.LoadAssetAtPath<Texture>(path);
             var ret = UnityEngine.Object.Instantiate(psd);
 
             // Restore compression settings.
@@ -185,7 +185,12 @@ namespace KRT.VRCQuestTools.Utils
             }
             importer.SaveAndReimport();
 
-            return ret;
+            if (!(ret is Texture2D))
+            {
+                throw new ArgumentException($"{path} is {ret.GetType().Name}");
+            }
+
+            return (Texture2D)ret;
         }
 
         /// <summary>

@@ -75,7 +75,12 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetFloat("_VQT_MainTexBrightness", setting.MainTextureBrightness);
                 foreach (var name in Material.GetTexturePropertyNames())
                 {
-                    var tex = AssetUtility.LoadUncompressedTexture(Material.GetTexture(name));
+                    var t = Material.GetTexture(name);
+                    if (t is Cubemap)
+                    {
+                        continue;
+                    }
+                    var tex = AssetUtility.LoadUncompressedTexture(t);
                     disposables.Add(DisposableObject.New(tex));
                     baker.Object.SetTexture(name, tex);
                 }
