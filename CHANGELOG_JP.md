@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### 追加
+- Android ビルドターゲットで Quest 用にアップロードできないアバターがある場合の警告に判定理由を追加
+
 ## [1.8.1] - 2022-09-29
 ### 修正
 - Cubemap を使用するマテリアルがあると変換に失敗する問題を修正
