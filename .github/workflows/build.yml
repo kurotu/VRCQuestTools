@@ -52,6 +52,7 @@ jobs:
         unityVersion:
           - 2018.4.20f1
           - 2019.4.31f1
+          - 2019.4.40f1
     steps:
       - uses: actions/checkout@v2
         with:
