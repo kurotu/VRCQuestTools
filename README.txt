@@ -64,7 +64,7 @@ unitypackage を導入後、ヒエラルキーでアバターを選択した状�
 - macOS Big Sur (Intel CPU)
 - Ubuntu 20.04 LTS
 - Unity 2018.4.20f1 / 2019.4.30f1
-- VRCSDK2 / VRCSDK3 / Creator Companion
+- VRCSDK2 / VRCSDK3 / Creator Companion (VCC)
 
 ## 利用規約
 
