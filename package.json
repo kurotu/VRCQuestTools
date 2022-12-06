@@ -6,5 +6,12 @@
     "unity": "2019.4",
     "author": {
         "name": "kurotu"
+    },
+    "vpmDependencies": {
+        "com.vrchat.avatars": ">=3.1.1"
+    },
+    "url": "https://github.com/kurotu/VRCQuestTools",
+    "legacyFolders": {
+        "Assets\\KRT\\VRCQuestTools": "bb6bc9dbb414049cebd82117a7ccb2c1"
     }
 }
