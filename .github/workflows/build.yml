@@ -42,7 +42,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: artifacts
+          name: unitypackage
           path: VRCQuestTools.unitypackage
 
   test:
@@ -88,16 +88,31 @@ jobs:
       - name: Report result
         run: if [ "$(wc -l < result.txt)" = "0" ]; then true; else cat result.txt && false; fi
 
+  vpm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Make zip
+        run: zip $(jq -r '.name' package.json)-$(jq -r '.version' package.json).zip $(ls)
+      - uses: actions/upload-artifact@v2
+        with:
+          name: vpm
+          path: "*.zip"
+
   release:
     if: startsWith(github.ref, 'refs/tags/')
-    needs: [build, test, lint]
+    needs: [build, test, lint, vpm]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
       - uses: actions/download-artifact@v2
         with:
-          name: artifacts
+          name: unitypackage
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: vpm
 
       - name: Create release artifact
         id: artifact
@@ -114,5 +129,5 @@ jobs:
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            ${{ steps.artifact.outputs.artifact-name }}.zip
+            *.zip
             ${{ steps.artifact.outputs.artifact-name }}/${{ steps.artifact.outputs.artifact-name }}.unitypackage
