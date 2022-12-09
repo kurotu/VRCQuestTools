@@ -3,7 +3,7 @@ name: Build Repo Listing
 on: 
   workflow_dispatch:
   workflow_run:
-    workflows: [Build Release]
+    workflows: [Build]
     types:
       - completed
   release:
@@ -40,17 +40,12 @@ jobs:
           repository: vrchat-community/package-list-action
           path: ${{env.pathToCi}}
           clean: false # otherwise the local repo will no longer be checked out
-          
-      - name: Restore Cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ${{env.pathToCi}}/.nuke/temp
-            ~/.nuget/packages
-          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
-          
+
       - name: Build Package Version Listing
-        run: ${{env.pathToCi}}/build.cmd BuildRepoListing --root ${{env.pathToCi}} --list-publish-directory $GITHUB_WORKSPACE/${{env.listPublishDirectory}}
+        run: |
+          npm install --no-save got@12.5.3
+          mkdir -p ${{env.listPublishDirectory}}
+          node .scripts/create_index_json.mjs kurotu/VRCQuestTools package.json > ${{env.listPublishDirectory}}/index.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
  
