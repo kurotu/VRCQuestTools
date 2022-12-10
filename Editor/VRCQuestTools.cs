@@ -79,7 +79,7 @@ namespace KRT.VRCQuestTools
         /// <summary>
         /// Gets a value indicating whether VRCQuestTools is imported as a package.
         /// </summary>
-        internal static bool IsImportedAsPackage => AssetRoot.StartsWith("Packages/");
+        internal static bool IsImportedAsPackage => AssetRoot.StartsWith("Packages");
 
         /// <summary>
         /// Export as .unitypackage for release.
