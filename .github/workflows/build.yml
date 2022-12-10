@@ -15,7 +15,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Move files into Assets
         run: |
@@ -23,7 +23,7 @@ jobs:
           cp .github/workflows/VRCQuestTools.meta Assets/KRT/
           mv $(ls . | grep -v Assets) Assets/KRT/VRCQuestTools/
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: Library
           key: Library-build-${{ github.ref }}
@@ -40,7 +40,7 @@ jobs:
           allowDirtyBuild: true
           versioning: None
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: unitypackage
           path: VRCQuestTools.unitypackage
@@ -55,11 +55,11 @@ jobs:
           - 2019.4.31f1
           - 2019.4.40f1
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           path: Assets/KRT/VRCQuestTools
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: Library
           key: Library-test-${{ matrix.unityVersion }}-${{ github.ref }}
@@ -76,9 +76,9 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 3.1.x
       - name: Restore dependencies
@@ -91,10 +91,10 @@ jobs:
   vpm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Make zip
         run: zip -r $(jq -r '.name' package.json)-$(jq -r '.version' package.json).zip $(ls)
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: vpm
           path: "*.zip"
@@ -104,13 +104,13 @@ jobs:
     needs: [build, test, lint, vpm]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: unitypackage
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: vpm
 
