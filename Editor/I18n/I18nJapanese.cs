@@ -112,5 +112,15 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MissingScripts => "\"Missing\"\u00A0状態のコンポーネントのあるアバターはアップロードできません。 ビルド前にコンポーネントを削除してください。";
         internal override string MissingDynamicBone => "Dynamic\u00A0Bone がインポートされていません。 Dynamic Bone をインポートするか \"missing\" 状態のコンポーネントを削除してください。";
         internal override string RemoveMissing => "\"Missing\" 状態のコンポーネントを削除";
+        internal override string ValidatorAlertsProhibitedShaders(string shaderName, string[] materialNames) =>
+            $"シェーダー \"{shaderName}\" (マテリアル: {string.Join(", ", materialNames)}) は Quest で使用できません。";
+        internal override string ValidatorAlertsUnsupportedComponents(string componentName, string objectName) =>
+            $"コンポーネント \"{componentName}\" ({objectName}) は Quest で使用できません。";
+        internal override string ValidatorAlertsVeryPoorPhysBones(int count) =>
+            $"PhysBone の数が多すぎます: {count} (Very Poor)";
+        internal override string ValidatorAlertsVeryPoorPhysBoneColliders(int count) =>
+            $"PhysBoneCollider の数が多すぎます: {count} (Very Poor)";
+        internal override string ValidatorAlertsVeryPoorContacts(int count) =>
+            $"ContactSender と ContactReceiver の数が多すぎます: {count} (Very Poor)";
     }
 }

@@ -111,5 +111,10 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string MissingScripts { get; }
         internal abstract string MissingDynamicBone { get; }
         internal abstract string RemoveMissing { get; }
+        internal abstract string ValidatorAlertsProhibitedShaders(string shaderName, string[] materialNames);
+        internal abstract string ValidatorAlertsUnsupportedComponents(string componentName, string objectName);
+        internal abstract string ValidatorAlertsVeryPoorPhysBones(int count);
+        internal abstract string ValidatorAlertsVeryPoorPhysBoneColliders(int count);
+        internal abstract string ValidatorAlertsVeryPoorContacts(int count);
     }
 }

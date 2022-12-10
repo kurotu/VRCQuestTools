@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Linq;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
@@ -19,7 +20,7 @@ namespace KRT.VRCQuestTools.Models.Validators
         private enum Result
         {
             Ok,
-            ProhibitedMaterials,
+            ProhibitedShaders,
             UnsupportedComponents,
             VeryPoorPhysBones,
             VeryPoorPhysBoneColliders,
@@ -38,26 +39,27 @@ namespace KRT.VRCQuestTools.Models.Validators
             if (result.Item1 != Result.Ok)
             {
                 var detail = string.Empty;
+                var i18n = VRCQuestToolsSettings.I18nResource;
                 switch (result.Item1)
                 {
                     case Result.Ok:
                         break;
-                    case Result.ProhibitedMaterials:
-                        var mat = (Material)result.Item2;
-                        detail = $"Material \"{mat.name}\" ({mat.shader.name}) is not allowed for Quest.";
+                    case Result.ProhibitedShaders:
+                        var mats = (Material[])result.Item2;
+                        detail = i18n.ValidatorAlertsProhibitedShaders(mats[0].shader.name,  mats.Select(m => m.name).ToArray());
                         break;
                     case Result.UnsupportedComponents:
                         var component = (Component)result.Item2;
-                        detail = $"Component \"{component.GetType().Name}\" ({component.transform.name}) is not allowed for Quest.";
+                        detail = i18n.ValidatorAlertsUnsupportedComponents(component.GetType().Name, component.transform.name);
                         break;
                     case Result.VeryPoorPhysBones:
-                        detail = $"Too many PhysBones: {(int)result.Item2} (Very Poor).";
+                        detail = i18n.ValidatorAlertsVeryPoorPhysBones((int)result.Item2);
                         break;
                     case Result.VeryPoorPhysBoneColliders:
-                        detail = $"Too many PhysBoneColliders: {(int)result.Item2} (Very Poor).";
+                        detail = i18n.ValidatorAlertsVeryPoorPhysBoneColliders((int)result.Item2);
                         break;
                     case Result.VeryPoorContacts:
-                        detail = $"Too many ContactSenders and ContactReceivers: {(int)result.Item2} (Very Poor).";
+                        detail = i18n.ValidatorAlertsVeryPoorContacts((int)result.Item2);
                         break;
                 }
 
@@ -67,7 +69,6 @@ namespace KRT.VRCQuestTools.Models.Validators
                     {
                         return true;
                     }
-                    var i18n = VRCQuestToolsSettings.I18nResource;
                     GUILayout.Label(i18n.IncompatibleForQuest, EditorStyles.wordWrappedLabel);
                     GUILayout.Label($"- {avatar.GameObject.name}", EditorStyles.wordWrappedLabel);
                     GUILayout.Label($"  {detail}", EditorStyles.wordWrappedLabel);
@@ -94,11 +95,12 @@ namespace KRT.VRCQuestTools.Models.Validators
             {
                 return new Tuple<Result, dynamic>(Result.Ok, null);
             }
-            foreach (var m in avatar.GetRendererMaterials())
+            var rendererMaterials = avatar.GetRendererMaterials();
+            foreach (var m in rendererMaterials)
             {
                 if (!VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m))
                 {
-                    return new Tuple<Result, dynamic>(Result.ProhibitedMaterials, m);
+                    return new Tuple<Result, dynamic>(Result.ProhibitedShaders, rendererMaterials.Where(rm => rm.shader == m.shader).ToArray());
                 }
             }
 

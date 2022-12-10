@@ -112,5 +112,15 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MissingScripts => "You can't upload an avatar which has \"missing\" scripts. Please remove these components to build.";
         internal override string MissingDynamicBone => "Dynamic Bone is missing in the project. Please import Dynamic Bone or remove \"missing\" components to build.";
         internal override string RemoveMissing => "Remove missing components";
+        internal override string ValidatorAlertsProhibitedShaders(string shaderName, string[] materialNames) =>
+            $"Shader \"{shaderName}\" (Materials: {string.Join(", ", materialNames)}) is not allowed for Quest.";
+        internal override string ValidatorAlertsUnsupportedComponents(string componentName, string objectName) =>
+            $"Component \"{componentName}\" ({objectName}) is not allowed for Quest.";
+        internal override string ValidatorAlertsVeryPoorPhysBones(int count) =>
+            $"Too many PhysBones: {count} (Very Poor).";
+        internal override string ValidatorAlertsVeryPoorPhysBoneColliders(int count) =>
+            $"Too many PhysBoneColliders: {count} (Very Poor).";
+        internal override string ValidatorAlertsVeryPoorContacts(int count) =>
+            $"Too many ContactSenders and ContactReceivers: {count} (Very Poor).";
     }
 }
