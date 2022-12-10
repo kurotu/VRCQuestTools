@@ -103,7 +103,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string GetUpdate => "Get Update";
         internal override string SkipThisVersion => "Skip This";
         internal override string NewVersionIsAvailable(string latestVersion) => $"New version {latestVersion} is available.";
-        internal override string NewVersionHasBreakingChanges => $"This version has breaking changes about compatibility. Please make sure that you use the latest VRCSDK then remove the existing tool from assets before upgrading.";
+        internal override string NewVersionHasBreakingChanges => $"This version might have breaking changes about compatibility. Please take care when upgrading.";
         internal override string ThereIsNoUpdate => "There is no update.";
 
         // Validations

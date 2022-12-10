@@ -68,7 +68,7 @@ namespace KRT.VRCQuestTools.Automators
                             }
                             GUILayout.Space(8);
                             GUILayout.BeginHorizontal();
-                            if (GUILayout.Button(i18n.GetUpdate))
+                            if (!VRCQuestTools.IsImportedAsPackage && GUILayout.Button(i18n.GetUpdate))
                             {
                                 Application.OpenURL(VRCQuestTools.BoothURL);
                                 return true;
