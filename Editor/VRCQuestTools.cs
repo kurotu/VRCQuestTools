@@ -77,7 +77,7 @@ namespace KRT.VRCQuestTools
         internal static string AssetRoot => Path.GetDirectoryName(AssetDatabase.GUIDToAssetPath(PackageJsonGUID));
 
         /// <summary>
-        /// Gets whether VRCQuestTools is imported as a package.
+        /// Gets a value indicating whether VRCQuestTools is imported as a package.
         /// </summary>
         internal static bool IsImportedAsPackage => AssetRoot.StartsWith("Packages/");
 
