@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 追加
 - Android ビルドターゲットで Quest 用にアップロードできないアバターがある場合の警告に判定理由を追加
+- VCC/VPM 向け zip ファイルを追加
 
 ## [1.8.1] - 2022-09-29
 ### 修正
