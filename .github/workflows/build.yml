@@ -93,7 +93,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Make zip
-        run: zip $(jq -r '.name' package.json)-$(jq -r '.version' package.json).zip $(ls)
+        run: zip -r $(jq -r '.name' package.json)-$(jq -r '.version' package.json).zip $(ls)
       - uses: actions/upload-artifact@v2
         with:
           name: vpm
