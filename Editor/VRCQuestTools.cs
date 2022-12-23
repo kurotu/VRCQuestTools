@@ -63,11 +63,11 @@ namespace KRT.VRCQuestTools
         static VRCQuestTools()
         {
 #if VRC_SDK_VRCSDK3
-            Debug.Log($"[{Name}] VRCSDK3 project.");
+            Debug.Log($"[{Name}] VRCSDK3 project. (VRC_SDK_VRCSDK3 is defined)");
 #elif VRC_SDK_VRCSDK2
-            Debug.Log($"[{Name}] VRCSDK2 project.");
+            Debug.Log($"[{Name}] VRCSDK2 project. (VRC_SDK_VRCSDK2 is defined)");
 #else
-            Debug.LogError($"[{Name}] VRCSDK is not imported. Please import VRCSDK.");
+            Debug.LogError($"[{Name}] Neither VRC_SDK_VRCSDK3 nor VRC_SDK_VRCSDK2 defined in this project. Make sure VRCSDK is properly imported.");
 #endif
         }
 
