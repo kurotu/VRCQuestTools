@@ -19,13 +19,15 @@ Unity editor extension to support uploading VRChat avatars for Oculus Quest. Com
 
 ## Install
 
+Choose an install method you like.
+
 ### Unitypackage
 Download the latest `.unitypackage` from [the release page](https://github.com/kurotu/VRCQuestTools/releases/latest) or [Booth](https://kurotu.booth.pm/items/2436054). Then import it to your avatar project.
 
 ### Unity Package Manager (UPM)
 Import `https://github.com/kurotu/VRCQuestTools.git`.
 
-### VRChat Creator Companion (VCC)
+### VRChat Package Manager (VPM)
 Clone `https://github.com/kurotu/VRCQuestTools.git` or download the latest source code zip from [the release page](https://github.com/kurotu/VRCQuestTools/releases/latest).
 Add the extracted folder as a local user package from VCC.
 
