@@ -6,13 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 ### 追加
 - Android ビルドターゲットで Quest 用にアップロードできないアバターがある場合の警告に判定理由を追加
 - VCC/VPM 向け zip ファイルを追加
-- VRCSDK を検出できない場合のメッセージを改善
 
 ### 変更
 - パッケージとして使用している場合にアップデート通知で Booth を開かないよう表示内容を変更
+- VRCSDK を検出できない場合のメッセージを改善
 
 ## [1.8.1] - 2022-09-29
 ### 修正
