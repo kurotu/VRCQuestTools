@@ -28,7 +28,7 @@ Download the latest `.unitypackage` from [the release page](https://github.com/k
 Import `https://github.com/kurotu/VRCQuestTools.git`.
 
 ### VRChat Package Manager (VPM)
-Clone `https://github.com/kurotu/VRCQuestTools.git` or download the latest source code zip from [the release page](https://github.com/kurotu/VRCQuestTools/releases/latest).
+Clone `https://github.com/kurotu/VRCQuestTools.git` or download the latest `com.github.kurotu.vrc-quest-tools-*.zip` from [the release page](https://github.com/kurotu/VRCQuestTools/releases/latest).
 Add the extracted folder as a local user package from VCC.
 
 ## Usage
