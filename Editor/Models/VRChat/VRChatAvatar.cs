@@ -82,7 +82,18 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 .Select(obj => obj.runtimeAnimatorController)
                 .ToArray();
 
-            return layers.Concat(avatercontrollers).Where(c => c != null).Distinct().ToArray();
+            // Modular Avatar Merge Animator
+            RuntimeAnimatorController[] mergeAnimators = { };
+            if (ModularAvatarUtility.IsModularAvatarImported)
+            {
+                mergeAnimators = AvatarDescriptor.gameObject
+                    .GetComponentsInChildren(ModularAvatarUtility.MergeAnimatorType, true)
+                    .Select(c => new MergeAnimatorProxy(c))
+                    .Select(ma => ma.Animator)
+                    .ToArray();
+            }
+
+            return layers.Concat(avatercontrollers).Concat(mergeAnimators).Where(c => c != null).Distinct().ToArray();
         }
 
         /// <summary>

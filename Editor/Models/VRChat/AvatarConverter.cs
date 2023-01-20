@@ -136,6 +136,21 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         }
                     }
                 }
+
+                if (ModularAvatarUtility.IsModularAvatarImported)
+                {
+                    foreach (var ma in questAvatarObject.GetComponentsInChildren(ModularAvatarUtility.MergeAnimatorType, true))
+                    {
+                        var proxy = new MergeAnimatorProxy(ma);
+                        if (proxy.Animator != null)
+                        {
+                            if (convertedAnimatorControllers.ContainsKey(proxy.Animator))
+                            {
+                                proxy.Animator = convertedAnimatorControllers[proxy.Animator];
+                            }
+                        }
+                    }
+                }
             }
 
             // Apply converted materials to renderers.
