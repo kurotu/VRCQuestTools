@@ -19,6 +19,7 @@
         _EmissionBlend("Blend", Range(0,1)) = 1
         _EmissionBlendMask("Mask", 2D) = "white" {}
         _EmissionBlendMask_ScrollRotate("Angle|UV Animation|Scroll|Rotate", Vector) = (0,0,0,0)
+        _EmissionBlendMode("Blend Mode|Normal|Add|Screen|Multiply", Int) = 1
         // _EmissionBlink("Blink Strength|Blink Type|Blink Speed|Blink Offset", Vector) = (0,0,3.141593,0)
         _EmissionUseGrad("Use Gradation", Int) = 0
         _EmissionGradTex("Gradation Texture", 2D) = "white" {}
@@ -34,6 +35,7 @@
         _Emission2ndBlend("Blend", Range(0,1)) = 1
         _Emission2ndBlendMask("Mask", 2D) = "white" {}
         _Emission2ndBlendMask_ScrollRotate("Angle|UV Animation|Scroll|Rotate", Vector) = (0,0,0,0)
+        _Emission2ndBlendMode("Blend Mode|Normal|Add|Screen|Multiply", Int) = 1
         // _Emission2ndBlink("Blink Strength|Blink Type|Blink Speed|Blink Offset", Vector) = (0,0,3.141593,0)
         _Emission2ndUseGrad("Use Gradation", Int) = 0
         _Emission2ndGradTex("Gradation Texture", 2D) = "white" {}
@@ -87,6 +89,7 @@
             sampler2D _EmissionBlendMask;
             float4 _EmissionBlendMask_ST;
             fixed4 _EmissionBlendMask_ScrollRotate;
+            uint _EmissionBlendMode;
             uint _EmissionUseGrad;
             Texture2D _EmissionGradTex;
             SamplerState sampler_EmissionGradTex;
@@ -101,6 +104,7 @@
             sampler2D _Emission2ndBlendMask;
             float4 _Emission2ndBlendMask_ST;
             fixed4 _Emission2ndBlendMask_ScrollRotate;
+            uint _Emission2ndBlendMode;
             uint _Emission2ndUseGrad;
             Texture2D _Emission2ndGradTex;
             SamplerState sampler_Emission2ndGradTex;
@@ -150,7 +154,10 @@
                         emi.rgb *= c.rgb;
                     }
                     emi.rgb = lerp(emi.rgb, 0, _EmissionFluorescence);
-                    col.rgb += emi.rgb;
+                    if (_EmissionBlendMode == 0) col.rgb = emi.rgb;
+                    if (_EmissionBlendMode == 1) col.rgb += emi.rgb;
+                    if (_EmissionBlendMode == 2) col.rgb = col.rgb + emi.rgb - col.rgb * emi.rgb;
+                    if (_EmissionBlendMode == 3) col.rgb *= emi.rgb;
                 }
 
                 if (_LIL_FEATURE_EMISSION_2ND && _UseEmission2nd) {
@@ -166,7 +173,10 @@
                         emi.rgb *= c.rgb;
                     }
                     emi.rgb = lerp(emi.rgb, 0, _Emission2ndFluorescence);
-                    col.rgb += emi.rgb;
+                    if (_Emission2ndBlendMode == 0) col.rgb = emi.rgb;
+                    if (_Emission2ndBlendMode == 1) col.rgb += emi.rgb;
+                    if (_Emission2ndBlendMode == 2) col.rgb = col.rgb + emi.rgb - col.rgb * emi.rgb;
+                    if (_Emission2ndBlendMode == 3) col.rgb *= emi.rgb;
                 }
                 return col;
             }

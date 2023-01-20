@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add detailed reason to the warning panel when an avatar is not uploadable for Quest on Android build target.
 - Add zip file for VCC/VPM.
 - Add Animator Controller conversion also for Merge Animator of Modular Avatar.
+- Add emission blend mode of lilToon 1.3.7.
 
 ### Changed
 - Change updater info to prevent opening Booth link when using as a VPM package.

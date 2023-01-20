@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Android ビルドターゲットで Quest 用にアップロードできないアバターがある場合の警告に判定理由を追加
 - VCC/VPM 向け zip ファイルを追加
 - Modular Avatar の Merge Animator に対しても Animator Controller を変換する機能を追加
+- lilToon 1.3.7 の Emission 合成モードの対応を追加
 
 ### 変更
 - パッケージとして使用している場合にアップデート通知で Booth を開かないよう表示内容を変更
