@@ -36,8 +36,5 @@ function isVpmRelease(release) {
 
 async function getVersionData(release) {
     const json = await got(release.assets.find(a => a.name === 'package.json').browser_download_url).json();
-    const version = release.tag_name.slice(1);
-    const url = release.assets.find(asset => asset.name === `${packageJson.name}-${version}.zip`).browser_download_url;
-    json.url = url;
     return json;
 }
