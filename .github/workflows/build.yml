@@ -135,5 +135,6 @@ jobs:
         with:
           body_path: ${{ github.workspace }}-release.txt
           files: |
+            package.json
             *.zip
             ${{ steps.artifact.outputs.artifact-name }}/${{ steps.artifact.outputs.artifact-name }}.unitypackage
