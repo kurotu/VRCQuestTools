@@ -214,7 +214,13 @@ namespace KRT.VRCQuestTools.ViewModels
                 overrideControllers = overrideControllers,
             };
             var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, Remover, converterSetting, progressCallback);
-            PrefabUtility.SaveAsPrefabAssetAndConnect(questAvatar.AvatarDescriptor.gameObject, prefabName, InteractionMode.UserAction);
+
+            /*
+             * If missing references exist in a prefab instance, unexpected references to prefab happen at play mode.
+             * So do not create prefabs at moment. To use prefabs in script, we need to carefully handle property override.
+             *
+             * PrefabUtility.SaveAsPrefabAssetAndConnect(questAvatar.AvatarDescriptor.gameObject, prefabName, InteractionMode.UserAction);
+             */
 
             if (TargetAvatarDescriptor.gameObject.activeInHierarchy)
             {
