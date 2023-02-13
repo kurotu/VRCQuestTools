@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### 変更
+- 変換後のアバターの Prefab を作成しないように変更
+
+### 修正
+- アバター内で参照されているオブジェクトを削除したときに Prefab を予期せず参照して発生する以下の問題を修正
+  - PhysBones Collision Check Count が実際より多く算出される問題
+  - Modular Avatar 使用時にビルドサイズが増加する問題
+
 ## [1.9.0] - 2023-01-21
 
 ### 追加
