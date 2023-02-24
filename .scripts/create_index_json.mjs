@@ -10,6 +10,7 @@ const packageJson = JSON.parse(fs.readFileSync(process.argv[3], 'utf-8'));
     const versionDatas = await Promise.all(vpm_releases.map(r => getVersionData(r)));
     const versions = {};
     for (let v of versionDatas) {
+        v.url += '?';
         versions[v.version] = v;
     }
     const list = {
