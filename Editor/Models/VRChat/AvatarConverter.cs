@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
@@ -173,6 +174,25 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             VRCSDKUtility.RemoveMissingComponentsInChildren(questAvatarObject, true);
             remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
+
+#if VRC_SDK_VRCSDK3
+            var vcr = questAvatarObject.GetComponent<VertexColorRemover>();
+            if (vcr == null)
+            {
+                questAvatarObject.AddComponent<VertexColorRemover>();
+                vcr = questAvatarObject.GetComponent<VertexColorRemover>();
+            }
+            if (setting.removeVertexColor)
+            {
+                vcr.active = true;
+                vcr.includeChildren = true;
+                vcr.RemoveVertexColor();
+            }
+            else
+            {
+                vcr.active = false;
+            }
+#endif
 
             questAvatarObject.name = avatar.AvatarDescriptor.gameObject.name + " (Quest)";
             questAvatarObject.SetActive(true);

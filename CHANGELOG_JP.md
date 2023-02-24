@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### 追加
+- (VRCSDK3) 「メッシュから頂点カラーを削除」オプションを変換ウィンドウに追加
+- 頂点カラーの削除/復元を制御するための VertexColorRemover コンポーネントを追加
+
+### 変更
+- (VRCSDK3) 頂点カラーが自動的に削除されないように変更。代わりに VertexColorRemover コンポーネントを使用する
+
 ## [1.9.1] - 2023-02-13
 
 ### 変更

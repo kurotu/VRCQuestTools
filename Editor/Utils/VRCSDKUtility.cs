@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -138,7 +139,7 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="obj">Asset object.</param>
         /// <returns>true when the object exists in VRCSDK examples folder.</returns>
-        internal static bool IsExampleAsset(Object obj)
+        internal static bool IsExampleAsset(UnityEngine.Object obj)
         {
             var path = AssetDatabase.GetAssetPath(obj);
             return IsExampleAsset(path);
@@ -244,6 +245,68 @@ namespace KRT.VRCQuestTools.Utils
         internal static bool IsPhysBonesImported()
         {
             return PhysBoneType != null;
+        }
+
+        /// <summary>
+        /// Inject components into VRCSDK's allowed components list.
+        /// </summary>
+        /// <param name="types">Component types to inject.</param>
+        internal static void InjectAllowedComponents(Type[] types)
+        {
+            var avatarValidation = SystemUtility.GetTypeByName("VRC.SDK3.Validation.AvatarValidation");
+            var findIllegalComponents = avatarValidation?.GetMethod("FindIllegalComponents", BindingFlags.Public | BindingFlags.Static);
+            if (findIllegalComponents == null)
+            {
+                Debug.LogError($"[{VRCQuestTools.Name}] Unsupported VRCSDK. Failed to find VRC.SDK3.Validation.AvatarValidation.FindIllegalComponents");
+            }
+            UnityEngine.Object dummy = null;
+            try
+            {
+                var path = AssetDatabase.GUIDToAssetPath("4f87c289ad956d7488a6a0b7d8773f0b");
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                dummy = PrefabUtility.InstantiatePrefab(prefab);
+                findIllegalComponents.Invoke(null, new[] { dummy }); // pass instantiated dummy instead of null in order to make cached list in legacy sdk3.
+            }
+            catch (TargetInvocationException e)
+            {
+                if (e.InnerException is NullReferenceException)
+                {
+                    // ok
+                }
+                else
+                {
+                    System.Diagnostics.Debug.Assert(e.InnerException != null, "e.InnerException != null");
+                    throw e.InnerException;
+                }
+            }
+            finally
+            {
+                if (dummy != null)
+                {
+                    UnityEngine.Object.DestroyImmediate(dummy);
+                }
+            }
+
+            var validationUtils = SystemUtility.GetTypeByName("VRC.SDKBase.Validation.ValidationUtils");
+            var whitelistedTypes = validationUtils?.GetMethod("WhitelistedTypes", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string), typeof(IEnumerable<Type>) }, null);
+
+            if (whitelistedTypes == null)
+            {
+                Debug.LogError($"[{VRCQuestTools.Name}] Unsupported VRCSDK. Failed to find ValidationUtils.WhitelistedTypes");
+                return;
+            }
+
+            var allowlist = whitelistedTypes.Invoke(null, new object[] { "avatar-sdk3", null }) as HashSet<Type>;
+            if (allowlist == null)
+            {
+                Debug.LogError($"[{VRCQuestTools.Name}] Unsupported VRCSDK. Failed to retrieve component whitelist");
+                return;
+            }
+
+            foreach (var type in types)
+            {
+                allowlist.Add(type);
+            }
         }
 
         /// <summary>

@@ -1,6 +1,8 @@
 {
     "name": "VRCQuestTools-Editor",
-    "references": [],
+    "references": [
+        "VRCQuestTools"
+    ],
     "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
@@ -11,6 +13,7 @@
     "precompiledReferences": [
         "VRCCore-Editor.dll",
         "VRCSDKBase.dll",
+        "VRCSDKBase-Editor.dll",
         "VRCSDK3A.dll"
     ],
     "autoReferenced": true,

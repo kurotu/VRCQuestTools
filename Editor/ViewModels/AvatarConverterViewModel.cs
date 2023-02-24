@@ -48,6 +48,11 @@ namespace KRT.VRCQuestTools.ViewModels
         public float mainTextureBrightness = 0.83f; // 1 / 1.2 -> 0.8333...
 
         /// <summary>
+        /// Whether the converter attaches VertexColorRemover to the converted avatar.
+        /// </summary>
+        public bool removeVertexColor = true;
+
+        /// <summary>
         /// Animator Override Controller for base layers.
         /// </summary>
         public AnimatorOverrideController[] overrideControllers = new AnimatorOverrideController[] { };
@@ -211,6 +216,7 @@ namespace KRT.VRCQuestTools.ViewModels
                 generateQuestTextures = generateQuestTextures,
                 maxTextureSize = (int)texturesSizeLimit,
                 mainTextureBrightness = mainTextureBrightness,
+                removeVertexColor = removeVertexColor,
                 overrideControllers = overrideControllers,
             };
             var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, Remover, converterSetting, progressCallback);

@@ -23,6 +23,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal float mainTextureBrightness;
 
         /// <summary>
+        /// Whether the converter attaches VertexColorRemover to the converted avatar.
+        /// </summary>
+        internal bool removeVertexColor;
+
+        /// <summary>
         /// Animator Override Controllers to apply.
         /// </summary>
         internal AnimatorOverrideController[] overrideControllers;

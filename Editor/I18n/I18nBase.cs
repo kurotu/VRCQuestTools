@@ -17,6 +17,8 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string CancelLabel { get; }
         internal abstract string CloseLabel { get; }
         internal abstract string DismissLabel { get; }
+        internal abstract string YesLabel { get; }
+        internal abstract string NoLabel { get; }
 
         // Convert Avatar for Quest
         internal abstract string OverwriteWarningDialogTitle { get; }
@@ -33,6 +35,8 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string ConvertButtonLabel { get; }
         internal abstract string UpdateTexturesLabel { get; }
         internal abstract string AdvancedConverterSettingsLabel { get; }
+        internal abstract string RemoveVertexColorLabel { get; }
+        internal abstract string RemoveVertexColorTooltip { get; }
         internal abstract string AnimationOverrideLabel { get; }
         internal abstract string AnimationOverrideTooltip { get; }
         internal abstract string AnimationOverrideMaterialErrorMessage { get; }
@@ -116,5 +120,11 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string ValidatorAlertsVeryPoorPhysBones(int count);
         internal abstract string ValidatorAlertsVeryPoorPhysBoneColliders(int count);
         internal abstract string ValidatorAlertsVeryPoorContacts(int count);
+
+        // Vertex Color
+        internal abstract string VertexColorRemoverEditorRemove { get; }
+        internal abstract string VertexColorRemoverEditorRestore { get; }
+        internal abstract string VertexColorRemoverDialogTitle { get; }
+        internal abstract string VertexColorRemoverDialogMessage(string name);
     }
 }

@@ -59,6 +59,29 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal bool HasAnimatedMaterials => GetAnimatedMaterials().Length > 0;
 
         /// <summary>
+        /// Gets a value indicating whether the avatar has vertex color in childrens' renderers.
+        /// </summary>
+        internal bool HasVertexColor
+        {
+            get
+            {
+                Renderer[] skinnedMeshRenderers = AvatarDescriptor.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                Renderer[] meshRenderers = AvatarDescriptor.GetComponentsInChildren<MeshRenderer>(true);
+                var renderers = skinnedMeshRenderers.Concat(meshRenderers);
+
+                foreach (var r in renderers)
+                {
+                    var mesh = RendererUtility.GetSharedMesh(r);
+                    if (mesh.colors32 == null || mesh.colors32.Length == 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Gets runtime animator controllers which are related.
         /// </summary>
         /// <returns>Controllers.</returns>

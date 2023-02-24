@@ -17,6 +17,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string CancelLabel => "Cancel";
         internal override string CloseLabel => "Close";
         internal override string DismissLabel => "Dismiss";
+        internal override string YesLabel => "Yes";
+        internal override string NoLabel => "No";
 
         // Convert Avatar for Quest
         internal override string OverwriteWarningDialogButtonCancel => "Cancel";
@@ -33,6 +35,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertButtonLabel => "Convert";
         internal override string UpdateTexturesLabel => "Update Only Quest Textures";
         internal override string AdvancedConverterSettingsLabel => "Advanced Converter Settings";
+        internal override string RemoveVertexColorLabel => "Remove Vertex Color from Meshes";
+        internal override string RemoveVertexColorTooltip => "Usually you don't have to disable this option. When you are using special shaders which require vertex colors in PC avatars, you can disable this option to prevent unexpected behavior.\nIf vertex color is accidentally removed, restore from the avatar's \"VertexColorRemover\" component.";
         internal override string AnimationOverrideLabel => "Animation Override";
         internal override string AnimationOverrideTooltip => "Convert Animator Controllers with Animator Override Controller's animations.";
         internal override string AnimationOverrideMaterialErrorMessage => "Animator Override Controllers contain animated materials which uses unsupported shaders for Quest.";
@@ -122,5 +126,12 @@ namespace KRT.VRCQuestTools.I18n
             $"Too many PhysBoneColliders: {count} (Very Poor).";
         internal override string ValidatorAlertsVeryPoorContacts(int count) =>
             $"Too many ContactSenders and ContactReceivers: {count} (Very Poor).";
+
+        // Vertex Color
+        internal override string VertexColorRemoverEditorRemove => "Remove Vertex Color";
+        internal override string VertexColorRemoverEditorRestore => "Restore Vertex Color";
+        internal override string VertexColorRemoverDialogTitle => $"Remove Vertex Color - {VRCQuestTools.Name}";
+        internal override string VertexColorRemoverDialogMessage(string name) =>
+            $"\"{name}\" has vertex colors in its meshes. Would you like to remove vertex colors to properly apply texture color?\n\nUsually you can choose \"{YesLabel}\". If you are using special shaders which require vertex color for PC avatars, you can choose \"{NoLabel}\"";
     }
 }

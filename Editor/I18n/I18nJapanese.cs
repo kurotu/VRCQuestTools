@@ -17,6 +17,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string CancelLabel => "キャンセル";
         internal override string CloseLabel => "閉じる";
         internal override string DismissLabel => "閉じる";
+        internal override string YesLabel => "はい";
+        internal override string NoLabel => "いいえ";
 
         // Convert Avatar for Quest
         internal override string OverwriteWarningDialogButtonCancel => "キャンセル";
@@ -33,6 +35,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertButtonLabel => "変換";
         internal override string UpdateTexturesLabel => "Quest用テクスチャのみ更新";
         internal override string AdvancedConverterSettingsLabel => "高度な変換設定";
+        internal override string RemoveVertexColorLabel => "メッシュから頂点カラーを削除";
+        internal override string RemoveVertexColorTooltip => "通常このオプションを無効にする必要はありません。PC用アバターで頂点カラーの必要な特別なシェーダーを使用している場合は、誤動作を防ぐためにこのオプションを無効にできます。\n誤って頂点カラーを削除した場合は、アバターの\"VertexColorRemover\"コンポーネントで復元できます。";
         internal override string AnimationOverrideLabel => "アニメーションオーバーライド";
         internal override string AnimationOverrideTooltip => "Animator Override Controller で指定したアニメーションを使用して Animator Controller を変換します。";
         internal override string AnimationOverrideMaterialErrorMessage => "Animator Override Controller に Quest で使用できないマテリアルへ変更するアニメーションがあります。";
@@ -122,5 +126,12 @@ namespace KRT.VRCQuestTools.I18n
             $"PhysBoneCollider の数が多すぎます: {count} (Very Poor)";
         internal override string ValidatorAlertsVeryPoorContacts(int count) =>
             $"ContactSender と ContactReceiver の数が多すぎます: {count} (Very Poor)";
+
+        // Vertex Color
+        internal override string VertexColorRemoverEditorRemove => "頂点カラーを削除";
+        internal override string VertexColorRemoverEditorRestore => "頂点カラーを復元";
+        internal override string VertexColorRemoverDialogTitle => $"頂点カラーの削除 - {VRCQuestTools.Name}";
+        internal override string VertexColorRemoverDialogMessage(string name) =>
+            $"\"{name}\" のメッシュには頂点カラーがあります。テクスチャ色を正しく反映するために頂点カラーを削除しますか？\n\n※通常は「{YesLabel}」を選択します。頂点カラーを必要とする特別なシェーダーをPC用アバターで使用している場合に「{NoLabel}」を選択します。";
     }
 }

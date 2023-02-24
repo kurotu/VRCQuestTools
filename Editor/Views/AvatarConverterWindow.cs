@@ -182,7 +182,13 @@ namespace KRT.VRCQuestTools.Views
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 EditorGUILayout.LabelField(i18n.AdvancedConverterSettingsLabel);
+
                 EditorGUILayout.Space();
+
+                model.removeVertexColor = EditorGUILayout.ToggleLeft(new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip), model.removeVertexColor  );
+
+                EditorGUILayout.Space();
+
                 var so = new SerializedObject(this);
                 so.Update();
                 var m_model = so.FindProperty("model");
