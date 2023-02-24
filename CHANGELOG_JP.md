@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 追加
 - VRChat Package Manager のサポート
+- [実験的機能] VPMリポジトリ: https://kurotu.github.io/VRCQuestTools/index.json
 - Modular Avatar の Merge Animator に対して Animator Controller を変換する機能を追加
 - lilToon 1.3.7 の Emission 合成モードの対応を追加
 - Android ビルドターゲットで Quest 用にアップロードできないアバターがある場合の警告に判定理由を追加
