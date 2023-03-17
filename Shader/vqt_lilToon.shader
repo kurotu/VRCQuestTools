@@ -120,8 +120,24 @@
                 return tex2D(tex, newUV);
             }
 
-            float3 emissionRGB(fixed4 emiColor, float4 emi, float emiBlend, float4 emiMask) {
-                return emi.rgb * emiColor.rgb * emi.a * emiColor.a * emiBlend * emiMask.rgb * emiMask.a;
+            float4 emissionRGB(fixed4 emiColor, float4 emi, float emiBlend, float4 emiMask) {
+                float4 ret = emi * emiColor * emiMask;
+                ret.rgb *= emiBlend;
+                return ret;
+            }
+
+            float4 compose(float4 base, float4 foreground, uint mode) {
+                float3 add = base.rgb + foreground.rgb;
+                float3 mul = base.rgb * foreground.rgb;
+                float3 outCol;
+                if (mode == 0) outCol = foreground.rgb;
+                if (mode == 1) outCol = add;
+                if (mode == 2) outCol = add - mul;
+                if (mode == 3) outCol = mul;
+                float4 ret;
+                ret.rgb = lerp(base.rgb, outCol.rgb, foreground.a);
+                ret.a = base.a;
+                return ret;
             }
 
             v2f vert (appdata v)
@@ -147,17 +163,14 @@
                     float4 emi = sampleTex2D(_EmissionMap, i.uv_EmissionMap, angle);
                     angle = _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? _EmissionBlendMask_ScrollRotate.b : 0.0f;
                     float4 emiMask = sampleTex2D(_EmissionBlendMask, i.uv_EmissionBlendMask, angle);
-                    emi.rgb = emissionRGB(_EmissionColor, emi, _EmissionBlend, emiMask);
+                    emi = emissionRGB(_EmissionColor, emi, _EmissionBlend, emiMask);
                     if (_LIL_FEATURE_EMISSION_GRADATION && _EmissionUseGrad) {
                         // Use first color
                         fixed4 c = _EmissionGradTex.Sample(sampler_EmissionGradTex, 0);
                         emi.rgb *= c.rgb;
                     }
                     emi.rgb = lerp(emi.rgb, 0, _EmissionFluorescence);
-                    if (_EmissionBlendMode == 0) col.rgb = emi.rgb;
-                    if (_EmissionBlendMode == 1) col.rgb += emi.rgb;
-                    if (_EmissionBlendMode == 2) col.rgb = col.rgb + emi.rgb - col.rgb * emi.rgb;
-                    if (_EmissionBlendMode == 3) col.rgb *= emi.rgb;
+                    col = compose(col, emi, _EmissionBlendMode);
                 }
 
                 if (_LIL_FEATURE_EMISSION_2ND && _UseEmission2nd) {
@@ -173,10 +186,7 @@
                         emi.rgb *= c.rgb;
                     }
                     emi.rgb = lerp(emi.rgb, 0, _Emission2ndFluorescence);
-                    if (_Emission2ndBlendMode == 0) col.rgb = emi.rgb;
-                    if (_Emission2ndBlendMode == 1) col.rgb += emi.rgb;
-                    if (_Emission2ndBlendMode == 2) col.rgb = col.rgb + emi.rgb - col.rgb * emi.rgb;
-                    if (_Emission2ndBlendMode == 3) col.rgb *= emi.rgb;
+                    col = compose(col, emi, _Emission2ndBlendMode);
                 }
                 return col;
             }
