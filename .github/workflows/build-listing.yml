@@ -2,10 +2,10 @@ name: Build Repo Listing
 
 on: 
   workflow_dispatch:
-#   workflow_run:
-#     workflows: [Build]
-#     types:
-#       - completed
+  workflow_run:
+    workflows: [Build]
+    types:
+      - completed
   release:
     types: [published, created, edited, unpublished, deleted, released]
 
