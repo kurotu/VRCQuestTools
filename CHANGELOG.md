@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed the issue where alpha parameters of lilToon emission are not reflected to converted textures.
+- Fixed failed conversion when material and animation name contain "/".
 
 ## [1.10.0] - 2023-03-04
 

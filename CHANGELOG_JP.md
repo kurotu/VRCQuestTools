@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 修正
 - lilToonの発光テクスチャの透明度が変換後のテクスチャに反映されない問題を修正
+- マテリアル名、アニメーション名に "/" が含まれていると変換に失敗する問題を修正
 
 ## [1.10.0] - 2023-03-04
 

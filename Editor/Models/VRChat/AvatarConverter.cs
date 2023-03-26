@@ -239,7 +239,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
                                     disposables.Add(DisposableObject.New(resized));
                                     texToWrite = resized;
                                 }
-                                texture = AssetUtility.SaveUncompressedTexture($"{saveDirectory}/{m.name}_from_{guid}.png", texToWrite);
+
+                                var outFile = $"{saveDirectory}/{m.name}_from_{guid}.png";
+
+                                // When the texture is added into another asset, "/" is acceptable as name.
+                                if (m.name.Contains("/"))
+                                {
+                                    var dir = Path.GetDirectoryName(outFile);
+                                    Directory.CreateDirectory(dir);
+                                }
+                                texture = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
                             }
                         }
                         convertedTextures.Add(m, texture);
@@ -275,7 +284,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
                 var material = new MaterialWrapperBuilder().Build(m);
                 var toonlit = material.ConvertToToonLit();
-                AssetDatabase.CreateAsset(toonlit, $"{saveDirectory}/{m.name}_from_{guid}.mat");
+
+                var outFile = $"{saveDirectory}/{m.name}_from_{guid}.mat";
+
+                // When the material is added into another asset, "/" is acceptable as name.
+                if (m.name.Contains("/"))
+                {
+                    var dir = Path.GetDirectoryName(outFile);
+                    Directory.CreateDirectory(dir);
+                }
+                AssetDatabase.CreateAsset(toonlit, outFile);
+
                 convertedMaterials.Add(m, toonlit);
             }
             return convertedMaterials;
@@ -382,6 +401,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 if (!originalAssetPath.EndsWith(".controller"))
                 {
                     var asset = $"{saveDirectory}/{newTree.name}.asset";
+
+                    // When the tree is added into another asset, "/" is acceptable as name.
+                    if (newTree.name.Contains("/"))
+                    {
+                        var dir = Path.GetDirectoryName(asset);
+                        Directory.CreateDirectory(dir);
+                    }
                     AssetDatabase.CreateAsset(newTree, asset);
                 }
                 dict.Add(tree, newTree);
@@ -422,7 +448,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 try
                 {
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animationClips[i], out string guid, out long localid);
-                    var outFile = $"{saveDirectory}/{animationClips[i].name}_from_{guid}.anim";
+                    var originalName = animationClips[i].name;
+                    var outFile = $"{saveDirectory}/{originalName}_from_{guid}.anim";
+
+                    // When the animation clip is added into another asset, "/" is acceptable as name.
+                    if (originalName.Contains("/"))
+                    {
+                        var dir = Path.GetDirectoryName(outFile);
+                        Directory.CreateDirectory(dir);
+                    }
                     var anim = UnityAnimationUtility.ReplaceAnimationClipMaterials(animationClips[i], convertedMaterials);
 
                     AssetDatabase.CreateAsset(anim, outFile);
