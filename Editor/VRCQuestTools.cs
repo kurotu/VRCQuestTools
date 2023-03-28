@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools
         /// <summary>
         /// VRCQuestTools version (semver).
         /// </summary>
-        public const string Version = "1.10.0";
+        public const string Version = "1.10.1";
 
         /// <summary>
         /// Days to delay update notification.

@@ -1,6 +1,6 @@
 {
     "name": "com.github.kurotu.vrc-quest-tools",
-    "version": "1.10.0",
+    "version": "1.10.1",
     "displayName": "VRCQuestTools",
     "description": "Editor extension to support uploading VRChat Quest avatars",
     "unity": "2019.4",
@@ -10,7 +10,7 @@
     "vpmDependencies": {
         "com.vrchat.avatars": ">=3.1.1"
     },
-    "url": "https://github.com/kurotu/VRCQuestTools/releases/download/v1.10.0/com.github.kurotu.vrc-quest-tools-1.10.0.zip",
+    "url": "https://github.com/kurotu/VRCQuestTools/releases/download/v1.10.1/com.github.kurotu.vrc-quest-tools-1.10.1.zip",
     "legacyFolders": {
         "Assets\\KRT\\VRCQuestTools": "bb6bc9dbb414049cebd82117a7ccb2c1"
     }
