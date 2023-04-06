@@ -20,6 +20,8 @@ namespace KRT.VRCQuestTools.Models
         private readonly int minor;
         [SerializeField]
         private readonly int patch;
+        [SerializeField]
+        private readonly string prerelease = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SemVer"/> class.
@@ -32,6 +34,14 @@ namespace KRT.VRCQuestTools.Models
             major = int.Parse(split[0]);
             minor = int.Parse(split[1]);
             patch = int.Parse(split[2]);
+            if (part.Length > 1)
+            {
+                prerelease = part[1];
+            }
+            else
+            {
+                prerelease = string.Empty;
+            }
         }
 
         /// <summary>
@@ -40,12 +50,19 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="major">Major.</param>
         /// <param name="minor">Minor.</param>
         /// <param name="patch">Patch.</param>
-        internal SemVer(int major, int minor, int patch)
+        /// <param name="prerelease">Prerelease.</param>
+        internal SemVer(int major, int minor, int patch, string prerelease = "")
         {
             this.major = major;
             this.minor = minor;
             this.patch = patch;
+            this.prerelease = prerelease;
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the version is a prerelease.
+        /// </summary>
+        internal bool IsPrerelease => !string.IsNullOrEmpty(prerelease);
 
         public static bool operator >(SemVer a, SemVer b)
         {
@@ -62,6 +79,18 @@ namespace KRT.VRCQuestTools.Models
             if (a.major == b.major && a.minor == b.minor && a.patch > b.patch)
             {
                 return true;
+            }
+
+            if (a.major == b.major && a.minor == b.minor && a.patch == b.patch)
+            {
+                if (!a.IsPrerelease && b.IsPrerelease)
+                {
+                    return true;
+                }
+                if (a.IsPrerelease && b.IsPrerelease && a.prerelease.CompareTo(b.prerelease) > 0)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -82,6 +111,18 @@ namespace KRT.VRCQuestTools.Models
             if (a.major == b.major && a.minor == b.minor && a.patch < b.patch)
             {
                 return true;
+            }
+
+            if (a.major == b.major && a.minor == b.minor && a.patch == b.patch)
+            {
+                if (a.IsPrerelease && !b.IsPrerelease)
+                {
+                    return true;
+                }
+                if (a.IsPrerelease && b.IsPrerelease && a.prerelease.CompareTo(b.prerelease) < 0)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -111,7 +152,12 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>"major.minor.patch".</returns>
         public override string ToString()
         {
-            return $"{major}.{minor}.{patch}";
+            var str = $"{major}.{minor}.{patch}";
+            if (IsPrerelease)
+            {
+                return str + "-" + prerelease;
+            }
+            return str;
         }
 
         /// <summary>
