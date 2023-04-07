@@ -17,19 +17,20 @@
 # VRCQuestTools
 Unity editor extension to support uploading VRChat avatars for Oculus Quest. Compatible for both of VRCSDK2 and 3.
 
+[![Add to VCC](https://img.shields.io/badge/-Add%20to%20VCC-%232baac1?style=for-the-badge)](https://kurotu.github.io/vpm-repos/vpm.html)
+
 ## Install
 
 Choose an install method you like.
+
+### VRChat Creator Companion (VCC)
+Click [here](https://kurotu.github.io/vpm-repos/vpm.html) to add the repository to VCC. Then you can install the package in VCC.
 
 ### Unitypackage
 Download the latest `.unitypackage` from [the release page](https://github.com/kurotu/VRCQuestTools/releases/latest) or [Booth](https://kurotu.booth.pm/items/2436054). Then import it to your avatar project.
 
 ### Unity Package Manager (UPM)
 Import `https://github.com/kurotu/VRCQuestTools.git`.
-
-### VRChat Package Manager (VPM)
-Clone `https://github.com/kurotu/VRCQuestTools.git` or download the latest `com.github.kurotu.vrc-quest-tools-*.zip` from [the release page](https://github.com/kurotu/VRCQuestTools/releases/latest).
-Add the extracted folder as a local user package from VCC.
 
 ## Usage
 
