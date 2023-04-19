@@ -63,8 +63,8 @@ unitypackage を導入後、ヒエラルキーでアバターを選択した状�
 - Windows 10 64-bit
 - macOS Big Sur (Intel CPU)
 - Ubuntu 20.04 LTS
-- Unity 2018.4.20f1 / 2019.4.30f1
-- VRCSDK2 / VRCSDK3 / Creator Companion (VCC)
+- Unity 2019.4.30f1
+- VRChat Creator Companion (VCC) / VRCSDK3
 
 ## 利用規約
 
