@@ -7,6 +7,7 @@ using System.IO;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Services;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -62,13 +63,7 @@ namespace KRT.VRCQuestTools
 
         static VRCQuestTools()
         {
-#if VRC_SDK_VRCSDK3
-            Debug.Log($"[{Name}] VRCSDK3 project. (VRC_SDK_VRCSDK3 is defined)");
-#elif VRC_SDK_VRCSDK2
-            Debug.Log($"[{Name}] VRCSDK2 project. (VRC_SDK_VRCSDK2 is defined)");
-#else
-            Debug.LogError($"[{Name}] Neither VRC_SDK_VRCSDK3 nor VRC_SDK_VRCSDK2 defined in this project. Make sure VRCSDK is properly imported.");
-#endif
+            PrintProjectInfo();
         }
 
         /// <summary>
@@ -93,6 +88,24 @@ namespace KRT.VRCQuestTools
         private static void Export()
         {
             ExportUnityPackage("VRCQuestTools.unitypackage");
+        }
+
+        private static async void PrintProjectInfo()
+        {
+#if VRC_SDK_VRCSDK3
+            Debug.Log($"[{Name}] VRCSDK3 project. (VRC_SDK_VRCSDK3 is defined)");
+            var isPackage = await VRCSDKUtility.IsImportedAsPackage();
+            if (!isPackage)
+            {
+                Debug.LogWarning($"[{Name}] Legacy VRCSDK3 is no longer supported. Functionalities may be broken in future. (com.vrchat.avatars is missing in Packages)");
+            }
+#elif VRC_SDK_VRCSDK2
+            Debug.LogWarning($"[{Name}] VRCSDK2 is no longer supported. Functionalities may be broken in future. (VRC_SDK_VRCSDK2 is defined)");
+#endif
+
+#if UNITY_2018
+            Debug.LogWarning($"[{Name}] Unity 2018 is no longer supported. Functionalities may be broken in future. (UNITY_2018 is defined)");
+#endif
         }
     }
 }

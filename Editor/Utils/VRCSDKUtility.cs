@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -306,6 +307,34 @@ namespace KRT.VRCQuestTools.Utils
             foreach (var type in types)
             {
                 allowlist.Add(type);
+            }
+        }
+
+        /// <summary>
+        /// Gets whether VRCSDK is imported as a package.
+        /// </summary>
+        /// <returns>true when com.vrchat.avatars exists.</returns>
+        internal static async Task<bool> IsImportedAsPackage()
+        {
+            var request = UnityEditor.PackageManager.Client.List(true, true);
+            while (!request.IsCompleted)
+            {
+                await Task.Delay(100);
+            }
+            if (request.Status == UnityEditor.PackageManager.StatusCode.Success)
+            {
+                foreach (var package in request.Result)
+                {
+                    if (package.name == "com.vrchat.avatars")
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                throw new Exception($"Failed to list packages: {request.Error.message}");
             }
         }
 
