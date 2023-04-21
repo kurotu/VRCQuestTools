@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 追加
+- アバターの変換に失敗したときのエラーメッセージにスタックトレースを追加
+
 ### 変更
 - VRCSDK2, レガシーVRCSDK3, Unity 2018 のサポートを終了
 

@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
@@ -63,10 +64,8 @@ namespace KRT.VRCQuestTools.Views
                         var message = $"{i18n.MaterialExceptionDialogMessage}\n" +
                             "\n" +
                             $"Material: {AssetDatabase.GetAssetPath(material)}\n" +
-                            $"Shader: {material.shader.name}\n" +
-                            "\n" +
-                            $"{exception.GetType().Name}: {exception.Message}";
-                        EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
+                            $"Shader: {material.shader.name}";
+                        DisplayErrorDialog(message, exception);
                         EditorUtility.ClearProgressBar();
                     }
                     else
@@ -82,10 +81,8 @@ namespace KRT.VRCQuestTools.Views
                     {
                         var message = $"{i18n.AnimationClipExceptionDialogMessage}\n" +
                             $"\n" +
-                            $"AnimationClip: {clip.name}\n" +
-                            $"\n" +
-                            $"{exception.GetType().Name}: {exception.Message}";
-                        EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
+                            $"AnimationClip: {clip.name}";
+                        DisplayErrorDialog(message, exception);
                         EditorUtility.ClearProgressBar();
                     }
                     else
@@ -101,10 +98,8 @@ namespace KRT.VRCQuestTools.Views
                     {
                         var message = $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
                             $"\n" +
-                            $"AnimatorController: {controller.name}\n" +
-                            $"\n" +
-                            $"{exception.GetType().Name}: {exception.Message}";
-                        EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
+                            $"AnimatorController: {controller.name}";
+                        DisplayErrorDialog(message, exception);
                         EditorUtility.ClearProgressBar();
                     }
                     else
@@ -320,6 +315,15 @@ namespace KRT.VRCQuestTools.Views
         private void OnClickConvertToPhysBonesButton()
         {
             model.ConvertDynamicBonesToPhysBones();
+        }
+
+        private bool DisplayErrorDialog(string message, System.Exception exception)
+        {
+            var m = $"{message}\n" +
+                "\n" +
+                $"{exception.GetType().Name}: {exception.Message}\n" +
+                exception.StackTrace.Replace(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar, string.Empty);
+            return EditorUtility.DisplayDialog(VRCQuestTools.Name, m, "OK");
         }
     }
 }

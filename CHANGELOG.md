@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add stack trace to the error message when failed to convert avatar.
+
 ### Changed
 - Deprecate support for VRCSDK2, Legacy VRCSDK3 and Unity 2018.
 
