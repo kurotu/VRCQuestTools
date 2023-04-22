@@ -12,14 +12,20 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <h1 className="hero__title">{siteConfig.title}</h1>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <h1 className={clsx("hero__title", styles.heroTitle)}>{siteConfig.title}</h1>
+        <p className={clsx("hero__subtitle", styles.heroSubtitle)}>{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link
-            className="button button--secondary button--lg"
+            className="button button--primary button--lg"
             to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            Get Started
           </Link>
+          <Link
+            className="button button--info button--lg"
+            to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
+            Add to VCC
+          </Link>
+          <iframe className={styles.github} src="https://ghbtns.com/github-btn.html?user=kurotu&repo=VRCQuestTools&type=star&count=true&size=large" frameBorder="0" scrolling="0" width="160" height="30" title="GitHub"></iframe>
         </div>
       </div>
     </header>
@@ -30,8 +36,8 @@ export default function Home(): JSX.Element {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title={`${siteConfig.title}`}
+      description={`${siteConfig.tagline}`}>
       <HomepageHeader />
       <main>
         <HomepageFeatures />
