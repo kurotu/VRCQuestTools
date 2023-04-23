@@ -39,6 +39,7 @@ export default function Home(): JSX.Element {
       title={`${siteConfig.title}`}
       description={`${siteConfig.tagline}`}>
       <HomepageHeader />
+      <div className={styles.heroImage}></div>
       <main>
         <HomepageFeatures />
       </main>

@@ -10,7 +10,7 @@
   overflow: hidden;
 
   color: var(--ifm-heading-color);
-  background-color: var(--ifm-color-emphasis-200);
+  background-color: var(--ifm-color-emphasis-100);
 }
 
 @media screen and (max-width: 996px) {
@@ -36,6 +36,13 @@
   row-gap: 16px;
 }
 
+.heroImage {
+  height: 400px;
+  background-image: url("/img/hero-image.png");
+  background-position: 50%;
+  background-size: cover;
+}
+
 @media screen and (max-width: 996px) {
   .heroTitle {
     font-size: 2.5rem;
@@ -43,5 +50,9 @@
 
   .github {
     display: none;
+  }
+
+  .heroImage {
+    height: 200px;
   }
 }
