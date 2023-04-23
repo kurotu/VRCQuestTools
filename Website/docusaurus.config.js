@@ -60,7 +60,7 @@ const config = {
         title: 'VRCQuestTools',
         logo: {
           alt: 'Docusaurus Logo',
-          src: 'img/logo.svg',
+          src: 'img/logo.png',
         },
         items: [
           {
