@@ -4,8 +4,10 @@
 // </copyright>
 
 using System;
+using System.IO;
 using KRT.VRCQuestTools.I18n;
 using UnityEditor;
+using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
 {
@@ -16,6 +18,7 @@ namespace KRT.VRCQuestTools.Models
     {
         private const string FALSE = "FALSE";
         private const string TRUE = "TRUE";
+        private const string ProjectSettingsFile = "ProjectSettings/VRCQuestToolsSettings.json";
 
         private static I18nBase i18n = null;
 
@@ -48,8 +51,17 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         internal static bool IsVertexColorRemoverAutomatorEnabled
         {
-            get { return GetBooleanConfigValue(Keys.AutoRemoveVertexColors, true); }
-            set { SetBooleanConfigValue(Keys.AutoRemoveVertexColors, value); }
+            get
+            {
+                return GetProjectSettings().AutoRemoveVertexColors;
+            }
+
+            set
+            {
+                var settings = GetProjectSettings();
+                settings.AutoRemoveVertexColors = value;
+                SaveProjectSettings(settings);
+            }
         }
 
         /// <summary>
@@ -131,6 +143,30 @@ namespace KRT.VRCQuestTools.Models
         {
             var d = defaultValue ? TRUE : FALSE;
             return (EditorUserSettings.GetConfigValue(name) ?? d) == TRUE;
+        }
+
+        private static VRCQuestToolsProjectSettings GetProjectSettings()
+        {
+            if (!File.Exists(ProjectSettingsFile))
+            {
+                var settings = new VRCQuestToolsProjectSettings();
+
+                // Migrate AutoRemoveVertexColors from EditorUserSettings to ProjectSettings/
+                if (EditorUserSettings.GetConfigValue(Keys.AutoRemoveVertexColors) != null)
+                {
+                    settings.AutoRemoveVertexColors = GetBooleanConfigValue(Keys.AutoRemoveVertexColors, true);
+                }
+
+                SaveProjectSettings(settings);
+            }
+            var json = File.ReadAllText(ProjectSettingsFile);
+            return JsonUtility.FromJson<VRCQuestToolsProjectSettings>(json);
+        }
+
+        private static void SaveProjectSettings(VRCQuestToolsProjectSettings settings)
+        {
+            var json = JsonUtility.ToJson(settings, true);
+            File.WriteAllText(ProjectSettingsFile, json);
         }
 
         private static class Keys
