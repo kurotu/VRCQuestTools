@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Deprecate support for VRCSDK2, Legacy VRCSDK3 and Unity 2018.
 - **Auto Remove Vertex Colors** setting is saved as `ProjectSettings/VRCQuestToolsSettings.json`.
+- Avatar's prefabs are no longer unpacked in conversion.
 
 ## [1.10.1] - 2023-03-28
 

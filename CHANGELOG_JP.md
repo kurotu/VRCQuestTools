@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 変更
 - VRCSDK2, レガシーVRCSDK3, Unity 2018 のサポートを終了
 - **Auto Remove Vertex Colors** (頂点カラーを自動的に削除する) 設定を `ProjectSettings/VRCQuestToolsSettings.json` に保存するように変更
+- 変換時にアバター内の Prefab を Unpack (解凍) しないように変更
 
 ## [1.10.1] - 2023-03-28
 
