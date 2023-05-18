@@ -114,9 +114,7 @@ namespace KRT.VRCQuestTools.I18n
         // Validations
         internal override string DeactivateAvatar => "アバターを非表示";
         internal override string IncompatibleForQuest => $"ビルドターゲットが Android の場合 Quest 用にアップロードできないアバターがシーン内にあるとアバターをアップロードできません。エラーのあるアバターを非表示にするか、ビルドターゲットを PC に戻してください。";
-        internal override string MissingScripts => "\"Missing\"\u00A0状態のコンポーネントのあるアバターはアップロードできません。 ビルド前にコンポーネントを削除してください。";
-        internal override string MissingDynamicBone => "Dynamic\u00A0Bone がインポートされていません。 Dynamic Bone をインポートするか \"missing\" 状態のコンポーネントを削除してください。";
-        internal override string RemoveMissing => "\"Missing\" 状態のコンポーネントを削除";
+        internal override string MissingScripts => "\"Missing\"\u00A0状態のコンポーネントがあります。インポートし忘れたアセットやパッケージがないか確認してください。";
         internal override string ValidatorAlertsProhibitedShaders(string shaderName, string[] materialNames) =>
             $"シェーダー \"{shaderName}\" (マテリアル: {string.Join(", ", materialNames)}) は Quest で使用できません。";
         internal override string ValidatorAlertsUnsupportedComponents(string componentName, string objectName) =>

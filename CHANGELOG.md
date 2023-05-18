@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Auto Remove Vertex Colors** setting is saved as `ProjectSettings/VRCQuestToolsSettings.json`.
 - Avatar's prefabs are no longer unpacked in conversion.
 - Missing components are no longer removed in conversion.
+- Changed validation message when missing components are detected.
 
 ## [1.10.1] - 2023-03-28
 

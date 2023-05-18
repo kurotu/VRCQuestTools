@@ -23,7 +23,6 @@ namespace KRT.VRCQuestTools.Models.Validators
             {
                 return null;
             }
-            var hasDynamicBone = AssetUtility.IsDynamicBoneImported();
 
             if (VRCSDKUtility.CountMissingComponentsInChildren(avatar.GameObject, true) > 0)
             {
@@ -35,20 +34,11 @@ namespace KRT.VRCQuestTools.Models.Validators
                     }
                     var i18n = VRCQuestToolsSettings.I18nResource;
 
-                    if (hasDynamicBone)
-                    {
-                        GUILayout.Label(i18n.MissingScripts, EditorStyles.wordWrappedLabel);
-                    }
-                    else
-                    {
-                        GUILayout.Label(i18n.MissingDynamicBone, EditorStyles.wordWrappedLabel);
-                    }
+                    GUILayout.Label(i18n.MissingScripts, EditorStyles.wordWrappedLabel);
                     GUILayout.Label($"- {avatar.GameObject.name}", EditorStyles.wordWrappedLabel);
-                    if (GUILayout.Button(i18n.RemoveMissing))
+                    if (GUILayout.Button(i18n.DismissLabel))
                     {
-                        Selection.activeGameObject = avatar.GameObject;
-                        EditorApplication.ExecuteMenuItem(VRCQuestToolsMenus.MenuPaths.RemoveMissingComponents);
-                        return false;
+                        return true;
                     }
                     return false;
                 });
