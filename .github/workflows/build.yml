@@ -134,6 +134,7 @@ jobs:
       - uses: softprops/action-gh-release@v1
         with:
           body_path: ${{ github.workspace }}-release.txt
+          draft: true
           files: |
             package.json
             *.zip
