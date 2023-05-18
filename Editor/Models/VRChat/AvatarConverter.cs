@@ -79,8 +79,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 AssetDatabase.SaveAssets();
             }
 
-            // Duplicate the original gameobject.
-            var questAvatarObject = UnityEngine.Object.Instantiate(avatar.AvatarDescriptor.gameObject);
+            // Duplicate the original gameobject by keeping instantiated prefabs.
+            // https://forum.unity.com/threads/solved-duplicate-prefab-issue.778553/#post-7562128
+            Selection.activeGameObject = avatar.AvatarDescriptor.gameObject;
+            Unsupported.DuplicateGameObjectsUsingPasteboard();
+            var questAvatarObject = Selection.activeGameObject;
 
             // Convert animator controllers and their animation clips.
             if (avatar.HasAnimatedMaterials || setting.overrideControllers.Count(oc => oc != null) > 0)
@@ -172,7 +175,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }).ToArray();
             }
 
-            VRCSDKUtility.RemoveMissingComponentsInChildren(questAvatarObject, true);
             remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
 
 #if VRC_SDK_VRCSDK3
