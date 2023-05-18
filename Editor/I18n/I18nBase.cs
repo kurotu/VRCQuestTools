@@ -61,6 +61,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string NoMissingComponentsMessage(string objectName);
         internal abstract string MissingRemoverConfirmationMessage(string objectName);
         internal abstract string UnpackPrefabMessage { get; }
+        internal abstract string MissingRemoverOnBuildDialogMessage(string objectName);
 
         // BlendShapes Copy
         internal abstract string SourceMeshLabel { get; }

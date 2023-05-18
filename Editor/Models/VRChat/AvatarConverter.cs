@@ -175,7 +175,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }).ToArray();
             }
 
-            VRCSDKUtility.RemoveMissingComponentsInChildren(questAvatarObject, true);
             remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
 
 #if VRC_SDK_VRCSDK3

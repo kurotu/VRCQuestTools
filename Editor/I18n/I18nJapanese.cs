@@ -62,6 +62,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string NoMissingComponentsMessage(string objectName) => $"{objectName} に \"Missing\" 状態のコンポーネントはありません。";
         internal override string MissingRemoverConfirmationMessage(string objectName) => $"{objectName} から \"Missing\" 状態のコンポーネントを削除します。";
         internal override string UnpackPrefabMessage => "同時に Unpack Prefab を実行します。";
+        internal override string MissingRemoverOnBuildDialogMessage(string objectName) => $"{objectName} には \"Missing\" 状態のコンポーネントがあります。このままビルドを続けますか？";
 
         // BlendShapes Copy
         internal override string SourceMeshLabel => "コピー元メッシュ";
