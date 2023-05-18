@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -210,15 +211,37 @@ namespace KRT.VRCQuestTools.ViewModels
             Undo.SetCurrentGroupName("Remove Avatar Dynamics Components");
             foreach (var c in Avatar.GetPhysBones().Except(physBonesToKeep))
             {
+                var go = c.gameObject;
                 Undo.DestroyObjectImmediate(c);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(go);
             }
             foreach (var c in Avatar.GetPhysBoneColliders().Except(physBoneCollidersToKeep))
             {
+                var physbones = Avatar.GetPhysBones();
+
+                // Remove reference from PhysBone before destroying.
+                for (var boneIndex = 0; boneIndex < physbones.Length; boneIndex++)
+                {
+                    var boneObject = physbones[boneIndex];
+                    var boneComponent = new VRCSDKUtility.Reflection.PhysBone(boneObject);
+                    for (var colliderIndex = 0; colliderIndex < boneComponent.Colliders.Count; colliderIndex++)
+                    {
+                        if (boneComponent.Colliders[colliderIndex] == c)
+                        {
+                            boneComponent.ClearCollider(colliderIndex);
+                        }
+                    }
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(boneObject);
+                }
+                var go = c.gameObject;
                 Undo.DestroyObjectImmediate(c);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(go);
             }
             foreach (var c in Avatar.GetContacts().Except(contactsToKeep))
             {
+                var go = c.gameObject;
                 Undo.DestroyObjectImmediate(c);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(go);
             }
             Undo.IncrementCurrentGroup();
         }

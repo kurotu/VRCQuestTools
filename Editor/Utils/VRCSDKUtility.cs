@@ -349,6 +349,7 @@ namespace KRT.VRCQuestTools.Utils
             internal class PhysBone
             {
                 private static readonly FieldInfo RootTransformField = PhysBoneType?.GetField("rootTransform");
+                private static readonly FieldInfo CollidersField = PhysBoneType?.GetField("colliders");
                 private readonly Component component;
 
                 /// <summary>
@@ -364,6 +365,29 @@ namespace KRT.VRCQuestTools.Utils
                 /// Gets root tansform set by inspector.
                 /// </summary>
                 internal Transform RootTransform => (Transform)RootTransformField.GetValue(component);
+
+                /// <summary>
+                /// Gets PhysBoneCollider instances.
+                /// </summary>
+                internal List<Component> Colliders
+                {
+                    get
+                    {
+                        var colliders = CollidersField.GetValue(component);
+                        dynamic[] c = Enumerable.ToArray((dynamic)colliders);
+                        return c.Cast<Component>().ToList();
+                    }
+                }
+
+                /// <summary>
+                /// Sets null to PhysBoneCollider at index.
+                /// </summary>
+                /// <param name="index">index to set null.</param>
+                internal void ClearCollider(int index)
+                {
+                    var colliders = CollidersField.GetValue(component);
+                    ((dynamic)colliders)[index] = null;
+                }
             }
 
             /// <summary>
