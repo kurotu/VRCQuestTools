@@ -16,6 +16,11 @@ namespace KRT.VRCQuestTools.Models
     internal class GitHubRelease
     {
         /// <summary>
+        /// URL of release.
+        /// </summary>
+        public string html_url = string.Empty;
+
+        /// <summary>
         /// Git tag name.
         /// </summary>
         public string tag_name = "0.0.0";

@@ -106,6 +106,7 @@ namespace KRT.VRCQuestTools.I18n
         // Check for Update
         internal override string CheckLater => "後で確認";
         internal override string GetUpdate => "アップデート";
+        internal override string SeeChangelog => "変更履歴";
         internal override string SkipThisVersion => "スキップ";
         internal override string NewVersionIsAvailable(string latestVersion) => $"新しいバージョン {latestVersion} があります。";
         internal override string NewVersionHasBreakingChanges => "このバージョンには互換性に関する重要な変更がある可能性があります。";

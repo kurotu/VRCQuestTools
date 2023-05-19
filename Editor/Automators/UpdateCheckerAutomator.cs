@@ -73,6 +73,11 @@ namespace KRT.VRCQuestTools.Automators
                                 Application.OpenURL(VRCQuestTools.BoothURL);
                                 return true;
                             }
+                            if (GUILayout.Button(i18n.SeeChangelog))
+                            {
+                                Application.OpenURL(latestRelease.html_url);
+                                return false;
+                            }
                             if (GUILayout.Button(i18n.CheckLater))
                             {
                                 VRCQuestToolsSettings.LastVersionCheckDateTime = DateTime.Now;
