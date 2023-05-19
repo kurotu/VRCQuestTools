@@ -17,5 +17,12 @@
         "VRCSDK3A.dll"
     ],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.vrchat.base",
+            "expression": "3.2.0",
+            "define": "VQT_VRCSDK_HAS_NETWORK_ID"
+        }
+    ]
 }

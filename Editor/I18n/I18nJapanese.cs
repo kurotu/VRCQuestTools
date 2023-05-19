@@ -33,6 +33,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SaveToLabel => "保存先フォルダ";
         internal override string SelectButtonLabel => "選択";
         internal override string ConvertButtonLabel => "変換";
+        internal override string AssignButtonLabel => "割り当て";
         internal override string UpdateTexturesLabel => "Quest用テクスチャのみ更新";
         internal override string AdvancedConverterSettingsLabel => "高度な変換設定";
         internal override string RemoveVertexColorLabel => "メッシュから頂点カラーを削除";
@@ -52,6 +53,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";
         internal override string AlertForMaterialAnimation => "マテリアルを変更するアニメーションがあるため、Animator ControllerおよびアニメーションをQuest用に複製・変換します。";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} は Dynamic Bone を PhysBones に変換しません。アバターを変換する前に PhysBones を設定してください。";
+        internal override string AlertForMissingNetIds => "ネットワークIDの割り当てられていない PhysBones があります。 PC と Quest で正しく同期させるため、ネットワークIDを割り当てた後でPC用のアバターを再度アップロードしてください。";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics コンポーネントの数が Poor の制限値を超えています (Very Poor)。 Avatar Dynamics 関連のパフォーマンスランクが Poor に収まるようコンポーネントを削除してください。";
         internal override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
         internal override string MainTextureBrightnessLabel => "メインテクスチャの明るさ";

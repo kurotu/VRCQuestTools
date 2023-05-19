@@ -215,6 +215,18 @@ namespace KRT.VRCQuestTools.Views
                     }
                 }
 
+                if (model.HasMissingNetIDs)
+                {
+                    using (var horizontal = new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.HelpBox(i18n.AlertForMissingNetIds, MessageType.Warning);
+                        if (GUILayout.Button(i18n.AssignButtonLabel, GUILayout.Height(38), GUILayout.MinWidth(60)))
+                        {
+                            OnClickAssignNetIdsButton();
+                        }
+                    }
+                }
+
                 var componentsToBeAlearted = model.UnsupportedComponents
                     .Select(c => c.GetType().Name)
                     .Distinct()
@@ -315,6 +327,11 @@ namespace KRT.VRCQuestTools.Views
         private void OnClickConvertToPhysBonesButton()
         {
             model.ConvertDynamicBonesToPhysBones();
+        }
+
+        private void OnClickAssignNetIdsButton()
+        {
+            model.AssignNetIdsToPhysBones();
         }
 
         private bool DisplayErrorDialog(string message, System.Exception exception)

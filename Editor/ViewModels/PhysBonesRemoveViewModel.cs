@@ -243,6 +243,11 @@ namespace KRT.VRCQuestTools.ViewModels
                 Undo.DestroyObjectImmediate(c);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(go);
             }
+
+            // For now, don't stripe unused network ids in order to help prefab workflow.
+            // Once network ids are striped, it's hard to revert the change.
+            // VRCSDKUtility.StripeUnusedNetworkIds(Avatar.AvatarDescriptor);
+            // PrefabUtility.RecordPrefabInstancePropertyModifications(Avatar.GameObject);
             Undo.IncrementCurrentGroup();
         }
 

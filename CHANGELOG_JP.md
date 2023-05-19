@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - アバターの変換に失敗したときのエラーメッセージにスタックトレースを追加
 - アバターのビルド時に Missing 状態のコンポーネントを削除する機能を追加
 - アップデート通知に変更履歴ボタンを追加
+- PhysBone に Network ID を割り当てる機能と説明を追加 (VRCSDK 3.2.0 以降が必要)
 
 ### 変更
 - VRCSDK2, レガシーVRCSDK3, Unity 2018 のサポートを終了

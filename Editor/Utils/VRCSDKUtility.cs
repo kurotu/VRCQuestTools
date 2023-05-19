@@ -339,6 +339,106 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Gets whether the avatar has missing network ids.
+        /// </summary>
+        /// <param name="avatarDescriptor">Taget avatar.</param>
+        /// <returns>true when the avatar has missing network ids.</returns>
+        internal static bool HasMissingNetworkIds(VRC_AvatarDescriptor avatarDescriptor)
+        {
+#if VQT_VRCSDK_HAS_NETWORK_ID
+            var ids = avatarDescriptor.NetworkIDCollection;
+            var pbs = avatarDescriptor.gameObject.GetComponentsInChildren(PhysBoneType, true);
+            if (ids.Count == 0)
+            {
+                return pbs.Length > 0;
+            }
+
+            var pbNetId0 = pbs.FirstOrDefault((pb) =>
+            {
+                var missingInIds = ids.FirstOrDefault((id_pair) =>
+                {
+                    return id_pair.gameObject == pb.gameObject;
+                }) == null;
+                return missingInIds;
+            }) != null;
+            return pbNetId0;
+#else
+            return false;
+#endif
+        }
+
+        /// <summary>
+        /// Assigns network ids to PhysBones.
+        /// </summary>
+        /// <param name="avatarDescriptor">Target avatar.</param>
+        /// <exception cref="NotImplementedException">VRCSDK dones't support Network IDs.</exception>
+        internal static void AssignNetworkIdsToPhysBones(VRC_AvatarDescriptor avatarDescriptor)
+        {
+#if VQT_VRCSDK_HAS_NETWORK_ID
+            var ids = avatarDescriptor.NetworkIDCollection;
+            var pbs = avatarDescriptor.GetComponentsInChildren(PhysBoneType, true)
+                .Select(c => new Reflection.PhysBone(c))
+                .OrderBy(pb => GetFullPathInHierarchy(pb.GameObject))
+                .ToArray();
+            var assignedIds = new HashSet<int>(ids.Select(oair => oair.ID));
+
+            int id = 10;
+            foreach (var pb in pbs)
+            {
+                while (assignedIds.Contains(id))
+                {
+                    id++;
+                }
+                var alreadyAssigned = ids.FirstOrDefault(pair => pair.gameObject == pb.GameObject) != null;
+                if (!alreadyAssigned)
+                {
+                    var pair = new VRC.SDKBase.Network.NetworkIDPair();
+                    pair.ID = id;
+                    pair.gameObject = pb.GameObject;
+                    avatarDescriptor.NetworkIDCollection.Add(pair);
+                    assignedIds.Add(id);
+                }
+            }
+#else
+            throw new NotImplementedException();
+#endif
+        }
+
+        /// <summary>
+        /// Stripes unused network ids from the avatar.
+        /// </summary>
+        /// <param name="avatarDescriptor">Target avatar.</param>
+        /// <exception cref="NotImplementedException">VRCSDK dones't support Network IDs.</exception>
+        internal static void StripeUnusedNetworkIds(VRC_AvatarDescriptor avatarDescriptor)
+        {
+#if VQT_VRCSDK_HAS_NETWORK_ID
+            for (var i = 0; i < avatarDescriptor.NetworkIDCollection.Count; i++)
+            {
+                var pair = avatarDescriptor.NetworkIDCollection[i];
+                if (pair.gameObject.GetComponent(PhysBoneType) == null)
+                {
+                    avatarDescriptor.NetworkIDCollection.RemoveAt(i);
+                    i--;
+                }
+            }
+#else
+            throw new NotImplementedException();
+#endif
+        }
+
+        private static string GetFullPathInHierarchy(GameObject gameObject)
+        {
+            var go = gameObject;
+            var path = $"/{go.name}";
+            while (go.transform.parent != null)
+            {
+                path = $"/{go.transform.parent.name}/{path}";
+                go = go.transform.parent.gameObject;
+            }
+            return path;
+        }
+
+        /// <summary>
         /// Reflection to use VRCSDK features.
         /// </summary>
         internal class Reflection
@@ -360,6 +460,11 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     this.component = component;
                 }
+
+                /// <summary>
+                /// Gets gameObject of the component.
+                /// </summary>
+                internal GameObject GameObject => component.gameObject;
 
                 /// <summary>
                 /// Gets root tansform set by inspector.
