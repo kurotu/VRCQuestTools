@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Missing components are no longer removed in conversion.
 - Changed validation message when missing components are detected.
 
+### Fixed
+- Fixed the issue where some prameters are not reflected to converted BlendTrees.
+
 ## [1.10.1] - 2023-03-28
 
 ### Fixed

@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 変換時に Missing 状態のコンポーネントを削除しないように変更
 - Missing 状態のコンポーネントがある場合の警告メッセージを変更
 
+### 修正
+- 変換された BlendTree に反映されないパラメーターがある問題を修正
+
 ## [1.10.1] - 2023-03-28
 
 ### 修正

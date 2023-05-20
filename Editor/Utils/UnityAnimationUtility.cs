@@ -203,12 +203,18 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Copied blend tree.</returns>
         internal static BlendTree DeepCopyBlendTree(BlendTree blendTree)
         {
-            var newTree = new BlendTree()
+            var originalSO = new SerializedObject(blendTree);
+            var originalProp = originalSO.GetIterator();
+            var newTree = new BlendTree();
+            var newSO = new SerializedObject(newTree);
+
+            while (originalProp.Next(true))
             {
-                blendParameter = blendTree.blendParameter,
-                blendParameterY = blendTree.blendParameterY,
-                blendType = blendTree.blendType,
-                children = blendTree.children.Select(child =>
+                newSO.CopyFromSerializedProperty(originalProp);
+            }
+            newSO.ApplyModifiedProperties();
+
+            newTree.children = blendTree.children.Select(child =>
                 {
                     var newChild = new ChildMotion()
                     {
@@ -221,13 +227,7 @@ namespace KRT.VRCQuestTools.Utils
                         timeScale = child.timeScale,
                     };
                     return newChild;
-                }).ToArray(),
-                maxThreshold = blendTree.maxThreshold,
-                minThreshold = blendTree.minThreshold,
-                useAutomaticThresholds = blendTree.useAutomaticThresholds,
-                hideFlags = blendTree.hideFlags,
-                name = blendTree.name,
-            };
+                }).ToArray();
             return newTree;
         }
 
