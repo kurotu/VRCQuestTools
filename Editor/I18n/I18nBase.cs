@@ -33,6 +33,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string SaveToLabel { get; }
         internal abstract string SelectButtonLabel { get; }
         internal abstract string ConvertButtonLabel { get; }
+        internal abstract string AssignButtonLabel { get; }
         internal abstract string UpdateTexturesLabel { get; }
         internal abstract string AdvancedConverterSettingsLabel { get; }
         internal abstract string RemoveVertexColorLabel { get; }
@@ -52,6 +53,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string MainTextureBrightnessLabel { get; }
         internal abstract string MainTextureBrightnessTooltip { get; }
         internal abstract string AlertForDynamicBoneConversion { get; }
+        internal abstract string AlertForMissingNetIds { get; }
         internal abstract string AlertForAvatarDynamicsPerformance { get; }
         internal abstract string AlertForComponents { get; }
         internal abstract string AlertForMaterialAnimation { get; }
@@ -82,6 +84,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string PhysBoneCollidersWillBeRemovedAtRunTime { get; }
         internal abstract string ContactsWillBeRemovedAtRunTime { get; }
         internal abstract string PhysBonesOrderMustMatchWithPC { get; }
+        internal abstract string PhysBonesShouldHaveNetworkID { get; }
         internal abstract string DeleteUnselectedComponents { get; }
 
         // Metallic Smoothness

@@ -33,6 +33,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SaveToLabel => "Folder to Save";
         internal override string SelectButtonLabel => "Select";
         internal override string ConvertButtonLabel => "Convert";
+        internal override string AssignButtonLabel => "Assign";
         internal override string UpdateTexturesLabel => "Update Only Quest Textures";
         internal override string AdvancedConverterSettingsLabel => "Advanced Converter Settings";
         internal override string RemoveVertexColorLabel => "Remove Vertex Color from Meshes";
@@ -52,6 +53,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
         internal override string AlertForMaterialAnimation => "There are Animation clips which change avatar's materials. Animator Controllers and Animation clips will be duplicated then converted for Quest.";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
+        internal override string AlertForMissingNetIds => "There are PhysBones which don't have Network ID. To keep sync between PC and Quest, assign Network IDs then re-upload the PC avatar.";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics components exceed \"Poor\" limits (Very Poor). Please keep \"Poor\" rating by removing them.";
         internal override string TexturesSizeLimitLabel => "Textures Size Limit";
         internal override string MainTextureBrightnessLabel => "Main Texture Brightness";
@@ -82,7 +84,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PhysBonesWillBeRemovedAtRunTime => "You can't upload this avatar for Quest. Please reduce PhysBone components.";
         internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "All PhysBone colliders will be removed at runtime on Quest. Please reduce PhysBoneCollider components.";
         internal override string ContactsWillBeRemovedAtRunTime => "You can't upload this avatar for Quest. Please reduce VRCContact components.";
-        internal override string PhysBonesOrderMustMatchWithPC => "To properly synchronize PhysBones, the order of PhysBones must match with the PC avatar. Please select PhysBones from the top of the list.";
+        internal override string PhysBonesOrderMustMatchWithPC => "To properly synchronize PhysBones, the order of PhysBones' Network IDs must match with the PC avatar. Please select PhysBones from the top of the list.";
+        internal override string PhysBonesShouldHaveNetworkID => "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Quest. Please assign Network IDs to both of PC version and Quest version with Network ID Utility of VRCSDK, then re-upload both.";
         internal override string DeleteUnselectedComponents => "Delete Unselected Components";
 
         // Metallic Smoothness

@@ -126,7 +126,7 @@ namespace KRT.VRCQuestTools.Views
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
-                        var physBones = model.Avatar.GetPhysBones();
+                        var physBones = model.Avatar.GetPhysBones().OrderBy(p => VRCSDKUtility.GetFullPathInHierarchy(p.gameObject)).ToArray();
                         if (physBones.Length > 0)
                         {
                             var allSelected = GUIToggleAllField(i18n.KeepAll, model.DoesSelectAllPhysBones);
@@ -227,10 +227,17 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space();
 
+#if VQT_VRCSDK_HAS_NETWORK_ID
+            if (VRCSDKUtility.HasMissingNetworkIds(model.Avatar.AvatarDescriptor))
+            {
+                EditorGUILayout.HelpBox(i18n.PhysBonesShouldHaveNetworkID, MessageType.Warning);
+            }
+#else
             if (!model.SelectedPhysBonesOrderMatchesWithOriginal())
             {
                 EditorGUILayout.HelpBox(i18n.PhysBonesOrderMustMatchWithPC, MessageType.Warning);
             }
+#endif
             if (model.PhysBonesToKeep.Count() > VRCSDKUtility.PoorPhysBonesCountLimit)
             {
                 EditorGUILayout.HelpBox("PhysBones Components: Very Poor (Quest)\n" + i18n.PhysBonesWillBeRemovedAtRunTime, MessageType.Error);

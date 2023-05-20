@@ -243,6 +243,10 @@ namespace KRT.VRCQuestTools.ViewModels
                 Undo.DestroyObjectImmediate(c);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(go);
             }
+
+            VRCSDKUtility.StripeUnusedNetworkIds(Avatar.AvatarDescriptor);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(Avatar.GameObject);
+
             Undo.IncrementCurrentGroup();
         }
 

@@ -143,6 +143,11 @@ namespace KRT.VRCQuestTools.ViewModels
         }
 
         /// <summary>
+        /// Gets a value indicating whether the avatar has missing network IDs.
+        /// </summary>
+        internal bool HasMissingNetIDs => VRCSDKUtility.HasMissingNetworkIds(TargetAvatarDescriptor);
+
+        /// <summary>
         /// Gets unsupported components for Quest.
         /// </summary>
         internal Component[] UnsupportedComponents => Remover.GetUnsupportedComponentsInChildren(TargetAvatar.AvatarDescriptor.gameObject, true);
@@ -246,6 +251,14 @@ namespace KRT.VRCQuestTools.ViewModels
         {
             Selection.activeGameObject = targetAvatarObject;
             EditorApplication.ExecuteMenuItem("VRChat SDK/Utilities/Convert DynamicBones To PhysBones");
+        }
+
+        /// <summary>
+        /// Assign network IDs to PhysBones via menu item.
+        /// </summary>
+        internal void AssignNetIdsToPhysBones()
+        {
+            VRCSDKUtility.AssignNetworkIdsToPhysBones(TargetAvatarDescriptor);
         }
     }
 }

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add stack trace to the error message when failed to convert avatar.
 - Remove missing components when building avatar.
 - Add changelog button to update notification.
+- Add description and feature to assign Network IDs to PhysBones. (Requires VRCSDK 3.2.0 or later)
 
 ### Changed
 - Deprecate support for VRCSDK2, Legacy VRCSDK3 and Unity 2018.
