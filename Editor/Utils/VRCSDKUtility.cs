@@ -399,6 +399,7 @@ namespace KRT.VRCQuestTools.Utils
                     assignedIds.Add(id);
                 }
             }
+            PrefabUtility.RecordPrefabInstancePropertyModifications(avatarDescriptor);
 #else
             throw new NotImplementedException();
 #endif
