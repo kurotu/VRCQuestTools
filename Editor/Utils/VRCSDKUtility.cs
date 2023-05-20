@@ -426,7 +426,12 @@ namespace KRT.VRCQuestTools.Utils
 #endif
         }
 
-        private static string GetFullPathInHierarchy(GameObject gameObject)
+        /// <summary>
+        /// Gets the full path of the game object in the hierarchy.
+        /// </summary>
+        /// <param name="gameObject">Target object.</param>
+        /// <returns>Full path which begins /.</returns>
+        internal static string GetFullPathInHierarchy(GameObject gameObject)
         {
             var go = gameObject;
             var path = $"/{go.name}";
