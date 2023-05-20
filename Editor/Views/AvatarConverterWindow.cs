@@ -126,6 +126,33 @@ namespace KRT.VRCQuestTools.Views
             }
             model.TargetAvatarDescriptor = selectedAvatar;
 
+            if (model.TargetAvatarDescriptor != null)
+            {
+                if (VRCSDKUtility.IsPhysBonesImported() && model.HasDynamicBones)
+                {
+                    using (var horizontal = new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Warning);
+                        if (GUILayout.Button(i18n.ConvertButtonLabel, GUILayout.Height(38), GUILayout.MinWidth(60)))
+                        {
+                            OnClickConvertToPhysBonesButton();
+                        }
+                    }
+                }
+
+                if (model.HasMissingNetIDs)
+                {
+                    using (var horizontal = new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.HelpBox(i18n.AlertForMissingNetIds, MessageType.Warning);
+                        if (GUILayout.Button(i18n.AssignButtonLabel, GUILayout.Height(38), GUILayout.MinWidth(60)))
+                        {
+                            OnClickAssignNetIdsButton();
+                        }
+                    }
+                }
+            }
+
             EditorGUILayout.Space();
 
             scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
@@ -203,30 +230,6 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.HelpBox(i18n.WarningForAppearance, MessageType.Info);
             if (model.TargetAvatarDescriptor != null)
             {
-                if (VRCSDKUtility.IsPhysBonesImported() && model.HasDynamicBones)
-                {
-                    using (var horizontal = new EditorGUILayout.HorizontalScope())
-                    {
-                        EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Warning);
-                        if (GUILayout.Button(i18n.ConvertButtonLabel, GUILayout.Height(38), GUILayout.MinWidth(60)))
-                        {
-                            OnClickConvertToPhysBonesButton();
-                        }
-                    }
-                }
-
-                if (model.HasMissingNetIDs)
-                {
-                    using (var horizontal = new EditorGUILayout.HorizontalScope())
-                    {
-                        EditorGUILayout.HelpBox(i18n.AlertForMissingNetIds, MessageType.Warning);
-                        if (GUILayout.Button(i18n.AssignButtonLabel, GUILayout.Height(38), GUILayout.MinWidth(60)))
-                        {
-                            OnClickAssignNetIdsButton();
-                        }
-                    }
-                }
-
                 var componentsToBeAlearted = model.UnsupportedComponents
                     .Select(c => c.GetType().Name)
                     .Distinct()
