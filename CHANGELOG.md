@@ -8,17 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Add stack trace to the error message when failed to convert avatar.
+- Add description and feature to assign Network IDs to PhysBones. (VRCSDK 3.2.0 or later)
 - Remove missing components when building avatar.
 - Add changelog button to update notification.
-- Add description and feature to assign Network IDs to PhysBones. (Requires VRCSDK 3.2.0 or later)
+- Add stack trace to the error message when failed to convert avatar.
 
 ### Changed
 - Deprecate support for VRCSDK2, Legacy VRCSDK3 and Unity 2018.
-- **Auto Remove Vertex Colors** setting is saved as `ProjectSettings/VRCQuestToolsSettings.json`.
 - Avatar's prefabs are no longer unpacked in conversion.
 - Missing components are no longer removed in conversion.
 - Changed validation message when missing components are detected.
+- **Auto Remove Vertex Colors** setting is saved as `ProjectSettings/VRCQuestToolsSettings.json`.
 
 ### Fixed
 - Fixed the issue where some prameters are not reflected to converted BlendTrees.

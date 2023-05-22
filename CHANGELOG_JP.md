@@ -8,17 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### 追加
-- アバターの変換に失敗したときのエラーメッセージにスタックトレースを追加
+- PhysBone に Network ID を割り当てる機能と説明を追加 (VRCSDK 3.2.0 以降)
 - アバターのビルド時に Missing 状態のコンポーネントを削除する機能を追加
 - アップデート通知に変更履歴ボタンを追加
-- PhysBone に Network ID を割り当てる機能と説明を追加 (VRCSDK 3.2.0 以降が必要)
+- アバターの変換に失敗したときのエラーメッセージにスタックトレースを追加
 
 ### 変更
 - VRCSDK2, レガシーVRCSDK3, Unity 2018 のサポートを終了
-- **Auto Remove Vertex Colors** (頂点カラーを自動的に削除する) 設定を `ProjectSettings/VRCQuestToolsSettings.json` に保存するように変更
 - 変換時にアバター内の Prefab を Unpack (解凍) しないように変更
 - 変換時に Missing 状態のコンポーネントを削除しないように変更
 - Missing 状態のコンポーネントがある場合の警告メッセージを変更
+- **Auto Remove Vertex Colors** (頂点カラーを自動的に削除する) 設定を `ProjectSettings/VRCQuestToolsSettings.json` に保存するように変更
 
 ### 修正
 - 変換された BlendTree に反映されないパラメーターがある問題を修正
