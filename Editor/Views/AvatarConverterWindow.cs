@@ -140,6 +140,7 @@ namespace KRT.VRCQuestTools.Views
                     }
                 }
 
+#if VQT_VRCSDK_HAS_NETWORK_ID
                 if (model.HasMissingNetIDs)
                 {
                     using (var horizontal = new EditorGUILayout.HorizontalScope())
@@ -151,6 +152,18 @@ namespace KRT.VRCQuestTools.Views
                         }
                     }
                 }
+
+                var gos = model.GameObjectsWithMultiplePhysBones;
+                if (gos.Length > 0)
+                {
+                    using (var horizontal = new EditorGUILayout.HorizontalScope())
+                    {
+                        var message = $"{i18n.AlertForMultiplePhysBones}\n\n" +
+                            $"{string.Join("\n", model.GameObjectsWithMultiplePhysBones.Select(x => $"  - {x.name}"))}";
+                        EditorGUILayout.HelpBox(message, MessageType.Warning);
+                    }
+                }
+#endif
             }
 
             EditorGUILayout.Space();

@@ -54,6 +54,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForMaterialAnimation => "マテリアルを変更するアニメーションがあるため、Animator ControllerおよびアニメーションをQuest用に複製・変換します。";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} は Dynamic Bone を PhysBones に変換しません。アバターを変換する前に PhysBones を設定してください。";
         internal override string AlertForMissingNetIds => "ネットワークIDの割り当てられていない PhysBones があります。 PC と Quest で正しく同期させるため、ネットワークIDを割り当てた後でPC用のアバターを再度アップロードしてください。";
+        internal override string AlertForMultiplePhysBones => "1つの GameObject に複数の PhysBone があります。変換後に Quest 用に PhysBone を削除した場合、PC と Quest で正しく同期しない可能性があります。";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics コンポーネントの数が Poor の制限値を超えています (Very Poor)。 Avatar Dynamics 関連のパフォーマンスランクが Poor に収まるようコンポーネントを削除してください。";
         internal override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
         internal override string MainTextureBrightnessLabel => "メインテクスチャの明るさ";

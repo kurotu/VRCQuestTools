@@ -54,6 +54,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string MainTextureBrightnessTooltip { get; }
         internal abstract string AlertForDynamicBoneConversion { get; }
         internal abstract string AlertForMissingNetIds { get; }
+        internal abstract string AlertForMultiplePhysBones { get; }
         internal abstract string AlertForAvatarDynamicsPerformance { get; }
         internal abstract string AlertForComponents { get; }
         internal abstract string AlertForMaterialAnimation { get; }

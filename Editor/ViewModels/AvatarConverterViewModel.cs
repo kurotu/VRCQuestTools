@@ -148,6 +148,23 @@ namespace KRT.VRCQuestTools.ViewModels
         internal bool HasMissingNetIDs => VRCSDKUtility.HasMissingNetworkIds(TargetAvatarDescriptor);
 
         /// <summary>
+        /// Gets GameObjects which have multiple PhysBones.
+        /// </summary>
+        internal GameObject[] GameObjectsWithMultiplePhysBones
+        {
+            get
+            {
+                var pbs = TargetAvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
+                var multiPbObjs = pbs
+                    .Select(pb => pb.gameObject)
+                    .Where(go => go.GetComponents(VRCSDKUtility.PhysBoneType).Count() >= 2)
+                    .Distinct()
+                    .ToArray();
+                return multiPbObjs;
+            }
+        }
+
+        /// <summary>
         /// Gets unsupported components for Quest.
         /// </summary>
         internal Component[] UnsupportedComponents => Remover.GetUnsupportedComponentsInChildren(TargetAvatar.AvatarDescriptor.gameObject, true);
