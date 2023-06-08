@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### 修正
+- 元のテクスチャが Texture2D でない場合に発生する不正なキャストエラーを修正
+
 ## [1.11.0] - 2023-05-22
 
 ### 追加

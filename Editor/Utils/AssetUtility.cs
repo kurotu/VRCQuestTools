@@ -101,7 +101,7 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="texture">original texture.</param>
         /// <returns>Loaded texture.</returns>
-        internal static Texture2D LoadUncompressedTexture(Texture texture)
+        internal static Texture LoadUncompressedTexture(Texture texture)
         {
             if (texture == null)
             {
@@ -117,6 +117,11 @@ namespace KRT.VRCQuestTools.Utils
             if (path == "Resources/unity_builtin_extra")
             {
                 return (Texture2D)UnityEngine.Object.Instantiate(texture);
+            }
+
+            if (!(texture is Texture2D))
+            {
+                return UnityEngine.Object.Instantiate(texture);
             }
 
             var tex2 = LoadUncompressedTexture(path);
