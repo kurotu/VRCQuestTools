@@ -1,0 +1,116 @@
+{
+  "name": "kurotu",
+  "id": "com.github.kurotu.vpm",
+  "author": "kurotu",
+  "url": "https://kurotu.github.io/vpm-repos/vpm.json",
+  "packages": {
+    "com.github.kurotu.vrc-quest-tools": {
+      "versions": {
+        "1.11.0": {
+          "name": "com.github.kurotu.vrc-quest-tools",
+          "version": "1.11.0",
+          "displayName": "VRCQuestTools",
+          "description": "Editor extension to support uploading VRChat Quest avatars",
+          "unity": "2019.4",
+          "author": {
+            "name": "kurotu"
+          },
+          "vpmDependencies": {
+            "com.vrchat.avatars": "^3.1.1"
+          },
+          "url": "https://github.com/kurotu/VRCQuestTools/releases/download/v1.11.0/com.github.kurotu.vrc-quest-tools-1.11.0.zip?",
+          "legacyFolders": {
+            "Assets\\KRT\\VRCQuestTools": "bb6bc9dbb414049cebd82117a7ccb2c1"
+          }
+        },
+        "1.10.1": {
+          "name": "com.github.kurotu.vrc-quest-tools",
+          "version": "1.10.1",
+          "displayName": "VRCQuestTools",
+          "description": "Editor extension to support uploading VRChat Quest avatars",
+          "unity": "2019.4",
+          "author": {
+            "name": "kurotu"
+          },
+          "vpmDependencies": {
+            "com.vrchat.avatars": ">=3.1.1"
+          },
+          "url": "https://github.com/kurotu/VRCQuestTools/releases/download/v1.10.1/com.github.kurotu.vrc-quest-tools-1.10.1.zip?",
+          "legacyFolders": {
+            "Assets\\KRT\\VRCQuestTools": "bb6bc9dbb414049cebd82117a7ccb2c1"
+          }
+        },
+        "1.10.0": {
+          "name": "com.github.kurotu.vrc-quest-tools",
+          "version": "1.10.0",
+          "displayName": "VRCQuestTools",
+          "description": "Editor extension to support uploading VRChat Quest avatars",
+          "unity": "2019.4",
+          "author": {
+            "name": "kurotu"
+          },
+          "vpmDependencies": {
+            "com.vrchat.avatars": ">=3.1.1"
+          },
+          "url": "https://github.com/kurotu/VRCQuestTools/releases/download/v1.10.0/com.github.kurotu.vrc-quest-tools-1.10.0.zip?",
+          "legacyFolders": {
+            "Assets\\KRT\\VRCQuestTools": "bb6bc9dbb414049cebd82117a7ccb2c1"
+          }
+        },
+        "1.9.1": {
+          "name": "com.github.kurotu.vrc-quest-tools",
+          "version": "1.9.1",
+          "displayName": "VRCQuestTools",
+          "description": "Editor extension to support uploading VRChat Quest avatars",
+          "unity": "2019.4",
+          "author": {
+            "name": "kurotu"
+          },
+          "vpmDependencies": {
+            "com.vrchat.avatars": ">=3.1.1"
+          },
+          "url": "https://github.com/kurotu/VRCQuestTools/releases/download/v1.9.1/com.github.kurotu.vrc-quest-tools-1.9.1.zip?",
+          "legacyFolders": {
+            "Assets\\KRT\\VRCQuestTools": "bb6bc9dbb414049cebd82117a7ccb2c1"
+          }
+        },
+        "1.9.0": {
+          "name": "com.github.kurotu.vrc-quest-tools",
+          "version": "1.9.0",
+          "displayName": "VRCQuestTools",
+          "description": "Editor extension to support uploading VRChat Quest avatars",
+          "unity": "2019.4",
+          "author": {
+            "name": "kurotu"
+          },
+          "vpmDependencies": {
+            "com.vrchat.avatars": ">=3.1.1"
+          },
+          "url": "https://github.com/kurotu/VRCQuestTools/releases/download/v1.9.0/com.github.kurotu.vrc-quest-tools-1.9.0.zip?",
+          "legacyFolders": {
+            "Assets\\KRT\\VRCQuestTools": "bb6bc9dbb414049cebd82117a7ccb2c1"
+          }
+        }
+      }
+    },
+    "com.github.kurotu.material-replacer": {
+      "versions": {
+        "1.1.1": {
+          "name": "com.github.kurotu.material-replacer",
+          "version": "1.1.1",
+          "displayName": "Material Replacer",
+          "description": "Editor extension to replace materials at once",
+          "unity": "2019.4",
+          "author": {
+            "name": "kurotu"
+          },
+          "vpmDependencies": {},
+          "url": "https://github.com/kurotu/MaterialReplacer/releases/download/v1.1.1/com.github.kurotu.material-replacer-1.1.1.zip?",
+          "legacyFolders": {
+            "Assets\\KRT\\MaterialReplacer": ""
+          }
+        }
+      }
+    }
+  }
+}

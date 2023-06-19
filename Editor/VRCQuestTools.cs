@@ -30,11 +30,6 @@ namespace KRT.VRCQuestTools
         public const string Version = "1.11.0";
 
         /// <summary>
-        /// Days to delay update notification.
-        /// </summary>
-        internal const int DaysToDelayUpdateNotification = 1;
-
-        /// <summary>
         /// GitHub repository (username/reponame).
         /// </summary>
         internal const string GitHubRepository = "kurotu/VRCQuestTools";
@@ -55,9 +50,19 @@ namespace KRT.VRCQuestTools
         internal static AvatarConverter AvatarConverter = new AvatarConverter(new MaterialWrapperBuilder());
 
         /// <summary>
-        /// GitHub API service instance.
+        /// VPM service instance.
         /// </summary>
-        internal static GitHubService GitHub = new GitHubService(GitHubRepository);
+        internal static VPMService VPM = new VPMService();
+
+        /// <summary>
+        /// VPM repository URL.
+        /// </summary>
+        internal static string VPMRepositoryURL = "https://kurotu.github.io/vpm-repos/vpm.json";
+
+        /// <summary>
+        /// package name.
+        /// </summary>
+        internal static string PackageName = "com.github.kurotu.vrc-quest-tools";
 
         private const string PackageJsonGUID = "a965857078462df4a879e07cb70812bb";
 

@@ -3,7 +3,6 @@
     "references": [
         "VRCQuestTools"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
@@ -14,7 +13,8 @@
         "VRCCore-Editor.dll",
         "VRCSDKBase.dll",
         "VRCSDKBase-Editor.dll",
-        "VRCSDK3A.dll"
+        "VRCSDK3A.dll",
+        "Unity.Plastic.Newtonsoft.Json.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],
@@ -24,5 +24,6 @@
             "expression": "3.2.0",
             "define": "VQT_VRCSDK_HAS_NETWORK_ID"
         }
-    ]
+    ],
+    "noEngineReferences": false
 }

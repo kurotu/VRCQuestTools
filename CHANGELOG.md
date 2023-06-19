@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Use VPM repository to check for updates instead of GitHub API.
+- Check for updates only on edit mode.
+
 ### Fixed
 - Fixed invalid cast error when an original texture is not Texture2D.
 

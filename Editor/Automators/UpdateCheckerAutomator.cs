@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Views;
@@ -18,11 +19,13 @@ namespace KRT.VRCQuestTools.Automators
     [InitializeOnLoad]
     internal static class UpdateCheckerAutomator
     {
-        private const int DelayDays = 1;
-
         static UpdateCheckerAutomator()
         {
-            EditorApplication.delayCall += CheckForUpdates;
+            EditorApplication.playModeStateChanged += PlayModeStateChanged;
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                PlayModeStateChanged(PlayModeStateChange.EnteredEditMode);
+            }
         }
 
         private static SemVer CurrentVersion => new SemVer(VRCQuestTools.Version);
@@ -46,9 +49,9 @@ namespace KRT.VRCQuestTools.Automators
             {
                 try
                 {
-                    var latestRelease = await VRCQuestTools.GitHub.GetLatestRelease();
-                    Debug.Log($"[{VRCQuestTools.Name}] Latest version is {latestRelease.Version}");
-                    var hasUpdate = GitHubRelease.HasUpdates(CurrentVersion, DateTime.UtcNow, VRCQuestTools.DaysToDelayUpdateNotification, latestRelease);
+                    var latestRelease = await GetLatestRelease();
+                    Debug.Log($"[{VRCQuestTools.Name}] Latest version is {latestRelease.Version} (Current: {CurrentVersion})");
+                    var hasUpdate = latestRelease.Version > CurrentVersion;
                     if (hasUpdate)
                     {
                         Debug.LogWarning($"[{VRCQuestTools.Name}] New version {latestRelease.Version} is available, see {VRCQuestTools.BoothURL}");
@@ -100,6 +103,37 @@ namespace KRT.VRCQuestTools.Automators
                     Debug.LogException(e);
                 }
             });
+        }
+
+        private static void PlayModeStateChanged(PlayModeStateChange state)
+        {
+            switch (state)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                    EditorApplication.delayCall += CheckForUpdates;
+                    break;
+                case PlayModeStateChange.ExitingEditMode:
+                case PlayModeStateChange.EnteredPlayMode:
+                case PlayModeStateChange.ExitingPlayMode:
+                    break;
+                default:
+                    throw new NotImplementedException($"Case {state} is missng.");
+            }
+        }
+
+        private static async Task<GitHubRelease> GetLatestRelease()
+        {
+            var repo = await VRCQuestTools.VPM.GetVPMRepository(VRCQuestTools.VPMRepositoryURL);
+            var vqt = repo.packages[VRCQuestTools.PackageName];
+            var latest = vqt.versions.Keys
+                .Select(v => new SemVer(v))
+                .OrderByDescending(v => v)
+                .First();
+            var release = new GitHubRelease();
+            release.tag_name = $"v{latest}";
+            release.published_at = DateTime.UtcNow.ToString(); // fake timestamp.
+            release.html_url = $"https://github.com/{VRCQuestTools.GitHubRepository}/releases/tag/{release.tag_name}";
+            return release;
         }
     }
 }

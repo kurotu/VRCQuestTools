@@ -12,7 +12,7 @@ namespace KRT.VRCQuestTools.Models
     /// Represents semantic versioning.
     /// </summary>
     [Serializable]
-    internal class SemVer
+    internal class SemVer : IComparable
     {
         [SerializeField]
         private readonly int major;
@@ -112,6 +112,34 @@ namespace KRT.VRCQuestTools.Models
         public override string ToString()
         {
             return $"{major}.{minor}.{patch}";
+        }
+
+        /// <summary>
+        /// Implementation of IComparable.
+        /// </summary>
+        /// <param name="obj">Other value.</param>
+        /// <returns>1 when this is later, 0 when same, -1 when this is earlier.</returns>
+        /// <exception cref="ArgumentException">Object is not a SemVer.</exception>
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+            {
+                return 1;
+            }
+            var other = obj as SemVer;
+            if (other == null)
+            {
+                throw new ArgumentException("Object is not a SemVer");
+            }
+            if (this > other)
+            {
+                return 1;
+            }
+            if (this < other)
+            {
+                return -1;
+            }
+            return 0;
         }
 
         /// <summary>
