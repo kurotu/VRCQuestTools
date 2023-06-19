@@ -47,6 +47,7 @@ namespace KRT.VRCQuestTools.Automators
                 try
                 {
                     var latestRelease = await VRCQuestTools.GitHub.GetLatestRelease();
+                    Debug.Log($"[{VRCQuestTools.Name}] Latest version is {latestRelease.Version}");
                     var hasUpdate = GitHubRelease.HasUpdates(CurrentVersion, DateTime.UtcNow, VRCQuestTools.DaysToDelayUpdateNotification, latestRelease);
                     if (hasUpdate)
                     {
@@ -95,6 +96,7 @@ namespace KRT.VRCQuestTools.Automators
                 }
                 catch (Exception e)
                 {
+                    Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to get latest version");
                     Debug.LogException(e);
                 }
             });
