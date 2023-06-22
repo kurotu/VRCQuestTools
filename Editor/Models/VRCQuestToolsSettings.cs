@@ -47,24 +47,6 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to enable VertexColorRemoverAutomator.
-        /// </summary>
-        internal static bool IsVertexColorRemoverAutomatorEnabled
-        {
-            get
-            {
-                return GetProjectSettings().AutoRemoveVertexColors;
-            }
-
-            set
-            {
-                var settings = GetProjectSettings();
-                settings.AutoRemoveVertexColors = value;
-                SaveProjectSettings(settings);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the skipped version.
         /// </summary>
         internal static SemVer SkippedVersion

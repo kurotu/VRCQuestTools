@@ -58,7 +58,7 @@ namespace KRT.VRCQuestTools.Automators
 #if VRC_SDK_VRCSDK3
             VRCSDKUtility.InjectAllowedComponents(new System.Type[] { typeof(VertexColorRemover) });
 #endif
-            Enable(VRCQuestToolsSettings.IsVertexColorRemoverAutomatorEnabled);
+            Enable(true);
         }
 
         private static void HierarchyChanged()
