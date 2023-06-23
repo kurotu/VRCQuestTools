@@ -68,9 +68,9 @@ You will often use when PC version and Quest version use different models and ne
 Generate *Metallic Smoothness Map* from a metallic map and/or a smoothness/roughness map.
 You can use generated textures in *VRChat/Mobile/Standard Lite* shader.
 
-### Auto Remove Vertex Colors
+### Remove All Vertex Colors
 
-Automatically remove vertex colors from scene's avatars. By using this, this would fix an issue where main textures are not correctly applied in some avatars.
+Remove vertex colors from scene's avatars. By using this, this would fix an issue where main textures are not correctly applied in some avatars.
 
 ![VertexColorRemover](.images/VertexColorRemover.png)
 

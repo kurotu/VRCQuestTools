@@ -41,9 +41,9 @@ PC 用と Quest 用で別々のモデルを使用する場合などに、設定�
 Metallic マップや Smoothness/Roughness マップから Metallic Smoothness マップを生成します。
 生成したテクスチャは VRChat/Mobile/Standard Lite シェーダーで使用できます。
 
-### Auto Remove Vertex Colors
+### Remove All Vertex Colors
 
-シーン内のアバターのメッシュから頂点カラーを自動的に取り除き、一部アバターで VRChat/Mobile 系シェーダーを使用する際に真っ黒になるなどテクスチャの色が正しく表示されない問題を対策します。
+シーン内のアバターのメッシュから頂点カラーを取り除き、一部アバターで VRChat/Mobile 系シェーダーを使用する際に真っ黒になるなどテクスチャの色が正しく表示されない問題を対策します。
 
 ### Unity Settings for Quest
 
