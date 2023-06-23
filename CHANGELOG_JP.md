@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 追加
+- "Remove All Vertex Colors" メニューをメインメニューに追加
+
 ### 変更
 - GitHub API ではなく VPM リポジトリを使用して更新を確認するように変更
 - Edit モード時のみ更新を確認するように変更
+- Play モード時に頂点カラーを削除しないように変更
+
+### 削除
+- "Auto Remove Vertex Colors" メニューを削除。代わりにアバターに対して "Remove All Vertex Colors" メニューを使用する
 
 ### 修正
 - 元のテクスチャが Texture2D でない場合に発生する不正なキャストエラーを修正

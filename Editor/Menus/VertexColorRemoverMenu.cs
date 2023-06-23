@@ -3,9 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using KRT.VRCQuestTools.Automators;
-using KRT.VRCQuestTools.Models;
-using KRT.VRCQuestTools.ViewModels;
+using KRT.VRCQuestTools.Components;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,39 +17,26 @@ namespace KRT.VRCQuestTools.Menus
     {
         private const string Tag = "VertexColorRemover";
 
-        static VertexColorRemoverMenu()
-        {
-            EditorApplication.delayCall += () =>
-            {
-                Menu.SetChecked(VRCQuestToolsMenus.MenuPaths.AutoRemoveVertexColors, VRCQuestToolsSettings.IsVertexColorRemoverAutomatorEnabled);
-            };
-        }
-
-        [MenuItem(VRCQuestToolsMenus.MenuPaths.AutoRemoveVertexColors, false, (int)VRCQuestToolsMenus.MenuPriorities.AutoRemoveVertexColors)]
-        private static void InitFromMenu()
-        {
-            ToggleVertexColorRemoverAutomatorMenu();
-        }
-
-        private static void ToggleVertexColorRemoverAutomatorMenu()
-        {
-            var enabled = !Menu.GetChecked(VRCQuestToolsMenus.MenuPaths.AutoRemoveVertexColors);
-            VRCQuestToolsSettings.IsVertexColorRemoverAutomatorEnabled = enabled;
-            Menu.SetChecked(VRCQuestToolsMenus.MenuPaths.AutoRemoveVertexColors, enabled);
-            VertexColorRemoverAutomator.Enable(enabled);
-        }
-
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.RemoveAllVertexColors, false, (int)VRCQuestToolsMenus.MenuPriorities.RemoveAllVertexColors)]
         [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveAllVertexColors, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectRemoveAllVertexColors)]
         private static void InitFromGameObject()
         {
-            var model = new VertexColorRemoverViewModel
+            var target = Selection.activeGameObject;
+            if (target == null)
             {
-                target = Selection.activeGameObject,
-            };
-            model.RemoveVertexColor();
-            Debug.LogFormat("[{0}] All vertex colors are removed from {1}", VRCQuestTools.Name, model.target);
+                return;
+            }
+            var remover = target.GetComponent<VertexColorRemover>();
+            if (remover == null)
+            {
+                remover = target.AddComponent<VertexColorRemover>();
+            }
+            remover.includeChildren = true;
+            remover.active = true;
+            Debug.Log($"[{VRCQuestTools.Name}] All vertex colors will be removed from {target}", target);
         }
 
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.RemoveAllVertexColors, true)]
         [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveAllVertexColors, true)]
         private static bool ValidateMenu()
         {

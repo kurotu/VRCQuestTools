@@ -20,10 +20,10 @@ namespace KRT.VRCQuestTools.Menus
             internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar for Quest";
             internal const string RemoveUnsupportedComponents = RootMenu + "Tools/Remove Unsupported Components";
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
+            internal const string RemoveAllVertexColors = RootMenu + "Remove All Vertex Colors";
             internal const string RemovePhysBones = RootMenu + "Remove PhysBones";
             internal const string BlendShapesCopy = RootMenu + "Tools/BlendShapes Copy";
             internal const string MSMapGenerator = RootMenu + "Tools/Metallic Smoothness Map";
-            internal const string AutoRemoveVertexColors = RootMenu + "Auto Remove Vertex Colors";
             internal const string UnitySettings = RootMenu + "Unity Settings for Quest";
             private const string LanguageMenu = RootMenu + "Languages/";
             internal const string LanguageAuto = LanguageMenu + "Auto (default)";
@@ -38,10 +38,10 @@ namespace KRT.VRCQuestTools.Menus
             ConvertAvatarForQuest = 600, // VRChat SDK/Splash Screen: 500
             RemoveMissingComponents,
             RemovePhysBones,
+            RemoveAllVertexColors,
             BlendShapesCopy = 700,
             RemoveUnsupportedComponents,
             MSMapGenerator,
-            AutoRemoveVertexColors = 800,
             UnitySettings = 900,
             LanguageAuto = 1000,
             LanguageEnglish,

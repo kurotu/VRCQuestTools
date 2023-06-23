@@ -27,6 +27,11 @@ namespace KRT.VRCQuestTools.Automators
         static VertexColorRemoverAutomator()
         {
             EditorApplication.delayCall += DelayCall;
+            EditorApplication.playModeStateChanged += PlayModeStateChanged;
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                PlayModeStateChanged(PlayModeStateChange.EnteredEditMode);
+            }
         }
 
         /// <summary>
@@ -58,7 +63,24 @@ namespace KRT.VRCQuestTools.Automators
 #if VRC_SDK_VRCSDK3
             VRCSDKUtility.InjectAllowedComponents(new System.Type[] { typeof(VertexColorRemover) });
 #endif
-            Enable(VRCQuestToolsSettings.IsVertexColorRemoverAutomatorEnabled);
+        }
+
+        private static void PlayModeStateChanged(PlayModeStateChange state)
+        {
+            switch (state)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                    Enable(true);
+                    break;
+                case PlayModeStateChange.ExitingEditMode:
+                    Enable(false);
+                    break;
+                case PlayModeStateChange.EnteredPlayMode:
+                case PlayModeStateChange.ExitingPlayMode:
+                    break;
+                default:
+                    throw new System.NotImplementedException($"Case for {state} is not implemented");
+            }
         }
 
         private static void HierarchyChanged()
