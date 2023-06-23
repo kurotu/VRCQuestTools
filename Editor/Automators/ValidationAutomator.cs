@@ -20,8 +20,30 @@ namespace KRT.VRCQuestTools.Automators
     {
         static ValidationAutomator()
         {
-            EditorApplication.delayCall += Update;
-            EditorApplication.hierarchyChanged += Update;
+            EditorApplication.playModeStateChanged += PlayModeStateChanged;
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                PlayModeStateChanged(PlayModeStateChange.EnteredEditMode);
+            }
+        }
+
+        private static void PlayModeStateChanged(PlayModeStateChange state)
+        {
+            switch (state)
+            {
+                case PlayModeStateChange.ExitingEditMode:
+                    EditorApplication.hierarchyChanged -= Update;
+                    break;
+                case PlayModeStateChange.EnteredEditMode:
+                    EditorApplication.delayCall += Update;
+                    EditorApplication.hierarchyChanged += Update;
+                    break;
+                case PlayModeStateChange.EnteredPlayMode:
+                case PlayModeStateChange.ExitingPlayMode:
+                    break;
+                default:
+                    throw new System.NotImplementedException($"Case {state} is not implemented.");
+            }
         }
 
         private static void Update()

@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use VPM repository to check for updates instead of GitHub API.
 - Check for updates only on edit mode.
 - Do not remove vertex color on play mode.
+- Do not validate avatars on play mode.
 
 ### Removed
 - Removed "Auto Remove Vertex Colors" menu. Use "Remove All Vertex Colors" menu to avatar instead.
