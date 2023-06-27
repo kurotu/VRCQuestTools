@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/kurotu/VRCQuestTools/releases"><img alt="All Downloads" src="https://img.shields.io/github/downloads/kurotu/VRCQuestTools/total?label=downloads@all"></a>
-  <a href="https://github.com/kurotu/VRCQuestTools/releases/latest"><img alt="Latest downloads" src="https://img.shields.io/github/downloads/kurotu/VRCQuestTools/latest/total"></a>
+  <a href="https://tooomm.github.io/github-release-stats/?username=kurotu&repository=VRCQuestTools"><img alt="All Downloads" src="https://img.shields.io/github/downloads/kurotu/VRCQuestTools/total?label=downloads@all"></a>
+  <a href="https://tooomm.github.io/github-release-stats/?username=kurotu&repository=VRCQuestTools"><img alt="Latest downloads" src="https://img.shields.io/github/downloads/kurotu/VRCQuestTools/latest/total"></a>
   <a href="https://kurotu.github.io/vpm-repos/"><img alt="VPM Release" src="https://img.shields.io/vpm/v/com.github.kurotu.vrc-quest-tools?repository_url=https%3A%2F%2Fkurotu.github.io%2Fvpm-repos%2Fvpm.json"></a>
 </p>
 
