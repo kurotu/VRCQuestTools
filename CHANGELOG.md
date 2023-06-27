@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed invalid cast error when an original texture is not Texture2D.
+- Fixed unnecessary error log when failed to convert an avatar.
 
 ## [1.11.0] - 2023-05-22
 

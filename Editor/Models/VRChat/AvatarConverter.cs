@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
@@ -258,9 +259,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
                 catch (Exception e)
                 {
-                    Debug.LogException(e);
                     progressCallback(materialsToConvert.Length, i, e, m);
-                    throw new InvalidOperationException($"Failed to convert a material \"{m.name}\". See the previous error log for detail.");
+                    ExceptionDispatchInfo.Capture(e).Throw();
                 }
             }
             return convertedTextures;
@@ -329,9 +329,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
                 catch (Exception e)
                 {
-                    Debug.LogException(e);
                     progressCallback(controllers.Length, index, e, controller);
-                    throw new InvalidOperationException($"Failed to convert an animator controller \"{controller.name}\". See the previous error log for detail.");
+                    ExceptionDispatchInfo.Capture(e).Throw();
                 }
             }
             return convertedControllers;
@@ -467,9 +466,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
                 catch (System.Exception e)
                 {
-                    Debug.LogException(e);
                     progressCallback(animationClips.Length, i, e, clip);
-                    throw new InvalidOperationException($"Failed to convert an animation clip \"{clip.name}\". See the previous error log for detail.");
+                    ExceptionDispatchInfo.Capture(e).Throw();
                 }
             }
             return convertedAnimationClips;

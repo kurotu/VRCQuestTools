@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 修正
 - 元のテクスチャが Texture2D でない場合に発生する不正なキャストエラーを修正
+- アバターの変換に失敗したときに不要なエラーログが出力される問題を修正
 
 ## [1.11.0] - 2023-05-22
 
