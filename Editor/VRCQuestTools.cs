@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools
         /// <summary>
         /// VRCQuestTools version (semver).
         /// </summary>
-        public const string Version = "1.11.0";
+        public const string Version = "1.12.0";
 
         /// <summary>
         /// GitHub repository (username/reponame).
