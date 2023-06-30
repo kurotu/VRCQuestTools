@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 削除
 - "Auto Remove Vertex Colors" メニューを削除。代わりにアバターに対して "Remove All Vertex Colors" メニューを使用する
+- 頂点カラー削除時の不要なログを削除
 
 ### 修正
 - 元のテクスチャが Texture2D でない場合に発生する不正なキャストエラーを修正

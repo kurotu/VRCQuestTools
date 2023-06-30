@@ -85,7 +85,6 @@ namespace KRT.VRCQuestTools.Automators
 
         private static void HierarchyChanged()
         {
-            Debug.Log($"[{Tag}] HierarchyChanged, {ClassName} tries to remove vertex colors");
 #if VRC_SDK_VRCSDK2
             RemoveAllVertexColorsFromAvatars(SceneManager.GetActiveScene());
 #else

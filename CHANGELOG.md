@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Removed "Auto Remove Vertex Colors" menu. Use "Remove All Vertex Colors" menu to avatar instead.
+- Removed redundant logs from vertex color remover.
 
 ### Fixed
 - Fixed invalid cast error when an original texture is not Texture2D.

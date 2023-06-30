@@ -28,7 +28,6 @@ namespace KRT.VRCQuestTools.Components
             {
                 return;
             }
-            Debug.Log($"Remove vertex color from {gameObject.name}, recursive: {includeChildren}");
             Renderer[] skinnedMeshRenderers;
             Renderer[] meshRenderers;
             if (includeChildren)
@@ -59,6 +58,7 @@ namespace KRT.VRCQuestTools.Components
             if (mesh.colors32.Length > 0)
             {
                 mesh.colors32 = null;
+                Debug.Log($"[VRCQuestTools] Removed vertex color from {renderer.name}", renderer);
             }
         }
 
