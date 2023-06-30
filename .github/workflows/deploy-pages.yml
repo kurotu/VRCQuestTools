@@ -51,6 +51,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: Website~/package-lock.json
       - run: cd Website~ && npm ci
+      - run: cp CHANGELOG.md Website~/docs/changelog.md
+      - run: cp CHANGELOG_JP.md Website~/i18n/ja/docusaurus-plugin-content-docs/current/changelog.md
       - run: cd Website~ && npm run build
       - uses: actions/upload-artifact@v3
         with:
