@@ -6,6 +6,7 @@ on:
     workflows: [Build]
     types:
       - completed
+    branches: [master, next-docs]
   release:
     types: [published, created, edited, unpublished, deleted, released]
 
@@ -59,8 +60,28 @@ jobs:
           name: docs
           path: Website~/build
 
+  build-next-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: next-docs
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+          cache-dependency-path: Website~/package-lock.json
+      - run: cd Website~ && npm ci
+      - run: cp CHANGELOG.md Website~/docs/changelog.md
+      - run: cp CHANGELOG_JP.md Website~/i18n/ja/docusaurus-plugin-content-docs/current/changelog.md
+      - run: sed -i "s|'/VRCQuestTools/'|'/VRCQuestTools/next/'|" Website~/docusaurus.config.js
+      - run: cd Website~ && npm run build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: next-docs
+          path: Website~/build
+
   deploy:
-    needs: [build-repo, build-docs]
+    needs: [build-repo, build-docs, build-next-docs]
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -75,6 +96,11 @@ jobs:
         with:
           name: docs
           path: ${{env.listPublishDirectory}}
+
+      - uses: actions/download-artifact@v1
+        with:
+          name: next-docs
+          path: ${{env.listPublishDirectory}}/next
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
