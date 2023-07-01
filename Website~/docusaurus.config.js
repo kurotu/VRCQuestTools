@@ -42,7 +42,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/kurotu/VRCQuestTools/tree/master/Website/',
+            'https://github.com/kurotu/VRCQuestTools/edit/master/Website~/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
