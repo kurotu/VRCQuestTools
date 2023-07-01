@@ -21,6 +21,7 @@ function HomepageHeader() {
             Get Started
           </Link>
           <Link
+            target={null}
             className="button button--info button--lg"
             to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
             Add to VCC
