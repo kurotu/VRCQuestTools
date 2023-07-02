@@ -1,7 +1,9 @@
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
-using Unity.Plastic.Newtonsoft.Json;
+#if VQT_HAS_NEWTONSOFT_JSON
+using Newtonsoft.Json;
+#endif
 
 namespace KRT.VRCQuestTools.Models
 {
@@ -18,6 +20,9 @@ namespace KRT.VRCQuestTools.Models
         [Test]
         public void ParseJson()
         {
+#if !VQT_HAS_NEWTONSOFT_JSON
+            Assert.Ignore("NewtonSoft Json is missing");
+#else
             var json = File.ReadAllText(Path.Combine(TestUtils.FixturesFolder, "vpm.json"));
 
             var repo = JsonConvert.DeserializeObject<VPMRepository>(json);
@@ -34,6 +39,7 @@ namespace KRT.VRCQuestTools.Models
             versions = replacer.versions.Keys.Select(v => new SemVer(v)).OrderBy(v => v).ToList();
             Assert.AreEqual("1.1.1", versions.First().ToString());
             Assert.AreEqual("1.1.1", versions.Last().ToString());
+#endif
         }
     }
 }

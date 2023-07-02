@@ -21,11 +21,16 @@ namespace KRT.VRCQuestTools.Automators
     {
         static UpdateCheckerAutomator()
         {
+#if !VQT_HAS_NEWTONSOFT_JSON
+            Debug.LogWarning($"[{VRCQuestTools.Name}] Newtonsoft Json package is not installed. Update checker is not working.");
+            return;
+#else
             EditorApplication.playModeStateChanged += PlayModeStateChanged;
             if (!EditorApplication.isPlayingOrWillChangePlaymode)
             {
                 PlayModeStateChanged(PlayModeStateChange.EnteredEditMode);
             }
+#endif
         }
 
         private static SemVer CurrentVersion => new SemVer(VRCQuestTools.Version);
