@@ -33,7 +33,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build Package Version Listing
         run: |
+          rm package.json
           npm install --no-save got@12.5.3
+          git checkout package.json
           node .scripts/create_index_json.mjs kurotu/VRCQuestTools package.json > index.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
