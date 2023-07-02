@@ -1,7 +1,9 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using KRT.VRCQuestTools.Models;
-using Unity.Plastic.Newtonsoft.Json;
+#if VQT_HAS_NEWTONSOFT_JSON
+using Newtonsoft.Json;
+#endif
 
 namespace KRT.VRCQuestTools.Services
 {
@@ -28,9 +30,13 @@ namespace KRT.VRCQuestTools.Services
         /// <returns>Parsed VPM repository.</returns>
         internal async Task<VPMRepository> GetVPMRepository(string url)
         {
+#if VQT_HAS_NEWTONSOFT_JSON
             var result = await Client.GetStringAsync(url);
             var repo = JsonConvert.DeserializeObject<VPMRepository>(result);
             return repo;
+#else
+            throw new System.NotImplementedException("NewtonSoft Json is missing");
+#endif
         }
     }
 }

@@ -14,7 +14,7 @@
         "VRCSDKBase.dll",
         "VRCSDKBase-Editor.dll",
         "VRCSDK3A.dll",
-        "Unity.Plastic.Newtonsoft.Json.dll"
+        "Newtonsoft.Json.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],
@@ -23,6 +23,11 @@
             "name": "com.vrchat.base",
             "expression": "3.2.0",
             "define": "VQT_VRCSDK_HAS_NETWORK_ID"
+        },
+        {
+            "name": "com.unity.nuget.newtonsoft-json",
+            "expression": "",
+            "define": "VQT_HAS_NEWTONSOFT_JSON"
         }
     ],
     "noEngineReferences": false

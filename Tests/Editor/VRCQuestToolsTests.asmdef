@@ -13,12 +13,18 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll",
-        "Unity.Plastic.Newtonsoft.Json.dll"
+        "Newtonsoft.Json.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.nuget.newtonsoft-json",
+            "expression": "",
+            "define": "VQT_HAS_NEWTONSOFT_JSON"
+        }
+    ],
     "noEngineReferences": false
 }
