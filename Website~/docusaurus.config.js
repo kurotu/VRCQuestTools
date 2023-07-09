@@ -56,6 +56,11 @@ const config = {
     ({
       // Replace with your project's social card
       image: 'img/social-card.png',
+      announcementBar: {
+        content: '<b>This site is still under construction.</b>',
+        backgroundColor: 'yellow',
+        isCloseable: false,
+      },
       navbar: {
         title: 'VRCQuestTools',
         logo: {
