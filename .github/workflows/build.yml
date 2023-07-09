@@ -100,9 +100,20 @@ jobs:
           name: vpm
           path: "*.zip"
 
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+          cache-dependency-path: Website~/package-lock.json
+      - run: cd Website~ && npm ci
+      - run: cd Website~ && npm run build
+
   release:
     if: startsWith(github.ref, 'refs/tags/')
-    needs: [build, test, lint, vpm]
+    needs: [build, test, lint, vpm, docs]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
