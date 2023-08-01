@@ -76,7 +76,7 @@ const config = {
           },
           {
             type: 'localeDropdown',
-            position: 'right',
+            position: 'left',
           },
           {
             href: 'https://github.com/kurotu/VRCQuestTools',
