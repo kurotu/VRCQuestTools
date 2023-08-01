@@ -1,0 +1,18 @@
+{
+  "link.item.label.Documentation": {
+    "message": "ドキュメント",
+    "description": "The label of footer link with label=Documentation linking to /docs/intro"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/kurotu/VRCQuestTools"
+  },
+  "link.item.label.Booth": {
+    "message": "Booth",
+    "description": "The label of footer link with label=Booth linking to https://kurotu.booth.pm/items/2436054"
+  },
+  "copyright": {
+    "message": "Copyright © 2023 kurotu. Built with Docusaurus.",
+    "description": "The footer copyright"
+  }
+}

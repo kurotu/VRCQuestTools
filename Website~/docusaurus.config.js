@@ -43,6 +43,7 @@ const config = {
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/kurotu/VRCQuestTools/edit/master/Website~/',
+          editLocalizedFiles: true,
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

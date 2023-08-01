@@ -1,36 +1,37 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './styles.module.css';
+import Translate from '@docusaurus/Translate';
 
 type FeatureItem = {
-  title: string;
+  title: JSX.Element;
   description: JSX.Element;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'One-Click Conversion',
+    title: <Translate>One-Click Conversion</Translate>,
     description: (
-      <>
+      <Translate>
         VRCQuestTools automatically makes your avatar uploadable for Quest.
         You are free from annoying manual work.
-      </>
+      </Translate>
     ),
   },
   {
-    title: 'Non Destructive',
+    title: <Translate>Non Destructive</Translate>,
     description: (
-      <>
-        VRCQuestTools keeps existing avatars and assets while conversion. Don't have to worry about unexpected modification.
-      </>
+      <Translate>
+        VRCQuestTools keeps existing avatars and assets while conversion. You can use the tool in existing projects as are.
+      </Translate>
     ),
   },
   {
-    title: 'Misc Utilities',
+    title: <Translate>Misc Utilities</Translate>,
     description: (
-      <>
-        VRCQuestTools has various features to help uploading Quest avatars.
-      </>
+      <Translate>
+        VRCQuestTools has various features to help uploading Quest avatars other than avatar convertersion.
+      </Translate>
     ),
   },
 ];
