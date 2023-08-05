@@ -124,6 +124,12 @@ namespace KRT.VRCQuestTools.Utils
                 return UnityEngine.Object.Instantiate(texture);
             }
 
+            var extension = Path.GetExtension(path).ToLower();
+            if (extension == ".asset")
+            {
+                return UnityEngine.Object.Instantiate(texture);
+            }
+
             var tex2 = LoadUncompressedTexture(path);
             tex2.wrapMode = texture.wrapMode;
             return tex2;
