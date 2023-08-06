@@ -1,0 +1,46 @@
+---
+sidebar_position: 1
+---
+
+import Link from '@docusaurus/Link';
+import Translate from '@docusaurus/Translate';
+
+# はじめに
+
+## VRCQuestTools
+
+VRCQuestToolsはOculus Quest用にVRChatアバターをアップロードするためのエディタ拡張です。
+
+- シングルクリックでPCアバターをQuest用にアップロード可能にします。
+- 手動でアバターをQuest対応にするための様々なツールを使うことができます。
+
+## クイックガイド
+
+### インストール
+
+VRCQuestToolsをプロジェクトに追加するには、以下の手順に従ってください。
+
+1. 下のボタンをクリックしてVCCにリポジトリを追加します。
+
+  <p>
+    <Link
+      target={null}
+      className="button button--primary button--lg"
+      to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
+      <Translate>
+        Add to VCC
+      </Translate>
+    </Link>
+  </p>
+
+2. VCCのプロジェクトにVRCQuestToolsパッケージを追加します。
+
+### Quest用にアバターを変換
+
+アバターをQuest用に変換するには、以下の手順に従ってください。
+
+1. シーン内のヒエラルキーからアバターを右クリックします。
+2. コンテキストメニューから**VRCQuestTools** > **Convert Avatar For Quest**を選択します。
+3. 開いたウィンドウで**変換**ボタンをクリックします。
+4. 変換が完了するのを待ちます。
+5. 変換後のアバターをAndroidプラットフォーム用にアップロードします。
