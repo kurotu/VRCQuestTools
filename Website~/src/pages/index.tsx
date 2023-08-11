@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
+import Translate from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
@@ -18,13 +19,13 @@ function HomepageHeader() {
           <Link
             className="button button--primary button--lg"
             to="/docs/intro">
-            Get Started
+            <Translate>Get Started</Translate>
           </Link>
           <Link
             target={null}
             className="button button--info button--lg"
             to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
-            Add to VCC
+            <Translate>Add to VCC</Translate>
           </Link>
           <iframe className={styles.github} src="https://ghbtns.com/github-btn.html?user=kurotu&repo=VRCQuestTools&type=star&count=true&size=large" frameBorder="0" scrolling="0" width="160" height="30" title="GitHub"></iframe>
         </div>
