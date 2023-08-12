@@ -8,5 +8,6 @@ namespace KRT.VRCQuestTools.Mocks
         PhysBoneTransformCount,
         PhysBoneColliderCount,
         PhysBoneCollisionCheckCount,
+        ContactCount,
     }
 }

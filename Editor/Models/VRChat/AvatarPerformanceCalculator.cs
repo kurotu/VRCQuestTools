@@ -34,6 +34,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     return GetRating(stats.PhysBonesColliderCount, statsLevelSet, category);
                 case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
                     return GetRating(stats.PhysBonesCollisionCheckCount, statsLevelSet, category);
+                case AvatarPerformanceCategory.ContactCount:
+                    return GetRating(stats.ContactsCount, statsLevelSet, category);
                 default:
                     throw new System.InvalidProgramException();
             }

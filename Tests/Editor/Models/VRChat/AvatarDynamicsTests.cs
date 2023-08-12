@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 #if VQT_HAS_VRCSDK
+using VRC.Dynamics;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
@@ -43,11 +44,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(2, stats.physBone.Value.colliderCount); // EditorOnly colliders are counted.
             Assert.AreEqual(10, stats.physBone.Value.collisionCheckCount); // EditorOnly PhysBones are ignored. EditorOnly colliders are counted.
 
+            Assert.AreEqual(2, root.GetComponentsInChildren<ContactBase>(true).Length);
+            Assert.AreEqual(2, stats.contactCount.Value); // EditorOnly contacts are counted. Children of EditorOnly are counted.
+
             // https://creators.vrchat.com/avatars/avatar-performance-ranking-system/#quest-limits
             Assert.AreEqual(PerformanceRating.Good, stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneComponentCount));
             Assert.AreEqual(PerformanceRating.Good, stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneTransformCount));
             Assert.AreEqual(PerformanceRating.Good, stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneColliderCount));
             Assert.AreEqual(PerformanceRating.Good, stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneCollisionCheckCount));
+            Assert.AreEqual(PerformanceRating.Excellent, stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.ContactCount));
 
             // Test AvatarPerformanceStatsLevelSet
             AvatarPerformanceStatsLevelSet questStatsLevelSet = LoadQuestStatsLevelSet();
@@ -74,6 +79,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBone>(true).Length);
             Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Length);
+            Assert.AreEqual(0, root.GetComponentsInChildren<ContactBase>(true).Length);
             Assert.IsNull(stats.physBone); // Children components of EditorOnly are ignored.
         }
 
@@ -117,7 +123,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "SimplePhysBone");
             var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
             var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
-            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders);
+            var contacts = root.GetComponentsInChildren<ContactBase>(true).Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray();
+            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
 
             var sdkStats = new AvatarPerformanceStats(true);
             AvatarPerformance.CalculatePerformanceStats(root.name, root, sdkStats, true);
@@ -126,6 +133,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(sdkStats.physBone.Value.transformCount, perfs.PhysBonesTransformCount, "PhysBones Transform count is different from SDK.");
             Assert.AreEqual(sdkStats.physBone.Value.colliderCount, perfs.PhysBonesColliderCount, "PhysBoneColliders count is different from SDK.");
             Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
+            Assert.AreEqual(sdkStats.contactCount.Value, perfs.ContactsCount, "Contacts count is different from SDK.");
 
             // https://creators.vrchat.com/avatars/avatar-performance-ranking-system/#quest-limits
             var questStatsLevelSet = LoadQuestStatsLevelSet();
@@ -134,6 +142,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneTransformCount));
             Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneColliderCount));
             Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneCollisionCheckCount));
+            Assert.AreEqual(PerformanceRating.Excellent, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.ContactCount));
 #else
             Assert.Ignore("VRCSDK is not installed.");
 #endif
@@ -150,7 +159,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
             var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
             var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
-            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders);
+            var contacts = root.GetComponentsInChildren<ContactBase>(true).Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray();
+            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
 
             var sdkStats = new AvatarPerformanceStats(true);
             AvatarPerformance.CalculatePerformanceStats(root.name, root, sdkStats, true);
@@ -159,6 +169,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(0, perfs.PhysBonesTransformCount, "PhysBones transform count is wrong.");
             Assert.AreEqual(0, perfs.PhysBonesColliderCount, "PhysBoneColliders count is wrong.");
             Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBone collision check count is wrong.");
+            Assert.AreEqual(0, perfs.ContactsCount, "Contacts count is wrong.");
 #else
             Assert.Ignore("VRCSDK is not installed.");
 #endif
@@ -182,18 +193,21 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
             var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
-            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders);
+            var contacts = root.GetComponentsInChildren<ContactBase>(true).Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray();
+            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
 
             var sdkStats = new AvatarPerformanceStats(true);
             AvatarPerformance.CalculatePerformanceStats(root.name, root, sdkStats, true);
 
             Assert.AreEqual(2, root.GetComponentsInChildren<VRCPhysBone>(true).Length);
             Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Length);
+            Assert.AreEqual(0, root.GetComponentsInChildren<ContactBase>(true).Length);
 
             Assert.AreEqual(sdkStats.physBone.Value.componentCount, perfs.PhysBonesCount, "PhysBones count is different from SDK.");
             Assert.AreEqual(sdkStats.physBone.Value.transformCount, perfs.PhysBonesTransformCount, "PhysBones Transform count is different from SDK.");
             Assert.AreEqual(sdkStats.physBone.Value.colliderCount, perfs.PhysBonesColliderCount, "PhysBoneColliders count is different from SDK.");
             Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
+            Assert.AreEqual(sdkStats.contactCount.Value, perfs.ContactsCount, "Contacts count is different from SDK.");
 #else
             Assert.Ignore("VRCSDK is not installed.");
 #endif

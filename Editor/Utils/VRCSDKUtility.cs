@@ -14,8 +14,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 #if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+using AvatarPerformanceStatsLevelSet = VRC.SDKBase.Validation.Performance.Stats.AvatarPerformanceStatsLevelSet;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
 #else
+using AvatarPerformanceStatsLevel = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceStatsLevel;
 using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
 #endif
 

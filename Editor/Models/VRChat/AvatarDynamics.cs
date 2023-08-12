@@ -15,8 +15,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="root">Avatar root object (VRCAvatarDescriptor).</param>
         /// <param name="physbones">PhysBone GameObjects.</param>
         /// <param name="colliders">PhysBoneCollider GameObjects.</param>
+        /// <param name="contacts">ContactSender and ContactReceiver GameObjects.</param>
         /// <returns>Calculated performance stats.</returns>
-        internal static PerformanceStats CalculatePerformanceStats(GameObject root, VRCSDKUtility.Reflection.PhysBone[] physbones, VRCSDKUtility.Reflection.PhysBoneCollider[] colliders)
+        internal static PerformanceStats CalculatePerformanceStats(
+            GameObject root,
+            VRCSDKUtility.Reflection.PhysBone[] physbones,
+            VRCSDKUtility.Reflection.PhysBoneCollider[] colliders,
+            VRCSDKUtility.Reflection.ContactBase[] contacts)
         {
             return new PerformanceStats()
             {
@@ -24,6 +29,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 PhysBonesTransformCount = CalculatePhysBonesTransformCount(root, physbones),
                 PhysBonesColliderCount = CalculatePhysBonesColliderCount(root, physbones, colliders),
                 PhysBonesCollisionCheckCount = CalculatePhysBonesCollisionCheckCount(root, physbones, colliders),
+                ContactsCount = CalculateContactsCount(contacts),
             };
         }
 
@@ -60,6 +66,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 return transformCount * colliderCount;
             });
             return collisions.Sum();
+        }
+
+        private static int CalculateContactsCount(VRCSDKUtility.Reflection.ContactBase[] contacts)
+        {
+            return contacts.Length;
         }
 
         private static VRCSDKUtility.Reflection.PhysBone[] GetActualPhysBones(GameObject root, VRCSDKUtility.Reflection.PhysBone[] physbones)
@@ -131,6 +142,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
             /// PhysBones Collision Check count.
             /// </summary>
             internal int PhysBonesCollisionCheckCount;
+
+            /// <summary>
+            /// Avatar Dynamics Contacts count.
+            /// </summary>
+            internal int ContactsCount;
         }
     }
 }
