@@ -506,8 +506,11 @@ namespace KRT.VRCQuestTools.Utils
             /// </summary>
             internal class PhysBoneCollider
             {
+                /// <summary>
+                /// Gets the component object of PhysBoneCollider.
+                /// </summary>
+                internal readonly Component Component;
                 private static readonly FieldInfo RootTransformField = PhysBoneColliderType?.GetField("rootTransform");
-                private readonly Component component;
 
                 /// <summary>
                 /// Initializes a new instance of the <see cref="PhysBoneCollider"/> class.
@@ -515,13 +518,13 @@ namespace KRT.VRCQuestTools.Utils
                 /// <param name="component">Component to wrap.</param>
                 internal PhysBoneCollider(Component component)
                 {
-                    this.component = component;
+                    this.Component = component;
                 }
 
                 /// <summary>
                 /// Gets root tansform set by inspector.
                 /// </summary>
-                internal Transform RootTransform => (Transform)RootTransformField.GetValue(component);
+                internal Transform RootTransform => (Transform)RootTransformField.GetValue(Component);
             }
 
             /// <summary>

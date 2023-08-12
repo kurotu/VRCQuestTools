@@ -1,4 +1,6 @@
 using System.Linq;
+using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -74,6 +76,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBone>(true).Length);
             Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Length);
             Assert.IsNull(stats.physBone); // Children components of EditorOnly are ignored.
+        }
+
+        /// <summary>
+        /// Test components are children of EditorOnly.
+        /// </summary>
+        [Test]
+        public void TestVRCSDK_ChildOfEditorOnly_WithNewPB() {
+            var scene = OpenTestScene();
+            var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
+            var stats = new AvatarPerformanceStats(true);
 
             // Append new pb object to root.
             var newPB = new GameObject("NewPB");
@@ -89,6 +101,86 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(1, stats.physBone.Value.transformCount); // children pb of EditorOnly are ignored.
             Assert.AreEqual(1, stats.physBone.Value.colliderCount); // referenced children colliders of EditorOnly are counted
             Assert.AreEqual(0, stats.physBone.Value.collisionCheckCount); // children colliders of EditorOnly are ignored
+#else
+            Assert.Ignore("VRCSDK is not installed.");
+#endif
+        }
+
+        /// <summary>
+        /// Test basic case.
+        /// </summary>
+        [Test]
+        public void TestBasic()
+        {
+#if VQT_HAS_VRCSDK
+            var scene = OpenTestScene();
+            var root = scene.GetRootGameObjects().First((obj) => obj.name == "SimplePhysBone");
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
+            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders);
+
+            var sdkStats = new AvatarPerformanceStats(true);
+            AvatarPerformance.CalculatePerformanceStats(root.name, root, sdkStats, true);
+
+            Assert.AreEqual(sdkStats.physBone.Value.componentCount, perfs.PhysBonesCount, "PhysBones count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.transformCount, perfs.PhysBonesTransformCount, "PhysBones Transform count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.colliderCount, perfs.PhysBonesColliderCount, "PhysBoneColliders count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
+#else
+            Assert.Ignore("VRCSDK is not installed.");
+#endif
+        }
+
+        /// <summary>
+        /// Test EditorOnly case.
+        /// </summary>
+        [Test]
+        public void TestEditorOnly()
+        {
+#if VQT_HAS_VRCSDK
+            var scene = OpenTestScene();
+            var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
+            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders);
+
+            var sdkStats = new AvatarPerformanceStats(true);
+            AvatarPerformance.CalculatePerformanceStats(root.name, root, sdkStats, true);
+
+            Assert.AreEqual(0, perfs.PhysBonesCount, "PhysBones count is wrong.");
+            Assert.AreEqual(0, perfs.PhysBonesTransformCount, "PhysBones transform count is wrong.");
+            Assert.AreEqual(0, perfs.PhysBonesColliderCount, "PhysBoneColliders count is wrong.");
+            Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBone collision check count is wrong.");
+        }
+
+        /// <summary>
+        /// Test EditorOnly case.
+        /// </summary>
+        [Test]
+        public void TestEditorOnly_WithNewPB() {
+            var scene = OpenTestScene();
+            var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
+
+            // Append new pb object to root.
+            var newPB = new GameObject("NewPB");
+            newPB.AddComponent<VRCPhysBone>();
+            newPB.transform.SetParent(root.transform, true);
+            newPB.GetComponent<VRCPhysBone>().colliders.Add(root.GetComponentInChildren<VRCPhysBoneCollider>());
+
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
+            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders);
+
+            var sdkStats = new AvatarPerformanceStats(true);
+            AvatarPerformance.CalculatePerformanceStats(root.name, root, sdkStats, true);
+
+            Assert.AreEqual(2, root.GetComponentsInChildren<VRCPhysBone>(true).Length);
+            Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Length);
+
+            Assert.AreEqual(sdkStats.physBone.Value.componentCount, perfs.PhysBonesCount, "PhysBones count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.transformCount, perfs.PhysBonesTransformCount, "PhysBones Transform count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.colliderCount, perfs.PhysBonesColliderCount, "PhysBoneColliders count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
 #else
             Assert.Ignore("VRCSDK is not installed.");
 #endif
