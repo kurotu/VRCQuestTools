@@ -50,8 +50,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(PerformanceRating.Good, stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneCollisionCheckCount));
 
             // Test AvatarPerformanceStatsLevelSet
-            var questStatsLevelSetPath = AssetDatabase.GUIDToAssetPath("f0f530dea3891c04e8ab37831627e702"); // AvatarPerformanceStatLevels_Quest.asset
-            var questStatsLevelSet = AssetDatabase.LoadAssetAtPath<AvatarPerformanceStatsLevelSet>(questStatsLevelSetPath);
+            AvatarPerformanceStatsLevelSet questStatsLevelSet = LoadQuestStatsLevelSet();
             Assert.AreEqual(8, questStatsLevelSet.poor.physBone.componentCount);
             Assert.AreEqual(64, questStatsLevelSet.poor.physBone.transformCount);
             Assert.AreEqual(16, questStatsLevelSet.poor.physBone.colliderCount);
@@ -82,7 +81,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Test components are children of EditorOnly.
         /// </summary>
         [Test]
-        public void TestVRCSDK_ChildOfEditorOnly_WithNewPB() {
+        public void TestVRCSDK_ChildOfEditorOnly_WithNewPB()
+        {
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
             var stats = new AvatarPerformanceStats(true);
@@ -126,6 +126,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(sdkStats.physBone.Value.transformCount, perfs.PhysBonesTransformCount, "PhysBones Transform count is different from SDK.");
             Assert.AreEqual(sdkStats.physBone.Value.colliderCount, perfs.PhysBonesColliderCount, "PhysBoneColliders count is different from SDK.");
             Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
+
+            // https://creators.vrchat.com/avatars/avatar-performance-ranking-system/#quest-limits
+            var questStatsLevelSet = LoadQuestStatsLevelSet();
+            Debug.Log(questStatsLevelSet);
+            Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneComponentCount));
+            Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneTransformCount));
+            Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneColliderCount));
+            Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneCollisionCheckCount));
 #else
             Assert.Ignore("VRCSDK is not installed.");
 #endif
@@ -157,7 +165,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Test EditorOnly case.
         /// </summary>
         [Test]
-        public void TestEditorOnly_WithNewPB() {
+        public void TestEditorOnly_WithNewPB()
+        {
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
 
@@ -184,6 +193,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
 #else
             Assert.Ignore("VRCSDK is not installed.");
 #endif
+        }
+
+        private static AvatarPerformanceStatsLevelSet LoadQuestStatsLevelSet()
+        {
+            var questStatsLevelSetPath = AssetDatabase.GUIDToAssetPath("f0f530dea3891c04e8ab37831627e702"); // AvatarPerformanceStatLevels_Quest.asset
+            var questStatsLevelSet = AssetDatabase.LoadAssetAtPath<AvatarPerformanceStatsLevelSet>(questStatsLevelSetPath);
+            return questStatsLevelSet;
         }
 
         private Scene OpenTestScene()
