@@ -13,8 +13,11 @@ using UnityEditor;
 using UnityEngine;
 
 #if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+using VRC.SDKBase.Validation.Performance;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
 #else
+using AvatarPerformanceCategory = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceCategory;
+using PerformanceRating = KRT.VRCQuestTools.Mocks.Mock_PerformanceRating;
 using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
 #endif
 
@@ -330,9 +333,17 @@ namespace KRT.VRCQuestTools.Views
                 Selection.activeGameObject = questAvatar;
 
                 var converted = new VRChatAvatar(questAvatar.GetComponent<VRC_AvatarDescriptor>());
-                if (converted.GetPhysBones().Length > VRCSDKUtility.PoorPhysBonesCountLimit
-                    || converted.GetPhysBoneColliders().Length > VRCSDKUtility.PoorPhysBoneCollidersCountLimit
-                    || converted.GetContacts().Length > VRCSDKUtility.PoorContactsCountLimit)
+                var stats = VRCSDKUtility.CalculatePerformanceStats(converted.GameObject, true);
+                var ratings = new PerformanceRating[]
+                {
+                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneComponentCount),
+                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneTransformCount),
+                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneColliderCount),
+                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneCollisionCheckCount),
+                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.ContactCount),
+                };
+
+                if (ratings.Contains(PerformanceRating.VeryPoor))
                 {
                     EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.AlertForAvatarDynamicsPerformance, "OK");
                     PhysBonesRemoveWindow.ShowWindow(converted.AvatarDescriptor);

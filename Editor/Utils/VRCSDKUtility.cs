@@ -14,10 +14,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 #if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+using VRC.SDKBase.Validation.Performance;
+using VRC.SDKBase.Validation.Performance.Stats;
 using AvatarPerformanceStatsLevelSet = VRC.SDKBase.Validation.Performance.Stats.AvatarPerformanceStatsLevelSet;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
 #else
+using AvatarPerformance = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformance;
+using AvatarPerformanceStats = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceStats;
 using AvatarPerformanceStatsLevel = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceStatsLevel;
+using AvatarPerformanceStatsLevelSet = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceStatsLevelSet;
+using PerformanceRating = KRT.VRCQuestTools.Mocks.Mock_PerformanceRating;
 using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
 #endif
 
@@ -447,6 +453,68 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Loads AvatarPerformanceStatsLevelSet.
+        /// </summary>
+        /// <param name="isMobile">Whether loads mobile set.</param>
+        /// <returns>StatsLevelSet.</returns>
+        internal static AvatarPerformanceStatsLevelSet LoadAvatarPerformanceStatsLevelSet(bool isMobile)
+        {
+#if !VRC_SDK_VRCSDK3
+            throw new InvalidOperationException("VRCSDK3 is not imported.");
+#endif
+            var guid = isMobile
+                ? "f0f530dea3891c04e8ab37831627e702" // AvatarPerformanceStatLevels_Quest.asset
+                : "438f83f183e95f740877d4c22ed91af2"; // AvatarPerformanceStatLevels_Windows.asset
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            return AssetDatabase.LoadAssetAtPath<AvatarPerformanceStatsLevelSet>(path);
+        }
+
+        /// <summary>
+        /// Loads the icon of the performance rating.
+        /// </summary>
+        /// <param name="rating">Rating.</param>
+        /// <returns>Icon texture.</returns>
+        internal static Texture2D LoadPerformanceIcon(PerformanceRating rating)
+        {
+            var guid = string.Empty;
+            switch (rating)
+            {
+                case PerformanceRating.None:
+                    throw new InvalidOperationException();
+                case PerformanceRating.Excellent:
+                    guid = "644caf5607820c7418cf0d248b12f33b";
+                    break;
+                case PerformanceRating.Good:
+                    guid = "4109d4977ddfb6548b458318e220ac70";
+                    break;
+                case PerformanceRating.Medium:
+                    guid = "9296abd40c7c1934cb668aae07b41c69";
+                    break;
+                case PerformanceRating.Poor:
+                    guid = "e561d0406779ab948b7f155498d101ee";
+                    break;
+                case PerformanceRating.VeryPoor:
+                    guid = "2886eb1248200a94d9eaec82336fbbad";
+                    break;
+            }
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
+        /// <summary>
+        /// Calculate performance stats of the avatar.
+        /// </summary>
+        /// <param name="gameObject">Target GameObject.</param>
+        /// <param name="isMobile">Whether the platform is mobile.</param>
+        /// <returns>Calculated stats.</returns>
+        internal static AvatarPerformanceStats CalculatePerformanceStats(GameObject gameObject, bool isMobile)
+        {
+            var stats = new AvatarPerformanceStats(isMobile);
+            AvatarPerformance.CalculatePerformanceStats(gameObject.name, gameObject, stats, isMobile);
+            return stats;
+        }
+
+        /// <summary>
         /// Reflection to use VRCSDK features.
         /// </summary>
         internal class Reflection
@@ -552,6 +620,11 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     this.component = component;
                 }
+
+                /// <summary>
+                /// Gets gameObject of the component.
+                /// </summary>
+                internal GameObject GameObject => component.gameObject;
 
                 /// <summary>
                 /// Gets root tansform set by inspector.

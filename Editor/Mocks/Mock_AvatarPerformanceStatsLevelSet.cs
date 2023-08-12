@@ -2,7 +2,7 @@
 
 namespace KRT.VRCQuestTools.Mocks
 {
-    internal class Mock_AvatarPerformanceStatsLevelSet
+    internal class Mock_AvatarPerformanceStatsLevelSet : UnityEngine.Object
     {
         public Mock_AvatarPerformanceStatsLevel excellent { get; }
 

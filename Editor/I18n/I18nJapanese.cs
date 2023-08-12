@@ -20,6 +20,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string YesLabel => "はい";
         internal override string NoLabel => "いいえ";
 
+        internal override string Maximum => "最大";
+
         // Convert Avatar for Quest
         internal override string OverwriteWarningDialogButtonCancel => "キャンセル";
         internal override string OverwriteWarningDialogButtonOK => "OK";
@@ -85,6 +87,9 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PhysBonesWillBeRemovedAtRunTime => "Quest用にアップロードできません。 PhysBone の数を減らしてください。";
         internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "Quest用にアップロードしても PhysBoneCollider は動作しません。 PhysBoneCollider の数を減らしてください。";
         internal override string ContactsWillBeRemovedAtRunTime => "Quest用にアップロードできません。 ContactReceiver と ContactSender の数を減らしてください。";
+        internal override string PhysBonesTransformsShouldBeReduced => "Quest用にアップロードできません。 PhysBone の数を減らすか、PhysBone の子オブジェクトの数を減らしてください。";
+
+        internal override string PhysBonesCollisionCheckCountShouldBeReduced => "Quest用にアップロードできません。 PhysBone と PhysBoneCollider の衝突判定の数を減らしてください。";
         internal override string PhysBonesOrderMustMatchWithPC => "PhysBones を正しく同期させるには PhysBones の Network ID をPC版と一致させる必要があります。残すコンポーネントをリスト先頭から順番に選んでください。";
         internal override string PhysBonesShouldHaveNetworkID => "PhysBones を正しく同期させるには PhysBones の Network ID をPC版と一致させる必要があります。VRCSDK の Network ID Utility を使用してPC用とQuest用で同じ Network ID を割り当てた後、両方を再アップロードしてください。";
         internal override string DeleteUnselectedComponents => "選択していないコンポーネントを削除";

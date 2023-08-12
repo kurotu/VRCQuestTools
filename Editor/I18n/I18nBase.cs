@@ -20,6 +20,8 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string YesLabel { get; }
         internal abstract string NoLabel { get; }
 
+        internal abstract string Maximum { get; }
+
         // Convert Avatar for Quest
         internal abstract string OverwriteWarningDialogTitle { get; }
         internal abstract string OverwriteWarningDialogMessage(string artifactsDir);
@@ -84,6 +86,9 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string PhysBonesWillBeRemovedAtRunTime { get; }
         internal abstract string PhysBoneCollidersWillBeRemovedAtRunTime { get; }
         internal abstract string ContactsWillBeRemovedAtRunTime { get; }
+        internal abstract string PhysBonesTransformsShouldBeReduced { get; }
+        internal abstract string PhysBonesCollisionCheckCountShouldBeReduced { get; }
+
         internal abstract string PhysBonesOrderMustMatchWithPC { get; }
         internal abstract string PhysBonesShouldHaveNetworkID { get; }
         internal abstract string DeleteUnselectedComponents { get; }
