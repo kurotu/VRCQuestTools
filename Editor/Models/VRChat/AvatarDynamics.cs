@@ -36,8 +36,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             // exclude editor only physbones
             var actual = GetActualPhysBones(root, physbones);
-            var roots = actual.Select(pb => pb.RootTransform == null ? pb.GameObject.transform : pb.RootTransform);
-            return roots.Sum(t => CalculatePhysBoneTransformCount(t));
+            return actual.Sum(pb => CalculatePhysBoneTransformCount(pb));
         }
 
         private static int CalculatePhysBonesColliderCount(GameObject root, VRCSDKUtility.Reflection.PhysBone[] physbones, VRCSDKUtility.Reflection.PhysBoneCollider[] colliders)
@@ -56,7 +55,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var actualPbs = physbones.Where((obj) => !IsFinallyEditorOnly(root, obj.GameObject));
             var collisions = actualPbs.Select((pb) =>
             {
-                var transformCount = CalculatePhysBoneTransformCount(pb.RootTransform == null ? pb.GameObject.transform : pb.RootTransform) - 1; // ignore itself.
+                var transformCount = CalculatePhysBoneTransformCount(pb) - 1; // ignore itself.
                 var colliderCount = pb.Colliders.Distinct().Where(c => c != null).Count();
                 return transformCount * colliderCount;
             });
@@ -87,18 +86,23 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return IsFinallyEditorOnly(root, obj.transform.parent.gameObject);
         }
 
-        private static int CalculatePhysBoneTransformCount(Transform rootTransform)
+        private static int CalculatePhysBoneTransformCount(VRCSDKUtility.Reflection.PhysBone physbone)
         {
-            return CountChildrenRecursive(rootTransform) + 1; // count root itself.
+            var rootTransform = physbone.RootTransform == null ? physbone.GameObject.transform : physbone.RootTransform;
+            return CountChildrenRecursive(rootTransform, physbone.IgnoreTransforms.ToArray()) + 1; // count root itself.
         }
 
-        private static int CountChildrenRecursive(Transform transform)
+        private static int CountChildrenRecursive(Transform transform, Transform[] ignoreTransforms)
         {
             var count = 0;
             foreach (Transform child in transform)
             {
+                if (ignoreTransforms.Contains(child))
+                {
+                    continue;
+                }
                 count++;
-                count += CountChildrenRecursive(child);
+                count += CountChildrenRecursive(child, ignoreTransforms);
             }
             return count;
         }

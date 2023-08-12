@@ -455,6 +455,7 @@ namespace KRT.VRCQuestTools.Utils
             internal class PhysBone
             {
                 private static readonly FieldInfo RootTransformField = PhysBoneType?.GetField("rootTransform");
+                private static readonly FieldInfo IgnoreTransformsField = PhysBoneType?.GetField("ignoreTransforms");
                 private static readonly FieldInfo CollidersField = PhysBoneType?.GetField("colliders");
                 private readonly Component component;
 
@@ -476,6 +477,11 @@ namespace KRT.VRCQuestTools.Utils
                 /// Gets root tansform set by inspector.
                 /// </summary>
                 internal Transform RootTransform => (Transform)RootTransformField.GetValue(component);
+
+                /// <summary>
+                /// Gets ignore transforms set by inspector.
+                /// </summary>
+                internal List<Transform> IgnoreTransforms => (List<Transform>)IgnoreTransformsField.GetValue(component);
 
                 /// <summary>
                 /// Gets PhysBoneCollider instances.
