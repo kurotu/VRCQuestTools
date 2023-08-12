@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 修正
 - 元のテクスチャが .asset ファイルの場合に発生する不正なキャストエラーを修正
+- lilToon の「発光設定 - メインカラーの強度」が変換後のテクスチャに反映されない問題を修正
 
 ## [1.12.1] - 2023-07-02
 

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed invalid cast error when an original texture is an .asset file.
+- Fixed issue where "Emission - Main Color Power" of lilToon is not reflected to converted textures.
 
 ## [1.12.1] - 2023-07-02
 

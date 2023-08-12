@@ -26,6 +26,7 @@
         _EmissionGradSpeed("Gradation Speed", Float) = 1
         // _EmissionParallaxDepth("Parallax Depth", float) = 0
         _EmissionFluorescence("Fluorescence", Range(0,1)) = 0
+        _EmissionMainStrength("EmissionMainStrength", Range(0,1)) = 0
 
         _UseEmission2nd("Use Emission", Int) = 0
         [HDR]_Emission2ndColor("Color", Color) = (1,1,1,1)
@@ -42,6 +43,7 @@
         _Emission2ndGradSpeed("Gradation Speed", Float) = 1
         // _Emission2ndParallaxDepth("Parallax Depth", float) = 0
         _Emission2ndFluorescence("Fluorescence", Range(0,1)) = 0
+        _Emission2ndMainStrength("Emission2ndMainStrength", Range(0,1)) = 0
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
     }
@@ -94,6 +96,7 @@
             Texture2D _EmissionGradTex;
             SamplerState sampler_EmissionGradTex;
             float _EmissionFluorescence;
+            float _EmissionMainStrength;
 
             uint _UseEmission2nd;
             fixed4 _Emission2ndColor;
@@ -109,6 +112,7 @@
             Texture2D _Emission2ndGradTex;
             SamplerState sampler_Emission2ndGradTex;
             float _Emission2ndFluorescence;
+            float _Emission2ndMainStrength;
 
             float _VQT_MainTexBrightness;
 
@@ -120,8 +124,9 @@
                 return tex2D(tex, newUV);
             }
 
-            float4 emissionRGB(fixed4 emiColor, float4 emi, float emiBlend, float4 emiMask) {
-                float4 ret = emi * emiColor * emiMask;
+            float4 emissionRGB(fixed4 emiColor, float4 emi, float emiBlend, float4 emiMask, float4 albedo, float mainStrength) {
+                float4 emi_tmp = emi * emiColor;
+                float4 ret = lerp(emi_tmp, emi_tmp * albedo, mainStrength) * emiMask;
                 ret.rgb *= emiBlend;
                 return ret;
             }
@@ -154,8 +159,9 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
-                col.rgb *= _VQT_MainTexBrightness;
+                fixed4 albedo = tex2D(_MainTex, i.uv);
+                albedo.rgb *= _VQT_MainTexBrightness;
+                fixed4 col = albedo;
 
                 if (_LIL_FEATURE_EMISSION_1ST && _UseEmission) {
                     float angle;
@@ -163,7 +169,7 @@
                     float4 emi = sampleTex2D(_EmissionMap, i.uv_EmissionMap, angle);
                     angle = _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? _EmissionBlendMask_ScrollRotate.b : 0.0f;
                     float4 emiMask = sampleTex2D(_EmissionBlendMask, i.uv_EmissionBlendMask, angle);
-                    emi = emissionRGB(_EmissionColor, emi, _EmissionBlend, emiMask);
+                    emi = emissionRGB(_EmissionColor, emi, _EmissionBlend, emiMask, albedo, _EmissionMainStrength);
                     if (_LIL_FEATURE_EMISSION_GRADATION && _EmissionUseGrad) {
                         // Use first color
                         fixed4 c = _EmissionGradTex.Sample(sampler_EmissionGradTex, 0);
@@ -179,7 +185,7 @@
                     float4 emi = sampleTex2D(_Emission2ndMap, i.uv_Emission2ndMap, angle);
                     angle = _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? _Emission2ndBlendMask_ScrollRotate.b : 0.0f;
                     float4 emiMask = sampleTex2D(_Emission2ndBlendMask, i.uv_Emission2ndBlendMask, angle);
-                    emi.rgb = emissionRGB(_Emission2ndColor, emi, _Emission2ndBlend, emiMask);
+                    emi.rgb = emissionRGB(_Emission2ndColor, emi, _Emission2ndBlend, emiMask, albedo, _Emission2ndMainStrength);
                     if (_LIL_FEATURE_EMISSION_GRADATION && _Emission2ndUseGrad) {
                         // Use first color
                         fixed4 c = _Emission2ndGradTex.Sample(sampler_Emission2ndGradTex, 0);
