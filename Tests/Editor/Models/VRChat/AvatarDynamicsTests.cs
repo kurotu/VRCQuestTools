@@ -159,6 +159,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(0, perfs.PhysBonesTransformCount, "PhysBones transform count is wrong.");
             Assert.AreEqual(0, perfs.PhysBonesColliderCount, "PhysBoneColliders count is wrong.");
             Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBone collision check count is wrong.");
+#else
+            Assert.Ignore("VRCSDK is not installed.");
+#endif
         }
 
         /// <summary>
@@ -167,6 +170,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         [Test]
         public void TestEditorOnly_WithNewPB()
         {
+#if VQT_HAS_VRCSDK
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
 
@@ -195,6 +199,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 #endif
         }
 
+#if VQT_HAS_VRCSDK
         private static AvatarPerformanceStatsLevelSet LoadQuestStatsLevelSet()
         {
             var questStatsLevelSetPath = AssetDatabase.GUIDToAssetPath("f0f530dea3891c04e8ab37831627e702"); // AvatarPerformanceStatLevels_Quest.asset
@@ -207,5 +212,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
             EditorSceneManager.OpenScene(TestUtils.FixturesFolder + "/Scenes/AvatarDynamicsTests.unity");
             return SceneManager.GetActiveScene();
         }
+#endif
     }
 }
