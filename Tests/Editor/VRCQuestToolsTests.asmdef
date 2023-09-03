@@ -13,7 +13,10 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll",
-        "Newtonsoft.Json.dll"
+        "Newtonsoft.Json.dll",
+        "VRCSDKBase.dll",
+        "VRC.SDK3.Dynamics.PhysBone.dll",
+        "VRC.Dynamics.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
@@ -24,6 +27,11 @@
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "VQT_HAS_NEWTONSOFT_JSON"
+        },
+        {
+            "name": "com.vrchat.base",
+            "expression": "",
+            "define": "VQT_HAS_VRCSDK"
         }
     ],
     "noEngineReferences": false
