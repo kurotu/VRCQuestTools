@@ -54,7 +54,7 @@ namespace KRT.VRCQuestTools.Automators
             {
                 try
                 {
-                    var latestRelease = await GetLatestRelease();
+                    var latestRelease = await GetLatestRelease(CurrentVersion.IsPrerelease);
                     Debug.Log($"[{VRCQuestTools.Name}] Latest version is {latestRelease.Version} (Current: {CurrentVersion})");
                     var hasUpdate = latestRelease.Version > CurrentVersion;
                     if (hasUpdate)
@@ -126,12 +126,13 @@ namespace KRT.VRCQuestTools.Automators
             }
         }
 
-        private static async Task<GitHubRelease> GetLatestRelease()
+        private static async Task<GitHubRelease> GetLatestRelease(bool allowPrerelease)
         {
             var repo = await VRCQuestTools.VPM.GetVPMRepository(VRCQuestTools.VPMRepositoryURL);
             var vqt = repo.packages[VRCQuestTools.PackageName];
             var latest = vqt.versions.Keys
                 .Select(v => new SemVer(v))
+                .Where(v => allowPrerelease || !v.IsPrerelease)
                 .OrderByDescending(v => v)
                 .First();
             var release = new GitHubRelease();
