@@ -8,7 +8,7 @@ After testing, you may find some issues in Quest avatars.
 This page describes how to tweak Quest avatars with examples.
 
 :::note
-This page requires knowledge of some basic Unity skills and terms.
+This page requires knowledge of some basic Unity skills and technical terms.
 :::
 
 ## Transparent Meshes

@@ -26,7 +26,7 @@ Convert your avatar to Quest compatible.
 4. Click **Convert** button of the window.
 5. Converted avatar is created in the same scene. Its name has the suffix `(Quest)`.
 
-:::note
+:::info
 The original avatar is deactivcated after conversion. You can restore it from the inspector.
 :::
 
@@ -81,7 +81,7 @@ Now you can upload the converted avatar to Quest platform. Make sure the origina
 
 After uploading, make sure the avatar thumbnail has the Quest icon.
 
-:::note
+:::info
 Avatars are managed by Blueprint ID. So you can upload avatar data for each platform with the same Blueprint ID.
 PC players will see the original avatar and Quest players will see the converted avatar.
 :::
