@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added estimated performance stats to PhysBones Remover window.
+- Added update notification for pre-release version. (Only when using pre-release version)
 
 ### Fixed
 - Fixed invalid cast error when an original texture is an .asset file.

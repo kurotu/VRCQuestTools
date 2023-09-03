@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 追加
 - PhysBones Remover ウィンドウに推定のパフォーマンス値を表示する機能を追加
+- プレリリース版の更新通知を表示する機能を追加 (プレリリース版を使用している場合のみ)
 
 ### 修正
 - 元のテクスチャが .asset ファイルの場合に発生する不正なキャストエラーを修正
