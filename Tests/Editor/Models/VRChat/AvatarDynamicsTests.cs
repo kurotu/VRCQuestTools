@@ -240,6 +240,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(sdkStats.physBone.Value.colliderCount, perfs.PhysBonesColliderCount, "PhysBoneColliders count is different from SDK.");
             Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
             Assert.AreEqual(sdkStats.contactCount.Value, perfs.ContactsCount, "Contacts count is different from SDK.");
+
+            perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCSDKUtility.Reflection.PhysBoneCollider[0], contacts);
+            Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count should be 0 when colliders are missing.");
 #else
             Assert.Ignore("VRCSDK is not installed.");
 #endif

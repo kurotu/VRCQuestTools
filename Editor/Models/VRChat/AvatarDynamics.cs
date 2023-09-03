@@ -68,7 +68,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     transformCount -= childCount; // ignore children's first objects.
                 }
-                var colliderCount = pb.Colliders.Distinct().Where(c => c != null).Count();
+                var colliderCount = pb.Colliders
+                    .Distinct()
+                    .Where(c => c != null)
+                    .Where(c => colliders.FirstOrDefault(cc => cc.Component == c) != null)
+                    .Count();
                 return transformCount * colliderCount;
             });
             return collisions.Sum();
