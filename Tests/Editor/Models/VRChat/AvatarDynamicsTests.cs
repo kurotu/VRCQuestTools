@@ -213,6 +213,38 @@ namespace KRT.VRCQuestTools.Models.VRChat
 #endif
         }
 
+        /// <summary>
+        /// Test MultiChild case.
+        /// </summary>
+        [Test]
+        public void TestMultiChild()
+        {
+#if VQT_HAS_VRCSDK
+            var scene = OpenTestScene();
+            var root = scene.GetRootGameObjects().First((obj) => obj.name == "MultiChild");
+
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
+            var contacts = new VRCSDKUtility.Reflection.ContactBase[0];
+            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
+
+            var sdkStats = new AvatarPerformanceStats(true);
+            AvatarPerformance.CalculatePerformanceStats(root.name, root, sdkStats, true);
+
+            Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBone>(true).Length);
+            Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Length);
+            Assert.AreEqual(0, root.GetComponentsInChildren<ContactBase>(true).Length);
+
+            Assert.AreEqual(sdkStats.physBone.Value.componentCount, perfs.PhysBonesCount, "PhysBones count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.transformCount, perfs.PhysBonesTransformCount, "PhysBones Transform count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.colliderCount, perfs.PhysBonesColliderCount, "PhysBoneColliders count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
+            Assert.AreEqual(sdkStats.contactCount.Value, perfs.ContactsCount, "Contacts count is different from SDK.");
+#else
+            Assert.Ignore("VRCSDK is not installed.");
+#endif
+        }
+
 #if VQT_HAS_VRCSDK
         private static AvatarPerformanceStatsLevelSet LoadQuestStatsLevelSet()
         {

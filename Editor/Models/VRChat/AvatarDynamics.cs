@@ -62,6 +62,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var collisions = actualPbs.Select((pb) =>
             {
                 var transformCount = CalculatePhysBoneTransformCount(pb) - 1; // ignore itself.
+                var rootTrans = pb.RootTransform == null ? pb.GameObject.transform : pb.RootTransform;
+                var childCount = rootTrans.childCount - pb.IgnoreTransforms.Count(t => t.IsChildOf(rootTrans)); // count children without ignored transforms.
+                if (childCount > 1)
+                {
+                    transformCount -= childCount; // ignore children's first objects.
+                }
                 var colliderCount = pb.Colliders.Distinct().Where(c => c != null).Count();
                 return transformCount * colliderCount;
             });
