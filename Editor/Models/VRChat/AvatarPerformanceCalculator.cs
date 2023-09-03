@@ -81,7 +81,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 case AvatarPerformanceCategory.None:
                 case AvatarPerformanceCategory.Overall:
                 case AvatarPerformanceCategory.DownloadSize:
-                case AvatarPerformanceCategory.UncompressedSize:
                 case AvatarPerformanceCategory.PolyCount:
                 case AvatarPerformanceCategory.AABB:
                 case AvatarPerformanceCategory.SkinnedMeshCount:
@@ -107,7 +106,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 case AvatarPerformanceCategory.PhysicsRigidbodyCount:
                 case AvatarPerformanceCategory.AudioSourceCount:
                 case AvatarPerformanceCategory.TextureMegabytes:
-                case AvatarPerformanceCategory.ConstraintsCount:
                 case AvatarPerformanceCategory.AvatarPerformanceCategoryCount:
                     throw new System.InvalidProgramException();
                 default:
