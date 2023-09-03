@@ -91,6 +91,7 @@ namespace KRT.VRCQuestTools.I18n
 
         internal abstract string PhysBonesOrderMustMatchWithPC { get; }
         internal abstract string PhysBonesShouldHaveNetworkID { get; }
+        internal abstract string EstimatedPerformanceStats { get; }
         internal abstract string DeleteUnselectedComponents { get; }
 
         // Metallic Smoothness

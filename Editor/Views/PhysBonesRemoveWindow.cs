@@ -256,6 +256,9 @@ namespace KRT.VRCQuestTools.Views
                 model.ContactsToKeep.Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray()
             );
 
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField(i18n.EstimatedPerformanceStats, EditorStyles.boldLabel);
             GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneComponentCount, i18n);
             GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneTransformCount, i18n);
             GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneColliderCount, i18n);
@@ -343,13 +346,16 @@ namespace KRT.VRCQuestTools.Views
                     default: throw new InvalidOperationException();
                 }
                 var label = $"{qualityLabel}: {value} ({i18n.Maximum}: {maximum})";
-                var style = EditorStyles.label;
-                if (rating == PerformanceRating.VeryPoor)
+
+                var style = EditorStyles.wordWrappedLabel;
+                using (var vertical = new EditorGUILayout.VerticalScope())
                 {
-                    label += $"\n{veryPoorViolation}";
-                    style = EditorStyles.wordWrappedLabel;
+                    EditorGUILayout.LabelField(label, style);
+                    if (rating == PerformanceRating.VeryPoor)
+                    {
+                        EditorGUILayout.LabelField(veryPoorViolation, style);
+                    }
                 }
-                EditorGUILayout.LabelField(label, style, GUILayout.ExpandHeight(true));
             }
 #endif
         }

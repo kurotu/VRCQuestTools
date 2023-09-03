@@ -93,6 +93,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PhysBonesOrderMustMatchWithPC => "To properly synchronize PhysBones, the order of PhysBones' Network IDs must match with the PC avatar. Please select PhysBones from the top of the list.";
         internal override string PhysBonesShouldHaveNetworkID => "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Quest. Please assign Network IDs to both of PC version and Quest version with Network ID Utility of VRCSDK, then re-upload both.";
         internal override string AlertForMultiplePhysBones => "There are multiple PhysBones in a single GameObject. When removing PhysBones for Quest after conversion, they may not be properly synchronized between PC and Quest.";
+        internal override string EstimatedPerformanceStats => "Estimated Performance Stats";
         internal override string DeleteUnselectedComponents => "Delete Unselected Components";
 
         // Metallic Smoothness
