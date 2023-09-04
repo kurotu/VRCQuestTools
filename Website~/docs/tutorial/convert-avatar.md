@@ -15,6 +15,25 @@ Convert your avatar to Quest compatible.
 ## Upload PC Avatar
 
 Before converting your avatar, you should upload your avatar for PC platform.
+But before uploading your avatar for PC platform, you should do additional work.
+
+### Assign Network IDs to PhysBones
+
+1. Select **VRChat SDK** > **Utilities** > **Network ID Import and Export Utility** in the menu bar.
+2. **Network ID Utility** window appears.
+3. Select your avatar in the **Target** dropdown.
+4. Click **Regenerate Scene IDs** button.
+5. **Generate New Scene IDs** dialog appears and click **Generate New IDs** button.
+6. List of PhysBones appears.
+
+### Upload Avatar
+
+Upload your avatar as usual.
+
+:::tip
+It's good time to create a prefab (or prefab variant) if you are using prefab workflow.
+VRCQuestTools keeps references to prefabs after conversion.
+:::
 
 ## Convert Avatar
 

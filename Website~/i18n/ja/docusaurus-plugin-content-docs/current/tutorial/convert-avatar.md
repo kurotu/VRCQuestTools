@@ -15,6 +15,27 @@ sidebar_position: 2
 ## PCアバターのアップロード
 
 アバターを変換する前に、PC向けのアバターをアップロードしておきます。
+ただし通常のPC向けのアップロードの前に、追加の作業をします。
+
+### PhysBoneへのネットワークIDの割り当て
+
+PCとQuestでPhysBoneを正しく同期させるために、PhysBoneにネットワークIDを割り当てる必要があります。
+
+1. メニューバーの**VRChat SDK** > **Utilities** > **Network ID Import and Export Utility**を選択します。
+2. **Network ID Utility**ウィンドウが表示されます。
+3. **Target**ドロップダウンからアバターを選択します。
+4. **Regenerate Scene IDs**ボタンをクリックします。
+5. **Generate New Scene IDs**ダイアログの**Generate New IDs**ボタンをクリックします。
+6. PhysBoneの一覧が表示されます。
+
+### アバターのアップロード
+
+通常通りアバターをアップロードします。
+
+:::tip
+Prefabワークフローを使用している場合、このタイミングでPrefab (またはPrefab Variant)を作成するとよいでしょう。
+VRCQuestToolsはアバターの変換後もプレハブへの参照を保持します。
+:::
 
 ## アバターの変換
 
