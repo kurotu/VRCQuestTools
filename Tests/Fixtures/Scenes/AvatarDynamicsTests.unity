@@ -2111,6 +2111,7 @@ MonoBehaviour:
   rootTransform: {fileID: 0}
   ignoreTransforms:
   - {fileID: 387641128}
+  - {fileID: 0}
   endpointPosition: {x: 0, y: 0, z: 0}
   multiChildType: 0
   pull: 0.2
@@ -2170,6 +2171,7 @@ MonoBehaviour:
   colliders:
   - {fileID: 1529998076}
   - {fileID: 249434617}
+  - {fileID: 0}
   limitType: 0
   maxAngleX: 45
   maxAngleXCurve:

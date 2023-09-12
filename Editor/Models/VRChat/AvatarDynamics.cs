@@ -63,7 +63,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 var transformCount = CalculatePhysBoneTransformCount(pb) - 1; // ignore itself.
                 var rootTrans = pb.RootTransform == null ? pb.GameObject.transform : pb.RootTransform;
-                var childCount = rootTrans.childCount - pb.IgnoreTransforms.Count(t => t.IsChildOf(rootTrans)); // count children without ignored transforms.
+                var childCount = rootTrans.childCount - pb.IgnoreTransforms.Where(t => t != null).Count(t => t.IsChildOf(rootTrans)); // count children without ignored transforms.
                 if (childCount > 1)
                 {
                     transformCount -= childCount; // ignore children's first objects.
