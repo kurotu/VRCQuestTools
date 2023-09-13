@@ -59,6 +59,7 @@ Questでは、セーフティのMinimum Displayed Performance Rankは「Good」�
 これは「Very Poor」のアバターは常にブロックされ、他の人が個別にAvatar Display設定(「Show Avatar」機能として知られています)を変更しない限り、フォールバックアバターで置き換えられることを意味します。
 
 適切なフォールバックアバターを設定する必要があります。
+詳細については、[Avatar Fallback System](https://docs.vrchat.com/docs/avatar-fallback-system)を参照してください。
 :::
 
 ## Avatar Dynamicsコンポーネントの削減

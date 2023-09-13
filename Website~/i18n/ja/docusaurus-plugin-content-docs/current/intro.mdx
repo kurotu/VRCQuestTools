@@ -14,6 +14,11 @@ VRCQuestToolsはOculus Quest用にVRChatアバターをアップロードする�
 - シングルクリックでPCアバターをQuest用にアップロード可能にします。
 - 手動でアバターをQuest対応にするための様々なツールを使うことができます。
 
+## 動作環境
+
+- Unity 2019.4.31f1
+- VRChat SDK - Avatars 3.1.1 以降
+
 ## クイックガイド
 
 ### インストール
@@ -44,3 +49,12 @@ VRCQuestToolsをプロジェクトに追加するには、以下の手順に従�
 3. 開いたウィンドウで**変換**ボタンをクリックします。
 4. 変換が完了するのを待ちます。
 5. 変換後のアバターをAndroidプラットフォーム用にアップロードします。
+
+:::caution
+このツールはパフォーマンスランクの最適化をしません。
+多くの場合、変換後のアバターはQuest基準で **Very Poor** になります。
+
+**Show Avatar** 操作をしない限り、フォーあるバックアバターで置き換えられます。
+詳細については、[Quest Limits](https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits)
+と [Avatar Fallback System](https://docs.vrchat.com/docs/avatar-fallback-system) を参照してください。
+:::

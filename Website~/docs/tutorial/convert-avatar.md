@@ -56,6 +56,7 @@ So in most cases, converted avatars would have "Very Poor" performance rank in Q
 In Quest platform, minimum displayed performance rank of safety can be "Good" or "Poor". This means "Very Poor" avatars are always blocked and replaced with your fallback avatar unless other people individually change Avatar Display setting (as known as "Show Avatar" functionality).
 
 You should set an appropriate fallback avatar.
+See [Avatar Fallback System](https://docs.vrchat.com/docs/avatar-fallback-system) for details.
 :::
 
 ## Reduce Avatar Dynamics Components
