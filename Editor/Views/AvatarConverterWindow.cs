@@ -5,6 +5,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
@@ -32,6 +33,7 @@ namespace KRT.VRCQuestTools.Views
         private AvatarConverterViewModel model = new AvatarConverterViewModel();
         private Vector2 scrollPosition;
         private AvatarConverter.ProgressCallback progressCallback;
+        private string[] invalidCharStrings;
 
         /// <summary>
         /// Show a window.
@@ -113,6 +115,10 @@ namespace KRT.VRCQuestTools.Views
                 },
             };
             model.AvatarConverter = VRCQuestTools.AvatarConverter;
+            invalidCharStrings = Path.GetInvalidFileNameChars()
+                        .Where(c => !char.IsControl(c))
+                        .Select(c => new string(c, 1))
+                        .ToArray();
         }
 
         private void OnGUI()
@@ -208,6 +214,10 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.BeginVertical(GUI.skin.box);
             {
                 model.outputPath = EditorGUILayout.TextField(i18n.SaveToLabel, model.outputPath);
+                if (model.HasInvalidCharsInOutputPath)
+                {
+                    EditorGUILayout.HelpBox(i18n.InvalidCharsInOutputPath + "\n" + string.Join(" ", invalidCharStrings), MessageType.Error);
+                }
                 if (GUILayout.Button(i18n.SelectButtonLabel))
                 {
                     OnClickSelectButton();
@@ -279,7 +289,17 @@ namespace KRT.VRCQuestTools.Views
         private void SetArtifactsPath(VRC_AvatarDescriptor avatar)
         {
             const string ArtifactsRootDir = "Assets/KRT/QuestAvatars";
-            model.outputPath = $"{ArtifactsRootDir}/{avatar.name}";
+            var invalidChars = Path.GetInvalidFileNameChars();
+
+            var name = new string(avatar.name.Select(c => invalidChars.Contains(c) ? '_' : c).ToArray());
+
+            // replace leading spaces with underscores
+            name = Regex.Replace(name, @"^ +", m => new string('_', m.Length));
+
+            // replace trailing spaces with underscores
+            name = Regex.Replace(name, @" +$", m => new string('_', m.Length));
+
+            model.outputPath = $"{ArtifactsRootDir}/{name}";
         }
 
         private void OnClickUpdateTexturesButton()

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### 変更
+- デフォルトの保存先フォルダ名に使用できない文字があるときアンダースコアを使用するように変更
+
+### 修正
+- 保存先フォルダ名に使用できない文字があると変換に失敗する問題を修正
+- 保存先フォルダ名の末尾に半角スペースがあると変換に失敗する問題を修正
+
 ## [1.13.1] - 2023-09-12
 
 ### 修正

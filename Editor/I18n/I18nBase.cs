@@ -33,6 +33,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string QuestTexturesDescription { get; }
         internal abstract string SupportedShadersLabel { get; }
         internal abstract string SaveToLabel { get; }
+        internal abstract string InvalidCharsInOutputPath { get; }
         internal abstract string SelectButtonLabel { get; }
         internal abstract string ConvertButtonLabel { get; }
         internal abstract string AssignButtonLabel { get; }

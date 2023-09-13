@@ -33,6 +33,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string QuestTexturesDescription => "メインテクスチャ以外にもマテリアルのパラメーターを参照してテクスチャを生成し、PC版アバターの外観に近づけます。";
         internal override string SupportedShadersLabel => "対応シェーダー";
         internal override string SaveToLabel => "保存先フォルダ";
+        internal override string InvalidCharsInOutputPath => "フォルダ名に使用できない文字を含んでいます。";
         internal override string SelectButtonLabel => "選択";
         internal override string ConvertButtonLabel => "変換";
         internal override string AssignButtonLabel => "割り当て";

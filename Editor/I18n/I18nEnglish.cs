@@ -33,6 +33,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string QuestTexturesDescription => "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar";
         internal override string SupportedShadersLabel => "Supported Shaders";
         internal override string SaveToLabel => "Folder to Save";
+        internal override string InvalidCharsInOutputPath => "Folder name has invalid characters.";
         internal override string SelectButtonLabel => "Select";
         internal override string ConvertButtonLabel => "Convert";
         internal override string AssignButtonLabel => "Assign";

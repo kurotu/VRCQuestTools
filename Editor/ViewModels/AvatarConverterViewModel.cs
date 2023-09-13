@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
@@ -115,6 +116,18 @@ namespace KRT.VRCQuestTools.ViewModels
         }
 
         /// <summary>
+        /// Gets a value indicating whether the output path contains invalid characters.
+        /// </summary>
+        internal bool HasInvalidCharsInOutputPath
+        {
+            get
+            {
+                var components = outputPath.Split('/');
+                return components.FirstOrDefault(c => c.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0) != null;
+            }
+        }
+
+        /// <summary>
         /// Gets materials which are not verified in VRCQuestTools.
         /// </summary>
         internal Material[] UnverifiedShaderMaterials => TargetAvatar.Materials
@@ -193,7 +206,7 @@ namespace KRT.VRCQuestTools.ViewModels
             get
             {
                 var hasTarget = TargetAvatarDescriptor != null;
-                return hasTarget && !OverrideControllersHasUnsupportedMaterials;
+                return hasTarget && !HasInvalidCharsInOutputPath && !OverrideControllersHasUnsupportedMaterials;
             }
         }
 
