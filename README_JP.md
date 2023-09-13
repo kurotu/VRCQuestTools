@@ -16,30 +16,30 @@
   <a href="https://kurotu.booth.pm/items/2436054"><img alt="Booth" src="https://asset.booth.pm/static-images/banner/200x40_01.png"></a>
 </p>
 
-[ English | [日本語](README_JP.md) ]
+[ [English](README.md) | 日本語 ]
 
-## Install
+## インストール
 
-Choose an install method you like.
+以下の方法でインストールできます。
 
 ### VRChat Creator Companion (VCC)
-Click [here](https://kurotu.github.io/vpm-repos/vpm.html) to add the repository to VCC. Then you can install the package in VCC.
+[ここ](https://kurotu.github.io/vpm-repos/vpm.html)をクリックして VCC にリポジトリを追加してください。その後、VCC でパッケージをインストールできます。
 
 ### Unitypackage
-Download the `.unitypackage` from [the latest release page](https://github.com/kurotu/VRCQuestTools/releases/latest) or [Booth](https://kurotu.booth.pm/items/2436054). Then import it to your avatar project.
+[最新のリリースページ](https://github.com/kurotu/VRCQuestTools/releases/latest)か [Booth](https://kurotu.booth.pm/items/2436054) から `.unitypackage` をダウンロードしてください。その後、アバタープロジェクトにインポートしてください。
 
 ### Unity Package Manager (UPM)
-Import `https://github.com/kurotu/VRCQuestTools.git`.
+`https://github.com/kurotu/VRCQuestTools.git` をインポートしてください。
 
-## Usage
+## 使い方
 
-See the reference site: https://kurotu.github.io/VRCQuestTools/
+リファレンスサイトを参照してください: https://kurotu.github.io/VRCQuestTools/ja/
 
-## License
+## 利用規約
 
-The MIT License.
+本ツールは MIT ライセンスで提供されます。
 
-## Contact
+## 連絡先
 
 - VRCID: kurotu
 - Twitter: [@kurotu](https://twitter.com/kurotu)
