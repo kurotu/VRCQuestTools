@@ -18,6 +18,11 @@
 
 [ [English](README.md) | 日本語 ]
 
+Avatar Converter and Utilities for Quest.
+
+- シングルクリックでPCアバターをQuest用にアップロード可能にします。
+- 手動でアバターをQuest対応にするための様々なツールを使うことができます。
+
 ## インストール
 
 以下の方法でインストールできます。

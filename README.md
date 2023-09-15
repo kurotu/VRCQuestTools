@@ -18,6 +18,11 @@
 
 [ English | [日本語](README_JP.md) ]
 
+Avatar Converter and Utilities for Quest.
+
+- You can make your PC avatar uploadable for Quest with a single click.
+- You can use various tools to manually make your avatar Quest compatible.
+
 ## Install
 
 Choose an install method you like.
