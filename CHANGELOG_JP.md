@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 修正
 - 頂点カラーの存在を確認する判定が誤っていた問題を修正
 - VertexColorRemover コンポーネントがあると VRCSDK 3.3.0 でアバターをアップロードできないことがある問題を修正
+- PhysBone の衝突判定数に Endpoint Position および Multi Child Type が反映されない問題を修正
 
 ## [1.13.2] - 2023-09-15
 

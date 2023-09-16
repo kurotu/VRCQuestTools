@@ -528,6 +528,8 @@ namespace KRT.VRCQuestTools.Utils
             {
                 private static readonly FieldInfo RootTransformField = PhysBoneType?.GetField("rootTransform");
                 private static readonly FieldInfo IgnoreTransformsField = PhysBoneType?.GetField("ignoreTransforms");
+                private static readonly FieldInfo EndpointPositionField = PhysBoneType?.GetField("endpointPosition");
+                private static readonly FieldInfo MultiChildTypeField = PhysBoneType?.GetField("multiChildType");
                 private static readonly FieldInfo CollidersField = PhysBoneType?.GetField("colliders");
                 private readonly Component component;
 
@@ -538,6 +540,27 @@ namespace KRT.VRCQuestTools.Utils
                 internal PhysBone(Component component)
                 {
                     this.component = component;
+                }
+
+                /// <summary>
+                /// VRCPhysBoneBase.MultiChildType.
+                /// </summary>
+                internal enum MultiChildTypeEnum
+                {
+                    /// <summary>
+                    /// VRCPhysBoneBase.MultiChildType.Ignore.
+                    /// </summary>
+                    Ignore,
+
+                    /// <summary>
+                    /// VRCPhysBoneBase.MultiChildType.First.
+                    /// </summary>
+                    First,
+
+                    /// <summary>
+                    /// VRCPhysBoneBase.MultiChildType.Average.
+                    /// </summary>
+                    Average,
                 }
 
                 /// <summary>
@@ -554,6 +577,16 @@ namespace KRT.VRCQuestTools.Utils
                 /// Gets ignore transforms set by inspector.
                 /// </summary>
                 internal List<Transform> IgnoreTransforms => (List<Transform>)IgnoreTransformsField.GetValue(component);
+
+                /// <summary>
+                /// Gets endpoint position set by inspector.
+                /// </summary>
+                internal Vector3 EndpointPosition => (Vector3)EndpointPositionField.GetValue(component);
+
+                /// <summary>
+                /// Gets multi child type set by inspector.
+                /// </summary>
+                internal MultiChildTypeEnum MultiChildType => (MultiChildTypeEnum)MultiChildTypeField.GetValue(component);
 
                 /// <summary>
                 /// Gets PhysBoneCollider instances.

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed the issue where vertex color remover fails to detect vertex colors.
 - Fixed the issue where avatar cannot be uploaded when VertexColorRemover component exists in VRCSDK 3.3.0.
+- Fixed the issue where PhysBone's collision check count does not reflect Endpoint Position and Multi Child Type.
 
 ## [1.13.2] - 2023-09-15
 

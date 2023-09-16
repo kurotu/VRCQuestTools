@@ -217,11 +217,81 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Test MultiChild case.
         /// </summary>
         [Test]
-        public void TestMultiChild()
+        public void TestMultiChilIgnore()
         {
 #if VQT_HAS_VRCSDK
             var scene = OpenTestScene();
-            var root = scene.GetRootGameObjects().First((obj) => obj.name == "MultiChild");
+            var root = scene.GetRootGameObjects().First((obj) => obj.name == "MultiChildIgnore");
+
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
+            var contacts = new VRCSDKUtility.Reflection.ContactBase[0];
+            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
+
+            var sdkStats = new AvatarPerformanceStats(true);
+            AvatarPerformance.CalculatePerformanceStats(root.name, root, sdkStats, true);
+
+            Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBone>(true).Length);
+            Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Length);
+            Assert.AreEqual(0, root.GetComponentsInChildren<ContactBase>(true).Length);
+
+            Assert.AreEqual(sdkStats.physBone.Value.componentCount, perfs.PhysBonesCount, "PhysBones count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.transformCount, perfs.PhysBonesTransformCount, "PhysBones Transform count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.colliderCount, perfs.PhysBonesColliderCount, "PhysBoneColliders count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
+            Assert.AreEqual(sdkStats.contactCount.Value, perfs.ContactsCount, "Contacts count is different from SDK.");
+
+            perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCSDKUtility.Reflection.PhysBoneCollider[0], contacts);
+            Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count should be 0 when colliders are missing.");
+#else
+            Assert.Ignore("VRCSDK is not installed.");
+#endif
+        }
+
+        /// <summary>
+        /// Test MultiChild case.
+        /// </summary>
+        [Test]
+        public void TestMultiChildFirst()
+        {
+#if VQT_HAS_VRCSDK
+            var scene = OpenTestScene();
+            var root = scene.GetRootGameObjects().First((obj) => obj.name == "MultiChildFirst");
+
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
+            var contacts = new VRCSDKUtility.Reflection.ContactBase[0];
+            var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
+
+            var sdkStats = new AvatarPerformanceStats(true);
+            AvatarPerformance.CalculatePerformanceStats(root.name, root, sdkStats, true);
+
+            Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBone>(true).Length);
+            Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Length);
+            Assert.AreEqual(0, root.GetComponentsInChildren<ContactBase>(true).Length);
+
+            Assert.AreEqual(sdkStats.physBone.Value.componentCount, perfs.PhysBonesCount, "PhysBones count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.transformCount, perfs.PhysBonesTransformCount, "PhysBones Transform count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.colliderCount, perfs.PhysBonesColliderCount, "PhysBoneColliders count is different from SDK.");
+            Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
+            Assert.AreEqual(sdkStats.contactCount.Value, perfs.ContactsCount, "Contacts count is different from SDK.");
+
+            perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCSDKUtility.Reflection.PhysBoneCollider[0], contacts);
+            Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count should be 0 when colliders are missing.");
+#else
+            Assert.Ignore("VRCSDK is not installed.");
+#endif
+        }
+
+        /// <summary>
+        /// Test EndpointPosition case.
+        /// </summary>
+        [Test]
+        public void TestEndpointPosition()
+        {
+#if VQT_HAS_VRCSDK
+            var scene = OpenTestScene();
+            var root = scene.GetRootGameObjects().First((obj) => obj.name == "EndpointPosition");
 
             var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
             var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
