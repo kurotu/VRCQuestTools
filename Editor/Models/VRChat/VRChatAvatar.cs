@@ -72,7 +72,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 foreach (var r in renderers)
                 {
                     var mesh = RendererUtility.GetSharedMesh(r);
-                    if (mesh.colors32 == null || mesh.colors32.Length == 0)
+                    if (mesh.colors32 != null && mesh.colors32.Length > 0)
                     {
                         return true;
                     }
