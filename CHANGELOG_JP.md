@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 変更
+- VRCSDK 3.3.0 では Android ビルドでアップロードできないアバターがいても警告を表示しないように変更
+
 ### 修正
 - 頂点カラーの存在を確認する判定が誤っていた問題を修正
 - VertexColorRemover コンポーネントがあると VRCSDK 3.3.0 でアバターをアップロードできないことがある問題を修正

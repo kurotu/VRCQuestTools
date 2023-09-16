@@ -86,7 +86,9 @@ namespace KRT.VRCQuestTools.Models.Validators
         [InitializeOnLoadMethod]
         private static void InitOnLoad()
         {
+#if !VQT_VRCSDK_HAS_PUBLIC_API
             AvatarValidationRules.Add(new NoPCAvatarOnAndroidRule());
+#endif
         }
 
         private Tuple<Result, dynamic> GetAvatarErrorForQuest(VRChatAvatar avatar)
