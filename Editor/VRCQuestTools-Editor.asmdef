@@ -25,6 +25,11 @@
             "define": "VQT_VRCSDK_HAS_NETWORK_ID"
         },
         {
+            "name": "com.vrchat.base",
+            "expression": "3.3.0",
+            "define": "VQT_VRCSDK_HAS_PUBLIC_API"
+        },
+        {
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "VQT_HAS_NEWTONSOFT_JSON"

@@ -256,6 +256,7 @@ namespace KRT.VRCQuestTools.Utils
             return PhysBoneType != null;
         }
 
+#if !VQT_VRCSDK_HAS_PUBLIC_API
         /// <summary>
         /// Inject components into VRCSDK's allowed components list.
         /// </summary>
@@ -317,6 +318,7 @@ namespace KRT.VRCQuestTools.Utils
                 allowlist.Add(type);
             }
         }
+#endif
 
         /// <summary>
         /// Gets whether VRCSDK is imported as a package.
