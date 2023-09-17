@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### 変更
-- VRCSDK 3.3.0 では Android ビルドでアップロードできないアバターがいても警告を表示しないように変更
+- Android ビルドターゲットのときにシーン内のアバターが1つでも Quest 用にアップロードできないときの警告は VRCSDK 3.3.0 では不要になったため表示しないように変更
 
 ### 修正
-- 頂点カラーの存在を確認する判定が誤っていた問題を修正
+- 頂点カラーの存在を確認する判定の誤りを修正
 - VertexColorRemover コンポーネントがあると VRCSDK 3.3.0 でアバターをアップロードできないことがある問題を修正
 - PhysBone の衝突判定数に Endpoint Position および Multi Child Type が反映されない問題を修正
 
