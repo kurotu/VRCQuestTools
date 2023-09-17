@@ -19,6 +19,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string DismissLabel => "Dismiss";
         internal override string YesLabel => "Yes";
         internal override string NoLabel => "No";
+        internal override string AbortLabel => "Abort";
 
         internal override string Maximum => "Maximum";
 
@@ -67,7 +68,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string NoMissingComponentsMessage(string objectName) => $"There are no \"missing\" components in {objectName}.";
         internal override string MissingRemoverConfirmationMessage(string objectName) => $"Remove \"missing\" components from {objectName}.";
         internal override string UnpackPrefabMessage => "This also executes \"Unpack Prefab\" operation.";
-        internal override string MissingRemoverOnBuildDialogMessage(string objectName) => $"{objectName} has \"missing\" components. Would you like to continue building the avatar?";
+        internal override string MissingRemoverOnBuildDialogMessage(string objectName) => $"{objectName} has \"missing\" components. Would you like to continue building the avatar without such components?";
 
         // BlendShapes Copy
         internal override string SourceMeshLabel => "Source Mesh";

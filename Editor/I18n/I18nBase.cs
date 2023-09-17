@@ -19,6 +19,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string DismissLabel { get; }
         internal abstract string YesLabel { get; }
         internal abstract string NoLabel { get; }
+        internal abstract string AbortLabel { get; }
 
         internal abstract string Maximum { get; }
 
