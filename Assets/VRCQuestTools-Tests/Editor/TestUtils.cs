@@ -50,7 +50,7 @@ namespace KRT.VRCQuestTools
         /// <summary>
         /// Gets Test fixtures folder.
         /// </summary>
-        internal static string FixturesFolder => VRCQuestTools.AssetRoot + "/Tests/Fixtures";
+        internal static string FixturesFolder => "Assets/VRCQuestTools-Tests/Fixtures";
 
         /// <summary>
         /// Gets Materials folder.
