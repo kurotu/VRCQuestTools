@@ -38,7 +38,7 @@ jobs:
           rm package.json
           npm install --no-save got@12.5.3
           git checkout package.json
-          node .scripts/create_index_json.mjs kurotu/VRCQuestTools package.json > index.json
+          node scripts/create_index_json.mjs kurotu/VRCQuestTools Packages/com.github.kurotu.vrc-quest-tools/package.json > index.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact
@@ -56,15 +56,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: 'npm'
-          cache-dependency-path: Website~/package-lock.json
-      - run: cd Website~ && npm ci
-      - run: cp CHANGELOG.md Website~/docs/changelog.md
-      - run: cp CHANGELOG_JP.md Website~/i18n/ja/docusaurus-plugin-content-docs/current/changelog.md
-      - run: cd Website~ && npm run build
+          cache-dependency-path: WebSite/package-lock.json
+      - run: cd WebSite && npm ci
+      - run: cp CHANGELOG.md WebSite/docs/changelog.md
+      - run: cp CHANGELOG_JP.md WebSite/i18n/ja/docusaurus-plugin-content-docs/current/changelog.md
+      - run: cd WebSite && npm run build
       - uses: actions/upload-artifact@v3
         with:
           name: docs
-          path: Website~/build
+          path: WebSite/build
 
   build-next-docs:
     runs-on: ubuntu-latest
@@ -75,16 +75,16 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: 'npm'
-          cache-dependency-path: Website~/package-lock.json
-      - run: cd Website~ && npm ci
-      - run: cp CHANGELOG.md Website~/docs/changelog.md
-      - run: cp CHANGELOG_JP.md Website~/i18n/ja/docusaurus-plugin-content-docs/current/changelog.md
-      - run: sed -i "s|'/VRCQuestTools/'|'/VRCQuestTools/next/'|" Website~/docusaurus.config.js
-      - run: cd Website~ && npm run build
+          cache-dependency-path: WebSite/package-lock.json
+      - run: cd WebSite && npm ci
+      - run: cp CHANGELOG.md WebSite/docs/changelog.md
+      - run: cp CHANGELOG_JP.md WebSite/i18n/ja/docusaurus-plugin-content-docs/current/changelog.md
+      - run: sed -i "s|'/VRCQuestTools/'|'/VRCQuestTools/next/'|" WebSite/docusaurus.config.js
+      - run: cd WebSite && npm run build
       - uses: actions/upload-artifact@v3
         with:
           name: next-docs
-          path: Website~/build
+          path: WebSite/build
 
   deploy:
     needs: [build-repo, build-docs, build-next-docs]
