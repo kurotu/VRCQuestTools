@@ -13,7 +13,7 @@ using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
 
-#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
 #else
@@ -225,7 +225,7 @@ namespace KRT.VRCQuestTools.Views
             }
             EditorGUILayout.EndVertical();
 
-#if VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
             EditorGUILayout.Space();
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {

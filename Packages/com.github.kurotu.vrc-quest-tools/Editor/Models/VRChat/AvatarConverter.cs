@@ -15,7 +15,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
-#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
 #else
 using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
@@ -117,7 +117,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 var convertedAnimatorControllers = ConvertAnimatorControllersForQuest(avatar.GetRuntimeAnimatorControllers(), assetsDirectory, convertedMotions, progressCallback.onRuntimeAnimatorProgress);
 
                 // Apply converted animator controllers.
-#if VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
                 var layers = questAvatarObject.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
                 for (int i = 0; i < layers.Length; i++)
                 {
@@ -178,7 +178,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
 
-#if VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
             var vcr = questAvatarObject.GetComponent<VertexColorRemover>();
             if (vcr == null)
             {

@@ -14,7 +14,7 @@ using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
 
-#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
 
 using AvatarPerformanceStatsLevelSet = VRC.SDKBase.Validation.Performance.Stats.AvatarPerformanceStatsLevelSet;
@@ -106,7 +106,6 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnGUI()
         {
-#if UNITY_2019_1_OR_NEWER
             var i18n = VRCQuestToolsSettings.I18nResource;
             if (!VRCSDKUtility.IsPhysBonesImported())
             {
@@ -271,9 +270,6 @@ namespace KRT.VRCQuestTools.Views
             }
 
             EditorGUILayout.Space();
-#else
-            EditorGUILayout.LabelField("Unity 2019 is required.");
-#endif
         }
 
         private bool GUIToggleAllField(string label, bool allSelected)
@@ -301,7 +297,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void GUIRatingPanel(AvatarDynamics.PerformanceStats stats, AvatarPerformanceCategory category, I18nBase i18n)
         {
-#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
             var rating = AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, category);
             using (var horizontal = new EditorGUILayout.HorizontalScope(GUI.skin.box))
             {

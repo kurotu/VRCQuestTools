@@ -26,7 +26,6 @@ namespace KRT.VRCQuestTools.Automators
 
         static VertexColorRemoverAutomator()
         {
-            EditorApplication.delayCall += DelayCall;
             EditorApplication.playModeStateChanged += PlayModeStateChanged;
             if (!EditorApplication.isPlayingOrWillChangePlaymode)
             {
@@ -43,12 +42,8 @@ namespace KRT.VRCQuestTools.Automators
             if (enabled)
             {
                 EditorApplication.hierarchyChanged += HierarchyChanged;
-#if VRC_SDK_VRCSDK2
-                RemoveAllVertexColorsFromAvatars(SceneManager.GetActiveScene());
-#else
                 RemoveVetexColorsByComponent(SceneManager.GetActiveScene());
                 ScanVertexColor(SceneManager.GetActiveScene());
-#endif
                 Debug.Log($"[{Tag}] {ClassName} Enabled");
             }
             else
@@ -56,13 +51,6 @@ namespace KRT.VRCQuestTools.Automators
                 EditorApplication.hierarchyChanged -= HierarchyChanged;
                 Debug.Log($"[{Tag}] {ClassName} Disabled");
             }
-        }
-
-        private static void DelayCall()
-        {
-#if VRC_SDK_VRCSDK3 && !VQT_VRCSDK_HAS_PUBLIC_API
-            VRCSDKUtility.InjectAllowedComponents(new System.Type[] { typeof(VertexColorRemover) });
-#endif
         }
 
         private static void PlayModeStateChanged(PlayModeStateChange state)
@@ -85,12 +73,8 @@ namespace KRT.VRCQuestTools.Automators
 
         private static void HierarchyChanged()
         {
-#if VRC_SDK_VRCSDK2
-            RemoveAllVertexColorsFromAvatars(SceneManager.GetActiveScene());
-#else
             RemoveVetexColorsByComponent(SceneManager.GetActiveScene());
             ScanVertexColor(SceneManager.GetActiveScene());
-#endif
         }
 
         private static void RemoveVetexColorsByComponent(Scene scene)

@@ -45,11 +45,7 @@ namespace KRT.VRCQuestTools.Utils
                 var pngPixels = png.Object.GetPixels32();
                 var psdPixels = psd.Object.GetPixels32();
                 Assert.AreEqual(pngPixels.Length, psdPixels.Length);
-#if UNITY_2019_1_OR_NEWER
                 Assert.AreEqual(pngPixels, psdPixels);
-#else
-                Assert.Ignore("Somehow GetPixels32() results are different on Unity 2018.");
-#endif
             }
         }
 
@@ -78,11 +74,7 @@ namespace KRT.VRCQuestTools.Utils
                 var pngPixels = png.Object.GetPixels32();
                 var tgaPixels = tga.Object.GetPixels32();
                 Assert.AreEqual(pngPixels.Length, tgaPixels.Length);
-#if UNITY_2019_1_OR_NEWER
                 Assert.AreEqual(pngPixels, tgaPixels);
-#else
-                Assert.Ignore("Somehow GetPixels32() results are different on Unity 2018.");
-#endif
             }
         }
     }

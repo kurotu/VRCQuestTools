@@ -39,23 +39,6 @@ namespace KRT.VRCQuestTools.Views
             var i18n = VRCQuestToolsSettings.I18nResource;
             var allActions = new List<Action>();
 
-#if !UNITY_2019_3_OR_NEWER
-            EditorGUILayout.LabelField("Unity Preferences", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField($"{i18n.CacheServerModeLabel}: {model.LegacyCacheServerMode}");
-
-            if (!model.HasValidLegacyCacheServerMode)
-            {
-                EditorGUILayout.HelpBox(i18n.CacheServerHelp, MessageType.Info);
-                allActions.Add(OnClickCacheServerButton);
-                if (GUILayout.Button(i18n.CacheServerButtonLabel))
-                {
-                    OnClickCacheServerButton();
-                }
-            }
-
-            EditorGUILayout.Space();
-#endif
-
             EditorGUILayout.LabelField("Build Settings", EditorStyles.boldLabel);
 
             EditorGUILayout.LabelField($"{i18n.TextureCompressionLabel}: {model.DefaultAndroidTextureCompression}");

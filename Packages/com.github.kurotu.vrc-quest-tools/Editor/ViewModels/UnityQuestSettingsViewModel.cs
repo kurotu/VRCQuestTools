@@ -47,12 +47,8 @@ namespace KRT.VRCQuestTools.ViewModels
         {
             get
             {
-#if UNITY_2019_3_OR_NEWER
                 // Do not check cache server on Unity 2019 (Asset Pipeline v2)
                 return HasValidAndroidTextureCompression;
-#else
-                return HasValidAndroidTextureCompression && HasValidLegacyCacheServerMode;
-#endif
             }
         }
 

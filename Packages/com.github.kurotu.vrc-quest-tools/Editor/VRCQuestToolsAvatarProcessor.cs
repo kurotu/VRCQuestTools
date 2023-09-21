@@ -1,6 +1,6 @@
 #pragma warning disable SA1300 // Elements should should begin with an uppercase letter
 
-#if VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
 
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;

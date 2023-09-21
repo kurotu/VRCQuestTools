@@ -1,4 +1,4 @@
-#if VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 #else
@@ -64,7 +64,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
         private static int GetRatingValue(AvatarPerformanceStatsLevelSet statsLevelSet, AvatarPerformanceCategory category, PerformanceRating rating)
         {
-#if VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
             var statsLevel = GetStatsLevel(statsLevelSet, rating);
             switch (category)
             {

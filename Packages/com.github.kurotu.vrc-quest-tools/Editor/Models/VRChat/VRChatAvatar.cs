@@ -13,7 +13,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
-#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
 #else
 using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
@@ -87,7 +87,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>Controllers.</returns>
         internal RuntimeAnimatorController[] GetRuntimeAnimatorControllers()
         {
-#if VRC_SDK_VRCSDK3
+#if VQT_HAS_VRCSDK_BASE
             // AV3 Playable Layers
             RuntimeAnimatorController[] layers = AvatarDescriptor.gameObject
                 .GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>()
