@@ -149,7 +149,6 @@ namespace KRT.VRCQuestTools.Views
                     }
                 }
 
-#if VQT_VRCSDK_HAS_NETWORK_ID
                 if (model.HasMissingNetIDs)
                 {
                     using (var horizontal = new EditorGUILayout.HorizontalScope())
@@ -172,7 +171,6 @@ namespace KRT.VRCQuestTools.Views
                         EditorGUILayout.HelpBox(message, MessageType.Warning);
                     }
                 }
-#endif
             }
 
             EditorGUILayout.Space();

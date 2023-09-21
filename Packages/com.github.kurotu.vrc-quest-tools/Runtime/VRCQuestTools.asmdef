@@ -14,7 +14,7 @@
         {
             "name": "com.vrchat.base",
             "expression": "3.3.0",
-            "define": "VQT_VRCSDK_HAS_PUBLIC_API"
+            "define": "VQT_HAS_VRCSDK_BASE"
         }
     ],
     "noEngineReferences": false

@@ -100,7 +100,7 @@ namespace KRT.VRCQuestTools
 #if VQT_HAS_VRCSDK_BASE
             Debug.Log($"[{Name}] VCC project. (com.vrchat.base is imported)");
 #elif VRC_SDK_VRCSDK3
-            Debug.LogError($"[{Name}] Legacy VRCSDK3 is no longer supported. (com.vrchat.avatars is missing in Packages)");
+            Debug.LogError($"[{Name}] Legacy VRCSDK3 is no longer supported. (com.vrchat.avatars 3.3.0 or later is missing in Packages)");
 #elif VRC_SDK_VRCSDK2
             Debug.LogError($"[{Name}] VRCSDK2 is no longer supported. (VRC_SDK_VRCSDK2 is defined)");
 #endif

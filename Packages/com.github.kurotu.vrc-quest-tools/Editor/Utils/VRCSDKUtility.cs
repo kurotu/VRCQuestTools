@@ -256,70 +256,6 @@ namespace KRT.VRCQuestTools.Utils
             return PhysBoneType != null;
         }
 
-#if !VQT_VRCSDK_HAS_PUBLIC_API
-        /// <summary>
-        /// Inject components into VRCSDK's allowed components list.
-        /// </summary>
-        /// <param name="types">Component types to inject.</param>
-        internal static void InjectAllowedComponents(Type[] types)
-        {
-            var avatarValidation = SystemUtility.GetTypeByName("VRC.SDK3.Validation.AvatarValidation");
-            var findIllegalComponents = avatarValidation?.GetMethod("FindIllegalComponents", BindingFlags.Public | BindingFlags.Static);
-            if (findIllegalComponents == null)
-            {
-                Debug.LogError($"[{VRCQuestTools.Name}] Unsupported VRCSDK. Failed to find VRC.SDK3.Validation.AvatarValidation.FindIllegalComponents");
-            }
-            UnityEngine.Object dummy = null;
-            try
-            {
-                var path = AssetDatabase.GUIDToAssetPath("4f87c289ad956d7488a6a0b7d8773f0b");
-                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                dummy = PrefabUtility.InstantiatePrefab(prefab);
-                findIllegalComponents.Invoke(null, new[] { dummy }); // pass instantiated dummy instead of null in order to make cached list in legacy sdk3.
-            }
-            catch (TargetInvocationException e)
-            {
-                if (e.InnerException is NullReferenceException)
-                {
-                    // ok
-                }
-                else
-                {
-                    System.Diagnostics.Debug.Assert(e.InnerException != null, "e.InnerException != null");
-                    throw e.InnerException;
-                }
-            }
-            finally
-            {
-                if (dummy != null)
-                {
-                    UnityEngine.Object.DestroyImmediate(dummy);
-                }
-            }
-
-            var validationUtils = SystemUtility.GetTypeByName("VRC.SDKBase.Validation.ValidationUtils");
-            var whitelistedTypes = validationUtils?.GetMethod("WhitelistedTypes", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string), typeof(IEnumerable<Type>) }, null);
-
-            if (whitelistedTypes == null)
-            {
-                Debug.LogError($"[{VRCQuestTools.Name}] Unsupported VRCSDK. Failed to find ValidationUtils.WhitelistedTypes");
-                return;
-            }
-
-            var allowlist = whitelistedTypes.Invoke(null, new object[] { "avatar-sdk3", null }) as HashSet<Type>;
-            if (allowlist == null)
-            {
-                Debug.LogError($"[{VRCQuestTools.Name}] Unsupported VRCSDK. Failed to retrieve component whitelist");
-                return;
-            }
-
-            foreach (var type in types)
-            {
-                allowlist.Add(type);
-            }
-        }
-#endif
-
         /// <summary>
         /// Gets whether VRCSDK is imported as a package.
         /// </summary>
@@ -355,7 +291,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when the avatar has missing network ids.</returns>
         internal static bool HasMissingNetworkIds(VRC_AvatarDescriptor avatarDescriptor)
         {
-#if VQT_VRCSDK_HAS_NETWORK_ID
+#if VQT_HAS_VRCSDK_BASE
             var ids = avatarDescriptor.NetworkIDCollection;
             var pbs = avatarDescriptor.gameObject.GetComponentsInChildren(PhysBoneType, true);
             if (ids.Count == 0)
@@ -384,7 +320,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <exception cref="NotImplementedException">VRCSDK dones't support Network IDs.</exception>
         internal static void AssignNetworkIdsToPhysBones(VRC_AvatarDescriptor avatarDescriptor)
         {
-#if VQT_VRCSDK_HAS_NETWORK_ID
+#if VQT_HAS_VRCSDK_BASE
             var ids = avatarDescriptor.NetworkIDCollection;
             var pbs = avatarDescriptor.GetComponentsInChildren(PhysBoneType, true)
                 .Select(c => new Reflection.PhysBone(c))
@@ -422,7 +358,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <exception cref="NotImplementedException">VRCSDK dones't support Network IDs.</exception>
         internal static void StripeUnusedNetworkIds(VRC_AvatarDescriptor avatarDescriptor)
         {
-#if VQT_VRCSDK_HAS_NETWORK_ID
+#if VQT_HAS_VRCSDK_BASE
             for (var i = 0; i < avatarDescriptor.NetworkIDCollection.Count; i++)
             {
                 var pair = avatarDescriptor.NetworkIDCollection[i];

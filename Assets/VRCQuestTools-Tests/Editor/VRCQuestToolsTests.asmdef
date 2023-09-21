@@ -30,7 +30,7 @@
         },
         {
             "name": "com.vrchat.base",
-            "expression": "",
+            "expression": "3.3.0",
             "define": "VQT_HAS_VRCSDK"
         }
     ],

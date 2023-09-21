@@ -237,17 +237,10 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space();
 
-#if VQT_VRCSDK_HAS_NETWORK_ID
             if (VRCSDKUtility.HasMissingNetworkIds(model.Avatar.AvatarDescriptor))
             {
                 EditorGUILayout.HelpBox(i18n.PhysBonesShouldHaveNetworkID, MessageType.Warning);
             }
-#else
-            if (!model.SelectedPhysBonesOrderMatchesWithOriginal())
-            {
-                EditorGUILayout.HelpBox(i18n.PhysBonesOrderMustMatchWithPC, MessageType.Warning);
-            }
-#endif
             var stats = AvatarDynamics.CalculatePerformanceStats(
                 model.Avatar.GameObject,
                 model.PhysBonesToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray(),

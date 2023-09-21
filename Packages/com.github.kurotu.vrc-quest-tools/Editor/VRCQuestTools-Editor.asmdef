@@ -21,18 +21,8 @@
     "versionDefines": [
         {
             "name": "com.vrchat.base",
-            "expression": "",
-            "define": "VQT_HAS_VRCSDK_BASE"
-        },
-        {
-            "name": "com.vrchat.base",
-            "expression": "3.2.0",
-            "define": "VQT_VRCSDK_HAS_NETWORK_ID"
-        },
-        {
-            "name": "com.vrchat.base",
             "expression": "3.3.0",
-            "define": "VQT_VRCSDK_HAS_PUBLIC_API"
+            "define": "VQT_HAS_VRCSDK_BASE"
         },
         {
             "name": "com.unity.nuget.newtonsoft-json",

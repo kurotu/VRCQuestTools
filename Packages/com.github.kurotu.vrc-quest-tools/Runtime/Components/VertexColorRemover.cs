@@ -7,7 +7,7 @@ namespace KRT.VRCQuestTools.Components
     /// Mark to remove vertex color in the scene.
     /// </summary>
     public class VertexColorRemover : MonoBehaviour
-#if VQT_VRCSDK_HAS_PUBLIC_API
+#if VQT_HAS_VRCSDK_BASE
         , VRC.SDKBase.IEditorOnly
 #endif
     {
