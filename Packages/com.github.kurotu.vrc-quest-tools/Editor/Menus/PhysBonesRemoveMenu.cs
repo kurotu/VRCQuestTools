@@ -17,6 +17,7 @@ namespace KRT.VRCQuestTools.Menus
     internal static class PhysBonesRemoveMenu
     {
         [MenuItem(VRCQuestToolsMenus.MenuPaths.RemovePhysBones, false, (int)VRCQuestToolsMenus.MenuPriorities.RemovePhysBones)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemovePhysBones, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectRemovePhysBones)]
         private static void InitFromMenu()
         {
             var target = Selection.activeGameObject;
@@ -29,6 +30,12 @@ namespace KRT.VRCQuestTools.Menus
             {
                 PhysBonesRemoveWindow.ShowWindow();
             }
+        }
+
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemovePhysBones, true)]
+        private static bool ValidateGameObjectMenu()
+        {
+            return Selection.activeGameObject != null;
         }
     }
 }

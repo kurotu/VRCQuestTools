@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change unitypackage's import path to `Packages/com.github.kurotu.vrc-quest-tools` instead of `Assets/KRT/VRCQuestTools`.
 - Change UPM import URL to `https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools`.
 - Move **VRCQuestTools** menu into **Tools** menu.
+- Rearrange menu items.
 
 ## [1.13.3] - 2023-09-17
 

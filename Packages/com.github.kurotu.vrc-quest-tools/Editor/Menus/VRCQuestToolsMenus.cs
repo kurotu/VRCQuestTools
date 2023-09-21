@@ -18,12 +18,12 @@ namespace KRT.VRCQuestTools.Menus
         {
             internal const string RootMenu = "Tools/" + VRCQuestTools.Name + "/";
             internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar for Quest";
-            internal const string RemoveUnsupportedComponents = RootMenu + "Tools/Remove Unsupported Components";
+            internal const string RemoveUnsupportedComponents = RootMenu + "Remove Unsupported Components";
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
             internal const string RemoveAllVertexColors = RootMenu + "Remove All Vertex Colors";
             internal const string RemovePhysBones = RootMenu + "Remove PhysBones";
-            internal const string BlendShapesCopy = RootMenu + "Tools/BlendShapes Copy";
-            internal const string MSMapGenerator = RootMenu + "Tools/Metallic Smoothness Map";
+            internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
+            internal const string MSMapGenerator = RootMenu + "Metallic Smoothness Map";
             internal const string UnitySettings = RootMenu + "Unity Settings for Quest";
             private const string LanguageMenu = RootMenu + "Languages/";
             internal const string LanguageAuto = LanguageMenu + "Auto (default)";
@@ -37,11 +37,11 @@ namespace KRT.VRCQuestTools.Menus
         internal enum MenuPriorities : int
         {
             ConvertAvatarForQuest = 600, // VRChat SDK/Splash Screen: 500
+            RemovePhysBones = 700,
             RemoveMissingComponents,
-            RemovePhysBones,
-            RemoveAllVertexColors,
-            BlendShapesCopy = 700,
             RemoveUnsupportedComponents,
+            RemoveAllVertexColors,
+            BlendShapesCopy = 800,
             MSMapGenerator,
             UnitySettings = 900,
             LanguageAuto = 1000,
@@ -56,6 +56,7 @@ namespace KRT.VRCQuestTools.Menus
         {
             private const string MenuPrefix = "GameObject/VRCQuestTools/";
             internal const string ConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Quest";
+            internal const string RemovePhysBones = MenuPrefix + "Remove PhysBones";
             internal const string RemoveMissingComponents = MenuPrefix + "Remove Missing Components";
             internal const string RemoveUnsupportedComponents = MenuPrefix + "Remove Unsupported Components";
             internal const string RemoveAllVertexColors = MenuPrefix + "Remove All Vertex Colors";
@@ -64,6 +65,7 @@ namespace KRT.VRCQuestTools.Menus
         internal enum GameObjectMenuPriorities : int
         {
             GameObjectConvertAvatarForQuest = 30,
+            GameObjectRemovePhysBones,
             GameObjectRemoveMissingComponents,
             GameObjectRemoveUnsupportedComponents,
             GameObjectRemoveAllVertexColors,

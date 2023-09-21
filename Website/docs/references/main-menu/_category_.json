@@ -1,0 +1,8 @@
+{
+  "label": "Tools/VRCQuestTools Menu",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Main menu of VRCQuestTools."
+  }
+}

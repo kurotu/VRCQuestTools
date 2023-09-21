@@ -11,6 +11,7 @@
 - unitypackage のインポートパスを `Assets/KRT/VRCQuestTools` から `Packages/com.github.kurotu.vrc-quest-tools` に変更
 - UPM のインポート URL を `https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools` に変更
 - **VRCQuestTools** メニューを **Tools** メニュー内に移動
+- メニュー項目の配置を変更
 
 ## [1.13.3] - 2023-09-17
 

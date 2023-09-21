@@ -19,12 +19,12 @@
     "message": "VRCQuestTools のリファレンス",
     "description": "The generated-index page description for category References in sidebar tutorialSidebar"
   },
-  "sidebar.tutorialSidebar.category.Tools": {
-    "message": "Tools",
-    "description": "The label for category Tools in sidebar tutorialSidebar"
+  "sidebar.tutorialSidebar.category.Tools/VRCQuestTools Menu": {
+    "message": "Tools/VRCQuestTools メニュー",
+    "description": "The label for category Tools/VRCQuestTools Menu in sidebar tutorialSidebar"
   },
-  "sidebar.tutorialSidebar.category.Tools.link.generated-index.description": {
-    "message": "Tools カテゴリのリファレンス",
-    "description": "The generated-index page description for category Tools in sidebar tutorialSidebar"
+  "sidebar.tutorialSidebar.category.Tools/VRCQuestTools Menu.link.generated-index.description": {
+    "message": "VRCQuestTools のメインメニュー",
+    "description": "The generated-index page description for category Tools/VRCQuestTools Menu in sidebar tutorialSidebar"
   }
 }
