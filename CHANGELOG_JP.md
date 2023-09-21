@@ -8,6 +8,8 @@
 
 ### 変更
 - VRChat SDK 3.3.0 以降が必要
+- unitypackage のインポートパスを `Assets/KRT/VRCQuestTools` から `Packages/com.github.kurotu.vrc-quest-tools` に変更
+- UPM のインポート URL を `https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools` に変更
 
 ## [1.13.3] - 2023-09-17
 
