@@ -76,7 +76,9 @@ namespace KRT.VRCQuestTools.Menus
 
 #if !VQT_HAS_VRCSDK_BASE
         [MenuItem(MenuPaths.MissingSDK, false, (int)MenuPriorities.MissingSDK)]
-        private static void MissingSDK() { }
+        private static void MissingSDK()
+        {
+        }
 
         [MenuItem(MenuPaths.MissingSDK, true)]
         private static bool MissingSDKValidation()
