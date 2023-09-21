@@ -30,6 +30,7 @@ namespace KRT.VRCQuestTools.Menus
             internal const string LanguageEnglish = LanguageMenu + "English";
             internal const string LanguageJapanese = LanguageMenu + "日本語";
             internal const string CheckForUpdate = RootMenu + "Check for Update";
+            internal const string MissingSDK = RootMenu + "VRCSDK is missing or incompatible";
             internal const string Version = RootMenu + "Version " + VRCQuestTools.Version;
         }
 
@@ -47,6 +48,7 @@ namespace KRT.VRCQuestTools.Menus
             LanguageEnglish,
             LanguageJapanese,
             CheckForUpdate = 1100,
+            MissingSDK,
             Version,
         }
 
@@ -71,6 +73,17 @@ namespace KRT.VRCQuestTools.Menus
         {
             internal const string CopyBlendShapeWeights = "CONTEXT/SkinnedMeshRenderer/Copy BlendShape Weights";
         }
+
+#if !VQT_HAS_VRCSDK_BASE
+        [MenuItem(MenuPaths.MissingSDK, false, (int)MenuPriorities.MissingSDK)]
+        private static void MissingSDK() { }
+
+        [MenuItem(MenuPaths.MissingSDK, true)]
+        private static bool MissingSDKValidation()
+        {
+            return false;
+        }
+#endif
 
         [MenuItem(MenuPaths.Version, false, (int)MenuPriorities.Version)]
         private static void Dummy()

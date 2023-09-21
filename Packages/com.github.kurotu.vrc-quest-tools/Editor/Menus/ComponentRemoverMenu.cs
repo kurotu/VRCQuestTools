@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+#if VQT_HAS_VRCSDK_BASE
 using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
@@ -93,3 +94,4 @@ namespace KRT.VRCQuestTools.Menus
         }
     }
 }
+#endif

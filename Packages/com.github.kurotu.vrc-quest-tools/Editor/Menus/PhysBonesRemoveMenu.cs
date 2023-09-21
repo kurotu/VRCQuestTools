@@ -3,15 +3,11 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+#if VQT_HAS_VRCSDK_BASE
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
-
-#if VQT_HAS_VRCSDK_BASE
-using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
-#else
-using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
-#endif
+using VRC.SDKBase;
 
 namespace KRT.VRCQuestTools.Menus
 {
@@ -36,3 +32,4 @@ namespace KRT.VRCQuestTools.Menus
         }
     }
 }
+#endif
