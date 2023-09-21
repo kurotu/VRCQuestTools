@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="VRCQuestTools" src=".images/VRCQuestTools.png" width="670px">
+  <img alt="VRCQuestTools" src="images/VRCQuestTools.png" width="670px">
 </p>
 
 <p align="center">
@@ -34,7 +34,7 @@ Avatar Converter and Utilities for Quest.
 [最新のリリースページ](https://github.com/kurotu/VRCQuestTools/releases/latest)か [Booth](https://kurotu.booth.pm/items/2436054) から `.unitypackage` をダウンロードしてください。その後、アバタープロジェクトにインポートしてください。
 
 ### Unity Package Manager (UPM)
-`https://github.com/kurotu/VRCQuestTools.git` をインポートしてください。
+`https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools` をインポートしてください。
 
 ## 使い方
 

@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="VRCQuestTools" src=".images/VRCQuestTools.png" width="670px">
+  <img alt="VRCQuestTools" src="images/VRCQuestTools.png" width="670px">
 </p>
 
 <p align="center">
@@ -34,7 +34,7 @@ Click [here](https://kurotu.github.io/vpm-repos/vpm.html) to add the repository 
 Download the `.unitypackage` from [the latest release page](https://github.com/kurotu/VRCQuestTools/releases/latest) or [Booth](https://kurotu.booth.pm/items/2436054). Then import it to your avatar project.
 
 ### Unity Package Manager (UPM)
-Import `https://github.com/kurotu/VRCQuestTools.git`.
+Import `https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools`.
 
 ## Usage
 
