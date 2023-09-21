@@ -22,7 +22,6 @@ jobs:
           key: Library-build-${{ github.ref }}
           restore-keys: |
             Library-build-
-      - uses: anatawa12/sh-actions/resolve-vpm-packages@master
 
       - uses: game-ci/unity-builder@v2
         env:
