@@ -45,7 +45,6 @@ jobs:
       matrix:
         unityVersion:
           - 2019.4.31f1
-          - 2019.4.40f1
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
