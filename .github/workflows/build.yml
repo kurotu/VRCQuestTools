@@ -45,15 +45,22 @@ jobs:
       matrix:
         unityVersion:
           - 2019.4.31f1
+        vrcsdkVersion:
+          - 3.3.0
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
           path: Library
-          key: Library-test-${{ matrix.unityVersion }}-${{ github.ref }}
+          key: Library-test-${{ matrix.unityVersion }}-${{ matrix.vrcsdkVersion }}-${{ github.ref }}
           restore-keys: |
-            Library-test-${{ matrix.unityVersion }}-
+            Library-test-${{ matrix.unityVersion }}-${{ matrix.vrcsdkVersion }}
+
       - uses: anatawa12/sh-actions/resolve-vpm-packages@master
+      - run: rm -r Packages/vpm-manifest.json Packages/com.vrchat.avatars Packages/com.vrchat.base
+      - run: vrc-get install -y com.vrchat.base ${{ matrix.vrcsdkVersion }}
+      - run: vrc-get install -y com.vrchat.avatars ${{ matrix.vrcsdkVersion }}
+      - run: cat Packages/vpm-manifest.json
 
       - uses: game-ci/unity-test-runner@v2
         env:
