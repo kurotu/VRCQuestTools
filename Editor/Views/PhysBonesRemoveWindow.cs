@@ -14,7 +14,7 @@ using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
 
-#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3 || VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
 
 using AvatarPerformanceStatsLevelSet = VRC.SDKBase.Validation.Performance.Stats.AvatarPerformanceStatsLevelSet;
@@ -301,7 +301,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void GUIRatingPanel(AvatarDynamics.PerformanceStats stats, AvatarPerformanceCategory category, I18nBase i18n)
         {
-#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3 || VQT_HAS_VRCSDK_BASE
             var rating = AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, category);
             using (var horizontal = new EditorGUILayout.HorizontalScope(GUI.skin.box))
             {

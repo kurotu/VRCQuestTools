@@ -33,6 +33,11 @@
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "VQT_HAS_NEWTONSOFT_JSON"
+        },
+        {
+            "name": "com.vrchat.base",
+            "expression": "",
+            "define": "VQT_HAS_VRCSDK_BASE"
         }
     ],
     "noEngineReferences": false

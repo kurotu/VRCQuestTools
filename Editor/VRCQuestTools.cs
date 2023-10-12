@@ -97,8 +97,8 @@ namespace KRT.VRCQuestTools
 
         private static async void PrintProjectInfo()
         {
-#if VRC_SDK_VRCSDK3
-            Debug.Log($"[{Name}] VRCSDK3 project. (VRC_SDK_VRCSDK3 is defined)");
+#if VRC_SDK_VRCSDK3 || VQT_HAS_VRCSDK_BASE
+            Debug.Log($"[{Name}] VRCSDK3 project. (VRC_SDK_VRCSDK3 is defined or com.vrchat.base is imported)");
             var isPackage = await VRCSDKUtility.IsImportedAsPackage();
             if (!isPackage)
             {

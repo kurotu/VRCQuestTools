@@ -13,7 +13,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3 || VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 using AvatarPerformanceStatsLevelSet = VRC.SDKBase.Validation.Performance.Stats.AvatarPerformanceStatsLevelSet;
@@ -461,7 +461,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>StatsLevelSet.</returns>
         internal static AvatarPerformanceStatsLevelSet LoadAvatarPerformanceStatsLevelSet(bool isMobile)
         {
-#if !VRC_SDK_VRCSDK3
+#if !VRC_SDK_VRCSDK3 && !VQT_HAS_VRCSDK_BASE
             throw new InvalidOperationException("VRCSDK3 is not imported.");
 #endif
             var guid = isMobile

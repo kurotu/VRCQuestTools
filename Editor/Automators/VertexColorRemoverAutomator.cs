@@ -60,7 +60,7 @@ namespace KRT.VRCQuestTools.Automators
 
         private static void DelayCall()
         {
-#if VRC_SDK_VRCSDK3 && !VQT_VRCSDK_HAS_PUBLIC_API
+#if (VRC_SDK_VRCSDK3 || VQT_HAS_VRCSDK_BASE) && !VQT_VRCSDK_HAS_PUBLIC_API
             VRCSDKUtility.InjectAllowedComponents(new System.Type[] { typeof(VertexColorRemover) });
 #endif
         }
