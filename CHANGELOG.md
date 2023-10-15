@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move **VRCQuestTools** menu into **Tools** menu.
 - Rearrange menu items.
 
+## [1.13.4] - 2023-10-12
+
+### Fixed
+- Fixed the issue where there may be compile errors when switching platform to Android in VRChat SDK's control panel.
+
 ## [1.13.3] - 2023-09-17
 
 ### Changed
@@ -133,7 +138,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Existing release.
 
-[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.3...HEAD
+[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.4...HEAD
+[1.13.4]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.3...v1.13.4
 [1.13.3]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.2...v1.13.3
 [1.13.2]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.1...v1.13.2
 [1.13.1]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.0...v1.13.1
