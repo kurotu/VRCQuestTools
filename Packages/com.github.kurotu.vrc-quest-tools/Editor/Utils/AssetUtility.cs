@@ -24,7 +24,12 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Type object of DynamicBone.
         /// </summary>
-        internal static Type DynamicBoneType = SystemUtility.GetTypeByName("DynamicBone");
+        internal static readonly Type DynamicBoneType = SystemUtility.GetTypeByName("DynamicBone");
+
+        /// <summary>
+        /// Type object of DynamicBoneCollider.
+        /// </summary>
+        internal static readonly Type DynamicBoneColliderType = SystemUtility.GetTypeByName("DynamicBoneCollider");
 
         private const string LilToonPackageJsonGUID = "397d2fa9e93fb5d44a9540d5f01437fc";
 
