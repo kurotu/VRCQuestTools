@@ -64,6 +64,13 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MainTextureBrightnessTooltip => "Tweak main texture color for Toon Lit.";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
 
+        internal override string AvatarConverterMustBeChildrenOfAvatar => "This component must be in VRC_AvatarDescriptor object or its children.";
+        internal override string AvatarConverterMaterialConvertSettingLabel => "Material Conversion Setting";
+        internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics Setting";
+        internal override string AvatarConverterPhysBonesTooltip => "Set PhysBones to keep while conversion.";
+        internal override string AvatarConverterPhysBoneCollidersTooltip => "Set PhysBoneColliders to keep while conversion.";
+        internal override string AvatarConverterContactsTooltip => "Set ContactSenders and ContactReceivers to keep while conversion.";
+
         // Remove Missing Components
         internal override string NoMissingComponentsMessage(string objectName) => $"There are no \"missing\" components in {objectName}.";
         internal override string MissingRemoverConfirmationMessage(string objectName) => $"Remove \"missing\" components from {objectName}.";
@@ -85,6 +92,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SelectComponentsToKeep => "Select components to keep.";
         internal override string PhysBonesListTooltip => "The list of components and their root transforms.";
         internal override string KeepAll => "Keep All";
+        internal override string AvatarDynamicsPreventsUpload => "You can't upload this avatar for Quest. At least Avatar Dynamics must keep \"Poor\" rating.";
         internal override string PhysBonesWillBeRemovedAtRunTime => "You can't upload this avatar for Quest. Please reduce PhysBone components.";
         internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "All PhysBone colliders will be removed at runtime on Quest. Please reduce PhysBoneCollider components.";
         internal override string ContactsWillBeRemovedAtRunTime => "You can't upload this avatar for Quest. Please reduce VRCContact components.";

@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
@@ -19,10 +21,12 @@ namespace KRT.VRCQuestTools.Inspector
     [CustomEditor(typeof(AvatarConverter))]
     public class AvatarConverterEditor : Editor
     {
-        private I18nBase i18n;
-        private AvatarPerformanceStatsLevelSet statsLevelSet;
         [SerializeField]
         private bool foldOutEstimatedPerf = false;
+
+        private I18nBase i18n;
+        private AvatarPerformanceStatsLevelSet statsLevelSet;
+        private PerformanceRating avatarDynamicsPerfLimit;
 
         /// <inheritdoc/>
         public override void OnInspectorGUI()
@@ -58,10 +62,26 @@ namespace KRT.VRCQuestTools.Inspector
                         }
                     }
                 }
+
+                var pbs = descriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
+                var multiPbObjs = pbs
+                    .Select(pb => pb.gameObject)
+                    .Where(go => go.GetComponents(VRCSDKUtility.PhysBoneType).Count() >= 2)
+                    .Distinct()
+                    .ToArray();
+                if (multiPbObjs.Length > 0)
+                {
+                    using (var horizontal = new EditorGUILayout.HorizontalScope())
+                    {
+                        var message = $"{i18n.AlertForMultiplePhysBones}\n\n" +
+                            $"{string.Join("\n", multiPbObjs.Select(x => $"  - {x.name}"))}";
+                        EditorGUILayout.HelpBox(message, MessageType.Warning);
+                    }
+                }
             }
             else
             {
-                EditorGUILayout.HelpBox("Must be children of avatar", MessageType.Error);
+                EditorGUILayout.HelpBox(i18n.AvatarConverterMustBeChildrenOfAvatar, MessageType.Error);
                 canConvert = false;
             }
 
@@ -72,7 +92,7 @@ namespace KRT.VRCQuestTools.Inspector
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField("マテリアル変換設定", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(i18n.AvatarConverterMaterialConvertSettingLabel, EditorStyles.boldLabel);
             MaterialSettingGUI(converter.defaultMaterialConvertSetting);
             if (GUILayout.Button(i18n.GenerateQuestTexturesLabel))
             {
@@ -81,15 +101,15 @@ namespace KRT.VRCQuestTools.Inspector
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField("Avatar Dynamics 設定", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(i18n.AvatarConverterAvatarDynamicsSettingLabel, EditorStyles.boldLabel);
             var so = new SerializedObject(target);
             so.Update();
             var m_physBones = so.FindProperty("physBonesToKeep");
-            EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones", "Set PhysBones to keep while conversion."));
+            EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones", i18n.AvatarConverterPhysBonesTooltip));
             var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
-            EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", "Set PhysBone Colliders to keep while conversion."));
+            EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", i18n.AvatarConverterPhysBoneCollidersTooltip));
             var m_contacts = so.FindProperty("contactsToKeep");
-            EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", "Set Contacts to keep while conversion."));
+            EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
             so.ApplyModifiedProperties();
             AvatarDynamicsPerformanceGUI(converter);
 
@@ -98,12 +118,23 @@ namespace KRT.VRCQuestTools.Inspector
             EditorGUILayout.LabelField(i18n.AdvancedConverterSettingsLabel, EditorStyles.boldLabel);
 
             so.Update();
-            EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), true);
+            EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
             so.ApplyModifiedProperties();
 
             converter.removeVertexColor = EditorGUILayout.Toggle(new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip), converter.removeVertexColor);
 
             EditorGUILayout.Space();
+
+            var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true)
+                .Select(c => c.GetType().Name)
+                .Distinct()
+                .OrderBy(s => s)
+                .ToArray();
+            if (componentsToBeAlearted.Count() > 0)
+            {
+                EditorGUILayout.HelpBox(i18n.AlertForComponents + "\n\n" + string.Join("\n", componentsToBeAlearted.Select(c => $"  - {c}")), MessageType.Warning);
+                EditorGUILayout.Space();
+            }
 
             using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
             {
@@ -117,6 +148,7 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnEnable()
         {
             statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(true);
+            avatarDynamicsPerfLimit = PerformanceRating.Poor;
         }
 
         private void MaterialSettingGUI(IMaterialConvertSetting setting)
@@ -142,36 +174,33 @@ namespace KRT.VRCQuestTools.Inspector
             var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(original.gameObject, pbToKeep, pbcToKeep, contactsToKeep);
 
             foldOutEstimatedPerf = EditorGUILayout.Foldout(foldOutEstimatedPerf, i18n.EstimatedPerformanceStats);
-            if (foldOutEstimatedPerf)
+            var categories = new AvatarPerformanceCategory[]
             {
-                GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneComponentCount, i18n);
-                GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneTransformCount, i18n);
-                GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneColliderCount, i18n);
-                GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneCollisionCheckCount, i18n);
-                GUIRatingPanel(stats, AvatarPerformanceCategory.ContactCount, i18n);
-            }
-            else
+                AvatarPerformanceCategory.PhysBoneComponentCount,
+                AvatarPerformanceCategory.PhysBoneTransformCount,
+                AvatarPerformanceCategory.PhysBoneColliderCount,
+                AvatarPerformanceCategory.PhysBoneCollisionCheckCount,
+                AvatarPerformanceCategory.ContactCount,
+            };
+            var ratings = categories.ToDictionary(x => x, x => Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, x));
+            var worst = ratings.Values.Max();
+            Views.EditorGUIUtility.PerformanceRatingPanel(worst, $"Avatar Dynamics: {worst}", worst > avatarDynamicsPerfLimit ? i18n.AvatarDynamicsPreventsUpload : null);
+            foreach (var category in categories)
             {
-                var ratings = new PerformanceRating[]
+                if (foldOutEstimatedPerf || ratings[category] > avatarDynamicsPerfLimit)
                 {
-                    Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, AvatarPerformanceCategory.PhysBoneComponentCount),
-                    Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, AvatarPerformanceCategory.PhysBoneTransformCount),
-                    Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, AvatarPerformanceCategory.PhysBoneColliderCount),
-                    Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, AvatarPerformanceCategory.PhysBoneCollisionCheckCount),
-                    Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, AvatarPerformanceCategory.ContactCount),
-                };
-                var worst = ratings.Max();
-                Views.EditorGUIUtility.PerformanceRatingPanel(worst, $"Avatar Dynamics: {worst}", worst == PerformanceRating.VeryPoor ? "Can't upload for Quest" : null);
+                    GUIRatingPanel(stats, category, i18n);
+                }
             }
         }
 
         private void GUIRatingPanel(Models.VRChat.AvatarDynamics.PerformanceStats stats, AvatarPerformanceCategory category, I18nBase i18n)
         {
             var rating = Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, category);
-            var categoryName = string.Empty;
-            var veryPoorViolation = string.Empty;
-            var value = 0;
-            var maximum = 0;
+            string categoryName;
+            string veryPoorViolation;
+            int value;
+            int maximum;
             switch (category)
             {
                 case AvatarPerformanceCategory.PhysBoneComponentCount:
@@ -207,12 +236,12 @@ namespace KRT.VRCQuestTools.Inspector
                 default: throw new InvalidOperationException();
             }
             var label = $"{categoryName}: {value} ({i18n.Maximum}: {maximum})";
-            Views.EditorGUIUtility.PerformanceRatingPanel(rating, label, rating == PerformanceRating.VeryPoor ? veryPoorViolation : null);
+            Views.EditorGUIUtility.PerformanceRatingPanel(rating, label, rating > avatarDynamicsPerfLimit ? veryPoorViolation : null);
         }
 
         private void ToonLitSettingGUI(ToonLitConvertSetting setting)
         {
-            setting.generateQuestTextures = EditorGUILayout.Toggle(i18n.GenerateQuestTexturesLabel, setting.generateQuestTextures);
+            setting.generateQuestTextures = EditorGUILayout.Toggle(new GUIContent(i18n.GenerateQuestTexturesLabel, i18n.QuestTexturesDescription), setting.generateQuestTextures);
             using (var disabled = new EditorGUI.DisabledGroupScope(!setting.generateQuestTextures))
             {
                 var sizes = new int[] { 0, 256, 512, 1024, 2048 };

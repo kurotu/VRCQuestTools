@@ -64,6 +64,13 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AlertForMaterialAnimation { get; }
         internal abstract string CompletedDialogMessage(string originalName);
 
+        internal abstract string AvatarConverterMustBeChildrenOfAvatar { get; }
+        internal abstract string AvatarConverterMaterialConvertSettingLabel { get; }
+        internal abstract string AvatarConverterAvatarDynamicsSettingLabel { get; }
+        internal abstract string AvatarConverterPhysBonesTooltip { get; }
+        internal abstract string AvatarConverterPhysBoneCollidersTooltip { get; }
+        internal abstract string AvatarConverterContactsTooltip { get; }
+
         // Remove Missing Components
         internal abstract string NoMissingComponentsMessage(string objectName);
         internal abstract string MissingRemoverConfirmationMessage(string objectName);
@@ -85,6 +92,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string SelectComponentsToKeep { get; }
         internal abstract string PhysBonesListTooltip { get; }
         internal abstract string KeepAll { get; }
+        internal abstract string AvatarDynamicsPreventsUpload { get; }
         internal abstract string PhysBonesWillBeRemovedAtRunTime { get; }
         internal abstract string PhysBoneCollidersWillBeRemovedAtRunTime { get; }
         internal abstract string ContactsWillBeRemovedAtRunTime { get; }

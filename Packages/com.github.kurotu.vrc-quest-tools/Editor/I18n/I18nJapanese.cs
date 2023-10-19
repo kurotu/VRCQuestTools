@@ -65,6 +65,13 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MainTextureBrightnessTooltip => "Toon Lit 用にメインテクスチャの色を調整します。";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";
 
+        internal override string AvatarConverterMustBeChildrenOfAvatar => "VRC_AvatarDescriptor または子オブジェクトに配置してください。";
+        internal override string AvatarConverterMaterialConvertSettingLabel => "マテリアル変換設定";
+        internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics 設定";
+        internal override string AvatarConverterPhysBonesTooltip => "変換時に残しておく PhysBone を選択します。";
+        internal override string AvatarConverterPhysBoneCollidersTooltip => "変換時に残しておく PhysBoneCollider を選択します。";
+        internal override string AvatarConverterContactsTooltip => "変換時に残しておく ContactSender と ContactReceiver を選択します。";
+
         // Remove Missing Components
         internal override string NoMissingComponentsMessage(string objectName) => $"{objectName} に \"Missing\" 状態のコンポーネントはありません。";
         internal override string MissingRemoverConfirmationMessage(string objectName) => $"{objectName} から \"Missing\" 状態のコンポーネントを削除します。";
@@ -86,6 +93,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SelectComponentsToKeep => "削除せずに残すコンポーネントを選択してください。";
         internal override string PhysBonesListTooltip => "コンポーネントと Root Transform の一覧";
         internal override string KeepAll => "すべて残す";
+        internal override string AvatarDynamicsPreventsUpload => "Quest用にアップロードできません。 Avatar Dynamics のランクは少なくとも Poor にしてください。";
         internal override string PhysBonesWillBeRemovedAtRunTime => "Quest用にアップロードできません。 PhysBone の数を減らしてください。";
         internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "Quest用にアップロードしても PhysBoneCollider は動作しません。 PhysBoneCollider の数を減らしてください。";
         internal override string ContactsWillBeRemovedAtRunTime => "Quest用にアップロードできません。 ContactReceiver と ContactSender の数を減らしてください。";
@@ -94,7 +102,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PhysBonesCollisionCheckCountShouldBeReduced => "Quest用にアップロードできません。 PhysBone と PhysBoneCollider の衝突判定の数を減らしてください。";
         internal override string PhysBonesOrderMustMatchWithPC => "PhysBones を正しく同期させるには PhysBones の Network ID をPC版と一致させる必要があります。残すコンポーネントをリスト先頭から順番に選んでください。";
         internal override string PhysBonesShouldHaveNetworkID => "PhysBones を正しく同期させるには PhysBones の Network ID をPC版と一致させる必要があります。VRCSDK の Network ID Utility を使用してPC用とQuest用で同じ Network ID を割り当てた後、両方を再アップロードしてください。";
-        internal override string EstimatedPerformanceStats => "推定パフォーマンス値";
+        internal override string EstimatedPerformanceStats => "推定パフォーマンスランク";
         internal override string DeleteUnselectedComponents => "選択していないコンポーネントを削除";
 
         // Metallic Smoothness
