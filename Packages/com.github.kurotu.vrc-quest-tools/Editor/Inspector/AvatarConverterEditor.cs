@@ -6,6 +6,7 @@ using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
+using KRT.VRCQuestTools.Views;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDKBase;
@@ -71,12 +72,20 @@ namespace KRT.VRCQuestTools.Inspector
                     .ToArray();
                 if (multiPbObjs.Length > 0)
                 {
-                    using (var horizontal = new EditorGUILayout.HorizontalScope())
+                    Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
                     {
-                        var message = $"{i18n.AlertForMultiplePhysBones}\n\n" +
-                            $"{string.Join("\n", multiPbObjs.Select(x => $"  - {x.name}"))}";
-                        EditorGUILayout.HelpBox(message, MessageType.Warning);
-                    }
+                        var style = new GUIStyle(EditorStyles.wordWrappedMiniLabel);
+                        style.normal.textColor = EditorStyles.helpBox.normal.textColor;
+                        EditorGUILayout.LabelField(i18n.AlertForMultiplePhysBones, style);
+                        using (var disabled = new EditorGUI.DisabledGroupScope(true))
+                        {
+                            foreach (var obj in multiPbObjs)
+                            {
+                                EditorGUILayout.ObjectField(obj, typeof(GameObject), true);
+                            }
+                        }
+                        EditorGUILayout.Space(2);
+                    });
                 }
             }
             else
@@ -125,15 +134,21 @@ namespace KRT.VRCQuestTools.Inspector
 
             EditorGUILayout.Space();
 
-            var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true)
-                .Select(c => c.GetType().Name)
-                .Distinct()
-                .OrderBy(s => s)
-                .ToArray();
+            var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
             if (componentsToBeAlearted.Count() > 0)
             {
-                EditorGUILayout.HelpBox(i18n.AlertForComponents + "\n\n" + string.Join("\n", componentsToBeAlearted.Select(c => $"  - {c}")), MessageType.Warning);
-                EditorGUILayout.Space();
+                Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
+                {
+                    EditorGUILayout.LabelField(i18n.AlertForComponents, EditorStyles.wordWrappedMiniLabel);
+                    using (var disabled = new EditorGUI.DisabledGroupScope(true))
+                    {
+                        foreach (var c in componentsToBeAlearted)
+                        {
+                            EditorGUILayout.ObjectField(c, typeof(Component), true);
+                        }
+                    }
+                    EditorGUILayout.Space(2);
+                });
             }
 
             using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
