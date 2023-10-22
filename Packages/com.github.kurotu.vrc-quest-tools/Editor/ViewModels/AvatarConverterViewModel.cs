@@ -254,7 +254,7 @@ namespace KRT.VRCQuestTools.ViewModels
                 removeVertexColor = removeVertexColor,
                 overrideControllers = overrideControllers,
             };
-            var (questAvatar, prefabName) = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, Remover, converterSetting, progressCallback);
+            var questAvatar = AvatarConverter.ConvertForQuest(TargetAvatar, outputPath, Remover, converterSetting, progressCallback);
 
             /*
              * If missing references exist in a prefab instance, unexpected references to prefab happen at play mode.

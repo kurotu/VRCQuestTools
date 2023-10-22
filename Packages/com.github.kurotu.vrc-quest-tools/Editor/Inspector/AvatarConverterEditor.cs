@@ -382,9 +382,9 @@ namespace KRT.VRCQuestTools.Inspector
             EditorUtility.ClearProgressBar();
             if (questAvatar != null)
             {
-                Selection.activeGameObject = questAvatar.Item1.GameObject;
+                Selection.activeGameObject = questAvatar.GameObject;
 
-                var converted = questAvatar.Item1;
+                var converted = questAvatar;
                 var stats = VRCSDKUtility.CalculatePerformanceStats(converted.GameObject, true);
                 var ratings = new PerformanceRating[]
                 {
