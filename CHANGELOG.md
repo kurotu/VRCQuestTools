@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add `VQT Avatar Converter` component to save converter settings to the avatar.
+
 ### Changed
 - Require VRChat SDK 3.3.0 or later.
 - Change unitypackage's import path to `Packages/com.github.kurotu.vrc-quest-tools` instead of `Assets/KRT/VRCQuestTools`.

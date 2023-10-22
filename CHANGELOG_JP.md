@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 追加
+- アバターに変換設定を保存する `VQT Avatar Converter` コンポーネントを追加
+
 ### 変更
 - VRChat SDK 3.3.0 以降が必要
 - unitypackage のインポートパスを `Assets/KRT/VRCQuestTools` から `Packages/com.github.kurotu.vrc-quest-tools` に変更
