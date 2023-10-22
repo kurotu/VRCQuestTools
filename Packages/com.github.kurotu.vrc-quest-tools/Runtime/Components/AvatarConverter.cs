@@ -53,5 +53,10 @@ namespace KRT.VRCQuestTools.Components
         /// </summary>
         [SerializeField]
         public bool removeVertexColor = true;
+
+        /// <summary>
+        /// Gets avatar descriptor of the avatar root object.
+        /// </summary>
+        public VRC_AvatarDescriptor RootAvatar => gameObject.GetComponentInParent<VRC_AvatarDescriptor>();
     }
 }
