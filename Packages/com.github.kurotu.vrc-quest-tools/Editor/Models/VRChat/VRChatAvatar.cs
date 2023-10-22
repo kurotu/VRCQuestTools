@@ -82,6 +82,31 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
         /// <summary>
+        /// Gets a value indicating whether the avatar has DynamicBone or DynamicBoneCollider components.
+        /// </summary>
+        internal bool HasDynamicBoneComponents
+        {
+            get
+            {
+                if (!AssetUtility.IsDynamicBoneImported())
+                {
+                    return false;
+                }
+                var dbs = GameObject.GetComponentsInChildren(AssetUtility.DynamicBoneType, true);
+                if (dbs.Length > 0)
+                {
+                    return true;
+                }
+                var dbcs = GameObject.GetComponentsInChildren(AssetUtility.DynamicBoneColliderType, true);
+                if (dbcs.Length > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Gets runtime animator controllers which are related.
         /// </summary>
         /// <returns>Controllers.</returns>

@@ -51,6 +51,35 @@ namespace KRT.VRCQuestTools.Models.VRChat
 #pragma warning restore SA1600 // Elements should be documented
 
         /// <summary>
+        /// V2 of ConvertForQuest.
+        /// </summary>
+        /// <param name="avatarConverter">Avatar converter component.</param>
+        /// <param name="assetsDirectory">Root directory to save assets.</param>
+        /// <param name="remover">ComponentRemover object.</param>
+        /// <param name="progressCallback">Callback to show progress.</param>
+        /// <returns>Converted avatar.</returns>
+        internal VRChatAvatar ConvertForQuest(Components.AvatarConverter avatarConverter, string assetsDirectory, ComponentRemover remover, ProgressCallback progressCallback)
+        {
+            var toonLitSetting = avatarConverter.defaultMaterialConvertSetting as ToonLitConvertSetting;
+            var setting = new AvatarConverterSetting
+            {
+                generateQuestTextures = toonLitSetting.generateQuestTextures,
+                mainTextureBrightness = toonLitSetting.mainTextureBrightness,
+                maxTextureSize = toonLitSetting.maxTextureSize,
+                overrideControllers = avatarConverter.animatorOverrideControllers,
+                removeVertexColor = avatarConverter.removeVertexColor,
+            };
+            var converted = ConvertForQuest(new VRChatAvatar(avatarConverter.RootAvatar), assetsDirectory, remover, setting, progressCallback);
+            var convertedConverter = converted.GameObject.GetComponent<Components.AvatarConverter>();
+            VRCSDKUtility.DeleteAvatarDynamicsComponents(converted, convertedConverter.physBonesToKeep, convertedConverter.physBoneCollidersToKeep, convertedConverter.contactsToKeep);
+
+            var convertedConverterObj = convertedConverter.gameObject;
+            UnityEngine.Object.DestroyImmediate(convertedConverter);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(convertedConverterObj);
+            return converted;
+        }
+
+        /// <summary>
         /// Covert the avatar for Quest.
         /// </summary>
         /// <param name="avatar">Avatar to convert.</param>
@@ -59,7 +88,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="setting">Converter setting object.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted avatar.</returns>
-        internal virtual Tuple<VRChatAvatar, string> ConvertForQuest(VRChatAvatar avatar, string assetsDirectory, ComponentRemover remover, AvatarConverterSetting setting, ProgressCallback progressCallback)
+        internal virtual VRChatAvatar ConvertForQuest(VRChatAvatar avatar, string assetsDirectory, ComponentRemover remover, AvatarConverterSetting setting, ProgressCallback progressCallback)
         {
             // Convert materials and generate textures.
             var convertedMaterials = ConvertMaterialsForToonLit(avatar.Materials, assetsDirectory);
@@ -200,7 +229,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             questAvatarObject.name = avatar.AvatarDescriptor.gameObject.name + " (Quest)";
             questAvatarObject.SetActive(true);
             var prefabName = $"{assetsDirectory}/{questAvatarObject.name}.prefab";
-            return new Tuple<VRChatAvatar, string>(new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>()), prefabName);
+            return new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
         }
 
         /// <summary>

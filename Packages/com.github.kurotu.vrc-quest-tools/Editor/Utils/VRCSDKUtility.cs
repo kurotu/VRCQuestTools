@@ -9,9 +9,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 
 #if VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
@@ -349,6 +352,54 @@ namespace KRT.VRCQuestTools.Utils
 #else
             throw new NotImplementedException();
 #endif
+        }
+
+        /// <summary>
+        /// Deletes avatar dynamics components.
+        /// </summary>
+        /// <param name="avatar">Target avatar.</param>
+        /// <param name="physBonesToKeep">PhysBones to keep.</param>
+        /// <param name="physBoneCollidersToKeep">PhysBoneColliders to keep.</param>
+        /// <param name="contactsToKeep">ContanctSenders and ContactReceivers to keep.</param>
+        internal static void DeleteAvatarDynamicsComponents(VRChatAvatar avatar, VRCPhysBone[] physBonesToKeep, VRCPhysBoneCollider[] physBoneCollidersToKeep, ContactBase[] contactsToKeep)
+        {
+            foreach (var c in avatar.GetPhysBones().Except(physBonesToKeep))
+            {
+                var go = c.gameObject;
+                Undo.DestroyObjectImmediate(c);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(go);
+            }
+            foreach (var c in avatar.GetPhysBoneColliders().Except(physBoneCollidersToKeep))
+            {
+                var physbones = avatar.GetPhysBones();
+
+                // Remove reference from PhysBone before destroying.
+                for (var boneIndex = 0; boneIndex < physbones.Length; boneIndex++)
+                {
+                    var boneObject = physbones[boneIndex];
+                    var boneComponent = new Reflection.PhysBone(boneObject);
+                    for (var colliderIndex = 0; colliderIndex < boneComponent.Colliders.Count; colliderIndex++)
+                    {
+                        if (boneComponent.Colliders[colliderIndex] == c)
+                        {
+                            boneComponent.ClearCollider(colliderIndex);
+                        }
+                    }
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(boneObject);
+                }
+                var go = c.gameObject;
+                Undo.DestroyObjectImmediate(c);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(go);
+            }
+            foreach (var c in avatar.GetContacts().Except(contactsToKeep))
+            {
+                var go = c.gameObject;
+                Undo.DestroyObjectImmediate(c);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(go);
+            }
+
+            StripeUnusedNetworkIds(avatar.AvatarDescriptor);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(avatar.GameObject);
         }
 
         /// <summary>

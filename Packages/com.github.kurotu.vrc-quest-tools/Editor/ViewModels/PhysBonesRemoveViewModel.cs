@@ -10,6 +10,8 @@ using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
+using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 
 #if VQT_HAS_VRCSDK_BASE
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
@@ -209,44 +211,10 @@ namespace KRT.VRCQuestTools.ViewModels
         {
             Undo.IncrementCurrentGroup();
             Undo.SetCurrentGroupName("Remove Avatar Dynamics Components");
-            foreach (var c in Avatar.GetPhysBones().Except(physBonesToKeep))
-            {
-                var go = c.gameObject;
-                Undo.DestroyObjectImmediate(c);
-                PrefabUtility.RecordPrefabInstancePropertyModifications(go);
-            }
-            foreach (var c in Avatar.GetPhysBoneColliders().Except(physBoneCollidersToKeep))
-            {
-                var physbones = Avatar.GetPhysBones();
-
-                // Remove reference from PhysBone before destroying.
-                for (var boneIndex = 0; boneIndex < physbones.Length; boneIndex++)
-                {
-                    var boneObject = physbones[boneIndex];
-                    var boneComponent = new VRCSDKUtility.Reflection.PhysBone(boneObject);
-                    for (var colliderIndex = 0; colliderIndex < boneComponent.Colliders.Count; colliderIndex++)
-                    {
-                        if (boneComponent.Colliders[colliderIndex] == c)
-                        {
-                            boneComponent.ClearCollider(colliderIndex);
-                        }
-                    }
-                    PrefabUtility.RecordPrefabInstancePropertyModifications(boneObject);
-                }
-                var go = c.gameObject;
-                Undo.DestroyObjectImmediate(c);
-                PrefabUtility.RecordPrefabInstancePropertyModifications(go);
-            }
-            foreach (var c in Avatar.GetContacts().Except(contactsToKeep))
-            {
-                var go = c.gameObject;
-                Undo.DestroyObjectImmediate(c);
-                PrefabUtility.RecordPrefabInstancePropertyModifications(go);
-            }
-
-            VRCSDKUtility.StripeUnusedNetworkIds(Avatar.AvatarDescriptor);
-            PrefabUtility.RecordPrefabInstancePropertyModifications(Avatar.GameObject);
-
+            var pbToKeep = physBonesToKeep.Select(b => (VRCPhysBone)b).ToArray();
+            var pbcToKeep = physBoneCollidersToKeep.Select(c => (VRCPhysBoneCollider)c).ToArray();
+            var cToKeep = contactsToKeep.Select(c => (ContactBase)c).ToArray();
+            VRCSDKUtility.DeleteAvatarDynamicsComponents(Avatar, pbToKeep, pbcToKeep, cToKeep);
             Undo.IncrementCurrentGroup();
         }
 
