@@ -47,6 +47,7 @@ jobs:
           - 2019.4.31f1
         vrcsdkVersion:
           - 3.3.0
+          - 3.4.1
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
