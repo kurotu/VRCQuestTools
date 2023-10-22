@@ -23,6 +23,9 @@ jobs:
           restore-keys: |
             Library-build-
 
+      - uses: anatawa12/sh-actions/resolve-vpm-packages@master
+      - run: vrc-get install
+
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
