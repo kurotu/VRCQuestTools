@@ -139,21 +139,24 @@ namespace KRT.VRCQuestTools.Inspector
 
             EditorGUILayout.Space();
 
-            var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
-            if (componentsToBeAlearted.Count() > 0)
+            if (descriptor)
             {
-                Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
+                var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
+                if (componentsToBeAlearted.Count() > 0)
                 {
-                    EditorGUILayout.LabelField(i18n.AlertForComponents, EditorStyles.wordWrappedMiniLabel);
-                    using (var disabled = new EditorGUI.DisabledGroupScope(true))
+                    Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
                     {
-                        foreach (var c in componentsToBeAlearted)
+                        EditorGUILayout.LabelField(i18n.AlertForComponents, EditorStyles.wordWrappedMiniLabel);
+                        using (var disabled = new EditorGUI.DisabledGroupScope(true))
                         {
-                            EditorGUILayout.ObjectField(c, typeof(Component), true);
+                            foreach (var c in componentsToBeAlearted)
+                            {
+                                EditorGUILayout.ObjectField(c, typeof(Component), true);
+                            }
                         }
-                    }
-                    EditorGUILayout.Space(2);
-                });
+                        EditorGUILayout.Space(2);
+                    });
+                }
             }
 
             using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
