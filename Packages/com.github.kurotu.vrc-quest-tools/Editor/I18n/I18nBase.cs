@@ -104,6 +104,11 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string EstimatedPerformanceStats { get; }
         internal abstract string DeleteUnselectedComponents { get; }
 
+        // Avatar Dynamics Selector
+        internal abstract string SelectAllButtonLabel { get; }
+        internal abstract string DeselectAllButtonLabel { get; }
+        internal abstract string ApplyButtonLabel { get; }
+
         // Metallic Smoothness
         internal abstract string TextureLabel { get; }
         internal abstract string InvertLabel { get; }

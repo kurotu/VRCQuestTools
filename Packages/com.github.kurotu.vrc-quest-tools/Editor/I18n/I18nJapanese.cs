@@ -105,6 +105,11 @@ namespace KRT.VRCQuestTools.I18n
         internal override string EstimatedPerformanceStats => "推定パフォーマンスランク";
         internal override string DeleteUnselectedComponents => "選択していないコンポーネントを削除";
 
+        // Avatar Dynamics Selector
+        internal override string SelectAllButtonLabel => "すべて選択";
+        internal override string DeselectAllButtonLabel => "すべて解除";
+        internal override string ApplyButtonLabel => "適用";
+
         // Metallic Smoothness
         internal override string TextureLabel => "テクスチャ";
         internal override string InvertLabel => "反転";

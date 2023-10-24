@@ -11,6 +11,7 @@ using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
@@ -116,6 +117,10 @@ namespace KRT.VRCQuestTools.Inspector
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField(i18n.AvatarConverterAvatarDynamicsSettingLabel, EditorStyles.boldLabel);
+            if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
+            {
+                OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+            }
             var so = new SerializedObject(target);
             so.Update();
             var m_physBones = so.FindProperty("physBonesToKeep");
@@ -212,54 +217,9 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 if (foldOutEstimatedPerf || ratings[category] > avatarDynamicsPerfLimit)
                 {
-                    GUIRatingPanel(stats, category, i18n);
+                    Views.EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
                 }
             }
-        }
-
-        private void GUIRatingPanel(Models.VRChat.AvatarDynamics.PerformanceStats stats, AvatarPerformanceCategory category, I18nBase i18n)
-        {
-            var rating = Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, category);
-            string categoryName;
-            string veryPoorViolation;
-            int value;
-            int maximum;
-            switch (category)
-            {
-                case AvatarPerformanceCategory.PhysBoneComponentCount:
-                    categoryName = "PhysBones Components";
-                    veryPoorViolation = i18n.PhysBonesWillBeRemovedAtRunTime;
-                    value = stats.PhysBonesCount;
-                    maximum = statsLevelSet.poor.physBone.componentCount;
-                    break;
-                case AvatarPerformanceCategory.PhysBoneTransformCount:
-                    categoryName = "PhysBones Affected Transforms";
-                    veryPoorViolation = i18n.PhysBonesTransformsShouldBeReduced;
-                    value = stats.PhysBonesTransformCount;
-                    maximum = statsLevelSet.poor.physBone.transformCount;
-                    break;
-                case AvatarPerformanceCategory.PhysBoneColliderCount:
-                    categoryName = "PhysBones Colliders";
-                    veryPoorViolation = i18n.PhysBoneCollidersWillBeRemovedAtRunTime;
-                    value = stats.PhysBonesColliderCount;
-                    maximum = statsLevelSet.poor.physBone.colliderCount;
-                    break;
-                case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
-                    categoryName = "PhysBones Collision Check Count";
-                    veryPoorViolation = i18n.PhysBonesCollisionCheckCountShouldBeReduced;
-                    value = stats.PhysBonesCollisionCheckCount;
-                    maximum = statsLevelSet.poor.physBone.collisionCheckCount;
-                    break;
-                case AvatarPerformanceCategory.ContactCount:
-                    categoryName = "Avatar Dynamics Contacts";
-                    veryPoorViolation = i18n.ContactsWillBeRemovedAtRunTime;
-                    value = stats.ContactsCount;
-                    maximum = statsLevelSet.poor.contactCount;
-                    break;
-                default: throw new InvalidOperationException();
-            }
-            var label = $"{categoryName}: {value} ({i18n.Maximum}: {maximum})";
-            Views.EditorGUIUtility.PerformanceRatingPanel(rating, label, rating > avatarDynamicsPerfLimit ? veryPoorViolation : null);
         }
 
         private void ToonLitSettingGUI(ToonLitConvertSetting setting)
@@ -321,6 +281,16 @@ namespace KRT.VRCQuestTools.Inspector
             };
             VRCQuestTools.AvatarConverter.GenrateToonLitTextures(targetAvatar.Materials, outputPath, texturesSizeLimit, setting, progressCallback);
             EditorUtility.ClearProgressBar();
+        }
+
+        private void OnClickSelectAvatarDynamicsComponentsButton(VRC_AvatarDescriptor avatar)
+        {
+            var window = EditorWindow.GetWindow<AvatarDynamicsSelectorWindow>();
+            window.converter = converter;
+            window.physBonesToKeep = converter.physBonesToKeep;
+            window.physBoneCollidersToKeep = converter.physBoneCollidersToKeep;
+            window.contactsToKeep = converter.contactsToKeep;
+            window.Show();
         }
 
         private void OnClickConvertButton(VRC_AvatarDescriptor avatar)

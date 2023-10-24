@@ -28,25 +28,25 @@ namespace KRT.VRCQuestTools.Components
         /// PhysBones to keep while conversion.
         /// </summary>
         [SerializeField]
-        public VRCPhysBone[] physBonesToKeep;
+        public VRCPhysBone[] physBonesToKeep = { };
 
         /// <summary>
         /// PhysBone colliders to keep while conversion.
         /// </summary>
         [SerializeField]
-        public VRCPhysBoneCollider[] physBoneCollidersToKeep;
+        public VRCPhysBoneCollider[] physBoneCollidersToKeep = { };
 
         /// <summary>
         /// Contact senders and receivers to keep while conversion.
         /// </summary>
         [SerializeField]
-        public ContactBase[] contactsToKeep;
+        public ContactBase[] contactsToKeep = { };
 
         /// <summary>
         /// Animator override controllers to apply while conversion.
         /// </summary>
         [SerializeField]
-        public AnimatorOverrideController[] animatorOverrideControllers;
+        public AnimatorOverrideController[] animatorOverrideControllers = { };
 
         /// <summary>
         /// Whether to remove vertex color.
@@ -58,5 +58,12 @@ namespace KRT.VRCQuestTools.Components
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
         public VRC_AvatarDescriptor RootAvatar => gameObject.GetComponentInParent<VRC_AvatarDescriptor>();
+
+        private void Reset()
+        {
+            physBonesToKeep = RootAvatar ? RootAvatar.gameObject.GetComponentsInChildren<VRCPhysBone>() : new VRCPhysBone[] { };
+            physBoneCollidersToKeep = RootAvatar ? RootAvatar.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>() : new VRCPhysBoneCollider[] { };
+            contactsToKeep = RootAvatar ? RootAvatar.gameObject.GetComponentsInChildren<ContactBase>() : new ContactBase[] { };
+        }
     }
 }

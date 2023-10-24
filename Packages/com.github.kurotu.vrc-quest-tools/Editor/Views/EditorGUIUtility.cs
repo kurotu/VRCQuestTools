@@ -1,7 +1,14 @@
+using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Utils;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDKBase.Validation.Performance;
+using VRC.SDKBase.Validation.Performance.Stats;
 
 namespace KRT.VRCQuestTools.Views
 {
@@ -27,24 +34,74 @@ namespace KRT.VRCQuestTools.Views
             {
                 using (var vertical = new EditorGUILayout.VerticalScope(GUILayout.MaxWidth(1)))
                 {
-                    GUILayout.FlexibleSpace();
+                    vertical.rect.Set(vertical.rect.x, vertical.rect.y, 1, vertical.rect.height);
                     var tex = VRCSDKUtility.LoadPerformanceIcon(rating);
                     EditorGUILayout.LabelField(new GUIContent(tex, $"Quest {rating}"), GUILayout.Width(32), GUILayout.Height(32));
-                    GUILayout.FlexibleSpace();
                 }
 
-                var style = EditorStyles.wordWrappedLabel;
                 using (var vertical = new EditorGUILayout.VerticalScope())
                 {
-                    GUILayout.FlexibleSpace();
+                    var style = EditorStyles.wordWrappedLabel;
                     EditorGUILayout.LabelField(label, style);
                     if (subLabel != null)
                     {
                         EditorGUILayout.LabelField(subLabel, style);
                     }
-                    GUILayout.FlexibleSpace();
                 }
             }
+        }
+
+        /// <summary>
+        /// Show performance rating panel for calculated stats.
+        /// </summary>
+        /// <param name="stats">Calculated stats</param>
+        /// <param name="statsLevelSet">Stats level set</param>
+        /// <param name="category">Stats category</param>
+        /// <param name="i18n">I18n resource.</param>
+        /// <exception cref="InvalidOperationException"></exception>
+        internal static void PerformanceRatingPanel(Models.VRChat.AvatarDynamics.PerformanceStats stats, AvatarPerformanceStatsLevelSet statsLevelSet, AvatarPerformanceCategory category, I18nBase i18n)
+        {
+            var rating = Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, category);
+            string categoryName;
+            string veryPoorViolation;
+            int value;
+            int maximum;
+            switch (category)
+            {
+                case AvatarPerformanceCategory.PhysBoneComponentCount:
+                    categoryName = "PhysBones Components";
+                    veryPoorViolation = i18n.PhysBonesWillBeRemovedAtRunTime;
+                    value = stats.PhysBonesCount;
+                    maximum = statsLevelSet.poor.physBone.componentCount;
+                    break;
+                case AvatarPerformanceCategory.PhysBoneTransformCount:
+                    categoryName = "PhysBones Affected Transforms";
+                    veryPoorViolation = i18n.PhysBonesTransformsShouldBeReduced;
+                    value = stats.PhysBonesTransformCount;
+                    maximum = statsLevelSet.poor.physBone.transformCount;
+                    break;
+                case AvatarPerformanceCategory.PhysBoneColliderCount:
+                    categoryName = "PhysBones Colliders";
+                    veryPoorViolation = i18n.PhysBoneCollidersWillBeRemovedAtRunTime;
+                    value = stats.PhysBonesColliderCount;
+                    maximum = statsLevelSet.poor.physBone.colliderCount;
+                    break;
+                case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
+                    categoryName = "PhysBones Collision Check Count";
+                    veryPoorViolation = i18n.PhysBonesCollisionCheckCountShouldBeReduced;
+                    value = stats.PhysBonesCollisionCheckCount;
+                    maximum = statsLevelSet.poor.physBone.collisionCheckCount;
+                    break;
+                case AvatarPerformanceCategory.ContactCount:
+                    categoryName = "Avatar Dynamics Contacts";
+                    veryPoorViolation = i18n.ContactsWillBeRemovedAtRunTime;
+                    value = stats.ContactsCount;
+                    maximum = statsLevelSet.poor.contactCount;
+                    break;
+                default: throw new InvalidOperationException();
+            }
+            var label = $"{categoryName}: {value} ({i18n.Maximum}: {maximum})";
+            PerformanceRatingPanel(rating, label, rating >= PerformanceRating.VeryPoor ? veryPoorViolation : null);
         }
 
         /// <summary>
@@ -73,6 +130,43 @@ namespace KRT.VRCQuestTools.Views
                     gui();
                     GUILayout.FlexibleSpace();
                 }
+            }
+        }
+
+        internal static T[] ObjectSelectorList<T>(T[] objects, T[] selectedObjects) where T : UnityEngine.Object
+        {
+            var afterSelected = new List<T>();
+            foreach (var obj in objects)
+            {
+                using (var horizontal = new EditorGUILayout.HorizontalScope())
+                {
+                    var isSelected = EditorGUILayout.Toggle(selectedObjects.Contains(obj), GUILayout.Width(16));
+                    GUILayout.Space(2);
+                    EditorGUILayout.ObjectField(obj, typeof(T), true);
+                    if (isSelected)
+                    {
+                        afterSelected.Add(obj);
+                    }
+                }
+            }
+            return afterSelected.ToArray();
+        }
+
+        /// <summary>
+        /// Disposable scope for foldout header group.
+        /// </summary>
+        internal class FoldoutHeaderGroupScope : System.IDisposable
+        {
+            internal readonly bool foldout;
+
+            internal FoldoutHeaderGroupScope(bool foldout, string label)
+            {
+                this.foldout = EditorGUILayout.BeginFoldoutHeaderGroup(foldout, label);
+            }
+
+            public void Dispose()
+            {
+                EditorGUILayout.EndFoldoutHeaderGroup();
             }
         }
 

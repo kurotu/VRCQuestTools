@@ -106,6 +106,11 @@ namespace KRT.VRCQuestTools.I18n
         internal override string EstimatedPerformanceStats => "Estimated Performance Stats";
         internal override string DeleteUnselectedComponents => "Delete Unselected Components";
 
+        // Avatar Dynamics Selector
+        internal override string SelectAllButtonLabel => "Select All";
+        internal override string DeselectAllButtonLabel => "Deselect All";
+        internal override string ApplyButtonLabel => "Apply";
+
         // Metallic Smoothness
         internal override string TextureLabel => "Texture";
         internal override string InvertLabel => "Invert";
