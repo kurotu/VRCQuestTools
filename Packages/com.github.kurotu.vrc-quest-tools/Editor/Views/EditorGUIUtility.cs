@@ -111,20 +111,16 @@ namespace KRT.VRCQuestTools.Views
             {
                 using (var vertical = new EditorGUILayout.VerticalScope(GUILayout.MaxWidth(32)))
                 {
-                    GUILayout.FlexibleSpace();
                     var icon = MessageTypeIconContent(type);
                     GUILayout.Label(icon, new GUIStyle()
                     {
                         padding = new RectOffset(0, 0, 0, 0),
                     });
-                    GUILayout.FlexibleSpace();
                 }
 
                 using (var vertical = new EditorGUILayout.VerticalScope(GUILayout.ExpandWidth(true)))
                 {
-                    GUILayout.FlexibleSpace();
                     gui();
-                    GUILayout.FlexibleSpace();
                 }
             }
         }

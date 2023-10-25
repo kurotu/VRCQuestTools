@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Components;
@@ -11,13 +8,11 @@ using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
 using UnityEngine;
-using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 using static KRT.VRCQuestTools.Models.VRChat.AvatarConverter;
 using static KRT.VRCQuestTools.Utils.VRCSDKUtility.Reflection;
-using static KRT.VRCQuestTools.ViewModels.AvatarConverterViewModel;
 
 namespace KRT.VRCQuestTools.Inspector
 {

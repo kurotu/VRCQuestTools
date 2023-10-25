@@ -24,6 +24,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string Maximum { get; }
 
         // Convert Avatar for Quest
+        internal abstract string AddAvatarConverterButtonLabel(string name);
         internal abstract string OverwriteWarningDialogTitle { get; }
         internal abstract string OverwriteWarningDialogMessage(string artifactsDir);
         internal abstract string OverwriteWarningDialogButtonOK { get; }

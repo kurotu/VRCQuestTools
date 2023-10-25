@@ -24,6 +24,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string Maximum => "Maximum";
 
         // Convert Avatar for Quest
+        internal override string AddAvatarConverterButtonLabel(string name) => $"Add VQT Avatar Converter to {name}";
         internal override string OverwriteWarningDialogButtonCancel => "Cancel";
         internal override string OverwriteWarningDialogButtonOK => "OK";
         internal override string OverwriteWarningDialogButtonUseAltDir(string altDir) => $"Use \"{altDir}\"";
