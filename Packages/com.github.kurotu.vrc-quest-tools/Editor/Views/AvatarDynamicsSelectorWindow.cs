@@ -1,29 +1,41 @@
+using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
-using System;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using VRC.Dynamics;
 using VRC.SDK3.Dynamics.PhysBone.Components;
-using VRC.SDKBase;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 using static KRT.VRCQuestTools.Utils.VRCSDKUtility.Reflection;
-using static UnityEngine.UI.Image;
 
 namespace KRT.VRCQuestTools.Views
 {
+    /// <summary>
+    /// Editor window for selecting avatar dynamics components to keep.
+    /// </summary>
     internal class AvatarDynamicsSelectorWindow : EditorWindow
     {
+        /// <summary>
+        /// AvatarConverter to edit.
+        /// </summary>
         internal AvatarConverter converter;
+
+        /// <summary>
+        /// PhysBones to keep.
+        /// </summary>
         internal VRCPhysBone[] physBonesToKeep = { };
+
+        /// <summary>
+        /// PhysBoneColliders to keep.
+        /// </summary>
         internal VRCPhysBoneCollider[] physBoneCollidersToKeep = { };
+
+        /// <summary>
+        /// ContactSenders & ContactReceivers to keep.
+        /// </summary>
         internal VRC.Dynamics.ContactBase[] contactsToKeep = { };
-        [NonSerialized]
-        internal bool canceled = false;
 
         [SerializeField]
         private Vector2 scrollPosition = Vector2.zero;
@@ -46,7 +58,6 @@ namespace KRT.VRCQuestTools.Views
                 padding = new RectOffset(16, 0, 0, 0),
             };
             statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(true);
-            canceled = false;
         }
 
         private void OnGUI()
@@ -69,7 +80,7 @@ namespace KRT.VRCQuestTools.Views
 
                 using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutPhysBones, "PhysBones"))
                 {
-                    foldoutPhysBones = foldout.foldout;
+                    foldoutPhysBones = foldout.Foldout;
                     if (foldoutPhysBones)
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
@@ -102,7 +113,7 @@ namespace KRT.VRCQuestTools.Views
 
                 using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutPhysBonesColliders, "PhysBone Colliders"))
                 {
-                    foldoutPhysBonesColliders = foldout.foldout;
+                    foldoutPhysBonesColliders = foldout.Foldout;
                     if (foldoutPhysBonesColliders)
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
@@ -135,7 +146,7 @@ namespace KRT.VRCQuestTools.Views
 
                 using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutContacts, "Contact Senders & Contact Receivers"))
                 {
-                    foldoutContacts = foldout.foldout;
+                    foldoutContacts = foldout.Foldout;
                     if (foldoutContacts)
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))

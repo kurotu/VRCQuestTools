@@ -1,10 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Utils;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDKBase.Validation.Performance;
@@ -54,11 +51,10 @@ namespace KRT.VRCQuestTools.Views
         /// <summary>
         /// Show performance rating panel for calculated stats.
         /// </summary>
-        /// <param name="stats">Calculated stats</param>
-        /// <param name="statsLevelSet">Stats level set</param>
-        /// <param name="category">Stats category</param>
+        /// <param name="stats">Calculated stats.</param>
+        /// <param name="statsLevelSet">Stats level set.</param>
+        /// <param name="category">Stats category.</param>
         /// <param name="i18n">I18n resource.</param>
-        /// <exception cref="InvalidOperationException"></exception>
         internal static void PerformanceRatingPanel(Models.VRChat.AvatarDynamics.PerformanceStats stats, AvatarPerformanceStatsLevelSet statsLevelSet, AvatarPerformanceCategory category, I18nBase i18n)
         {
             var rating = Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, category);
@@ -98,7 +94,7 @@ namespace KRT.VRCQuestTools.Views
                     value = stats.ContactsCount;
                     maximum = statsLevelSet.poor.contactCount;
                     break;
-                default: throw new InvalidOperationException();
+                default: throw new System.InvalidOperationException();
             }
             var label = $"{categoryName}: {value} ({i18n.Maximum}: {maximum})";
             PerformanceRatingPanel(rating, label, rating >= PerformanceRating.VeryPoor ? veryPoorViolation : null);
@@ -133,7 +129,15 @@ namespace KRT.VRCQuestTools.Views
             }
         }
 
-        internal static T[] ObjectSelectorList<T>(T[] objects, T[] selectedObjects) where T : UnityEngine.Object
+        /// <summary>
+        /// List to select objects.
+        /// </summary>
+        /// <typeparam name="T">Component type.</typeparam>
+        /// <param name="objects">All objects.</param>
+        /// <param name="selectedObjects">Selected objects.</param>
+        /// <returns>New array of selected objects.</returns>
+        internal static T[] ObjectSelectorList<T>(T[] objects, T[] selectedObjects)
+            where T : UnityEngine.Object
         {
             var afterSelected = new List<T>();
             foreach (var obj in objects)
@@ -152,24 +156,6 @@ namespace KRT.VRCQuestTools.Views
             return afterSelected.ToArray();
         }
 
-        /// <summary>
-        /// Disposable scope for foldout header group.
-        /// </summary>
-        internal class FoldoutHeaderGroupScope : System.IDisposable
-        {
-            internal readonly bool foldout;
-
-            internal FoldoutHeaderGroupScope(bool foldout, string label)
-            {
-                this.foldout = EditorGUILayout.BeginFoldoutHeaderGroup(foldout, label);
-            }
-
-            public void Dispose()
-            {
-                EditorGUILayout.EndFoldoutHeaderGroup();
-            }
-        }
-
         private static GUIContent MessageTypeIconContent(MessageType type)
         {
             switch (type)
@@ -182,6 +168,35 @@ namespace KRT.VRCQuestTools.Views
                     return UnityEditor.EditorGUIUtility.IconContent("console.erroricon");
                 default:
                     throw new System.ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+        /// <summary>
+        /// Disposable scope for <see cref="EditorGUILayout.BeginFoldoutHeaderGroup(bool, string)"/>.
+        /// </summary>
+        internal class FoldoutHeaderGroupScope : System.IDisposable
+        {
+            /// <summary>
+            /// Gets foldout value.
+            /// </summary>
+            internal readonly bool Foldout;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="FoldoutHeaderGroupScope"/> class.
+            /// </summary>
+            /// <param name="foldout">Is foldout opened.</param>
+            /// <param name="label">Label string to show.</param>
+            internal FoldoutHeaderGroupScope(bool foldout, string label)
+            {
+                this.Foldout = EditorGUILayout.BeginFoldoutHeaderGroup(foldout, label);
+            }
+
+            /// <summary>
+            /// Call <see cref="EditorGUILayout.EndFoldoutHeaderGroup"/> to end foldout header group.
+            /// </summary>
+            public void Dispose()
+            {
+                EditorGUILayout.EndFoldoutHeaderGroup();
             }
         }
     }
