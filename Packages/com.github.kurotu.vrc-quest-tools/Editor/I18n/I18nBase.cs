@@ -26,6 +26,7 @@ namespace KRT.VRCQuestTools.I18n
         // Convert Avatar for Quest
         internal abstract string ExitPlayModeToEdit { get; }
         internal abstract string AddAvatarConverterButtonLabel(string name);
+        internal abstract string ConvertedAvatarLabel { get; }
         internal abstract string OverwriteWarningDialogTitle { get; }
         internal abstract string OverwriteWarningDialogMessage(string artifactsDir);
         internal abstract string OverwriteWarningDialogButtonOK { get; }
@@ -44,6 +45,8 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AdvancedConverterSettingsLabel { get; }
         internal abstract string RemoveVertexColorLabel { get; }
         internal abstract string RemoveVertexColorTooltip { get; }
+        internal abstract string OverwriteDestinationAvatarLabel { get; }
+        internal abstract string OverwriteDestinationAvatarTooltip { get; }
         internal abstract string AnimationOverrideLabel { get; }
         internal abstract string AnimationOverrideTooltip { get; }
         internal abstract string AnimationOverrideMaterialErrorMessage { get; }

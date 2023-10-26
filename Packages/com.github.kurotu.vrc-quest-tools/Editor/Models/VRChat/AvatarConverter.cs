@@ -324,7 +324,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     var dir = Path.GetDirectoryName(outFile);
                     Directory.CreateDirectory(dir);
                 }
-                AssetDatabase.CreateAsset(toonlit, outFile);
+                m = AssetUtility.CreateAsset(toonlit, outFile);
 
                 convertedMaterials.Add(m, toonlit);
             }
@@ -438,7 +438,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         var dir = Path.GetDirectoryName(asset);
                         Directory.CreateDirectory(dir);
                     }
-                    AssetDatabase.CreateAsset(newTree, asset);
+                    newTree = AssetUtility.CreateAsset(newTree, asset);
                 }
                 dict.Add(tree, newTree);
             }
@@ -489,7 +489,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                     var anim = UnityAnimationUtility.ReplaceAnimationClipMaterials(animationClips[i], convertedMaterials);
 
-                    AssetDatabase.CreateAsset(anim, outFile);
+                    anim = AssetUtility.CreateAsset(anim, outFile);
                     convertedAnimationClips.Add(clip, anim);
                     Debug.Log("create asset: " + outFile);
                 }

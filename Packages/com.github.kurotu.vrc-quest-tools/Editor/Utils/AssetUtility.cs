@@ -262,6 +262,34 @@ namespace KRT.VRCQuestTools.Utils
             return CreateColorTexture(color, 4, 4);
         }
 
+        /// <summary>
+        /// Create a new asset. If the path already exists, it will be overwritten.
+        /// </summary>
+        /// <typeparam name="T">Type of asset.</typeparam>
+        /// <param name="asset">Asset to save.</param>
+        /// <param name="path">Path to save.</param>
+        /// <returns>Created asset.</returns>
+        /// <remarks>Do not use `asset` object after this method. Use the returned object.</remarks>
+        internal static T CreateAsset<T>(T asset, string path)
+            where T : UnityEngine.Object
+        {
+            if (File.Exists(path))
+            {
+                AssetDatabase.CreateAsset(asset, path);
+                return AssetDatabase.LoadAssetAtPath<T>(path);
+            }
+
+            var guid = GUID.Generate();
+            var extension = Path.GetExtension(path);
+            var tmpPath = $"Assets/tmp_{guid}{extension}";
+
+            AssetDatabase.CreateAsset(asset, tmpPath);
+            File.Move(tmpPath, path);
+            File.Delete($"{tmpPath}.meta");
+            AssetDatabase.Refresh();
+            return AssetDatabase.LoadAssetAtPath<T>(path);
+        }
+
         [Serializable]
         private class PackageJson
         {

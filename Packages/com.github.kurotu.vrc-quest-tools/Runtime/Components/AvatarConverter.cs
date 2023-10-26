@@ -55,6 +55,12 @@ namespace KRT.VRCQuestTools.Components
         public bool removeVertexColor = true;
 
         /// <summary>
+        /// Whether to remove existing avatar game object: destinationAvatar.
+        /// </summary>
+        [SerializeField]
+        public bool overwriteDestinationAvatar = true;
+
+        /// <summary>
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
