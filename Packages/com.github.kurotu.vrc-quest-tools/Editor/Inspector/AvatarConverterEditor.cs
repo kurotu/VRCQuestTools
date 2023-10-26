@@ -387,6 +387,8 @@ namespace KRT.VRCQuestTools.Inspector
                     DestroyImmediate(converter.destinationAvatar.gameObject);
                 }
                 converter.destinationAvatar = converted.AvatarDescriptor;
+
+                converter.AvatarDescriptor.gameObject.SetActive(false);
             }
         }
 
