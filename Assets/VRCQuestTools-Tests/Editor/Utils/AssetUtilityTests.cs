@@ -77,5 +77,32 @@ namespace KRT.VRCQuestTools.Utils
                 Assert.AreEqual(pngPixels, tgaPixels);
             }
         }
+
+        /// <summary>
+        /// Test AssetUtility.CreateAsset().
+        /// </summary>
+        [Test]
+        public void CreateAsset()
+        {
+            var guid = GUID.Generate();
+            var path = $"Assets/test_tmp_{guid}.mat";
+            Assert.IsFalse(System.IO.File.Exists(path));
+
+            var material = new Material(Shader.Find("Standard"));
+            material.color = Color.red;
+            var origMat = AssetUtility.CreateAsset(material, path);
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(origMat, out var guid_orig, out long _);
+            Assert.AreEqual(Color.red, origMat.color);
+
+            var updated = new Material(Shader.Find("Standard"));
+            updated.color = Color.blue;
+            var newMat = AssetUtility.CreateAsset(updated, path);
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(newMat, out var guid_new, out long _);
+            Assert.AreEqual(Color.blue, newMat.color);
+
+            Assert.AreEqual(guid_orig, guid_new);
+
+            AssetDatabase.DeleteAsset(path);
+        }
     }
 }
