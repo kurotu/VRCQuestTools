@@ -24,6 +24,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string Maximum => "Maximum";
 
         // Convert Avatar for Quest
+        internal override string ExitPlayModeToEdit => "Exit play mode to edit.";
         internal override string AddAvatarConverterButtonLabel(string name) => $"Add VQT Avatar Converter to {name}";
         internal override string OverwriteWarningDialogButtonCancel => "Cancel";
         internal override string OverwriteWarningDialogButtonOK => "OK";
@@ -65,7 +66,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MainTextureBrightnessTooltip => "Tweak main texture color for Toon Lit.";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
 
-        internal override string AvatarConverterMustBeChildrenOfAvatar => "This component must be in VRC_AvatarDescriptor object or its children.";
+        internal override string AvatarConverterMustBeOnAvatarRoot => "This component must be attached to VRC_AvatarDescriptor GameObject.";
         internal override string AvatarConverterMaterialConvertSettingLabel => "Material Conversion Setting";
         internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics Setting";
         internal override string AvatarConverterPhysBonesTooltip => "Set PhysBones to keep while conversion.";

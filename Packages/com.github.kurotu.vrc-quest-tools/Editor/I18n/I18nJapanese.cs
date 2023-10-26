@@ -24,6 +24,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string Maximum => "最大";
 
         // Convert Avatar for Quest
+        internal override string ExitPlayModeToEdit => "編集するには再生モードを終了してください。";
         internal override string AddAvatarConverterButtonLabel(string name) => $"{name} に VQT Avatar Converter を追加";
         internal override string OverwriteWarningDialogButtonCancel => "キャンセル";
         internal override string OverwriteWarningDialogButtonOK => "OK";
@@ -66,7 +67,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MainTextureBrightnessTooltip => "Toon Lit 用にメインテクスチャの色を調整します。";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";
 
-        internal override string AvatarConverterMustBeChildrenOfAvatar => "VRC_AvatarDescriptor または子オブジェクトに配置してください。";
+        internal override string AvatarConverterMustBeOnAvatarRoot => "VRC_AvatarDescriptor のあるオブジェクトに配置してください。";
         internal override string AvatarConverterMaterialConvertSettingLabel => "マテリアル変換設定";
         internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics 設定";
         internal override string AvatarConverterPhysBonesTooltip => "変換時に残しておく PhysBone を選択します。";

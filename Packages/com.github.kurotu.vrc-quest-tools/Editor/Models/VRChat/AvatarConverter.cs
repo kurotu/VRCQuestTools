@@ -69,7 +69,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 overrideControllers = avatarConverter.animatorOverrideControllers,
                 removeVertexColor = avatarConverter.removeVertexColor,
             };
-            var converted = ConvertForQuest(new VRChatAvatar(avatarConverter.RootAvatar), assetsDirectory, remover, setting, progressCallback);
+            var converted = ConvertForQuest(new VRChatAvatar(avatarConverter.AvatarDescriptor), assetsDirectory, remover, setting, progressCallback);
             var convertedConverter = converted.GameObject.GetComponent<Components.AvatarConverter>();
             VRCSDKUtility.DeleteAvatarDynamicsComponents(converted, convertedConverter.physBonesToKeep, convertedConverter.physBoneCollidersToKeep, convertedConverter.contactsToKeep);
 

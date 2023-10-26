@@ -57,13 +57,14 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
-        public VRC_AvatarDescriptor RootAvatar => gameObject.GetComponentInParent<VRC_AvatarDescriptor>();
+        public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
 
         private void Reset()
         {
-            physBonesToKeep = RootAvatar ? RootAvatar.gameObject.GetComponentsInChildren<VRCPhysBone>() : new VRCPhysBone[] { };
-            physBoneCollidersToKeep = RootAvatar ? RootAvatar.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>() : new VRCPhysBoneCollider[] { };
-            contactsToKeep = RootAvatar ? RootAvatar.gameObject.GetComponentsInChildren<ContactBase>() : new ContactBase[] { };
+            var descriptor = AvatarDescriptor;
+            physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>() : new VRCPhysBone[] { };
+            physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>() : new VRCPhysBoneCollider[] { };
+            contactsToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<ContactBase>() : new ContactBase[] { };
         }
     }
 }

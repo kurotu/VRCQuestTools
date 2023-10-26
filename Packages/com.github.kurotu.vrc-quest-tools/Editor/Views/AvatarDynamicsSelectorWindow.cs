@@ -85,7 +85,7 @@ namespace KRT.VRCQuestTools.Views
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
                         {
-                            var pbs = converter.RootAvatar.GetComponentsInChildren<VRCPhysBone>(true);
+                            var pbs = converter.AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true);
                             if (pbs.Length == 0)
                             {
                                 EditorGUILayout.LabelField("No PhysBones found.");
@@ -118,7 +118,7 @@ namespace KRT.VRCQuestTools.Views
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
                         {
-                            var colliders = converter.RootAvatar.GetComponentsInChildren<VRCPhysBoneCollider>(true);
+                            var colliders = converter.AvatarDescriptor.GetComponentsInChildren<VRCPhysBoneCollider>(true);
                             if (colliders.Length == 0)
                             {
                                 EditorGUILayout.LabelField("No PhysBone Colliders found.");
@@ -151,7 +151,7 @@ namespace KRT.VRCQuestTools.Views
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
                         {
-                            var contacts = converter.RootAvatar.GetComponentsInChildren<VRC.Dynamics.ContactBase>(true);
+                            var contacts = converter.AvatarDescriptor.GetComponentsInChildren<VRC.Dynamics.ContactBase>(true);
                             if (contacts.Length == 0)
                             {
                                 EditorGUILayout.LabelField("No Contact Senders & Contact Receivers found.");
@@ -182,7 +182,7 @@ namespace KRT.VRCQuestTools.Views
             var pbToKeep = physBonesToKeep.Where(x => x != null).Select(pb => new PhysBone(pb)).ToArray();
             var pbcToKeep = physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
             var cToKeep = contactsToKeep.Where(x => x != null).Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray();
-            var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(converter.RootAvatar.gameObject, pbToKeep, pbcToKeep, cToKeep);
+            var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(converter.AvatarDescriptor.gameObject, pbToKeep, pbcToKeep, cToKeep);
             var categories = new AvatarPerformanceCategory[]
             {
                 AvatarPerformanceCategory.PhysBoneComponentCount,

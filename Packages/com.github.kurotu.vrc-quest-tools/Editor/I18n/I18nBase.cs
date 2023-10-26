@@ -24,6 +24,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string Maximum { get; }
 
         // Convert Avatar for Quest
+        internal abstract string ExitPlayModeToEdit { get; }
         internal abstract string AddAvatarConverterButtonLabel(string name);
         internal abstract string OverwriteWarningDialogTitle { get; }
         internal abstract string OverwriteWarningDialogMessage(string artifactsDir);
@@ -65,7 +66,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AlertForMaterialAnimation { get; }
         internal abstract string CompletedDialogMessage(string originalName);
 
-        internal abstract string AvatarConverterMustBeChildrenOfAvatar { get; }
+        internal abstract string AvatarConverterMustBeOnAvatarRoot { get; }
         internal abstract string AvatarConverterMaterialConvertSettingLabel { get; }
         internal abstract string AvatarConverterAvatarDynamicsSettingLabel { get; }
         internal abstract string AvatarConverterPhysBonesTooltip { get; }

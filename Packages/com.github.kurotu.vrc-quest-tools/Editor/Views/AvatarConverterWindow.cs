@@ -4,7 +4,6 @@
 // </copyright>
 
 using KRT.VRCQuestTools.Components;
-using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
@@ -22,9 +21,12 @@ namespace KRT.VRCQuestTools.Views
     /// </summary>
     internal class AvatarConverterWindow : EditorWindow
     {
-        internal VRC_AvatarDescriptor target;
+        [SerializeField]
+        private GameObject targetRoot;
+
         [SerializeField]
         private Vector2 scrollPosition = Vector2.zero;
+
         private Editor editor;
 
         /// <summary>
@@ -43,7 +45,7 @@ namespace KRT.VRCQuestTools.Views
         internal static void ShowWindow(VRC_AvatarDescriptor avatar)
         {
             var window = (AvatarConverterWindow)GetWindow(typeof(AvatarConverterWindow));
-            window.target = avatar;
+            window.targetRoot = avatar.gameObject;
             window.Show();
         }
 
@@ -55,23 +57,27 @@ namespace KRT.VRCQuestTools.Views
         private void OnGUI()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
+
             EditorGUI.BeginChangeCheck();
-            target = (VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, target, typeof(VRC_AvatarDescriptor), true);
-            if (target == null)
+            var descriptor = targetRoot == null ? null : targetRoot.GetComponent<VRC_AvatarDescriptor>();
+            descriptor = (VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, descriptor, typeof(VRC_AvatarDescriptor), true);
+            targetRoot = descriptor == null ? null : descriptor.gameObject;
+            if (targetRoot == null)
             {
                 return;
             }
-            var converter = target.GetComponentInChildren<AvatarConverter>(true);
-            if (converter == null)
+            if (EditorGUI.EndChangeCheck() || editor == null || editor.target == null)
             {
-                if (GUILayout.Button(i18n.AddAvatarConverterButtonLabel(target.name)))
+                var converter = targetRoot.GetComponentInChildren<AvatarConverter>(true);
+                if (converter == null)
                 {
-                    OnClickAttachAvatarConverterButton();
+                    editor = null;
+                    if (GUILayout.Button(i18n.AddAvatarConverterButtonLabel(targetRoot.name)))
+                    {
+                        OnClickAttachAvatarConverterButton();
+                    }
+                    return;
                 }
-                return;
-            }
-            if (EditorGUI.EndChangeCheck() || editor == null)
-            {
                 editor = Editor.CreateEditor(converter);
             }
 
@@ -89,7 +95,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnClickAttachAvatarConverterButton()
         {
-            var converter = target.gameObject.AddComponent<AvatarConverter>();
+            var converter = targetRoot.gameObject.AddComponent<AvatarConverter>();
             editor = Editor.CreateEditor(converter);
         }
     }

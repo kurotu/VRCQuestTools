@@ -33,137 +33,145 @@ namespace KRT.VRCQuestTools.Inspector
         /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
-            bool canConvert = true;
-
             i18n = VRCQuestToolsSettings.I18nResource;
 
-            converter = (AvatarConverter)target;
-            var descriptor = converter.gameObject.GetComponentInParent<VRC_AvatarDescriptor>();
-            if (descriptor)
+            if (EditorApplication.isPlaying)
             {
-                var avatar = new Models.VRChat.VRChatAvatar(descriptor);
-                if (avatar.HasDynamicBoneComponents)
-                {
-                    using (var horizontal = new EditorGUILayout.HorizontalScope())
-                    {
-                        EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Warning);
-                        if (GUILayout.Button(i18n.ConvertButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
-                        {
-                            OnClickConvertToPhysBonesButton(descriptor);
-                        }
-                    }
-                }
-                if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor))
-                {
-                    using (var horizontal = new EditorGUILayout.HorizontalScope())
-                    {
-                        EditorGUILayout.HelpBox(i18n.AlertForMissingNetIds, MessageType.Warning);
-                        if (GUILayout.Button(i18n.AssignButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
-                        {
-                            OnClickAssignNetIdsButton(descriptor);
-                        }
-                    }
-                }
+                EditorGUILayout.HelpBox(i18n.ExitPlayModeToEdit, MessageType.Warning);
+            }
 
-                var pbs = descriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
-                var multiPbObjs = pbs
-                    .Select(pb => pb.gameObject)
-                    .Where(go => go.GetComponents(VRCSDKUtility.PhysBoneType).Count() >= 2)
-                    .Distinct()
-                    .ToArray();
-                if (multiPbObjs.Length > 0)
+            using (var disabledInPlayMode = new EditorGUI.DisabledGroupScope(EditorApplication.isPlaying))
+            {
+                bool canConvert = true;
+
+                converter = (AvatarConverter)target;
+                var descriptor = converter.AvatarDescriptor;
+                if (descriptor)
                 {
-                    Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
+                    var avatar = new Models.VRChat.VRChatAvatar(descriptor);
+                    if (avatar.HasDynamicBoneComponents)
                     {
-                        var style = new GUIStyle(EditorStyles.wordWrappedMiniLabel);
-                        style.normal.textColor = EditorStyles.helpBox.normal.textColor;
-                        EditorGUILayout.LabelField(i18n.AlertForMultiplePhysBones, style);
-                        using (var disabled = new EditorGUI.DisabledGroupScope(true))
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
                         {
-                            foreach (var obj in multiPbObjs)
+                            EditorGUILayout.HelpBox(i18n.AlertForDynamicBoneConversion, MessageType.Warning);
+                            if (GUILayout.Button(i18n.ConvertButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
                             {
-                                EditorGUILayout.ObjectField(obj, typeof(GameObject), true);
+                                OnClickConvertToPhysBonesButton(descriptor);
                             }
                         }
-                        EditorGUILayout.Space(2);
-                    });
-                }
-            }
-            else
-            {
-                EditorGUILayout.HelpBox(i18n.AvatarConverterMustBeChildrenOfAvatar, MessageType.Error);
-                canConvert = false;
-            }
-
-            using (var disabled = new EditorGUI.DisabledGroupScope(true))
-            {
-                EditorGUILayout.ObjectField("Target Avatar", converter.destinationAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
-            }
-
-            EditorGUILayout.Space();
-
-            EditorGUILayout.LabelField(i18n.AvatarConverterMaterialConvertSettingLabel, EditorStyles.boldLabel);
-            MaterialSettingGUI(converter.defaultMaterialConvertSetting);
-            if (GUILayout.Button(i18n.GenerateQuestTexturesLabel))
-            {
-                OnClickRegenerateTexturesButton(descriptor, converter.defaultMaterialConvertSetting);
-            }
-
-            EditorGUILayout.Space();
-
-            EditorGUILayout.LabelField(i18n.AvatarConverterAvatarDynamicsSettingLabel, EditorStyles.boldLabel);
-            if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
-            {
-                OnClickSelectAvatarDynamicsComponentsButton(descriptor);
-            }
-            var so = new SerializedObject(target);
-            so.Update();
-            var m_physBones = so.FindProperty("physBonesToKeep");
-            EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones", i18n.AvatarConverterPhysBonesTooltip));
-            var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
-            EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", i18n.AvatarConverterPhysBoneCollidersTooltip));
-            var m_contacts = so.FindProperty("contactsToKeep");
-            EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
-            so.ApplyModifiedProperties();
-            AvatarDynamicsPerformanceGUI(converter);
-
-            EditorGUILayout.Space();
-
-            EditorGUILayout.LabelField(i18n.AdvancedConverterSettingsLabel, EditorStyles.boldLabel);
-
-            so.Update();
-            EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
-            so.ApplyModifiedProperties();
-
-            converter.removeVertexColor = EditorGUILayout.Toggle(new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip), converter.removeVertexColor);
-
-            EditorGUILayout.Space();
-
-            if (descriptor)
-            {
-                var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
-                if (componentsToBeAlearted.Count() > 0)
-                {
-                    Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
+                    }
+                    if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor))
                     {
-                        EditorGUILayout.LabelField(i18n.AlertForComponents, EditorStyles.wordWrappedMiniLabel);
-                        using (var disabled = new EditorGUI.DisabledGroupScope(true))
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
                         {
-                            foreach (var c in componentsToBeAlearted)
+                            EditorGUILayout.HelpBox(i18n.AlertForMissingNetIds, MessageType.Warning);
+                            if (GUILayout.Button(i18n.AssignButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
                             {
-                                EditorGUILayout.ObjectField(c, typeof(Component), true);
+                                OnClickAssignNetIdsButton(descriptor);
                             }
                         }
-                        EditorGUILayout.Space(2);
-                    });
-                }
-            }
+                    }
 
-            using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
-            {
-                if (GUILayout.Button(i18n.ConvertButtonLabel))
+                    var pbs = descriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
+                    var multiPbObjs = pbs
+                        .Select(pb => pb.gameObject)
+                        .Where(go => go.GetComponents(VRCSDKUtility.PhysBoneType).Count() >= 2)
+                        .Distinct()
+                        .ToArray();
+                    if (multiPbObjs.Length > 0)
+                    {
+                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
+                        {
+                            var style = new GUIStyle(EditorStyles.wordWrappedMiniLabel);
+                            style.normal.textColor = EditorStyles.helpBox.normal.textColor;
+                            EditorGUILayout.LabelField(i18n.AlertForMultiplePhysBones, style);
+                            using (var disabled = new EditorGUI.DisabledGroupScope(true))
+                            {
+                                foreach (var obj in multiPbObjs)
+                                {
+                                    EditorGUILayout.ObjectField(obj, typeof(GameObject), true);
+                                }
+                            }
+                            EditorGUILayout.Space(2);
+                        });
+                    }
+                }
+                else
                 {
-                    OnClickConvertButton(descriptor);
+                    EditorGUILayout.HelpBox(i18n.AvatarConverterMustBeOnAvatarRoot, MessageType.Error);
+                    canConvert = false;
+                }
+
+                using (var disabled = new EditorGUI.DisabledGroupScope(true))
+                {
+                    EditorGUILayout.ObjectField("Target Avatar", converter.destinationAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+                }
+
+                EditorGUILayout.Space();
+
+                EditorGUILayout.LabelField(i18n.AvatarConverterMaterialConvertSettingLabel, EditorStyles.boldLabel);
+                MaterialSettingGUI(converter.defaultMaterialConvertSetting);
+                if (GUILayout.Button(i18n.GenerateQuestTexturesLabel))
+                {
+                    OnClickRegenerateTexturesButton(descriptor, converter.defaultMaterialConvertSetting);
+                }
+
+                EditorGUILayout.Space();
+
+                EditorGUILayout.LabelField(i18n.AvatarConverterAvatarDynamicsSettingLabel, EditorStyles.boldLabel);
+                if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
+                {
+                    OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+                }
+                var so = new SerializedObject(target);
+                so.Update();
+                var m_physBones = so.FindProperty("physBonesToKeep");
+                EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones", i18n.AvatarConverterPhysBonesTooltip));
+                var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
+                EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", i18n.AvatarConverterPhysBoneCollidersTooltip));
+                var m_contacts = so.FindProperty("contactsToKeep");
+                EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
+                so.ApplyModifiedProperties();
+                AvatarDynamicsPerformanceGUI(converter);
+
+                EditorGUILayout.Space();
+
+                EditorGUILayout.LabelField(i18n.AdvancedConverterSettingsLabel, EditorStyles.boldLabel);
+
+                so.Update();
+                EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
+                so.ApplyModifiedProperties();
+
+                converter.removeVertexColor = EditorGUILayout.Toggle(new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip), converter.removeVertexColor);
+
+                EditorGUILayout.Space();
+
+                if (descriptor)
+                {
+                    var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
+                    if (componentsToBeAlearted.Count() > 0)
+                    {
+                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
+                        {
+                            EditorGUILayout.LabelField(i18n.AlertForComponents, EditorStyles.wordWrappedMiniLabel);
+                            using (var disabled = new EditorGUI.DisabledGroupScope(true))
+                            {
+                                foreach (var c in componentsToBeAlearted)
+                                {
+                                    EditorGUILayout.ObjectField(c, typeof(Component), true);
+                                }
+                            }
+                            EditorGUILayout.Space(2);
+                        });
+                    }
+                }
+
+                using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
+                {
+                    if (GUILayout.Button(i18n.ConvertButtonLabel))
+                    {
+                        OnClickConvertButton(descriptor);
+                    }
                 }
             }
         }
@@ -186,7 +194,7 @@ namespace KRT.VRCQuestTools.Inspector
 
         private void AvatarDynamicsPerformanceGUI(AvatarConverter converter)
         {
-            var original = converter.gameObject.GetComponentInParent<VRC_AvatarDescriptor>();
+            var original = converter.AvatarDescriptor;
             if (original == null)
             {
                 return;
