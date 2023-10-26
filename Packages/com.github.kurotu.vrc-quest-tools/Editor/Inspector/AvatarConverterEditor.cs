@@ -104,6 +104,15 @@ namespace KRT.VRCQuestTools.Inspector
 
                 using (var disabled = new EditorGUI.DisabledGroupScope(true))
                 {
+                    var path = GetOutputPath(descriptor);
+                    if (Directory.Exists(path))
+                    {
+                        EditorGUILayout.ObjectField(i18n.SaveToLabel, AssetDatabase.LoadAssetAtPath<DefaultAsset>(path), typeof(DefaultAsset), false);
+                    }
+                    else
+                    {
+                        EditorGUILayout.TextField(i18n.SaveToLabel, path);
+                    }
                     EditorGUILayout.ObjectField(i18n.ConvertedAvatarLabel, converter.destinationAvatar, typeof(VRC_AvatarDescriptor), true);
                 }
                 converter.overwriteDestinationAvatar = EditorGUILayout.Toggle(new GUIContent(i18n.OverwriteDestinationAvatarLabel, i18n.OverwriteDestinationAvatarTooltip), converter.overwriteDestinationAvatar);
