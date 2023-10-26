@@ -72,5 +72,19 @@ namespace KRT.VRCQuestTools.Components
             physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>() : new VRCPhysBoneCollider[] { };
             contactsToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<ContactBase>() : new ContactBase[] { };
         }
+
+        private void OnValidate()
+        {
+            var e = Event.current;
+            if (e != null || e.type != EventType.ExecuteCommand || e.commandName != "Duplicate")
+            {
+                destinationAvatar = null;
+            }
+
+            if (destinationAvatar != null && destinationAvatar == AvatarDescriptor)
+            {
+                destinationAvatar = null;
+            }
+        }
     }
 }
