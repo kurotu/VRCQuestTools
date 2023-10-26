@@ -26,6 +26,7 @@ namespace KRT.VRCQuestTools.I18n
         // Convert Avatar for Quest
         internal override string ExitPlayModeToEdit => "Exit play mode to edit.";
         internal override string AddAvatarConverterButtonLabel(string name) => $"Add VQT Avatar Converter to {name}";
+        internal override string ConvertedAvatarLabel => "Converted Avatar";
         internal override string OverwriteWarningDialogButtonCancel => "Cancel";
         internal override string OverwriteWarningDialogButtonOK => "OK";
         internal override string OverwriteWarningDialogButtonUseAltDir(string altDir) => $"Use \"{altDir}\"";
@@ -44,6 +45,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AdvancedConverterSettingsLabel => "Advanced Converter Settings";
         internal override string RemoveVertexColorLabel => "Remove Vertex Color from Meshes";
         internal override string RemoveVertexColorTooltip => "Usually you don't have to disable this option. When you are using special shaders which require vertex colors in PC avatars, you can disable this option to prevent unexpected behavior.\nIf vertex color is accidentally removed, restore from the avatar's \"VertexColorRemover\" component.";
+        internal override string OverwriteDestinationAvatarLabel => "Overwrite Converted Avatar";
+        internal override string OverwriteDestinationAvatarTooltip => "Delete the existing converted avatar from the scene after conversion.";
         internal override string AnimationOverrideLabel => "Animation Override";
         internal override string AnimationOverrideTooltip => "Convert Animator Controllers with Animator Override Controller's animations.";
         internal override string AnimationOverrideMaterialErrorMessage => "Animator Override Controllers contain animated materials which uses unsupported shaders for Quest.";
