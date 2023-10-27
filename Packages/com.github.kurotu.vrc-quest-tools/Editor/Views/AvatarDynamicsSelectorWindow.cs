@@ -204,6 +204,7 @@ namespace KRT.VRCQuestTools.Views
                 converter.physBonesToKeep = physBonesToKeep;
                 converter.physBoneCollidersToKeep = physBoneCollidersToKeep;
                 converter.contactsToKeep = contactsToKeep;
+                PrefabUtility.RecordPrefabInstancePropertyModifications(converter);
                 Close();
             }
 
