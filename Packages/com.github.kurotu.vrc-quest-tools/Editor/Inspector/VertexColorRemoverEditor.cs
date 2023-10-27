@@ -5,7 +5,7 @@ using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
-namespace KRT.VRCQuestTools.Views
+namespace KRT.VRCQuestTools.Inspector
 {
     /// <summary>
     /// Inspector for VertexColorRemover to provide "restore" function.
@@ -25,8 +25,7 @@ namespace KRT.VRCQuestTools.Views
             {
                 if (GUILayout.Button(i18n.VertexColorRemoverEditorRemove))
                 {
-                    remover.active = true;
-                    remover.RemoveVertexColor();
+                    OnClickRemove();
                 }
             }
 
@@ -34,24 +33,37 @@ namespace KRT.VRCQuestTools.Views
             {
                 if (GUILayout.Button(i18n.VertexColorRemoverEditorRestore))
                 {
-                    remover.active = false;
-                    RestoreVertexColor();
+                    OnClickRestore();
                 }
             }
 
-            using (new EditorGUI.DisabledGroupScope(true))
+            var so = new SerializedObject(remover);
+            so.Update();
+
+            var active = so.FindProperty("active");
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(active);
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUILayout.Toggle("Active", remover.active);
+                if (active.boolValue)
+                {
+                    OnClickRemove();
+                }
+                else
+                {
+                    OnClickRestore();
+                }
             }
 
-            var includeChildren = EditorGUILayout.Toggle("Include Children", remover.includeChildren);
-            var includeChildrenChanged = includeChildren != remover.includeChildren;
-            remover.includeChildren = includeChildren;
-            if (includeChildrenChanged)
+            EditorGUI.BeginChangeCheck();
+            var includeChildren = so.FindProperty("includeChildren");
+            EditorGUILayout.PropertyField(includeChildren);
+            if (EditorGUI.EndChangeCheck())
             {
-                OnChangeIncludeChildren(includeChildren);
+                OnChangeIncludeChildren(includeChildren.boolValue);
             }
-            remover.includeChildren = includeChildren;
+
+            so.ApplyModifiedProperties();
         }
 
         private void OnClickRemove()
@@ -59,6 +71,7 @@ namespace KRT.VRCQuestTools.Views
             VertexColorRemover remover = target as VertexColorRemover;
             remover.active = true;
             remover.RemoveVertexColor();
+            PrefabUtility.RecordPrefabInstancePropertyModifications(remover);
         }
 
         private void OnClickRestore()
@@ -66,6 +79,7 @@ namespace KRT.VRCQuestTools.Views
             VertexColorRemover remover = target as VertexColorRemover;
             remover.active = false;
             RestoreVertexColor();
+            PrefabUtility.RecordPrefabInstancePropertyModifications(remover);
         }
 
         private void OnChangeIncludeChildren(bool includeChildren)
