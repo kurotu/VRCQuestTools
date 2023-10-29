@@ -324,7 +324,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     var dir = Path.GetDirectoryName(outFile);
                     Directory.CreateDirectory(dir);
                 }
-                m = AssetUtility.CreateAsset(toonlit, outFile);
+                toonlit = AssetUtility.CreateAsset(toonlit, outFile);
 
                 convertedMaterials.Add(m, toonlit);
             }
