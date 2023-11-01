@@ -35,6 +35,9 @@ namespace KRT.VRCQuestTools.Inspector
         {
             i18n = VRCQuestToolsSettings.I18nResource;
 
+            var so = new SerializedObject(target);
+            so.Update();
+
             if (EditorApplication.isPlaying)
             {
                 EditorGUILayout.HelpBox(i18n.ExitPlayModeToEdit, MessageType.Warning);
@@ -113,14 +116,13 @@ namespace KRT.VRCQuestTools.Inspector
                     {
                         EditorGUILayout.TextField(i18n.SaveToLabel, path);
                     }
-                    EditorGUILayout.ObjectField(i18n.ConvertedAvatarLabel, converter.destinationAvatar, typeof(VRC_AvatarDescriptor), true);
+                    EditorGUILayout.PropertyField(so.FindProperty("destinationAvatar"), new GUIContent(i18n.ConvertedAvatarLabel));
                 }
-                converter.overwriteDestinationAvatar = EditorGUILayout.Toggle(new GUIContent(i18n.OverwriteDestinationAvatarLabel, i18n.OverwriteDestinationAvatarTooltip), converter.overwriteDestinationAvatar);
+                EditorGUILayout.PropertyField(so.FindProperty("overwriteDestinationAvatar"), new GUIContent(i18n.OverwriteDestinationAvatarLabel, i18n.OverwriteDestinationAvatarTooltip));
 
                 EditorGUILayout.Space();
 
-                EditorGUILayout.LabelField(i18n.AvatarConverterMaterialConvertSettingLabel, EditorStyles.boldLabel);
-                MaterialSettingGUI(converter.defaultMaterialConvertSetting);
+                EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent(i18n.AvatarConverterMaterialConvertSettingLabel));
                 if (GUILayout.Button(i18n.GenerateQuestTexturesLabel))
                 {
                     OnClickRegenerateTexturesButton(descriptor, converter.defaultMaterialConvertSetting);
@@ -133,26 +135,21 @@ namespace KRT.VRCQuestTools.Inspector
                 {
                     OnClickSelectAvatarDynamicsComponentsButton(descriptor);
                 }
-                var so = new SerializedObject(target);
-                so.Update();
+
                 var m_physBones = so.FindProperty("physBonesToKeep");
                 EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones", i18n.AvatarConverterPhysBonesTooltip));
                 var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
                 EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", i18n.AvatarConverterPhysBoneCollidersTooltip));
                 var m_contacts = so.FindProperty("contactsToKeep");
                 EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
-                so.ApplyModifiedProperties();
                 AvatarDynamicsPerformanceGUI(converter);
 
                 EditorGUILayout.Space();
 
                 EditorGUILayout.LabelField(i18n.AdvancedConverterSettingsLabel, EditorStyles.boldLabel);
 
-                so.Update();
                 EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
-                so.ApplyModifiedProperties();
-
-                converter.removeVertexColor = EditorGUILayout.Toggle(new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip), converter.removeVertexColor);
+                EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
 
                 EditorGUILayout.Space();
 
@@ -184,22 +181,14 @@ namespace KRT.VRCQuestTools.Inspector
                     }
                 }
             }
+
+            so.ApplyModifiedProperties();
         }
 
         private void OnEnable()
         {
             statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(true);
             avatarDynamicsPerfLimit = PerformanceRating.Poor;
-        }
-
-        private void MaterialSettingGUI(IMaterialConvertSetting setting)
-        {
-            switch (setting)
-            {
-                case ToonLitConvertSetting toonLitSetting:
-                    ToonLitSettingGUI(toonLitSetting);
-                    break;
-            }
         }
 
         private void AvatarDynamicsPerformanceGUI(AvatarConverter converter)
@@ -232,18 +221,6 @@ namespace KRT.VRCQuestTools.Inspector
                 {
                     Views.EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
                 }
-            }
-        }
-
-        private void ToonLitSettingGUI(ToonLitConvertSetting setting)
-        {
-            setting.generateQuestTextures = EditorGUILayout.Toggle(new GUIContent(i18n.GenerateQuestTexturesLabel, i18n.QuestTexturesDescription), setting.generateQuestTextures);
-            using (var disabled = new EditorGUI.DisabledGroupScope(!setting.generateQuestTextures))
-            {
-                var sizes = new int[] { 0, 256, 512, 1024, 2048 };
-                var names = sizes.Select(x => x == 0 ? "No Limits" : $"Max {x}x{x}").ToArray();
-                setting.maxTextureSize = EditorGUILayout.IntPopup(i18n.TexturesSizeLimitLabel, setting.maxTextureSize, names, sizes);
-                setting.mainTextureBrightness = EditorGUILayout.Slider(new GUIContent(i18n.MainTextureBrightnessLabel, i18n.MainTextureBrightnessTooltip), setting.mainTextureBrightness, 0.0f, 1.0f);
             }
         }
 
@@ -292,7 +269,7 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 onTextureProgress = progressCallback,
             };
-            VRCQuestTools.AvatarConverter.GenrateToonLitTextures(targetAvatar.Materials, outputPath, texturesSizeLimit, setting, progressCallback);
+            VRCQuestTools.AvatarConverter.GenrateToonLitTextures(targetAvatar.Materials, outputPath, (int)texturesSizeLimit, setting, progressCallback);
             EditorUtility.ClearProgressBar();
         }
 

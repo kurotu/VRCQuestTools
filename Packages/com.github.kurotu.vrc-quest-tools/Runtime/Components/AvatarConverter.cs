@@ -76,7 +76,7 @@ namespace KRT.VRCQuestTools.Components
         private void OnValidate()
         {
             var e = Event.current;
-            if (e != null || e.type != EventType.ExecuteCommand || e.commandName != "Duplicate")
+            if (e != null && e.type != EventType.ExecuteCommand && e.commandName != "Duplicate")
             {
                 destinationAvatar = null;
             }

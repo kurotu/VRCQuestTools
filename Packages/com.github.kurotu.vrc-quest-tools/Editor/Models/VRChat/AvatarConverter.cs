@@ -65,7 +65,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 generateQuestTextures = toonLitSetting.generateQuestTextures,
                 mainTextureBrightness = toonLitSetting.mainTextureBrightness,
-                maxTextureSize = toonLitSetting.maxTextureSize,
+                maxTextureSize = (int)toonLitSetting.maxTextureSize,
                 overrideControllers = avatarConverter.animatorOverrideControllers,
                 removeVertexColor = avatarConverter.removeVertexColor,
             };
