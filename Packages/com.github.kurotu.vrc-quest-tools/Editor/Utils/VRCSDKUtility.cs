@@ -413,7 +413,7 @@ namespace KRT.VRCQuestTools.Utils
             for (var i = 0; i < avatarDescriptor.NetworkIDCollection.Count; i++)
             {
                 var pair = avatarDescriptor.NetworkIDCollection[i];
-                if (pair.gameObject.GetComponent(PhysBoneType) == null)
+                if (pair.gameObject == null || pair.gameObject.GetComponent(PhysBoneType) == null)
                 {
                     avatarDescriptor.NetworkIDCollection.RemoveAt(i);
                     i--;
