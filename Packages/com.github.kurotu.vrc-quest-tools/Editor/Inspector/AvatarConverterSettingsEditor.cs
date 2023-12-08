@@ -122,7 +122,22 @@ namespace KRT.VRCQuestTools.Inspector
 
                 EditorGUILayout.Space();
 
-                EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent(i18n.AvatarConverterMaterialConvertSettingLabel));
+                EditorGUILayout.LabelField(i18n.AvatarConverterMaterialConvertSettingLabel, EditorStyles.boldLabel);
+                EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent(i18n.AvatarConverterDefaultMaterialConvertSettingLabel));
+
+                var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
+                var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;
+                EditorGUILayout.PropertyField(additionalMaterialConvertSettings, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel));
+                if (additionalMaterialConvertSettings.arraySize > additionalMaterialConvertCount)
+                {
+                    for (var i = additionalMaterialConvertCount; i < additionalMaterialConvertSettings.arraySize; i++)
+                    {
+                        var e = additionalMaterialConvertSettings.GetArrayElementAtIndex(i);
+                        e.FindPropertyRelative("targetMaterial").objectReferenceValue = null;
+                        e.FindPropertyRelative("materialConvertSettings").managedReferenceValue = new ToonLitConvertSettings();
+                    }
+                }
+
                 if (GUILayout.Button(i18n.GenerateQuestTexturesLabel))
                 {
                     OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSetting);

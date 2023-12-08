@@ -25,6 +25,12 @@ namespace KRT.VRCQuestTools.Components
         public IMaterialConvertSettings defaultMaterialConvertSetting = new ToonLitConvertSettings();
 
         /// <summary>
+        /// Additional material convert settings.
+        /// </summary>
+        [SerializeField]
+        public AdditionalMaterialConvertSettings[] additionalMaterialConvertSettings = { };
+
+        /// <summary>
         /// PhysBones to keep while conversion.
         /// </summary>
         [SerializeField]

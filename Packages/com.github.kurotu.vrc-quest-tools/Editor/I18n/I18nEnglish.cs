@@ -71,6 +71,10 @@ namespace KRT.VRCQuestTools.I18n
 
         internal override string AvatarConverterMustBeOnAvatarRoot => "This component must be attached to VRC_AvatarDescriptor GameObject.";
         internal override string AvatarConverterMaterialConvertSettingLabel => "Material Conversion Setting";
+        internal override string AvatarConverterDefaultMaterialConvertSettingLabel => "Default Material Conversion Settings";
+        internal override string AvatarConverterAdditionalMaterialConvertSettingsLabel => "Additional Material Conversion Settings";
+        internal override string AvatarConverterMaterialLabel => "Material";
+
         internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics Setting";
         internal override string AvatarConverterPhysBonesTooltip => "Set PhysBones to keep while conversion.";
         internal override string AvatarConverterPhysBoneCollidersTooltip => "Set PhysBoneColliders to keep while conversion.";
