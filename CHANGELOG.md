@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix conversion failure when GameObjects which were assigned to Network IDs are actually missing.
 
+## [1.13.5] - 2023-12-03
+
+### Fixed
+- Fixed the texture generation error when the lilToon main texture is not Texture2D.
+
 ## [1.13.4] - 2023-10-12
 
 ### Fixed
@@ -144,7 +149,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Existing release.
 
-[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.4...HEAD
+[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.5...HEAD
+[1.13.5]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.4...v1.13.5
 [1.13.4]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.3...v1.13.4
 [1.13.3]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.2...v1.13.3
 [1.13.2]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.1...v1.13.2

@@ -140,7 +140,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 bool bake3rd = (bakeType == 0 || bakeType == 3 || bakeType == 6) && useMain3rdTex.floatValue != 0.0;
 
                 // run bake
-                Texture2D bufMainTexture = (Texture2D)mainTex.textureValue;
+                // Texture bufMainTexture = mainTex.textureValue;
                 Material hsvgMaterial = new Material(ltsbaker);
 
                 Texture srcTexture = new Texture2D(2, 2);

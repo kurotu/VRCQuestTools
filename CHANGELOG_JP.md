@@ -19,6 +19,11 @@
 ### 修正
 - Network ID に割り当てられていた GameObject が実際には存在しないとき変換に失敗する問題を修正
 
+## [1.13.5] - 2023-12-03
+
+### 修正
+- lilToon のメインテクスチャが Texture2D でない場合にテクスチャの生成に失敗する問題を修正
+
 ## [1.13.4] - 2023-10-12
 
 ### 修正
@@ -341,7 +346,8 @@
 ## [0.1.0] - 2020-10-10
 - 公開
 
-[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.4...HEAD
+[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.5...HEAD
+[1.13.5]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.4...v1.13.5
 [1.13.4]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.3...v1.13.4
 [1.13.3]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.2...v1.13.3
 [1.13.2]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.1...v1.13.2
