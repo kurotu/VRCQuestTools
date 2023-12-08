@@ -60,7 +60,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>Converted avatar.</returns>
         internal VRChatAvatar ConvertForQuest(Components.AvatarConverterSettings avatarConverterSettings, string assetsDirectory, ComponentRemover remover, ProgressCallback progressCallback)
         {
-            var toonLitSetting = avatarConverterSettings.defaultMaterialConvertSetting as ToonLitConvertSetting;
+            var toonLitSetting = avatarConverterSettings.defaultMaterialConvertSetting as ToonLitConvertSettings;
             var setting = new AvatarConverterSetting
             {
                 generateQuestTextures = toonLitSetting.generateQuestTextures,

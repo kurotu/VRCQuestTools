@@ -19,10 +19,10 @@ namespace KRT.VRCQuestTools.Components
         public VRC_AvatarDescriptor destinationAvatar;
 
         /// <summary>
-        /// Default material convert setting. The default value is <see cref="ToonLitConvertSetting"/>.
+        /// Default material convert setting. The default value is <see cref="ToonLitConvertSettings"/>.
         /// </summary>
         [SerializeReference]
-        public IMaterialConvertSetting defaultMaterialConvertSetting = new ToonLitConvertSetting();
+        public IMaterialConvertSettings defaultMaterialConvertSetting = new ToonLitConvertSettings();
 
         /// <summary>
         /// PhysBones to keep while conversion.

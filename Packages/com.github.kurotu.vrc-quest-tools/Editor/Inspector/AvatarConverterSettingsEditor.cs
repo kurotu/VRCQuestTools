@@ -235,9 +235,9 @@ namespace KRT.VRCQuestTools.Inspector
             VRCSDKUtility.AssignNetworkIdsToPhysBones(avatar);
         }
 
-        private void OnClickRegenerateTexturesButton(VRC_AvatarDescriptor avatar, IMaterialConvertSetting convertSetting)
+        private void OnClickRegenerateTexturesButton(VRC_AvatarDescriptor avatar, IMaterialConvertSettings convertSetting)
         {
-            var toonLitSetting = convertSetting is ToonLitConvertSetting ? convertSetting as ToonLitConvertSetting : null;
+            var toonLitSetting = convertSetting is ToonLitConvertSettings ? convertSetting as ToonLitConvertSettings : null;
             var setting = new TextureGeneratorSetting
             {
                 MainTextureBrightness = toonLitSetting != null ? toonLitSetting.mainTextureBrightness : 1.0f,

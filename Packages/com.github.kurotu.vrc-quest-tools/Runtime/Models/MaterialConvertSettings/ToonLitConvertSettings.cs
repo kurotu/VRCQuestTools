@@ -7,7 +7,7 @@ namespace KRT.VRCQuestTools.Models
     /// Material convert setting for Toon Lit shader.
     /// </summary>
     [Serializable]
-    public class ToonLitConvertSetting : IMaterialConvertSetting
+    public class ToonLitConvertSettings : IMaterialConvertSettings
     {
         /// <summary>
         /// Whether to generate quest textures.

@@ -7,8 +7,8 @@ namespace KRT.VRCQuestTools.Inspector
     /// <summary>
     /// PrpertyDrawer for ToonLitConvertSetting.
     /// </summary>
-    [CustomPropertyDrawer(typeof(ToonLitConvertSetting))]
-    internal class ToonLitConvertSettingDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(ToonLitConvertSettings))]
+    internal class ToonLitConvertSettingsDrawer : PropertyDrawer
     {
         /// <inheritdoc />
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
