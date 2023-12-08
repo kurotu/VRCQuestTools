@@ -9,8 +9,8 @@ namespace KRT.VRCQuestTools.Components
     /// <summary>
     /// Component to configure avatar conversion.
     /// </summary>
-    [AddComponentMenu("VRCQuestTools/VQT Avatar Converter")]
-    public class AvatarConverter : MonoBehaviour, IEditorOnly
+    [AddComponentMenu("VRCQuestTools/VQT Avatar Converter Settings")]
+    public class AvatarConverterSettings : MonoBehaviour, IEditorOnly
     {
         /// <summary>
         /// Destination avatar.

@@ -18,9 +18,9 @@ namespace KRT.VRCQuestTools.Views
     internal class AvatarDynamicsSelectorWindow : EditorWindow
     {
         /// <summary>
-        /// AvatarConverter to edit.
+        /// AvatarConverterSettings to edit.
         /// </summary>
-        internal AvatarConverter converter;
+        internal AvatarConverterSettings converterSettings;
 
         /// <summary>
         /// PhysBones to keep.
@@ -63,7 +63,7 @@ namespace KRT.VRCQuestTools.Views
         private void OnGUI()
         {
             i18n = VRCQuestToolsSettings.I18nResource;
-            if (converter == null)
+            if (converterSettings == null)
             {
                 EditorGUILayout.LabelField("Referenced AvatarConverter is missing.");
                 if (GUILayout.Button(i18n.CloseLabel))
@@ -85,7 +85,7 @@ namespace KRT.VRCQuestTools.Views
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
                         {
-                            var pbs = converter.AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true);
+                            var pbs = converterSettings.AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true);
                             if (pbs.Length == 0)
                             {
                                 EditorGUILayout.LabelField("No PhysBones found.");
@@ -118,7 +118,7 @@ namespace KRT.VRCQuestTools.Views
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
                         {
-                            var colliders = converter.AvatarDescriptor.GetComponentsInChildren<VRCPhysBoneCollider>(true);
+                            var colliders = converterSettings.AvatarDescriptor.GetComponentsInChildren<VRCPhysBoneCollider>(true);
                             if (colliders.Length == 0)
                             {
                                 EditorGUILayout.LabelField("No PhysBone Colliders found.");
@@ -151,7 +151,7 @@ namespace KRT.VRCQuestTools.Views
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
                         {
-                            var contacts = converter.AvatarDescriptor.GetComponentsInChildren<VRC.Dynamics.ContactBase>(true);
+                            var contacts = converterSettings.AvatarDescriptor.GetComponentsInChildren<VRC.Dynamics.ContactBase>(true);
                             if (contacts.Length == 0)
                             {
                                 EditorGUILayout.LabelField("No Contact Senders & Contact Receivers found.");
@@ -182,7 +182,7 @@ namespace KRT.VRCQuestTools.Views
             var pbToKeep = physBonesToKeep.Where(x => x != null).Select(pb => new PhysBone(pb)).ToArray();
             var pbcToKeep = physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
             var cToKeep = contactsToKeep.Where(x => x != null).Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray();
-            var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(converter.AvatarDescriptor.gameObject, pbToKeep, pbcToKeep, cToKeep);
+            var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(converterSettings.AvatarDescriptor.gameObject, pbToKeep, pbcToKeep, cToKeep);
             var categories = new AvatarPerformanceCategory[]
             {
                 AvatarPerformanceCategory.PhysBoneComponentCount,
@@ -201,10 +201,10 @@ namespace KRT.VRCQuestTools.Views
 
             if (GUILayout.Button(i18n.ApplyButtonLabel))
             {
-                converter.physBonesToKeep = physBonesToKeep;
-                converter.physBoneCollidersToKeep = physBoneCollidersToKeep;
-                converter.contactsToKeep = contactsToKeep;
-                PrefabUtility.RecordPrefabInstancePropertyModifications(converter);
+                converterSettings.physBonesToKeep = physBonesToKeep;
+                converterSettings.physBoneCollidersToKeep = physBoneCollidersToKeep;
+                converterSettings.contactsToKeep = contactsToKeep;
+                PrefabUtility.RecordPrefabInstancePropertyModifications(converterSettings);
                 Close();
             }
 

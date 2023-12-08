@@ -53,24 +53,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <summary>
         /// V2 of ConvertForQuest.
         /// </summary>
-        /// <param name="avatarConverter">Avatar converter component.</param>
+        /// <param name="avatarConverterSettings">Avatar converter settings component.</param>
         /// <param name="assetsDirectory">Root directory to save assets.</param>
         /// <param name="remover">ComponentRemover object.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted avatar.</returns>
-        internal VRChatAvatar ConvertForQuest(Components.AvatarConverter avatarConverter, string assetsDirectory, ComponentRemover remover, ProgressCallback progressCallback)
+        internal VRChatAvatar ConvertForQuest(Components.AvatarConverterSettings avatarConverterSettings, string assetsDirectory, ComponentRemover remover, ProgressCallback progressCallback)
         {
-            var toonLitSetting = avatarConverter.defaultMaterialConvertSetting as ToonLitConvertSetting;
+            var toonLitSetting = avatarConverterSettings.defaultMaterialConvertSetting as ToonLitConvertSetting;
             var setting = new AvatarConverterSetting
             {
                 generateQuestTextures = toonLitSetting.generateQuestTextures,
                 mainTextureBrightness = toonLitSetting.mainTextureBrightness,
                 maxTextureSize = (int)toonLitSetting.maxTextureSize,
-                overrideControllers = avatarConverter.animatorOverrideControllers,
-                removeVertexColor = avatarConverter.removeVertexColor,
+                overrideControllers = avatarConverterSettings.animatorOverrideControllers,
+                removeVertexColor = avatarConverterSettings.removeVertexColor,
             };
-            var converted = ConvertForQuest(new VRChatAvatar(avatarConverter.AvatarDescriptor), assetsDirectory, remover, setting, progressCallback);
-            var convertedConverter = converted.GameObject.GetComponent<Components.AvatarConverter>();
+            var converted = ConvertForQuest(new VRChatAvatar(avatarConverterSettings.AvatarDescriptor), assetsDirectory, remover, setting, progressCallback);
+            var convertedConverter = converted.GameObject.GetComponent<Components.AvatarConverterSettings>();
             VRCSDKUtility.DeleteAvatarDynamicsComponents(converted, convertedConverter.physBonesToKeep, convertedConverter.physBoneCollidersToKeep, convertedConverter.contactsToKeep);
 
             var convertedConverterObj = convertedConverter.gameObject;

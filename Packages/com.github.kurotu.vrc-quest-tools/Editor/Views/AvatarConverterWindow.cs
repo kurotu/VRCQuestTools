@@ -68,8 +68,8 @@ namespace KRT.VRCQuestTools.Views
             }
             if (EditorGUI.EndChangeCheck() || editor == null || editor.target == null)
             {
-                var converter = targetRoot.GetComponentInChildren<AvatarConverter>(true);
-                if (converter == null)
+                var converterSettings = targetRoot.GetComponentInChildren<AvatarConverterSettings>(true);
+                if (converterSettings == null)
                 {
                     editor = null;
                     if (GUILayout.Button(i18n.AddAvatarConverterButtonLabel(targetRoot.name)))
@@ -78,7 +78,7 @@ namespace KRT.VRCQuestTools.Views
                     }
                     return;
                 }
-                editor = Editor.CreateEditor(converter);
+                editor = Editor.CreateEditor(converterSettings);
             }
 
             using (var scroll = new EditorGUILayout.ScrollViewScope(scrollPosition))
@@ -95,8 +95,8 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnClickAttachAvatarConverterButton()
         {
-            var converter = targetRoot.gameObject.AddComponent<AvatarConverter>();
-            editor = Editor.CreateEditor(converter);
+            var converterSettings = targetRoot.gameObject.AddComponent<AvatarConverterSettings>();
+            editor = Editor.CreateEditor(converterSettings);
         }
     }
 }

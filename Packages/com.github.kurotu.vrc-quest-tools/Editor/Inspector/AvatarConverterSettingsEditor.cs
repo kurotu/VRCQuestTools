@@ -17,15 +17,15 @@ using static KRT.VRCQuestTools.Utils.VRCSDKUtility.Reflection;
 namespace KRT.VRCQuestTools.Inspector
 {
     /// <summary>
-    /// Inspector for <see cref="AvatarConverter"/>.
+    /// Inspector for <see cref="AvatarConverterSettings"/>.
     /// </summary>
-    [CustomEditor(typeof(AvatarConverter))]
-    public class AvatarConverterEditor : Editor
+    [CustomEditor(typeof(AvatarConverterSettings))]
+    public class AvatarConverterSettingsEditor : Editor
     {
         [SerializeField]
         private bool foldOutEstimatedPerf = false;
 
-        private AvatarConverter converter;
+        private AvatarConverterSettings converterSettings;
         private I18nBase i18n;
         private AvatarPerformanceStatsLevelSet statsLevelSet;
         private PerformanceRating avatarDynamicsPerfLimit;
@@ -47,8 +47,8 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 bool canConvert = true;
 
-                converter = (AvatarConverter)target;
-                var descriptor = converter.AvatarDescriptor;
+                converterSettings = (AvatarConverterSettings)target;
+                var descriptor = converterSettings.AvatarDescriptor;
                 if (descriptor)
                 {
                     var avatar = new Models.VRChat.VRChatAvatar(descriptor);
@@ -125,7 +125,7 @@ namespace KRT.VRCQuestTools.Inspector
                 EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent(i18n.AvatarConverterMaterialConvertSettingLabel));
                 if (GUILayout.Button(i18n.GenerateQuestTexturesLabel))
                 {
-                    OnClickRegenerateTexturesButton(descriptor, converter.defaultMaterialConvertSetting);
+                    OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSetting);
                 }
 
                 EditorGUILayout.Space();
@@ -142,7 +142,7 @@ namespace KRT.VRCQuestTools.Inspector
                 EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", i18n.AvatarConverterPhysBoneCollidersTooltip));
                 var m_contacts = so.FindProperty("contactsToKeep");
                 EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
-                AvatarDynamicsPerformanceGUI(converter);
+                AvatarDynamicsPerformanceGUI(converterSettings);
 
                 EditorGUILayout.Space();
 
@@ -191,16 +191,16 @@ namespace KRT.VRCQuestTools.Inspector
             avatarDynamicsPerfLimit = PerformanceRating.Poor;
         }
 
-        private void AvatarDynamicsPerformanceGUI(AvatarConverter converter)
+        private void AvatarDynamicsPerformanceGUI(AvatarConverterSettings converterSettings)
         {
-            var original = converter.AvatarDescriptor;
+            var original = converterSettings.AvatarDescriptor;
             if (original == null)
             {
                 return;
             }
-            var pbToKeep = converter.physBonesToKeep.Where(x => x != null).Select(pb => new PhysBone(pb)).ToArray();
-            var pbcToKeep = converter.physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
-            var contactsToKeep = converter.contactsToKeep.Where(x => x != null).Select(c => new ContactBase(c)).ToArray();
+            var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).Select(pb => new PhysBone(pb)).ToArray();
+            var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
+            var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).Select(c => new ContactBase(c)).ToArray();
             var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(original.gameObject, pbToKeep, pbcToKeep, contactsToKeep);
 
             foldOutEstimatedPerf = EditorGUILayout.Foldout(foldOutEstimatedPerf, i18n.EstimatedPerformanceStats);
@@ -276,10 +276,10 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickSelectAvatarDynamicsComponentsButton(VRC_AvatarDescriptor avatar)
         {
             var window = EditorWindow.GetWindow<AvatarDynamicsSelectorWindow>();
-            window.converter = converter;
-            window.physBonesToKeep = converter.physBonesToKeep;
-            window.physBoneCollidersToKeep = converter.physBoneCollidersToKeep;
-            window.contactsToKeep = converter.contactsToKeep;
+            window.converterSettings = converterSettings;
+            window.physBonesToKeep = converterSettings.physBonesToKeep;
+            window.physBoneCollidersToKeep = converterSettings.physBoneCollidersToKeep;
+            window.contactsToKeep = converterSettings.contactsToKeep;
             window.Show();
         }
 
@@ -341,7 +341,7 @@ namespace KRT.VRCQuestTools.Inspector
                 },
             };
 
-            var questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converter, GetOutputPath(avatar), VRCQuestTools.ComponentRemover, progressCallback);
+            var questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, GetOutputPath(avatar), VRCQuestTools.ComponentRemover, progressCallback);
             EditorUtility.ClearProgressBar();
             if (questAvatar != null)
             {
@@ -365,16 +365,16 @@ namespace KRT.VRCQuestTools.Inspector
                 }
 
                 // Overwrite existing converted avatar.
-                if (converter.destinationAvatar != null && converter.overwriteDestinationAvatar)
+                if (converterSettings.destinationAvatar != null && converterSettings.overwriteDestinationAvatar)
                 {
-                    var destinationIndex = converter.destinationAvatar.transform.GetSiblingIndex();
-                    converted.GameObject.transform.SetParent(converter.destinationAvatar.transform.parent);
+                    var destinationIndex = converterSettings.destinationAvatar.transform.GetSiblingIndex();
+                    converted.GameObject.transform.SetParent(converterSettings.destinationAvatar.transform.parent);
                     converted.GameObject.transform.SetSiblingIndex(destinationIndex);
-                    DestroyImmediate(converter.destinationAvatar.gameObject);
+                    DestroyImmediate(converterSettings.destinationAvatar.gameObject);
                 }
-                converter.destinationAvatar = converted.AvatarDescriptor;
+                converterSettings.destinationAvatar = converted.AvatarDescriptor;
 
-                converter.AvatarDescriptor.gameObject.SetActive(false);
+                converterSettings.AvatarDescriptor.gameObject.SetActive(false);
             }
         }
 
