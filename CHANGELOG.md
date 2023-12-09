@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix conversion failure when GameObjects which were assigned to Network IDs are actually missing.
 
+## [1.14.0] - 2023-12-09
+
+### Added
+- Support for Unity 2022. (Still supports 2019)
+- Support for texture conversion from material variants.
+
 ## [1.13.5] - 2023-12-03
 
 ### Fixed
@@ -150,7 +156,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Existing release.
 
-[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.5...HEAD
+[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.5...v1.14.0
 [1.13.5]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.4...v1.13.5
 [1.13.4]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.3...v1.13.4
 [1.13.3]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.2...v1.13.3

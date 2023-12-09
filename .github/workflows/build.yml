@@ -51,6 +51,9 @@ jobs:
         vrcsdkVersion:
           - 3.3.0
           - 3.4.1
+        include:
+          - unityVersion: 2022.3.6f1
+            vrcsdkVersion: 3.5.0
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3

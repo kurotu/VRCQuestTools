@@ -315,6 +315,9 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var dstTexture = DisposableObject.New(new RenderTexture(main.width, main.height, 0, RenderTextureFormat.ARGB32)))
             {
                 var lilBaker = Shader.Find("Hidden/VRCQuestTools/lilToon");
+#if UNITY_2022_1_OR_NEWER
+                baker.Object.parent = null;
+#endif
                 baker.Object.shader = lilBaker;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.mainTextureBrightness);
                 baker.Object.mainTexture = main;

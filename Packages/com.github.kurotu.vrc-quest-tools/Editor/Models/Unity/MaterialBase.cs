@@ -71,6 +71,9 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var baker = DisposableObject.New(Object.Instantiate(Material)))
             using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
             {
+#if UNITY_2022_1_OR_NEWER
+                baker.Object.parent = null;
+#endif
                 baker.Object.shader = BakeShader;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.mainTextureBrightness);
                 foreach (var name in Material.GetTexturePropertyNames())

@@ -39,6 +39,43 @@ namespace KRT.VRCQuestTools
         }
 
         /// <summary>
+        /// Test standard material variant.
+        /// </summary>
+        [Test]
+        public void StandardNpEmission_EmissionVariant()
+        {
+#if UNITY_2022_1_OR_NEWER
+            var wrapper = TestUtils.LoadMaterialWrapper("Standard_NoEmission EmissionVariant.mat");
+            Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
+            var setting = new TextureGeneratorSetting
+            {
+                MainTextureBrightness = 1.0f,
+            };
+            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
+            using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
+            using (var emission = DisposableObject.New(TestUtils.LoadUncompressedTexture("emission_1024px.png")))
+            using (var composed = DisposableObject.New(new Texture2D(main.Object.width, main.Object.height)))
+            {
+                var mainPixels = main.Object.GetPixels32();
+                var emissionPixels = emission.Object.GetPixels32();
+                var compose = mainPixels.Select((p, i) =>
+                {
+                    var e = emissionPixels[i];
+                    var r = (byte)System.Math.Min(p.r + e.r, 255);
+                    var g = (byte)System.Math.Min(p.g + e.g, 255);
+                    var b = (byte)System.Math.Min(p.b + e.b, 255);
+                    var a = (byte)System.Math.Min(p.a + e.a, 255);
+                    return new Color32(r, g, b, a);
+                }).ToArray();
+                composed.Object.SetPixels32(compose);
+                Assert.Less(TestUtils.Difference(tex.Object, composed.Object), Threshold);
+            }
+#else
+            Assert.Ignore("This test is not supported on Unity 2021.2 or older.");
+#endif
+        }
+
+        /// <summary>
         /// Test standard with emission.
         /// </summary>
         [Test]
