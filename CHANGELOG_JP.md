@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.14.0] - 2023-12-09
 
 ### 追加
 - Unity 2022 のサポート (2019 にも引き続き対応)
@@ -338,7 +338,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2020-10-10
 - 公開
 
-[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.5...HEAD
+[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.5...v1.14.0
 [1.13.5]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.4...v1.13.5
 [1.13.4]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.3...v1.13.4
 [1.13.3]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.2...v1.13.3
