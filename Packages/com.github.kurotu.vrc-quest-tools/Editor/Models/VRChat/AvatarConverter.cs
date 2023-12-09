@@ -58,18 +58,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="remover">ComponentRemover object.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted avatar.</returns>
-        internal VRChatAvatar ConvertForQuest(Components.AvatarConverterSettings avatarConverterSettings, string assetsDirectory, ComponentRemover remover, ProgressCallback progressCallback)
+        internal VRChatAvatar ConvertForQuest(AvatarConverterSettings avatarConverterSettings, string assetsDirectory, ComponentRemover remover, ProgressCallback progressCallback)
         {
-            var toonLitSetting = avatarConverterSettings.defaultMaterialConvertSetting as ToonLitConvertSettings;
-            var setting = new AvatarConverterSetting
-            {
-                generateQuestTextures = toonLitSetting.generateQuestTextures,
-                mainTextureBrightness = toonLitSetting.mainTextureBrightness,
-                maxTextureSize = (int)toonLitSetting.maxTextureSize,
-                overrideControllers = avatarConverterSettings.animatorOverrideControllers,
-                removeVertexColor = avatarConverterSettings.removeVertexColor,
-            };
-            var converted = ConvertForQuest(new VRChatAvatar(avatarConverterSettings.AvatarDescriptor), assetsDirectory, remover, setting, progressCallback);
+            var converted = ConvertForQuestImpl(new VRChatAvatar(avatarConverterSettings.AvatarDescriptor), assetsDirectory, remover, avatarConverterSettings, progressCallback);
             var convertedConverter = converted.GameObject.GetComponent<Components.AvatarConverterSettings>();
             VRCSDKUtility.DeleteAvatarDynamicsComponents(converted, convertedConverter.physBonesToKeep, convertedConverter.physBoneCollidersToKeep, convertedConverter.contactsToKeep);
 
@@ -88,26 +79,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="setting">Converter setting object.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted avatar.</returns>
-        internal virtual VRChatAvatar ConvertForQuest(VRChatAvatar avatar, string assetsDirectory, ComponentRemover remover, AvatarConverterSetting setting, ProgressCallback progressCallback)
+        internal virtual VRChatAvatar ConvertForQuestImpl(VRChatAvatar avatar, string assetsDirectory, ComponentRemover remover, AvatarConverterSettings setting, ProgressCallback progressCallback)
         {
             // Convert materials and generate textures.
-            var convertedMaterials = ConvertMaterialsForToonLit(avatar.Materials, assetsDirectory);
-            if (setting.generateQuestTextures)
-            {
-                var genSetting = new TextureGeneratorSetting
-                {
-                    MainTextureBrightness = setting.mainTextureBrightness,
-                };
-                var generatedTextures = GenrateToonLitTextures(avatar.Materials, assetsDirectory, setting.maxTextureSize, genSetting, progressCallback.onTextureProgress);
-                foreach (var tex in generatedTextures)
-                {
-                    if (convertedMaterials.ContainsKey(tex.Key))
-                    {
-                        convertedMaterials[tex.Key].mainTexture = tex.Value;
-                    }
-                }
-                AssetDatabase.SaveAssets();
-            }
+            var convertedMaterials = ConvertMaterialsForAndroid(avatar.Materials, setting, assetsDirectory, progressCallback.onTextureProgress);
 
             // Duplicate the original gameobject by keeping instantiated prefabs.
             // https://forum.unity.com/threads/solved-duplicate-prefab-issue.778553/#post-7562128
@@ -116,12 +91,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var questAvatarObject = Selection.activeGameObject;
 
             // Convert animator controllers and their animation clips.
-            if (avatar.HasAnimatedMaterials || setting.overrideControllers.Count(oc => oc != null) > 0)
+            if (avatar.HasAnimatedMaterials || setting.animatorOverrideControllers.Count(oc => oc != null) > 0)
             {
                 var convertedAnimationClips = ConvertAnimationClipsForQuest(avatar.GetRuntimeAnimatorControllers(), assetsDirectory, convertedMaterials, progressCallback.onAnimationClipProgress);
 
                 // Inject animation override.
-                foreach (var oc in setting.overrideControllers)
+                foreach (var oc in setting.animatorOverrideControllers)
                 {
                     if (oc == null)
                     {
@@ -255,36 +230,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 progressCallback(materialsToConvert.Length, i, null, m);
                 try
                 {
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
-                    var material = MaterialWrapperBuilder.Build(m);
-                    using (var tex = DisposableObject.New(material.GenerateToonLitImage(setting)))
-                    {
-                        Texture2D texture = null;
-                        if (tex.Object != null)
-                        {
-                            using (var disposables = new CompositeDisposable())
-                            {
-                                var texToWrite = tex.Object;
-                                if (maxTextureSize > 0 && Math.Max(tex.Object.width, tex.Object.height) > maxTextureSize)
-                                {
-                                    var resized = AssetUtility.ResizeTexture(tex.Object, maxTextureSize, maxTextureSize);
-                                    disposables.Add(DisposableObject.New(resized));
-                                    texToWrite = resized;
-                                }
-
-                                var outFile = $"{saveDirectory}/{m.name}_from_{guid}.png";
-
-                                // When the texture is added into another asset, "/" is acceptable as name.
-                                if (m.name.Contains("/"))
-                                {
-                                    var dir = Path.GetDirectoryName(outFile);
-                                    Directory.CreateDirectory(dir);
-                                }
-                                texture = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
-                            }
-                        }
-                        convertedTextures.Add(m, texture);
-                    }
+                    var tex = GenerateToonLitTexture(maxTextureSize, setting, saveDirectory, m);
+                    convertedTextures.Add(m, tex);
                 }
                 catch (Exception e)
                 {
@@ -296,12 +243,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
         /// <summary>
-        /// Converts materials for ToonLit.
+        /// Converts materials and generate textures for Android.
         /// </summary>
         /// <param name="materials">Materials to convert.</param>
+        /// <param name="avatarConverterSettings">Avatar converter settings component.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
+        /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted materials (key: original material).</returns>
-        internal Dictionary<Material, Material> ConvertMaterialsForToonLit(Material[] materials, string assetsDirectory)
+        internal Dictionary<Material, Material> ConvertMaterialsForAndroid(Material[] materials, AvatarConverterSettings avatarConverterSettings, string assetsDirectory, TextureProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Materials";
             Directory.CreateDirectory(saveDirectory);
@@ -311,22 +260,50 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var convertedMaterials = new Dictionary<Material, Material>();
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
-                var m = materialsToConvert[i];
-                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
-                var material = new MaterialWrapperBuilder().Build(m);
-                var toonlit = material.ConvertToToonLit();
-
-                var outFile = $"{saveDirectory}/{m.name}_from_{guid}.mat";
-
-                // When the material is added into another asset, "/" is acceptable as name.
-                if (m.name.Contains("/"))
+                progressCallback(materialsToConvert.Length, i, null, materialsToConvert[i]);
+                try
                 {
-                    var dir = Path.GetDirectoryName(outFile);
-                    Directory.CreateDirectory(dir);
-                }
-                toonlit = AssetUtility.CreateAsset(toonlit, outFile);
+                    var m = materialsToConvert[i];
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
+                    var material = new MaterialWrapperBuilder().Build(m);
+                    var setting = avatarConverterSettings.GetMaterialConvertSettings(m);
+                    Material output;
+                    switch (setting)
+                    {
+                        case ToonLitConvertSettings toonLitConvertSettings:
+                            output = material.ConvertToToonLit();
+                            if (toonLitConvertSettings.generateQuestTextures)
+                            {
+                                var genSetting = new TextureGeneratorSetting
+                                {
+                                    MainTextureBrightness = toonLitConvertSettings.mainTextureBrightness,
+                                };
+                                var texDir = $"{assetsDirectory}/Textures";
+                                var tex = GenerateToonLitTexture((int)toonLitConvertSettings.maxTextureSize, genSetting, texDir, m);
+                                output.mainTexture = tex;
+                                AssetDatabase.SaveAssets();
+                            }
+                            break;
+                        default:
+                            throw new InvalidProgramException($"Unhandled material convert setting: {setting.GetType().Name}");
+                    }
+                    var outFile = $"{saveDirectory}/{m.name}_from_{guid}.mat";
 
-                convertedMaterials.Add(m, toonlit);
+                    // When the material is added into another asset, "/" is acceptable as name.
+                    if (m.name.Contains("/"))
+                    {
+                        var dir = Path.GetDirectoryName(outFile);
+                        Directory.CreateDirectory(dir);
+                    }
+                    output = AssetUtility.CreateAsset(output, outFile);
+
+                    convertedMaterials.Add(m, output);
+                }
+                catch (Exception e)
+                {
+                    progressCallback(materialsToConvert.Length, i, e, materialsToConvert[i]);
+                    ExceptionDispatchInfo.Capture(e).Throw();
+                }
             }
             return convertedMaterials;
         }
@@ -500,6 +477,41 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
             }
             return convertedAnimationClips;
+        }
+
+        private Texture2D GenerateToonLitTexture(int maxTextureSize, TextureGeneratorSetting setting, string saveDirectory, Material m)
+        {
+            Directory.CreateDirectory(saveDirectory);
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
+            var material = MaterialWrapperBuilder.Build(m);
+            using (var tex = DisposableObject.New(material.GenerateToonLitImage(setting)))
+            {
+                Texture2D texture = null;
+                if (tex.Object != null)
+                {
+                    using (var disposables = new CompositeDisposable())
+                    {
+                        var texToWrite = tex.Object;
+                        if (maxTextureSize > 0 && Math.Max(tex.Object.width, tex.Object.height) > maxTextureSize)
+                        {
+                            var resized = AssetUtility.ResizeTexture(tex.Object, maxTextureSize, maxTextureSize);
+                            disposables.Add(DisposableObject.New(resized));
+                            texToWrite = resized;
+                        }
+
+                        var outFile = $"{saveDirectory}/{m.name}_from_{guid}.png";
+
+                        // When the texture is added into another asset, "/" is acceptable as name.
+                        if (m.name.Contains("/"))
+                        {
+                            var dir = Path.GetDirectoryName(outFile);
+                            Directory.CreateDirectory(dir);
+                        }
+                        texture = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
+                    }
+                }
+                return texture;
+            }
         }
 
 #pragma warning disable SA1600 // Elements should be documented

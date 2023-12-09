@@ -71,6 +71,23 @@ namespace KRT.VRCQuestTools.Components
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
 
+        /// <summary>
+        /// Gets the material convert settings for the specified material.
+        /// </summary>
+        /// <param name="material">Material to convert.</param>
+        /// <returns>Resolved IMaterialConvertSettings.</returns>
+        public IMaterialConvertSettings GetMaterialConvertSettings(Material material)
+        {
+            foreach (var setting in additionalMaterialConvertSettings)
+            {
+                if (setting.targetMaterial == material)
+                {
+                    return setting.materialConvertSettings;
+                }
+            }
+            return defaultMaterialConvertSetting;
+        }
+
         private void Reset()
         {
             var descriptor = AvatarDescriptor;
