@@ -60,9 +60,9 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <summary>
         /// Generates an image for Toon Lit main texture.
         /// </summary>
-        /// <param name="setting">Setting object.</param>
+        /// <param name="settings">Setting object.</param>
         /// <returns>Generated image.</returns>
-        internal virtual Texture2D GenerateToonLitImage(TextureGeneratorSetting setting)
+        internal virtual Texture2D GenerateToonLitImage(ToonLitConvertSettings settings)
         {
             var width = Material.mainTexture?.width ?? 4;
             var height = Material.mainTexture?.height ?? 4;
@@ -72,7 +72,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
             {
                 baker.Object.shader = BakeShader;
-                baker.Object.SetFloat("_VQT_MainTexBrightness", setting.MainTextureBrightness);
+                baker.Object.SetFloat("_VQT_MainTexBrightness", settings.mainTextureBrightness);
                 foreach (var name in Material.GetTexturePropertyNames())
                 {
                     var t = Material.GetTexture(name);

@@ -235,11 +235,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         case ToonLitConvertSettings toonLitConvertSettings:
                             if (toonLitConvertSettings.generateQuestTextures)
                             {
-                                var genSetting = new TextureGeneratorSetting
-                                {
-                                    MainTextureBrightness = toonLitConvertSettings.mainTextureBrightness,
-                                };
-                                var tex = GenerateToonLitTexture((int)toonLitConvertSettings.maxTextureSize, genSetting, saveDirectory, m);
+                                var tex = GenerateToonLitTexture((int)toonLitConvertSettings.maxTextureSize, toonLitConvertSettings, saveDirectory, m);
                                 convertedTextures.Add(m, tex);
                             }
                             break;
@@ -288,12 +284,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             output = material.ConvertToToonLit();
                             if (toonLitConvertSettings.generateQuestTextures)
                             {
-                                var genSetting = new TextureGeneratorSetting
-                                {
-                                    MainTextureBrightness = toonLitConvertSettings.mainTextureBrightness,
-                                };
                                 var texDir = $"{assetsDirectory}/Textures";
-                                var tex = GenerateToonLitTexture((int)toonLitConvertSettings.maxTextureSize, genSetting, texDir, m);
+                                var tex = GenerateToonLitTexture((int)toonLitConvertSettings.maxTextureSize, toonLitConvertSettings, texDir, m);
                                 output.mainTexture = tex;
                                 AssetDatabase.SaveAssets();
                             }
@@ -493,12 +485,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return convertedAnimationClips;
         }
 
-        private Texture2D GenerateToonLitTexture(int maxTextureSize, TextureGeneratorSetting setting, string saveDirectory, Material m)
+        private Texture2D GenerateToonLitTexture(int maxTextureSize, ToonLitConvertSettings settings, string saveDirectory, Material m)
         {
             Directory.CreateDirectory(saveDirectory);
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
             var material = MaterialWrapperBuilder.Build(m);
-            using (var tex = DisposableObject.New(material.GenerateToonLitImage(setting)))
+            using (var tex = DisposableObject.New(material.GenerateToonLitImage(settings)))
             {
                 Texture2D texture = null;
                 if (tex.Object != null)

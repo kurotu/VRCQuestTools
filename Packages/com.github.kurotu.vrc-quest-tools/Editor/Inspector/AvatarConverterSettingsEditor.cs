@@ -253,11 +253,6 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickRegenerateTexturesButton(VRC_AvatarDescriptor avatar, IMaterialConvertSettings convertSetting)
         {
             var toonLitSetting = convertSetting is ToonLitConvertSettings ? convertSetting as ToonLitConvertSettings : null;
-            var setting = new TextureGeneratorSetting
-            {
-                MainTextureBrightness = toonLitSetting != null ? toonLitSetting.mainTextureBrightness : 1.0f,
-            };
-            var texturesSizeLimit = toonLitSetting != null ? toonLitSetting.maxTextureSize : 0;
             var targetAvatar = new Models.VRChat.VRChatAvatar(avatar);
 
             TextureProgressCallback progressCallback = (int total, int index, System.Exception exception, Material material) =>

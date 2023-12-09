@@ -32,9 +32,9 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             var wrapper = TestUtils.LoadMaterialWrapper("axcs.mat");
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
-            var setting = new TextureGeneratorSetting
+            var setting = new ToonLitConvertSettings
             {
-                MainTextureBrightness = 1.0f,
+                mainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
@@ -63,9 +63,9 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             var wrapper = TestUtils.LoadMaterialWrapper("axcs_EmissiveFreak.mat");
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
-            var setting = new TextureGeneratorSetting
+            var setting = new ToonLitConvertSettings
             {
-                MainTextureBrightness = 1.0f,
+                mainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
