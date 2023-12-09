@@ -50,7 +50,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MaterialExceptionDialogMessage => "マテリアルの変換中にエラーが発生しました。変換を中止します。";
         internal override string AnimationClipExceptionDialogMessage => "アニメーションの変換中にエラーが発生しました。変換を中止します。";
         internal override string AnimatorControllerExceptionDialogMessage => "Animator Controllerの変換中にエラーが発生しました。変換を中止します。";
-        internal override string WarningForPerformance => $"{VRCQuestTools.Name}はポリゴン数削減などのパフォーマンスランクの最適化をしません。ほとんどの場合、変換後のアバターは Quest のパフォーマンスランクで Very Poor になります。デフォルトではフォールバックアバターが表示され、見る側が Avatar Display 設定で個別に表示する必要があります。";
+        internal override string WarningForPerformance => $"{VRCQuestTools.Name}はポリゴン数削減などのパフォーマンスランクの最適化をしません。ほとんどの場合、変換後のアバターは Quest のパフォーマンスランクで Very Poor になります。\n・デフォルトではフォールバックアバターが表示され、見る側が Avatar Display 設定で個別に表示する必要があります。\n・Very Poor のアバターは Android スマートフォン版 VRChat では使用・表示できません。";
         internal override string WarningForAppearance => "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n\n" +
             "別の Blueprint ID でのアップロードや Avatars 3.0 のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
         internal override string WarningForUnsupportedShaders => $"以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n「{GenerateQuestTexturesLabel}」をオフにするとシェーダーのみを変更します。";
