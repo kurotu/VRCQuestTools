@@ -52,10 +52,15 @@ jobs:
       matrix:
         unityVersion:
           - 2019.4.31f1
+          - 2022.3.6f1
     steps:
       - uses: actions/checkout@v3
         with:
           path: Assets/KRT/VRCQuestTools
+
+      - run: mkdir -p Packages
+      # Somehow NUnit is not resolved in Unity 2022.
+      - run: echo '{"dependencies":{"com.unity.test-framework":"1.1.27"}}' > Packages/manifest.json
 
       - uses: actions/cache@v3
         with:
