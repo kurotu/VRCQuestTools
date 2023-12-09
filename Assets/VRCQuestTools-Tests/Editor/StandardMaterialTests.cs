@@ -47,9 +47,9 @@ namespace KRT.VRCQuestTools
 #if UNITY_2022_1_OR_NEWER
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_NoEmission EmissionVariant.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            var setting = new TextureGeneratorSetting
+            var setting = new ToonLitConvertSettings
             {
-                MainTextureBrightness = 1.0f,
+                mainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
