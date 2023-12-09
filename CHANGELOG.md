@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Material Variant からのテクスチャ生成に対応
+- Support for Unity 2022. (Still supports 2019)
+- Support for texture conversion from material variants.
 
 ## [1.13.5] - 2023-12-03
 

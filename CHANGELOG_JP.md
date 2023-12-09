@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### 追加
+- Unity 2022 のサポート (2019 にも引き続き対応)
 - Material Variant からのテクスチャ生成に対応
 
 ## [1.13.5] - 2023-12-03
