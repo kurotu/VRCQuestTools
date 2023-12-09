@@ -25,6 +25,12 @@ namespace KRT.VRCQuestTools.Components
         public IMaterialConvertSettings defaultMaterialConvertSetting = new ToonLitConvertSettings();
 
         /// <summary>
+        /// Additional material convert settings.
+        /// </summary>
+        [SerializeField]
+        public AdditionalMaterialConvertSettings[] additionalMaterialConvertSettings = { };
+
+        /// <summary>
         /// PhysBones to keep while conversion.
         /// </summary>
         [SerializeField]
@@ -64,6 +70,23 @@ namespace KRT.VRCQuestTools.Components
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
+
+        /// <summary>
+        /// Gets the material convert settings for the specified material.
+        /// </summary>
+        /// <param name="material">Material to convert.</param>
+        /// <returns>Resolved IMaterialConvertSettings.</returns>
+        public IMaterialConvertSettings GetMaterialConvertSettings(Material material)
+        {
+            foreach (var setting in additionalMaterialConvertSettings)
+            {
+                if (setting.targetMaterial == material)
+                {
+                    return setting.materialConvertSettings;
+                }
+            }
+            return defaultMaterialConvertSetting;
+        }
 
         private void Reset()
         {

@@ -122,8 +122,23 @@ namespace KRT.VRCQuestTools.Inspector
 
                 EditorGUILayout.Space();
 
-                EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent(i18n.AvatarConverterMaterialConvertSettingLabel));
-                if (GUILayout.Button(i18n.GenerateQuestTexturesLabel))
+                EditorGUILayout.LabelField(i18n.AvatarConverterMaterialConvertSettingLabel, EditorStyles.boldLabel);
+                EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent(i18n.AvatarConverterDefaultMaterialConvertSettingLabel));
+
+                var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
+                var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;
+                EditorGUILayout.PropertyField(additionalMaterialConvertSettings, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel));
+                if (additionalMaterialConvertSettings.arraySize > additionalMaterialConvertCount)
+                {
+                    for (var i = additionalMaterialConvertCount; i < additionalMaterialConvertSettings.arraySize; i++)
+                    {
+                        var e = additionalMaterialConvertSettings.GetArrayElementAtIndex(i);
+                        e.FindPropertyRelative("targetMaterial").objectReferenceValue = null;
+                        e.FindPropertyRelative("materialConvertSettings").managedReferenceValue = new ToonLitConvertSettings();
+                    }
+                }
+
+                if (GUILayout.Button(i18n.UpdateTexturesLabel))
                 {
                     OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSetting);
                 }
@@ -238,11 +253,6 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickRegenerateTexturesButton(VRC_AvatarDescriptor avatar, IMaterialConvertSettings convertSetting)
         {
             var toonLitSetting = convertSetting is ToonLitConvertSettings ? convertSetting as ToonLitConvertSettings : null;
-            var setting = new TextureGeneratorSetting
-            {
-                MainTextureBrightness = toonLitSetting != null ? toonLitSetting.mainTextureBrightness : 1.0f,
-            };
-            var texturesSizeLimit = toonLitSetting != null ? toonLitSetting.maxTextureSize : 0;
             var targetAvatar = new Models.VRChat.VRChatAvatar(avatar);
 
             TextureProgressCallback progressCallback = (int total, int index, System.Exception exception, Material material) =>
@@ -269,7 +279,7 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 onTextureProgress = progressCallback,
             };
-            VRCQuestTools.AvatarConverter.GenrateToonLitTextures(targetAvatar.Materials, outputPath, (int)texturesSizeLimit, setting, progressCallback);
+            VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, outputPath, converterSettings, progressCallback);
             EditorUtility.ClearProgressBar();
         }
 

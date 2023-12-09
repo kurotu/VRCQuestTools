@@ -7,7 +7,8 @@
 ## [Unreleased]
 
 ### 追加
-- アバターに変換設定を保存する `VQT Avatar Converter` コンポーネントを追加
+- アバターに変換設定を保存する `VQT Avatar Converter Settings` コンポーネントを追加
+- マテリアルごとにマテリアル変換設定を変更する機能を追加
 
 ### 変更
 - VRChat SDK 3.3.0 以降が必要

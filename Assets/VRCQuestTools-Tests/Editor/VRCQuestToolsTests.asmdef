@@ -1,6 +1,7 @@
 {
     "name": "VRCQuestTools-EditorTests",
     "references": [
+        "VRCQuestTools",
         "VRCQuestTools-Editor",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"

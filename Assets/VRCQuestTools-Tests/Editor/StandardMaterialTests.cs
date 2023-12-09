@@ -4,6 +4,7 @@
 // </copyright>
 
 using System.Linq;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
@@ -26,9 +27,9 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_NoEmission.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            var setting = new TextureGeneratorSetting
+            var setting = new ToonLitConvertSettings
             {
-                MainTextureBrightness = 1.0f,
+                mainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
@@ -45,9 +46,9 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_Emission.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            var setting = new TextureGeneratorSetting
+            var setting = new ToonLitConvertSettings
             {
-                MainTextureBrightness = 1.0f,
+                mainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
@@ -78,9 +79,9 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Unlit_Transparent.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            var setting = new TextureGeneratorSetting
+            var setting = new ToonLitConvertSettings
             {
-                MainTextureBrightness = 1.0f,
+                mainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(TestUtils.LoadUncompressedTexture("alpha_test.png")))
@@ -97,9 +98,9 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("Unlit_Color.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            var setting = new TextureGeneratorSetting
+            var setting = new ToonLitConvertSettings
             {
-                MainTextureBrightness = 1.0f,
+                mainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(Color.red)))
@@ -116,9 +117,9 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("render_texture.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
-            var setting = new TextureGeneratorSetting
+            var setting = new ToonLitConvertSettings
             {
-                MainTextureBrightness = 1.0f,
+                mainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(new Color32(205, 205, 205, 205), 256, 256)))

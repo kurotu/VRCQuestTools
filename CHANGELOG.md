@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Add `VQT Avatar Converter` component to save converter settings to the avatar.
+- Add `VQT Avatar Converter Settings` component to save converter settings to the avatar.
+- Add feature to change material conversion settings for each material.
 
 ### Changed
 - Require VRChat SDK 3.3.0 or later.

@@ -4,6 +4,7 @@
 // </copyright>
 
 using System.Linq;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
@@ -33,9 +34,9 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("arktoon.mat");
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
-            var setting = new TextureGeneratorSetting
+            var setting = new ToonLitConvertSettings
             {
-                MainTextureBrightness = 1.0f,
+                mainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
@@ -64,9 +65,9 @@ namespace KRT.VRCQuestTools
         {
             var wrapper = TestUtils.LoadMaterialWrapper("arktoon_EmissiveFreak.mat");
             Assert.AreEqual(typeof(ArktoonMaterial), wrapper.GetType());
-            var setting = new TextureGeneratorSetting
+            var setting = new ToonLitConvertSettings
             {
-                MainTextureBrightness = 1.0f,
+                mainTextureBrightness = 1.0f,
             };
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
