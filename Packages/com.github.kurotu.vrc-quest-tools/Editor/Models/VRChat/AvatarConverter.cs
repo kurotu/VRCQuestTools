@@ -212,11 +212,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// </summary>
         /// <param name="materials">Materials to generate textures.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
-        /// <param name="maxTextureSize">Max texture size. 0 for no limits.</param>
-        /// <param name="setting">Setting object.</param>
+        /// <param name="settings">Avatar converter settings component.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted textures (key: original material).</returns>
-        internal Dictionary<Material, Texture2D> GenrateToonLitTextures(Material[] materials, string assetsDirectory, int maxTextureSize, TextureGeneratorSetting setting, TextureProgressCallback progressCallback)
+        internal Dictionary<Material, Texture2D> GenerateAndroidTextures(Material[] materials, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Textures";
             Directory.CreateDirectory(saveDirectory);
@@ -230,8 +229,23 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 progressCallback(materialsToConvert.Length, i, null, m);
                 try
                 {
-                    var tex = GenerateToonLitTexture(maxTextureSize, setting, saveDirectory, m);
-                    convertedTextures.Add(m, tex);
+                    var materialSetting = settings.GetMaterialConvertSettings(m);
+                    switch (materialSetting)
+                    {
+                        case ToonLitConvertSettings toonLitConvertSettings:
+                            if (toonLitConvertSettings.generateQuestTextures)
+                            {
+                                var genSetting = new TextureGeneratorSetting
+                                {
+                                    MainTextureBrightness = toonLitConvertSettings.mainTextureBrightness,
+                                };
+                                var tex = GenerateToonLitTexture((int)toonLitConvertSettings.maxTextureSize, genSetting, saveDirectory, m);
+                                convertedTextures.Add(m, tex);
+                            }
+                            break;
+                        default:
+                            throw new InvalidProgramException($"Unhandled material convert setting: {materialSetting.GetType().Name}");
+                    }
                 }
                 catch (Exception e)
                 {

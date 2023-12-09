@@ -138,7 +138,7 @@ namespace KRT.VRCQuestTools.Inspector
                     }
                 }
 
-                if (GUILayout.Button(i18n.GenerateQuestTexturesLabel))
+                if (GUILayout.Button(i18n.UpdateTexturesLabel))
                 {
                     OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSetting);
                 }
@@ -284,7 +284,7 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 onTextureProgress = progressCallback,
             };
-            VRCQuestTools.AvatarConverter.GenrateToonLitTextures(targetAvatar.Materials, outputPath, (int)texturesSizeLimit, setting, progressCallback);
+            VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, outputPath, converterSettings, progressCallback);
             EditorUtility.ClearProgressBar();
         }
 
