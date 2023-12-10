@@ -74,7 +74,9 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarConverterMaterialConvertSettingLabel => "マテリアル変換設定";
         internal override string AvatarConverterDefaultMaterialConvertSettingLabel => "デフォルトのマテリアル変換設定";
         internal override string AvatarConverterAdditionalMaterialConvertSettingsLabel => "追加のマテリアル変換設定";
-        internal override string AvatarConverterMaterialLabel => "マテリアル";
+        internal override string AvatarConverterTargetMaterialLabel => "対象マテリアル";
+        internal override string AvatarConverterReplaceMaterialLabel => "置換マテリアル";
+
         internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics 設定";
         internal override string AvatarConverterPhysBonesTooltip => "変換時に残しておく PhysBone を選択します。";
         internal override string AvatarConverterPhysBoneCollidersTooltip => "変換時に残しておく PhysBoneCollider を選択します。";

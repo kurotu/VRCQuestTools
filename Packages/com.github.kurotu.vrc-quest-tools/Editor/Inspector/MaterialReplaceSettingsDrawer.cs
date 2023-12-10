@@ -7,8 +7,8 @@ namespace KRT.VRCQuestTools.Inspector
     /// <summary>
     /// PrpertyDrawer for ToonLitConvertSetting.
     /// </summary>
-    [CustomPropertyDrawer(typeof(ToonLitConvertSettings))]
-    internal class ToonLitConvertSettingsDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(MaterialReplaceSettings))]
+    internal class MaterialReplaceSettingsDrawer : PropertyDrawer
     {
         /// <inheritdoc />
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -28,13 +28,7 @@ namespace KRT.VRCQuestTools.Inspector
 
             EditorGUI.indentLevel++;
 
-            var generateQuestTextures = property.FindPropertyRelative("generateQuestTextures");
-            EditorGUILayout.PropertyField(generateQuestTextures, new GUIContent(i18n.GenerateQuestTexturesLabel));
-            using (var disabled = new EditorGUI.DisabledScope(!generateQuestTextures.boolValue))
-            {
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.TexturesSizeLimitLabel));
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("mainTextureBrightness"), new GUIContent(i18n.MainTextureBrightnessLabel, i18n.MainTextureBrightnessTooltip));
-            }
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("material"), new GUIContent(i18n.AvatarConverterReplaceMaterialLabel));
 
             EditorGUI.indentLevel--;
         }

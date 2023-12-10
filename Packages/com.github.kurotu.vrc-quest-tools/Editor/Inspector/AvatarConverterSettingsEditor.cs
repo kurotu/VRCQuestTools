@@ -123,7 +123,19 @@ namespace KRT.VRCQuestTools.Inspector
                 EditorGUILayout.Space();
 
                 EditorGUILayout.LabelField(i18n.AvatarConverterMaterialConvertSettingLabel, EditorStyles.boldLabel);
-                EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent(i18n.AvatarConverterDefaultMaterialConvertSettingLabel));
+                using (var ccs = new EditorGUI.ChangeCheckScope())
+                {
+                    var name = so.FindProperty("defaultMaterialConvertSetting").managedReferenceFullTypename.Split(' ').Last();
+                    var type = SystemUtility.GetTypeByName(name);
+                    var selectedIndex = MaterialConvertSettingsTypes.DefaultTypes.IndexOf(type);
+                    selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterDefaultMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.DefaultTypes.Select(t => t.Name).ToArray());
+                    if (ccs.changed)
+                    {
+                        var newType = MaterialConvertSettingsTypes.DefaultTypes[selectedIndex];
+                        so.FindProperty("defaultMaterialConvertSetting").managedReferenceValue = System.Activator.CreateInstance(newType);
+                    }
+                }
+                EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent());
 
                 var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
                 var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;

@@ -239,6 +239,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
                                 convertedTextures.Add(m, tex);
                             }
                             break;
+                        case MaterialReplaceSettings materialReplaceSettings:
+                            // don't have to generate textures
+                            break;
                         default:
                             throw new InvalidProgramException($"Unhandled material convert setting: {materialSetting.GetType().Name}");
                     }
@@ -290,18 +293,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
                                 AssetDatabase.SaveAssets();
                             }
                             break;
+                        case MaterialReplaceSettings materialReplaceSettings:
+                            output = materialReplaceSettings.material;
+                            break;
                         default:
                             throw new InvalidProgramException($"Unhandled material convert setting: {setting.GetType().Name}");
                     }
                     var outFile = $"{saveDirectory}/{m.name}_from_{guid}.mat";
 
-                    // When the material is added into another asset, "/" is acceptable as name.
-                    if (m.name.Contains("/"))
+                    if (!(setting is MaterialReplaceSettings))
                     {
-                        var dir = Path.GetDirectoryName(outFile);
-                        Directory.CreateDirectory(dir);
+                        // When the material is added into another asset, "/" is acceptable as name.
+                        if (m.name.Contains("/"))
+                        {
+                            var dir = Path.GetDirectoryName(outFile);
+                            Directory.CreateDirectory(dir);
+                        }
+                        output = AssetUtility.CreateAsset(output, outFile);
                     }
-                    output = AssetUtility.CreateAsset(output, outFile);
 
                     convertedMaterials.Add(m, output);
                 }

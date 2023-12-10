@@ -73,7 +73,8 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AvatarConverterMaterialConvertSettingLabel { get; }
         internal abstract string AvatarConverterDefaultMaterialConvertSettingLabel { get; }
         internal abstract string AvatarConverterAdditionalMaterialConvertSettingsLabel { get; }
-        internal abstract string AvatarConverterMaterialLabel { get; }
+        internal abstract string AvatarConverterTargetMaterialLabel { get; }
+        internal abstract string AvatarConverterReplaceMaterialLabel { get; }
 
         internal abstract string AvatarConverterAvatarDynamicsSettingLabel { get; }
         internal abstract string AvatarConverterPhysBonesTooltip { get; }

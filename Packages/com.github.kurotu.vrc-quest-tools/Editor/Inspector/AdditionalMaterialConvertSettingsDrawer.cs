@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,9 +29,23 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 EditorGUI.indentLevel++;
 
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("targetMaterial"), new GUIContent(i18n.AvatarConverterMaterialLabel));
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("targetMaterial"), new GUIContent(i18n.AvatarConverterTargetMaterialLabel));
+
+                using (var ccs = new EditorGUI.ChangeCheckScope())
+                {
+                    var name = property.FindPropertyRelative("materialConvertSettings").managedReferenceFullTypename.Split(' ').Last();
+                    var type = SystemUtility.GetTypeByName(name);
+                    var selectedIndex = MaterialConvertSettingsTypes.Types.IndexOf(type);
+                    selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.Types.Select(t => t.Name).ToArray());
+                    if (ccs.changed)
+                    {
+                        var newType = MaterialConvertSettingsTypes.Types[selectedIndex];
+                        property.FindPropertyRelative("materialConvertSettings").managedReferenceValue = Activator.CreateInstance(newType);
+                    }
+                }
+
                 var settings = property.FindPropertyRelative("materialConvertSettings");
-                EditorGUILayout.PropertyField(settings, new GUIContent($"{i18n.AvatarConverterMaterialConvertSettingLabel} ({settings.managedReferenceFullTypename.Split('.').Last()})"));
+                EditorGUILayout.PropertyField(settings, new GUIContent());
 
                 EditorGUI.indentLevel--;
             }

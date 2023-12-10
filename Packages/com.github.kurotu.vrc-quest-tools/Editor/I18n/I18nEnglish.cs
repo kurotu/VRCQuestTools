@@ -73,7 +73,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarConverterMaterialConvertSettingLabel => "Material Conversion Setting";
         internal override string AvatarConverterDefaultMaterialConvertSettingLabel => "Default Material Conversion Settings";
         internal override string AvatarConverterAdditionalMaterialConvertSettingsLabel => "Additional Material Conversion Settings";
-        internal override string AvatarConverterMaterialLabel => "Material";
+        internal override string AvatarConverterTargetMaterialLabel => "Target Material";
+        internal override string AvatarConverterReplaceMaterialLabel => "Replaced Material";
 
         internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics Setting";
         internal override string AvatarConverterPhysBonesTooltip => "Set PhysBones to keep while conversion.";
