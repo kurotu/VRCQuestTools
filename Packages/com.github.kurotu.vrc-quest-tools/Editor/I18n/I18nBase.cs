@@ -58,9 +58,6 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string WarningForPerformance { get; }
         internal abstract string WarningForAppearance { get; }
         internal abstract string WarningForUnsupportedShaders { get; }
-        internal abstract string TexturesSizeLimitLabel { get; }
-        internal abstract string MainTextureBrightnessLabel { get; }
-        internal abstract string MainTextureBrightnessTooltip { get; }
         internal abstract string AlertForDynamicBoneConversion { get; }
         internal abstract string AlertForMissingNetIds { get; }
         internal abstract string AlertForMultiplePhysBones { get; }
@@ -73,13 +70,18 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AvatarConverterMaterialConvertSettingLabel { get; }
         internal abstract string AvatarConverterDefaultMaterialConvertSettingLabel { get; }
         internal abstract string AvatarConverterAdditionalMaterialConvertSettingsLabel { get; }
-        internal abstract string AvatarConverterTargetMaterialLabel { get; }
-        internal abstract string AvatarConverterReplaceMaterialLabel { get; }
 
         internal abstract string AvatarConverterAvatarDynamicsSettingLabel { get; }
         internal abstract string AvatarConverterPhysBonesTooltip { get; }
         internal abstract string AvatarConverterPhysBoneCollidersTooltip { get; }
         internal abstract string AvatarConverterContactsTooltip { get; }
+
+        // IMaterialConvertSettings
+        internal abstract string IMaterialConvertSettingsTexturesSizeLimitLabel { get; }
+        internal abstract string IMaterialConvertSettingsMainTextureBrightnessLabel { get; }
+        internal abstract string IMaterialConvertSettingsMainTextureBrightnessTooltip { get; }
+        internal abstract string AdditionalMaterialConvertSettingsTargetMaterialLabel { get; }
+        internal abstract string MaterialReplaceSettingsMaterialLabel { get; }
 
         // Remove Missing Components
         internal abstract string NoMissingComponentsMessage(string objectName);

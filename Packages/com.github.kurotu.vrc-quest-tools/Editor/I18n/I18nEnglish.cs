@@ -64,22 +64,24 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
         internal override string AlertForMissingNetIds => "There are PhysBones which don't have Network ID. To keep sync between PC and Quest, assign Network IDs then re-upload the PC avatar.";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics components exceed \"Poor\" limits (Very Poor). Please keep \"Poor\" rating by removing them.";
-        internal override string TexturesSizeLimitLabel => "Textures Size Limit";
-        internal override string MainTextureBrightnessLabel => "Main Texture Brightness";
-        internal override string MainTextureBrightnessTooltip => "Tweak main texture color for Toon Lit.";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
 
         internal override string AvatarConverterMustBeOnAvatarRoot => "This component must be attached to VRC_AvatarDescriptor GameObject.";
         internal override string AvatarConverterMaterialConvertSettingLabel => "Material Conversion Setting";
         internal override string AvatarConverterDefaultMaterialConvertSettingLabel => "Default Material Conversion Settings";
         internal override string AvatarConverterAdditionalMaterialConvertSettingsLabel => "Additional Material Conversion Settings";
-        internal override string AvatarConverterTargetMaterialLabel => "Target Material";
-        internal override string AvatarConverterReplaceMaterialLabel => "Replaced Material";
 
         internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics Setting";
         internal override string AvatarConverterPhysBonesTooltip => "Set PhysBones to keep while conversion.";
         internal override string AvatarConverterPhysBoneCollidersTooltip => "Set PhysBoneColliders to keep while conversion.";
         internal override string AvatarConverterContactsTooltip => "Set ContactSenders and ContactReceivers to keep while conversion.";
+
+        // IMaterialConvertSettings
+        internal override string IMaterialConvertSettingsTexturesSizeLimitLabel => "Textures Size Limit";
+        internal override string IMaterialConvertSettingsMainTextureBrightnessLabel => "Main Texture Brightness";
+        internal override string IMaterialConvertSettingsMainTextureBrightnessTooltip => "Tweak main texture color.";
+        internal override string AdditionalMaterialConvertSettingsTargetMaterialLabel => "Target Material";
+        internal override string MaterialReplaceSettingsMaterialLabel => "Replaced Material";
 
         // Remove Missing Components
         internal override string NoMissingComponentsMessage(string objectName) => $"There are no \"missing\" components in {objectName}.";

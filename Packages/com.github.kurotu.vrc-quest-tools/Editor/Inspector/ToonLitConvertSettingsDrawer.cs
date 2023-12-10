@@ -32,8 +32,8 @@ namespace KRT.VRCQuestTools.Inspector
             EditorGUILayout.PropertyField(generateQuestTextures, new GUIContent(i18n.GenerateQuestTexturesLabel));
             using (var disabled = new EditorGUI.DisabledScope(!generateQuestTextures.boolValue))
             {
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.TexturesSizeLimitLabel));
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("mainTextureBrightness"), new GUIContent(i18n.MainTextureBrightnessLabel, i18n.MainTextureBrightnessTooltip));
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("mainTextureBrightness"), new GUIContent(i18n.IMaterialConvertSettingsMainTextureBrightnessLabel, i18n.IMaterialConvertSettingsMainTextureBrightnessTooltip));
             }
 
             EditorGUI.indentLevel--;

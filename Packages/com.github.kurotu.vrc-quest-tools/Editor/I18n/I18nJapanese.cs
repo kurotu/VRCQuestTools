@@ -65,22 +65,24 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForMissingNetIds => "ネットワークIDの割り当てられていない PhysBones があります。 PC と Quest で正しく同期させるため、ネットワークIDを割り当てた後でPC用のアバターを再度アップロードしてください。";
         internal override string AlertForMultiplePhysBones => "1つの GameObject に複数の PhysBone があります。変換後に Quest 用に PhysBone を削除した場合、PC と Quest で正しく同期しない可能性があります。";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics コンポーネントの数が Poor の制限値を超えています (Very Poor)。 Avatar Dynamics 関連のパフォーマンスランクが Poor に収まるようコンポーネントを削除してください。";
-        internal override string TexturesSizeLimitLabel => "最大テクスチャサイズ";
-        internal override string MainTextureBrightnessLabel => "メインテクスチャの明るさ";
-        internal override string MainTextureBrightnessTooltip => "Toon Lit 用にメインテクスチャの色を調整します。";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";
 
         internal override string AvatarConverterMustBeOnAvatarRoot => "VRC_AvatarDescriptor のあるオブジェクトに配置してください。";
         internal override string AvatarConverterMaterialConvertSettingLabel => "マテリアル変換設定";
         internal override string AvatarConverterDefaultMaterialConvertSettingLabel => "デフォルトのマテリアル変換設定";
         internal override string AvatarConverterAdditionalMaterialConvertSettingsLabel => "追加のマテリアル変換設定";
-        internal override string AvatarConverterTargetMaterialLabel => "対象マテリアル";
-        internal override string AvatarConverterReplaceMaterialLabel => "置換マテリアル";
 
         internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics 設定";
         internal override string AvatarConverterPhysBonesTooltip => "変換時に残しておく PhysBone を選択します。";
         internal override string AvatarConverterPhysBoneCollidersTooltip => "変換時に残しておく PhysBoneCollider を選択します。";
         internal override string AvatarConverterContactsTooltip => "変換時に残しておく ContactSender と ContactReceiver を選択します。";
+
+        // IMaterialConvertSettings
+        internal override string IMaterialConvertSettingsTexturesSizeLimitLabel => "最大テクスチャサイズ";
+        internal override string IMaterialConvertSettingsMainTextureBrightnessLabel => "メインテクスチャの明るさ";
+        internal override string IMaterialConvertSettingsMainTextureBrightnessTooltip => "メインテクスチャの色を調整します。";
+        internal override string AdditionalMaterialConvertSettingsTargetMaterialLabel => "対象マテリアル";
+        internal override string MaterialReplaceSettingsMaterialLabel => "置換マテリアル";
 
         // Remove Missing Components
         internal override string NoMissingComponentsMessage(string objectName) => $"{objectName} に \"Missing\" 状態のコンポーネントはありません。";

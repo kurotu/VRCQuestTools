@@ -29,7 +29,7 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 EditorGUI.indentLevel++;
 
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("targetMaterial"), new GUIContent(i18n.AvatarConverterTargetMaterialLabel));
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("targetMaterial"), new GUIContent(i18n.AdditionalMaterialConvertSettingsTargetMaterialLabel));
 
                 using (var ccs = new EditorGUI.ChangeCheckScope())
                 {
