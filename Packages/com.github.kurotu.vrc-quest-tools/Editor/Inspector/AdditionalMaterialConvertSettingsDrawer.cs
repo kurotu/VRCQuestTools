@@ -36,7 +36,7 @@ namespace KRT.VRCQuestTools.Inspector
                     var name = property.FindPropertyRelative("materialConvertSettings").managedReferenceFullTypename.Split(' ').Last();
                     var type = SystemUtility.GetTypeByName(name);
                     var selectedIndex = MaterialConvertSettingsTypes.Types.IndexOf(type);
-                    selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.Types.Select(t => t.Name).ToArray());
+                    selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.GetConvertTypePopupLabels());
                     if (ccs.changed)
                     {
                         var newType = MaterialConvertSettingsTypes.Types[selectedIndex];

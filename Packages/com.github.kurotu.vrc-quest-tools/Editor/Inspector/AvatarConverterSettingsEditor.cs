@@ -128,7 +128,7 @@ namespace KRT.VRCQuestTools.Inspector
                     var name = so.FindProperty("defaultMaterialConvertSetting").managedReferenceFullTypename.Split(' ').Last();
                     var type = SystemUtility.GetTypeByName(name);
                     var selectedIndex = MaterialConvertSettingsTypes.DefaultTypes.IndexOf(type);
-                    selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterDefaultMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.DefaultTypes.Select(t => t.Name).ToArray());
+                    selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterDefaultMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.GetDefaultConvertTypePopupLabels());
                     if (ccs.changed)
                     {
                         var newType = MaterialConvertSettingsTypes.DefaultTypes[selectedIndex];

@@ -28,7 +28,8 @@ namespace KRT.VRCQuestTools.Inspector
 
             EditorGUI.indentLevel++;
 
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("material"), new GUIContent(i18n.MaterialReplaceSettingsMaterialLabel));
+            var materialLabel = new GUIContent(i18n.MaterialReplaceSettingsMaterialLabel, i18n.MaterialReplaceSettingsMaterialTooltip);
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("material"), materialLabel);
 
             EditorGUI.indentLevel--;
         }
