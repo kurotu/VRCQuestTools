@@ -81,6 +81,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string IMaterialConvertSettingsMainTextureBrightnessLabel { get; }
         internal abstract string IMaterialConvertSettingsMainTextureBrightnessTooltip { get; }
         internal abstract string AdditionalMaterialConvertSettingsTargetMaterialLabel { get; }
+        internal abstract string AdditionalMaterialConvertSettingsSelectMaterialLabel { get; }
         internal abstract string MaterialConvertTypePopupLabelToonLit { get; }
         internal abstract string MaterialConvertTypePopupLabelMaterialReplace { get; }
         internal abstract string MaterialReplaceSettingsMaterialLabel { get; }

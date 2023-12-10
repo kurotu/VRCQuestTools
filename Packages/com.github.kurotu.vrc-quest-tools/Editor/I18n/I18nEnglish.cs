@@ -81,6 +81,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string IMaterialConvertSettingsMainTextureBrightnessLabel => "Main Texture Brightness";
         internal override string IMaterialConvertSettingsMainTextureBrightnessTooltip => "Tweak main texture color.";
         internal override string AdditionalMaterialConvertSettingsTargetMaterialLabel => "Target Material";
+        internal override string AdditionalMaterialConvertSettingsSelectMaterialLabel => "Select Material";
         internal override string MaterialConvertTypePopupLabelToonLit => "Toon Lit";
         internal override string MaterialConvertTypePopupLabelMaterialReplace => "Material Replacement";
         internal override string MaterialReplaceSettingsMaterialLabel => "Replaced Material";

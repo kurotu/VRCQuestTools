@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
+using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
+using KRT.VRCQuestTools.Views;
 using UnityEditor;
 using UnityEngine;
 
@@ -29,7 +32,18 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 EditorGUI.indentLevel++;
 
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("targetMaterial"), new GUIContent(i18n.AdditionalMaterialConvertSettingsTargetMaterialLabel));
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    var targetMaterial = property.FindPropertyRelative("targetMaterial");
+                    using (new EditorGUI.DisabledGroupScope(true))
+                    {
+                        EditorGUILayout.PropertyField(targetMaterial, new GUIContent(i18n.AdditionalMaterialConvertSettingsTargetMaterialLabel));
+                    }
+                    if (GUILayout.Button(i18n.AdditionalMaterialConvertSettingsSelectMaterialLabel))
+                    {
+                        OnClickMaterialSelectButton(targetMaterial);
+                    }
+                }
 
                 using (var ccs = new EditorGUI.ChangeCheckScope())
                 {
@@ -49,6 +63,17 @@ namespace KRT.VRCQuestTools.Inspector
 
                 EditorGUI.indentLevel--;
             }
+        }
+
+        private void OnClickMaterialSelectButton(SerializedProperty materialProperty)
+        {
+            var settings = (AvatarConverterSettings)materialProperty.serializedObject.targetObject;
+            var avatar = new VRChatAvatar(settings.AvatarDescriptor);
+            AvatarMaterialSelectorWindow.Open((Material)materialProperty.objectReferenceValue, avatar.Materials, m =>
+            {
+                materialProperty.objectReferenceValue = m;
+                materialProperty.serializedObject.ApplyModifiedProperties();
+            });
         }
     }
 }
