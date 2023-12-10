@@ -214,8 +214,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="settings">Avatar converter settings component.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
-        /// <returns>Converted textures (key: original material).</returns>
-        internal Dictionary<Material, Texture2D> GenerateAndroidTextures(Material[] materials, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
+        internal void GenerateAndroidTextures(Material[] materials, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Textures";
             Directory.CreateDirectory(saveDirectory);
@@ -235,8 +234,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         case ToonLitConvertSettings toonLitConvertSettings:
                             if (toonLitConvertSettings.generateQuestTextures)
                             {
-                                var tex = GenerateToonLitTexture((int)toonLitConvertSettings.maxTextureSize, toonLitConvertSettings, saveDirectory, m);
-                                convertedTextures.Add(m, tex);
+                                var m2 = MaterialWrapperBuilder.Build(m);
+                                new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, saveDirectory);
                             }
                             break;
                         case MaterialReplaceSettings materialReplaceSettings:
@@ -252,7 +251,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     ExceptionDispatchInfo.Capture(e).Throw();
                 }
             }
-            return convertedTextures;
         }
 
         /// <summary>
@@ -284,14 +282,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     switch (setting)
                     {
                         case ToonLitConvertSettings toonLitConvertSettings:
-                            output = material.ConvertToToonLit();
-                            if (toonLitConvertSettings.generateQuestTextures)
-                            {
-                                var texDir = $"{assetsDirectory}/Textures";
-                                var tex = GenerateToonLitTexture((int)toonLitConvertSettings.maxTextureSize, toonLitConvertSettings, texDir, m);
-                                output.mainTexture = tex;
-                                AssetDatabase.SaveAssets();
-                            }
+                            output = new ToonLitGenerator(toonLitConvertSettings).GenerateMaterial(material, $"{assetsDirectory}/Textures");
                             break;
                         case MaterialReplaceSettings materialReplaceSettings:
                             output = materialReplaceSettings.material;
@@ -492,41 +483,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
             }
             return convertedAnimationClips;
-        }
-
-        private Texture2D GenerateToonLitTexture(int maxTextureSize, ToonLitConvertSettings settings, string saveDirectory, Material m)
-        {
-            Directory.CreateDirectory(saveDirectory);
-            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
-            var material = MaterialWrapperBuilder.Build(m);
-            using (var tex = DisposableObject.New(material.GenerateToonLitImage(settings)))
-            {
-                Texture2D texture = null;
-                if (tex.Object != null)
-                {
-                    using (var disposables = new CompositeDisposable())
-                    {
-                        var texToWrite = tex.Object;
-                        if (maxTextureSize > 0 && Math.Max(tex.Object.width, tex.Object.height) > maxTextureSize)
-                        {
-                            var resized = AssetUtility.ResizeTexture(tex.Object, maxTextureSize, maxTextureSize);
-                            disposables.Add(DisposableObject.New(resized));
-                            texToWrite = resized;
-                        }
-
-                        var outFile = $"{saveDirectory}/{m.name}_from_{guid}.png";
-
-                        // When the texture is added into another asset, "/" is acceptable as name.
-                        if (m.name.Contains("/"))
-                        {
-                            var dir = Path.GetDirectoryName(outFile);
-                            Directory.CreateDirectory(dir);
-                        }
-                        texture = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
-                    }
-                }
-                return texture;
-            }
         }
 
 #pragma warning disable SA1600 // Elements should be documented

@@ -17,7 +17,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <summary>
         /// Internal material.
         /// </summary>
-        protected readonly Material Material;
+        internal readonly Material Material;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MaterialBase"/> class.
