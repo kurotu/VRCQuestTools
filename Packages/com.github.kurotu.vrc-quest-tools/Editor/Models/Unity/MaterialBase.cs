@@ -62,7 +62,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </summary>
         /// <param name="settings">Setting object.</param>
         /// <returns>Generated image.</returns>
-        internal virtual Texture2D GenerateToonLitImage(ToonLitConvertSettings settings)
+        internal virtual Texture2D GenerateToonLitImage(IToonLitConvertSettings settings)
         {
             var width = Material.mainTexture?.width ?? 4;
             var height = Material.mainTexture?.height ?? 4;
@@ -75,7 +75,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.parent = null;
 #endif
                 baker.Object.shader = BakeShader;
-                baker.Object.SetFloat("_VQT_MainTexBrightness", settings.mainTextureBrightness);
+                baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
                 foreach (var name in Material.GetTexturePropertyNames())
                 {
                     var t = Material.GetTexture(name);

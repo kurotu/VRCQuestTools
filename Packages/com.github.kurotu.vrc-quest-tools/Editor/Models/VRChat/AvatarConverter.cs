@@ -238,6 +238,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
                                 new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, saveDirectory);
                             }
                             break;
+                        case MatCapLitConvertSettings matCapLitConvertSettings:
+                            if (matCapLitConvertSettings.generateQuestTextures)
+                            {
+                                var m2 = MaterialWrapperBuilder.Build(m);
+                                new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, saveDirectory);
+                            }
+                            break;
                         case MaterialReplaceSettings materialReplaceSettings:
                             // don't have to generate textures
                             break;
@@ -279,10 +286,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     var material = new MaterialWrapperBuilder().Build(m);
                     var setting = avatarConverterSettings.GetMaterialConvertSettings(m);
                     Material output;
+                    var texturesPath = $"{assetsDirectory}/Textures";
                     switch (setting)
                     {
                         case ToonLitConvertSettings toonLitConvertSettings:
-                            output = new ToonLitGenerator(toonLitConvertSettings).GenerateMaterial(material, $"{assetsDirectory}/Textures");
+                            output = new ToonLitGenerator(toonLitConvertSettings).GenerateMaterial(material, texturesPath);
+                            break;
+                        case MatCapLitConvertSettings matCapLitConvertSettings:
+                            output = new MatCapLitGenerator(matCapLitConvertSettings).GenerateMaterial(material, texturesPath);
                             break;
                         case MaterialReplaceSettings materialReplaceSettings:
                             output = materialReplaceSettings.material;

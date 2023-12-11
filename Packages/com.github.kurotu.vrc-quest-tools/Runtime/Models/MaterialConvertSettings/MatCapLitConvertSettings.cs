@@ -1,13 +1,17 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
 {
     /// <summary>
-    /// Material convert setting for Toon Lit shader.
+    /// Material convert setting for MatCap Lit shader.
     /// </summary>
     [Serializable]
-    public class ToonLitConvertSettings : IToonLitConvertSettings
+    public class MatCapLitConvertSettings : IMaterialConvertSettings, IToonLitConvertSettings
     {
         /// <summary>
         /// Whether to generate quest textures.
@@ -23,7 +27,12 @@ namespace KRT.VRCQuestTools.Models
         /// Texture brightness for quest. [0-1].
         /// </summary>
         [Range(0.0f, 1.0f)]
-        public float mainTextureBrightness = 0.83f;
+        public float mainTextureBrightness = 1.0f;
+
+        /// <summary>
+        /// MatCap texture.
+        /// </summary>
+        public Texture matCapTexture;
 
         /// <inheritdoc/>
         public bool GenerateQuestTextures => generateQuestTextures;

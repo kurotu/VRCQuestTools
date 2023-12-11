@@ -12,13 +12,13 @@ namespace KRT.VRCQuestTools.Models
     /// </summary>
     internal class ToonLitGenerator : IMaterialGenerator
     {
-        private readonly ToonLitConvertSettings settings;
+        private readonly IToonLitConvertSettings settings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToonLitGenerator"/> class.
         /// </summary>
         /// <param name="settings">Convert settings.</param>
-        internal ToonLitGenerator(ToonLitConvertSettings settings)
+        internal ToonLitGenerator(IToonLitConvertSettings settings)
         {
             this.settings = settings;
         }
@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools.Models
         public Material GenerateMaterial(MaterialBase material, string texturesPath)
         {
             var newMaterial = material.ConvertToToonLit();
-            if (settings.generateQuestTextures)
+            if (settings.GenerateQuestTextures)
             {
                 var texture = GenerateToonLitTexture(material, settings, texturesPath);
                 newMaterial.mainTexture = texture;
@@ -41,7 +41,7 @@ namespace KRT.VRCQuestTools.Models
             GenerateToonLitTexture(material, settings, texturesPath);
         }
 
-        private Texture2D GenerateToonLitTexture(MaterialBase material, ToonLitConvertSettings settings, string texturesPath)
+        private Texture2D GenerateToonLitTexture(MaterialBase material, IToonLitConvertSettings settings, string texturesPath)
         {
             Directory.CreateDirectory(texturesPath);
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material.Material, out string guid, out long localId);
@@ -53,7 +53,7 @@ namespace KRT.VRCQuestTools.Models
                     using (var disposables = new CompositeDisposable())
                     {
                         var texToWrite = tex.Object;
-                        var maxTextureSize = (int)settings.maxTextureSize;
+                        var maxTextureSize = (int)settings.MaxTextureSize;
                         if (maxTextureSize > 0 && Math.Max(tex.Object.width, tex.Object.height) > maxTextureSize)
                         {
                             var resized = AssetUtility.ResizeTexture(tex.Object, maxTextureSize, maxTextureSize);

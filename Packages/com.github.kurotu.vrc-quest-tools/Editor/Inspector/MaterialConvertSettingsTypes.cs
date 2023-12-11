@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,6 +15,7 @@ namespace KRT.VRCQuestTools.Models
         internal static readonly List<Type> DefaultTypes = new List<Type>
         {
             typeof(ToonLitConvertSettings),
+            typeof(MatCapLitConvertSettings),
         };
 
         /// <summary>
@@ -23,6 +24,7 @@ namespace KRT.VRCQuestTools.Models
         internal static readonly List<Type> Types = new List<Type>
         {
             typeof(ToonLitConvertSettings),
+            typeof(MatCapLitConvertSettings),
             typeof(MaterialReplaceSettings),
         };
 
@@ -50,6 +52,10 @@ namespace KRT.VRCQuestTools.Models
             if (type == typeof(ToonLitConvertSettings))
             {
                 return i18n.MaterialConvertTypePopupLabelToonLit;
+            }
+            else if (type == typeof(MatCapLitConvertSettings))
+            {
+                return i18n.MaterialConvertTypePopupLabelMatCapLit;
             }
             else if (type == typeof(MaterialReplaceSettings))
             {
