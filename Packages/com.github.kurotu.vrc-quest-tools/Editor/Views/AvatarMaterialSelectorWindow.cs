@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -41,45 +41,18 @@ namespace KRT.VRCQuestTools.Views
             {
                 scrollPosition = scrollView.scrollPosition;
 
-                var itemWidth = 64;
-                var cols = (int)(position.width / itemWidth);
-                var blankItems = cols - materials.Length % cols;
-                var allItemsCount = materials.Length + blankItems;
-
-                using (var vertical = new EditorGUILayout.VerticalScope())
+                foreach (var material in materials)
                 {
-                    EditorGUILayout.Space();
-                    EditorGUILayout.BeginHorizontal();
-
-                    var width = 64;
-                    var margin = UnityEditor.EditorGUIUtility.standardVerticalSpacing;
-                    float currentWidth = 0;
-                    for (int i = 0; i < allItemsCount; i++)
+                    using (var ccs = new EditorGUI.ChangeCheckScope())
                     {
-                        if (i < materials.Length)
+                        var isSelected = MaterialItem(material, position.width, material == selectedMaterial);
+                        if (ccs.changed && isSelected)
                         {
-                            var material = materials[i];
-                            var isSelected = selectedMaterial == material;
-                            if (MaterialItem(material, width, isSelected) && !isSelected)
-                            {
-                                selectedMaterial = material;
-                                materialPath = AssetDatabase.GetAssetPath(material);
-                                onMaterialSelected?.Invoke(selectedMaterial);
-                            }
-                        }
-
-                        currentWidth += width + margin * 2;
-                        if (currentWidth + width + margin * 2 > position.width - 16)
-                        {
-                            currentWidth = 0;
-                            GUILayout.FlexibleSpace();
-                            EditorGUILayout.EndHorizontal();
-                            EditorGUILayout.Space();
-                            EditorGUILayout.BeginHorizontal();
+                            selectedMaterial = material;
+                            materialPath = AssetDatabase.GetAssetPath(material);
+                            onMaterialSelected?.Invoke(material);
                         }
                     }
-                    GUILayout.FlexibleSpace();
-                    EditorGUILayout.EndHorizontal();
                 }
             }
             EditorGUILayout.LabelField($"{selectedMaterial.name} (Material)    {materialPath}");
@@ -87,31 +60,23 @@ namespace KRT.VRCQuestTools.Views
 
         private bool MaterialItem(Material material, float width, bool isSelected)
         {
-            using (var vertical = new EditorGUILayout.VerticalScope(GUILayout.Width(width)))
+            using (new EditorGUILayout.HorizontalScope())
             {
+                var selected = EditorGUILayout.ToggleLeft(string.Empty, isSelected, GUILayout.Width(16));
+
                 var thumbnail = AssetPreview.GetAssetPreview(material);
-                using (new EditorGUILayout.HorizontalScope(GUILayout.Width(width)))
-                {
-                    EditorGUILayout.LabelField(new GUIContent(thumbnail), GUILayout.Width(54), GUILayout.Height(54));
-                }
-                EditorGUILayout.LabelField(material.name, EditorStyles.miniLabel, GUILayout.Width(width));
+                EditorGUILayout.LabelField(new GUIContent(thumbnail), GUILayout.Width(48), GUILayout.Height(48));
 
-                if (isSelected)
+                using (new EditorGUILayout.VerticalScope())
                 {
-                    var color = new Color(0, 0, 1, 0.3f);
-                    EditorGUI.DrawRect(vertical.rect, color);
+                    EditorGUILayout.LabelField(material.name);
+
+                    var path = AssetDatabase.GetAssetPath(material);
+                    EditorGUILayout.LabelField(path, EditorStyles.miniLabel);
                 }
 
-                var mousePosition = Event.current.mousePosition;
-                if (vertical.rect.Contains(mousePosition))
-                {
-                    if (Event.current.type == EventType.MouseDown)
-                    {
-                        return true;
-                    }
-                }
+                return selected;
             }
-            return false;
         }
     }
 }

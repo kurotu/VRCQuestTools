@@ -69,7 +69,10 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var settings = (AvatarConverterSettings)materialProperty.serializedObject.targetObject;
             var avatar = new VRChatAvatar(settings.AvatarDescriptor);
-            AvatarMaterialSelectorWindow.Open((Material)materialProperty.objectReferenceValue, avatar.Materials, m =>
+            var materials = avatar.Materials.ToList();
+            materials.Sort((a, b) => a.name.CompareTo(b.name));
+
+            AvatarMaterialSelectorWindow.Open((Material)materialProperty.objectReferenceValue, materials.ToArray(), m =>
             {
                 materialProperty.objectReferenceValue = m;
                 materialProperty.serializedObject.ApplyModifiedProperties();
