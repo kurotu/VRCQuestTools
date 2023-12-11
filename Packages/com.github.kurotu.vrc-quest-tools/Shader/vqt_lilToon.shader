@@ -2,6 +2,7 @@
 {
     Properties
     {
+        _LIL_FEATURE_NORMAL_1ST("LIL_FEATURE_NORMAL_1ST", Int) = 1
         _LIL_FEATURE_EMISSION_1ST("LIL_FEATURE_EMISSION_1ST", Int) = 1
         _LIL_FEATURE_EMISSION_2ND("LIL_FEATURE_EMISSION_2ND", Int) = 1
         _LIL_FEATURE_ANIMATE_EMISSION_UV("LIL_FEATURE_ANIMATE_EMISSION_UV", Int) = 1
@@ -10,6 +11,18 @@
 
         _MainTex ("Texture", 2D) = "white" {}
         [HDR]_Color("Color", Color) = (1,1,1,1)
+
+        _UseShadow("Use Shadow", Int) = 0
+        _ShadowColor("Shadow 1st Color", Color) = (0.5, 0.5, 0.5, 1)
+        _ShadowBorder("Shadow 1st Border", Range(0, 1)) = 0.5
+        _Shadow2ndColor("Shadow 2nd Color", Color) = (0.3, 0.3, 0.3, 1)
+        _Shadow2ndBorder("Shadow 2nd Border", Range(0, 1)) = 0.3
+        _Shadow3rdColor("Shadow 3rd Color", Color) = (0, 0, 0, 1)
+        _Shadow3rdBorder("Shadow 3rd Border", Range(0, 1)) = 0.1
+
+        _UseBumpMap("Use Normal Map", Int) = 0
+        [Normal] _BumpMap("Normal Map", 2D) = "bump" {}
+        _BumpScale("Normal Scale", Float) = 1
 
         _UseEmission("Use Emission", Int) = 0
         [HDR]_EmissionColor("Color", Color) = (1,1,1,1)
@@ -52,10 +65,13 @@
         Pass
         {
             CGPROGRAM
+            #pragma target 3.0
             #pragma vertex vert
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #include "UnityStandardUtils.cginc"
+            #include "cginc/vqt_common.cginc"
 
             struct appdata
             {
@@ -66,13 +82,15 @@
             struct v2f
             {
                 float2 uv : TEXCOORD0;
-                float2 uv_EmissionMap : TEXCOORD1;
-                float2 uv_EmissionBlendMask : TEXCOORD2;
+                float2 uv_BumpMap : TEXCOORD1;
+                float2 uv_EmissionMap : TEXCOORD2;
+                float2 uv_EmissionBlendMask : TEXCOORD3;
                 float2 uv_Emission2ndMap : TEXCOORD4;
                 float2 uv_Emission2ndBlendMask : TEXCOORD5;
                 float4 vertex : SV_POSITION;
             };
 
+            uint _LIL_FEATURE_NORMAL_1ST;
             uint _LIL_FEATURE_EMISSION_1ST;
             uint _LIL_FEATURE_EMISSION_2ND;
             uint _LIL_FEATURE_ANIMATE_EMISSION_UV;
@@ -81,6 +99,19 @@
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+
+            uint _UseShadow;
+            fixed4 _ShadowColor;
+            float _ShadowBorder;
+            fixed4 _Shadow2ndColor;
+            float _Shadow2ndBorder;
+            fixed4 _Shadow3rdColor;
+            float _Shadow3rdBorder;
+
+            uint _UseBumpMap;
+            sampler2D _BumpMap;
+            float4 _BumpMap_ST;
+            float _BumpScale;
 
             uint _UseEmission;
             fixed4 _EmissionColor;
@@ -150,6 +181,7 @@
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.uv_BumpMap = TRANSFORM_TEX(v.uv, _BumpMap);
                 o.uv_EmissionMap = TRANSFORM_TEX(v.uv, _EmissionMap);
                 o.uv_EmissionBlendMask = TRANSFORM_TEX(v.uv, _EmissionBlendMask);
                 o.uv_Emission2ndMap = TRANSFORM_TEX(v.uv, _Emission2ndMap);
@@ -157,9 +189,42 @@
                 return o;
             }
 
+            fixed4 lilShadow(float4 light, float4 shadow1, float border1, float4 shadow2, float border2, float4 shadow3, float border3) {
+                fixed4 shadow1Result = fixed4(lerp(light.rgb, shadow1.rgb, shadow1.a), 1);
+                fixed4 shadow12Result = fixed4(lerp(shadow1Result.rgb, shadow2.rgb, shadow2.a), 1);
+                fixed4 shadow13Result = fixed4(lerp(shadow1Result.rgb, shadow3.rgb, shadow3.a), 1);
+                fixed4 shadow23Result = fixed4(lerp(shadow12Result.rgb, shadow3.rgb, shadow3.a), 1);
+
+                if (light.r > border1) {
+                    return light;
+                }
+
+                if (light.r > max(border2, border3)) {
+                    return shadow1Result;
+                }
+
+                if (light.r >= min(border2, border3)) {
+                    if (border2 > border3) {
+                        return shadow12Result;
+                    } else {
+                        return shadow13Result;
+                    }
+                }
+
+                return shadow23Result;
+            }
+
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 albedo = tex2D(_MainTex, i.uv);
+                if (_LIL_FEATURE_NORMAL_1ST && _UseShadow && _UseBumpMap) {
+                    half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv_BumpMap), _BumpScale);
+                    half4 normalCol = vqt_normalToGrayScale(normal);
+
+                    fixed4 shadow = lilShadow(normalCol, _ShadowColor, _ShadowBorder, _Shadow2ndColor, _Shadow2ndBorder, _Shadow3rdColor, _Shadow3rdBorder);
+                    albedo.rgb *= shadow.rgb;
+                }
+
                 albedo.rgb *= _VQT_MainTexBrightness;
                 fixed4 col = albedo;
 
