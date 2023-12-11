@@ -116,9 +116,7 @@ namespace KRT.VRCQuestTools.Inspector
                     {
                         EditorGUILayout.TextField(i18n.SaveToLabel, path);
                     }
-                    EditorGUILayout.PropertyField(so.FindProperty("destinationAvatar"), new GUIContent(i18n.ConvertedAvatarLabel));
                 }
-                EditorGUILayout.PropertyField(so.FindProperty("overwriteDestinationAvatar"), new GUIContent(i18n.OverwriteDestinationAvatarLabel, i18n.OverwriteDestinationAvatarTooltip));
 
                 EditorGUILayout.Space();
 
@@ -385,16 +383,6 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.AlertForAvatarDynamicsPerformance, "OK");
                     PhysBonesRemoveWindow.ShowWindow(converted.AvatarDescriptor);
                 }
-
-                // Overwrite existing converted avatar.
-                if (converterSettings.destinationAvatar != null && converterSettings.overwriteDestinationAvatar)
-                {
-                    var destinationIndex = converterSettings.destinationAvatar.transform.GetSiblingIndex();
-                    converted.GameObject.transform.SetParent(converterSettings.destinationAvatar.transform.parent);
-                    converted.GameObject.transform.SetSiblingIndex(destinationIndex);
-                    DestroyImmediate(converterSettings.destinationAvatar.gameObject);
-                }
-                converterSettings.destinationAvatar = converted.AvatarDescriptor;
 
                 converterSettings.AvatarDescriptor.gameObject.SetActive(false);
             }

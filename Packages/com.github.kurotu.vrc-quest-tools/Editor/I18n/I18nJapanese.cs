@@ -26,7 +26,6 @@ namespace KRT.VRCQuestTools.I18n
         // Convert Avatar for Quest
         internal override string ExitPlayModeToEdit => "編集するには再生モードを終了してください。";
         internal override string AddAvatarConverterButtonLabel(string name) => $"{name} に VQT Avatar Converter を追加";
-        internal override string ConvertedAvatarLabel => "変換後アバター";
         internal override string OverwriteWarningDialogButtonCancel => "キャンセル";
         internal override string OverwriteWarningDialogButtonOK => "OK";
         internal override string OverwriteWarningDialogButtonUseAltDir(string altDir) => $"\"{altDir}\" を使用する";
@@ -45,8 +44,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AdvancedConverterSettingsLabel => "高度な変換設定";
         internal override string RemoveVertexColorLabel => "メッシュから頂点カラーを削除";
         internal override string RemoveVertexColorTooltip => "通常このオプションを無効にする必要はありません。PC用アバターで頂点カラーの必要な特別なシェーダーを使用している場合は、誤動作を防ぐためにこのオプションを無効にできます。\n誤って頂点カラーを削除した場合は、アバターの\"VertexColorRemover\"コンポーネントで復元できます。";
-        internal override string OverwriteDestinationAvatarLabel => "アバターを上書き";
-        internal override string OverwriteDestinationAvatarTooltip => "変換後、シーンに既に存在している変換済みのアバターを削除します。";
         internal override string AnimationOverrideLabel => "アニメーションオーバーライド";
         internal override string AnimationOverrideTooltip => "Animator Override Controller で指定したアニメーションを使用して Animator Controller を変換します。";
         internal override string AnimationOverrideMaterialErrorMessage => "Animator Override Controller に Quest で使用できないマテリアルへ変更するアニメーションがあります。";
