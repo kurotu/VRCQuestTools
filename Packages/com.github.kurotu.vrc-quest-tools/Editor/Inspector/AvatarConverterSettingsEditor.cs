@@ -228,7 +228,7 @@ namespace KRT.VRCQuestTools.Inspector
             var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).Select(c => new ContactBase(c)).ToArray();
             var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(original.gameObject, pbToKeep, pbcToKeep, contactsToKeep);
 
-            foldOutEstimatedPerf = EditorGUILayout.Foldout(foldOutEstimatedPerf, i18n.EstimatedPerformanceStats);
+            foldOutEstimatedPerf = EditorGUILayout.Foldout(foldOutEstimatedPerf, i18n.EstimatedPerformanceStats, true);
             var categories = new AvatarPerformanceCategory[]
             {
                 AvatarPerformanceCategory.PhysBoneComponentCount,
