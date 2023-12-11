@@ -118,7 +118,7 @@ namespace KRT.VRCQuestTools.Inspector
                     }
                 }
 
-                EditorGUILayout.Space();
+                Views.EditorGUIUtility.HorizontalDivider(2);
 
                 EditorGUILayout.LabelField(i18n.AvatarConverterMaterialConvertSettingLabel, EditorStyles.boldLabel);
                 using (var ccs = new EditorGUI.ChangeCheckScope())
@@ -153,7 +153,7 @@ namespace KRT.VRCQuestTools.Inspector
                     OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSetting);
                 }
 
-                EditorGUILayout.Space();
+                Views.EditorGUIUtility.HorizontalDivider(2);
 
                 EditorGUILayout.LabelField(i18n.AvatarConverterAvatarDynamicsSettingLabel, EditorStyles.boldLabel);
                 if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
@@ -169,7 +169,7 @@ namespace KRT.VRCQuestTools.Inspector
                 EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
                 AvatarDynamicsPerformanceGUI(converterSettings);
 
-                EditorGUILayout.Space();
+                Views.EditorGUIUtility.HorizontalDivider(2);
 
                 EditorGUILayout.LabelField(i18n.AdvancedConverterSettingsLabel, EditorStyles.boldLabel);
 

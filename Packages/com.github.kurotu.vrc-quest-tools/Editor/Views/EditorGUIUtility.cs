@@ -152,6 +152,17 @@ namespace KRT.VRCQuestTools.Views
             return afterSelected.ToArray();
         }
 
+        /// <summary>
+        /// Show horizontal divider.
+        /// </summary>
+        /// <param name="lineHeight">Line height.</param>
+        internal static void HorizontalDivider(float lineHeight)
+        {
+            EditorGUILayout.Space();
+            GUILayout.Box(string.Empty, GUILayout.ExpandWidth(true), GUILayout.Height(lineHeight));
+            EditorGUILayout.Space();
+        }
+
         private static GUIContent MessageTypeIconContent(MessageType type)
         {
             switch (type)
