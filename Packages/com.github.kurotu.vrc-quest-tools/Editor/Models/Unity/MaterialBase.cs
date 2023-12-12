@@ -83,6 +83,10 @@ namespace KRT.VRCQuestTools.Models.Unity
                     {
                         continue;
                     }
+                    if (AssetUtility.IsNormalMapAsset(t))
+                    {
+                        continue;
+                    }
                     var tex = AssetUtility.LoadUncompressedTexture(t);
                     disposables.Add(DisposableObject.New(tex));
                     baker.Object.SetTexture(name, tex);

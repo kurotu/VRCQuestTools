@@ -5,8 +5,15 @@
         _MainTex ("Texture", 2D) = "white" {}
         _Color("Color", Color) = (1,1,1,1)
 
+        [Normal] _BumpMap ("Normalmap", 2D) = "bump" {}
+        _BumpScale("Normal Scale", Float) = 1
+
         _EmissionMap("EmissionMap", 2D) = "white" {}
         [HDR]_EmissionColor("EmissionColor", Color) = (1,1,1,1)
+
+        _Shadowborder ("[Shadow] border ", Range(0, 1)) = 0.6
+        _ShadowborderBlur ("[Shadow] border Blur", Range(0, 1)) = 0.05
+        _ShadowStrength ("[Shadow] Strength", Range(0, 1)) = 0.5
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
     }
@@ -18,10 +25,13 @@
         Pass
         {
             CGPROGRAM
+            #pragma target 3.0
             #pragma vertex vert
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #include "UnityStandardUtils.cginc"
+            #include "cginc/vqt_common.cginc"
 
             struct appdata
             {
@@ -40,9 +50,16 @@
             float4 _MainTex_ST;
             fixed4 _Color;
 
+            sampler2D _BumpMap;
+            float _BumpScale;
+
             sampler2D _EmissionMap;
             float4 _EmissionMap_ST;
             fixed4 _EmissionColor;
+
+            float _Shadowborder;
+            float _ShadowborderBlur;
+            float _ShadowStrength;
 
             float _VQT_MainTexBrightness;
 
@@ -67,6 +84,12 @@
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
                 col *= _Color;
+
+                half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv), _BumpScale);
+                half4 normalCol = vqt_normalToGrayScale(normal);
+                fixed4 shadow = arktoonShadow(normalCol, _Shadowborder, _ShadowborderBlur, _ShadowStrength);
+                col.rgb *= shadow.rgb;
+
                 col.rgb *= _VQT_MainTexBrightness;
                 float4 emi = sampleTex2D(_EmissionMap, i.uv_EmissionMap, 0.0f);
                 col = clamp(col + emi * _EmissionColor, 0, 1);

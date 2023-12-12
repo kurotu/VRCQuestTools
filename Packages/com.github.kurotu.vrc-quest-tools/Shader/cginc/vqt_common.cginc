@@ -37,3 +37,22 @@ half4 vqt_normalToGrayScale(half3 normal)
     finalColor.rgb = saturate(lambert.rgb + phong.rgb);
     return finalColor;
 }
+
+float4 arktoonShadow(float4 light, float border, float borderBlur, float shadowStrength)
+{
+    float borderMax = saturate(border - borderBlur / 2);
+    float borderMin = saturate(border + borderBlur / 2);
+    float dark = 1 - shadowStrength;
+    float4 darkColor = float4(dark, dark, dark, 1);
+    if (light.r > borderMax)
+    {
+        return light;
+    }
+    if (light.r <= borderMax && light.r >= borderMin)
+    {
+        float shadow = light;
+        shadow = lerp(darkColor, light, (light.r - borderMin) / (borderMax - borderMin));
+        return shadow;
+    }
+    return darkColor;
+}
