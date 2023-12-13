@@ -32,7 +32,7 @@ namespace KRT.VRCQuestTools.Inspector
         /// <summary>
         /// Draw property fields for ToonLitConvertSettings.
         /// </summary>
-        /// <param name="property">ToonLitConvertSettings serialized property</param>
+        /// <param name="property">Serialized property of ToonLitConvertSettings.</param>
         internal static void DrawPorpertyFields(SerializedProperty property)
         {
             var i18n = VRCQuestToolsSettings.I18nResource;

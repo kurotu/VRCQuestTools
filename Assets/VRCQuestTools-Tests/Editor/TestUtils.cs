@@ -122,6 +122,12 @@ namespace KRT.VRCQuestTools
             return dsum / (float)(255L * 255L * 4L * pixels1.Length);
         }
 
+        /// <summary>
+        /// Calculates max difference between two textures.
+        /// </summary>
+        /// <param name="tex1">Texture 1.</param>
+        /// <param name="tex2">Texture 2.</param>
+        /// <returns>Max difference.</returns>
         internal static float MaxDifference(Texture2D tex1, Texture2D tex2)
         {
             var pixels1 = tex1.GetPixels32();

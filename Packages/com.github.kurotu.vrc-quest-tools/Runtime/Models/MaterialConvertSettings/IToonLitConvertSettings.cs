@@ -6,7 +6,7 @@ namespace KRT.VRCQuestTools.Models
     public interface IToonLitConvertSettings : IMaterialConvertSettings
     {
         /// <summary>
-        /// Gets a value indicating whether whether to generate quest textures.
+        /// Gets a value indicating whether to generate quest textures.
         /// </summary>
         bool GenerateQuestTextures { get; }
 
