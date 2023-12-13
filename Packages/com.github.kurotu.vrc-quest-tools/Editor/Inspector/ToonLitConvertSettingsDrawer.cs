@@ -19,14 +19,23 @@ namespace KRT.VRCQuestTools.Inspector
         /// <inheritdoc />
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var i18n = VRCQuestToolsSettings.I18nResource;
-
             if (label.text != string.Empty || label.image != null)
             {
                 EditorGUILayout.LabelField(label);
             }
 
             EditorGUI.indentLevel++;
+            DrawPorpertyFields(property);
+            EditorGUI.indentLevel--;
+        }
+
+        /// <summary>
+        /// Draw property fields for ToonLitConvertSettings.
+        /// </summary>
+        /// <param name="property">ToonLitConvertSettings serialized property</param>
+        internal static void DrawPorpertyFields(SerializedProperty property)
+        {
+            var i18n = VRCQuestToolsSettings.I18nResource;
 
             var generateQuestTextures = property.FindPropertyRelative("generateQuestTextures");
             EditorGUILayout.PropertyField(generateQuestTextures, new GUIContent(i18n.GenerateQuestTexturesLabel));
@@ -35,8 +44,6 @@ namespace KRT.VRCQuestTools.Inspector
                 EditorGUILayout.PropertyField(property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
                 EditorGUILayout.PropertyField(property.FindPropertyRelative("mainTextureBrightness"), new GUIContent(i18n.IMaterialConvertSettingsMainTextureBrightnessLabel, i18n.IMaterialConvertSettingsMainTextureBrightnessTooltip));
             }
-
-            EditorGUI.indentLevel--;
         }
     }
 }
