@@ -1,7 +1,8 @@
-﻿Shader "VRCQuestTools/NormalMap/HalfGray"
+﻿Shader "VRCQuestTools/NormalMap/Gray"
 {
     Properties
     {
+        _Level("Level", Range(0, 1)) = 0.5
     }
     SubShader
     {
@@ -30,6 +31,8 @@
                 float4 vertex : SV_POSITION;
             };
 
+            float _Level;
+
             v2f vert (appdata v)
             {
                 v2f o;
@@ -40,7 +43,7 @@
             fixed4 frag (v2f i) : SV_Target
             {
               fixed4 color = 1;
-              color.rgb = 0.5;
+              color.rgb = _Level;
               return color;
             }
 
