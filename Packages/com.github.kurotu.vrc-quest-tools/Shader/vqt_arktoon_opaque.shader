@@ -16,6 +16,7 @@
         _ShadowStrength ("[Shadow] Strength", Range(0, 1)) = 0.5
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
+        _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
     }
     SubShader
     {
@@ -62,6 +63,7 @@
             float _ShadowStrength;
 
             float _VQT_MainTexBrightness;
+            uint _VQT_GenerateShadow;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
               half angleCos = cos(angle);
@@ -85,10 +87,12 @@
                 fixed4 col = tex2D(_MainTex, i.uv);
                 col *= _Color;
 
-                half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv), _BumpScale);
-                half4 normalCol = vqt_normalToGrayScale(normal);
-                fixed4 shadow = arktoonShadow(normalCol, _Shadowborder, _ShadowborderBlur, _ShadowStrength);
-                col.rgb *= shadow.rgb;
+                if (_VQT_GenerateShadow) {
+                    half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv), _BumpScale);
+                    half4 normalCol = vqt_normalToGrayScale(normal);
+                    fixed4 shadow = arktoonShadow(normalCol, _Shadowborder, _ShadowborderBlur, _ShadowStrength);
+                    col.rgb *= shadow.rgb;
+                }
 
                 col.rgb *= _VQT_MainTexBrightness;
                 float4 emi = sampleTex2D(_EmissionMap, i.uv_EmissionMap, 0.0f);

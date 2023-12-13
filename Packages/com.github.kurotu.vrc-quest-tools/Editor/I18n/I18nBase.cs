@@ -77,6 +77,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string IMaterialConvertSettingsTexturesSizeLimitLabel { get; }
         internal abstract string IMaterialConvertSettingsMainTextureBrightnessLabel { get; }
         internal abstract string IMaterialConvertSettingsMainTextureBrightnessTooltip { get; }
+        internal abstract string ToonLitConvertSettingsGenerateShadowFromNormalMapLabel { get; }
         internal abstract string MatCapLitConvertSettingsMatCapTextureLabel { get; }
         internal abstract string AdditionalMaterialConvertSettingsTargetMaterialLabel { get; }
         internal abstract string AdditionalMaterialConvertSettingsSelectMaterialLabel { get; }

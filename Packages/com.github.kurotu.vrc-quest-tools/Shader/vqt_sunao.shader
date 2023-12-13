@@ -68,6 +68,7 @@
         _LimitterMax("Limitter Max", Range(0, 5)) = 1
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
+        _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
     }
     SubShader
     {
@@ -162,6 +163,7 @@
             float _LimitterMax;
 
             float _VQT_MainTexBrightness;
+            uint _VQT_GenerateShadow;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
               half angleCos = cos(angle);
@@ -195,16 +197,18 @@
                     : i.uv;
                 fixed4 col = tex2D(_MainTex, mainUV) * _Color * _Bright;
 
-                half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv), _BumpScale);
-                float diffuse = DiffuseCalc(normal, VQT_DUMMY_LIGHT_DIRECTION, _ShadeGradient , _ShadeWidth);
-                if (_ToonEnable) {
-                    float4 toon = Toon(_Toon, _ToonSharpness);
-                    diffuse = ToonCalc(diffuse, toon);
+                if (_VQT_GenerateShadow) {
+                    half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv), _BumpScale);
+                    float diffuse = DiffuseCalc(normal, VQT_DUMMY_LIGHT_DIRECTION, _ShadeGradient , _ShadeWidth);
+                    if (_ToonEnable) {
+                        float4 toon = Toon(_Toon, _ToonSharpness);
+                        diffuse = ToonCalc(diffuse, toon);
+                    }
+                    float3 shadeColor = saturate(col.rgb * 3.0f - 1.5f) * _ShadeColor;
+                    shadeColor = lerp(shadeColor, _CustomShadeColor.rgb, _CustomShadeColor.a);
+                    float3 diffColor = LightingCalc(float3(1, 1, 1) , diffuse , shadeColor , 1.0);
+                    col.rgb *= diffColor;
                 }
-                float3 shadeColor = saturate(col.rgb * 3.0f - 1.5f) * _ShadeColor;
-                shadeColor = lerp(shadeColor, _CustomShadeColor.rgb, _CustomShadeColor.a);
-                float3 diffColor = LightingCalc(float3(1, 1, 1) , diffuse , shadeColor , 1.0);
-                col.rgb *= diffColor;
 
                 col.rgb *= _VQT_MainTexBrightness;
                 fixed4 OUT = col;

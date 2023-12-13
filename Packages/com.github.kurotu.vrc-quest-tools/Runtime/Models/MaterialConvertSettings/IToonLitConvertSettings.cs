@@ -19,5 +19,10 @@ namespace KRT.VRCQuestTools.Models
         /// Gets texture brightness for quest. [0-1].
         /// </summary>
         float MainTextureBrightness { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether to generate shadow from normal map.
+        /// </summary>
+        bool GenerateShadowFromNormalMap { get; }
     }
 }

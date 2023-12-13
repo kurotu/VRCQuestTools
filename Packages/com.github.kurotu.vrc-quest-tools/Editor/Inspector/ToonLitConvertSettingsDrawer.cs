@@ -43,6 +43,7 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 EditorGUILayout.PropertyField(property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
                 EditorGUILayout.PropertyField(property.FindPropertyRelative("mainTextureBrightness"), new GUIContent(i18n.IMaterialConvertSettingsMainTextureBrightnessLabel, i18n.IMaterialConvertSettingsMainTextureBrightnessTooltip));
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("generateShadowFromNormalMap"), new GUIContent(i18n.ToonLitConvertSettingsGenerateShadowFromNormalMapLabel));
             }
         }
     }

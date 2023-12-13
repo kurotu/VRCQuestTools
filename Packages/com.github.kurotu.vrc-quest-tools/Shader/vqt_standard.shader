@@ -12,6 +12,7 @@
         [HDR]_EmissionColor("EmissionColor", Color) = (1,1,1,1)
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
+        _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
     }
     SubShader
     {
@@ -55,6 +56,7 @@
             fixed4 _EmissionColor;
 
             float _VQT_MainTexBrightness;
+            uint _VQT_GenerateShadow;
 
             v2f vert (appdata v)
             {
@@ -70,11 +72,14 @@
                 fixed4 col = tex2D(_MainTex, i.uv);
                 col *= _Color;
 
-                half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv), _BumpScale);
-                half4 normalCol = vqt_normalToGrayScale(normal);
-                col.rgb *= normalCol.rgb;
+                if (_VQT_GenerateShadow == 1)
+                {
+                    half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv), _BumpScale);
+                    half4 normalCol = vqt_normalToGrayScale(normal);
+                    col.rgb *= normalCol.rgb / 0.83; // In standard shading, normalCol multiplies 0.83 to most of the main texture. So we need to undo that.
+                }
 
-                col.rgb *= (_VQT_MainTexBrightness / 0.83); // In standard shading, normalCol multiplies 0.83 to most of the main texture. So we need to undo that.
+                col.rgb *= _VQT_MainTexBrightness;
 #ifdef _EMISSION
                 fixed4 emi = tex2D(_EmissionMap, i.uv);
                 col = clamp(col + emi * _EmissionColor, 0, 1);

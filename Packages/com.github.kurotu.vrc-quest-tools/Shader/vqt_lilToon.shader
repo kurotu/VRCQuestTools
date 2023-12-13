@@ -59,6 +59,7 @@
         _Emission2ndMainStrength("Emission2ndMainStrength", Range(0,1)) = 0
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
+        _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
     }
     SubShader
     {
@@ -146,6 +147,7 @@
             float _Emission2ndMainStrength;
 
             float _VQT_MainTexBrightness;
+            uint _VQT_GenerateShadow;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
                 half angleCos           = cos(angle);
@@ -217,7 +219,7 @@
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 albedo = tex2D(_MainTex, i.uv);
-                if (_LIL_FEATURE_NORMAL_1ST && _UseShadow && _UseBumpMap) {
+                if (_VQT_GenerateShadow && _LIL_FEATURE_NORMAL_1ST && _UseShadow && _UseBumpMap) {
                     half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv_BumpMap), _BumpScale);
                     half4 normalCol = vqt_normalToGrayScale(normal);
 

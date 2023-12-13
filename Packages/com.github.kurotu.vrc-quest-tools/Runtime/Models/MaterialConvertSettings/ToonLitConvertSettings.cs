@@ -25,6 +25,11 @@ namespace KRT.VRCQuestTools.Models
         [Range(0.0f, 1.0f)]
         public float mainTextureBrightness = 0.83f;
 
+        /// <summary>
+        /// Whether to generate shadow from normal map.
+        /// </summary>
+        public bool generateShadowFromNormalMap = true;
+
         /// <inheritdoc/>
         public bool GenerateQuestTextures => generateQuestTextures;
 
@@ -33,5 +38,8 @@ namespace KRT.VRCQuestTools.Models
 
         /// <inheritdoc/>
         public float MainTextureBrightness => mainTextureBrightness;
+
+        /// <inheritdoc/>
+        public bool GenerateShadowFromNormalMap => generateShadowFromNormalMap;
     }
 }

@@ -320,6 +320,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 #endif
                 baker.Object.shader = lilBaker;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
+                baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);
                 baker.Object.mainTexture = main;
                 baker.Object.mainTextureOffset = new Vector2(0.0f, 0.0f);
                 baker.Object.mainTextureScale = new Vector2(1.0f, 1.0f);
