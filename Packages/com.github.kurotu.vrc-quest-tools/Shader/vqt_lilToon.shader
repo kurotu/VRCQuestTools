@@ -15,10 +15,15 @@
         _UseShadow("Use Shadow", Int) = 0
         _ShadowColor("Shadow 1st Color", Color) = (0.5, 0.5, 0.5, 1)
         _ShadowBorder("Shadow 1st Border", Range(0, 1)) = 0.5
+        _ShadowBlur("Shadow 1st Blur", Range(0, 1)) = 0.5
         _Shadow2ndColor("Shadow 2nd Color", Color) = (0.3, 0.3, 0.3, 1)
         _Shadow2ndBorder("Shadow 2nd Border", Range(0, 1)) = 0.3
+        _Shadow2ndBlur("Shadow 2nd Blur", Range(0, 1)) = 0.3
         _Shadow3rdColor("Shadow 3rd Color", Color) = (0, 0, 0, 1)
         _Shadow3rdBorder("Shadow 3rd Border", Range(0, 1)) = 0.1
+        _Shadow3rdBlur("Shadow 3rd Blur", Range(0, 1)) = 0.1
+        // _ShadowBorderColor("Shadow Border Color", Color) = (1, 0, 0, 1)
+        // _ShadowBorderRange("Shadow Border Range", Range(0, 1)) = 0.1
 
         _UseBumpMap("Use Normal Map", Int) = 0
         [Normal] _BumpMap("Normal Map", 2D) = "bump" {}
@@ -104,10 +109,13 @@
             uint _UseShadow;
             fixed4 _ShadowColor;
             float _ShadowBorder;
+            float _ShadowBlur;
             fixed4 _Shadow2ndColor;
             float _Shadow2ndBorder;
+            float _Shadow2ndBlur;
             fixed4 _Shadow3rdColor;
             float _Shadow3rdBorder;
+            float _Shadow3rdBlur;
 
             uint _UseBumpMap;
             sampler2D _BumpMap;
@@ -191,29 +199,41 @@
                 return o;
             }
 
-            fixed4 lilShadow(float4 light, float4 shadow1, float border1, float4 shadow2, float border2, float4 shadow3, float border3) {
-                fixed4 shadow1Result = fixed4(lerp(light.rgb, shadow1.rgb, shadow1.a), 1);
-                fixed4 shadow12Result = fixed4(lerp(shadow1Result.rgb, shadow2.rgb, shadow2.a), 1);
-                fixed4 shadow13Result = fixed4(lerp(shadow1Result.rgb, shadow3.rgb, shadow3.a), 1);
-                fixed4 shadow23Result = fixed4(lerp(shadow12Result.rgb, shadow3.rgb, shadow3.a), 1);
-
-                if (light.r > border1) {
-                    return light;
+            fixed4 lilShadow(float lightValue) {
+                fixed4 white = fixed4(1, 1, 1, 1);
+                fixed4 shadow = fixed4(1, 1, 1, 1);
+                float shadowBorderMax = _ShadowBorder + _ShadowBlur / 2;
+                float shadowBorderMin = _ShadowBorder - _ShadowBlur / 2;
+                if (lightValue >= shadowBorderMax) {
+                    return shadow;
                 }
 
-                if (light.r > max(border2, border3)) {
-                    return shadow1Result;
+                // shadow1
+                if (lightValue < shadowBorderMax) {
+                    float rate = (lightValue - shadowBorderMin) / (shadowBorderMax - shadowBorderMin);
+                    fixed4 shadowColor = lerp(_ShadowColor, white, saturate(rate));
+                    shadow.rgb = lerp(shadow.rgb, shadow.rgb * shadowColor.rgb, shadowColor.a);
                 }
 
-                if (light.r >= min(border2, border3)) {
-                    if (border2 > border3) {
-                        return shadow12Result;
-                    } else {
-                        return shadow13Result;
-                    }
+                // shadow2
+                float shadow2BorderMax = _Shadow2ndBorder + _Shadow2ndBlur / 2;
+                float shadow2BorderMin = _Shadow2ndBorder - _Shadow2ndBlur / 2;
+                if (lightValue < shadow2BorderMax) {
+                    float rate = (lightValue - shadow2BorderMin) / (shadow2BorderMax - shadow2BorderMin);
+                    fixed4 shadow2Color = lerp(_Shadow2ndColor, white, saturate(rate));
+                    shadow.rgb = lerp(shadow.rgb, shadow.rgb * shadow2Color.rgb, shadow2Color.a);
                 }
 
-                return shadow23Result;
+                // shadow3
+                float shadow3BorderMax = _Shadow3rdBorder + _Shadow3rdBlur / 2;
+                float shadow3BorderMin = _Shadow3rdBorder - _Shadow3rdBlur / 2;
+                if (lightValue < shadow3BorderMax) {
+                    float rate = (lightValue - shadow3BorderMin) / (shadow3BorderMax - shadow3BorderMin);
+                    fixed4 shadow3Color = lerp(_Shadow3rdColor, white, saturate(rate));
+                    shadow.rgb = lerp(shadow.rgb, shadow.rgb * shadow3Color.rgb, shadow3Color.a);
+                }
+
+                return shadow;
             }
 
             fixed4 frag (v2f i) : SV_Target
@@ -223,7 +243,8 @@
                     half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv_BumpMap), _BumpScale);
                     half4 normalCol = vqt_normalToGrayScale(normal);
 
-                    fixed4 shadow = lilShadow(normalCol, _ShadowColor, _ShadowBorder, _Shadow2ndColor, _Shadow2ndBorder, _Shadow3rdColor, _Shadow3rdBorder);
+                    fixed4 shadow = lilShadow(normalCol);
+
                     albedo.rgb *= shadow.rgb;
                 }
 
