@@ -1,4 +1,4 @@
-#define VQT_DUMMY_LIGHT_DIRECTION float3(-0.5, 0.5, 0.7071068)
+#define VQT_DUMMY_LIGHT_DIRECTION float3(-0.5, 0.5, 1.05)
 //#define VQT_DUMMY_LIGHT_DIRECTION float3(-0.5, 0.5, 0.5)
 
 float4 vqt_lambert(half3 normal)

@@ -122,6 +122,32 @@ namespace KRT.VRCQuestTools
             return dsum / (float)(255L * 255L * 4L * pixels1.Length);
         }
 
+        internal static float MaxDifference(Texture2D tex1, Texture2D tex2)
+        {
+            var pixels1 = tex1.GetPixels32();
+            var pixels2 = tex2.GetPixels32();
+
+            Assert.AreEqual(pixels1.Length, pixels2.Length);
+
+            long max = 0;
+            for (var i = 0; i < pixels1.Length; i++)
+            {
+                var c1 = pixels1[i];
+                var c2 = pixels2[i];
+                var r = c1.r - c2.r;
+                var g = c1.g - c2.g;
+                var b = c1.b - c2.b;
+                var a = c1.a - c2.a;
+                var diff = r * r + g * g + b * b + a * a;
+                if (diff > max)
+                {
+                    max = diff;
+                }
+            }
+
+            return max / (float)(255L * 255L * 4L);
+        }
+
         /// <summary>
         /// Load MaterialBase from materials folder.
         /// </summary>

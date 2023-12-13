@@ -74,11 +74,12 @@
                 half4 normalCol = vqt_normalToGrayScale(normal);
                 col.rgb *= normalCol.rgb;
 
-                col.rgb *= _VQT_MainTexBrightness;
+                col.rgb *= (_VQT_MainTexBrightness / 0.83); // In standard shading, normalCol multiplies 0.83 to most of the main texture. So we need to undo that.
 #ifdef _EMISSION
                 fixed4 emi = tex2D(_EmissionMap, i.uv);
                 col = clamp(col + emi * _EmissionColor, 0, 1);
 #endif
+                col.rgb = saturate(col.rgb);
                 return col;
             }
             ENDCG
