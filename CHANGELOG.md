@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - MatCap Lit
     - Material Replacement
 - Add **Generate shadow from normal map** option to material conversion settings.
+- Add material conversion from Poiyomi Toon shader. Supported features are:
+    - Main Color
+    - Shading by normal map
+    - Emission [0-3]
 
 ### Changed
 - Require VRChat SDK 3.3.0 or later.
