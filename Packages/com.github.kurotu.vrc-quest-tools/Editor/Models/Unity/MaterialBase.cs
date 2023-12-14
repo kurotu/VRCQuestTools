@@ -76,10 +76,15 @@ namespace KRT.VRCQuestTools.Models.Unity
 #endif
                 baker.Object.shader = BakeShader;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
+                baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);
                 foreach (var name in Material.GetTexturePropertyNames())
                 {
                     var t = Material.GetTexture(name);
                     if (t is Cubemap)
+                    {
+                        continue;
+                    }
+                    if (AssetUtility.IsNormalMapAsset(t))
                     {
                         continue;
                     }

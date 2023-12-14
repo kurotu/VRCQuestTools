@@ -78,6 +78,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string IMaterialConvertSettingsTexturesSizeLimitLabel => "最大テクスチャサイズ";
         internal override string IMaterialConvertSettingsMainTextureBrightnessLabel => "メインテクスチャの明るさ";
         internal override string IMaterialConvertSettingsMainTextureBrightnessTooltip => "メインテクスチャの色を調整します。";
+        internal override string ToonLitConvertSettingsGenerateShadowFromNormalMapLabel => "ノーマルマップから影を生成する";
         internal override string MatCapLitConvertSettingsMatCapTextureLabel => "MatCap テクスチャ";
         internal override string AdditionalMaterialConvertSettingsTargetMaterialLabel => "対象マテリアル";
         internal override string AdditionalMaterialConvertSettingsSelectMaterialLabel => "マテリアルを選択";

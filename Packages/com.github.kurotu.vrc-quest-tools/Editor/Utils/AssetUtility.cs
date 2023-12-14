@@ -263,6 +263,26 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Gets whether the texture is a normal map asset.
+        /// </summary>
+        /// <param name="texture">Texture.</param>
+        /// <returns>true when the texture is a normal map. false when it's not an asset.</returns>
+        internal static bool IsNormalMapAsset(Texture texture)
+        {
+            var path = AssetDatabase.GetAssetPath(texture);
+            if (string.IsNullOrEmpty(path))
+            {
+                return false;
+            }
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null)
+            {
+                return false;
+            }
+            return importer.textureType == TextureImporterType.NormalMap;
+        }
+
+        /// <summary>
         /// Create a new asset. If the path already exists, it will be overwritten.
         /// </summary>
         /// <typeparam name="T">Type of asset.</typeparam>

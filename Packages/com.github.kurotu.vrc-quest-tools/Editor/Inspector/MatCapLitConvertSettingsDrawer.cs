@@ -27,15 +27,7 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
             EditorGUI.indentLevel++;
-
-            var generateQuestTextures = property.FindPropertyRelative("generateQuestTextures");
-            EditorGUILayout.PropertyField(generateQuestTextures, new GUIContent(i18n.GenerateQuestTexturesLabel));
-            using (var disabled = new EditorGUI.DisabledScope(!generateQuestTextures.boolValue))
-            {
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("mainTextureBrightness"), new GUIContent(i18n.IMaterialConvertSettingsMainTextureBrightnessLabel, i18n.IMaterialConvertSettingsMainTextureBrightnessTooltip));
-            }
-
+            ToonLitConvertSettingsDrawer.DrawPorpertyFields(property);
             EditorGUILayout.PropertyField(property.FindPropertyRelative("matCapTexture"), new GUIContent(i18n.MatCapLitConvertSettingsMatCapTextureLabel));
 
             EditorGUI.indentLevel--;

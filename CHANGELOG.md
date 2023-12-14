@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add material conversion settings other than Toon Lit shader.
     - MatCap Lit
     - Material Replacement
+- Add **Generate shadow from normal map** option to material conversion settings.
 
 ### Changed
 - Require VRChat SDK 3.3.0 or later.

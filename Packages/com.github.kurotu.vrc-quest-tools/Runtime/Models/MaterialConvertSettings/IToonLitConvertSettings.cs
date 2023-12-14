@@ -6,7 +6,7 @@ namespace KRT.VRCQuestTools.Models
     public interface IToonLitConvertSettings : IMaterialConvertSettings
     {
         /// <summary>
-        /// Gets a value indicating whether whether to generate quest textures.
+        /// Gets a value indicating whether to generate quest textures.
         /// </summary>
         bool GenerateQuestTextures { get; }
 
@@ -19,5 +19,10 @@ namespace KRT.VRCQuestTools.Models
         /// Gets texture brightness for quest. [0-1].
         /// </summary>
         float MainTextureBrightness { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether to generate shadow from normal map.
+        /// </summary>
+        bool GenerateShadowFromNormalMap { get; }
     }
 }

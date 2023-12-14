@@ -17,7 +17,7 @@ namespace KRT.VRCQuestTools
     /// </summary>
     public class StandardMaterialTests
     {
-        private const float Threshold = 1e-10f;
+        private const float Threshold = 1e-5f;
 
         /// <summary>
         /// Test standard without emission.
@@ -34,7 +34,7 @@ namespace KRT.VRCQuestTools
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
             {
-                Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
+                Assert.Less(TestUtils.MaxDifference(tex.Object, original.Object), Threshold);
             }
         }
 
@@ -68,7 +68,7 @@ namespace KRT.VRCQuestTools
                     return new Color32(r, g, b, a);
                 }).ToArray();
                 composed.Object.SetPixels32(compose);
-                Assert.Less(TestUtils.Difference(tex.Object, composed.Object), Threshold);
+                Assert.Less(TestUtils.MaxDifference(tex.Object, composed.Object), Threshold);
             }
 #else
             Assert.Ignore("This test is not supported on Unity 2021.2 or older.");
@@ -104,7 +104,7 @@ namespace KRT.VRCQuestTools
                     return new Color32(r, g, b, a);
                 }).ToArray();
                 composed.Object.SetPixels32(compose);
-                Assert.Less(TestUtils.Difference(tex.Object, composed.Object), Threshold);
+                Assert.Less(TestUtils.MaxDifference(tex.Object, composed.Object), Threshold);
             }
         }
 
@@ -123,7 +123,7 @@ namespace KRT.VRCQuestTools
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(TestUtils.LoadUncompressedTexture("alpha_test.png")))
             {
-                Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
+                Assert.Less(TestUtils.MaxDifference(tex.Object, original.Object), Threshold);
             }
         }
 
@@ -142,7 +142,7 @@ namespace KRT.VRCQuestTools
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(Color.red)))
             {
-                Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
+                Assert.Less(TestUtils.MaxDifference(tex.Object, original.Object), Threshold);
             }
         }
 
@@ -161,7 +161,7 @@ namespace KRT.VRCQuestTools
             using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
             using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(new Color32(205, 205, 205, 205), 256, 256)))
             {
-                Assert.Less(TestUtils.Difference(tex.Object, original.Object), Threshold);
+                Assert.Less(TestUtils.MaxDifference(tex.Object, original.Object), Threshold);
             }
         }
     }

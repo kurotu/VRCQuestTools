@@ -11,6 +11,19 @@
         _UVAnimY("Animation Y Size", Int) = 1
         _UVAnimOtherTex("Animation Other Texture Maps", Float) = 0
 
+        [Normal] _BumpMap ("Normalmap", 2D) = "bump" {}
+        _BumpScale ("Normal Map Scale", Range(-2.0,  2.0)) = 1.0
+
+        _Shade ("Shade Strength", Range( 0.0,  1.0)) = 0.3
+        _ShadeWidth ("Shade Width", Range( 0.0,  2.0)) = 0.75
+        _ShadeGradient ("Shade Gradient", Range( 0.0,  2.0)) = 0.75
+        _ShadeColor ("Shade Color", Range( 0.0,  1.0)) = 0.5
+        _CustomShadeColor ("Custom Shade Color", Color) = (0,0,0,0)
+
+        _ToonEnable ("Enable Toon Shading", int) = 0
+        _Toon ("Toon", Range( 0.0,  9.0)) = 9.0
+        _ToonSharpness ("Toon Sharpness", Range( 0.0,  1.0)) = 1.0
+
         // Decal
         _DecalEnable("Enable Decal", Int) = 0
         _DecalTex("Decal Texture", 2D) = "white" {}
@@ -55,6 +68,7 @@
         _LimitterMax("Limitter Max", Range(0, 5)) = 1
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
+        _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
     }
     SubShader
     {
@@ -64,10 +78,14 @@
         Pass
         {
             CGPROGRAM
+            #pragma target 3.0
             #pragma vertex vert
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #include "UnityStandardUtils.cginc"
+            #include "cginc/vqt_common.cginc"
+            #include "cginc/vqt_sunao_function.cginc"
 
             struct appdata
             {
@@ -91,6 +109,18 @@
             float _UVAnimX;
             float _UVAnimY;
             float _UVAnimOtherTex;
+
+            sampler2D _BumpMap;
+            float _BumpScale;
+
+            float _Shade;
+            float _ShadeWidth;
+            float _ShadeGradient;
+            float _ShadeColor;
+            float4 _CustomShadeColor;
+            bool _ToonEnable;
+            uint _Toon;
+            float _ToonSharpness;
 
             float _DecalEnable;
             sampler2D _DecalTex;
@@ -133,6 +163,7 @@
             float _LimitterMax;
 
             float _VQT_MainTexBrightness;
+            uint _VQT_GenerateShadow;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
               half angleCos = cos(angle);
@@ -165,6 +196,20 @@
                     ? animateUV(i.uv, _UVAnimX, _UVAnimY)
                     : i.uv;
                 fixed4 col = tex2D(_MainTex, mainUV) * _Color * _Bright;
+
+                if (_VQT_GenerateShadow) {
+                    half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv), _BumpScale);
+                    float diffuse = DiffuseCalc(normal, VQT_DUMMY_LIGHT_DIRECTION, _ShadeGradient , _ShadeWidth);
+                    if (_ToonEnable) {
+                        float4 toon = Toon(_Toon, _ToonSharpness);
+                        diffuse = ToonCalc(diffuse, toon);
+                    }
+                    float3 shadeColor = saturate(col.rgb * 3.0f - 1.5f) * _ShadeColor;
+                    shadeColor = lerp(shadeColor, _CustomShadeColor.rgb, _CustomShadeColor.a);
+                    float3 diffColor = LightingCalc(float3(1, 1, 1) , diffuse , shadeColor , 1.0);
+                    col.rgb *= diffColor;
+                }
+
                 col.rgb *= _VQT_MainTexBrightness;
                 fixed4 OUT = col;
 

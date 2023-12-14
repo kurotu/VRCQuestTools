@@ -320,10 +320,12 @@ namespace KRT.VRCQuestTools.Models.Unity
 #endif
                 baker.Object.shader = lilBaker;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
+                baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);
                 baker.Object.mainTexture = main;
                 baker.Object.mainTextureOffset = new Vector2(0.0f, 0.0f);
                 baker.Object.mainTextureScale = new Vector2(1.0f, 1.0f);
                 baker.Object.color = Color.white;
+                baker.Object.SetFloat("_LIL_FEATURE_NORMAL_1ST", shaderSetting.LIL_FEATURE_NORMAL_1ST ? 1.0f : 0.0f);
                 baker.Object.SetFloat("_LIL_FEATURE_EMISSION_1ST", shaderSetting.LIL_FEATURE_EMISSION_1ST ? 1.0f : 0.0f);
                 baker.Object.SetFloat("_LIL_FEATURE_EMISSION_2ND", shaderSetting.LIL_FEATURE_EMISSION_2ND ? 1.0f : 0.0f);
                 baker.Object.SetFloat("_LIL_FEATURE_ANIMATE_EMISSION_UV", shaderSetting.LIL_FEATURE_ANIMATE_EMISSION_UV ? 1.0f : 0.0f);
@@ -369,6 +371,8 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
 
             public bool LIL_FEATURE_MAIN_GRADATION_MAP => IsFeatureEnabled("LIL_FEATURE_MAIN_GRADATION_MAP");
+
+            public bool LIL_FEATURE_NORMAL_1ST => IsFeatureEnabled("LIL_FEATURE_NORMAL_1ST");
 
             public bool LIL_FEATURE_EMISSION_1ST => IsFeatureEnabled("LIL_FEATURE_EMISSION_1ST");
 
