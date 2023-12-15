@@ -163,6 +163,41 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.Space();
         }
 
+        /// <summary>
+        /// Show boxed foldout.
+        /// </summary>
+        /// <param name="title">Title to show.</param>
+        /// <param name="display">Whether to show.</param>
+        /// <returns>Foldout result.</returns>
+        internal static bool Foldout(string title, bool display)
+        {
+            var style = new GUIStyle("ShurikenModuleTitle");
+            style.font = EditorStyles.label.font;
+            style.fontSize = EditorStyles.label.fontSize;
+            style.border = new RectOffset(15, 7, 4, 4);
+            style.fixedHeight = 22;
+            style.contentOffset = new Vector2(20f, -2f);
+
+            var rect = GUILayoutUtility.GetRect(16f, 22f, style);
+            GUI.Box(rect, title, style);
+
+            var e = Event.current;
+
+            var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
+            if (e.type == EventType.Repaint)
+            {
+                EditorStyles.foldout.Draw(toggleRect, false, false, display, false);
+            }
+
+            if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
+            {
+                display = !display;
+                e.Use();
+            }
+
+            return display;
+        }
+
         private static GUIContent MessageTypeIconContent(MessageType type)
         {
             switch (type)

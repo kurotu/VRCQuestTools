@@ -4,6 +4,7 @@ using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
@@ -23,7 +24,16 @@ namespace KRT.VRCQuestTools.Inspector
     public class AvatarConverterSettingsEditor : Editor
     {
         [SerializeField]
+        private bool foldOutMaterialSettings = false;
+
+        [SerializeField]
+        private bool foldOutAvatarDynamics = false;
+
+        [SerializeField]
         private bool foldOutEstimatedPerf = false;
+
+        [SerializeField]
+        private bool foldOutAdvancedSettings = false;
 
         private AvatarConverterSettings converterSettings;
         private I18nBase i18n;
@@ -118,65 +128,70 @@ namespace KRT.VRCQuestTools.Inspector
                     }
                 }
 
-                Views.EditorGUIUtility.HorizontalDivider(2);
+                EditorGUILayout.Space(12);
 
-                EditorGUILayout.LabelField(i18n.AvatarConverterMaterialConvertSettingLabel, EditorStyles.boldLabel);
-                using (var ccs = new EditorGUI.ChangeCheckScope())
+                foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingLabel, foldOutMaterialSettings);
+                if (foldOutMaterialSettings)
                 {
-                    var name = so.FindProperty("defaultMaterialConvertSetting").managedReferenceFullTypename.Split(' ').Last();
-                    var type = SystemUtility.GetTypeByName(name);
-                    var selectedIndex = MaterialConvertSettingsTypes.DefaultTypes.IndexOf(type);
-                    selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterDefaultMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.GetDefaultConvertTypePopupLabels());
-                    if (ccs.changed)
+                    using (var ccs = new EditorGUI.ChangeCheckScope())
                     {
-                        var newType = MaterialConvertSettingsTypes.DefaultTypes[selectedIndex];
-                        so.FindProperty("defaultMaterialConvertSetting").managedReferenceValue = System.Activator.CreateInstance(newType);
+                        var name = so.FindProperty("defaultMaterialConvertSetting").managedReferenceFullTypename.Split(' ').Last();
+                        var type = SystemUtility.GetTypeByName(name);
+                        var selectedIndex = MaterialConvertSettingsTypes.DefaultTypes.IndexOf(type);
+                        selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterDefaultMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.GetDefaultConvertTypePopupLabels());
+                        if (ccs.changed)
+                        {
+                            var newType = MaterialConvertSettingsTypes.DefaultTypes[selectedIndex];
+                            so.FindProperty("defaultMaterialConvertSetting").managedReferenceValue = System.Activator.CreateInstance(newType);
+                        }
                     }
-                }
-                EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent());
+                    EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent());
 
-                var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
-                var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;
-                EditorGUILayout.PropertyField(additionalMaterialConvertSettings, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel));
-                if (additionalMaterialConvertSettings.arraySize > additionalMaterialConvertCount)
-                {
-                    for (var i = additionalMaterialConvertCount; i < additionalMaterialConvertSettings.arraySize; i++)
+                    var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
+                    var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;
+                    EditorGUILayout.PropertyField(additionalMaterialConvertSettings, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel));
+                    if (additionalMaterialConvertSettings.arraySize > additionalMaterialConvertCount)
                     {
-                        var e = additionalMaterialConvertSettings.GetArrayElementAtIndex(i);
-                        e.FindPropertyRelative("targetMaterial").objectReferenceValue = null;
-                        e.FindPropertyRelative("materialConvertSettings").managedReferenceValue = new ToonLitConvertSettings();
+                        for (var i = additionalMaterialConvertCount; i < additionalMaterialConvertSettings.arraySize; i++)
+                        {
+                            var e = additionalMaterialConvertSettings.GetArrayElementAtIndex(i);
+                            e.FindPropertyRelative("targetMaterial").objectReferenceValue = null;
+                            e.FindPropertyRelative("materialConvertSettings").managedReferenceValue = new ToonLitConvertSettings();
+                        }
                     }
+
+                    if (GUILayout.Button(i18n.UpdateTexturesLabel))
+                    {
+                        OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSetting);
+                    }
+                    EditorGUILayout.Space(12);
                 }
 
-                if (GUILayout.Button(i18n.UpdateTexturesLabel))
+                foldOutAvatarDynamics = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterAvatarDynamicsSettingLabel, foldOutAvatarDynamics);
+                if (foldOutAvatarDynamics)
                 {
-                    OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSetting);
+                    if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
+                    {
+                        OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+                    }
+
+                    var m_physBones = so.FindProperty("physBonesToKeep");
+                    EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones", i18n.AvatarConverterPhysBonesTooltip));
+                    var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
+                    EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", i18n.AvatarConverterPhysBoneCollidersTooltip));
+                    var m_contacts = so.FindProperty("contactsToKeep");
+                    EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
+                    AvatarDynamicsPerformanceGUI(converterSettings);
+                    EditorGUILayout.Space(12);
                 }
 
-                Views.EditorGUIUtility.HorizontalDivider(2);
-
-                EditorGUILayout.LabelField(i18n.AvatarConverterAvatarDynamicsSettingLabel, EditorStyles.boldLabel);
-                if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
+                foldOutAdvancedSettings = Views.EditorGUIUtility.Foldout(i18n.AdvancedConverterSettingsLabel, foldOutAdvancedSettings);
+                if (foldOutAdvancedSettings)
                 {
-                    OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+                    EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
+                    EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
+                    EditorGUILayout.Space(12);
                 }
-
-                var m_physBones = so.FindProperty("physBonesToKeep");
-                EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones", i18n.AvatarConverterPhysBonesTooltip));
-                var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
-                EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", i18n.AvatarConverterPhysBoneCollidersTooltip));
-                var m_contacts = so.FindProperty("contactsToKeep");
-                EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
-                AvatarDynamicsPerformanceGUI(converterSettings);
-
-                Views.EditorGUIUtility.HorizontalDivider(2);
-
-                EditorGUILayout.LabelField(i18n.AdvancedConverterSettingsLabel, EditorStyles.boldLabel);
-
-                EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
-                EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
-
-                EditorGUILayout.Space();
 
                 if (descriptor)
                 {
@@ -239,7 +254,10 @@ namespace KRT.VRCQuestTools.Inspector
             };
             var ratings = categories.ToDictionary(x => x, x => Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, x));
             var worst = ratings.Values.Max();
-            Views.EditorGUIUtility.PerformanceRatingPanel(worst, $"Avatar Dynamics: {worst}", worst > avatarDynamicsPerfLimit ? i18n.AvatarDynamicsPreventsUpload : null);
+            if (foldOutEstimatedPerf || worst > avatarDynamicsPerfLimit)
+            {
+                Views.EditorGUIUtility.PerformanceRatingPanel(worst, $"Avatar Dynamics: {worst}", worst > avatarDynamicsPerfLimit ? i18n.AvatarDynamicsPreventsUpload : null);
+            }
             foreach (var category in categories)
             {
                 if (foldOutEstimatedPerf || ratings[category] > avatarDynamicsPerfLimit)
