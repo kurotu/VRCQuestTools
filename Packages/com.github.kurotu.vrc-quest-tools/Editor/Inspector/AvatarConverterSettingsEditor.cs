@@ -160,6 +160,33 @@ namespace KRT.VRCQuestTools.Inspector
                         }
                     }
 
+                    if (descriptor)
+                    {
+                        var targetAvatar = new VRChatAvatar(descriptor);
+                        var unverifiedMaterials = targetAvatar.Materials
+                            .Where(m => VRCQuestTools.AvatarConverter.MaterialWrapperBuilder.DetectShaderCategory(m) == MaterialWrapperBuilder.ShaderCategory.Unverified)
+                            .ToArray();
+
+                        if (unverifiedMaterials.Length > 0)
+                        {
+                            Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
+                            {
+                                EditorGUILayout.LabelField(i18n.WarningForUnsupportedShaders, EditorStyles.wordWrappedMiniLabel);
+                                EditorGUILayout.Space(1);
+                                EditorGUILayout.LabelField($"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon, AXCS, Sunao, lilToon, Poiyomi", EditorStyles.wordWrappedMiniLabel);
+                                EditorGUI.BeginDisabledGroup(true);
+                                foreach (var m in unverifiedMaterials)
+                                {
+                                    EditorGUILayout.BeginHorizontal();
+                                    EditorGUILayout.ObjectField(m, typeof(Material), false);
+                                    EditorGUILayout.ObjectField(m.shader, typeof(Shader), false);
+                                    EditorGUILayout.EndHorizontal();
+                                }
+                                EditorGUI.EndDisabledGroup();
+                            });
+                        }
+                    }
+
                     if (GUILayout.Button(i18n.UpdateTexturesLabel))
                     {
                         OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSetting);
