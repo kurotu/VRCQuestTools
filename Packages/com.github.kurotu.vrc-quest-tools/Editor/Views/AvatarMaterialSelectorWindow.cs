@@ -55,7 +55,11 @@ namespace KRT.VRCQuestTools.Views
                     }
                 }
             }
-            EditorGUILayout.LabelField($"{selectedMaterial.name} (Material)    {materialPath}");
+
+            if (selectedMaterial != null)
+            {
+                EditorGUILayout.LabelField($"{selectedMaterial.name} (Material)    {materialPath}");
+            }
         }
 
         private bool MaterialItem(Material material, float width, bool isSelected)
