@@ -8,6 +8,7 @@ using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.SDKBase.Validation.Performance;
@@ -26,6 +27,11 @@ namespace KRT.VRCQuestTools.Inspector
         [SerializeField]
         private bool foldOutMaterialSettings = false;
 
+#if !UNITY_2022_1_OR_NEWER
+        [SerializeField]
+        private bool foldOutAdditionalMaterialSettings = false;
+#endif
+
         [SerializeField]
         private bool foldOutAvatarDynamics = false;
 
@@ -36,7 +42,9 @@ namespace KRT.VRCQuestTools.Inspector
         private bool foldOutAdvancedSettings = false;
 
         private AvatarConverterSettings converterSettings;
+
         private I18nBase i18n;
+        private ReorderableList additionalMaterialConvertSettingsReorderableList;
         private AvatarPerformanceStatsLevelSet statsLevelSet;
         private PerformanceRating avatarDynamicsPerfLimit;
 
@@ -149,7 +157,28 @@ namespace KRT.VRCQuestTools.Inspector
 
                     var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
                     var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;
+#if UNITY_2022_1_OR_NEWER
                     EditorGUILayout.PropertyField(additionalMaterialConvertSettings, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel));
+#else
+                    foldOutAdditionalMaterialSettings = EditorGUILayout.Foldout(foldOutAdditionalMaterialSettings, i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel, true);
+                    if (foldOutAdditionalMaterialSettings)
+                    {
+                        if (additionalMaterialConvertSettingsReorderableList == null)
+                        {
+                            additionalMaterialConvertSettingsReorderableList = new ReorderableList(so, additionalMaterialConvertSettings, true, false, true, true);
+                            additionalMaterialConvertSettingsReorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
+                            {
+                                EditorGUI.PropertyField(rect, additionalMaterialConvertSettings.GetArrayElementAtIndex(index));
+                            };
+                            additionalMaterialConvertSettingsReorderableList.elementHeightCallback = (index) =>
+                            {
+                                var element = additionalMaterialConvertSettings.GetArrayElementAtIndex(index);
+                                return EditorGUI.GetPropertyHeight(element);
+                            };
+                        }
+                        additionalMaterialConvertSettingsReorderableList.DoLayoutList();
+                    }
+#endif
                     if (additionalMaterialConvertSettings.arraySize > additionalMaterialConvertCount)
                     {
                         for (var i = additionalMaterialConvertCount; i < additionalMaterialConvertSettings.arraySize; i++)
