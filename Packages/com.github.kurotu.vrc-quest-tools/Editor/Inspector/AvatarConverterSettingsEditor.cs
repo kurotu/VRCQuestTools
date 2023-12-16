@@ -24,24 +24,10 @@ namespace KRT.VRCQuestTools.Inspector
     [CustomEditor(typeof(AvatarConverterSettings))]
     public class AvatarConverterSettingsEditor : Editor
     {
-        [SerializeField]
-        private bool foldOutMaterialSettings = false;
-
-        [SerializeField]
-        private bool foldOutAdditionalMaterialSettings = false;
-
-        [SerializeField]
-        private bool foldOutAvatarDynamics = false;
-
-        [SerializeField]
-        private bool foldOutEstimatedPerf = false;
-
-        [SerializeField]
-        private bool foldOutAdvancedSettings = false;
-
         private AvatarConverterSettings converterSettings;
 
         private I18nBase i18n;
+        private AvatarConverterSettingsEditorState editorState;
         private ReorderableList additionalMaterialConvertSettingsReorderableList;
         private AvatarPerformanceStatsLevelSet statsLevelSet;
         private PerformanceRating avatarDynamicsPerfLimit;
@@ -50,6 +36,10 @@ namespace KRT.VRCQuestTools.Inspector
         public override void OnInspectorGUI()
         {
             i18n = VRCQuestToolsSettings.I18nResource;
+            if (editorState == null)
+            {
+                editorState = AvatarConverterSettingsEditorState.instance;
+            }
 
             var so = new SerializedObject(target);
             so.Update();
@@ -136,8 +126,8 @@ namespace KRT.VRCQuestTools.Inspector
 
                 EditorGUILayout.Space(12);
 
-                foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingLabel, foldOutMaterialSettings);
-                if (foldOutMaterialSettings)
+                editorState.foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingLabel, editorState.foldOutMaterialSettings);
+                if (editorState.foldOutMaterialSettings)
                 {
                     var defaultMaterialConvertSettings = so.FindProperty("defaultMaterialConvertSettings");
                     EditorGUILayout.PropertyField(defaultMaterialConvertSettings, new GUIContent(i18n.AvatarConverterDefaultMaterialConvertSettingLabel));
@@ -145,8 +135,8 @@ namespace KRT.VRCQuestTools.Inspector
                     var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
                     var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;
 
-                    foldOutAdditionalMaterialSettings = EditorGUILayout.Foldout(foldOutAdditionalMaterialSettings, i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel, true);
-                    if (foldOutAdditionalMaterialSettings)
+                    editorState.foldOutAdditionalMaterialSettings = EditorGUILayout.Foldout(editorState.foldOutAdditionalMaterialSettings, i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel, true);
+                    if (editorState.foldOutAdditionalMaterialSettings)
                     {
                         if (additionalMaterialConvertSettingsReorderableList == null)
                         {
@@ -209,8 +199,8 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.Space(12);
                 }
 
-                foldOutAvatarDynamics = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterAvatarDynamicsSettingLabel, foldOutAvatarDynamics);
-                if (foldOutAvatarDynamics)
+                editorState.foldOutAvatarDynamics = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterAvatarDynamicsSettingLabel, editorState.foldOutAvatarDynamics);
+                if (editorState.foldOutAvatarDynamics)
                 {
                     if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
                     {
@@ -227,8 +217,8 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.Space(12);
                 }
 
-                foldOutAdvancedSettings = Views.EditorGUIUtility.Foldout(i18n.AdvancedConverterSettingsLabel, foldOutAdvancedSettings);
-                if (foldOutAdvancedSettings)
+                editorState.foldOutAdvancedSettings = Views.EditorGUIUtility.Foldout(i18n.AdvancedConverterSettingsLabel, editorState.foldOutAdvancedSettings);
+                if (editorState.foldOutAdvancedSettings)
                 {
                     EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
@@ -285,7 +275,7 @@ namespace KRT.VRCQuestTools.Inspector
             var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).Select(c => new ContactBase(c)).ToArray();
             var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(original.gameObject, pbToKeep, pbcToKeep, contactsToKeep);
 
-            foldOutEstimatedPerf = EditorGUILayout.Foldout(foldOutEstimatedPerf, i18n.EstimatedPerformanceStats, true);
+            editorState.foldOutEstimatedPerf = EditorGUILayout.Foldout(editorState.foldOutEstimatedPerf, i18n.EstimatedPerformanceStats, true);
             var categories = new AvatarPerformanceCategory[]
             {
                 AvatarPerformanceCategory.PhysBoneComponentCount,
@@ -296,13 +286,13 @@ namespace KRT.VRCQuestTools.Inspector
             };
             var ratings = categories.ToDictionary(x => x, x => Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, x));
             var worst = ratings.Values.Max();
-            if (foldOutEstimatedPerf || worst > avatarDynamicsPerfLimit)
+            if (editorState.foldOutEstimatedPerf || worst > avatarDynamicsPerfLimit)
             {
                 Views.EditorGUIUtility.PerformanceRatingPanel(worst, $"Avatar Dynamics: {worst}", worst > avatarDynamicsPerfLimit ? i18n.AvatarDynamicsPreventsUpload : null);
             }
             foreach (var category in categories)
             {
-                if (foldOutEstimatedPerf || ratings[category] > avatarDynamicsPerfLimit)
+                if (editorState.foldOutEstimatedPerf || ratings[category] > avatarDynamicsPerfLimit)
                 {
                     Views.EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
                 }
