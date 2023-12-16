@@ -141,19 +141,20 @@ namespace KRT.VRCQuestTools.Inspector
                 foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingLabel, foldOutMaterialSettings);
                 if (foldOutMaterialSettings)
                 {
+                    var defaultMaterialConvertSettings = so.FindProperty("defaultMaterialConvertSettings");
                     using (var ccs = new EditorGUI.ChangeCheckScope())
                     {
-                        var name = so.FindProperty("defaultMaterialConvertSetting").managedReferenceFullTypename.Split(' ').Last();
+                        var name = defaultMaterialConvertSettings.managedReferenceFullTypename.Split(' ').Last();
                         var type = SystemUtility.GetTypeByName(name);
                         var selectedIndex = MaterialConvertSettingsTypes.DefaultTypes.IndexOf(type);
                         selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterDefaultMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.GetDefaultConvertTypePopupLabels());
                         if (ccs.changed)
                         {
                             var newType = MaterialConvertSettingsTypes.DefaultTypes[selectedIndex];
-                            so.FindProperty("defaultMaterialConvertSetting").managedReferenceValue = System.Activator.CreateInstance(newType);
+                            defaultMaterialConvertSettings.managedReferenceValue = System.Activator.CreateInstance(newType);
                         }
                     }
-                    EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent());
+                    EditorGUILayout.PropertyField(defaultMaterialConvertSettings, new GUIContent());
 
                     var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
                     var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;
@@ -218,7 +219,7 @@ namespace KRT.VRCQuestTools.Inspector
 
                     if (GUILayout.Button(i18n.UpdateTexturesLabel))
                     {
-                        OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSetting);
+                        OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSettings);
                     }
                     EditorGUILayout.Space(12);
                 }

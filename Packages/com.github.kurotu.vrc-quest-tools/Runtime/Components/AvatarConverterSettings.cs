@@ -16,7 +16,7 @@ namespace KRT.VRCQuestTools.Components
         /// Default material convert setting. The default value is <see cref="ToonLitConvertSettings"/>.
         /// </summary>
         [SerializeReference]
-        public IMaterialConvertSettings defaultMaterialConvertSetting = new ToonLitConvertSettings();
+        public IMaterialConvertSettings defaultMaterialConvertSettings = new ToonLitConvertSettings();
 
         /// <summary>
         /// Additional material convert settings.
@@ -73,7 +73,7 @@ namespace KRT.VRCQuestTools.Components
                     return setting.materialConvertSettings;
                 }
             }
-            return defaultMaterialConvertSetting;
+            return defaultMaterialConvertSettings;
         }
 
         private void Reset()
