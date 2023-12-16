@@ -14,11 +14,7 @@ namespace KRT.VRCQuestTools.Inspector
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             var height = 0.0f;
-            if (label.text != string.Empty || label.image != null)
-            {
-                height += EditorGUIUtility.singleLineHeight;
-                height += EditorGUIUtility.standardVerticalSpacing;
-            }
+            height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
             height += ToonLitConvertSettingsDrawer.GetPropertyFieldsHeight(property) + EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUIUtility.singleLineHeight;
             return height;
@@ -27,22 +23,32 @@ namespace KRT.VRCQuestTools.Inspector
         /// <inheritdoc />
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var i18n = VRCQuestToolsSettings.I18nResource;
-            var fieldRect = position;
-            fieldRect.height = EditorGUIUtility.singleLineHeight;
-
-            if (label.text != string.Empty || label.image != null)
+            using (new EditorGUI.PropertyScope(position, label, property))
             {
-                EditorGUILayout.LabelField(label);
+                var i18n = VRCQuestToolsSettings.I18nResource;
+                var fieldRect = position;
+                fieldRect.height = EditorGUIUtility.singleLineHeight;
+
+                var selectedIndex = MaterialConvertSettingsTypes.Types.IndexOf(typeof(MatCapLitConvertSettings));
+                using (var ccs = new EditorGUI.ChangeCheckScope())
+                {
+                    selectedIndex = EditorGUI.Popup(fieldRect, label.text, selectedIndex, MaterialConvertSettingsTypes.GetConvertTypePopupLabels());
+                    if (ccs.changed)
+                    {
+                        var type = MaterialConvertSettingsTypes.Types[selectedIndex];
+                        property.managedReferenceValue = System.Activator.CreateInstance(type);
+                        return;
+                    }
+                }
                 fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+                ToonLitConvertSettingsDrawer.DrawPorpertyFields(fieldRect, property);
+                EditorGUI.indentLevel++;
+                fieldRect.y += ToonLitConvertSettingsDrawer.GetPropertyFieldsHeight(property) + EditorGUIUtility.standardVerticalSpacing;
+                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("matCapTexture"), new GUIContent(i18n.MatCapLitConvertSettingsMatCapTextureLabel));
+
+                EditorGUI.indentLevel--;
             }
-
-            EditorGUI.indentLevel++;
-            ToonLitConvertSettingsDrawer.DrawPorpertyFields(position, property);
-            fieldRect.y += ToonLitConvertSettingsDrawer.GetPropertyFieldsHeight(property) + EditorGUIUtility.standardVerticalSpacing;
-            EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("matCapTexture"), new GUIContent(i18n.MatCapLitConvertSettingsMatCapTextureLabel));
-
-            EditorGUI.indentLevel--;
         }
     }
 }

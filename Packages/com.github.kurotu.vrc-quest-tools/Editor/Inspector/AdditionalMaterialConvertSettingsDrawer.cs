@@ -36,52 +36,41 @@ namespace KRT.VRCQuestTools.Inspector
         /// <inheritdoc />
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var i18n = VRCQuestToolsSettings.I18nResource;
-            var fieldRect = position;
-            fieldRect.height = EditorGUIUtility.singleLineHeight;
-
-            if (label.text != string.Empty || label.image != null)
+            using (new EditorGUI.PropertyScope(position, label, property))
             {
-                EditorGUI.LabelField(fieldRect, label);
-                fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-            }
+                var i18n = VRCQuestToolsSettings.I18nResource;
+                var fieldRect = position;
+                fieldRect.height = EditorGUIUtility.singleLineHeight;
 
-            EditorGUI.indentLevel++;
-
-            var leftRect = fieldRect;
-            leftRect.width = fieldRect.width * 0.75f;
-            var rightRect = fieldRect;
-            rightRect.width = fieldRect.width * 0.25f;
-            rightRect.x = leftRect.x + leftRect.width;
-            var targetMaterial = property.FindPropertyRelative("targetMaterial");
-            using (new EditorGUI.DisabledGroupScope(true))
-            {
-                EditorGUI.PropertyField(leftRect, targetMaterial, new GUIContent(i18n.AdditionalMaterialConvertSettingsTargetMaterialLabel));
-            }
-            if (GUI.Button(rightRect, i18n.AdditionalMaterialConvertSettingsSelectMaterialLabel))
-            {
-                OnClickMaterialSelectButton(targetMaterial);
-            }
-            fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-
-            using (var ccs = new EditorGUI.ChangeCheckScope())
-            {
-                var name = property.FindPropertyRelative("materialConvertSettings").managedReferenceFullTypename.Split(' ').Last();
-                var type = SystemUtility.GetTypeByName(name);
-                var selectedIndex = MaterialConvertSettingsTypes.Types.IndexOf(type);
-                selectedIndex = EditorGUI.Popup(fieldRect, i18n.AvatarConverterMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.GetConvertTypePopupLabels());
-                fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                if (ccs.changed)
+                if (label.text != string.Empty || label.image != null)
                 {
-                    var newType = MaterialConvertSettingsTypes.Types[selectedIndex];
-                    property.FindPropertyRelative("materialConvertSettings").managedReferenceValue = Activator.CreateInstance(newType);
+                    EditorGUI.LabelField(fieldRect, label);
+                    fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 }
+
+                EditorGUI.indentLevel++;
+
+                var leftRect = fieldRect;
+                leftRect.width = fieldRect.width * 0.75f;
+                var rightRect = fieldRect;
+                rightRect.width = fieldRect.width * 0.25f;
+                rightRect.x = leftRect.x + leftRect.width;
+                var targetMaterial = property.FindPropertyRelative("targetMaterial");
+                using (new EditorGUI.DisabledGroupScope(true))
+                {
+                    EditorGUI.PropertyField(leftRect, targetMaterial, new GUIContent(i18n.AdditionalMaterialConvertSettingsTargetMaterialLabel));
+                }
+                if (GUI.Button(rightRect, i18n.AdditionalMaterialConvertSettingsSelectMaterialLabel))
+                {
+                    OnClickMaterialSelectButton(targetMaterial);
+                }
+                fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+                var settings = property.FindPropertyRelative("materialConvertSettings");
+                EditorGUI.PropertyField(fieldRect, settings, new GUIContent(i18n.AvatarConverterMaterialConvertSettingLabel));
+
+                EditorGUI.indentLevel--;
             }
-
-            var settings = property.FindPropertyRelative("materialConvertSettings");
-            EditorGUI.PropertyField(fieldRect, settings, new GUIContent());
-
-            EditorGUI.indentLevel--;
         }
 
         private void OnClickMaterialSelectButton(SerializedProperty materialProperty)

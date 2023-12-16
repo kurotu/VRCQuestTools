@@ -27,10 +27,8 @@ namespace KRT.VRCQuestTools.Inspector
         [SerializeField]
         private bool foldOutMaterialSettings = false;
 
-#if !UNITY_2022_1_OR_NEWER
         [SerializeField]
         private bool foldOutAdditionalMaterialSettings = false;
-#endif
 
         [SerializeField]
         private bool foldOutAvatarDynamics = false;
@@ -142,25 +140,11 @@ namespace KRT.VRCQuestTools.Inspector
                 if (foldOutMaterialSettings)
                 {
                     var defaultMaterialConvertSettings = so.FindProperty("defaultMaterialConvertSettings");
-                    using (var ccs = new EditorGUI.ChangeCheckScope())
-                    {
-                        var name = defaultMaterialConvertSettings.managedReferenceFullTypename.Split(' ').Last();
-                        var type = SystemUtility.GetTypeByName(name);
-                        var selectedIndex = MaterialConvertSettingsTypes.DefaultTypes.IndexOf(type);
-                        selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterDefaultMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.GetDefaultConvertTypePopupLabels());
-                        if (ccs.changed)
-                        {
-                            var newType = MaterialConvertSettingsTypes.DefaultTypes[selectedIndex];
-                            defaultMaterialConvertSettings.managedReferenceValue = System.Activator.CreateInstance(newType);
-                        }
-                    }
-                    EditorGUILayout.PropertyField(defaultMaterialConvertSettings, new GUIContent());
+                    EditorGUILayout.PropertyField(defaultMaterialConvertSettings, new GUIContent(i18n.AvatarConverterDefaultMaterialConvertSettingLabel));
 
                     var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
                     var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;
-#if UNITY_2022_1_OR_NEWER
-                    EditorGUILayout.PropertyField(additionalMaterialConvertSettings, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel));
-#else
+
                     foldOutAdditionalMaterialSettings = EditorGUILayout.Foldout(foldOutAdditionalMaterialSettings, i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel, true);
                     if (foldOutAdditionalMaterialSettings)
                     {
@@ -170,24 +154,25 @@ namespace KRT.VRCQuestTools.Inspector
                             additionalMaterialConvertSettingsReorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
                             {
                                 EditorGUI.PropertyField(rect, additionalMaterialConvertSettings.GetArrayElementAtIndex(index));
+                                so.ApplyModifiedProperties();
                             };
                             additionalMaterialConvertSettingsReorderableList.elementHeightCallback = (index) =>
                             {
                                 var element = additionalMaterialConvertSettings.GetArrayElementAtIndex(index);
                                 return EditorGUI.GetPropertyHeight(element);
                             };
+                            additionalMaterialConvertSettingsReorderableList.onAddCallback = (list) =>
+                            {
+                                var index = list.serializedProperty.arraySize;
+                                list.serializedProperty.arraySize++;
+                                list.index = index;
+                                var element = list.serializedProperty.GetArrayElementAtIndex(index);
+                                element.FindPropertyRelative("targetMaterial").objectReferenceValue = null;
+                                element.FindPropertyRelative("materialConvertSettings").managedReferenceValue = new ToonLitConvertSettings();
+                                so.ApplyModifiedProperties();
+                            };
                         }
                         additionalMaterialConvertSettingsReorderableList.DoLayoutList();
-                    }
-#endif
-                    if (additionalMaterialConvertSettings.arraySize > additionalMaterialConvertCount)
-                    {
-                        for (var i = additionalMaterialConvertCount; i < additionalMaterialConvertSettings.arraySize; i++)
-                        {
-                            var e = additionalMaterialConvertSettings.GetArrayElementAtIndex(i);
-                            e.FindPropertyRelative("targetMaterial").objectReferenceValue = null;
-                            e.FindPropertyRelative("materialConvertSettings").managedReferenceValue = new ToonLitConvertSettings();
-                        }
                     }
 
                     if (descriptor)
