@@ -288,7 +288,8 @@ namespace KRT.VRCQuestTools.Inspector
             avatarDynamicsPerfLimit = PerformanceRating.Poor;
         }
 
-        private AvatarPerformanceStats EstimatePerformanceStats(AvatarConverterSettings converterSettings) {
+        private AvatarPerformanceStats EstimatePerformanceStats(AvatarConverterSettings converterSettings)
+        {
             var original = converterSettings.AvatarDescriptor;
             if (original == null)
             {
@@ -298,7 +299,7 @@ namespace KRT.VRCQuestTools.Inspector
             var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
             var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).Select(c => new ContactBase(c)).ToArray();
             var avatar = new VRChatAvatar(original);
-            return avatar.EstimateMobilePerformanceStats(pbToKeep, pbcToKeep, contactsToKeep);
+            return avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, contactsToKeep);
         }
 
         private void AvatarDynamicsPerformanceGUI(AvatarPerformanceStats stats)

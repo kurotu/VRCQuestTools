@@ -241,20 +241,19 @@ namespace KRT.VRCQuestTools.Views
             {
                 EditorGUILayout.HelpBox(i18n.PhysBonesShouldHaveNetworkID, MessageType.Warning);
             }
-            var stats = AvatarDynamics.CalculatePerformanceStats(
-                model.Avatar.GameObject,
-                model.PhysBonesToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray(),
-                model.PhysBoneCollidersToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray(),
-                model.ContactsToKeep.Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray());
 
             EditorGUILayout.Space();
 
+            var stats = model.Avatar.EstimatePerformanceStats(
+                model.PhysBonesToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray(),
+                model.PhysBoneCollidersToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray(),
+                model.ContactsToKeep.Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray(),
+                true);
             EditorGUILayout.LabelField(i18n.EstimatedPerformanceStats, EditorStyles.boldLabel);
-            GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneComponentCount, i18n);
-            GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneTransformCount, i18n);
-            GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneColliderCount, i18n);
-            GUIRatingPanel(stats, AvatarPerformanceCategory.PhysBoneCollisionCheckCount, i18n);
-            GUIRatingPanel(stats, AvatarPerformanceCategory.ContactCount, i18n);
+            foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
+            {
+                EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
+            }
 
             if (GUILayout.Button(i18n.DeleteUnselectedComponents))
             {
@@ -285,67 +284,6 @@ namespace KRT.VRCQuestTools.Views
                 EditorGUILayout.ObjectField(GetRootTransform(component), typeof(Transform), true);
                 return selected;
             }
-        }
-
-        private void GUIRatingPanel(AvatarDynamics.PerformanceStats stats, AvatarPerformanceCategory category, I18nBase i18n)
-        {
-#if VQT_HAS_VRCSDK_BASE
-            var rating = AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, category);
-            using (var horizontal = new EditorGUILayout.HorizontalScope(GUI.skin.box))
-            {
-                var tex = VRCSDKUtility.LoadPerformanceIcon(rating);
-                EditorGUILayout.LabelField(new GUIContent(tex, $"Quest {rating}"), GUILayout.Width(32), GUILayout.Height(32));
-                var qualityLabel = string.Empty;
-                var veryPoorViolation = string.Empty;
-                var value = 0;
-                var maximum = 0;
-                switch (category)
-                {
-                    case AvatarPerformanceCategory.PhysBoneComponentCount:
-                        qualityLabel = "PhysBones Components";
-                        veryPoorViolation = i18n.PhysBonesWillBeRemovedAtRunTime;
-                        value = stats.PhysBonesCount;
-                        maximum = statsLevelSet.poor.physBone.componentCount;
-                        break;
-                    case AvatarPerformanceCategory.PhysBoneTransformCount:
-                        qualityLabel = "PhysBones Affected Transforms";
-                        veryPoorViolation = i18n.PhysBonesTransformsShouldBeReduced;
-                        value = stats.PhysBonesTransformCount;
-                        maximum = statsLevelSet.poor.physBone.transformCount;
-                        break;
-                    case AvatarPerformanceCategory.PhysBoneColliderCount:
-                        qualityLabel = "PhysBones Colliders";
-                        veryPoorViolation = i18n.PhysBoneCollidersWillBeRemovedAtRunTime;
-                        value = stats.PhysBonesColliderCount;
-                        maximum = statsLevelSet.poor.physBone.colliderCount;
-                        break;
-                    case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
-                        qualityLabel = "PhysBones Collision Check Count";
-                        veryPoorViolation = i18n.PhysBonesCollisionCheckCountShouldBeReduced;
-                        value = stats.PhysBonesCollisionCheckCount;
-                        maximum = statsLevelSet.poor.physBone.collisionCheckCount;
-                        break;
-                    case AvatarPerformanceCategory.ContactCount:
-                        qualityLabel = "Avatar Dynamics Contacts";
-                        veryPoorViolation = i18n.ContactsWillBeRemovedAtRunTime;
-                        value = stats.ContactsCount;
-                        maximum = statsLevelSet.poor.contactCount;
-                        break;
-                    default: throw new InvalidOperationException();
-                }
-                var label = $"{qualityLabel}: {value} ({i18n.Maximum}: {maximum})";
-
-                var style = EditorStyles.wordWrappedLabel;
-                using (var vertical = new EditorGUILayout.VerticalScope())
-                {
-                    EditorGUILayout.LabelField(label, style);
-                    if (rating == PerformanceRating.VeryPoor)
-                    {
-                        EditorGUILayout.LabelField(veryPoorViolation, style);
-                    }
-                }
-            }
-#endif
         }
 
         private void OnSelectAvatar(VRC_AvatarDescriptor avatar)

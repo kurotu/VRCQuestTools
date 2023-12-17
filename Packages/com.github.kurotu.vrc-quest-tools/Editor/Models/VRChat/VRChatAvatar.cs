@@ -196,12 +196,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return new Component[] { };
         }
 
-        internal AvatarPerformanceStats EstimateMobilePerformanceStats(
+        /// <summary>
+        /// Estimates performance stats.
+        /// </summary>
+        /// <param name="physbones">PhysBones to keep.</param>
+        /// <param name="colliders">PhysBone colliders to keep.</param>
+        /// <param name="contacts">Contacts to keep.</param>
+        /// <param name="isMobile">true for mobile.</param>
+        /// <returns>Estimated performance stats.</returns>
+        internal AvatarPerformanceStats EstimatePerformanceStats(
             VRCSDKUtility.Reflection.PhysBone[] physbones,
             VRCSDKUtility.Reflection.PhysBoneCollider[] colliders,
             VRCSDKUtility.Reflection.ContactBase[] contacts,
-            bool isMobile = true
-            )
+            bool isMobile = true)
         {
             var stats = VRCSDKUtility.CalculatePerformanceStats(AvatarDescriptor.gameObject, isMobile);
             var dynaimcsStats = AvatarDynamics.CalculatePerformanceStats(AvatarDescriptor.gameObject, physbones, colliders, contacts);
@@ -214,17 +221,20 @@ namespace KRT.VRCQuestTools.Models.VRChat
             };
             stats.contactCount = dynaimcsStats.ContactsCount;
 
-            stats.audioSourceCount = null;
-            stats.clothCount = null;
-            stats.clothMaxVertices = null;
-            stats.constraintsCount = null;
-            stats.downloadSizeBytes = null;
-            stats.dynamicBone = null;
-            stats.lightCount = null;
-            stats.physicsColliderCount = null;
-            stats.physicsRigidbodyCount = null;
-            stats.textureMegabytes = null;
-            stats.uncompressedSizeBytes = null;
+            if (isMobile)
+            {
+                stats.audioSourceCount = null;
+                stats.clothCount = null;
+                stats.clothMaxVertices = null;
+                stats.constraintsCount = null;
+                stats.downloadSizeBytes = null;
+                stats.dynamicBone = null;
+                stats.lightCount = null;
+                stats.physicsColliderCount = null;
+                stats.physicsRigidbodyCount = null;
+                stats.textureMegabytes = null;
+                stats.uncompressedSizeBytes = null;
+            }
 
             stats.CalculateAllPerformanceRatings(isMobile);
             return stats;

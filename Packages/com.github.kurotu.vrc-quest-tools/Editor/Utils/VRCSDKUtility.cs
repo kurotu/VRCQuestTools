@@ -69,7 +69,8 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// AvatarPerformanceCategory for Avatar Dynamics.
         /// </summary>
-        internal static readonly AvatarPerformanceCategory[] AvatarDynamicsPerformanceCategories = {
+        internal static readonly AvatarPerformanceCategory[] AvatarDynamicsPerformanceCategories =
+        {
             AvatarPerformanceCategory.PhysBoneComponentCount,
             AvatarPerformanceCategory.PhysBoneTransformCount,
             AvatarPerformanceCategory.PhysBoneColliderCount,

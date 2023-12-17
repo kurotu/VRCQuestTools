@@ -2,6 +2,7 @@ using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -179,19 +180,13 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField(i18n.EstimatedPerformanceStats, EditorStyles.boldLabel);
+            var avatar = new VRChatAvatar(converterSettings.AvatarDescriptor);
             var pbToKeep = physBonesToKeep.Where(x => x != null).Select(pb => new PhysBone(pb)).ToArray();
             var pbcToKeep = physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
             var cToKeep = contactsToKeep.Where(x => x != null).Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray();
-            var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(converterSettings.AvatarDescriptor.gameObject, pbToKeep, pbcToKeep, cToKeep);
-            var categories = new AvatarPerformanceCategory[]
-            {
-                AvatarPerformanceCategory.PhysBoneComponentCount,
-                AvatarPerformanceCategory.PhysBoneTransformCount,
-                AvatarPerformanceCategory.PhysBoneColliderCount,
-                AvatarPerformanceCategory.PhysBoneCollisionCheckCount,
-                AvatarPerformanceCategory.ContactCount,
-            };
-            var ratings = categories.ToDictionary(x => x, x => Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, x));
+            var stats = avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, cToKeep, true);
+            var categories = VRCSDKUtility.AvatarDynamicsPerformanceCategories;
+            var ratings = categories.ToDictionary(x => x, x => stats.GetPerformanceRatingForCategory(x));
             foreach (var category in categories)
             {
                 EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
