@@ -21,7 +21,7 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// Additional material convert settings.
         /// </summary>
-        [SerializeField]
+        [SerializeReference]
         public AdditionalMaterialConvertSettings[] additionalMaterialConvertSettings = { };
 
         /// <summary>

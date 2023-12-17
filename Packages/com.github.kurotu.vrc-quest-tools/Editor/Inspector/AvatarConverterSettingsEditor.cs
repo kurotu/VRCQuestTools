@@ -161,8 +161,7 @@ namespace KRT.VRCQuestTools.Inspector
                                     list.serializedProperty.arraySize++;
                                     list.index = index;
                                     var element = list.serializedProperty.GetArrayElementAtIndex(index);
-                                    element.FindPropertyRelative("targetMaterial").objectReferenceValue = null;
-                                    element.FindPropertyRelative("materialConvertSettings").managedReferenceValue = new ToonLitConvertSettings();
+                                    element.managedReferenceValue = new AdditionalMaterialConvertSettings();
                                     so.ApplyModifiedProperties();
                                 };
                             }
