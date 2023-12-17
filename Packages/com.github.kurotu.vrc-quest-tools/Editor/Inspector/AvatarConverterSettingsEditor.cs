@@ -134,12 +134,10 @@ namespace KRT.VRCQuestTools.Inspector
 
                     var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
 
-                    var listRect = new Rect(EditorGUILayout.GetControlRect());
-                    listRect.y += UnityEditor.EditorGUIUtility.singleLineHeight + UnityEditor.EditorGUIUtility.standardVerticalSpacing;
-                    listRect.height = UnityEditor.EditorGUIUtility.singleLineHeight;
-                    using (var property = new EditorGUI.PropertyScope(listRect, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel), additionalMaterialConvertSettings))
+                    var headerRect = new Rect(EditorGUILayout.GetControlRect());
+                    using (var property = new EditorGUI.PropertyScope(headerRect, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel), additionalMaterialConvertSettings))
                     {
-                        editorState.foldOutAdditionalMaterialSettings = EditorGUILayout.Foldout(editorState.foldOutAdditionalMaterialSettings, property.content, true);
+                        editorState.foldOutAdditionalMaterialSettings = EditorGUI.Foldout(headerRect, editorState.foldOutAdditionalMaterialSettings, property.content, true);
                         if (editorState.foldOutAdditionalMaterialSettings)
                         {
                             if (additionalMaterialConvertSettingsReorderableList == null)
@@ -195,6 +193,8 @@ namespace KRT.VRCQuestTools.Inspector
                             });
                         }
                     }
+
+                    EditorGUILayout.Space();
 
                     if (GUILayout.Button(i18n.UpdateTexturesLabel))
                     {
