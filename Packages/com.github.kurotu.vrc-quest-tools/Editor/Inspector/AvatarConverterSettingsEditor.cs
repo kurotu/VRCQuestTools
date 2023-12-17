@@ -233,7 +233,7 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
                 }
 
-                EditorGUILayout.Space(12);
+                Views.EditorGUIUtility.HorizontalDivider(2);
 
                 if (descriptor)
                 {
