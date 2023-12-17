@@ -139,12 +139,10 @@ namespace KRT.VRCQuestTools.Inspector
                     listRect.height = UnityEditor.EditorGUIUtility.singleLineHeight;
                     using (var property = new EditorGUI.PropertyScope(listRect, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel), additionalMaterialConvertSettings))
                     {
-                            editorState.foldOutAdditionalMaterialSettings = EditorGUILayout.Foldout(editorState.foldOutAdditionalMaterialSettings, property.content, true);
-                            if (editorState.foldOutAdditionalMaterialSettings)
+                        editorState.foldOutAdditionalMaterialSettings = EditorGUILayout.Foldout(editorState.foldOutAdditionalMaterialSettings, property.content, true);
+                        if (editorState.foldOutAdditionalMaterialSettings)
                         {
-                            // always true is good to show updated list with prefab override.
-                            // if (additionalMaterialConvertSettingsReorderableList == null)
-                            if (true)
+                            if (additionalMaterialConvertSettingsReorderableList == null)
                             {
                                 additionalMaterialConvertSettingsReorderableList = new ReorderableList(so, additionalMaterialConvertSettings, true, false, true, true);
                                 additionalMaterialConvertSettingsReorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
