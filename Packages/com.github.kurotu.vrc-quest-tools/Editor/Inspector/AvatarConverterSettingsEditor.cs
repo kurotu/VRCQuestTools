@@ -133,36 +133,43 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.PropertyField(defaultMaterialConvertSettings, new GUIContent(i18n.AvatarConverterDefaultMaterialConvertSettingLabel));
 
                     var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
-                    var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;
 
-                    editorState.foldOutAdditionalMaterialSettings = EditorGUILayout.Foldout(editorState.foldOutAdditionalMaterialSettings, i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel, true);
-                    if (editorState.foldOutAdditionalMaterialSettings)
+                    var listRect = new Rect(EditorGUILayout.GetControlRect());
+                    listRect.y += UnityEditor.EditorGUIUtility.singleLineHeight + UnityEditor.EditorGUIUtility.standardVerticalSpacing;
+                    listRect.height = UnityEditor.EditorGUIUtility.singleLineHeight;
+                    using (var property = new EditorGUI.PropertyScope(listRect, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel), additionalMaterialConvertSettings))
                     {
-                        if (additionalMaterialConvertSettingsReorderableList == null)
+                            editorState.foldOutAdditionalMaterialSettings = EditorGUILayout.Foldout(editorState.foldOutAdditionalMaterialSettings, property.content, true);
+                            if (editorState.foldOutAdditionalMaterialSettings)
                         {
-                            additionalMaterialConvertSettingsReorderableList = new ReorderableList(so, additionalMaterialConvertSettings, true, false, true, true);
-                            additionalMaterialConvertSettingsReorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
+                            // always true is good to show updated list with prefab override.
+                            // if (additionalMaterialConvertSettingsReorderableList == null)
+                            if (true)
                             {
-                                EditorGUI.PropertyField(rect, additionalMaterialConvertSettings.GetArrayElementAtIndex(index));
-                                so.ApplyModifiedProperties();
-                            };
-                            additionalMaterialConvertSettingsReorderableList.elementHeightCallback = (index) =>
-                            {
-                                var element = additionalMaterialConvertSettings.GetArrayElementAtIndex(index);
-                                return EditorGUI.GetPropertyHeight(element);
-                            };
-                            additionalMaterialConvertSettingsReorderableList.onAddCallback = (list) =>
-                            {
-                                var index = list.serializedProperty.arraySize;
-                                list.serializedProperty.arraySize++;
-                                list.index = index;
-                                var element = list.serializedProperty.GetArrayElementAtIndex(index);
-                                element.FindPropertyRelative("targetMaterial").objectReferenceValue = null;
-                                element.FindPropertyRelative("materialConvertSettings").managedReferenceValue = new ToonLitConvertSettings();
-                                so.ApplyModifiedProperties();
-                            };
+                                additionalMaterialConvertSettingsReorderableList = new ReorderableList(so, additionalMaterialConvertSettings, true, false, true, true);
+                                additionalMaterialConvertSettingsReorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
+                                {
+                                    EditorGUI.PropertyField(rect, additionalMaterialConvertSettings.GetArrayElementAtIndex(index));
+                                    so.ApplyModifiedProperties();
+                                };
+                                additionalMaterialConvertSettingsReorderableList.elementHeightCallback = (index) =>
+                                {
+                                    var element = additionalMaterialConvertSettings.GetArrayElementAtIndex(index);
+                                    return EditorGUI.GetPropertyHeight(element);
+                                };
+                                additionalMaterialConvertSettingsReorderableList.onAddCallback = (list) =>
+                                {
+                                    var index = list.serializedProperty.arraySize;
+                                    list.serializedProperty.arraySize++;
+                                    list.index = index;
+                                    var element = list.serializedProperty.GetArrayElementAtIndex(index);
+                                    element.FindPropertyRelative("targetMaterial").objectReferenceValue = null;
+                                    element.FindPropertyRelative("materialConvertSettings").managedReferenceValue = new ToonLitConvertSettings();
+                                    so.ApplyModifiedProperties();
+                                };
+                            }
+                            additionalMaterialConvertSettingsReorderableList.DoLayoutList();
                         }
-                        additionalMaterialConvertSettingsReorderableList.DoLayoutList();
                     }
 
                     if (descriptor)
@@ -210,11 +217,11 @@ namespace KRT.VRCQuestTools.Inspector
                     }
 
                     var m_physBones = so.FindProperty("physBonesToKeep");
-                    EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones", i18n.AvatarConverterPhysBonesTooltip));
+                    EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones to Keep", i18n.AvatarConverterPhysBonesTooltip));
                     var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
-                    EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", i18n.AvatarConverterPhysBoneCollidersTooltip));
+                    EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders to Keep", i18n.AvatarConverterPhysBoneCollidersTooltip));
                     var m_contacts = so.FindProperty("contactsToKeep");
-                    EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
+                    EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers to Keep", i18n.AvatarConverterContactsTooltip));
                     AvatarDynamicsPerformanceGUI(stats);
                     EditorGUILayout.Space(12);
                 }
