@@ -12,6 +12,7 @@ using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using VRC.SDKBase.Validation.Performance.Stats;
 
 #if VQT_HAS_VRCSDK_BASE
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
@@ -193,6 +194,40 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     .ToArray();
             }
             return new Component[] { };
+        }
+
+        internal AvatarPerformanceStats EstimateMobilePerformanceStats(
+            VRCSDKUtility.Reflection.PhysBone[] physbones,
+            VRCSDKUtility.Reflection.PhysBoneCollider[] colliders,
+            VRCSDKUtility.Reflection.ContactBase[] contacts,
+            bool isMobile = true
+            )
+        {
+            var stats = VRCSDKUtility.CalculatePerformanceStats(AvatarDescriptor.gameObject, isMobile);
+            var dynaimcsStats = AvatarDynamics.CalculatePerformanceStats(AvatarDescriptor.gameObject, physbones, colliders, contacts);
+            stats.physBone = new AvatarPerformanceStats.PhysBoneStats
+            {
+                componentCount = dynaimcsStats.PhysBonesCount,
+                transformCount = dynaimcsStats.PhysBonesTransformCount,
+                colliderCount = dynaimcsStats.PhysBonesColliderCount,
+                collisionCheckCount = dynaimcsStats.PhysBonesCollisionCheckCount,
+            };
+            stats.contactCount = dynaimcsStats.ContactsCount;
+
+            stats.audioSourceCount = null;
+            stats.clothCount = null;
+            stats.clothMaxVertices = null;
+            stats.constraintsCount = null;
+            stats.downloadSizeBytes = null;
+            stats.dynamicBone = null;
+            stats.lightCount = null;
+            stats.physicsColliderCount = null;
+            stats.physicsRigidbodyCount = null;
+            stats.textureMegabytes = null;
+            stats.uncompressedSizeBytes = null;
+
+            stats.CalculateAllPerformanceRatings(isMobile);
+            return stats;
         }
 
         private Material[] GetAnimatedMaterials()

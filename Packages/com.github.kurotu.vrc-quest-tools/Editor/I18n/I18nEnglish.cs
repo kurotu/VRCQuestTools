@@ -52,7 +52,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MaterialExceptionDialogMessage => "An error occured when converting materials. Aborted.";
         internal override string AnimationClipExceptionDialogMessage => "An error occured when converting Animation Clips. Aborted.";
         internal override string AnimatorControllerExceptionDialogMessage => "An error occured when converting Animator Controllers. Aborted.";
-        internal override string WarningForPerformance => $"{VRCQuestTools.Name} never optimize performance rank such as polygon reduction. In most cases, the converted avatar's performance rank will be \"Very Poor\" for Quest.\n- Quest users see your fallback avatar by default, and need to change \"Avatar Display\" setting.\n- You can't use and see Very Poor avatars on Android smartphone.";
+        internal override string WarningForPerformance => $"Estimated performance rating is Very Poor. You can upload the converted avatar for Android platform, but there are following limitation.\n- Quest/PICO users see your fallback avatar by default, then need to change \"Avatar Display\" setting.\n- Android smartphone users can't see Very Poor avatars.";
         internal override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n\n" +
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
         internal override string WarningForUnsupportedShaders => $"Following materials are using unsupported shaders. Textures might not properly be generated.\nDisabling \"{GenerateQuestTexturesLabel}\" option changes only shader.";
@@ -60,7 +60,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForMaterialAnimation => "There are Animation clips which change avatar's materials. Animator Controllers and Animation clips will be duplicated then converted for Quest.";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
         internal override string AlertForMissingNetIds => "There are PhysBones which don't have Network ID. To keep sync between PC and Quest, assign Network IDs then re-upload the PC avatar.";
-        internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics components exceed \"Poor\" limits (Very Poor). Please keep \"Poor\" rating by removing them.";
+        internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not able to upload for Android.  Please keep \"Poor\" rating in avatar dynamics categories.";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
 
         internal override string AvatarConverterMustBeOnAvatarRoot => "This component must be attached to VRC_AvatarDescriptor GameObject.";

@@ -67,6 +67,17 @@ namespace KRT.VRCQuestTools.Utils
         }.Where(e => e != null).ToArray();
 
         /// <summary>
+        /// AvatarPerformanceCategory for Avatar Dynamics.
+        /// </summary>
+        internal static readonly AvatarPerformanceCategory[] AvatarDynamicsPerformanceCategories = {
+            AvatarPerformanceCategory.PhysBoneComponentCount,
+            AvatarPerformanceCategory.PhysBoneTransformCount,
+            AvatarPerformanceCategory.PhysBoneColliderCount,
+            AvatarPerformanceCategory.PhysBoneCollisionCheckCount,
+            AvatarPerformanceCategory.ContactCount,
+        };
+
+        /// <summary>
         /// Type object of VRCPhysBone.
         /// </summary>
         internal static readonly System.Type PhysBoneType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");

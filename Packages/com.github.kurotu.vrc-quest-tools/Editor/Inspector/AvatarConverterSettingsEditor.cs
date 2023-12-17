@@ -199,6 +199,8 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.Space(12);
                 }
 
+                var stats = EstimatePerformanceStats(converterSettings);
+
                 editorState.foldOutAvatarDynamics = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterAvatarDynamicsSettingLabel, editorState.foldOutAvatarDynamics);
                 if (editorState.foldOutAvatarDynamics)
                 {
@@ -213,7 +215,7 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", i18n.AvatarConverterPhysBoneCollidersTooltip));
                     var m_contacts = so.FindProperty("contactsToKeep");
                     EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
-                    AvatarDynamicsPerformanceGUI(converterSettings);
+                    AvatarDynamicsPerformanceGUI(stats);
                     EditorGUILayout.Space(12);
                 }
 
@@ -222,11 +224,25 @@ namespace KRT.VRCQuestTools.Inspector
                 {
                     EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
-                    EditorGUILayout.Space(12);
                 }
+
+                EditorGUILayout.Space(12);
 
                 if (descriptor)
                 {
+                    if (GetAvatarDynamicsRating(stats) > avatarDynamicsPerfLimit)
+                    {
+                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.Error, () =>
+                        {
+                            EditorGUILayout.LabelField(i18n.AlertForAvatarDynamicsPerformance, EditorStyles.wordWrappedMiniLabel);
+                            if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
+                            {
+                                OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+                            }
+                            EditorGUILayout.Space(2);
+                        });
+                    }
+
                     var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
                     if (componentsToBeAlearted.Count() > 0)
                     {
@@ -240,6 +256,15 @@ namespace KRT.VRCQuestTools.Inspector
                                     EditorGUILayout.ObjectField(c, typeof(Component), true);
                                 }
                             }
+                            EditorGUILayout.Space(2);
+                        });
+                    }
+
+                    if (stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.Overall) > PerformanceRating.Poor)
+                    {
+                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
+                        {
+                            EditorGUILayout.LabelField(i18n.WarningForPerformance, EditorStyles.wordWrappedMiniLabel);
                             EditorGUILayout.Space(2);
                         });
                     }
@@ -263,40 +288,41 @@ namespace KRT.VRCQuestTools.Inspector
             avatarDynamicsPerfLimit = PerformanceRating.Poor;
         }
 
-        private void AvatarDynamicsPerformanceGUI(AvatarConverterSettings converterSettings)
-        {
+        private AvatarPerformanceStats EstimatePerformanceStats(AvatarConverterSettings converterSettings) {
             var original = converterSettings.AvatarDescriptor;
             if (original == null)
             {
-                return;
+                return null;
             }
             var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).Select(pb => new PhysBone(pb)).ToArray();
             var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
             var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).Select(c => new ContactBase(c)).ToArray();
-            var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(original.gameObject, pbToKeep, pbcToKeep, contactsToKeep);
+            var avatar = new VRChatAvatar(original);
+            return avatar.EstimateMobilePerformanceStats(pbToKeep, pbcToKeep, contactsToKeep);
+        }
 
+        private void AvatarDynamicsPerformanceGUI(AvatarPerformanceStats stats)
+        {
             editorState.foldOutEstimatedPerf = EditorGUILayout.Foldout(editorState.foldOutEstimatedPerf, i18n.EstimatedPerformanceStats, true);
-            var categories = new AvatarPerformanceCategory[]
-            {
-                AvatarPerformanceCategory.PhysBoneComponentCount,
-                AvatarPerformanceCategory.PhysBoneTransformCount,
-                AvatarPerformanceCategory.PhysBoneColliderCount,
-                AvatarPerformanceCategory.PhysBoneCollisionCheckCount,
-                AvatarPerformanceCategory.ContactCount,
-            };
-            var ratings = categories.ToDictionary(x => x, x => Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, x));
+            var ratings = VRCSDKUtility.AvatarDynamicsPerformanceCategories.ToDictionary(x => x, stats.GetPerformanceRatingForCategory);
             var worst = ratings.Values.Max();
             if (editorState.foldOutEstimatedPerf || worst > avatarDynamicsPerfLimit)
             {
                 Views.EditorGUIUtility.PerformanceRatingPanel(worst, $"Avatar Dynamics: {worst}", worst > avatarDynamicsPerfLimit ? i18n.AvatarDynamicsPreventsUpload : null);
             }
-            foreach (var category in categories)
+            foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
             {
                 if (editorState.foldOutEstimatedPerf || ratings[category] > avatarDynamicsPerfLimit)
                 {
                     Views.EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
                 }
             }
+        }
+
+        private PerformanceRating GetAvatarDynamicsRating(AvatarPerformanceStats stats)
+        {
+            var ratings = VRCSDKUtility.AvatarDynamicsPerformanceCategories.Select(stats.GetPerformanceRatingForCategory);
+            return ratings.Max();
         }
 
         private void OnClickConvertToPhysBonesButton(VRC_AvatarDescriptor avatar)

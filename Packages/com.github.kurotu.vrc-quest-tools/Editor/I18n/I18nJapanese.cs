@@ -52,7 +52,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MaterialExceptionDialogMessage => "マテリアルの変換中にエラーが発生しました。変換を中止します。";
         internal override string AnimationClipExceptionDialogMessage => "アニメーションの変換中にエラーが発生しました。変換を中止します。";
         internal override string AnimatorControllerExceptionDialogMessage => "Animator Controllerの変換中にエラーが発生しました。変換を中止します。";
-        internal override string WarningForPerformance => $"{VRCQuestTools.Name}はポリゴン数削減などのパフォーマンスランクの最適化をしません。ほとんどの場合、変換後のアバターは Quest のパフォーマンスランクで Very Poor になります。\n・デフォルトではフォールバックアバターが表示され、見る側が Avatar Display 設定で個別に表示する必要があります。\n・Very Poor のアバターは Android スマートフォン版 VRChat では使用・表示できません。";
+        internal override string WarningForPerformance => $"変換後のアバターの推定パフォーマンスランクは Very Poor です。Android 用にアップロードできますが、以下の制限があります。\n・デフォルトではフォールバックアバターが表示され、見る側が Avatar Display 設定で個別に表示する必要があります。\n・Android スマートフォン版 VRChat では表示できません。";
         internal override string WarningForAppearance => "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n\n" +
             "別の Blueprint ID でのアップロードや Avatars 3.0 のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
         internal override string WarningForUnsupportedShaders => $"以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n「{GenerateQuestTexturesLabel}」をオフにするとシェーダーのみを変更します。";
@@ -61,7 +61,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} は Dynamic Bone を PhysBones に変換しません。アバターを変換する前に PhysBones を設定してください。";
         internal override string AlertForMissingNetIds => "ネットワークIDの割り当てられていない PhysBones があります。 PC と Quest で正しく同期させるため、ネットワークIDを割り当てた後でPC用のアバターを再度アップロードしてください。";
         internal override string AlertForMultiplePhysBones => "1つの GameObject に複数の PhysBone があります。変換後に Quest 用に PhysBone を削除した場合、PC と Quest で正しく同期しない可能性があります。";
-        internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics コンポーネントの数が Poor の制限値を超えています (Very Poor)。 Avatar Dynamics 関連のパフォーマンスランクが Poor に収まるようコンポーネントを削除してください。";
+        internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones, Contacts) のパフォーマンスランクが Very Poor になっており Android 用にアップロードできません。 Avatar Dynamics のパフォーマンスランクが Poor に収まるようコンポーネントを削減してください。";
         internal override string CompletedDialogMessage(string originalName) => $"{originalName} の変換が完了しました。\n表情などを確認した後、PC用と同じBlueprint IDを使ってAndroidプラットフォーム用にアップロードしてください。";
 
         internal override string AvatarConverterMustBeOnAvatarRoot => "VRC_AvatarDescriptor のあるオブジェクトに配置してください。";

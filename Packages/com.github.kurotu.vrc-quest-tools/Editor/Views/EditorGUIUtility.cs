@@ -55,6 +55,57 @@ namespace KRT.VRCQuestTools.Views
         /// <param name="statsLevelSet">Stats level set.</param>
         /// <param name="category">Stats category.</param>
         /// <param name="i18n">I18n resource.</param>
+        internal static void PerformanceRatingPanel(AvatarPerformanceStats stats, AvatarPerformanceStatsLevelSet statsLevelSet, AvatarPerformanceCategory category, I18nBase i18n)
+        {
+            var rating = stats.GetPerformanceRatingForCategory(category);
+            string categoryDisplayName;
+            try
+            {
+                categoryDisplayName = AvatarPerformanceStats.GetPerformanceCategoryDisplayName(category);
+            }
+            catch
+            {
+                categoryDisplayName = category.ToString();
+            }
+            string ratingDisplayName = AvatarPerformanceStats.GetPerformanceRatingDisplayName(rating);
+            string label = $"{categoryDisplayName}: {ratingDisplayName}";
+            string veryPoorViolation = null;
+
+            switch (category)
+            {
+                case AvatarPerformanceCategory.PhysBoneComponentCount:
+                    label = $"{categoryDisplayName}: {stats.physBone.Value.componentCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.componentCount})";
+                    veryPoorViolation = i18n.PhysBonesWillBeRemovedAtRunTime;
+                    break;
+                case AvatarPerformanceCategory.PhysBoneTransformCount:
+                    label = $"{categoryDisplayName}: {stats.physBone.Value.transformCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.transformCount})";
+                    veryPoorViolation = i18n.PhysBonesTransformsShouldBeReduced;
+                    break;
+                case AvatarPerformanceCategory.PhysBoneColliderCount:
+                    label = $"{categoryDisplayName}: {stats.physBone.Value.colliderCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.colliderCount})";
+                    veryPoorViolation = i18n.PhysBoneCollidersWillBeRemovedAtRunTime;
+                    break;
+                case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
+                    label = $"{categoryDisplayName}: {stats.physBone.Value.collisionCheckCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.collisionCheckCount})";
+                    veryPoorViolation = i18n.PhysBonesCollisionCheckCountShouldBeReduced;
+                    break;
+                case AvatarPerformanceCategory.ContactCount:
+                    label = $"{categoryDisplayName}: {stats.contactCount.Value} ({i18n.Maximum}: {statsLevelSet.poor.contactCount})";
+                    veryPoorViolation = i18n.ContactsWillBeRemovedAtRunTime;
+                    break;
+                default:
+                    throw new System.InvalidProgramException();
+            }
+            PerformanceRatingPanel(rating, label, rating >= PerformanceRating.VeryPoor ? veryPoorViolation : null);
+        }
+
+        /// <summary>
+        /// Show performance rating panel for calculated stats.
+        /// </summary>
+        /// <param name="stats">Calculated stats.</param>
+        /// <param name="statsLevelSet">Stats level set.</param>
+        /// <param name="category">Stats category.</param>
+        /// <param name="i18n">I18n resource.</param>
         internal static void PerformanceRatingPanel(Models.VRChat.AvatarDynamics.PerformanceStats stats, AvatarPerformanceStatsLevelSet statsLevelSet, AvatarPerformanceCategory category, I18nBase i18n)
         {
             var rating = Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, category);
