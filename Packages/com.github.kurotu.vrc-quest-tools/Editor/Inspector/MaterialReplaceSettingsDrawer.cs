@@ -13,25 +13,42 @@ namespace KRT.VRCQuestTools.Inspector
         /// <inheritdoc />
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return 0.0f;
+            var height = 0.0f;
+            height += EditorGUIUtility.singleLineHeight;
+            height += EditorGUIUtility.standardVerticalSpacing;
+            height += EditorGUIUtility.singleLineHeight;
+            return height;
         }
 
         /// <inheritdoc />
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var i18n = VRCQuestToolsSettings.I18nResource;
-
-            if (label.text != string.Empty || label.image != null)
+            using (new EditorGUI.PropertyScope(position, label, property))
             {
-                EditorGUILayout.LabelField(label);
+                var i18n = VRCQuestToolsSettings.I18nResource;
+                var fieldRect = position;
+                fieldRect.height = EditorGUIUtility.singleLineHeight;
+
+                var selectedIndex = MaterialConvertSettingsTypes.Types.IndexOf(typeof(MaterialReplaceSettings));
+                using (var ccs = new EditorGUI.ChangeCheckScope())
+                {
+                    selectedIndex = EditorGUI.Popup(fieldRect, label.text, selectedIndex, MaterialConvertSettingsTypes.GetConvertTypePopupLabels());
+                    if (ccs.changed)
+                    {
+                        var type = MaterialConvertSettingsTypes.Types[selectedIndex];
+                        property.managedReferenceValue = System.Activator.CreateInstance(type);
+                        return;
+                    }
+                }
+                fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+                EditorGUI.indentLevel++;
+
+                var materialLabel = new GUIContent(i18n.MaterialReplaceSettingsMaterialLabel, i18n.MaterialReplaceSettingsMaterialTooltip);
+                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("material"), materialLabel);
+
+                EditorGUI.indentLevel--;
             }
-
-            EditorGUI.indentLevel++;
-
-            var materialLabel = new GUIContent(i18n.MaterialReplaceSettingsMaterialLabel, i18n.MaterialReplaceSettingsMaterialTooltip);
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("material"), materialLabel);
-
-            EditorGUI.indentLevel--;
         }
     }
 }

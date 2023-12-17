@@ -55,48 +55,47 @@ namespace KRT.VRCQuestTools.Views
         /// <param name="statsLevelSet">Stats level set.</param>
         /// <param name="category">Stats category.</param>
         /// <param name="i18n">I18n resource.</param>
-        internal static void PerformanceRatingPanel(Models.VRChat.AvatarDynamics.PerformanceStats stats, AvatarPerformanceStatsLevelSet statsLevelSet, AvatarPerformanceCategory category, I18nBase i18n)
+        internal static void PerformanceRatingPanel(AvatarPerformanceStats stats, AvatarPerformanceStatsLevelSet statsLevelSet, AvatarPerformanceCategory category, I18nBase i18n)
         {
-            var rating = Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, category);
-            string categoryName;
-            string veryPoorViolation;
-            int value;
-            int maximum;
+            var rating = stats.GetPerformanceRatingForCategory(category);
+            string categoryDisplayName;
+            try
+            {
+                categoryDisplayName = AvatarPerformanceStats.GetPerformanceCategoryDisplayName(category);
+            }
+            catch
+            {
+                categoryDisplayName = category.ToString();
+            }
+            string ratingDisplayName = AvatarPerformanceStats.GetPerformanceRatingDisplayName(rating);
+            string label = $"{categoryDisplayName}: {ratingDisplayName}";
+            string veryPoorViolation = null;
+
             switch (category)
             {
                 case AvatarPerformanceCategory.PhysBoneComponentCount:
-                    categoryName = "PhysBones Components";
+                    label = $"{categoryDisplayName}: {stats.physBone.Value.componentCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.componentCount})";
                     veryPoorViolation = i18n.PhysBonesWillBeRemovedAtRunTime;
-                    value = stats.PhysBonesCount;
-                    maximum = statsLevelSet.poor.physBone.componentCount;
                     break;
                 case AvatarPerformanceCategory.PhysBoneTransformCount:
-                    categoryName = "PhysBones Affected Transforms";
+                    label = $"{categoryDisplayName}: {stats.physBone.Value.transformCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.transformCount})";
                     veryPoorViolation = i18n.PhysBonesTransformsShouldBeReduced;
-                    value = stats.PhysBonesTransformCount;
-                    maximum = statsLevelSet.poor.physBone.transformCount;
                     break;
                 case AvatarPerformanceCategory.PhysBoneColliderCount:
-                    categoryName = "PhysBones Colliders";
+                    label = $"{categoryDisplayName}: {stats.physBone.Value.colliderCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.colliderCount})";
                     veryPoorViolation = i18n.PhysBoneCollidersWillBeRemovedAtRunTime;
-                    value = stats.PhysBonesColliderCount;
-                    maximum = statsLevelSet.poor.physBone.colliderCount;
                     break;
                 case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
-                    categoryName = "PhysBones Collision Check Count";
+                    label = $"{categoryDisplayName}: {stats.physBone.Value.collisionCheckCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.collisionCheckCount})";
                     veryPoorViolation = i18n.PhysBonesCollisionCheckCountShouldBeReduced;
-                    value = stats.PhysBonesCollisionCheckCount;
-                    maximum = statsLevelSet.poor.physBone.collisionCheckCount;
                     break;
                 case AvatarPerformanceCategory.ContactCount:
-                    categoryName = "Avatar Dynamics Contacts";
+                    label = $"{categoryDisplayName}: {stats.contactCount.Value} ({i18n.Maximum}: {statsLevelSet.poor.contactCount})";
                     veryPoorViolation = i18n.ContactsWillBeRemovedAtRunTime;
-                    value = stats.ContactsCount;
-                    maximum = statsLevelSet.poor.contactCount;
                     break;
-                default: throw new System.InvalidOperationException();
+                default:
+                    throw new System.InvalidProgramException();
             }
-            var label = $"{categoryName}: {value} ({i18n.Maximum}: {maximum})";
             PerformanceRatingPanel(rating, label, rating >= PerformanceRating.VeryPoor ? veryPoorViolation : null);
         }
 
@@ -161,6 +160,41 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.Space();
             GUILayout.Box(string.Empty, GUILayout.ExpandWidth(true), GUILayout.Height(lineHeight));
             EditorGUILayout.Space();
+        }
+
+        /// <summary>
+        /// Show boxed foldout.
+        /// </summary>
+        /// <param name="title">Title to show.</param>
+        /// <param name="display">Whether to show.</param>
+        /// <returns>Foldout result.</returns>
+        internal static bool Foldout(string title, bool display)
+        {
+            var style = new GUIStyle("ShurikenModuleTitle");
+            style.font = EditorStyles.label.font;
+            style.fontSize = EditorStyles.label.fontSize;
+            style.border = new RectOffset(15, 7, 4, 4);
+            style.fixedHeight = 22;
+            style.contentOffset = new Vector2(20f, -2f);
+
+            var rect = GUILayoutUtility.GetRect(16f, 22f, style);
+            GUI.Box(rect, title, style);
+
+            var e = Event.current;
+
+            var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
+            if (e.type == EventType.Repaint)
+            {
+                EditorStyles.foldout.Draw(toggleRect, false, false, display, false);
+            }
+
+            if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
+            {
+                display = !display;
+                e.Use();
+            }
+
+            return display;
         }
 
         private static GUIContent MessageTypeIconContent(MessageType type)

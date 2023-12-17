@@ -4,9 +4,11 @@ using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.SDKBase.Validation.Performance;
@@ -22,11 +24,11 @@ namespace KRT.VRCQuestTools.Inspector
     [CustomEditor(typeof(AvatarConverterSettings))]
     public class AvatarConverterSettingsEditor : Editor
     {
-        [SerializeField]
-        private bool foldOutEstimatedPerf = false;
-
         private AvatarConverterSettings converterSettings;
+
         private I18nBase i18n;
+        private AvatarConverterSettingsEditorState editorState;
+        private ReorderableList additionalMaterialConvertSettingsReorderableList;
         private AvatarPerformanceStatsLevelSet statsLevelSet;
         private PerformanceRating avatarDynamicsPerfLimit;
 
@@ -34,6 +36,10 @@ namespace KRT.VRCQuestTools.Inspector
         public override void OnInspectorGUI()
         {
             i18n = VRCQuestToolsSettings.I18nResource;
+            if (editorState == null)
+            {
+                editorState = AvatarConverterSettingsEditorState.instance;
+            }
 
             var so = new SerializedObject(target);
             so.Update();
@@ -118,68 +124,129 @@ namespace KRT.VRCQuestTools.Inspector
                     }
                 }
 
-                Views.EditorGUIUtility.HorizontalDivider(2);
+                EditorGUILayout.Space(12);
 
-                EditorGUILayout.LabelField(i18n.AvatarConverterMaterialConvertSettingLabel, EditorStyles.boldLabel);
-                using (var ccs = new EditorGUI.ChangeCheckScope())
+                editorState.foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingLabel, editorState.foldOutMaterialSettings);
+                if (editorState.foldOutMaterialSettings)
                 {
-                    var name = so.FindProperty("defaultMaterialConvertSetting").managedReferenceFullTypename.Split(' ').Last();
-                    var type = SystemUtility.GetTypeByName(name);
-                    var selectedIndex = MaterialConvertSettingsTypes.DefaultTypes.IndexOf(type);
-                    selectedIndex = EditorGUILayout.Popup(i18n.AvatarConverterDefaultMaterialConvertSettingLabel, selectedIndex, MaterialConvertSettingsTypes.GetDefaultConvertTypePopupLabels());
-                    if (ccs.changed)
+                    var defaultMaterialConvertSettings = so.FindProperty("defaultMaterialConvertSettings");
+                    EditorGUILayout.PropertyField(defaultMaterialConvertSettings, new GUIContent(i18n.AvatarConverterDefaultMaterialConvertSettingLabel));
+
+                    var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
+
+                    var headerRect = new Rect(EditorGUILayout.GetControlRect());
+                    using (var property = new EditorGUI.PropertyScope(headerRect, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel), additionalMaterialConvertSettings))
                     {
-                        var newType = MaterialConvertSettingsTypes.DefaultTypes[selectedIndex];
-                        so.FindProperty("defaultMaterialConvertSetting").managedReferenceValue = System.Activator.CreateInstance(newType);
+                        editorState.foldOutAdditionalMaterialSettings = EditorGUI.Foldout(headerRect, editorState.foldOutAdditionalMaterialSettings, property.content, true);
+                        if (editorState.foldOutAdditionalMaterialSettings)
+                        {
+                            if (additionalMaterialConvertSettingsReorderableList == null)
+                            {
+                                additionalMaterialConvertSettingsReorderableList = new ReorderableList(so, additionalMaterialConvertSettings, true, false, true, true);
+                                additionalMaterialConvertSettingsReorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
+                                {
+                                    EditorGUI.PropertyField(rect, additionalMaterialConvertSettings.GetArrayElementAtIndex(index));
+                                    so.ApplyModifiedProperties();
+                                };
+                                additionalMaterialConvertSettingsReorderableList.elementHeightCallback = (index) =>
+                                {
+                                    var element = additionalMaterialConvertSettings.GetArrayElementAtIndex(index);
+                                    return EditorGUI.GetPropertyHeight(element);
+                                };
+                                additionalMaterialConvertSettingsReorderableList.onAddCallback = (list) =>
+                                {
+                                    var index = list.serializedProperty.arraySize;
+                                    list.serializedProperty.arraySize++;
+                                    list.index = index;
+                                    var element = list.serializedProperty.GetArrayElementAtIndex(index);
+                                    element.managedReferenceValue = new AdditionalMaterialConvertSettings();
+                                    so.ApplyModifiedProperties();
+                                };
+                            }
+                            additionalMaterialConvertSettingsReorderableList.DoLayoutList();
+                        }
                     }
-                }
-                EditorGUILayout.PropertyField(so.FindProperty("defaultMaterialConvertSetting"), new GUIContent());
 
-                var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
-                var additionalMaterialConvertCount = additionalMaterialConvertSettings.arraySize;
-                EditorGUILayout.PropertyField(additionalMaterialConvertSettings, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel));
-                if (additionalMaterialConvertSettings.arraySize > additionalMaterialConvertCount)
-                {
-                    for (var i = additionalMaterialConvertCount; i < additionalMaterialConvertSettings.arraySize; i++)
+                    if (descriptor)
                     {
-                        var e = additionalMaterialConvertSettings.GetArrayElementAtIndex(i);
-                        e.FindPropertyRelative("targetMaterial").objectReferenceValue = null;
-                        e.FindPropertyRelative("materialConvertSettings").managedReferenceValue = new ToonLitConvertSettings();
+                        var targetAvatar = new VRChatAvatar(descriptor);
+                        var unverifiedMaterials = targetAvatar.Materials
+                            .Where(m => VRCQuestTools.AvatarConverter.MaterialWrapperBuilder.DetectShaderCategory(m) == MaterialWrapperBuilder.ShaderCategory.Unverified)
+                            .ToArray();
+
+                        if (unverifiedMaterials.Length > 0)
+                        {
+                            Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
+                            {
+                                EditorGUILayout.LabelField(i18n.WarningForUnsupportedShaders, EditorStyles.wordWrappedMiniLabel);
+                                EditorGUILayout.Space(1);
+                                EditorGUILayout.LabelField($"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon, AXCS, Sunao, lilToon, Poiyomi", EditorStyles.wordWrappedMiniLabel);
+                                EditorGUI.BeginDisabledGroup(true);
+                                foreach (var m in unverifiedMaterials)
+                                {
+                                    EditorGUILayout.BeginHorizontal();
+                                    EditorGUILayout.ObjectField(m, typeof(Material), false);
+                                    EditorGUILayout.ObjectField(m.shader, typeof(Shader), false);
+                                    EditorGUILayout.EndHorizontal();
+                                }
+                                EditorGUI.EndDisabledGroup();
+                            });
+                        }
                     }
+
+                    EditorGUILayout.Space();
+
+                    if (GUILayout.Button(i18n.UpdateTexturesLabel))
+                    {
+                        OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSettings);
+                    }
+                    EditorGUILayout.Space(12);
                 }
 
-                if (GUILayout.Button(i18n.UpdateTexturesLabel))
+                var stats = EstimatePerformanceStats(converterSettings);
+
+                editorState.foldOutAvatarDynamics = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterAvatarDynamicsSettingLabel, editorState.foldOutAvatarDynamics);
+                if (editorState.foldOutAvatarDynamics)
                 {
-                    OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSetting);
+                    if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
+                    {
+                        OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+                    }
+
+                    var m_physBones = so.FindProperty("physBonesToKeep");
+                    EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones to Keep", i18n.AvatarConverterPhysBonesTooltip));
+                    var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
+                    EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders to Keep", i18n.AvatarConverterPhysBoneCollidersTooltip));
+                    var m_contacts = so.FindProperty("contactsToKeep");
+                    EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers to Keep", i18n.AvatarConverterContactsTooltip));
+                    AvatarDynamicsPerformanceGUI(stats);
+                    EditorGUILayout.Space(12);
+                }
+
+                editorState.foldOutAdvancedSettings = Views.EditorGUIUtility.Foldout(i18n.AdvancedConverterSettingsLabel, editorState.foldOutAdvancedSettings);
+                if (editorState.foldOutAdvancedSettings)
+                {
+                    EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
+                    EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
                 }
 
                 Views.EditorGUIUtility.HorizontalDivider(2);
-
-                EditorGUILayout.LabelField(i18n.AvatarConverterAvatarDynamicsSettingLabel, EditorStyles.boldLabel);
-                if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
-                {
-                    OnClickSelectAvatarDynamicsComponentsButton(descriptor);
-                }
-
-                var m_physBones = so.FindProperty("physBonesToKeep");
-                EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones", i18n.AvatarConverterPhysBonesTooltip));
-                var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
-                EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders", i18n.AvatarConverterPhysBoneCollidersTooltip));
-                var m_contacts = so.FindProperty("contactsToKeep");
-                EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers", i18n.AvatarConverterContactsTooltip));
-                AvatarDynamicsPerformanceGUI(converterSettings);
-
-                Views.EditorGUIUtility.HorizontalDivider(2);
-
-                EditorGUILayout.LabelField(i18n.AdvancedConverterSettingsLabel, EditorStyles.boldLabel);
-
-                EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
-                EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
-
-                EditorGUILayout.Space();
 
                 if (descriptor)
                 {
+                    if (GetAvatarDynamicsRating(stats) > avatarDynamicsPerfLimit)
+                    {
+                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.Error, () =>
+                        {
+                            EditorGUILayout.LabelField(i18n.AlertForAvatarDynamicsPerformance, EditorStyles.wordWrappedMiniLabel);
+                            if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingLabel))
+                            {
+                                OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+                            }
+                            EditorGUILayout.Space(2);
+                        });
+                    }
+
                     var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
                     if (componentsToBeAlearted.Count() > 0)
                     {
@@ -193,6 +260,15 @@ namespace KRT.VRCQuestTools.Inspector
                                     EditorGUILayout.ObjectField(c, typeof(Component), true);
                                 }
                             }
+                            EditorGUILayout.Space(2);
+                        });
+                    }
+
+                    if (stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.Overall) > PerformanceRating.Poor)
+                    {
+                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
+                        {
+                            EditorGUILayout.LabelField(i18n.WarningForPerformance, EditorStyles.wordWrappedMiniLabel);
                             EditorGUILayout.Space(2);
                         });
                     }
@@ -216,37 +292,42 @@ namespace KRT.VRCQuestTools.Inspector
             avatarDynamicsPerfLimit = PerformanceRating.Poor;
         }
 
-        private void AvatarDynamicsPerformanceGUI(AvatarConverterSettings converterSettings)
+        private AvatarPerformanceStats EstimatePerformanceStats(AvatarConverterSettings converterSettings)
         {
             var original = converterSettings.AvatarDescriptor;
             if (original == null)
             {
-                return;
+                return null;
             }
             var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).Select(pb => new PhysBone(pb)).ToArray();
             var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
             var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).Select(c => new ContactBase(c)).ToArray();
-            var stats = Models.VRChat.AvatarDynamics.CalculatePerformanceStats(original.gameObject, pbToKeep, pbcToKeep, contactsToKeep);
+            var avatar = new VRChatAvatar(original);
+            return avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, contactsToKeep);
+        }
 
-            foldOutEstimatedPerf = EditorGUILayout.Foldout(foldOutEstimatedPerf, i18n.EstimatedPerformanceStats, true);
-            var categories = new AvatarPerformanceCategory[]
-            {
-                AvatarPerformanceCategory.PhysBoneComponentCount,
-                AvatarPerformanceCategory.PhysBoneTransformCount,
-                AvatarPerformanceCategory.PhysBoneColliderCount,
-                AvatarPerformanceCategory.PhysBoneCollisionCheckCount,
-                AvatarPerformanceCategory.ContactCount,
-            };
-            var ratings = categories.ToDictionary(x => x, x => Models.VRChat.AvatarPerformanceCalculator.GetPerformanceRating(stats, statsLevelSet, x));
+        private void AvatarDynamicsPerformanceGUI(AvatarPerformanceStats stats)
+        {
+            editorState.foldOutEstimatedPerf = EditorGUILayout.Foldout(editorState.foldOutEstimatedPerf, i18n.EstimatedPerformanceStats, true);
+            var ratings = VRCSDKUtility.AvatarDynamicsPerformanceCategories.ToDictionary(x => x, stats.GetPerformanceRatingForCategory);
             var worst = ratings.Values.Max();
-            Views.EditorGUIUtility.PerformanceRatingPanel(worst, $"Avatar Dynamics: {worst}", worst > avatarDynamicsPerfLimit ? i18n.AvatarDynamicsPreventsUpload : null);
-            foreach (var category in categories)
+            if (editorState.foldOutEstimatedPerf || worst > avatarDynamicsPerfLimit)
             {
-                if (foldOutEstimatedPerf || ratings[category] > avatarDynamicsPerfLimit)
+                Views.EditorGUIUtility.PerformanceRatingPanel(worst, $"Avatar Dynamics: {worst}", worst > avatarDynamicsPerfLimit ? i18n.AvatarDynamicsPreventsUpload : null);
+            }
+            foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
+            {
+                if (editorState.foldOutEstimatedPerf || ratings[category] > avatarDynamicsPerfLimit)
                 {
                     Views.EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
                 }
             }
+        }
+
+        private PerformanceRating GetAvatarDynamicsRating(AvatarPerformanceStats stats)
+        {
+            var ratings = VRCSDKUtility.AvatarDynamicsPerformanceCategories.Select(stats.GetPerformanceRatingForCategory);
+            return ratings.Max();
         }
 
         private void OnClickConvertToPhysBonesButton(VRC_AvatarDescriptor avatar)
