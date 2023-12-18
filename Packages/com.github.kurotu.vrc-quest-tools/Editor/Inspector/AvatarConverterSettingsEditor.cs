@@ -35,6 +35,10 @@ namespace KRT.VRCQuestTools.Inspector
         /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
+            Views.EditorGUIUtility.LanguageSelector();
+
+            Views.EditorGUIUtility.HorizontalDivider(2);
+
             i18n = VRCQuestToolsSettings.I18nResource;
             if (editorState == null)
             {

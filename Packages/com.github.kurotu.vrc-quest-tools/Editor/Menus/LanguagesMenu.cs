@@ -35,6 +35,13 @@ namespace KRT.VRCQuestTools.Menus
             SetLanguage(DisplayLanguage.Auto);
         }
 
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.LanguageAuto, true)]
+        private static bool LanguageAutoValidate()
+        {
+            UpdateLanguageChecks(VRCQuestToolsSettings.DisplayLanguage);
+            return true;
+        }
+
         /// <summary>
         /// Use English.
         /// </summary>

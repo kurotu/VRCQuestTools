@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.I18n;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -14,10 +15,42 @@ namespace KRT.VRCQuestTools.Views
     /// </summary>
     internal static class EditorGUIUtility
     {
+        private static Dictionary<DisplayLanguage, string> displayLanguageNames = System.Enum.GetValues(typeof(DisplayLanguage))
+            .Cast<DisplayLanguage>()
+            .ToDictionary(x => x, x =>
+            {
+                switch (x)
+                {
+                    case DisplayLanguage.Auto:
+                        return "Auto";
+                    case DisplayLanguage.English:
+                        return "English";
+                    case DisplayLanguage.Japanese:
+                        return "日本語";
+                    default:
+                        throw new System.InvalidProgramException();
+                }
+            });
+
         /// <summary>
         /// Delegate for GUI function.
         /// </summary>
         internal delegate void GUICallback();
+
+        /// <summary>
+        /// Show language selector.
+        /// </summary>
+        internal static void LanguageSelector()
+        {
+            using (var ccs = new EditorGUI.ChangeCheckScope())
+            {
+                var language = (DisplayLanguage)EditorGUILayout.Popup("Language", (int)VRCQuestToolsSettings.DisplayLanguage, displayLanguageNames.Values.ToArray());
+                if (ccs.changed)
+                {
+                    VRCQuestToolsSettings.DisplayLanguage = language;
+                }
+            }
+        }
 
         /// <summary>
         /// Show performance rating panel.
