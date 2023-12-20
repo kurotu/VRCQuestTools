@@ -220,6 +220,18 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Get game objects which have "Missing" script components.
+        /// </summary>
+        /// <param name="gameObject">Target object.</param>
+        /// <param name="includeInactive">Whether to incldue inactive objects.</param>
+        /// <returns>Game objects which have "Missing" script components.</returns>
+        internal static GameObject[] GetGameObjectsWithMissingComponents(GameObject gameObject, bool includeInactive)
+        {
+            var children = gameObject.GetComponentsInChildren<Transform>(includeInactive).Select(t => t.gameObject);
+            return children.Where(c => GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(c) > 0).ToArray();
+        }
+
+        /// <summary>
         /// Count number of "Missing" script components.
         /// </summary>
         /// <param name="gameObject">Target object.</param>

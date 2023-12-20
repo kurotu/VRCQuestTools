@@ -35,7 +35,15 @@ namespace KRT.VRCQuestTools.Models.Validators
                     var i18n = VRCQuestToolsSettings.I18nResource;
 
                     GUILayout.Label(i18n.MissingScripts, EditorStyles.wordWrappedLabel);
-                    GUILayout.Label($"- {avatar.GameObject.name}", EditorStyles.wordWrappedLabel);
+                    GUILayout.Label($"{avatar.GameObject.name}", EditorStyles.wordWrappedLabel);
+                    using (new EditorGUI.DisabledScope(true))
+                    {
+                        var objects = VRCSDKUtility.GetGameObjectsWithMissingComponents(avatar.GameObject, true);
+                        foreach (var obj in objects)
+                        {
+                            EditorGUILayout.ObjectField(obj, typeof(GameObject), true);
+                        }
+                    }
                     if (GUILayout.Button(i18n.DismissLabel))
                     {
                         return true;

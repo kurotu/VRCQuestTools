@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Main Color
     - Shading by normal map
     - Emission [0-3]
+- Add feature to show game objects in the warning panel for missing components.
 
 ### Changed
 - Require VRChat SDK 3.3.0 or later.
