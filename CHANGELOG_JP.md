@@ -27,6 +27,9 @@
 - **VRCQuestTools** メニューを **Tools** メニュー内に移動
 - メニュー項目の配置を変更
 
+### 削除
+- **Check for Updates** メニューを削除。代わりに VCC または Inspector を使用
+
 ### 修正
 - Network ID に割り当てられていた GameObject が実際には存在しないとき変換に失敗する問題を修正
 

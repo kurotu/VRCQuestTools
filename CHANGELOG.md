@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move **VRCQuestTools** menu into **Tools** menu.
 - Rearrange menu items.
 
+### Removed
+- Remove **Check for Updates** menu. Use VCC or inspector to check for updates.
+
 ### Fixed
 - Fix conversion failure when GameObjects which were assigned to Network IDs are actually missing.
 
