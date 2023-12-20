@@ -47,6 +47,15 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
+        /// Gets or sets the cached latest version.
+        /// </summary>
+        internal static SemVer LatestVersionCache
+        {
+            get { return new SemVer(EditorUserSettings.GetConfigValue(Keys.LatestVersionCache) ?? "0.0.0"); }
+            set { EditorUserSettings.SetConfigValue(Keys.LatestVersionCache, value.ToString()); }
+        }
+
+        /// <summary>
         /// Gets or sets the skipped version.
         /// </summary>
         internal static SemVer SkippedVersion
@@ -153,7 +162,7 @@ namespace KRT.VRCQuestTools.Models
 
         private static class Keys
         {
-            internal const string LastVersion = PREFIX + "LastQuestToolsVersion";
+            internal const string LatestVersionCache = PREFIX + "LatestVersionCache";
             internal const string ShowSettingsOnLoad = PREFIX + "ShowSettingsOnLoad";
             internal const string AutoRemoveVertexColors = PREFIX + "AutoRemoveVertexColors";
             internal const string SkippedVersion = PREFIX + "SkippedVersion";

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.I18n;
@@ -49,6 +50,55 @@ namespace KRT.VRCQuestTools.Views
                 {
                     VRCQuestToolsSettings.DisplayLanguage = language;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Show update notification panel.
+        /// </summary>
+        internal static void UpdateNotificationPanel()
+        {
+            var latestVersion = VRCQuestToolsSettings.LatestVersionCache;
+            var currentVersion = new SemVer(VRCQuestTools.Version);
+            var skippedVersion = VRCQuestToolsSettings.SkippedVersion;
+            var hasUpdate = latestVersion > currentVersion;
+            if (latestVersion <= skippedVersion)
+            {
+                return;
+            }
+
+            if (hasUpdate)
+            {
+                var i18n = VRCQuestToolsSettings.I18nResource;
+
+                var color = GUI.contentColor;
+                GUI.contentColor = Color.red;
+                GUILayout.Label($"Update: {currentVersion} -> {latestVersion}", EditorStyles.boldLabel);
+                GUI.contentColor = color;
+                if (latestVersion.IsMajorUpdate(currentVersion))
+                {
+                    EditorGUILayout.HelpBox(i18n.NewVersionHasBreakingChanges, MessageType.Warning);
+                }
+                GUILayout.BeginHorizontal();
+                if (!VRCQuestTools.IsImportedAsPackage && GUILayout.Button(i18n.GetUpdate))
+                {
+                    Application.OpenURL(VRCQuestTools.BoothURL);
+                }
+                if (GUILayout.Button(i18n.SeeChangelog))
+                {
+                    var path = "docs/changelog/";
+                    if (i18n is I18nJapanese)
+                    {
+                        path = $"ja/{path}";
+                    }
+                    var changelogURL = new Uri(new Uri(VRCQuestTools.DocsURL), path);
+                    Application.OpenURL(changelogURL.AbsoluteUri);
+                }
+                if (GUILayout.Button(i18n.SkipThisVersion))
+                {
+                    VRCQuestToolsSettings.SkippedVersion = latestVersion;
+                }
+                GUILayout.EndHorizontal();
             }
         }
 

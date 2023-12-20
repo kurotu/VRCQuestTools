@@ -60,6 +60,11 @@ namespace KRT.VRCQuestTools
         internal static string VPMRepositoryURL = "https://kurotu.github.io/vpm-repos/vpm.json";
 
         /// <summary>
+        /// Documentation URL.
+        /// </summary>
+        internal static string DocsURL = "https://kurotu.github.io/VRCQuestTools/";
+
+        /// <summary>
         /// package name.
         /// </summary>
         internal static string PackageName = "com.github.kurotu.vrc-quest-tools";

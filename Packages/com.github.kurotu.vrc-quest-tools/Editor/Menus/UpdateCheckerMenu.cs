@@ -17,11 +17,9 @@ namespace KRT.VRCQuestTools.Menus
     internal static class UpdateCheckerMenu
     {
         [MenuItem(VRCQuestToolsMenus.MenuPaths.CheckForUpdate, false, (int)VRCQuestToolsMenus.MenuPriorities.CheckForUpdate)]
-        private static void InitFromMenu()
+        private static async void InitFromMenu()
         {
-            VRCQuestToolsSettings.SkippedVersion = new SemVer("0.0.0");
-            VRCQuestToolsSettings.LastVersionCheckDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            UpdateCheckerAutomator.CheckForUpdates();
+            await UpdateCheckerAutomator.CheckForUpdates(true);
         }
     }
 }

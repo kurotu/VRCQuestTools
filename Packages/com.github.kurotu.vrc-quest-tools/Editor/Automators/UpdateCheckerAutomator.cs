@@ -7,7 +7,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using KRT.VRCQuestTools.Models;
-using KRT.VRCQuestTools.Views;
 using UnityEditor;
 using UnityEngine;
 
@@ -38,76 +37,35 @@ namespace KRT.VRCQuestTools.Automators
         /// <summary>
         /// Check for updates.
         /// </summary>
-        internal static void CheckForUpdates()
+        internal static async void CheckForUpdates()
         {
-            var instance = NotificationWindow.instance;
-            var lastVersionCheckDate = VRCQuestToolsSettings.LastVersionCheckDateTime;
-            var noNotificationDate = lastVersionCheckDate.AddDays(1);
-            if (DateTime.Now < noNotificationDate)
+            await CheckForUpdates(false);
+        }
+
+        /// <summary>
+        /// Check for updates.
+        /// </summary>
+        /// <param name="ignoreCache">Ignore cache.</param>
+        /// <returns>true when update exists.</returns>
+        internal static async Task<bool> CheckForUpdates(bool ignoreCache)
+        {
+            try
             {
-                Debug.Log($"[{VRCQuestTools.Name}] Version check is skipped until {noNotificationDate.ToLocalTime()}");
-                return;
+                var latestVersion = await GetLatestVersion(CurrentVersion.IsPrerelease, ignoreCache);
+                Debug.Log($"[{VRCQuestTools.Name}] Latest version is {latestVersion} (Current: {CurrentVersion})");
+                var hasUpdate = latestVersion > CurrentVersion;
+                if (hasUpdate)
+                {
+                    Debug.LogWarning($"[{VRCQuestTools.Name}] New version {latestVersion} is available, see {VRCQuestTools.BoothURL}");
+                }
+                return hasUpdate;
             }
-
-            var skippedVersion = VRCQuestToolsSettings.SkippedVersion;
-            Task.Run(async () =>
+            catch (Exception e)
             {
-                try
-                {
-                    var latestRelease = await GetLatestRelease(CurrentVersion.IsPrerelease);
-                    Debug.Log($"[{VRCQuestTools.Name}] Latest version is {latestRelease.Version} (Current: {CurrentVersion})");
-                    var hasUpdate = latestRelease.Version > CurrentVersion;
-                    if (hasUpdate)
-                    {
-                        Debug.LogWarning($"[{VRCQuestTools.Name}] New version {latestRelease.Version} is available, see {VRCQuestTools.BoothURL}");
-                        if (latestRelease.Version.ToString() == skippedVersion.ToString())
-                        {
-                            Debug.Log($"[{VRCQuestTools.Name}] Notification was skipped because {skippedVersion} was marked as \"skipped\"");
-                            return;
-                        }
-
-                        NotificationWindow.instance.RegisterNotification("vrcquesttools-update", new NotificationItem(() =>
-                        {
-                            var i18n = VRCQuestToolsSettings.I18nResource;
-
-                            GUILayout.Label(i18n.NewVersionIsAvailable(latestRelease.Version.ToString()));
-                            if (latestRelease.Version.IsMajorUpdate(CurrentVersion))
-                            {
-                                EditorGUILayout.HelpBox(i18n.NewVersionHasBreakingChanges, MessageType.Warning);
-                            }
-                            GUILayout.Space(8);
-                            GUILayout.BeginHorizontal();
-                            if (!VRCQuestTools.IsImportedAsPackage && GUILayout.Button(i18n.GetUpdate))
-                            {
-                                Application.OpenURL(VRCQuestTools.BoothURL);
-                                return true;
-                            }
-                            if (GUILayout.Button(i18n.SeeChangelog))
-                            {
-                                Application.OpenURL(latestRelease.html_url);
-                                return false;
-                            }
-                            if (GUILayout.Button(i18n.CheckLater))
-                            {
-                                VRCQuestToolsSettings.LastVersionCheckDateTime = DateTime.Now;
-                                return true;
-                            }
-                            if (GUILayout.Button(i18n.SkipThisVersion))
-                            {
-                                VRCQuestToolsSettings.SkippedVersion = latestRelease.Version;
-                                return true;
-                            }
-                            GUILayout.EndHorizontal();
-                            return false;
-                        }));
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to get latest version");
-                    Debug.LogException(e);
-                }
-            });
+                Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to get latest version");
+                Debug.LogException(e);
+                return false;
+            }
         }
 
         private static void PlayModeStateChanged(PlayModeStateChange state)
@@ -126,8 +84,15 @@ namespace KRT.VRCQuestTools.Automators
             }
         }
 
-        private static async Task<GitHubRelease> GetLatestRelease(bool allowPrerelease)
+        private static async Task<SemVer> GetLatestVersion(bool allowPrerelease, bool ignoreCache)
         {
+            var lastVersionCheckDate = VRCQuestToolsSettings.LastVersionCheckDateTime;
+            if (DateTime.Now < lastVersionCheckDate.AddDays(1) && !ignoreCache)
+            {
+                Debug.Log($"[{VRCQuestTools.Name}] Version check is skipped until {lastVersionCheckDate.AddDays(1).ToLocalTime()}");
+                return VRCQuestToolsSettings.LatestVersionCache;
+            }
+
             var repo = await VRCQuestTools.VPM.GetVPMRepository(VRCQuestTools.VPMRepositoryURL);
             var vqt = repo.packages[VRCQuestTools.PackageName];
             var latest = vqt.versions.Keys
@@ -135,11 +100,9 @@ namespace KRT.VRCQuestTools.Automators
                 .Where(v => allowPrerelease || !v.IsPrerelease)
                 .OrderByDescending(v => v)
                 .First();
-            var release = new GitHubRelease();
-            release.tag_name = $"v{latest}";
-            release.published_at = DateTime.UtcNow.ToString(); // fake timestamp.
-            release.html_url = $"https://github.com/{VRCQuestTools.GitHubRepository}/releases/tag/{release.tag_name}";
-            return release;
+            VRCQuestToolsSettings.LatestVersionCache = latest;
+            VRCQuestToolsSettings.LastVersionCheckDateTime = DateTime.Now;
+            return latest;
         }
     }
 }

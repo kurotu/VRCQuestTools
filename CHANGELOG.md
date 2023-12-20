@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Require VRChat SDK 3.3.0 or later.
 - Change unitypackage's import path to `Packages/com.github.kurotu.vrc-quest-tools` instead of `Assets/KRT/VRCQuestTools`.
 - Change UPM import URL to `https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools`.
+- Show update notification in inspector instead of scene view.
+- Change update check interval to 1 day.
 - Move **VRCQuestTools** menu into **Tools** menu.
 - Rearrange menu items.
 

@@ -36,6 +36,7 @@ namespace KRT.VRCQuestTools.Inspector
         public override void OnInspectorGUI()
         {
             Views.EditorGUIUtility.LanguageSelector();
+            Views.EditorGUIUtility.UpdateNotificationPanel();
 
             Views.EditorGUIUtility.HorizontalDivider(2);
 

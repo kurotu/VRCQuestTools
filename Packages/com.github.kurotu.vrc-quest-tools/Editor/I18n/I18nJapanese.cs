@@ -145,7 +145,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AllAppliedHelp => "すべての推奨設定が適用されています。";
 
         // Check for Update
-        internal override string CheckLater => "後で確認";
         internal override string GetUpdate => "アップデート";
         internal override string SeeChangelog => "変更履歴";
         internal override string SkipThisVersion => "スキップ";

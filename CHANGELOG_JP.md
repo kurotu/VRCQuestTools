@@ -22,6 +22,8 @@
 - VRChat SDK 3.3.0 以降が必要
 - unitypackage のインポートパスを `Assets/KRT/VRCQuestTools` から `Packages/com.github.kurotu.vrc-quest-tools` に変更
 - UPM のインポート URL を `https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools` に変更
+- 更新通知をシーンビューの代わりに Inspector に表示するように変更
+- 最新バージョンの確認処理を1日1回に変更
 - **VRCQuestTools** メニューを **Tools** メニュー内に移動
 - メニュー項目の配置を変更
 

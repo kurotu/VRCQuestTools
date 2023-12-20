@@ -144,7 +144,6 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AllAppliedHelp { get; }
 
         // Check for Update
-        internal abstract string CheckLater { get; }
         internal abstract string GetUpdate { get; }
         internal abstract string SeeChangelog { get; }
         internal abstract string SkipThisVersion { get; }
