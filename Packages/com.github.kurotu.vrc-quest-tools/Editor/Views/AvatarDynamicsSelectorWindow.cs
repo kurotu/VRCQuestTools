@@ -5,6 +5,8 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase.Validation.Performance;
@@ -200,6 +202,13 @@ namespace KRT.VRCQuestTools.Views
                 converterSettings.physBoneCollidersToKeep = physBoneCollidersToKeep;
                 converterSettings.contactsToKeep = contactsToKeep;
                 PrefabUtility.RecordPrefabInstancePropertyModifications(converterSettings);
+
+                var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+                if (prefabStage != null)
+                {
+                    EditorSceneManager.MarkSceneDirty(prefabStage.scene);
+                }
+
                 Close();
             }
 
