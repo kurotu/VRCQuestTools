@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Remove **Check for Updates** menu. Use VCC or inspector to check for updates.
+- Remove automated detection for vertex colors. Use **Remove All Vertex Colors** menu instead.
 
 ### Fixed
 - Fix conversion failure when GameObjects which were assigned to Network IDs are actually missing.

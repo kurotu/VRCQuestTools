@@ -21,7 +21,7 @@ namespace KRT.VRCQuestTools.Inspector
             VertexColorRemover remover = target as VertexColorRemover;
             var i18n = VRCQuestToolsSettings.I18nResource;
 
-            using (new EditorGUI.DisabledGroupScope(remover.active))
+            using (new EditorGUI.DisabledGroupScope(remover.enabled))
             {
                 if (GUILayout.Button(i18n.VertexColorRemoverEditorRemove))
                 {
@@ -29,7 +29,7 @@ namespace KRT.VRCQuestTools.Inspector
                 }
             }
 
-            using (new EditorGUI.DisabledGroupScope(!remover.active))
+            using (new EditorGUI.DisabledGroupScope(!remover.enabled))
             {
                 if (GUILayout.Button(i18n.VertexColorRemoverEditorRestore))
                 {
@@ -39,21 +39,6 @@ namespace KRT.VRCQuestTools.Inspector
 
             var so = new SerializedObject(remover);
             so.Update();
-
-            var active = so.FindProperty("active");
-            EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(active);
-            if (EditorGUI.EndChangeCheck())
-            {
-                if (active.boolValue)
-                {
-                    OnClickRemove();
-                }
-                else
-                {
-                    OnClickRestore();
-                }
-            }
 
             EditorGUI.BeginChangeCheck();
             var includeChildren = so.FindProperty("includeChildren");
@@ -69,23 +54,23 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickRemove()
         {
             VertexColorRemover remover = target as VertexColorRemover;
-            remover.active = true;
-            remover.RemoveVertexColor();
+            remover.enabled = true;
             PrefabUtility.RecordPrefabInstancePropertyModifications(remover);
         }
 
         private void OnClickRestore()
         {
             VertexColorRemover remover = target as VertexColorRemover;
-            remover.active = false;
-            RestoreVertexColor();
+            remover.enabled = false;
+            remover.RestoreVertexColor();
             PrefabUtility.RecordPrefabInstancePropertyModifications(remover);
         }
 
         private void OnChangeIncludeChildren(bool includeChildren)
         {
             VertexColorRemover remover = target as VertexColorRemover;
-            if (!remover.active)
+            remover.includeChildren = includeChildren;
+            if (!remover.enabled)
             {
                 return;
             }
@@ -95,26 +80,8 @@ namespace KRT.VRCQuestTools.Inspector
             }
             else
             {
-                RestoreVertexColor();
+                remover.RestoreVertexColor();
                 remover.RemoveVertexColor();
-            }
-        }
-
-        private void RestoreVertexColor()
-        {
-            VertexColorRemover remover = target as VertexColorRemover;
-
-            Renderer[] skinnedMeshRenderers = remover.GetComponentsInChildren<SkinnedMeshRenderer>(true);
-            Renderer[] meshRenderers = remover.GetComponentsInChildren<MeshRenderer>(true);
-            var renderers = skinnedMeshRenderers.Concat(meshRenderers);
-            var paths = renderers
-                .Select(r => RendererUtility.GetSharedMesh(r))
-               .Where(m => m != null)
-               .Select(m => AssetDatabase.GetAssetPath(m))
-               .Distinct();
-            foreach (var p in paths)
-            {
-                AssetDatabase.ImportAsset(p);
             }
         }
     }

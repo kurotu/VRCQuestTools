@@ -1,34 +1,51 @@
 using System.Linq;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace KRT.VRCQuestTools.Components
 {
     /// <summary>
     /// Mark to remove vertex color in the scene.
     /// </summary>
     [AddComponentMenu("VRCQuestTools/VQT Vertex Color Remover")]
-    public class VertexColorRemover : MonoBehaviour
+    [ExecuteInEditMode]
+    public class VertexColorRemover : MonoBehaviour, ISerializationCallbackReceiver
 #if VQT_HAS_VRCSDK_BASE
         , VRC.SDKBase.IEditorOnly
 #endif
     {
 #if UNITY_EDITOR
         /// <summary>
-        /// Gets the value whether the component is working.
-        /// </summary>
-        public bool active = true;
-
-        /// <summary>
         /// Gets the value whether vertex color are removed from children's renderers.
         /// </summary>
         public bool includeChildren = false;
+
+        private int serializedVersion = 2;
+
+        [SerializeField]
+        [System.Obsolete("Use enabled instead")]
+        private bool active;
+
+        public void OnEnable()
+        {
+            RemoveVertexColor();
+            EditorApplication.hierarchyChanged += HierarchyChanged;
+        }
+
+        public void OnDisable()
+        {
+            EditorApplication.hierarchyChanged -= HierarchyChanged;
+        }
 
         /// <summary>
         /// Remove vertex color from gameObject's renderer.
         /// </summary>
         public void RemoveVertexColor()
         {
-            if (!active)
+            if (!enabled)
             {
                 return;
             }
@@ -49,6 +66,22 @@ namespace KRT.VRCQuestTools.Components
             foreach (var renderer in skinnedMeshRenderers.Concat(meshRenderers))
             {
                 RemoveVertexColor(renderer);
+            }
+        }
+
+        public void RestoreVertexColor()
+        {
+            Renderer[] skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            Renderer[] meshRenderers = GetComponentsInChildren<MeshRenderer>(true);
+            var renderers = skinnedMeshRenderers.Concat(meshRenderers);
+            var paths = renderers
+                .Select(r => GetSharedMesh(r))
+               .Where(m => m != null)
+               .Select(m => AssetDatabase.GetAssetPath(m))
+               .Distinct();
+            foreach (var p in paths)
+            {
+                AssetDatabase.ImportAsset(p);
             }
         }
 
@@ -83,14 +116,25 @@ namespace KRT.VRCQuestTools.Components
             return null;
         }
 
-        private void Reset()
+        private void HierarchyChanged()
         {
             RemoveVertexColor();
         }
 
-        private void OnValidate()
+        public void OnBeforeSerialize()
         {
-            RemoveVertexColor();
+            // nothing to do
+        }
+
+        public void OnAfterDeserialize()
+        {
+            if (serializedVersion < 2)
+            {
+#pragma warning disable CS0618
+                enabled = this.active;
+#pragma warning restore CS0618
+                serializedVersion = 2;
+            }
         }
 #endif
     }

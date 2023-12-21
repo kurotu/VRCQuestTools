@@ -191,13 +191,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
             if (setting.removeVertexColor)
             {
-                vcr.active = true;
+                vcr.enabled = true;
                 vcr.includeChildren = true;
                 vcr.RemoveVertexColor();
             }
             else
             {
-                vcr.active = false;
+                vcr.enabled = false;
             }
 #endif
 

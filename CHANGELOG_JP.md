@@ -30,6 +30,7 @@
 
 ### 削除
 - **Check for Updates** メニューを削除。代わりに VCC または Inspector を使用
+- シーンから頂点カラーを検出して自動削除する機能を削除。代わりに **Remove All Vertex Colors** メニューを使用
 
 ### 修正
 - Network ID に割り当てられていた GameObject が実際には存在しないとき変換に失敗する問題を修正
