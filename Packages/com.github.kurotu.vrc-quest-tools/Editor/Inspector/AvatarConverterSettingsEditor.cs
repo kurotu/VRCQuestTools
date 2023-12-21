@@ -476,7 +476,7 @@ namespace KRT.VRCQuestTools.Inspector
 
         private string GetOutputPath(VRC_AvatarDescriptor avatar)
         {
-            var outputPath = $"Assets/VRCQuestToolsOutput/{avatar.name}-{GlobalObjectId.GetGlobalObjectIdSlow(avatar).targetObjectId}";
+            var outputPath = $"Assets/VRCQuestToolsOutput/{avatar.name}";
             return outputPath;
         }
 
