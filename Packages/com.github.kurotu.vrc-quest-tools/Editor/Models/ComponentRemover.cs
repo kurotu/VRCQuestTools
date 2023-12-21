@@ -56,6 +56,7 @@ namespace KRT.VRCQuestTools.Models
         {
             foreach (var c in GetUnsupportedComponentsInChildren(gameObject, includeInactive))
             {
+                var obj = c.gameObject;
                 var message = $"[{VRCQuestTools.Name}] Removed {c.GetType().Name} from {c.gameObject.name}";
                 if (canUndo)
                 {
@@ -65,7 +66,7 @@ namespace KRT.VRCQuestTools.Models
                 {
                     Object.DestroyImmediate(c);
                 }
-                Debug.Log(message);
+                Debug.Log(message, obj);
             }
         }
     }
