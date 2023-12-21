@@ -5,6 +5,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
@@ -293,21 +294,52 @@ namespace KRT.VRCQuestTools.Utils
         internal static T CreateAsset<T>(T asset, string path)
             where T : UnityEngine.Object
         {
-            if (File.Exists(path))
+            if (!File.Exists(path))
             {
                 AssetDatabase.CreateAsset(asset, path);
                 return AssetDatabase.LoadAssetAtPath<T>(path);
             }
 
-            var guid = GUID.Generate();
-            var extension = Path.GetExtension(path);
-            var tmpPath = $"Assets/tmp_{guid}{extension}";
+            var file = Path.GetFileName(path);
+            var tmpDir = $"Assets/tmp_vqt";
+            var tmpPath = $"{tmpDir}/{file}";
 
-            AssetDatabase.CreateAsset(asset, tmpPath);
-            File.Move(tmpPath, path);
-            File.Delete($"{tmpPath}.meta");
+            try
+            {
+                if (!Directory.Exists(tmpDir))
+                {
+                    Directory.CreateDirectory(tmpDir);
+                }
+                AssetDatabase.CreateAsset(asset, tmpPath);
+                File.Copy(tmpPath, path, true);
+            }
+            catch (Exception e)
+            {
+                ExceptionDispatchInfo.Capture(e).Throw();
+            }
+            finally
+            {
+                if (File.Exists(tmpPath))
+                {
+                    File.Delete(tmpPath);
+                }
+                if (File.Exists($"{tmpPath}.meta"))
+                {
+                    File.Delete($"{tmpPath}.meta");
+                }
+                if (Directory.Exists(tmpDir))
+                {
+                    Directory.Delete(tmpDir, true);
+                }
+                if (File.Exists($"{tmpDir}.meta"))
+                {
+                    File.Delete($"{tmpDir}.meta");
+                }
+            }
+
             AssetDatabase.Refresh();
-            return AssetDatabase.LoadAssetAtPath<T>(path);
+            var newAsset = AssetDatabase.LoadAssetAtPath<T>(path);
+            return newAsset;
         }
 
         [Serializable]
