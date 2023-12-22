@@ -41,12 +41,18 @@ namespace KRT.VRCQuestTools
                 VRCSDKUtility.RemoveMissingComponentsInChildren(avatarGameObject, true);
             }
 
-            var components = avatarGameObject.GetComponentsInChildren<VertexColorRemover>(true);
+            var removers = avatarGameObject.GetComponentsInChildren<VertexColorRemover>(true);
+            foreach (var r in removers)
+            {
+                r.RemoveVertexColor();
+            }
+
+            var components = avatarGameObject.GetComponentsInChildren<VRCQuestToolsEditorOnly>(true);
             foreach (var c in components)
             {
-                c.RemoveVertexColor();
                 Object.DestroyImmediate(c);
             }
+
             return true;
         }
     }

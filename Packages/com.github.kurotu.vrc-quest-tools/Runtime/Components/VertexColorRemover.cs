@@ -12,10 +12,7 @@ namespace KRT.VRCQuestTools.Components
     /// </summary>
     [AddComponentMenu("VRCQuestTools/VQT Vertex Color Remover")]
     [ExecuteInEditMode]
-    public class VertexColorRemover : MonoBehaviour, ISerializationCallbackReceiver
-#if VQT_HAS_VRCSDK_BASE
-        , VRC.SDKBase.IEditorOnly
-#endif
+    public class VertexColorRemover : VRCQuestToolsEditorOnly, ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         /// <summary>
