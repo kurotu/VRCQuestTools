@@ -20,7 +20,7 @@ namespace KRT.VRCQuestTools
         /// <summary>
         /// Gets execution order for the moment.
         /// </summary>
-        public int callbackOrder => 1000;
+        public int callbackOrder => -2000; // AAO: -1025 https://vpm.anatawa12.com/avatar-optimizer/ja/docs/developers/make-your-components-compatible-with-aao/#remove-component
 
         /// <summary>
         /// Execute before build an avatar.
