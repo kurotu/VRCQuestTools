@@ -25,21 +25,6 @@ namespace KRT.VRCQuestTools.Components
         [System.Obsolete("Use enabled instead")]
         private bool active;
 
-        public void OnEnable()
-        {
-            RemoveVertexColor();
-#if UNITY_EDITOR
-            EditorApplication.hierarchyChanged += HierarchyChanged;
-#endif
-        }
-
-        public void OnDisable()
-        {
-#if UNITY_EDITOR
-            EditorApplication.hierarchyChanged -= HierarchyChanged;
-#endif
-        }
-
         /// <summary>
         /// Remove vertex color from gameObject's renderer.
         /// </summary>
@@ -69,6 +54,9 @@ namespace KRT.VRCQuestTools.Components
             }
         }
 
+        /// <summary>
+        /// Restore vertex color for gameObject's renderer.
+        /// </summary>
         public void RestoreVertexColor()
         {
 #if UNITY_EDITOR
@@ -87,6 +75,28 @@ namespace KRT.VRCQuestTools.Components
 #else
             Debug.LogError("RestoreVertexColor is not supported in runtime");
 #endif
+        }
+
+        /// <summary>
+        /// Called before serialization.
+        /// </summary>
+        public void OnBeforeSerialize()
+        {
+            // nothing to do
+        }
+
+        /// <summary>
+        /// Called after deserialization to migrate parameters.
+        /// </summary>
+        public void OnAfterDeserialize()
+        {
+            if (serializedVersion < 2)
+            {
+#pragma warning disable CS0618
+                enabled = this.active;
+#pragma warning restore CS0618
+                serializedVersion = 2;
+            }
         }
 
         private static void RemoveVertexColor(Renderer renderer)
@@ -125,20 +135,19 @@ namespace KRT.VRCQuestTools.Components
             RemoveVertexColor();
         }
 
-        public void OnBeforeSerialize()
+        private void OnEnable()
         {
-            // nothing to do
+            RemoveVertexColor();
+#if UNITY_EDITOR
+            EditorApplication.hierarchyChanged += HierarchyChanged;
+#endif
         }
 
-        public void OnAfterDeserialize()
+        private void OnDisable()
         {
-            if (serializedVersion < 2)
-            {
-#pragma warning disable CS0618
-                enabled = this.active;
-#pragma warning restore CS0618
-                serializedVersion = 2;
-            }
+#if UNITY_EDITOR
+            EditorApplication.hierarchyChanged -= HierarchyChanged;
+#endif
         }
     }
 }
