@@ -14,7 +14,6 @@ namespace KRT.VRCQuestTools.Components
     [ExecuteInEditMode]
     public class VertexColorRemover : VRCQuestToolsEditorOnly, ISerializationCallbackReceiver
     {
-#if UNITY_EDITOR
         /// <summary>
         /// Gets the value whether vertex color are removed from children's renderers.
         /// </summary>
@@ -29,12 +28,16 @@ namespace KRT.VRCQuestTools.Components
         public void OnEnable()
         {
             RemoveVertexColor();
+#if UNITY_EDITOR
             EditorApplication.hierarchyChanged += HierarchyChanged;
+#endif
         }
 
         public void OnDisable()
         {
+#if UNITY_EDITOR
             EditorApplication.hierarchyChanged -= HierarchyChanged;
+#endif
         }
 
         /// <summary>
@@ -68,6 +71,7 @@ namespace KRT.VRCQuestTools.Components
 
         public void RestoreVertexColor()
         {
+#if UNITY_EDITOR
             Renderer[] skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>(true);
             Renderer[] meshRenderers = GetComponentsInChildren<MeshRenderer>(true);
             var renderers = skinnedMeshRenderers.Concat(meshRenderers);
@@ -80,6 +84,9 @@ namespace KRT.VRCQuestTools.Components
             {
                 AssetDatabase.ImportAsset(p);
             }
+#else
+            Debug.LogError("RestoreVertexColor is not supported in runtime");
+#endif
         }
 
         private static void RemoveVertexColor(Renderer renderer)
@@ -133,6 +140,5 @@ namespace KRT.VRCQuestTools.Components
                 serializedVersion = 2;
             }
         }
-#endif
     }
 }
