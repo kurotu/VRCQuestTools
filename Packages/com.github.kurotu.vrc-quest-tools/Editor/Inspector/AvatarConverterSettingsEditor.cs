@@ -8,6 +8,7 @@ using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEditorInternal;
 using UnityEngine;
 using VRC.SDKBase;
@@ -277,6 +278,11 @@ namespace KRT.VRCQuestTools.Inspector
                             EditorGUILayout.Space(2);
                         });
                     }
+                }
+
+                if (PrefabStageUtility.GetCurrentPrefabStage() != null)
+                {
+                    canConvert = false;
                 }
 
                 using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
