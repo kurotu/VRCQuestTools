@@ -63,6 +63,7 @@
         [ToggleUI]_EnableEmission ("Enable Emission", Float) = 0
         [HDR] _EmissionColor ("Emission Color", Color) = (0,0,0,0)
         _EmissionMap ("Emission 0", 2D) = "black" {}
+        [ToggleUI]_EmissionBaseColorAsMap ("Base Color as Map", Float) = 0
         [sRGBWarning]_EmissionMask ("Emission Mask", 2D) = "white" {}
         [Enum(R, 0, G, 1, B, 2, A, 3)]_EmissionMaskChannel ("Channel", Float) = 0
         // [ToggleUI]_EmissionMaskInvert ("Invert", Float) = 0
@@ -71,6 +72,7 @@
         [ToggleUI]_EnableEmission1 ("Enable Emission 1", Float) = 0
         [HDR] _EmissionColor1 ("Emission Color 1", Color) = (0,0,0,0)
         _EmissionMap1 ("Emission 1", 2D) = "black" {}
+        [ToggleUI]_EmissionBaseColorAsMap1 ("Base Color as Map", Float) = 0
         [sRGBWarning]_EmissionMask1 ("Emission Mask 1", 2D) = "white" {}
         [Enum(R, 0, G, 1, B, 2, A, 3)]_EmissionMask1Channel ("Channel 1", Float) = 0
         // [ToggleUI]_EmissionMaskInvert1 ("Invert 1", Float) = 0
@@ -79,6 +81,7 @@
         [ToggleUI]_EnableEmission2 ("Enable Emission 2", Float) = 0
         [HDR] _EmissionColor2 ("Emission Color 2", Color) = (0,0,0,0)
         _EmissionMap2 ("Emission 2", 2D) = "black" {}
+        [ToggleUI]_EmissionBaseColorAsMap2 ("Base Color as Map", Float) = 0
         [sRGBWarning]_EmissionMask2 ("Emission Mask 2", 2D) = "white" {}
         [Enum(R, 0, G, 1, B, 2, A, 3)]_EmissionMask2Channel ("Channel 2", Float) = 0
         // [ToggleUI]_EmissionMaskInvert2 ("Invert 2", Float) = 0
@@ -87,6 +90,7 @@
         [ToggleUI]_EnableEmission3 ("Enable Emission 3", Float) = 0
         [HDR] _EmissionColor3 ("Emission Color 3", Color) = (0,0,0,0)
         _EmissionMap3 ("Emission 3", 2D) = "black" {}
+        [ToggleUI]_EmissionBaseColorAsMap3 ("Base Color as Map", Float) = 0
         [sRGBWarning]_EmissionMask3 ("Emission Mask 3", 2D) = "white" {}
         [Enum(R, 0, G, 1, B, 2, A, 3)]_EmissionMask3Channel ("Channel 3", Float) = 0
         // [ToggleUI]_EmissionMaskInvert3 ("Invert 3", Float) = 0
@@ -165,6 +169,7 @@
             float _EnableEmission;
             float4 _EmissionColor;
             sampler2D _EmissionMap;
+            float _EmissionBaseColorAsMap;
             sampler2D _EmissionMask;
             float _EmissionMaskChannel;
             // float _EmissionMaskInvert;
@@ -173,6 +178,7 @@
             float _EnableEmission1;
             float4 _EmissionColor1;
             sampler2D _EmissionMap1;
+            float _EmissionBaseColorAsMap1;
             sampler2D _EmissionMask1;
             float _EmissionMask1Channel;
             // float _EmissionMaskInvert1;
@@ -181,6 +187,7 @@
             float _EnableEmission2;
             float4 _EmissionColor2;
             sampler2D _EmissionMap2;
+            float _EmissionBaseColorAsMap2;
             sampler2D _EmissionMask2;
             float _EmissionMask2Channel;
             // float _EmissionMaskInvert2;
@@ -189,6 +196,7 @@
             float _EnableEmission3;
             float4 _EmissionColor3;
             sampler2D _EmissionMap3;
+            float _EmissionBaseColorAsMap3;
             sampler2D _EmissionMask3;
             float _EmissionMask3Channel;
             // float _EmissionMaskInvert3;
@@ -352,28 +360,36 @@
                     float4 emi = sampleTex2D(_EmissionMap, i.uv, 0.0f);
                     float4 maskTex = sampleTex2D(_EmissionMask, i.uv, 0.0f);
                     float mask = emissionMask(maskTex, _EmissionMaskChannel);
-                    col.rgb += (emi.rgb * _EmissionColor.rgb * mask * _EmissionColor.a * _EmissionStrength);
+                    float strength = saturate(mask * _EmissionStrength3); // limit too strong emission.
+                    float3 base = lerp(1, emi.rgb, _EmissionBaseColorAsMap);
+                    col.rgb += emi.rgb * _EmissionColor.rgb * _EmissionColor.a * strength * base;
                 }
 
                 if (_EnableEmission1) {
                     float4 emi = sampleTex2D(_EmissionMap1, i.uv, 0.0f);
                     float4 maskTex = sampleTex2D(_EmissionMask1, i.uv, 0.0f);
                     float mask = emissionMask(maskTex, _EmissionMask1Channel);
-                    col.rgb += (emi.rgb * _EmissionColor1.rgb * mask * _EmissionColor1.a * _EmissionStrength1);
+                    float strength = saturate(mask * _EmissionStrength3); // limit too strong emission.
+                    float3 base = lerp(1, emi.rgb, _EmissionBaseColorAsMap1);
+                    col.rgb += emi.rgb * _EmissionColor1.rgb * _EmissionColor1.a * strength * base;
                 }
 
                 if (_EnableEmission2) {
                     float4 emi = sampleTex2D(_EmissionMap2, i.uv, 0.0f);
                     float4 maskTex = sampleTex2D(_EmissionMask2, i.uv, 0.0f);
                     float mask = emissionMask(maskTex, _EmissionMask2Channel);
-                    col.rgb += (emi.rgb * _EmissionColor2.rgb * mask * _EmissionColor2.a * _EmissionStrength2);
+                    float strength = saturate(mask * _EmissionStrength3); // limit too strong emission.
+                    float3 base = lerp(1, emi.rgb, _EmissionBaseColorAsMap2);
+                    col.rgb += emi.rgb * _EmissionColor2.rgb * _EmissionColor2.a * strength * base;
                 }
 
                 if (_EnableEmission3) {
                     float4 emi = sampleTex2D(_EmissionMap3, i.uv, 0.0f);
                     float4 maskTex = sampleTex2D(_EmissionMask3, i.uv, 0.0f);
                     float mask = emissionMask(maskTex, _EmissionMask3Channel);
-                    col.rgb += (emi.rgb * _EmissionColor3.rgb * mask * _EmissionColor3.a * _EmissionStrength3);
+                    float strength = saturate(mask * _EmissionStrength3); // limit too strong emission.
+                    float3 base = lerp(1, emi.rgb, _EmissionBaseColorAsMap3);
+                    col.rgb += emi.rgb * _EmissionColor3.rgb * _EmissionColor3.a * strength * base;
                 }
 
                 return saturate(col);
