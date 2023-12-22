@@ -59,7 +59,7 @@ namespace KRT.VRCQuestTools.Inspector
             EditorGUI.indentLevel++;
 
             var generateQuestTextures = property.FindPropertyRelative("generateQuestTextures");
-            EditorGUI.PropertyField(fieldRect, generateQuestTextures, new GUIContent(i18n.GenerateQuestTexturesLabel));
+            EditorGUI.PropertyField(fieldRect, generateQuestTextures, new GUIContent(i18n.GenerateQuestTexturesLabel, i18n.GenerateQuestTexturesTooltip));
             fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
             using (var disabled = new EditorGUI.DisabledScope(!generateQuestTextures.boolValue))
             {

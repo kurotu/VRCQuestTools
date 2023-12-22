@@ -25,7 +25,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // Convert Avatar for Quest
         internal override string ExitPlayModeToEdit => "編集するには再生モードを終了してください。";
-        internal override string AddAvatarConverterButtonLabel(string name) => $"{name} に VQT Avatar Converter を追加";
+        internal override string AddAvatarConverterButtonLabel(string name) => $"{name} に \"VQT Avatar Converter Settings\" を追加";
         internal override string OverwriteWarningDialogButtonCancel => "キャンセル";
         internal override string OverwriteWarningDialogButtonOK => "OK";
         internal override string OverwriteWarningDialogButtonUseAltDir(string altDir) => $"\"{altDir}\" を使用する";
@@ -33,7 +33,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string OverwriteWarningDialogTitle => $"{VRCQuestTools.Name} 警告";
         internal override string AvatarLabel => "アバター";
         internal override string GenerateQuestTexturesLabel => "Quest用のテクスチャを生成する";
-        internal override string QuestTexturesDescription => "メインテクスチャ以外にもマテリアルのパラメーターを参照してテクスチャを生成し、PC版アバターの外観に近づけます。";
+        internal override string GenerateQuestTexturesTooltip => "メインテクスチャ以外にもマテリアルのパラメーターを参照してテクスチャを生成し、PC版アバターの外観に近づけます。";
         internal override string SupportedShadersLabel => "対応シェーダー";
         internal override string SaveToLabel => "保存先フォルダ";
         internal override string InvalidCharsInOutputPath => "フォルダ名に使用できない文字を含んでいます。";
@@ -53,7 +53,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AnimationClipExceptionDialogMessage => "アニメーションの変換中にエラーが発生しました。変換を中止します。";
         internal override string AnimatorControllerExceptionDialogMessage => "Animator Controllerの変換中にエラーが発生しました。変換を中止します。";
         internal override string WarningForPerformance => $"変換後のアバターの推定パフォーマンスランクは Very Poor です。Android 用にアップロードできますが、以下の制限があります。\n・デフォルトではフォールバックアバターが表示され、見る側が Avatar Display 設定で個別に表示する必要があります。\n・Android スマートフォン版 VRChat では表示できません。";
-        internal override string WarningForAppearance => "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n\n" +
+        internal override string WarningForAppearance => "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n" +
             "別の Blueprint ID でのアップロードや Avatars 3.0 のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
         internal override string WarningForUnsupportedShaders => $"以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n「{GenerateQuestTexturesLabel}」をオフにするとシェーダーのみを変更します。";
         internal override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";

@@ -236,7 +236,7 @@ namespace KRT.VRCQuestTools.Inspector
                 editorState.foldOutAdvancedSettings = Views.EditorGUIUtility.Foldout(i18n.AdvancedConverterSettingsLabel, editorState.foldOutAdvancedSettings);
                 if (editorState.foldOutAdvancedSettings)
                 {
-                    EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent("Animator Override Controllers", i18n.AnimationOverrideTooltip));
+                    EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent(i18n.AnimationOverrideLabel, i18n.AnimationOverrideTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
                 }
 
@@ -283,6 +283,12 @@ namespace KRT.VRCQuestTools.Inspector
                         });
                     }
                 }
+
+                Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
+                {
+                    EditorGUILayout.LabelField(i18n.WarningForAppearance, EditorStyles.wordWrappedMiniLabel);
+                    EditorGUILayout.Space(2);
+                });
 
                 if (PrefabStageUtility.GetCurrentPrefabStage() != null)
                 {

@@ -25,7 +25,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // Convert Avatar for Quest
         internal override string ExitPlayModeToEdit => "Exit play mode to edit.";
-        internal override string AddAvatarConverterButtonLabel(string name) => $"Add VQT Avatar Converter to {name}";
+        internal override string AddAvatarConverterButtonLabel(string name) => $"Add \"VQT Avatar Converter Settings\" to {name}";
         internal override string OverwriteWarningDialogButtonCancel => "Cancel";
         internal override string OverwriteWarningDialogButtonOK => "OK";
         internal override string OverwriteWarningDialogButtonUseAltDir(string altDir) => $"Use \"{altDir}\"";
@@ -33,7 +33,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string OverwriteWarningDialogTitle => $"{VRCQuestTools.Name} Warning";
         internal override string AvatarLabel => "Avatar";
         internal override string GenerateQuestTexturesLabel => "Generate Textures for Quest";
-        internal override string QuestTexturesDescription => "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar";
+        internal override string GenerateQuestTexturesTooltip => "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar";
         internal override string SupportedShadersLabel => "Supported Shaders";
         internal override string SaveToLabel => "Folder to Save";
         internal override string InvalidCharsInOutputPath => "Folder name has invalid characters.";
@@ -53,7 +53,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AnimationClipExceptionDialogMessage => "An error occured when converting Animation Clips. Aborted.";
         internal override string AnimatorControllerExceptionDialogMessage => "An error occured when converting Animator Controllers. Aborted.";
         internal override string WarningForPerformance => $"Estimated performance rating is Very Poor. You can upload the converted avatar for Android platform, but there are following limitation.\n- Quest/PICO users see your fallback avatar by default, then need to change \"Avatar Display\" setting.\n- Android smartphone users can't see Very Poor avatars.";
-        internal override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n\n" +
+        internal override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n" +
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
         internal override string WarningForUnsupportedShaders => $"Following materials are using unsupported shaders. Textures might not properly be generated.\nDisabling \"{GenerateQuestTexturesLabel}\" option changes only shader.";
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";

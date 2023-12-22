@@ -33,7 +33,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string OverwriteWarningDialogButtonUseAltDir(string altDir);
         internal abstract string AvatarLabel { get; }
         internal abstract string GenerateQuestTexturesLabel { get; }
-        internal abstract string QuestTexturesDescription { get; }
+        internal abstract string GenerateQuestTexturesTooltip { get; }
         internal abstract string SupportedShadersLabel { get; }
         internal abstract string SaveToLabel { get; }
         internal abstract string InvalidCharsInOutputPath { get; }
