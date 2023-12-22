@@ -26,17 +26,11 @@ namespace KRT.VRCQuestTools.I18n
         // Convert Avatar for Quest
         internal abstract string ExitPlayModeToEdit { get; }
         internal abstract string AddAvatarConverterButtonLabel(string name);
-        internal abstract string OverwriteWarningDialogTitle { get; }
-        internal abstract string OverwriteWarningDialogMessage(string artifactsDir);
-        internal abstract string OverwriteWarningDialogButtonOK { get; }
-        internal abstract string OverwriteWarningDialogButtonCancel { get; }
-        internal abstract string OverwriteWarningDialogButtonUseAltDir(string altDir);
         internal abstract string AvatarLabel { get; }
         internal abstract string GenerateQuestTexturesLabel { get; }
         internal abstract string GenerateQuestTexturesTooltip { get; }
         internal abstract string SupportedShadersLabel { get; }
         internal abstract string SaveToLabel { get; }
-        internal abstract string InvalidCharsInOutputPath { get; }
         internal abstract string SelectButtonLabel { get; }
         internal abstract string ConvertButtonLabel { get; }
         internal abstract string AssignButtonLabel { get; }
@@ -46,8 +40,6 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string RemoveVertexColorTooltip { get; }
         internal abstract string AnimationOverrideLabel { get; }
         internal abstract string AnimationOverrideTooltip { get; }
-        internal abstract string AnimationOverrideMaterialErrorMessage { get; }
-        internal abstract string ConvertingMaterialsDialogMessage { get; }
         internal abstract string GeneratingTexturesDialogMessage { get; }
         internal abstract string MaterialExceptionDialogMessage { get; }
         internal abstract string AnimationClipExceptionDialogMessage { get; }
@@ -60,8 +52,6 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AlertForMultiplePhysBones { get; }
         internal abstract string AlertForAvatarDynamicsPerformance { get; }
         internal abstract string AlertForComponents { get; }
-        internal abstract string AlertForMaterialAnimation { get; }
-        internal abstract string CompletedDialogMessage(string originalName);
 
         internal abstract string AvatarConverterMustBeOnAvatarRoot { get; }
         internal abstract string AvatarConverterMaterialConvertSettingLabel { get; }
@@ -115,7 +105,6 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string PhysBonesTransformsShouldBeReduced { get; }
         internal abstract string PhysBonesCollisionCheckCountShouldBeReduced { get; }
 
-        internal abstract string PhysBonesOrderMustMatchWithPC { get; }
         internal abstract string PhysBonesShouldHaveNetworkID { get; }
         internal abstract string EstimatedPerformanceStats { get; }
         internal abstract string DeleteUnselectedComponents { get; }
@@ -133,9 +122,6 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string GenerateButtonLabel { get; }
 
         // Unity Settings
-        internal abstract string CacheServerModeLabel { get; }
-        internal abstract string CacheServerHelp { get; }
-        internal abstract string CacheServerButtonLabel { get; }
         internal abstract string TextureCompressionLabel { get; }
         internal abstract string TextureCompressionHelp { get; }
         internal abstract string TextureCompressionButtonLabel { get; }
@@ -149,22 +135,12 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string SkipThisVersion { get; }
         internal abstract string NewVersionIsAvailable(string latestVersion);
         internal abstract string NewVersionHasBreakingChanges { get; }
-        internal abstract string ThereIsNoUpdate { get; }
 
         // Validations
-        internal abstract string DeactivateAvatar { get; }
-        internal abstract string IncompatibleForQuest { get; }
         internal abstract string MissingScripts { get; }
-        internal abstract string ValidatorAlertsProhibitedShaders(string shaderName, string[] materialNames);
-        internal abstract string ValidatorAlertsUnsupportedComponents(string componentName, string objectName);
-        internal abstract string ValidatorAlertsVeryPoorPhysBones(int count);
-        internal abstract string ValidatorAlertsVeryPoorPhysBoneColliders(int count);
-        internal abstract string ValidatorAlertsVeryPoorContacts(int count);
 
         // Vertex Color
         internal abstract string VertexColorRemoverEditorRemove { get; }
         internal abstract string VertexColorRemoverEditorRestore { get; }
-        internal abstract string VertexColorRemoverDialogTitle { get; }
-        internal abstract string VertexColorRemoverDialogMessage(string name);
     }
 }

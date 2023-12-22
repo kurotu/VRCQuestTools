@@ -26,17 +26,11 @@ namespace KRT.VRCQuestTools.I18n
         // Convert Avatar for Quest
         internal override string ExitPlayModeToEdit => "Exit play mode to edit.";
         internal override string AddAvatarConverterButtonLabel(string name) => $"Add \"VQT Avatar Converter Settings\" to {name}";
-        internal override string OverwriteWarningDialogButtonCancel => "Cancel";
-        internal override string OverwriteWarningDialogButtonOK => "OK";
-        internal override string OverwriteWarningDialogButtonUseAltDir(string altDir) => $"Use \"{altDir}\"";
-        internal override string OverwriteWarningDialogMessage(string artifactsDir) => $"\"{artifactsDir}\" already exists. Do you want to overwrite?";
-        internal override string OverwriteWarningDialogTitle => $"{VRCQuestTools.Name} Warning";
         internal override string AvatarLabel => "Avatar";
         internal override string GenerateQuestTexturesLabel => "Generate Textures for Quest";
         internal override string GenerateQuestTexturesTooltip => "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar";
         internal override string SupportedShadersLabel => "Supported Shaders";
         internal override string SaveToLabel => "Folder to Save";
-        internal override string InvalidCharsInOutputPath => "Folder name has invalid characters.";
         internal override string SelectButtonLabel => "Select";
         internal override string ConvertButtonLabel => "Convert";
         internal override string AssignButtonLabel => "Assign";
@@ -46,8 +40,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string RemoveVertexColorTooltip => "Usually you don't have to disable this option. When you are using special shaders which require vertex colors in PC avatars, you can disable this option to prevent unexpected behavior.\nIf vertex color is accidentally removed, restore from the avatar's \"VertexColorRemover\" component.";
         internal override string AnimationOverrideLabel => "Animation Override";
         internal override string AnimationOverrideTooltip => "Convert Animator Controllers with Animator Override Controller's animations.";
-        internal override string AnimationOverrideMaterialErrorMessage => "Animator Override Controllers contain animated materials which uses unsupported shaders for Quest.";
-        internal override string ConvertingMaterialsDialogMessage => "Converting materials...";
         internal override string GeneratingTexturesDialogMessage => "Generating textures...";
         internal override string MaterialExceptionDialogMessage => "An error occured when converting materials. Aborted.";
         internal override string AnimationClipExceptionDialogMessage => "An error occured when converting Animation Clips. Aborted.";
@@ -57,11 +49,9 @@ namespace KRT.VRCQuestTools.I18n
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
         internal override string WarningForUnsupportedShaders => $"Following materials are using unsupported shaders. Textures might not properly be generated.\nDisabling \"{GenerateQuestTexturesLabel}\" option changes only shader.";
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
-        internal override string AlertForMaterialAnimation => "There are Animation clips which change avatar's materials. Animator Controllers and Animation clips will be duplicated then converted for Quest.";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
         internal override string AlertForMissingNetIds => "There are PhysBones which don't have Network ID. To keep sync between PC and Quest, assign Network IDs then re-upload the PC avatar.";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not able to upload for Android.  Please keep \"Poor\" rating in avatar dynamics categories.";
-        internal override string CompletedDialogMessage(string originalName) => $"{originalName} has been converted for Quest.\nTest your avatar such as facial expression then upload it for Android platform by using same Blueprint ID as PC version.";
 
         internal override string AvatarConverterMustBeOnAvatarRoot => "This component must be attached to VRC_AvatarDescriptor GameObject.";
         internal override string AvatarConverterMaterialConvertSettingLabel => "Material Conversion Setting";
@@ -116,7 +106,6 @@ namespace KRT.VRCQuestTools.I18n
 
         internal override string PhysBonesCollisionCheckCountShouldBeReduced => "You can't upload this avatar for Quest. Please reduce collision check count between VRCPhysBone components and VRCPhysBoneCollider components.";
 
-        internal override string PhysBonesOrderMustMatchWithPC => "To properly synchronize PhysBones, the order of PhysBones' Network IDs must match with the PC avatar. Please select PhysBones from the top of the list.";
         internal override string PhysBonesShouldHaveNetworkID => "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Quest. Please assign Network IDs to both of PC version and Quest version with Network ID Utility of VRCSDK, then re-upload both.";
         internal override string AlertForMultiplePhysBones => "There are multiple PhysBones in a single GameObject. When removing PhysBones for Quest after conversion, they may not be properly synchronized between PC and Quest.";
         internal override string EstimatedPerformanceStats => "Estimated Performance Stats";
@@ -135,9 +124,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string GenerateButtonLabel => "Generate Metallic Smoothness";
 
         // Unity Settings
-        internal override string CacheServerModeLabel => "Cache Server Mode";
-        internal override string CacheServerHelp => "By enabling the local cache server, you can save time for such as texture compression from the next. In default preferences, the server takes 10 GB from C drive at maximum.";
-        internal override string CacheServerButtonLabel => "Enable Local Cache Server";
         internal override string TextureCompressionLabel => "Android Texture Compression";
         internal override string TextureCompressionHelp => "ASTC improves Quest texture quality in exchange for long compression time";
         internal override string TextureCompressionButtonLabel => "Set texture compression to ASTC";
@@ -151,28 +137,12 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SkipThisVersion => "Skip This";
         internal override string NewVersionIsAvailable(string latestVersion) => $"New version {latestVersion} is available.";
         internal override string NewVersionHasBreakingChanges => $"This version might have breaking changes about compatibility.";
-        internal override string ThereIsNoUpdate => "There is no update.";
 
         // Validations
-        internal override string DeactivateAvatar => "Deactivate avatar";
-        internal override string IncompatibleForQuest => "On Android build target, you can't upload Quest avatars because this avatar can't be uploaded for Quest. Please deactivate such avatars or switch platfrom back to PC.";
         internal override string MissingScripts => "There are \"missing\" scripts. Please check for assets or packages you forgot to import.";
-        internal override string ValidatorAlertsProhibitedShaders(string shaderName, string[] materialNames) =>
-            $"Shader \"{shaderName}\" (Materials: {string.Join(", ", materialNames)}) is not allowed for Quest.";
-        internal override string ValidatorAlertsUnsupportedComponents(string componentName, string objectName) =>
-            $"Component \"{componentName}\" ({objectName}) is not allowed for Quest.";
-        internal override string ValidatorAlertsVeryPoorPhysBones(int count) =>
-            $"Too many PhysBones: {count} (Very Poor).";
-        internal override string ValidatorAlertsVeryPoorPhysBoneColliders(int count) =>
-            $"Too many PhysBoneColliders: {count} (Very Poor).";
-        internal override string ValidatorAlertsVeryPoorContacts(int count) =>
-            $"Too many ContactSenders and ContactReceivers: {count} (Very Poor).";
 
         // Vertex Color
         internal override string VertexColorRemoverEditorRemove => "Remove Vertex Color";
         internal override string VertexColorRemoverEditorRestore => "Restore Vertex Color";
-        internal override string VertexColorRemoverDialogTitle => $"Remove Vertex Color - {VRCQuestTools.Name}";
-        internal override string VertexColorRemoverDialogMessage(string name) =>
-            $"\"{name}\" has vertex colors in its meshes. Would you like to remove vertex colors to properly apply texture color?\n\nUsually you can choose \"{YesLabel}\". If you are using special shaders which require vertex color for PC avatars, you can choose \"{NoLabel}\"";
     }
 }
