@@ -486,7 +486,9 @@ namespace KRT.VRCQuestTools.Inspector
 
         private string GetOutputPath(VRC_AvatarDescriptor avatar)
         {
-            var outputPath = $"Assets/VRCQuestToolsOutput/{avatar.name}";
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var avatarName = new string(avatar.name.Select(c => invalidChars.Contains(c) ? '_' : c).ToArray());
+            var outputPath = $"Assets/VRCQuestToolsOutput/{avatarName}";
             return outputPath;
         }
 
