@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Shading by normal map
     - Emission [0-3]
 - Add feature to show game objects in the warning panel for missing components.
+- Integrate VRCQuestTools Extra features into VRCQuestTools.
+    - FinalIK Support
+    - VirtualLens2 Support
 
 ### Changed
 - Require VRChat SDK 3.3.0 or later.

@@ -19,7 +19,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
 #pragma warning disable SA1136 // Enum values should be on separate lines
 #pragma warning disable SA1602 // Enumeration items should be documented
-            UTS2, Arktoon, Standard, Unlit, Quest, Sunao, AXCS, LilToon, Poiyomi, ExtraSupport, Unverified,
+            UTS2, Arktoon, Standard, Unlit, Quest, Sunao, AXCS, LilToon, Poiyomi, VirtualLens2, Unverified,
 #pragma warning restore SA1602 // Enumeration items should be documented
 #pragma warning restore SA1136 // Enum values should be on separate lines
         }
@@ -45,10 +45,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                     return new LilToonMaterial(material);
                 case ShaderCategory.Poiyomi:
                     return new PoiyomiMaterial(material);
+                case ShaderCategory.VirtualLens2:
+                    return new VirtualLens2Material(material);
                 case ShaderCategory.Standard:
                 case ShaderCategory.Unlit:
                 case ShaderCategory.Quest:
-                case ShaderCategory.ExtraSupport:
                 case ShaderCategory.Unverified:
                     return new StandardMaterial(material);
                 default:
@@ -101,6 +102,10 @@ namespace KRT.VRCQuestTools.Models.Unity
             if (shaderName.Contains("poiyomi"))
             {
                 return ShaderCategory.Poiyomi;
+            }
+            if (shaderName.StartsWith("VirtualLens2/".ToLower()))
+            {
+                return ShaderCategory.VirtualLens2;
             }
             return ShaderCategory.Unverified;
         }

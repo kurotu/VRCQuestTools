@@ -43,7 +43,11 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Unsupported components.</returns>
         internal virtual Component[] GetUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive)
         {
-            return VRCSDKUtility.UnsupportedComponentTypes.SelectMany(type => gameObject.GetComponentsInChildren(type, includeInactive)).ToArray();
+            var components = gameObject.GetComponentsInChildren<Component>(includeInactive);
+            return components
+                .Where(c => c != null)
+                .Where(IsUnsupportedComponent)
+                .ToArray();
         }
 
         /// <summary>

@@ -198,6 +198,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             questAvatarObject.name = avatar.AvatarDescriptor.gameObject.name + " (Quest)";
             questAvatarObject.SetActive(true);
+            ApplyVirtualLens2Support(questAvatarObject);
             var prefabName = $"{assetsDirectory}/{questAvatarObject.name}.prefab";
             return new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
         }
@@ -489,6 +490,45 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
             }
             return convertedAnimationClips;
+        }
+
+        private void ApplyVirtualLens2Support(GameObject avatar)
+        {
+            // Since VirtualLens2 2.10.x, it is not necessary to disable VirtualLens2 objects because there is remote only mode for mobile platform.
+            // When _VirtualLens_Root exists, it is assumed that legacy VirtualLens2 is installed.
+            var root = FindDescendant(avatar, "_VirtualLens_Root");
+            if (root != null)
+            {
+                root.tag = "EditorOnly";
+                root.SetActive(false);
+
+                var origin = FindDescendant(avatar, "VirtualLensOrigin");
+                if (origin != null)
+                {
+                    origin.tag = "EditorOnly";
+                    origin.SetActive(false);
+                }
+            }
+        }
+
+        private GameObject FindDescendant(GameObject gameObject, string name)
+        {
+            var transform = gameObject.transform;
+            var child = transform.Find(name);
+            if (child != null)
+            {
+                return child.gameObject;
+            }
+            for (var i = 0; i < transform.childCount; i++)
+            {
+                var c = transform.GetChild(i);
+                var result = FindDescendant(c.gameObject, name);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            return null;
         }
 
 #pragma warning disable SA1600 // Elements should be documented

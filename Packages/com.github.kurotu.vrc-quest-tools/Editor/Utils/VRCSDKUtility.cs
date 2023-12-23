@@ -53,20 +53,6 @@ namespace KRT.VRCQuestTools.Utils
         internal const int PoorContactsCountLimit = 16;
 
         /// <summary>
-        /// Types which is not allowed for Quest avatars.
-        /// </summary>
-        internal static readonly System.Type[] UnsupportedComponentTypes = new System.Type[]
-        {
-            SystemUtility.GetTypeByName("DynamicBoneColliderBase"), SystemUtility.GetTypeByName("DynamicBone"), // DynamicBone may be missing
-            typeof(Cloth),
-            typeof(Camera),
-            typeof(Light),
-            typeof(AudioSource),
-            typeof(Joint), typeof(Rigidbody), typeof(Collider),
-            typeof(UnityEngine.Animations.IConstraint),
-        }.Where(e => e != null).ToArray();
-
-        /// <summary>
         /// AvatarPerformanceCategory for Avatar Dynamics.
         /// </summary>
         internal static readonly AvatarPerformanceCategory[] AvatarDynamicsPerformanceCategories =
@@ -99,6 +85,20 @@ namespace KRT.VRCQuestTools.Utils
         internal static readonly System.Type ContactSenderType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.Contact.Components.VRCContactSender");
 
         private const string VpmSdk3DemoFolder = "Packages/com.vrchat.avatars/Samples/AV3 Demo Assets";
+
+        /// <summary>
+        /// Types which is not allowed for Quest avatars. (except FinalIK).
+        /// </summary>
+        private static readonly System.Type[] UnsupportedComponentTypes = new System.Type[]
+        {
+            SystemUtility.GetTypeByName("DynamicBoneColliderBase"), SystemUtility.GetTypeByName("DynamicBone"), // DynamicBone may be missing
+            typeof(Cloth),
+            typeof(Camera),
+            typeof(Light),
+            typeof(AudioSource),
+            typeof(Joint), typeof(Rigidbody), typeof(Collider),
+            typeof(UnityEngine.Animations.IConstraint),
+        }.Where(e => e != null).ToArray();
 
         private static readonly Regex VpmSdk3ProxyAnimPattern = new Regex($"{VpmSdk3DemoFolder}/Animation/ProxyAnim/.*\\.anim", RegexOptions.Compiled);
         private static readonly Regex VpmSdk3DemoPattern = new Regex($"{VpmSdk3DemoFolder}/.*", RegexOptions.Compiled);
@@ -199,10 +199,16 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when unsupported.</returns>
         internal static bool IsUnsupportedComponentType(System.Type type)
         {
-            return UnsupportedComponentTypes.FirstOrDefault(t =>
+            var unsupported = UnsupportedComponentTypes.FirstOrDefault(t =>
             {
                 return t.IsAssignableFrom(type);
             }) != null;
+            if (unsupported)
+            {
+                return true;
+            }
+
+            return FinalIKUtility.IsFinalIKComponent(type);
         }
 
         /// <summary>
