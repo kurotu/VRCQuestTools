@@ -13,13 +13,18 @@
         [HDR]_Color("Color", Color) = (1,1,1,1)
 
         _UseShadow("Use Shadow", Int) = 0
+        _ShadowStrength("sStrength", Range(0, 1)) = 1
+        _ShadowStrengthMask("sStrength", 2D) = "white" {}
         _ShadowColor("Shadow 1st Color", Color) = (0.5, 0.5, 0.5, 1)
+        _ShadowColorTex("Shadow Color", 2D) = "black" {}
         _ShadowBorder("Shadow 1st Border", Range(0, 1)) = 0.5
         _ShadowBlur("Shadow 1st Blur", Range(0, 1)) = 0.5
         _Shadow2ndColor("Shadow 2nd Color", Color) = (0.3, 0.3, 0.3, 1)
+        _Shadow2ndColorTex("2nd Color", 2D) = "black" {}
         _Shadow2ndBorder("Shadow 2nd Border", Range(0, 1)) = 0.3
         _Shadow2ndBlur("Shadow 2nd Blur", Range(0, 1)) = 0.3
         _Shadow3rdColor("Shadow 3rd Color", Color) = (0, 0, 0, 1)
+        _Shadow3rdColorTex("2nd Color", 2D) = "black" {}
         _Shadow3rdBorder("Shadow 3rd Border", Range(0, 1)) = 0.1
         _Shadow3rdBlur("Shadow 3rd Blur", Range(0, 1)) = 0.1
         // _ShadowBorderColor("Shadow Border Color", Color) = (1, 0, 0, 1)
@@ -107,13 +112,21 @@
             float4 _MainTex_ST;
 
             uint _UseShadow;
+            float _ShadowStrength;
+            sampler2D _ShadowStrengthMask;
             fixed4 _ShadowColor;
+            sampler2D _ShadowColorTex;
+            float4 _ShadowColorTex_ST;
             float _ShadowBorder;
             float _ShadowBlur;
             fixed4 _Shadow2ndColor;
+            sampler2D _Shadow2ndColorTex;
+            float4 _Shadow2ndColorTex_ST;
             float _Shadow2ndBorder;
             float _Shadow2ndBlur;
             fixed4 _Shadow3rdColor;
+            sampler2D _Shadow3rdColorTex;
+            float4 _Shadow3rdColorTex_ST;
             float _Shadow3rdBorder;
             float _Shadow3rdBlur;
 
@@ -199,14 +212,16 @@
                 return o;
             }
 
-            fixed4 lilShadow(float lightValue) {
+            fixed4 lilShadow(float lightValue, float2 uv) {
                 fixed4 white = fixed4(1, 1, 1, 1);
-                fixed4 shadow = fixed4(1, 1, 1, 1);
+
                 float shadowBorderMax = _ShadowBorder + _ShadowBlur / 2;
                 float shadowBorderMin = _ShadowBorder - _ShadowBlur / 2;
                 if (lightValue >= shadowBorderMax) {
-                    return shadow;
+                    return white;
                 }
+
+                fixed4 shadow = fixed4(1, 1, 1, 1);
 
                 // shadow1
                 if (lightValue < shadowBorderMax) {
@@ -233,6 +248,10 @@
                     shadow.rgb = lerp(shadow.rgb, shadow.rgb * shadow3Color.rgb, shadow3Color.a);
                 }
 
+                float4 strengthMask = tex2D(_ShadowStrengthMask, uv);
+                float strength = strengthMask.rgb * _ShadowStrength;
+                shadow.rgb = lerp(white.rgb, shadow.rgb, strength);
+
                 return shadow;
             }
 
@@ -243,7 +262,7 @@
                     half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv_BumpMap), _BumpScale);
                     half4 normalCol = vqt_normalToGrayScale(normal);
 
-                    fixed4 shadow = lilShadow(normalCol);
+                    fixed4 shadow = lilShadow(normalCol, i.uv);
 
                     albedo.rgb *= shadow.rgb;
                 }

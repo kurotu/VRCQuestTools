@@ -14,6 +14,7 @@
         [Normal] _BumpMap ("Normalmap", 2D) = "bump" {}
         _BumpScale ("Normal Map Scale", Range(-2.0,  2.0)) = 1.0
 
+        _ShadeMask("Shade Mask", 2D) = "white" {}
         _Shade ("Shade Strength", Range( 0.0,  1.0)) = 0.3
         _ShadeWidth ("Shade Width", Range( 0.0,  2.0)) = 0.75
         _ShadeGradient ("Shade Gradient", Range( 0.0,  2.0)) = 0.75
@@ -113,6 +114,8 @@
             sampler2D _BumpMap;
             float _BumpScale;
 
+            sampler2D _ShadeMask;
+            float4 _ShadeMask_ST;
             float _Shade;
             float _ShadeWidth;
             float _ShadeGradient;
@@ -207,6 +210,11 @@
                     float3 shadeColor = saturate(col.rgb * 3.0f - 1.5f) * _ShadeColor;
                     shadeColor = lerp(shadeColor, _CustomShadeColor.rgb, _CustomShadeColor.a);
                     float3 diffColor = LightingCalc(float3(1, 1, 1) , diffuse , shadeColor , 1.0);
+
+                    float shadeMap = tex2D(_ShadeMask, i.uv).r;
+                    float shade = _Shade * shadeMap;
+                    diffColor = lerp(float3(1, 1, 1), diffColor, shade);
+
                     col.rgb *= diffColor;
                 }
 

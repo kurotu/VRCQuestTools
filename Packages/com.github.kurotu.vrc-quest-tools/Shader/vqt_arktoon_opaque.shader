@@ -14,6 +14,7 @@
         _Shadowborder ("[Shadow] border ", Range(0, 1)) = 0.6
         _ShadowborderBlur ("[Shadow] border Blur", Range(0, 1)) = 0.05
         _ShadowStrength ("[Shadow] Strength", Range(0, 1)) = 0.5
+        _ShadowStrengthMask ("[Shadow] Strength Mask", 2D) = "white" {}
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
         _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
@@ -61,6 +62,8 @@
             float _Shadowborder;
             float _ShadowborderBlur;
             float _ShadowStrength;
+            sampler2D _ShadowStrengthMask;
+            fixed4 _ShadowStrengthMask_ST;
 
             float _VQT_MainTexBrightness;
             uint _VQT_GenerateShadow;
@@ -90,7 +93,9 @@
                 if (_VQT_GenerateShadow) {
                     half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv), _BumpScale);
                     half4 normalCol = vqt_normalToGrayScale(normal);
-                    fixed4 shadow = arktoonShadow(normalCol, _Shadowborder, _ShadowborderBlur, _ShadowStrength);
+                    float4 mask = tex2D(_ShadowStrengthMask, i.uv);
+                    float strength = mask * _ShadowStrength;
+                    fixed4 shadow = arktoonShadow(normalCol, _Shadowborder, _ShadowborderBlur, strength);
                     col.rgb *= shadow.rgb;
                 }
 

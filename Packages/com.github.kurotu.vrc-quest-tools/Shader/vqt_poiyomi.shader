@@ -17,12 +17,15 @@
       	_ShadowOffset ("Ramp Offset", Range(-1, 1)) = 0
 
         // _LightingMode == 1
+        [sRGBWarning(true)]_ShadowColorTex ("Color Tex", 2D) = "black" { }
         _ShadowColor ("Shadow Color", Color) = (0.7, 0.75, 0.85, 1.0)
         _ShadowBorder ("Shadow Border", Range(0, 1)) = 0.5
         _ShadowBlur ("Shadow Blur", Range(0, 1)) = 0.1
+        [sRGBWarning(true)]_Shadow2ndColorTex ("Color Tex", 2D) = "black" { }
         _Shadow2ndColor ("Shadow 2nd Color", Color) = (0, 0, 0, 0)
         _Shadow2ndBorder ("Shadow 2nd Border", Range(0, 1)) = 0.5
         _Shadow2ndBlur ("Shadow 2nd Blur", Range(0, 1)) = 0.1
+        [sRGBWarning(true)]_Shadow3rdColorTex ("Color Tex", 2D) = "black" { }
         _Shadow3rdColor ("Shadow 3rd Color", Color) = (0, 0, 0, 0)
         _Shadow3rdBorder ("Shadow 3rd Border", Range(0, 1)) = 0.5
         _Shadow3rdBlur ("Shadow 3rd Blur", Range(0, 1)) = 0.1
@@ -140,14 +143,21 @@
             float3 _LightingShadowColor;
 
             sampler2D _ToonRamp;
+            float4 _ToonRamp_ST;
             float _ShadowOffset;
 
+            sampler2D _ShadowColorTex;
+            float4 _ShadowColorTex_ST;
             float4 _ShadowColor;
             float _ShadowBorder;
             float _ShadowBlur;
+            sampler2D _Shadow2ndColorTex;
+            float4 _Shadow2ndColorTex_ST;
             float4 _Shadow2ndColor;
             float _Shadow2ndBorder;
             float _Shadow2ndBlur;
+            sampler2D _Shadow3rdColorTex;
+            float4 _Shadow3rdColorTex_ST;
             float4 _Shadow3rdColor;
             float _Shadow3rdBorder;
             float _Shadow3rdBlur;
@@ -222,19 +232,25 @@
                 }
 
                 if (_ShadowColor.a > 0) {
-                    shadow.rgb = lerp(_ShadowColor, shadow.rgb, saturate((light - shadow1BorderMin) / _ShadowBlur));
+                    float4 shadowTex = tex2D(_ShadowColorTex, uv);
+                    float3 color = _ShadowColor.rgb * shadowTex.rgb;
+                    shadow.rgb = lerp(color, shadow.rgb, saturate((light - shadow1BorderMin) / _ShadowBlur));
                 }
 
                 if (_Shadow2ndColor.a > 0) {
                     float shadow2BorderMax = _Shadow2ndBorder + _Shadow2ndBlur / 2;
                     float shadow2BorderMin = _Shadow2ndBorder - _Shadow2ndBlur / 2;
-                    shadow.rgb = lerp(_Shadow2ndColor, shadow.rgb, saturate((light - shadow2BorderMin) / _Shadow2ndBlur));
+                    float4 shadowTex = tex2D(_Shadow2ndColorTex, uv);
+                    float3 color = _Shadow2ndColor.rgb * shadowTex.rgb;
+                    shadow.rgb = lerp(color, shadow.rgb, saturate((light - shadow2BorderMin) / _Shadow2ndBlur));
                 }
 
                 if (_Shadow3rdColor.a > 0) {
                     float shadow3BorderMax = _Shadow3rdBorder + _Shadow3rdBlur / 2;
                     float shadow3BorderMin = _Shadow3rdBorder - _Shadow3rdBlur / 2;
-                    shadow.rgb = lerp(_Shadow3rdColor, shadow.rgb, saturate((light - shadow3BorderMin) / _Shadow3rdBlur));
+                    float4 shadowTex = tex2D(_Shadow3rdColorTex, uv);
+                    float3 color = _Shadow3rdColor.rgb * shadowTex.rgb;
+                    shadow.rgb = lerp(color, shadow.rgb, saturate((light - shadow3BorderMin) / _Shadow3rdBlur));
                 }
 
                 float4 result = baseColor;
@@ -283,7 +299,7 @@
                 if (_LightingMode == 0) {
                     float2 coord = normalCol.rg;
                     coord.r = saturate(coord.r + _ShadowOffset);
-                    half4 shadow = sampleTex2D(_ToonRamp, normalCol.rg, 0.0f);
+                    float4 shadow = tex2D(_ToonRamp, coord);
                     shadow.rgb = lerp(float3(1, 1, 1), shadow.rgb, _ShadowStrength);
                     float4 result = baseColor;
                     result.rgb *= shadow.rgb;

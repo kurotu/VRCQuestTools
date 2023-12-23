@@ -14,6 +14,7 @@
         _Shadowborder ("[Shadow] border ", Range(0, 1)) = 0.6
         _ShadowborderBlur ("[Shadow] border Blur", Range(0, 1)) = 0.05
         _ShadowStrength ("[Shadow] Strength", Range(0, 1)) = 0.5
+        _ShadowStrengthMask ("[Shadow] Strength Mask", 2D) = "white" {}
 
         _EmissiveFreak1Tex("EmissiveFreak1Tex", 2D) = "white" {}
         [HDR]_EmissiveFreak1Color("EmissiveFreak1Color", Color) = (1,1,1,1)
@@ -69,6 +70,8 @@
             float _Shadowborder;
             float _ShadowborderBlur;
             float _ShadowStrength;
+            sampler2D _ShadowStrengthMask;
+            float4 _ShadowStrengthMask_ST;
 
             sampler2D _EmissiveFreak1Tex;
             float4 _EmissiveFreak1Tex_ST;
@@ -108,7 +111,9 @@
                 if (_VQT_GenerateShadow) {
                     half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv), _BumpScale);
                     half4 normalCol = vqt_normalToGrayScale(normal);
-                    fixed4 shadow = arktoonShadow(normalCol, _Shadowborder, _ShadowborderBlur, _ShadowStrength);
+                    float4 mask = tex2D(_ShadowStrengthMask, i.uv);
+                    float strength = mask * _ShadowStrength;
+                    fixed4 shadow = arktoonShadow(normalCol, _Shadowborder, _ShadowborderBlur, strength);
                     col.rgb *= shadow.rgb;
                 }
 
