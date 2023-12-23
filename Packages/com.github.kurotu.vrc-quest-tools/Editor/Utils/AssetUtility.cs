@@ -149,10 +149,12 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Loaded texture.</returns>
         internal static Texture2D LoadUncompressedTexture(string path)
         {
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             var extension = Path.GetExtension(path).ToLower();
             if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
             {
-                var tex = new Texture2D(2, 2);
+                var isLinear = !importer.sRGBTexture;
+                var tex = new Texture2D(2, 2, TextureFormat.RGBA32, Texture.GenerateAllMips, linear: isLinear);
                 var bytes = File.ReadAllBytes(Path.GetFullPath(path));
                 tex.LoadImage(bytes);
                 tex.filterMode = FilterMode.Bilinear;
@@ -161,7 +163,6 @@ namespace KRT.VRCQuestTools.Utils
 
             const string AndroidPlatform = "Android";
             const string StandalonePlatform = "Standalone";
-            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             var isReadable = importer.isReadable;
             var textureCompression = importer.textureCompression;
             var standaloneTextureSettings = importer.GetPlatformTextureSettings(StandalonePlatform);
