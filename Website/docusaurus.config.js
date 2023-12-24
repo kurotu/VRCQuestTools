@@ -80,6 +80,11 @@ const config = {
             label: 'GitHub',
             position: 'right',
           },
+          {
+            href: 'https://kurotu.booth.pm/items/2436054',
+            label: 'Booth',
+            position: 'right',
+          },
         ],
       },
       footer: {
