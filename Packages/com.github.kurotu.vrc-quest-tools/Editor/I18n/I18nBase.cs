@@ -27,8 +27,8 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string ExitPlayModeToEdit { get; }
         internal abstract string AddAvatarConverterButtonLabel(string name);
         internal abstract string AvatarLabel { get; }
-        internal abstract string GenerateQuestTexturesLabel { get; }
-        internal abstract string GenerateQuestTexturesTooltip { get; }
+        internal abstract string GenerateAndroidTexturesLabel { get; }
+        internal abstract string GenerateAndroidTexturesTooltip { get; }
         internal abstract string SupportedShadersLabel { get; }
         internal abstract string SaveToLabel { get; }
         internal abstract string SelectButtonLabel { get; }

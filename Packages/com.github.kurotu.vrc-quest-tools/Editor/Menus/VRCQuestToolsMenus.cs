@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Menus
             internal const string RemovePhysBones = RootMenu + "Remove PhysBones";
             internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
             internal const string MSMapGenerator = RootMenu + "Metallic Smoothness Map";
-            internal const string UnitySettings = RootMenu + "Unity Settings for Quest";
+            internal const string UnitySettings = RootMenu + "Unity Settings for Android";
             private const string LanguageMenu = RootMenu + "Languages/";
             internal const string LanguageAuto = LanguageMenu + "Auto (default)";
             internal const string LanguageEnglish = LanguageMenu + "English";

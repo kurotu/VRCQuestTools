@@ -27,14 +27,14 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ExitPlayModeToEdit => "編集するには再生モードを終了してください。";
         internal override string AddAvatarConverterButtonLabel(string name) => $"{name} に \"VQT Avatar Converter Settings\" を追加";
         internal override string AvatarLabel => "アバター";
-        internal override string GenerateQuestTexturesLabel => "Quest用のテクスチャを生成する";
-        internal override string GenerateQuestTexturesTooltip => "メインテクスチャ以外にもマテリアルのパラメーターを参照してテクスチャを生成し、PC版アバターの外観に近づけます。";
+        internal override string GenerateAndroidTexturesLabel => "Android用のテクスチャを生成する";
+        internal override string GenerateAndroidTexturesTooltip => "メインテクスチャ以外にもマテリアルのパラメーターを参照してテクスチャを生成し、PC版アバターの外観に近づけます。";
         internal override string SupportedShadersLabel => "対応シェーダー";
         internal override string SaveToLabel => "保存先フォルダ";
         internal override string SelectButtonLabel => "選択";
         internal override string ConvertButtonLabel => "変換";
         internal override string AssignButtonLabel => "割り当て";
-        internal override string UpdateTexturesLabel => "Quest用テクスチャのみ更新";
+        internal override string UpdateTexturesLabel => "変換後のAndroid用テクスチャを更新";
         internal override string AdvancedConverterSettingsLabel => "高度な変換設定";
         internal override string RemoveVertexColorLabel => "メッシュから頂点カラーを削除";
         internal override string RemoveVertexColorTooltip => "通常このオプションを無効にする必要はありません。PC用アバターで頂点カラーの必要な特別なシェーダーを使用している場合は、誤動作を防ぐためにこのオプションを無効にできます。\n誤って頂点カラーを削除した場合は、アバターの\"VertexColorRemover\"コンポーネントで復元できます。";
@@ -47,11 +47,11 @@ namespace KRT.VRCQuestTools.I18n
         internal override string WarningForPerformance => $"変換後のアバターの推定パフォーマンスランクは Very Poor です。Android 用にアップロードできますが、以下の制限があります。\n・デフォルトではフォールバックアバターが表示され、見る側が Avatar Display 設定で個別に表示する必要があります。\n・Android スマートフォン版 VRChat では表示できません。";
         internal override string WarningForAppearance => "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n" +
             "別の Blueprint ID でのアップロードや Avatars 3.0 のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
-        internal override string WarningForUnsupportedShaders => $"以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n「{GenerateQuestTexturesLabel}」をオフにするとシェーダーのみを変更します。";
+        internal override string WarningForUnsupportedShaders => $"以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n「{GenerateAndroidTexturesLabel}」をオフにするとシェーダーのみを変更します。";
         internal override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";
-        internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} は Dynamic Bone を PhysBones に変換しません。アバターを変換する前に PhysBones を設定してください。";
-        internal override string AlertForMissingNetIds => "ネットワークIDの割り当てられていない PhysBones があります。 PC と Quest で正しく同期させるため、ネットワークIDを割り当てた後でPC用のアバターを再度アップロードしてください。";
-        internal override string AlertForMultiplePhysBones => "1つの GameObject に複数の PhysBone があります。変換後に Quest 用に PhysBone を削除した場合、PC と Quest で正しく同期しない可能性があります。";
+        internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} は Dynamic Bone を PhysBone に変換しません。アバターを変換する前に PhysBone を設定してください。";
+        internal override string AlertForMissingNetIds => "ネットワークIDの割り当てられていない PhysBones があります。 PC と Android で正しく同期させるため、ネットワークIDを割り当てた後でPC用のアバターを再度アップロードしてください。";
+        internal override string AlertForMultiplePhysBones => "1つの GameObject に複数の PhysBone があります。Android 用に PhysBone を削除した場合、PC と Android で正しく同期しない可能性があります。";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones, Contacts) のパフォーマンスランクが Very Poor になっており Android 用にアップロードできません。 Avatar Dynamics のパフォーマンスランクが Poor に収まるようコンポーネントを削減してください。";
 
         internal override string AvatarConverterMustBeOnAvatarRoot => "VRC_AvatarDescriptor のあるオブジェクトに配置してください。";
@@ -99,14 +99,14 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SelectComponentsToKeep => "削除せずに残すコンポーネントを選択してください。";
         internal override string PhysBonesListTooltip => "コンポーネントと Root Transform の一覧";
         internal override string KeepAll => "すべて残す";
-        internal override string AvatarDynamicsPreventsUpload => "Quest用にアップロードできません。 Avatar Dynamics のランクは少なくとも Poor にしてください。";
-        internal override string PhysBonesWillBeRemovedAtRunTime => "Quest用にアップロードできません。 PhysBone の数を減らしてください。";
-        internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "Quest用にアップロードしても PhysBoneCollider は動作しません。 PhysBoneCollider の数を減らしてください。";
-        internal override string ContactsWillBeRemovedAtRunTime => "Quest用にアップロードできません。 ContactReceiver と ContactSender の数を減らしてください。";
-        internal override string PhysBonesTransformsShouldBeReduced => "Quest用にアップロードできません。 PhysBone の数を減らすか、PhysBone の子オブジェクトの数を減らしてください。";
+        internal override string AvatarDynamicsPreventsUpload => "Android用にアップロードできません。 Avatar Dynamics のランクは少なくとも Poor にしてください。";
+        internal override string PhysBonesWillBeRemovedAtRunTime => "Android用にアップロードできません。 PhysBone の数を減らしてください。";
+        internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "Android用にアップロードしても PhysBoneCollider は動作しません。 PhysBoneCollider の数を減らしてください。";
+        internal override string ContactsWillBeRemovedAtRunTime => "Android用にアップロードできません。 ContactReceiver と ContactSender の数を減らしてください。";
+        internal override string PhysBonesTransformsShouldBeReduced => "Android用にアップロードできません。 PhysBone の数を減らすか、PhysBone の子オブジェクトの数を減らしてください。";
 
-        internal override string PhysBonesCollisionCheckCountShouldBeReduced => "Quest用にアップロードできません。 PhysBone と PhysBoneCollider の衝突判定の数を減らしてください。";
-        internal override string PhysBonesShouldHaveNetworkID => "PhysBones を正しく同期させるには PhysBones の Network ID をPC版と一致させる必要があります。VRCSDK の Network ID Utility を使用してPC用とQuest用で同じ Network ID を割り当てた後、両方を再アップロードしてください。";
+        internal override string PhysBonesCollisionCheckCountShouldBeReduced => "Android用にアップロードできません。 PhysBone と PhysBoneCollider の衝突判定の数を減らしてください。";
+        internal override string PhysBonesShouldHaveNetworkID => "PhysBone を正しく同期させるには PhysBone の Network ID をPC版と一致させる必要があります。VRCSDK の Network ID Utility を使用してPC用とAndroid用で同じ Network ID を割り当てた後、両方を再アップロードしてください。";
         internal override string EstimatedPerformanceStats => "推定パフォーマンスランク";
         internal override string DeleteUnselectedComponents => "選択していないコンポーネントを削除";
 
@@ -124,7 +124,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // Unity Settings
         internal override string TextureCompressionLabel => "Android テクスチャ圧縮";
-        internal override string TextureCompressionHelp => "ASTCを使用するとQuest用のテクスチャ圧縮に時間がかかる代わりに画質が向上します。";
+        internal override string TextureCompressionHelp => "ASTCを使用するとAndroid用のテクスチャ圧縮に時間がかかる代わりに画質が向上します。";
         internal override string TextureCompressionButtonLabel => "ASTCでテクスチャを圧縮";
         internal override string ApplyAllButtonLabel => "すべての設定を適用";
         internal override string ShowOnStartupLabel => "起動時に表示";

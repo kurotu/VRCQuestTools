@@ -27,14 +27,14 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ExitPlayModeToEdit => "Exit play mode to edit.";
         internal override string AddAvatarConverterButtonLabel(string name) => $"Add \"VQT Avatar Converter Settings\" to {name}";
         internal override string AvatarLabel => "Avatar";
-        internal override string GenerateQuestTexturesLabel => "Generate Textures for Quest";
-        internal override string GenerateQuestTexturesTooltip => "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar";
+        internal override string GenerateAndroidTexturesLabel => "Generate Textures for Android";
+        internal override string GenerateAndroidTexturesTooltip => "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar";
         internal override string SupportedShadersLabel => "Supported Shaders";
         internal override string SaveToLabel => "Folder to Save";
         internal override string SelectButtonLabel => "Select";
         internal override string ConvertButtonLabel => "Convert";
         internal override string AssignButtonLabel => "Assign";
-        internal override string UpdateTexturesLabel => "Update Only Quest Textures";
+        internal override string UpdateTexturesLabel => "Update Converted Android Textures";
         internal override string AdvancedConverterSettingsLabel => "Advanced Converter Settings";
         internal override string RemoveVertexColorLabel => "Remove Vertex Color from Meshes";
         internal override string RemoveVertexColorTooltip => "Usually you don't have to disable this option. When you are using special shaders which require vertex colors in PC avatars, you can disable this option to prevent unexpected behavior.\nIf vertex color is accidentally removed, restore from the avatar's \"VertexColorRemover\" component.";
@@ -47,10 +47,10 @@ namespace KRT.VRCQuestTools.I18n
         internal override string WarningForPerformance => $"Estimated performance rating is Very Poor. You can upload the converted avatar for Android platform, but there are following limitation.\n- Quest/PICO users see your fallback avatar by default, then need to change \"Avatar Display\" setting.\n- Android smartphone users can't see Very Poor avatars.";
         internal override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n" +
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
-        internal override string WarningForUnsupportedShaders => $"Following materials are using unsupported shaders. Textures might not properly be generated.\nDisabling \"{GenerateQuestTexturesLabel}\" option changes only shader.";
+        internal override string WarningForUnsupportedShaders => $"Following materials are using unsupported shaders. Textures might not properly be generated.\nDisabling \"{GenerateAndroidTexturesLabel}\" option changes only shader.";
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
-        internal override string AlertForMissingNetIds => "There are PhysBones which don't have Network ID. To keep sync between PC and Quest, assign Network IDs then re-upload the PC avatar.";
+        internal override string AlertForMissingNetIds => "There are PhysBones which don't have Network ID. To keep sync between PC and Android, assign Network IDs then re-upload the PC avatar.";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not able to upload for Android.  Please keep \"Poor\" rating in avatar dynamics categories.";
 
         internal override string AvatarConverterMustBeOnAvatarRoot => "This component must be attached to VRC_AvatarDescriptor GameObject.";
@@ -98,16 +98,16 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SelectComponentsToKeep => "Select components to keep.";
         internal override string PhysBonesListTooltip => "The list of components and their root transforms.";
         internal override string KeepAll => "Keep All";
-        internal override string AvatarDynamicsPreventsUpload => "You can't upload this avatar for Quest. At least Avatar Dynamics must keep \"Poor\" rating.";
-        internal override string PhysBonesWillBeRemovedAtRunTime => "You can't upload this avatar for Quest. Please reduce PhysBone components.";
-        internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "All PhysBone colliders will be removed at runtime on Quest. Please reduce PhysBoneCollider components.";
-        internal override string ContactsWillBeRemovedAtRunTime => "You can't upload this avatar for Quest. Please reduce VRCContact components.";
-        internal override string PhysBonesTransformsShouldBeReduced => "You can't upload this avatar for Quest. Please reduce VRCPhysBone components or number of transforms in hierarchy under VRCPhysBone components.";
+        internal override string AvatarDynamicsPreventsUpload => "You can't upload this avatar for Android. At least Avatar Dynamics must keep \"Poor\" rating.";
+        internal override string PhysBonesWillBeRemovedAtRunTime => "You can't upload this avatar for Android. Please reduce PhysBone components.";
+        internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "All PhysBone colliders will be removed at runtime on Android. Please reduce PhysBoneCollider components.";
+        internal override string ContactsWillBeRemovedAtRunTime => "You can't upload this avatar for Android. Please reduce VRCContact components.";
+        internal override string PhysBonesTransformsShouldBeReduced => "You can't upload this avatar for Android. Please reduce VRCPhysBone components or number of transforms in hierarchy under VRCPhysBone components.";
 
-        internal override string PhysBonesCollisionCheckCountShouldBeReduced => "You can't upload this avatar for Quest. Please reduce collision check count between VRCPhysBone components and VRCPhysBoneCollider components.";
+        internal override string PhysBonesCollisionCheckCountShouldBeReduced => "You can't upload this avatar for Android. Please reduce collision check count between VRCPhysBone components and VRCPhysBoneCollider components.";
 
-        internal override string PhysBonesShouldHaveNetworkID => "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Quest. Please assign Network IDs to both of PC version and Quest version with Network ID Utility of VRCSDK, then re-upload both.";
-        internal override string AlertForMultiplePhysBones => "There are multiple PhysBones in a single GameObject. When removing PhysBones for Quest after conversion, they may not be properly synchronized between PC and Quest.";
+        internal override string PhysBonesShouldHaveNetworkID => "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Android. Please assign Network IDs to both of PC version and Android version with Network ID Utility of VRCSDK, then re-upload both.";
+        internal override string AlertForMultiplePhysBones => "There are multiple PhysBones in a single GameObject. When removing PhysBones for Android, they may not be properly synchronized between PC and Android.";
         internal override string EstimatedPerformanceStats => "Estimated Performance Stats";
         internal override string DeleteUnselectedComponents => "Delete Unselected Components";
 
@@ -125,7 +125,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // Unity Settings
         internal override string TextureCompressionLabel => "Android Texture Compression";
-        internal override string TextureCompressionHelp => "ASTC improves Quest texture quality in exchange for long compression time";
+        internal override string TextureCompressionHelp => "ASTC improves Android texture quality in exchange for long compression time";
         internal override string TextureCompressionButtonLabel => "Set texture compression to ASTC";
         internal override string ApplyAllButtonLabel => "Apply All Settings";
         internal override string ShowOnStartupLabel => "Show on startup";
