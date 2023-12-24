@@ -10,14 +10,13 @@ import AddToVccLink from '@site/src/components/AddToVccLink';
 
 ## Android Build Supportのインストール
 
-VRChatはPCとQuestの2つのプラットフォームをサポートしています。
-QuestはAndroid上で動作するため、Android向けのアバターを作成する必要があります。
-Android向けのコンテンツを作成するには、Unityに**Android Build Support**モジュールをインストールする必要があります。
+VRChatはPCとAndroid (Quest, PICO, スマートフォン)の2つのプラットフォームをサポートしています。
+Android向けのアバターやワールドを作成するには、Unityに**Android Build Support**モジュールをインストールする必要があります。
 VRChat Creator Companion (VCC)を使ってUnityをインストールした場合、通常Android Build Supportもインストールされています。
 
 :::info
-PCとQuestの最大の違いは、パフォーマンスではなくプラットフォーム(OS)です。
-たとえPCでパフォーマンスランクがExcellentでポリゴン数が少ないアバターを作成しても、Android向けにアップロードしない限りQuestには対応していません。
+PCとAndroidの最大の違いは、性能ではなくプラットフォーム(OS)です。
+たとえPCでパフォーマンスランクがExcellentかつポリゴン数が少ないアバターを作成しても、Android向けにアップロードしない限りAndroidには対応していません。
 :::
 
 | Android Build Supportがインストールされている | Android Build Supportがインストールされていない |
@@ -46,9 +45,9 @@ VRCQuestToolsをインストールするには、以下のいずれかの方法�
 - [Unitypackage](#unitypackage)
 - [Unity Package Manager (UPM)](#unity-package-manager-upm)
 
-## VRChat Creator Companion (VCC)
+### VRChat Creator Companion (VCC)
 
-### VCCにVPMリポジトリを追加
+#### VCCにVPMリポジトリを追加
 
 VRCQuestToolsはVPMのコミュニティリポジトリで提供されています。
 リポジトリをVCCに追加することができます。
@@ -67,7 +66,7 @@ https://kurotu.github.io/vpm-repos/vpm.json
 ```
 :::
 
-### アバタープロジェクトにVRCQuestToolsを追加
+#### アバタープロジェクトにVRCQuestToolsを追加
 
 VCCでVRCQuestToolsを管理できるようになりました。アバタープロジェクトに追加しましょう。
 
@@ -76,7 +75,7 @@ VCCでVRCQuestToolsを管理できるようになりました。アバタープ�
 3. VRCQuestToolsの行の⊕ボタンをクリックします。
 4. 最新版のVRCQuestToolsがプロジェクトに追加されます。
 
-## Unitypackage
+### Unitypackage
 
 VRCQuestToolsをUnitypackageでインストールすることもできます。
 
@@ -86,6 +85,6 @@ VRCQuestToolsをUnitypackageでインストールすることもできます。
 4. **Import**ボタンをクリックします。
 5. VRCQuestToolsが`Packages/com.github.kurotu.vrc-quest-tools`フォルダに追加されます。
 
-## Unity Package Manager (UPM)
+### Unity Package Manager (UPM)
 
 UPMでプロジェクトに`https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools`をインポートします。

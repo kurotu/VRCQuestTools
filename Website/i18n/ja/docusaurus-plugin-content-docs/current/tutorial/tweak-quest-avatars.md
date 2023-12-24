@@ -2,18 +2,18 @@
 sidebar_position: 4
 ---
 
-# Questアバターの調整
+# Androidアバターの調整
 
-テスト後、Questアバターに問題がある場合があります。
-このページでは、例を交えてQuestアバターの調整方法を説明します。
+テスト後、Androidアバターに問題がある場合があります。
+このページでは、例を交えてAndroidアバターの調整方法を説明します。
 
 :::note
-このページでは、基本的なUnityのスキルと用語の知識が必要です。
+このページでは、基本的なUnityの用語の知識が必要です。
 :::
 
 ## 半透明なメッシュ
 
-Questアバターは半透明なマテリアルをサポートしていません。
+Androidアバターは半透明なマテリアルをサポートしていません。
 そのため、変換されたアバターには半透明なマテリアルに問題がある場合があります。
 例えば、表情（赤面や青ざめ）、眼鏡のレンズ、目(角膜)などです。
 
@@ -44,7 +44,7 @@ Questアバターは半透明なマテリアルをサポートしていません
 
 :::tip
 新しいアニメーションクリップを作成した後、元のアニメーションをオーバーライドするために**[Animator Override Controller](https://docs.unity3d.com/2019.4/Documentation/Manual/AnimatorOverrideController.html)**を作成できます。
-VRCQuestToolsはアバターを変換する際に自動的にAnimator Override Controllerを解決します。
+VRCQuestToolsはアバターを変換する際に自動的にAnimator Override Controllerを解決して新しいAnimator Controllerを作成します。
 詳細については、[リファレンスページ](./#)を参照してください。
 :::
 
@@ -54,6 +54,7 @@ VRCQuestToolsはアバターを変換する際に自動的にAnimator Override C
 このページでは、メッシュを編集するためのツールの紹介に留めます。
 
 - [MeshDeleterWithTexture](https://gatosyocora.booth.pm/items/1501527) by gatosyocora
+- [Avatar Optimizer](https://vpm.anatawa12.com/avatar-optimizer/ja/) by anatawa12
 - [Blender](https://www.blender.org/)
 
 ### テクスチャの調整
@@ -100,7 +101,7 @@ VRCQuestToolsはアバターを変換する際に自動的にAnimator Override C
 ## ビルドサイズ
 
 一般的に、テクスチャとメッシュがビルドサイズの主な要因です。
-Questアバターの10MB制限のため、テクスチャとメッシュのサイズを削減する必要がある場合があります。
+Androidアバターの10MB制限のため、テクスチャとメッシュのサイズを削減する必要がある場合があります。
 
 ### 不要なGameObjectの除外
 
@@ -129,7 +130,7 @@ Questアバターの10MB制限のため、テクスチャとメッシュのサ�
 UnityはデフォルトでASTC圧縮に**ASTC 6x6 block**を使用します。
 ASTCブロックサイズを変更することでテクスチャの品質を変更できます。
 
-| ASTCブロックサイス | テクスチャ品質 | サイズ |
+| ASTCブロックサイズ | テクスチャ品質 | サイズ |
 |---|---|---|
 | 4x4 | 高 | 大 |
 | : | : | : |

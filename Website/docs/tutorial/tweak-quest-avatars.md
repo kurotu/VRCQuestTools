@@ -2,18 +2,18 @@
 sidebar_position: 4
 ---
 
-# Tweak Quest Avatars
+# Tweak Android Avatars
 
-After testing, you may find some issues in Quest avatars.
-This page describes how to tweak Quest avatars with examples.
+After testing, you may find some issues in Android avatars.
+This page describes how to tweak Android avatars with examples.
 
 :::note
-This page requires knowledge of some basic Unity skills and technical terms.
+This page requires knowledge of some basic technical terms of Unity.
 :::
 
 ## Transparent Meshes
 
-Quest avatars don't support transparent materials.
+Android avatars don't support transparent materials.
 So converted avatars may have issues with transparent materials.
 For example, facial expressions (blush and pallor), glasses lens, and eyes (cornea).
 
@@ -44,7 +44,7 @@ So you can suppress them by editing animations.
 
 :::tip
 After creating new animation clips, you can create an **[Animator Override Controller](https://docs.unity3d.com/2019.4/Documentation/Manual/AnimatorOverrideController.html)** to override the original animations.
-VRCQuestTools autocmatically resolves Animator Override Controllers while converting an avatar.
+VRCQuestTools autocmatically creates new Animator Controller by resolving Animator Override Controllers when converting an avatar.
 See [the reference page](./#) for more details.
 :::
 
@@ -54,6 +54,7 @@ In some cases, problematic parts of meshes can be removed instead of editing ani
 This page just suggests tools to edit meshes.
 
 - [MeshDeleterWithTexture](https://gatosyocora.booth.pm/items/1501527) by gatosyocora
+- [Avatar Optimizer](https://vpm.anatawa12.com/avatar-optimizer/en/) by anatawa12
 - [Blender](https://www.blender.org/)
 
 ### Tweak Textures
@@ -100,7 +101,7 @@ Models:
 ## Build Size
 
 In general, textures and meshes are the main factors of build size.
-Due to 10 MB limit of Quest avatars, you may need to reduce the size of textures and meshes.
+Due to 10 MB limit of Android avatars, you may need to reduce the size of textures and meshes.
 
 ### Omit Unnecessary GameObjects
 

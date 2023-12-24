@@ -4,13 +4,24 @@ sidebar_position: 2
 
 # アバターの変換
 
-アバターをQuest対応に変換します。
+アバターをAndroid対応に変換します。
+
+まず始めにPC用アバターをアップロードした後、アバターを変換してAndroid用にアップロードします。
+
+:::info
+VRChatではアバターはBlueprint IDで管理されており、同じBlueprint IDに対してプラットフォーム毎にアバターデータをアップロードできます。
+そのためPCユーザーは元のアバターを、Androidユーザーは変換後のアバターを見ることになります。
+:::
+
+:::caution
+VRoid Studioで作成されたアバターは透過表現を多用しており、Android用のシェーダーでは正しく表示できません。
+VRCQuestToolsだけでは対応できず、別途作業が必要です。
+:::
 
 ## 必要な知識
 
 - VRChat用の基本的なUnityの知識
 - VRChatにアバターをアップロードする方法
-- [アバターフォールバックシステム](https://docs.vrchat.com/docs/avatar-fallback-system)
 
 ## PCアバターのアップロード
 
@@ -30,41 +41,23 @@ PCとQuestでPhysBoneを正しく同期させるために、PhysBoneにネット
 
 ### アバターのアップロード
 
-通常通りアバターをアップロードします。
+通常通りアバターをPC用にアップロードします。
 
-:::tip
-Prefabワークフローを使用している場合、このタイミングでPrefab (またはPrefab Variant)を作成するとよいでしょう。
-VRCQuestToolsはアバターの変換後もプレハブへの参照を保持します。
-:::
+## アバターの変換設定
 
-## アバターの変換
-
-アバターをQuest対応に変換します。
+アバターをAndroid対応に変換するための設定をします。
 
 1. ヒエラルキーからアバターを選択します。
 2. アバターを右クリックして**VRCQuestTools** > **Convert Avatar for Quest** を選択します。
 3. **Convert Avatar for Quest**ウィンドウが表示されます。
-4. ウィンドウの**変換**ボタンをクリックします。
-5. 変換が完了すると、同じシーンに変換後のアバターが作成されます。名前には`(Quest)`という接尾語が付きます。
+4. ウィンドウの**変換の設定を始める**ボタンをクリックします。
+5. アバターに**VQT Avatar Converter Settings**コンポーネントが追加され、変換の設定が表示されます。
 
-:::info
-変換後、元のアバターは非アクティブになります。インスペクターから元に戻すことができます。
-:::
+以下の項目の設定をします。
 
-:::caution
-VRCQuestToolsはアバターのパフォーマンスを最適化しません。
-そのためほとんどの場合、変換後のアバターはQuestプラットフォームでパフォーマンスランクが「Very Poor」になります。
+### Avatar Dynamicsコンポーネントの削減
 
-Questでは、セーフティのMinimum Displayed Performance Rankは「Good」または「Poor」になります。
-これは「Very Poor」のアバターは常にブロックされ、他の人が個別にAvatar Display設定(「Show Avatar」機能として知られています)を変更しない限り、フォールバックアバターで置き換えられることを意味します。
-
-適切なフォールバックアバターを設定する必要があります。
-詳細については、[Avatar Fallback System](https://docs.vrchat.com/docs/avatar-fallback-system)を参照してください。
-:::
-
-## Avatar Dynamicsコンポーネントの削減
-
-QuestアバターはAvatar Dynamics(PhysBone, Collider, Contact)に上限があります。アバターに多くのPhysBoneがある場合は、減らす必要があります。
+AndroidアバターはAvatar Dynamics(PhysBone, Collider, Contact)に上限があります。アバターに多くのPhysBoneがある場合は、減らす必要があります。
 
 https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits
 
@@ -76,9 +69,43 @@ https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits
 
 言い換えると、アバターのパフォーマンスランクが「Very Poor」であっても、Avatar Dynamicsカテゴリーでは「Poor」以内にする必要があります。
 
-1. 変換後のアバターが制限を超えている場合、**PhysBones Remover**ウィンドウが表示されます。
-2. 残したいPhysBonesなどのチェックボックスを選択します。
-3. **選択していないコンポーネントを削除**ボタンをクリックします。
+1. 設定項目から**Avatar Dynamics 設定**を展開し、**Avatar Dynamics 設定**ボタンをクリックします。
+2. **Avatar Dynamics Selector**ウィンドウが表示されます。
+3. 残したいPhysBoneなどのチェックボックスを選択し、推定パフォーマンスランクをPoor以内にします。
+4. **適用**ボタンをクリックします。
+
+## アバターの変換
+
+:::tip
+Prefabワークフローを使用している場合、このタイミングでPrefab (またはPrefab Variant)を作成するとよいでしょう。
+VRCQuestToolsはアバターの変換後もプレハブへの参照を保持します。
+また、同じ変換設定を流用することができます。
+:::
+
+1. 設定項目を一番下までスクロールし、**変換**ボタンをクリックします。
+2. 変換が完了すると、同じシーンに変換後のアバターが作成されます。
+    - 名前には` (Quest)`という接尾語が付きます。
+    - 生成されたアセットは`Assets/VRCQuestToolsOutput/<アバターのオブジェクト名>`に保存されます。
+
+:::note
+変換後、元のアバターは非アクティブになります。インスペクターから元に戻すことができます。
+:::
+
+:::info
+VRCQuestToolsはアバターのパフォーマンスを最適化しません。
+そのためほとんどの場合、変換後のアバターはAndroidプラットフォームでパフォーマンスランクが「Very Poor」になります。
+
+Androidでは、セーフティのMinimum Displayed Performance Rankは「Good」または「Poor」になります。
+これは「Very Poor」のアバターは常にブロックされ、他の人が個別にAvatar Display設定(「Show Avatar」機能として知られています)を変更しない限り、フォールバックアバターまたはインポスターで置き換えられることを意味します。
+
+また、スマートフォン版VRChatではVery Poorのアバターは表示されません。
+
+参照:
+- [Quest Limits - Performance Ranks](https://creators.vrchat.com/avatars/avatar-performance-ranking-system/#quest-limits)
+- [Avatar Fallback System](https://docs.vrchat.com/docs/avatar-fallback-system)
+- [Impostors](https://creators.vrchat.com/avatars/avatar-impostors)
+:::
+
 
 ## プラットフォームをAndroidに変更
 
@@ -98,13 +125,8 @@ Unity 2019以降、プラットフォームの切り替え結果はプロジェ�
 詳細については、[Unityのドキュメント](https://docs.unity3d.com/Manual/UnityAccelerator.html)を参照してください。
 :::
 
-## Questアバターのアップロード
+## Androidアバターのアップロード
 
 変換後のアバターをQuestプラットフォームにアップロードできるようになりました。元のアバターと変換後のアバターがPipeline Managerで同じBlueprint IDを使用していることを確認してください。
 
-アップロード後、アバターのサムネイルにQuestアイコンがあることを確認してください。
-
-:::info
-アバターはBlueprint IDで管理されます。そのため、同じBlueprint IDで各プラットフォームのアバターデータをアップロードできます。
-PCプレイヤーは元のアバターを、Questプレイヤーは変換後のアバターを見ることになります。
-:::
+アップロード後、アバターのサムネイルに緑色のMobileアイコンがあることを確認してください。
