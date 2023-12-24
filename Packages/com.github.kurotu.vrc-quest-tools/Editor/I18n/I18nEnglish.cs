@@ -25,7 +25,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // Convert Avatar for Quest
         internal override string ExitPlayModeToEdit => "Exit play mode to edit.";
-        internal override string AddAvatarConverterButtonLabel(string name) => $"Add \"VQT Avatar Converter Settings\" to {name}";
+        internal override string BeingConvertSettingsButtonLabel => $"Begin Converter Settings";
         internal override string AvatarLabel => "Avatar";
         internal override string GenerateAndroidTexturesLabel => "Generate Textures for Android";
         internal override string GenerateAndroidTexturesTooltip => "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar";
