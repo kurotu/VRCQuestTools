@@ -37,7 +37,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string UpdateTexturesLabel => "Update Converted Android Textures";
         internal override string AdvancedConverterSettingsLabel => "Advanced Converter Settings";
         internal override string RemoveVertexColorLabel => "Remove Vertex Color from Meshes";
-        internal override string RemoveVertexColorTooltip => "Usually you don't have to disable this option. When you are using special shaders which require vertex colors in PC avatars, you can disable this option to prevent unexpected behavior.\nIf vertex color is accidentally removed, restore from the avatar's \"VertexColorRemover\" component.";
+        internal override string RemoveVertexColorTooltip => "Usually you don't have to disable this option. You can disable this option to prevent unexpected behavior when you are using special shaders which require vertex colors in PC avatars.\nRestore from the avatar's \"VertexColorRemover\" component if vertex color is accidentally removed.";
         internal override string AnimationOverrideLabel => "Animation Override";
         internal override string AnimationOverrideTooltip => "Convert Animator Controllers with Animator Override Controller's animations.";
         internal override string GeneratingTexturesDialogMessage => "Generating textures...";
@@ -107,7 +107,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PhysBonesCollisionCheckCountShouldBeReduced => "You can't upload this avatar for Android. Please reduce collision check count between VRCPhysBone components and VRCPhysBoneCollider components.";
 
         internal override string PhysBonesShouldHaveNetworkID => "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Android. Please assign Network IDs to both of PC version and Android version with Network ID Utility of VRCSDK, then re-upload both.";
-        internal override string AlertForMultiplePhysBones => "There are multiple PhysBones in a single GameObject. When removing PhysBones for Android, they may not be properly synchronized between PC and Android.";
+        internal override string AlertForMultiplePhysBones => "There are multiple PhysBones in a single GameObject. They may not be properly synchronized between PC and Android after removing PhysBones.";
         internal override string EstimatedPerformanceStats => "Estimated Performance Stats";
         internal override string DeleteUnselectedComponents => "Delete Unselected Components";
 
