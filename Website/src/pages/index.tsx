@@ -4,6 +4,7 @@ import Link from '@docusaurus/Link';
 import Translate from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
+import AddToVccLink from '@site/src/components/AddToVccLink';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 
 import styles from './index.module.css';
@@ -21,12 +22,7 @@ function HomepageHeader() {
             to="/docs/intro">
             <Translate>Get Started</Translate>
           </Link>
-          <Link
-            target={null}
-            className="button button--info button--lg"
-            to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
-            <Translate>Add to VCC</Translate>
-          </Link>
+          <AddToVccLink className="button button--info button--lg" />
           <iframe className={styles.github} src="https://ghbtns.com/github-btn.html?user=kurotu&repo=VRCQuestTools&type=star&count=true&size=large" frameBorder="0" scrolling="0" width="160" height="30" title="GitHub"></iframe>
         </div>
       </div>

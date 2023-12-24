@@ -2,8 +2,7 @@
 sidebar_position: 1
 ---
 
-import Link from '@docusaurus/Link';
-import Translate from '@docusaurus/Translate';
+import AddToVccLink from '@site/src/components/AddToVccLink';
 
 # 環境の準備
 
@@ -55,12 +54,7 @@ VRCQuestToolsはVPMのコミュニティリポジトリで提供されていま�
 リポジトリをVCCに追加することができます。
 
 1. 下の**Add to VCC**ボタンをクリックします。VCCが起動します。
-    <Link
-        target={null}
-        className="button button--primary button--lg"
-        to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
-        <span>VCC に追加</span>
-    </Link>
+    <AddToVccLink className="button button--primary button--lg" />
 
 2. **I Understand, Add Repository**ボタンをクリックします。
 3. **kurotu**リポジトリが**Community Repository**セクションに追加されます。

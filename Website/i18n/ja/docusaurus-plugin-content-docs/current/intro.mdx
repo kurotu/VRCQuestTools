@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-import Link from '@docusaurus/Link';
+import AddToVccLink from '@site/src/components/AddToVccLink';
 
 # はじめに
 
@@ -25,12 +25,7 @@ VRCQuestToolsはOculus Quest用にVRChatアバターをアップロードする�
 VRCQuestToolsをプロジェクトに追加するには、以下の手順に従ってください。
 
 1. 下のボタンをクリックしてVCCにリポジトリを追加します。
-    <Link
-      target={null}
-      className="button button--primary button--lg"
-      to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
-      <span>VCC に追加</span>
-    </Link>
+    <AddToVccLink className="button button--primary button--lg" />
 
 2. VCCで管理しているプロジェクトにVRCQuestToolsパッケージを追加します。
 

@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-import Link from '@docusaurus/Link';
+import AddToVccLink from '@site/src/components/AddToVccLink';
 
 # Set up Environment
 
@@ -53,12 +53,7 @@ You can choose one of the following methods to install VRCQuestTools.
 VRCQuestTools is provided via VPM community repository. You can add it to VCC.
 
 1. Click **Add to VCC** button below. VCC will be launched.
-    <Link
-        target={null}
-        className="button button--primary button--lg"
-        to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
-        Add to VCC
-    </Link>
+    <AddToVccLink className="button button--primary button--lg" />
 
 2. Click **I Understand, Add Repository** button.
 3. **kurotu** repository is added to **Community Repository** section.

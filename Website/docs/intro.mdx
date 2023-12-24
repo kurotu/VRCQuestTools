@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-import Link from '@docusaurus/Link';
+import AddToVccLink from '@site/src/components/AddToVccLink';
 
 # Introduction
 
@@ -26,12 +26,7 @@ To add VRCQuestTools to your project, follow these steps:
 
 1. Click the button below to add the repository to VCC.
 
-    <Link
-      target={null}
-      className="button button--primary button--lg"
-      to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
-      <span>Add to VCC</span>
-    </Link>
+    <AddToVccLink className="button button--primary button--lg" />
 
 2. Add VRCQuestTools package to your VCC project.
 
