@@ -67,7 +67,7 @@ namespace KRT.VRCQuestTools.Inspector
                 fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
                 var settings = property.FindPropertyRelative("materialConvertSettings");
-                EditorGUI.PropertyField(fieldRect, settings, new GUIContent(i18n.AvatarConverterMaterialConvertSettingLabel));
+                EditorGUI.PropertyField(fieldRect, settings, new GUIContent(i18n.AvatarConverterMaterialConvertSettingsLabel));
 
                 EditorGUI.indentLevel--;
             }

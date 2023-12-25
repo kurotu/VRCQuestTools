@@ -54,11 +54,11 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not able to upload for Android.  Please keep \"Poor\" rating in avatar dynamics categories.";
 
         internal override string AvatarConverterMustBeOnAvatarRoot => "This component must be attached to VRC_AvatarDescriptor GameObject.";
-        internal override string AvatarConverterMaterialConvertSettingLabel => "Material Conversion Setting";
+        internal override string AvatarConverterMaterialConvertSettingsLabel => "Material Conversion Settings";
         internal override string AvatarConverterDefaultMaterialConvertSettingLabel => "Default Material Conversion Settings";
         internal override string AvatarConverterAdditionalMaterialConvertSettingsLabel => "Additional Material Conversion Settings";
 
-        internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics Setting";
+        internal override string AvatarConverterAvatarDynamicsSettingsLabel => "Avatar Dynamics Settings";
         internal override string AvatarConverterPhysBonesTooltip => "Set PhysBones to keep while conversion.";
         internal override string AvatarConverterPhysBoneCollidersTooltip => "Set PhysBoneColliders to keep while conversion.";
         internal override string AvatarConverterContactsTooltip => "Set ContactSenders and ContactReceivers to keep while conversion.";

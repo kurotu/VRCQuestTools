@@ -54,11 +54,11 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AlertForComponents { get; }
 
         internal abstract string AvatarConverterMustBeOnAvatarRoot { get; }
-        internal abstract string AvatarConverterMaterialConvertSettingLabel { get; }
+        internal abstract string AvatarConverterMaterialConvertSettingsLabel { get; }
         internal abstract string AvatarConverterDefaultMaterialConvertSettingLabel { get; }
         internal abstract string AvatarConverterAdditionalMaterialConvertSettingsLabel { get; }
 
-        internal abstract string AvatarConverterAvatarDynamicsSettingLabel { get; }
+        internal abstract string AvatarConverterAvatarDynamicsSettingsLabel { get; }
         internal abstract string AvatarConverterPhysBonesTooltip { get; }
         internal abstract string AvatarConverterPhysBoneCollidersTooltip { get; }
         internal abstract string AvatarConverterContactsTooltip { get; }

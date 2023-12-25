@@ -55,11 +55,11 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones, Contacts) のパフォーマンスランクが Very Poor になっており Android 用にアップロードできません。 Avatar Dynamics のパフォーマンスランクが Poor に収まるようコンポーネントを削減してください。";
 
         internal override string AvatarConverterMustBeOnAvatarRoot => "VRC_AvatarDescriptor のあるオブジェクトに配置してください。";
-        internal override string AvatarConverterMaterialConvertSettingLabel => "マテリアル変換設定";
+        internal override string AvatarConverterMaterialConvertSettingsLabel => "マテリアル変換設定";
         internal override string AvatarConverterDefaultMaterialConvertSettingLabel => "デフォルトのマテリアル変換設定";
         internal override string AvatarConverterAdditionalMaterialConvertSettingsLabel => "追加のマテリアル変換設定";
 
-        internal override string AvatarConverterAvatarDynamicsSettingLabel => "Avatar Dynamics 設定";
+        internal override string AvatarConverterAvatarDynamicsSettingsLabel => "Avatar Dynamics 設定";
         internal override string AvatarConverterPhysBonesTooltip => "変換時に残しておく PhysBone を選択します。";
         internal override string AvatarConverterPhysBoneCollidersTooltip => "変換時に残しておく PhysBoneCollider を選択します。";
         internal override string AvatarConverterContactsTooltip => "変換時に残しておく ContactSender と ContactReceiver を選択します。";
