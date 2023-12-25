@@ -113,4 +113,6 @@ Animator Override Controller で指定したアニメーションクリップを
 
 #### VirtualLens2
 
+VirtualLensSettings コンポーネントの `Remote Only Mode` を `Force Enable` に設定します。
+
 破壊的セットアップを使用している場合、`_VirtualLens_Root` および `VirtualLensOrigin` オブジェクトに `EditorOnly` タグを設定します。

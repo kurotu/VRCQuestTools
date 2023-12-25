@@ -494,6 +494,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
         private void ApplyVirtualLens2Support(GameObject avatar)
         {
+            // Use remote only mode to force enable in order to get same result also on PC platform.
+            if (VirtualLensUtility.VirtualLensSettingsType != null)
+            {
+                var component = avatar.GetComponentInChildren(VirtualLensUtility.VirtualLensSettingsType, true);
+                var settings = new VirtualLensUtility.VirtualLensSettingsProxy(component);
+                settings.remoteOnlyMode = VirtualLensUtility.RemoteOnlyMode.ForceEnable;
+            }
+
             // Since VirtualLens2 2.10.x, it is not necessary to disable VirtualLens2 objects because there is remote only mode for mobile platform.
             // When _VirtualLens_Root exists, it is assumed that legacy VirtualLens2 is installed.
             var root = FindDescendant(avatar, "_VirtualLens_Root");

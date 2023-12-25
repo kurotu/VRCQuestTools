@@ -114,4 +114,6 @@ Depending on the assets you are using, a special conversion process is executed.
 
 #### VirtualLens2
 
+Set `Remote Only Mode` of VirtualLensSettings component to `Force Enable`.
+
 If you are using VirtualLens2 with the destructive setup, set `EditorOnly` tag to `_VirtualLens_Root` and `VirtualLensOrigin` objects.
