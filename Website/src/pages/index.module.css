@@ -4,7 +4,7 @@
  */
 
 .heroBanner {
-  padding: 4rem 0;
+  padding: 2rem 0;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -20,7 +20,12 @@
 }
 
 .heroTitle {
+  font-size: 5rem;
   white-space: nowrap;
+}
+
+.heroSubtitle {
+  font-size: 2rem;
 }
 
 .heroTitle, .heroSubtitle {
@@ -46,6 +51,10 @@
 @media screen and (max-width: 996px) {
   .heroTitle {
     font-size: 2.5rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1.5rem;
   }
 
   .github {

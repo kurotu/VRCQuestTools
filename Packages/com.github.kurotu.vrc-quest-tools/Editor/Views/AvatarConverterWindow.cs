@@ -72,7 +72,7 @@ namespace KRT.VRCQuestTools.Views
                 if (converterSettings == null)
                 {
                     editor = null;
-                    if (GUILayout.Button(i18n.AddAvatarConverterButtonLabel(targetRoot.name)))
+                    if (GUILayout.Button(i18n.BeingConvertSettingsButtonLabel))
                     {
                         OnClickAttachAvatarConverterButton();
                     }

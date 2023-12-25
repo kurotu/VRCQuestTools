@@ -15,5 +15,6 @@ DynamicBoneなどのQuest版でサポートされていないコンポーネン�
 - Audio Sources
 - Physics Objects
 - Constraints
+- Final IK
 
 サポートされないコンポーネントについての詳細は[VRChatのドキュメント](https://creators.vrchat.com/platforms/android/quest-content-limitations/#components)を参照してください。

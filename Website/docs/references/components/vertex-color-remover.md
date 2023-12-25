@@ -14,17 +14,18 @@ Example:
 
 ![VertexColorRemover](/img/VertexColorRemover.png)
 
+:::info
+Since vertex colors are removed from the shared mesh, it also affects other avatars that use the same mesh asset.
+:::
+
 ## Buttons and Properties
 
 ### Remove Vertex Color
-Remove vertex colors on `OnReset()` or `OnValidate()`.
-**Active** checkbox is enabled.
+Activate the component to remove vertex colors.
 
 ### Restore Vertex Color
-Restore vertex colors by reloading mesh assets. **Active** checkbox is disabled.
-
-### Active
-Indicates whether the component removes vertex colors or not.
+Deactivate the component.
+Then restore vertex colors by reloading mesh assets.
 
 ### Include Children
-Indicates whether the component removes vertex colors from children's mesh renderers or skinned mesh renderers or not.
+Select whether the component removes vertex colors from children's mesh renderers or skinned mesh renderers or not.

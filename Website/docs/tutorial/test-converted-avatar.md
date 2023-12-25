@@ -6,13 +6,13 @@ sidebar_position: 3
 
 Now your avatar is cross-platform, but it may not be perfect. Let's test.
 
-## Test Quest Avatars in PC
+## Test Android Avatars in PC
 
-For complete testing, you need Quest. Even if you have Quest, it would be hard because you need to go back and forth between PC and Quest.
-However, in most cases you can test Quest avatars in PC because they use limited shaders and components which are fully supported in PC platform.
+For complete testing, you need standalone VR device (Quest or PICO). Even if you have devices, it would be hard because you need to go back and forth between PC and standalone VR.
+In most cases you can test Android avatars in PC because they use limited shaders and components which are fully supported in PC platform.
 
 In VRCSDK3, there is a feature called [Local Avatar Testing](https://docs.vrchat.com/docs/avatars-30#local-avatar-testing). It allows you to test avatars in PC without uploading.
-By using local testing, you can quickly test Quest avatars in PC.
+By using local testing, you can quickly test Android avatars in PC.
 
 ## Build Offline Avatars
 
@@ -23,7 +23,7 @@ To build offline testing avatars, follow the steps below.
 3. Click **Switch Platform**.
 4. Select **VRChat SDK** > **Show Control Panel** from the menu bar.
 5. Select **Builder** tab.
-6. Select an avatar to test from the scene.
+6. Select an avatar to test.
 7. Click **Build & Test**.
 
 After building, you can test the avatar in PC.
@@ -64,3 +64,5 @@ If you are testing in desktop mode, see tables below to control avatars by keybo
 | Jump | <kbd>Space</kbd> |
 | Crouch | <kbd>C</kbd> |
 | Crawl/Go Prone | <kbd>Z</kbd> |
+
+Once you have tested your avatar, you should tweak it if necessary.

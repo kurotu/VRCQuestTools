@@ -15,5 +15,6 @@ Following components are removed:
 - Audio Sources
 - Physics Objects
 - Constraints
+- Final IK
 
 See [VRChat's documentation](https://creators.vrchat.com/platforms/android/quest-content-limitations/#components) for details about unsupported components.

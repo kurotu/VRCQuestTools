@@ -25,7 +25,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // Convert Avatar for Quest
         internal abstract string ExitPlayModeToEdit { get; }
-        internal abstract string AddAvatarConverterButtonLabel(string name);
+        internal abstract string BeingConvertSettingsButtonLabel { get; }
         internal abstract string AvatarLabel { get; }
         internal abstract string GenerateAndroidTexturesLabel { get; }
         internal abstract string GenerateAndroidTexturesTooltip { get; }

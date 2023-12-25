@@ -10,10 +10,10 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: <Translate>One-Click Conversion</Translate>,
+    title: <Translate>Easy Avatar Conversion</Translate>,
     description: (
       <Translate>
-        VRCQuestTools automatically makes your avatar uploadable for Quest.
+        VRCQuestTools automates works to make your avatar uploadable for Android.
         You are free from annoying manual work.
       </Translate>
     ),
@@ -30,7 +30,7 @@ const FeatureList: FeatureItem[] = [
     title: <Translate>Misc Utilities</Translate>,
     description: (
       <Translate>
-        VRCQuestTools has various features to help uploading Quest avatars other than avatar convertersion.
+        VRCQuestTools has various features to help uploading Android avatars other than avatar convertersion.
       </Translate>
     ),
   },

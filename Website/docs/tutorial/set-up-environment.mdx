@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-import Link from '@docusaurus/Link';
+import AddToVccLink from '@site/src/components/AddToVccLink';
 
 # Set up Environment
 
@@ -10,14 +10,13 @@ Before starting to convert avatars, you need to set up your environment.
 
 ## Install Android Build Support
 
-VRChat supports two kinds of platform, PC and Quest.
-Quest is built on Android, so you need to create avatars for Android platform.
-To create contents for Android, you need to install **Android Build Support** module for Unity.
+VRChat supports two kinds of platform, PC and Android (Quest, PICO, Smartphone).
+To create avatars and worlds for Android, you need to install **Android Build Support** module for Unity.
 When you install Unity with VRChat Creator Companion (VCC), usually Android Build Support is also installed.
 
 :::info
 The most difference between PC and Quest is the platform (operating system) rather than performance.
-Even if your avatar has excellent performance rank and low polygons count on PC, it is not compatible for Quest unless you upload it for Android platform.
+Even if your avatar has excellent performance rank and low polygons count on PC, it is not compatible for Android unless you upload it for Android platform.
 :::
 
 | Android Build Support is installed | Android Build Support is missing |
@@ -46,21 +45,15 @@ You can choose one of the following methods to install VRCQuestTools.
 - [Unitypackage](#unitypackage)
 - [Unity Package Manager (UPM)](#unity-package-manager-upm)
 
-## VRChat Creator Companion (VCC)
+### VRChat Creator Companion (VCC)
 
-### Add VPM Repository to VCC
+#### Add VPM Repository to VCC
 
 VRCQuestTools is provided via VPM community repository. You can add it to VCC.
 
 1. Click **Add to VCC** button below. VCC will be launched.
-<p>
-    <Link
-        target={null}
-        className="button button--primary button--lg"
-        to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
-        Add to VCC
-    </Link>
-</p>
+    <AddToVccLink className="button button--primary button--lg" />
+
 2. Click **I Understand, Add Repository** button.
 3. **kurotu** repository is added to **Community Repository** section.
 
@@ -72,7 +65,7 @@ https://kurotu.github.io/vpm-repos/vpm.json
 ```
 :::
 
-### Add VRCQuestTools to Avatar Project
+#### Add VRCQuestTools to Avatar Project
 
 Now you can manage VRCQuestTools in VCC. Let's add it to your avatar project.
 
@@ -81,7 +74,7 @@ Now you can manage VRCQuestTools in VCC. Let's add it to your avatar project.
 3. Click ⊕ button for VRCQuestTools row.
 4. The latest version of VRCQuestTools is added to the project.
 
-## Unitypackage
+### Unitypackage
 
 You can also install VRCQuestTools via unitypackage.
 
@@ -91,6 +84,6 @@ You can also install VRCQuestTools via unitypackage.
 4. Click **Import** button.
 5. VRCQuestTools is added to `Packages/com.github.kurotu.vrc-quest-tools` folder.
 
-## Unity Package Manager (UPM)
+### Unity Package Manager (UPM)
 
 Import `https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools` to your project via UPM.

@@ -2,21 +2,32 @@
 sidebar_position: 1
 ---
 
-import Link from '@docusaurus/Link';
+import AddToVccLink from '@site/src/components/AddToVccLink';
 
 # Introduction
 
 ## VRCQuestTools
 
-VRCQuestTools is an editor extension to support uploading VRChat avatars for Oculus Quest.
+VRCQuestTools is an Unity editor extension to support uploading VRChat avatars for Android (Meta Quest, PICO).
 
-- You can make your PC avatar uploadable for Quest with a single click.
-- You can use various tools to manually make your avatar Quest compatible.
+Android version of VRChat has very strict limitations for avatars compared to PC version.
+So you can't upload your PC avatars for Android without any modification.
+You can upload your PC avatars for Android with modifications, but it's very complicated.
 
-## Environment
+VRCQuestTools provides a simple way to convert your PC avatars for Android.
+
+- You can make your PC avatar uploadable for Android with a few clicks.
+- You can use various tools to manually make your avatar Android compatible.
+
+:::caution
+VRoid Studio avatars use a lot of transparent materials, and they are not supported on Android.
+VRCQuestTools can't help such avatars, so you need to modify them manually.
+:::
+
+## Required Environment
 
 - Unity 2019.4.31f1 or 2022.3.6f1
-- VRChat SDK - Avatars 3.1.1 or later
+- VRChat SDK - Avatars 3.3.0 or later
 
 ## Quick Guide
 
@@ -25,33 +36,41 @@ VRCQuestTools is an editor extension to support uploading VRChat avatars for Ocu
 To add VRCQuestTools to your project, follow these steps:
 
 1. Click the button below to add the repository to VCC.
+    <AddToVccLink className="button button--primary button--lg" />
 
-  <p>
-    <Link
-      target={null}
-      className="button button--primary button--lg"
-      to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
-      Add to VCC
-    </Link>
-  </p>
+2. Add **VRCQuestTools** package to your VCC avatar project.
 
-2. Add VRCQuestTools package to your VCC project.
+### Convert Avatar for Android
 
-### Convert Avatar for Quest
-
-To convert your avatar for Quest, follow these steps:
+To convert your avatar for Android, follow these steps:
 
 1. Right-click your avatar in the scene hierarchy.
 2. Select **VRCQuestTools** > **Convert Avatar For Quest** from the context menu.
-3. Click **Convert** button in the opened window.
+3. Click **Begin Converter Settings** button in the opened window, then click **Convert** button.
 4. Wait for the conversion to complete.
-5. Upload the converted avatar for Android platform.
+5. Select **File** > **Build Settings** from the menu bar.
+6. Select **Android** platform, then click **Switch Platform** button in the opened window.
+    :::note
+    You need to install Android Build Support module to switch to Android platform.
+    (Reference: [Set up Environment](./tutorial/set-up-environment))
+    :::
+7. Wait for the platform switching to complete.
+8. Upload the converted avatar.
 
-:::caution
+:::note
+The original avatar is deactivated after conversion.
+You can activate it again by using the inspector.
+:::
+
+:::tip
 The tool never optimize performance rank.
-In many cases, the converted avatar would have **Very Poor** rank for Quest.
+In many cases, the converted avatar would have **Very Poor** rank for Android.
 
-It's replaced with the fallback avatar unless using *Show Avatar* operation.
-See [Quest Limits](https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits)
-and [Avatar Fallback System](https://docs.vrchat.com/docs/avatar-fallback-system) for details.
+It's replaced with the fallback avatar or impostors unless using Avatar Display setting (a.k.a. **Show Avatar**).
+And smartphone users can't see Very Poor avatars.
+
+References:
+- [Quest Limits - Performance Ranks](https://creators.vrchat.com/avatars/avatar-performance-ranking-system/#quest-limits)
+- [Avatar Fallback System](https://docs.vrchat.com/docs/avatar-fallback-system)
+- [Impostors](https://creators.vrchat.com/avatars/avatar-impostors)
 :::
