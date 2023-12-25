@@ -13,18 +13,18 @@ sidebar_position: 2
 
 ![VertexColorRemover](/img/VertexColorRemover.png)
 
+:::info
+Shared Meshから頂点カラーを削除するため、同じメッシュアセットを使用する他のアバターにも影響します。
+:::
+
 ## ボタンとプロパティ
 
 ### 頂点カラーを削除
-`OnReset()` および `OnValidate()` で頂点カラーを削除します。
-**Active** チェックボックスが有効になります。
+コンポーネントをアクティブにして頂点カラーを削除します。
 
 ### 頂点カラーを復元
+コンポーネントを非アクティブに変更します。
 メッシュアセットを再読み込みすることで頂点カラーを復元します。
-**Active** チェックボックスが無効になります。
-
-### Active
-コンポーネントが頂点カラーを削除するかどうかを示します。
 
 ### Include Children
-コンポーネントが子のMesh RendererまたはSkinned Mesh Rendererから頂点カラーを削除するかどうかを示します。
+子のMesh RendererまたはSkinned Mesh Rendererからも頂点カラーを削除するかどうかを選択します。

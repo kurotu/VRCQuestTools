@@ -2,9 +2,9 @@
 sidebar_position: 8
 ---
 
-# Unity Settings for Quest
+# Unity Settings for Android
 
-Set recommended Unity settings for Quest.
+Set recommended Unity settings for Android.
 
 ![Unity Settings for Quest](/img/unity_settings_for_quest.png)
 

@@ -2,9 +2,9 @@
 sidebar_position: 8
 ---
 
-# Unity Settings for Quest
+# Unity Settings for Android
 
-Quest向けのUnityの推奨設定を行います。
+Android向けのUnityの推奨設定を行います。
 
 ![Unity Settings for Quest](/img/unity_settings_for_quest.png)
 
