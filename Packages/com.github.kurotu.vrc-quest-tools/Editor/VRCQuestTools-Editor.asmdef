@@ -1,7 +1,8 @@
 {
     "name": "VRCQuestTools-Editor",
     "references": [
-        "VRCQuestTools"
+        "VRCQuestTools",
+        "nadena.dev.ndmf"
     ],
     "includePlatforms": [
         "Editor"
@@ -35,6 +36,11 @@
             "name": "com.vrchat.base",
             "expression": "",
             "define": "VQT_HAS_VRCSDK_BASE"
+        },
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "",
+            "define": "VQT_HAS_NDMF"
         }
     ],
     "noEngineReferences": false

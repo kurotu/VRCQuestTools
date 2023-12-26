@@ -182,6 +182,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
 
+            if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
+            {
+                questAvatarObject.AddComponent<ConvertedAvatar>();
+            }
 #if VQT_HAS_VRCSDK_BASE
             if (setting.removeVertexColor)
             {

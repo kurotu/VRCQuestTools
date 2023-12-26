@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add `VQT Avatar Converter Settings` component to save converter settings to the avatar.
+- Add `VQT Converted Avatar` component to indicate that the avatar is converted with VRCQuestTools.
 - Add feature to change material conversion settings for each material.
 - Add material conversion settings other than Toon Lit shader.
     - MatCap Lit

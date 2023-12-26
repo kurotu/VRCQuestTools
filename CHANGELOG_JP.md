@@ -8,6 +8,7 @@
 
 ### 追加
 - アバターに変換設定を保存する `VQT Avatar Converter Settings` コンポーネントを追加
+- アバターがVRCQuestToolsで変換されたことを示す `VQT Converted Avatar` コンポーネントを追加
 - マテリアルごとにマテリアル変換設定を変更する機能を追加
 - Toon Lit 以外のシェーダーへのマテリアル変換設定を追加
     - MatCap Lit
