@@ -9,6 +9,7 @@
 ### 追加
 - アバターに変換設定を保存する `VQT Avatar Converter Settings` コンポーネントを追加
 - アバターがVRCQuestToolsで変換されたことを示す `VQT Converted Avatar` コンポーネントを追加
+- アバターのビルド中にNDMFで生成された非対応コンポーネントを削除する機能を追加
 - マテリアルごとにマテリアル変換設定を変更する機能を追加
 - Toon Lit 以外のシェーダーへのマテリアル変換設定を追加
     - MatCap Lit
@@ -22,6 +23,7 @@
 - VRCQuestTools Extra の機能を統合
     - FinalIK のコンポーネントを削除する機能を追加
     - VirtualLens2 導入時専用の処理を追加
+- アバターの変換時に非対応のModular Avatarのコンポーネントを削除する機能を追加 (Modular Avatar 1.8.0 以降)
 
 ### 変更
 - VRChat SDK 3.3.0 以降が必要
