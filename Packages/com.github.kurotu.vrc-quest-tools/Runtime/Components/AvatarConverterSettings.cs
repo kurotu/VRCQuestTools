@@ -10,6 +10,7 @@ namespace KRT.VRCQuestTools.Components
     /// Component to configure avatar conversion.
     /// </summary>
     [AddComponentMenu("VRCQuestTools/VQT Avatar Converter Settings")]
+    [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/avatar-converter-settings")]
     public class AvatarConverterSettings : VRCQuestToolsEditorOnly
     {
         /// <summary>
