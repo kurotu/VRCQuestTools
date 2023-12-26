@@ -144,5 +144,8 @@ namespace KRT.VRCQuestTools.I18n
         // Vertex Color
         internal override string VertexColorRemoverEditorRemove => "Remove Vertex Color";
         internal override string VertexColorRemoverEditorRestore => "Restore Vertex Color";
+
+        // NDMF
+        internal override string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => $"Removed unsupported component \"{typeName}\" from \"{objectName}\". Please test the avatar.";
     }
 }

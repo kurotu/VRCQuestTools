@@ -142,5 +142,8 @@ namespace KRT.VRCQuestTools.I18n
         // Vertex Color
         internal abstract string VertexColorRemoverEditorRemove { get; }
         internal abstract string VertexColorRemoverEditorRestore { get; }
+
+        // NDMF
+        internal abstract string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName);
     }
 }
