@@ -8,8 +8,14 @@ using UnityEngine;
 
 namespace KRT.VRCQuestTools
 {
+    /// <summary>
+    /// NDMF plugin of VRCQuestTools.
+    /// </summary>
     internal class VRCQuestToolsNdmfPlugin : Plugin<VRCQuestToolsNdmfPlugin>
     {
+        /// <summary>
+        /// Gets the display name of the plugin.
+        /// </summary>
         public override string DisplayName => "VRCQuestTools";
 
         protected override void Configure()
