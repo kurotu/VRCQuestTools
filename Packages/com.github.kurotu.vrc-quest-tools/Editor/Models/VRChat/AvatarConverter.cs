@@ -181,6 +181,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
+            ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
 
             if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
             {

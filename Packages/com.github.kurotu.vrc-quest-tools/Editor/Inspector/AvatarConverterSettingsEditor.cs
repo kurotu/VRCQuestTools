@@ -274,6 +274,23 @@ namespace KRT.VRCQuestTools.Inspector
                         });
                     }
 
+                    var maComponentsToBeAlearted = ModularAvatarUtility.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
+                    if (maComponentsToBeAlearted.Length > 0)
+                    {
+                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
+                        {
+                            EditorGUILayout.LabelField(i18n.AlertForComponents, EditorStyles.wordWrappedMiniLabel);
+                            using (var disabled = new EditorGUI.DisabledGroupScope(true))
+                            {
+                                foreach (var c in maComponentsToBeAlearted)
+                                {
+                                    EditorGUILayout.ObjectField(c, typeof(Component), true);
+                                }
+                            }
+                            EditorGUILayout.Space(2);
+                        });
+                    }
+
                     if (stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.Overall) > PerformanceRating.Poor)
                     {
                         Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
