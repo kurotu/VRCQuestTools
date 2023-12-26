@@ -1,1 +1,0 @@
-// Renamed to VRCQuestToolsAvatarProcessor

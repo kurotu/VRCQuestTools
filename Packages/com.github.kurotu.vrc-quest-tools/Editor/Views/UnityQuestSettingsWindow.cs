@@ -75,11 +75,6 @@ namespace KRT.VRCQuestTools.Views
             model.ShowWindowOnLoad = EditorGUILayout.Toggle(i18n.ShowOnStartupLabel, model.ShowWindowOnLoad);
         }
 
-        private void OnClickCacheServerButton()
-        {
-            model.ApplyRecommendedLegacyCacheServerMode();
-        }
-
         private void OnClickTextureCompressionButton()
         {
             model.ApplyRecommendedAndroidTextureCompression();

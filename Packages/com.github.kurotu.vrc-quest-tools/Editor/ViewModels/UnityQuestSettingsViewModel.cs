@@ -19,11 +19,6 @@ namespace KRT.VRCQuestTools.ViewModels
         private const MobileTextureSubtarget RecommendedAndroidTextureCompression = MobileTextureSubtarget.ASTC;
 
         /// <summary>
-        /// Gets legacy cache server mode.
-        /// </summary>
-        internal LegacyCacheServerMode LegacyCacheServerMode => UnitySettings.LegacyCacheServerMode;
-
-        /// <summary>
         /// Gets default texuture compression for Android.
         /// </summary>
         internal MobileTextureSubtarget DefaultAndroidTextureCompression => UnitySettings.DefaultAndroidTextureCompression;
@@ -58,29 +53,11 @@ namespace KRT.VRCQuestTools.ViewModels
         internal bool HasValidAndroidTextureCompression => DefaultAndroidTextureCompression == RecommendedAndroidTextureCompression;
 
         /// <summary>
-        /// Gets a value indicating whether legacy cache server mode is valid.
-        /// </summary>
-        internal bool HasValidLegacyCacheServerMode => LegacyCacheServerMode != LegacyCacheServerMode.Disable;
-
-        /// <summary>
         /// Apply recommended texture compression for Android.
         /// </summary>
         internal void ApplyRecommendedAndroidTextureCompression()
         {
             UnitySettings.DefaultAndroidTextureCompression = RecommendedAndroidTextureCompression;
-        }
-
-        /// <summary>
-        /// Apply recommended cache server mode.
-        /// </summary>
-        internal void ApplyRecommendedLegacyCacheServerMode()
-        {
-            if (UnitySettings.LegacyCacheServerMode == LegacyCacheServerMode.Remote)
-            {
-                return;
-            }
-
-            UnitySettings.LegacyCacheServerMode = LegacyCacheServerMode.Local;
         }
     }
 }

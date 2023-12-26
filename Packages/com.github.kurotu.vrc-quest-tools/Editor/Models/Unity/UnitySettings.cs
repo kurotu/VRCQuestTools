@@ -24,23 +24,6 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
         }
 
-        /// <summary>
-        /// Gets or sets legacy cache server mode.
-        /// </summary>
-        internal static LegacyCacheServerMode LegacyCacheServerMode
-        {
-            get
-            {
-                var mode = EditorPrefs.GetInt(EditorPrefsKeys.LegacyCacheServerMode, (int)LegacyCacheServerMode.Disable);
-                return (LegacyCacheServerMode)System.Enum.ToObject(typeof(LegacyCacheServerMode), mode);
-            }
-
-            set
-            {
-                EditorPrefs.SetInt(EditorPrefsKeys.LegacyCacheServerMode, (int)value);
-            }
-        }
-
         private static class EditorPrefsKeys
         {
             internal const string LegacyCacheServerMode = "CacheServerMode";
