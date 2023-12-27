@@ -29,7 +29,10 @@ namespace KRT.VRCQuestTools
             InPhase(BuildPhase.Resolving)
                 .Run("Clear report window", ctx =>
                 {
-                    NdmfReportWindow.Clear();
+                    if (EditorWindow.HasOpenInstances<NdmfReportWindow>())
+                    {
+                        NdmfReportWindow.Clear();
+                    }
                 });
 
             InPhase(BuildPhase.Optimizing)
