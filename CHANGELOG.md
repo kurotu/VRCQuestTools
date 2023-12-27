@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integrate VRCQuestTools Extra features into VRCQuestTools.
     - FinalIK Support
     - VirtualLens2 Support
-- Add feature to remove unsupported Modular Avatar components on avatar conversion. (Modular Avatar 1.8.0 or later)
+- Add feature to remove unsupported Modular Avatar components on avatar conversion.
 
 ### Changed
 - Require VRChat SDK 3.3.0 or later.

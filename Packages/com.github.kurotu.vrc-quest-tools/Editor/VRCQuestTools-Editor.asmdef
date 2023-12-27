@@ -45,8 +45,13 @@
         },
         {
             "name": "nadena.dev.modular-avatar",
-            "expression": "1.8.0",
+            "expression": "1.0.0",
             "define": "VQT_HAS_MODULAR_AVATAR"
+        },
+        {
+            "name": "nadena.dev.modular-avatar",
+            "expression": "1.8.0",
+            "define": "VQT_HAS_MODULAR_AVATAR_WFO"
         }
     ],
     "noEngineReferences": false

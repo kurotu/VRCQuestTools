@@ -23,7 +23,7 @@
 - VRCQuestTools Extra の機能を統合
     - FinalIK のコンポーネントを削除する機能を追加
     - VirtualLens2 導入時専用の処理を追加
-- アバターの変換時に非対応のModular Avatarのコンポーネントを削除する機能を追加 (Modular Avatar 1.8.0 以降)
+- アバターの変換時に非対応のModular Avatarのコンポーネントを削除する機能を追加
 
 ### 変更
 - VRChat SDK 3.3.0 以降が必要

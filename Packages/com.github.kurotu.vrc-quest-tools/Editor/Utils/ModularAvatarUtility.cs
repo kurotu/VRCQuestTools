@@ -36,7 +36,12 @@ namespace KRT.VRCQuestTools.Utils
         internal static Component[] GetUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive)
         {
 #if VQT_HAS_MODULAR_AVATAR
-            var types = new Type[] { typeof(ModularAvatarVisibleHeadAccessory), typeof(ModularAvatarWorldFixedObject) };
+            var types = new Type[] {
+                typeof(ModularAvatarVisibleHeadAccessory),
+                #if VQT_HAS_MODULAR_AVATAR_WFO
+                typeof(ModularAvatarWorldFixedObject),
+                #endif
+            };
             var components = types.SelectMany(t => gameObject.GetComponentsInChildren(t, includeInactive)).ToArray();
             return components;
 #else
