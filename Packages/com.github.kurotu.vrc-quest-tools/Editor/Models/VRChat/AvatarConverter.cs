@@ -11,6 +11,9 @@ using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
+#if VQT_HAS_MODULAR_AVATAR
+using nadena.dev.modular_avatar.core;
+#endif
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -146,20 +149,18 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                 }
 
-                if (ModularAvatarUtility.IsModularAvatarImported)
+#if VQT_HAS_MODULAR_AVATAR
+                foreach (var ma in questAvatarObject.GetComponentsInChildren<ModularAvatarMergeAnimator>(true))
                 {
-                    foreach (var ma in questAvatarObject.GetComponentsInChildren(ModularAvatarUtility.MergeAnimatorType, true))
+                    if (ma.animator != null)
                     {
-                        var proxy = new MergeAnimatorProxy(ma);
-                        if (proxy.Animator != null)
+                        if (convertedAnimatorControllers.ContainsKey(ma.animator))
                         {
-                            if (convertedAnimatorControllers.ContainsKey(proxy.Animator))
-                            {
-                                proxy.Animator = convertedAnimatorControllers[proxy.Animator];
-                            }
+                            ma.animator = convertedAnimatorControllers[ma.animator];
                         }
                     }
                 }
+#endif
             }
 
             // Apply converted materials to renderers.

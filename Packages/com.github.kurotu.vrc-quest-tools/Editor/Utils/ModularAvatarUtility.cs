@@ -18,16 +18,6 @@ namespace KRT.VRCQuestTools.Utils
     internal class ModularAvatarUtility
     {
         /// <summary>
-        /// Type object of ModularAvatarMergeAnimator.
-        /// </summary>
-        internal static Type MergeAnimatorType = SystemUtility.GetTypeByName("nadena.dev.modular_avatar.core.ModularAvatarMergeAnimator");
-
-        /// <summary>
-        /// Gets a value indicating whether Modular Avatar is imported.
-        /// </summary>
-        internal static bool IsModularAvatarImported => MergeAnimatorType != null;
-
-        /// <summary>
         /// Gets unsupported MA components for Android.
         /// </summary>
         /// <param name="gameObject">GameObject to inspect.</param>
