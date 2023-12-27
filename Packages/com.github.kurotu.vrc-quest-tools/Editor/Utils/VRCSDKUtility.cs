@@ -15,6 +15,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.Dynamics;
 using VRC.SDK3.Dynamics.PhysBone.Components;
+using VRC.SDKBase;
 
 #if VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
@@ -95,6 +96,7 @@ namespace KRT.VRCQuestTools.Utils
             typeof(Cloth),
             typeof(Camera),
             typeof(Light),
+            typeof(VRC_SpatialAudioSource),
             typeof(AudioSource),
             typeof(Joint), typeof(Rigidbody), typeof(Collider),
             typeof(UnityEngine.Animations.IConstraint),
