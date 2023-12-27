@@ -47,6 +47,9 @@ namespace KRT.VRCQuestTools.Components
         /// Animator override controllers to apply while conversion.
         /// </summary>
         [SerializeField]
+#if UNITY_2020_2_OR_NEWER
+        [NonReorderable] // somehow reorderable list doesn't work well
+#endif
         public AnimatorOverrideController[] animatorOverrideControllers = { };
 
         /// <summary>
