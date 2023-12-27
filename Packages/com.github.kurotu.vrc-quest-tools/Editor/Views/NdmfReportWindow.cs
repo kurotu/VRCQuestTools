@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if !VQT_HAS_NDMF_ERROR_REPORT
+using UnityEditor;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Views
@@ -85,3 +86,4 @@ namespace KRT.VRCQuestTools.Views
         }
     }
 }
+#endif
