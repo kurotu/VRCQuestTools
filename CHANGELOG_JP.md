@@ -35,6 +35,7 @@
 - 最新バージョンの確認処理を1日1回に変更
 - **VRCQuestTools** メニューを **Tools** メニュー内に移動
 - メニュー項目の配置を変更
+- **Remove Unsupported Components** メニューで削除対象のコンポーネントを一覧表示するように変更
 
 ### 削除
 - **Check for Updates** メニューを削除。代わりに VCC または Inspector を使用

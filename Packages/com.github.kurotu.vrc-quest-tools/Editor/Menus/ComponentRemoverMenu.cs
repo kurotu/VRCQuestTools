@@ -7,6 +7,7 @@
 using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
+using KRT.VRCQuestTools.Views;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,25 +25,7 @@ namespace KRT.VRCQuestTools.Menus
         [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.RemoveUnsupportedComponents, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectRemoveUnsupportedComponents)]
         private static void RemoveUnsupportedComponents()
         {
-            var remover = VRCQuestTools.ComponentRemover;
-            var i18n = VRCQuestToolsSettings.I18nResource;
-            var obj = Selection.activeGameObject;
-
-            var components = remover.GetUnsupportedComponentsInChildren(obj, true);
-            if (components.Length == 0)
-            {
-                EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NoUnsupportedComponentsMessage(obj.name), "OK");
-                return;
-            }
-            var message = i18n.UnsupportedRemoverConfirmationMessage(obj.name) + "\n\n" +
-                string.Join("\n", components.Select(c => c.GetType()).Distinct().Select(c => $"  - {c.Name}").OrderBy(c => c));
-            if (!EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK", i18n.CancelLabel))
-            {
-                return;
-            }
-
-            Undo.SetCurrentGroupName("Remove Unsupported Components");
-            remover.RemoveUnsupportedComponentsInChildren(obj, true, true);
+            UnsupportedComponentRemoverWindow.Show(Selection.activeGameObject);
         }
 
         /// <summary>

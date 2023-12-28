@@ -20,6 +20,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string YesLabel => "はい";
         internal override string NoLabel => "いいえ";
         internal override string AbortLabel => "中止";
+        internal override string RemoveLabel => "削除";
 
         internal override string Maximum => "最大";
 

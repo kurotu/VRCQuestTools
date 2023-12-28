@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change update check interval to 1 day.
 - Move **VRCQuestTools** menu into **Tools** menu.
 - Rearrange menu items.
+- Show a detailed list of unsupported components in **Remove Unsupported Components** menu.
 
 ### Removed
 - Remove **Check for Updates** menu. Use VCC or inspector to check for updates.

@@ -20,6 +20,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string YesLabel => "Yes";
         internal override string NoLabel => "No";
         internal override string AbortLabel => "Abort";
+        internal override string RemoveLabel => "Remove";
 
         internal override string Maximum => "Maximum";
 
