@@ -1,5 +1,4 @@
 ﻿#if VQT_HAS_NDMF
-using KRT.VRCQuestTools;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Ndmf;
@@ -11,7 +10,7 @@ using UnityEngine;
 
 [assembly: ExportsPlugin(typeof(VRCQuestToolsNdmfPlugin))]
 
-namespace KRT.VRCQuestTools
+namespace KRT.VRCQuestTools.Ndmf
 {
     /// <summary>
     /// NDMF plugin of VRCQuestTools.

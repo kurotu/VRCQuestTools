@@ -1,8 +1,7 @@
-﻿#if !VQT_HAS_NDMF_ERROR_REPORT
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace KRT.VRCQuestTools.Views
+namespace KRT.VRCQuestTools.Ndmf
 {
     /// <summary>
     /// Report window for NDMF.
@@ -49,7 +48,7 @@ namespace KRT.VRCQuestTools.Views
                 }
                 foreach (var item in items)
                 {
-                    EditorGUIUtility.HelpBoxGUI(item.type, () =>
+                    Views.EditorGUIUtility.HelpBoxGUI(item.type, () =>
                     {
                         EditorGUILayout.LabelField(item.message, EditorStyles.wordWrappedLabel);
                         if (item.gameObject != null)
@@ -86,4 +85,3 @@ namespace KRT.VRCQuestTools.Views
         }
     }
 }
-#endif
