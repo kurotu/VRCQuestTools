@@ -172,6 +172,15 @@ namespace KRT.VRCQuestTools.Inspector
                                     element.managedReferenceValue = new AdditionalMaterialConvertSettings();
                                     so.ApplyModifiedProperties();
                                 };
+                                additionalMaterialConvertSettingsReorderableList.onRemoveCallback = (list) =>
+                                {
+                                    if (list.index < 0 || list.index >= list.serializedProperty.arraySize)
+                                    {
+                                        return;
+                                    }
+                                    list.serializedProperty.DeleteArrayElementAtIndex(list.index);
+                                    so.ApplyModifiedProperties();
+                                };
                             }
                             additionalMaterialConvertSettingsReorderableList.DoLayoutList();
                         }
