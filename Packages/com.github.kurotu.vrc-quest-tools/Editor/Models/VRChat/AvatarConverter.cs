@@ -504,8 +504,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
             if (VirtualLensUtility.VirtualLensSettingsType != null)
             {
                 var component = avatar.GetComponentInChildren(VirtualLensUtility.VirtualLensSettingsType, true);
-                var settings = new VirtualLensUtility.VirtualLensSettingsProxy(component);
-                settings.remoteOnlyMode = VirtualLensUtility.RemoteOnlyMode.ForceEnable;
+                if (component != null)
+                {
+                    var settings = new VirtualLensUtility.VirtualLensSettingsProxy(component);
+                    settings.remoteOnlyMode = VirtualLensUtility.RemoteOnlyMode.ForceEnable;
+                }
             }
 
             // Since VirtualLens2 2.10.x, it is not necessary to disable VirtualLens2 objects because there is remote only mode for mobile platform.
