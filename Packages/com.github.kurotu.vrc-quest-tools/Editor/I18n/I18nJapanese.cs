@@ -145,6 +145,10 @@ namespace KRT.VRCQuestTools.I18n
         internal override string VertexColorRemoverEditorRemove => "頂点カラーを削除";
         internal override string VertexColorRemoverEditorRestore => "頂点カラーを復元";
 
+        // Converted Avatar
+        internal override string ConvertedAvatarEditorMessage => "このコンポーネントはアバターが VRCQuestTools で変換されたことを示します。";
+        internal override string ConvertedAvatarEditorNDMFMessage => "非対応コンポーネントは NDMF の Optimization Phase で削除されます。";
+
         // NDMF
         internal override string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => $"ビルド中に非対応コンポーネント {typeName} を \"{objectName}\" から削除しました。動作に問題がないか確認してください。";
     }
