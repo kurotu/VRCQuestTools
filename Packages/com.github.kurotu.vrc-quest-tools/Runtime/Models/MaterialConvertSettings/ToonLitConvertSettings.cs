@@ -22,6 +22,10 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Texture brightness for quest. [0-1].
         /// </summary>
+        /// <remarks>
+        /// Toon Lit shader adds indirect light to main texture, but final color will be about 150% of texture color.
+        /// So 1.0 is too bright for light colors. (1 / 1.5 => 0.67 is a little dark.)
+        /// </remarks>
         [Range(0.0f, 1.0f)]
         public float mainTextureBrightness = 0.83f;
 

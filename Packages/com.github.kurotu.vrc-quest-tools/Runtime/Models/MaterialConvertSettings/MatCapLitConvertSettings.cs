@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools.Models
         /// Texture brightness for quest. [0-1].
         /// </summary>
         [Range(0.0f, 1.0f)]
-        public float mainTextureBrightness = 1.0f;
+        public float mainTextureBrightness = 0.83f;
 
         /// <summary>
         /// Whether to generate shadow from normal map.
