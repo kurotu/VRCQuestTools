@@ -487,7 +487,19 @@ namespace KRT.VRCQuestTools.Utils
                 ? "f0f530dea3891c04e8ab37831627e702" // AvatarPerformanceStatLevels_Quest.asset
                 : "438f83f183e95f740877d4c22ed91af2"; // AvatarPerformanceStatLevels_Windows.asset
             var path = AssetDatabase.GUIDToAssetPath(guid);
-            return AssetDatabase.LoadAssetAtPath<AvatarPerformanceStatsLevelSet>(path);
+            if (path == string.Empty)
+            {
+                path = isMobile
+                    ? "Packages/com.vrchat.base/Runtime/VRCSDK/Dependencies/VRChat/Resources/Validation/Performance/StatsLevels/Quest/AvatarPerformanceStatLevels_Quest.asset"
+                    : "Packages/com.vrchat.base/Runtime/VRCSDK/Dependencies/VRChat/Resources/Validation/Performance/StatsLevels/Windows/AvatarPerformanceStatLevels_Windows.asset";
+                Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to find AvatarPerformanceStatLevelSet by GUID. Using {path}.");
+            }
+            var statsLevelSet = AssetDatabase.LoadAssetAtPath<AvatarPerformanceStatsLevelSet>(path);
+            if (statsLevelSet == null)
+            {
+                throw new InvalidOperationException($"Failed to load AvatarPerformanceStatLevelSet from {path}");
+            }
+            return statsLevelSet;
         }
 
         /// <summary>

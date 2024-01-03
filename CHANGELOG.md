@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix conversion failure when GameObjects which were assigned to Network IDs are actually missing.
 - Fix linear textures are loaded as sRGB when generating textures.
 - Fix VRC Spatial Audio Source is not detected as an unsupported component.
+- Fix an issue that could cause performance rank estimation to fail.
 
 ## [1.14.0] - 2023-12-09
 
