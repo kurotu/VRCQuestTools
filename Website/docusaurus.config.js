@@ -8,7 +8,7 @@ const darkCodeTheme = themes.dracula;
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'VRCQuestTools',
-  tagline: 'Avatar Converter and Utilities for Quest',
+  tagline: 'Avatar Converter and Utilities for Android',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here

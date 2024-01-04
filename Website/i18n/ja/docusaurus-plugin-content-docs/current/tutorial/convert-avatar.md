@@ -30,7 +30,7 @@ VRCQuestToolsだけでは対応できず、別途作業が必要です。
 
 ### PhysBoneへのネットワークIDの割り当て
 
-PCとQuestでPhysBoneを正しく同期させるために、PhysBoneにネットワークIDを割り当てる必要があります。
+PCとAndroidでPhysBoneを正しく同期させるために、PhysBoneにネットワークIDを割り当てる必要があります。
 
 1. メニューバーの**VRChat SDK** > **Utilities** > **Network ID Import and Export Utility**を選択します。
 2. **Network ID Utility**ウィンドウが表示されます。
@@ -109,7 +109,7 @@ Androidでは、セーフティのMinimum Displayed Performance Rankは「Good�
 
 ## プラットフォームをAndroidに変更
 
-Questプラットフォームにアバターをアップロードするには、プラットフォームをAndroidに変更する必要があります。
+Androidプラットフォームにアバターをアップロードするには、UnityのターゲットプラットフォームをAndroidに変更する必要があります。
 
 1. メニューバーの**File** > **Build Settings**を選択します。
 2. プラットフォームリストで**Android**を選択します。
@@ -127,6 +127,6 @@ Unity 2019以降、プラットフォームの切り替え結果はプロジェ�
 
 ## Androidアバターのアップロード
 
-変換後のアバターをQuestプラットフォームにアップロードできるようになりました。元のアバターと変換後のアバターがPipeline Managerで同じBlueprint IDを使用していることを確認してください。
+変換後のアバターをAndroidプラットフォームにアップロードできるようになりました。元のアバターと変換後のアバターがPipeline Managerで同じBlueprint IDを使用していることを確認してください。
 
 アップロード後、アバターのサムネイルに緑色のMobileアイコンがあることを確認してください。

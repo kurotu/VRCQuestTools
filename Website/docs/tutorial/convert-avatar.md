@@ -30,6 +30,8 @@ But before uploading your avatar for PC platform, you should do additional work.
 
 ### Assign Network IDs to PhysBones
 
+You need to assign Network IDs to PhysBones to synchronize them correctly between PC and Android.
+
 1. Select **VRChat SDK** > **Utilities** > **Network ID Import and Export Utility** in the menu bar.
 2. **Network ID Utility** window appears.
 3. Select your avatar in the **Target** dropdown.
@@ -55,7 +57,7 @@ Do settings for the following items.
 
 ### Reduce Avatar Dynamics Components
 
-Quest avatar has a hard cap for Avatar Dynamics (PhysBones, Colliders and Contacts). If your avatar has too many PhysBones, you should reduce them.
+Android avatar has a hard cap for Avatar Dynamics (PhysBones, Colliders and Contacts). If your avatar has too many PhysBones, you should reduce them.
 
 https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits
 
@@ -106,7 +108,7 @@ References:
 
 ## Switch Platform to Android
 
-To upload your avatar to Android platform, you should switch platform to Android.
+To upload your avatar to Android platform, you should switch Unity's target platform to Android.
 
 1. Select **File** > **Build Settings** in the menu bar.
 2. Select **Android** in the Platform list.
