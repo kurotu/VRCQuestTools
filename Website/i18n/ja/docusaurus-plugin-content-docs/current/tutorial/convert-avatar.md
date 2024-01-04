@@ -49,7 +49,7 @@ PCとAndroidでPhysBoneを正しく同期させるために、PhysBoneにネッ�
 
 1. ヒエラルキーからアバターを選択します。
 2. アバターを右クリックして**VRCQuestTools** > **Convert Avatar for Quest** を選択します。
-3. **Convert Avatar for Quest**ウィンドウが表示されます。
+3. **Convert Avatar for Android**ウィンドウが表示されます。
 4. ウィンドウの**変換の設定を始める**ボタンをクリックします。
 5. アバターに**VQT Avatar Converter Settings**コンポーネントが追加され、変換の設定が表示されます。
 
@@ -84,7 +84,7 @@ VRCQuestToolsはアバターの変換後もプレハブへの参照を保持し�
 
 1. 設定項目を一番下までスクロールし、**変換**ボタンをクリックします。
 2. 変換が完了すると、同じシーンに変換後のアバターが作成されます。
-    - 名前には` (Quest)`という接尾語が付きます。
+    - 名前には` (Android)`という接尾語が付きます。
     - 生成されたアセットは`Assets/VRCQuestToolsOutput/<アバターのオブジェクト名>`に保存されます。
 
 :::note

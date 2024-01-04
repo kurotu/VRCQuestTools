@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Convert Avatar for Quest
+# Convert Avatar for Android
 
 VRChatアバターに[Avatar Converter Settings](../components/avatar-converter-settings)コンポーネントを追加します。
 

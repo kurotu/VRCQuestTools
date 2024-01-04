@@ -202,7 +202,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 #endif
 
-            questAvatarObject.name = avatar.AvatarDescriptor.gameObject.name + " (Quest)";
+            questAvatarObject.name = avatar.AvatarDescriptor.gameObject.name + " (Android)";
             questAvatarObject.SetActive(true);
             ApplyVirtualLens2Support(questAvatarObject);
             var prefabName = $"{assetsDirectory}/{questAvatarObject.name}.prefab";

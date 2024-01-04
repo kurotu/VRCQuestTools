@@ -49,7 +49,7 @@ Set up settings to convert your avatar to Android compatible.
 
 1. Select your avatar in Hierarchy.
 2. Right-click on the avatar and select **VRCQuestTools** > **Convert Avatar for Quest**.
-3. **Convert Avatar for Quest** window appears.
+3. **Convert Avatar for Android** window appears.
 4. Click **Begin Converter Settings** button of the window.
 5. **VQT Avatar Converter Settings** component is added to your avatar and settings appear.
 
@@ -84,7 +84,7 @@ And you can reuse the converter settings.
 
 1. Scroll down the settings and click **Convert** button.
 2. The converted avatar is created in the same scene.
-    - Its name has the suffix ` (Quest)`.
+    - Its name has the suffix ` (Android)`.
     - Generated assets are saved in `Assets/VRCQuestTools/<Avatar's object name>` folder.
 
 :::note

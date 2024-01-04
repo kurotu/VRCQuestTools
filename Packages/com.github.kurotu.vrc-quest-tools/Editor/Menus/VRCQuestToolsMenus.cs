@@ -17,7 +17,7 @@ namespace KRT.VRCQuestTools.Menus
         internal static class MenuPaths
         {
             internal const string RootMenu = "Tools/" + VRCQuestTools.Name + "/";
-            internal const string ConvertAvatarForQuest = RootMenu + "Convert Avatar for Quest";
+            internal const string ConvertAvatarForAndroid = RootMenu + "Convert Avatar for Android";
             internal const string RemoveUnsupportedComponents = RootMenu + "Remove Unsupported Components";
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
             internal const string RemoveAllVertexColors = RootMenu + "Remove All Vertex Colors";

@@ -30,6 +30,7 @@
 - unitypackage のインポートパスを `Assets/KRT/VRCQuestTools` から `Packages/com.github.kurotu.vrc-quest-tools` に変更
 - UPM のインポート URL を `https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools` に変更
 - 変換後のアバターの保存先を `Assets/KRT/QuestAvatars` から `Assets/VRCQuestToolsOutput` に変更
+- 変換後のアバターのオブジェクト名に付与する接尾語を ` (Quest)` から ` (Android)` に変更
 - ビルド時の独自コンポーネントの削除処理を Anatawa12's Avatar Optimizer による最適化の前に実行するように変更
 - 更新通知をシーンビューの代わりに Inspector に表示するように変更
 - 最新バージョンの確認処理を1日1回に変更

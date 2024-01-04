@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change unitypackage's import path to `Packages/com.github.kurotu.vrc-quest-tools` instead of `Assets/KRT/VRCQuestTools`.
 - Change UPM import URL to `https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools`.
 - Change output folder of converted avatars to `Assets/VRCQuestToolsOutput` instead of `Assets/KRT/QuestAvatars`.
+- Change suffix of converted avatar's object name to ` (Android)` instead of ` (Quest)`.
 - Change the order of removing custom components in build process to run before Anatawa12's Avatar Optimizer.
 - Show update notification in inspector instead of scene view.
 - Change update check interval to 1 day.

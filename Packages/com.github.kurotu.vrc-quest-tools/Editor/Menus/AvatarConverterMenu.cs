@@ -16,7 +16,7 @@ namespace KRT.VRCQuestTools.Menus
     /// </summary>
     internal static class AvatarConverterMenu
     {
-        [MenuItem(VRCQuestToolsMenus.MenuPaths.ConvertAvatarForQuest, false, (int)VRCQuestToolsMenus.MenuPriorities.ConvertAvatarForQuest)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.ConvertAvatarForAndroid, false, (int)VRCQuestToolsMenus.MenuPriorities.ConvertAvatarForQuest)]
         private static void InitFromMenu()
         {
             var target = Selection.activeGameObject;
