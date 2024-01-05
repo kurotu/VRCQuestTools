@@ -150,6 +150,6 @@ jobs:
           body_path: ${{ github.workspace }}-release.txt
           draft: true
           files: |
-            package.json
+            Packages/com.github.kurotu.vrc-quest-tools/package.json
             *.zip
             ${{ steps.artifact.outputs.artifact-name }}/${{ steps.artifact.outputs.artifact-name }}.unitypackage
