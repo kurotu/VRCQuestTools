@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.0.1] - 2024-01-05
 
 ### 修正
 - VRChat SDK 3.3.0 未満のプロジェクトに導入できる問題を修正
@@ -386,7 +386,8 @@
 ## [0.1.0] - 2020-10-10
 - 公開
 
-[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/kurotu/VRCQuestTools/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/kurotu/VRCQuestTools/compare/v1.14.0...v2.0.0
 [1.14.0]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.5...v1.14.0
 [1.13.5]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.4...v1.13.5
