@@ -1,0 +1,63 @@
+{
+    "name": "VRCQuestTools-Editor",
+    "references": [
+        "VRCQuestTools",
+        "nadena.dev.ndmf",
+        "nadena.dev.modular-avatar.core"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "VRCCore-Editor.dll",
+        "VRCSDKBase.dll",
+        "VRCSDKBase-Editor.dll",
+        "VRCSDK3A.dll",
+        "VRC.Dynamics.dll",
+        "VRC.SDK3.Dynamics.PhysBone.dll",
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.vrchat.base",
+            "expression": "3.3.0",
+            "define": "VQT_HAS_VRCSDK_BASE"
+        },
+        {
+            "name": "com.unity.nuget.newtonsoft-json",
+            "expression": "",
+            "define": "VQT_HAS_NEWTONSOFT_JSON"
+        },
+        {
+            "name": "com.vrchat.base",
+            "expression": "",
+            "define": "VQT_HAS_VRCSDK_BASE"
+        },
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "",
+            "define": "VQT_HAS_NDMF"
+        },
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "1.3.0-rc.0",
+            "define": "VQT_HAS_NDMF_ERROR_REPORT"
+        },
+        {
+            "name": "nadena.dev.modular-avatar",
+            "expression": "1.0.0",
+            "define": "VQT_HAS_MODULAR_AVATAR"
+        },
+        {
+            "name": "nadena.dev.modular-avatar",
+            "expression": "1.8.0",
+            "define": "VQT_HAS_MODULAR_AVATAR_WFO"
+        }
+    ],
+    "noEngineReferences": false
+}

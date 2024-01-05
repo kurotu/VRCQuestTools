@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "com.vrchat.core.vpm-resolver": {
+      "version": "0.1.23"
+    },
+    "com.vrchat.avatars": {
+      "version": "3.3.0"
+    }
+  },
+  "locked": {
+    "com.vrchat.core.vpm-resolver": {
+      "version": "0.1.23",
+      "dependencies": {}
+    },
+    "com.vrchat.avatars": {
+      "version": "3.3.0",
+      "dependencies": {
+        "com.vrchat.base": "3.3.0"
+      }
+    },
+    "com.vrchat.base": {
+      "version": "3.3.0",
+      "dependencies": {}
+    }
+  }
+}

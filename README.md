@@ -11,10 +11,24 @@ Avatar Converter and Utilities for Quest.
 <a href="https://tooomm.github.io/github-release-stats/?username=kurotu&repository=VRCQuestTools"><img alt="Latest downloads" src="https://img.shields.io/github/downloads/kurotu/VRCQuestTools/latest/total"></a>
 <a href="https://kurotu.github.io/vpm-repos/"><img alt="VPM Release" src="https://img.shields.io/vpm/v/com.github.kurotu.vrc-quest-tools?repository_url=https%3A%2F%2Fkurotu.github.io%2Fvpm-repos%2Fvpm.json"></a>
 
-- You can convert your PC avatar uploadable for Quest with a few steps.
-- You can use various tools to manually make your avatar Quest compatible.
+This tool helps you to make your avatar compatible with Android (Quest, PICO).
+Convert your PC avatar to Android in a few steps.
 
-## Install and Usage
+## Features
+
+- Duplicate the avatar and materials so that the original avatar is not affected.
+- Generate textures for Android according to the material settings.
+- Delete unsupported components such as Constraints.
+- Easily reduce PhysBones.
+- Remove vertex colors to display textures correctly.
+- Change Unity to recommended settings.
+
+## Install
+
+Use [this link](https://kurotu.github.io/vpm-repos/vpm.html) to add the repository to VCC.
+Then add `VRCQuestTools` package to your projects.
+
+## Usage
 
 See [the documentation site](https://kurotu.github.io/VRCQuestTools/).
 

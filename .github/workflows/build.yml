@@ -16,19 +16,15 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      - name: Move files into Assets
-        run: |
-          mkdir -p Assets/KRT/VRCQuestTools
-          cp .github/workflows/VRCQuestTools.meta Assets/KRT/
-          mv $(ls . | grep -v Assets) Assets/KRT/VRCQuestTools/
-
       - uses: actions/cache@v3
         with:
           path: Library
           key: Library-build-${{ github.ref }}
           restore-keys: |
             Library-build-
+
+      - uses: anatawa12/sh-actions/resolve-vpm-packages@master
+      - run: vrc-get install
 
       - uses: game-ci/unity-builder@v2
         env:
@@ -52,22 +48,26 @@ jobs:
       matrix:
         unityVersion:
           - 2019.4.31f1
-          - 2022.3.6f1
+        vrcsdkVersion:
+          - 3.3.0
+          - 3.4.1
+        include:
+          - unityVersion: 2022.3.6f1
+            vrcsdkVersion: 3.5.0
     steps:
       - uses: actions/checkout@v3
-        with:
-          path: Assets/KRT/VRCQuestTools
-
-      - run: mkdir -p Packages
-      # Somehow NUnit is not resolved in Unity 2022.
-      - run: echo '{"dependencies":{"com.unity.test-framework":"1.1.27"}}' > Packages/manifest.json
-
       - uses: actions/cache@v3
         with:
           path: Library
-          key: Library-test-${{ matrix.unityVersion }}-${{ github.ref }}
+          key: Library-test-${{ matrix.unityVersion }}-${{ matrix.vrcsdkVersion }}-${{ github.ref }}
           restore-keys: |
-            Library-test-${{ matrix.unityVersion }}-
+            Library-test-${{ matrix.unityVersion }}-${{ matrix.vrcsdkVersion }}
+
+      - uses: anatawa12/sh-actions/resolve-vpm-packages@master
+      - run: rm -r Packages/vpm-manifest.json Packages/com.vrchat.avatars Packages/com.vrchat.base
+      - run: vrc-get install -y com.vrchat.base ${{ matrix.vrcsdkVersion }}
+      - run: vrc-get install -y com.vrchat.avatars ${{ matrix.vrcsdkVersion }}
+      - run: cat Packages/vpm-manifest.json
 
       - uses: game-ci/unity-test-runner@v2
         env:
@@ -95,10 +95,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Remove unused files
-        run: rm -r Tests Tests.meta Website~
       - name: Make zip
-        run: zip -r $(jq -r '.name' package.json)-$(jq -r '.version' package.json).zip $(ls)
+        run: |
+          cd Packages/com.github.kurotu.vrc-quest-tools
+          zip -r ../../$(jq -r '.name' package.json)-$(jq -r '.version' package.json).zip $(ls)
       - uses: actions/upload-artifact@v3
         with:
           name: vpm
@@ -111,9 +111,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: 'npm'
-          cache-dependency-path: Website~/package-lock.json
-      - run: cd Website~ && npm ci
-      - run: cd Website~ && npm run build
+          cache-dependency-path: Website/package-lock.json
+      - run: cd Website && npm ci
+      - run: cd Website && npm run build
 
   release:
     if: startsWith(github.ref, 'refs/tags/')

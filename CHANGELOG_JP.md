@@ -1,9 +1,52 @@
 # 変更履歴
 
-All notable changes to this project will be documented in this file.
+このプロジェクトのすべての重要な変更はこのファイルに記録されます。
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
+
+## [Unreleased]
+
+### 追加
+- アバターに変換設定を保存する `VQT Avatar Converter Settings` コンポーネントを追加
+- アバターがVRCQuestToolsで変換されたことを示す `VQT Converted Avatar` コンポーネントを追加
+- アバターのビルド中にNDMFで生成された非対応コンポーネントを削除する機能を追加
+- マテリアルごとにマテリアル変換設定を変更する機能を追加
+- Toon Lit 以外のシェーダーへのマテリアル変換設定を追加
+    - MatCap Lit
+    - マテリアル置換
+- マテリアル変換設定に「ノーマルマップから影を生成する」オプションを追加
+- Poiyomi Toon シェーダーからのマテリアル変換を追加。対応している機能は以下の通り:
+    - メインカラー
+    - ノーマルマップによる影
+    - 発光 (0～3)
+- Missing 状態のコンポーネントがあるときの警告内に対象オブジェクトを表示する機能を追加
+- VRCQuestTools Extra の機能を統合
+    - FinalIK のコンポーネントを削除する機能を追加
+    - VirtualLens2 導入時専用の処理を追加
+- アバターの変換時に非対応のModular Avatarのコンポーネントを削除する機能を追加
+
+### 変更
+- VRChat SDK 3.3.0 以降が必要
+- unitypackage のインポートパスを `Assets/KRT/VRCQuestTools` から `Packages/com.github.kurotu.vrc-quest-tools` に変更
+- UPM のインポート URL を `https://github.com/kurotu/VRCQuestTools.git?path=Packages/com.github.kurotu.vrc-quest-tools` に変更
+- 変換後のアバターの保存先を `Assets/KRT/QuestAvatars` から `Assets/VRCQuestToolsOutput` に変更
+- 変換後のアバターのオブジェクト名に付与する接尾語を ` (Quest)` から ` (Android)` に変更
+- ビルド時の独自コンポーネントの削除処理を Anatawa12's Avatar Optimizer による最適化の前に実行するように変更
+- 更新通知をシーンビューの代わりに Inspector に表示するように変更
+- 最新バージョンの確認処理を1日1回に変更
+- **VRCQuestTools** メニューを **Tools** メニュー内に移動
+- メニュー項目の配置を変更
+- **Remove Unsupported Components** メニューで削除対象のコンポーネントを一覧表示するように変更
+
+### 削除
+- **Check for Updates** メニューを削除。代わりに VCC または Inspector を使用
+- シーンから頂点カラーを検出して自動削除する機能を削除。代わりに **Remove All Vertex Colors** メニューを使用
+
+### 修正
+- Network ID に割り当てられていた GameObject が実際には存在しないとき変換に失敗する問題を修正
+- テクスチャ生成時にリニアテクスチャを sRGB で読み込んでいた問題を修正
+- VRC Spatial Audio Source が非対応コンポーネントとして検出されない問題を修正
+- パフォーマンスランクの推定に失敗する可能性がある問題を対策
 
 ## [1.14.0] - 2023-12-09
 

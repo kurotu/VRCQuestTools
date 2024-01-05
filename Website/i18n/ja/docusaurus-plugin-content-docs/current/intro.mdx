@@ -1,0 +1,76 @@
+---
+sidebar_position: 1
+---
+
+import AddToVccLink from '@site/src/components/AddToVccLink';
+
+# はじめに
+
+## VRCQuestTools
+
+VRCQuestToolsはAndroid(Meta Quest, PICO)用にVRChatアバターをアップロードするためのUnityエディタ拡張です。
+
+Android版VRChatではPC版VRChatと異なりアバターの仕様に非常に強い制限があります。
+そのためPC用にセットアップされたアバターをそのままAndroid用にアップロードすることはできません。
+Androidでは使用できない部分を修正することでAndroid用にアップロード可能にすることはできますが、その作業は非常に煩雑です。
+
+VRCQuestToolsはその作業を自動化することで、Android用にアバターをアップロードする手間を大幅に減らします。
+
+- 数回のクリックでPCアバターをAndroid用にアップロード可能にします。
+- 手動でアバターをAndroid対応にするための様々なツールを使うことができます。
+
+:::caution
+VRoid Studioで作成されたアバターは透過表現を多用しており、Android用のシェーダーでは正しく表示できません。
+VRCQuestToolsだけでは対応できず、別途作業が必要です。
+:::
+
+## 必要環境
+
+- Unity 2019.4.31f1 または 2022.3.6f1
+- VRChat SDK - Avatars 3.3.0 以降
+
+## クイックガイド
+
+### インストール
+
+VRCQuestToolsをプロジェクトに追加するには、以下の手順に従ってください。
+
+1. 下のボタンをクリックしてVCCにリポジトリを追加します。
+    <AddToVccLink className="button button--primary button--lg" />
+
+2. VCCで管理しているアバタープロジェクトに「VRCQuestTools」パッケージを追加します。
+
+### Android用にアバターを変換
+
+アバターをAndroid用に変換するには、以下の手順に従ってください。
+
+1. シーン内のヒエラルキーからアバターを右クリックします。
+2. コンテキストメニューから**VRCQuestTools** > **Convert Avatar For Android**を選択します。
+3. 開いたウィンドウで**変換の設定を始める**をクリックした後、**変換**ボタンをクリックします。
+4. 変換が完了するのを待ちます。
+5. Unityのメニューバーから**File** > **Build Settings**を選択します。
+6. 開いたウィンドウで**Android**を選択して**Switch Platform**ボタンをクリックします。
+    :::note
+    Switch Platformができない場合、Android Build Supportをインストールしてください。
+    (参照: [環境の準備](./tutorial/set-up-environment))
+    :::
+7. 再インポートの完了を待ちます。(**初回は非常に時間がかかります**)
+8. 変換後のアバターをアップロードします。
+
+:::note
+変換前のアバターは非アクティブになってシーンに残ります。
+Inspectorでアクティブに戻すことができます。
+:::
+
+:::tip
+このツールはパフォーマンスランクの最適化をしません。
+多くの場合、変換後のアバターはAndroid基準で **Very Poor** になります。
+
+見る側がAvatar Display設定の操作(**Show Avatar**)をしない限り、フォールバックアバターまたはインポスターで置き換えられます。
+また、スマートフォン版VRChatではVery Poorのアバターを表示することができません。
+
+参照:
+- [Quest Limits - Performance Ranks](https://creators.vrchat.com/avatars/avatar-performance-ranking-system/#quest-limits)
+- [Avatar Fallback System](https://docs.vrchat.com/docs/avatar-fallback-system)
+- [Impostors](https://creators.vrchat.com/avatars/avatar-impostors)
+:::

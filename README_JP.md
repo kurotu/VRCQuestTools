@@ -11,10 +11,24 @@ Avatar Converter and Utilities for Quest.
 <a href="https://tooomm.github.io/github-release-stats/?username=kurotu&repository=VRCQuestTools"><img alt="Latest downloads" src="https://img.shields.io/github/downloads/kurotu/VRCQuestTools/latest/total"></a>
 <a href="https://kurotu.github.io/vpm-repos/"><img alt="VPM Release" src="https://img.shields.io/vpm/v/com.github.kurotu.vrc-quest-tools?repository_url=https%3A%2F%2Fkurotu.github.io%2Fvpm-repos%2Fvpm.json"></a>
 
-- 数ステップでPCアバターをQuest用にアップロード可能に変換します。
-- 手動でアバターをQuest対応にするための様々なツールを使うことができます。
+アバターの Android (Quest, PICO) 対応を支援するツールです。
+数ステップでPCアバターをAndroid用にアップロード可能に変換します。
 
-## インストールと使い方
+## 主な特徴
+
+- アバターとマテリアルを複製し、元のアバターに影響しないようにします。
+- マテリアルの設定にしたがって Android 用のテクスチャを生成します。
+- Constraint などの非対応コンポーネントを削除します。
+- PhysBone の削減を簡単にします。
+- 頂点カラーを削除し、テクスチャの色を正しく表示できるようにします。
+- Unity を推奨設定へ変更します。
+
+## インストール
+
+[このリンク](https://kurotu.github.io/vpm-repos/vpm.html)を使用して VCC にリポジトリを追加します。
+その後、プロジェクトに `VRCQuestTools` パッケージを追加します。
+
+## 使い方
 
 [ドキュメント](https://kurotu.github.io/VRCQuestTools/ja/)を参照してください。
 
