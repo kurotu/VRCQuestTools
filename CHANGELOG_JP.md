@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.0.0] - 2024-01-05
 
 ### 追加
 - アバターに変換設定を保存する `VQT Avatar Converter Settings` コンポーネントを追加
@@ -381,7 +381,8 @@
 ## [0.1.0] - 2020-10-10
 - 公開
 
-[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v1.14.0...HEAD
+[Unreleased]: https://github.com/kurotu/VRCQuestTools/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/kurotu/VRCQuestTools/compare/v1.14.0...v2.0.0
 [1.14.0]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.5...v1.14.0
 [1.13.5]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.4...v1.13.5
 [1.13.4]: https://github.com/kurotu/VRCQuestTools/compare/v1.13.3...v1.13.4
