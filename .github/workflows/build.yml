@@ -143,7 +143,7 @@ jobs:
           echo "::set-output name=artifact-name::${NAME}"
 
       - name: Generate release note
-        run: ./.scripts/generate-releasenote.sh ${GITHUB_REF#refs/tags/v} | tee ${{ github.workspace }}-release.txt
+        run: ./scripts/generate-releasenote.sh ${GITHUB_REF#refs/tags/v} | tee ${{ github.workspace }}-release.txt
 
       - uses: softprops/action-gh-release@v1
         with:
