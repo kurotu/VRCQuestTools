@@ -4,7 +4,7 @@ set -eu
 REPO=kurotu/VRCQuestTools
 
 # get all tags from github (excluding prereleases).
-mapfile -t TAGS < <(curl -s "https://api.github.com/repos/${REPO}/tags?per_page=100" | jq --binary -r '.[] | .name' | grep -v '-')
+mapfile -t TAGS < <(curl -s "https://api.github.com/repos/${REPO}/tags?per_page=100" | jq -r '.[] | .name' | grep -v '-')
 
 # print links to compare pages for each version.
 # e.g. [1.1.0]: https://github.com/kurotu/VRCQuestTools/compare/1.0.0...1.1.0
