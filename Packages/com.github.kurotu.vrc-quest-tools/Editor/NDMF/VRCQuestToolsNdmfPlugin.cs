@@ -1,12 +1,5 @@
-﻿#if VQT_HAS_NDMF
-using KRT.VRCQuestTools.Components;
-using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Ndmf;
-using KRT.VRCQuestTools.Views;
 using nadena.dev.ndmf;
-using System.Linq;
-using UnityEditor;
-using UnityEngine;
 
 [assembly: ExportsPlugin(typeof(VRCQuestToolsNdmfPlugin))]
 
@@ -22,6 +15,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// </summary>
         public override string DisplayName => "VRCQuestTools";
 
+        /// <inheritdoc/>
         protected override void Configure()
         {
 #if !VQT_HAS_NDMF_ERROR_REPORT
@@ -42,4 +36,3 @@ namespace KRT.VRCQuestTools.Ndmf
         }
     }
 }
-#endif

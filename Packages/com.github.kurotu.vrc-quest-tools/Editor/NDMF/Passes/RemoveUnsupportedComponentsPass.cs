@@ -1,19 +1,21 @@
-﻿#if VQT_HAS_NDMF
-using System.Linq;
 using System.Threading;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using nadena.dev.ndmf;
-using UnityEditor;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
-    class RemoveUnsupportedComponentsPass : Pass<RemoveUnsupportedComponentsPass>
+    /// <summary>
+    /// Remove unsupported components in NDMF.
+    /// </summary>
+    internal class RemoveUnsupportedComponentsPass : Pass<RemoveUnsupportedComponentsPass>
     {
-        public override string DisplayName => "Remove unsupported components";
-
         private SynchronizationContext mainContext = SynchronizationContext.Current;
 
+        /// <inheritdoc/>
+        public override string DisplayName => "Remove unsupported components";
+
+        /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
             if (context.AvatarRootObject.GetComponent<ConvertedAvatar>() != null)
@@ -46,4 +48,3 @@ namespace KRT.VRCQuestTools.Ndmf
         }
     }
 }
-#endif
