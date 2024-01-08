@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
-    class RemoveVRCQuestToolsComponentPass : Pass<RemoveVRCQuestToolsComponentPass>
+    class RemoveVRCQuestToolsComponentsPass : Pass<RemoveVRCQuestToolsComponentsPass>
     {
         public override string DisplayName => "Remove VRCQuestTools components";
 
