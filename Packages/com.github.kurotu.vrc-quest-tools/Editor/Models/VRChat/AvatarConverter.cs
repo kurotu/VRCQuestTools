@@ -184,24 +184,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
             ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
 
-            if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
-            {
-                questAvatarObject.AddComponent<ConvertedAvatar>();
-            }
-#if VQT_HAS_VRCSDK_BASE
-            if (setting.removeVertexColor)
-            {
-                var vcr = questAvatarObject.GetComponent<VertexColorRemover>();
-                if (vcr == null)
-                {
-                    vcr = questAvatarObject.AddComponent<VertexColorRemover>();
-                }
-                vcr.includeChildren = true;
-                vcr.enabled = true;
-                vcr.RemoveVertexColor();
-            }
-#endif
-
+            ApplyVRCQuestToolsComponents(setting, questAvatarObject);
             questAvatarObject.name = avatar.AvatarDescriptor.gameObject.name + " (Android)";
             questAvatarObject.SetActive(true);
             ApplyVirtualLens2Support(questAvatarObject);
@@ -496,6 +479,27 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
             }
             return convertedAnimationClips;
+        }
+
+        private static void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
+        {
+            if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
+            {
+                questAvatarObject.AddComponent<ConvertedAvatar>();
+            }
+#if VQT_HAS_VRCSDK_BASE
+            if (setting.removeVertexColor)
+            {
+                var vcr = questAvatarObject.GetComponent<VertexColorRemover>();
+                if (vcr == null)
+                {
+                    vcr = questAvatarObject.AddComponent<VertexColorRemover>();
+                }
+                vcr.includeChildren = true;
+                vcr.enabled = true;
+                vcr.RemoveVertexColor();
+            }
+#endif
         }
 
         private void ApplyVirtualLens2Support(GameObject avatar)
