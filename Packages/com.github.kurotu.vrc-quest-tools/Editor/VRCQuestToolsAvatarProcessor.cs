@@ -5,6 +5,7 @@
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
@@ -48,6 +49,9 @@ namespace KRT.VRCQuestTools
             }
 
             var components = avatarGameObject.GetComponentsInChildren<VRCQuestToolsEditorOnly>(true);
+#if VQT_HAS_NDMF
+            components = components.Where(c => !(c is IVRCQuestToolsNdmfComponent)).ToArray();
+#endif
             foreach (var c in components)
             {
                 Object.DestroyImmediate(c);

@@ -71,18 +71,11 @@ namespace KRT.VRCQuestTools.Ndmf
                 })
                 .Then.Run("Remove VRCQuestTools components", ctx =>
                 {
-                    Component[] components = ctx.AvatarRootObject.GetComponentsInChildren<ConvertedAvatar>(true);
+                    var components = ctx.AvatarRootObject.GetComponentsInChildren<VRCQuestToolsEditorOnly>(true);
                     foreach (var component in components)
                     {
                         Object.DestroyImmediate(component);
                     }
-
-                    components = ctx.AvatarRootObject.GetComponentsInChildren<VRCQuestToolsEditorOnly>(true);
-                    foreach (var component in components)
-                    {
-                        Object.DestroyImmediate(component);
-                    }
-
                 });
         }
     }
