@@ -1,0 +1,32 @@
+{
+    "name": "VRCQuestTools-Editor-Ndmf",
+    "references": [
+        "GUID:b58e7b76b1a5bf64795fb2e30af9586e",
+        "GUID:82b7c43981485984a98b8be762c6068d",
+        "GUID:62ced99b048af7f4d8dfe4bed8373d76"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "VQT_HAS_NDMF"
+    ],
+    "versionDefines": [
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "",
+            "define": "VQT_HAS_NDMF"
+        },
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "1.3.0-rc.0",
+            "define": "VQT_HAS_NDMF_ERROR_REPORT"
+        }
+    ],
+    "noEngineReferences": false
+}

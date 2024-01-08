@@ -6,6 +6,7 @@
 #if UNITY_EDITOR
 using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("VRCQuestTools-Editor-Ndmf")]
 [assembly: InternalsVisibleTo("VRCQuestTools-DebugUtil-Editor")]
 [assembly: InternalsVisibleTo("VRCQuestTools-EditorTests")]
 [assembly: InternalsVisibleTo("VRCQuestToolsExtra-Editor")]
