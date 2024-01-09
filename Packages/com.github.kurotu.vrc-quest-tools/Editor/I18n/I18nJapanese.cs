@@ -149,6 +149,12 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertedAvatarEditorMessage => "このコンポーネントはアバターが VRCQuestTools で変換されたことを示します。";
         internal override string ConvertedAvatarEditorNDMFMessage => "非対応コンポーネントは NDMF の Optimization Phase で削除されます。";
 
+        // Platform Component Settings
+        internal override string ComponentRequiresNdmf => "このコンポーネントには Non-Destructive Modular Framework (NDMF) が必要です。";
+        internal override string BuildTargetLabel => "ビルドターゲット";
+        internal override string PlatformComponentSettingsEditorComponentSettingsLabel => "コンポーネント設定";
+        internal override string ComponentLabel => "コンポーネント";
+
         // NDMF
         internal override string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => $"ビルド中に非対応コンポーネント {typeName} を \"{objectName}\" から削除しました。動作に問題がないか確認してください。";
     }

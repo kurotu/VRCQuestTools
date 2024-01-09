@@ -150,6 +150,12 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertedAvatarEditorMessage => "This component indicates the avatar was converted by VRCQuestTools.";
         internal override string ConvertedAvatarEditorNDMFMessage => "Unsupported components will be removed in NDMF optimization phase.";
 
+        // Platform Component Settings
+        internal override string ComponentRequiresNdmf => "This component requires Non-Destructive Modular Framework (NDMF).";
+        internal override string BuildTargetLabel => "Build Target";
+        internal override string PlatformComponentSettingsEditorComponentSettingsLabel => "Component Settings";
+        internal override string ComponentLabel => "Component";
+
         // NDMF
         internal override string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => $"Removed unsupported component \"{typeName}\" from \"{objectName}\". Please test the avatar.";
     }

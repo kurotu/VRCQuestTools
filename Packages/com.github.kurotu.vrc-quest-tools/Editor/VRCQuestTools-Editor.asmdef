@@ -2,7 +2,6 @@
     "name": "VRCQuestTools-Editor",
     "references": [
         "VRCQuestTools",
-        "nadena.dev.ndmf",
         "nadena.dev.modular-avatar.core"
     ],
     "includePlatforms": [

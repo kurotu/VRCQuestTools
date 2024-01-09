@@ -148,6 +148,12 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string ConvertedAvatarEditorMessage { get; }
         internal abstract string ConvertedAvatarEditorNDMFMessage { get; }
 
+        // Platform Component Settings
+        internal abstract string ComponentRequiresNdmf { get; }
+        internal abstract string BuildTargetLabel { get; }
+        internal abstract string PlatformComponentSettingsEditorComponentSettingsLabel { get; }
+        internal abstract string ComponentLabel { get; }
+
         // NDMF
         internal abstract string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName);
     }

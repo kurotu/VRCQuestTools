@@ -111,6 +111,10 @@ Animator Override Controller で指定したアニメーションクリップを
 
 導入しているアセットに応じて、特殊な変換処理を実行します。
 
+#### Platform Component Settings
+
+ビルドターゲットを `Android` に設定します。
+
 #### VirtualLens2
 
 VirtualLensSettings コンポーネントの `Remote Only Mode` を `Force Enable` に設定します。
