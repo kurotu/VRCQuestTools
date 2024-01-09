@@ -70,6 +70,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string IMaterialConvertSettingsMainTextureBrightnessTooltip => "Tweak main texture color.";
         internal override string ToonLitConvertSettingsGenerateShadowFromNormalMapLabel => "Generate shadow from normal map";
         internal override string MatCapLitConvertSettingsMatCapTextureLabel => "MatCap Texture";
+        internal override string MatCapLitConvertSettingsMatCapTextureWarning => "Set MatCap texture.";
         internal override string AdditionalMaterialConvertSettingsTargetMaterialLabel => "Target Material";
         internal override string AdditionalMaterialConvertSettingsSelectMaterialLabel => "Select Material";
         internal override string MaterialConvertTypePopupLabelToonLit => "Toon Lit";

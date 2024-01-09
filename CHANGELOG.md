@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add `VQT Platform Component Settings` component to control whether to use the component depending on the build platform.
+- Add warning when MatCap Lit conversion setting has no MatCap texture assigned.
 
 ## [2.0.1] - 2024-01-05
 

@@ -17,6 +17,13 @@ namespace KRT.VRCQuestTools.Inspector
             height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
             height += ToonLitConvertSettingsDrawer.GetPropertyFieldsHeight(property) + EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUIUtility.singleLineHeight;
+
+            var matCapTexture = property.FindPropertyRelative("matCapTexture");
+            if (matCapTexture.objectReferenceValue == null)
+            {
+                height += EditorGUIUtility.singleLineHeight * 2 + EditorGUIUtility.standardVerticalSpacing;
+            }
+
             return height;
         }
 
@@ -45,7 +52,19 @@ namespace KRT.VRCQuestTools.Inspector
                 ToonLitConvertSettingsDrawer.DrawPorpertyFields(fieldRect, property);
                 EditorGUI.indentLevel++;
                 fieldRect.y += ToonLitConvertSettingsDrawer.GetPropertyFieldsHeight(property) + EditorGUIUtility.standardVerticalSpacing;
-                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("matCapTexture"), new GUIContent(i18n.MatCapLitConvertSettingsMatCapTextureLabel));
+
+                var matCapTexture = property.FindPropertyRelative("matCapTexture");
+                EditorGUI.PropertyField(fieldRect, matCapTexture, new GUIContent(i18n.MatCapLitConvertSettingsMatCapTextureLabel));
+                if (matCapTexture.objectReferenceValue == null)
+                {
+                    fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                    fieldRect.height = EditorGUIUtility.singleLineHeight * 2;
+                    const float indentWidth = 12;
+                    fieldRect.x += indentWidth;
+                    EditorGUI.HelpBox(fieldRect, i18n.MatCapLitConvertSettingsMatCapTextureWarning, MessageType.Warning);
+                    fieldRect.x -= indentWidth;
+                    fieldRect.height = EditorGUIUtility.singleLineHeight;
+                }
 
                 EditorGUI.indentLevel--;
             }

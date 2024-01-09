@@ -71,6 +71,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string IMaterialConvertSettingsMainTextureBrightnessTooltip => "メインテクスチャの色を調整します。";
         internal override string ToonLitConvertSettingsGenerateShadowFromNormalMapLabel => "ノーマルマップから影を生成する";
         internal override string MatCapLitConvertSettingsMatCapTextureLabel => "MatCap テクスチャ";
+        internal override string MatCapLitConvertSettingsMatCapTextureWarning => "MatCap テクスチャを設定してください。";
         internal override string AdditionalMaterialConvertSettingsTargetMaterialLabel => "対象マテリアル";
         internal override string AdditionalMaterialConvertSettingsSelectMaterialLabel => "マテリアルを選択";
         internal override string MaterialConvertTypePopupLabelToonLit => "Toon Lit";
