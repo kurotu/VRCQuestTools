@@ -6,7 +6,7 @@ on:
     workflows: [Build]
     types:
       - completed
-    branches: [master, next-docs]
+    branches: [master, current-docs]
   release:
     types: [published, unpublished]
 
