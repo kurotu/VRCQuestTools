@@ -112,6 +112,10 @@ Typically, the avatar is converted in the following steps.
 
 Depending on the assets you are using, a special conversion process is executed.
 
+#### Platform Component Settings
+
+Set `Build Target` to `Android`.
+
 #### VirtualLens2
 
 Set `Remote Only Mode` of VirtualLensSettings component to `Force Enable`.
