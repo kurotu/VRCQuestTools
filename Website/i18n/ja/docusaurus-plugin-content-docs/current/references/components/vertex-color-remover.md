@@ -1,7 +1,3 @@
----
-sidebar_position: 3
----
-
 # Vertex Color Remover
 
 アタッチされたGameObjectとその子のMesh RendererまたはSkinned Mesh Rendererに関連付けられているメッシュから頂点カラーをすべて削除します。

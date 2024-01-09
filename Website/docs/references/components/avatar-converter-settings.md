@@ -1,7 +1,3 @@
----
-sidebar_position: 1
----
-
 # Avatar Converter Settings
 
 Avatar Converter Settings component holds settings for converting VRChat avatars to Android.

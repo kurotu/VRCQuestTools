@@ -1,7 +1,3 @@
----
-sidebar_position: 2
----
-
 # Converted Avatar
 
 This is a component attached to the converted avatar.

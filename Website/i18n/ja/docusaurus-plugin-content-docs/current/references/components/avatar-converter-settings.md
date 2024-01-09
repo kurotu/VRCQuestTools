@@ -1,7 +1,3 @@
----
-sidebar_position: 1
----
-
 # Avatar Converter Settings
 
 VRChatアバターをAndroid向けにアップロード可能に変換するための設定を保持します。

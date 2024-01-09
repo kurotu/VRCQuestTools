@@ -1,7 +1,3 @@
----
-sidebar_position: 3
----
-
 # Vertex Color Remover
 
 Remove vertex colors from meshes which are associated with the attached GameObject and its children's mesh renderers or skinned mesh renderers.
