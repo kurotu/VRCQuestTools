@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 追加
+- ビルドプラットフォームによってコンポーネントを使用するかどうかを制御する `VQT Platform Component Settings` コンポーネントを追加
+
 ## [2.0.1] - 2024-01-05
 
 ### 修正
