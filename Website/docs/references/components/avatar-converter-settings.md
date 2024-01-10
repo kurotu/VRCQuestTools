@@ -108,7 +108,7 @@ Typically, the avatar is converted in the following steps.
 
 Depending on the assets you are using, a special conversion process is executed.
 
-#### Platform Component Settings
+#### Platform Component Remover
 
 Set `Build Target` to `Android`.
 

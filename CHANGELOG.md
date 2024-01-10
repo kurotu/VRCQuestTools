@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Add `VQT Platform Component Settings` component to control whether to use the component depending on the build platform.
+- Add `VQT Platform Component Remover` component to remove components depending on the build platform (NDMF is required).
 - Add warning when MatCap Lit conversion setting has no MatCap texture assigned.
 
 ## [2.0.1] - 2024-01-05

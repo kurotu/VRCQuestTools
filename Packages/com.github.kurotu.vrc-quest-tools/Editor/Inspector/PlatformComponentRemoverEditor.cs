@@ -6,10 +6,10 @@ using UnityEngine;
 namespace KRT.VRCQuestTools.Inspector
 {
     /// <summary>
-    /// Editor for PlatformComponentSettings.
+    /// Editor for PlatformComponentRemover.
     /// </summary>
-    [CustomEditor(typeof(PlatformComponentSettings))]
-    internal class PlatformComponentSettingsEditor : Editor
+    [CustomEditor(typeof(PlatformComponentRemover))]
+    internal class PlatformComponentRemoverEditor : Editor
     {
         private const float PCCheckboxWidth = 20f;
         private const float AndroidCheckboxWidth = 50f;
@@ -25,7 +25,7 @@ namespace KRT.VRCQuestTools.Inspector
 
             EditorGUILayout.Space();
 
-            ((PlatformComponentSettings)target).UpdateComponentSettings();
+            ((PlatformComponentRemover)target).UpdateComponentSettings();
 
             var so = new SerializedObject(target);
             so.Update();
@@ -35,7 +35,7 @@ namespace KRT.VRCQuestTools.Inspector
 
             var componentSettings = so.FindProperty("componentSettings");
             var componentSettingsLabelRect = EditorGUILayout.GetControlRect();
-            using (var property = new EditorGUI.PropertyScope(componentSettingsLabelRect, new GUIContent(i18n.PlatformComponentSettingsEditorComponentSettingsLabel), componentSettings))
+            using (var property = new EditorGUI.PropertyScope(componentSettingsLabelRect, new GUIContent(i18n.PlatformComponentRemoverEditorComponentSettingsLabel), componentSettings))
             {
                 EditorGUI.LabelField(componentSettingsLabelRect, property.content);
             }
@@ -65,10 +65,10 @@ namespace KRT.VRCQuestTools.Inspector
 
                         using (new EditorGUI.IndentLevelScope(-1))
                         {
-                            var enabledOnPC = element.FindPropertyRelative("enabledOnPC");
-                            EditorGUILayout.PropertyField(enabledOnPC, GUIContent.none, GUILayout.Width(PCCheckboxWidth));
-                            var enabledOnAndroid = element.FindPropertyRelative("enabledOnAndroid");
-                            EditorGUILayout.PropertyField(enabledOnAndroid, GUIContent.none, GUILayout.Width(AndroidCheckboxWidth));
+                            var removeOnPC = element.FindPropertyRelative("removeOnPC");
+                            EditorGUILayout.PropertyField(removeOnPC, GUIContent.none, GUILayout.Width(PCCheckboxWidth));
+                            var removeOnAndroid = element.FindPropertyRelative("removeOnAndroid");
+                            EditorGUILayout.PropertyField(removeOnAndroid, GUIContent.none, GUILayout.Width(AndroidCheckboxWidth));
                         }
                     }
                 }

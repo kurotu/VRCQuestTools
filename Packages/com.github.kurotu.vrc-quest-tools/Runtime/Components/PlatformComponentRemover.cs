@@ -5,13 +5,13 @@ using UnityEngine;
 namespace KRT.VRCQuestTools.Components
 {
     /// <summary>
-    /// PlatformComponentSettings is a component that manages components depending on the target platform.
-    /// Disabled components are automatically removed on build.
+    /// PlatformComponentRemover removes components depending on the target platform.
+    /// Selected components are automatically removed on build.
     /// </summary>
-    [AddComponentMenu("VRCQuestTools/VQT Platform Component Settings")]
-    [HelpURL("https://kurotu.github.io/VRCQuestTools/ja/docs/references/components/platform-component-settings")]
+    [AddComponentMenu("VRCQuestTools/VQT Platform Component Remover")]
+    [HelpURL("https://kurotu.github.io/VRCQuestTools/ja/docs/references/components/platform-component-remover")]
     [DisallowMultipleComponent]
-    public class PlatformComponentSettings : VRCQuestToolsEditorOnly, IVRCQuestToolsNdmfComponent
+    public class PlatformComponentRemover : VRCQuestToolsEditorOnly, IVRCQuestToolsNdmfComponent
     {
         /// <summary>
         /// Build target to enable components.
@@ -19,9 +19,9 @@ namespace KRT.VRCQuestTools.Components
         public BuildTarget buildTarget = BuildTarget.Auto;
 
         /// <summary>
-        /// PlatformComponentSettingsItems to manage components.
+        /// PlatformComponentRemoverItems to manage components.
         /// </summary>
-        public PlatformComponentSettingsItem[] componentSettings = new PlatformComponentSettingsItem[0];
+        public PlatformComponentRemoverItem[] componentSettings = new PlatformComponentRemoverItem[0];
 
         /// <summary>
         /// Remove non-existing components then add unregistered components.
@@ -30,12 +30,12 @@ namespace KRT.VRCQuestTools.Components
         {
             var components = gameObject.GetComponents<Component>()
                 .Where(c => !(c is Transform))
-                .Where(c => !(c is PlatformComponentSettings))
+                .Where(c => !(c is PlatformComponentRemover))
                 .ToArray();
 
             var keep = componentSettings.Where(s => components.Contains(s.component));
             var add = components.Where(c => componentSettings.Any(s => s.component == c) == false)
-                .Select(c => new PlatformComponentSettingsItem { component = c, enabledOnPC = true, enabledOnAndroid = true });
+                .Select(c => new PlatformComponentRemoverItem { component = c });
 
             componentSettings = keep.Concat(add).ToArray();
         }

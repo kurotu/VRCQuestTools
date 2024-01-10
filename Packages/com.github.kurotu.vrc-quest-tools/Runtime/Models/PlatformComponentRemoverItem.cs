@@ -4,10 +4,10 @@ using UnityEngine;
 namespace KRT.VRCQuestTools.Models
 {
     /// <summary>
-    /// PlatformComponentSettingsItem is a class that stores the settings of the component to be enabled depending on the platform.
+    /// PlatformComponentRemoverItem is a class that stores whether the component should be removed depending on the platform.
     /// </summary>
     [Serializable]
-    public class PlatformComponentSettingsItem
+    public class PlatformComponentRemoverItem
     {
         /// <summary>
         /// Target component.
@@ -15,13 +15,13 @@ namespace KRT.VRCQuestTools.Models
         public Component component;
 
         /// <summary>
-        /// Whether to enable on PC.
+        /// Whether to remove on PC.
         /// </summary>
-        public bool enabledOnPC = true;
+        public bool removeOnPC;
 
         /// <summary>
-        /// Whether to enable on Android.
+        /// Whether to remove on Android.
         /// </summary>
-        public bool enabledOnAndroid = true;
+        public bool removeOnAndroid;
     }
 }

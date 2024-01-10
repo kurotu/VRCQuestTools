@@ -107,7 +107,7 @@ Animator Override Controller で指定したアニメーションクリップを
 
 導入しているアセットに応じて、特殊な変換処理を実行します。
 
-#### Platform Component Settings
+#### Platform Component Remover
 
 ビルドターゲットを `Android` に設定します。
 
