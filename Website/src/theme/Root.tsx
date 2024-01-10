@@ -14,8 +14,13 @@ export default function Root({children}) {
         if (locale === 'ja' || locale === 'ja-JP') {
             redirectBaseUrl = siteConfig.baseUrl + 'ja/';
         }
-        const redirectPathname = useLocation().pathname.replace(currentBaseUrlWithLocale, redirectBaseUrl);
-        return <Redirect to={redirectPathname} />;
+
+        if (currentBaseUrlWithLocale !== redirectBaseUrl) {
+            const redirectPathname = useLocation().pathname.replace(currentBaseUrlWithLocale, redirectBaseUrl);
+            window.location.href = window.location.origin + redirectPathname;
+        } else {
+            return <Redirect to={location.pathname} />;
+        }
     }
 
     return <>{children}</>;
