@@ -12,7 +12,7 @@ namespace KRT.VRCQuestTools.Components
     /// </summary>
     [AddComponentMenu("VRCQuestTools/VQT Vertex Color Remover")]
     [ExecuteInEditMode]
-    [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/vertex-color-remover")]
+    [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/vertex-color-remover?lang=auto")]
     public class VertexColorRemover : VRCQuestToolsEditorOnly, ISerializationCallbackReceiver
     {
         /// <summary>

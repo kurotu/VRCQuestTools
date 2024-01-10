@@ -7,8 +7,8 @@
     "author": {
         "name": "kurotu"
     },
-    "changelogUrl": "https://kurotu.github.io/VRCQuestTools/docs/changelog",
-    "documentationUrl": "https://kurotu.github.io/VRCQuestTools/",
+    "changelogUrl": "https://kurotu.github.io/VRCQuestTools/docs/changelog?lang=auto",
+    "documentationUrl": "https://kurotu.github.io/VRCQuestTools/?lang=auto",
     "licensesUrl": "https://github.com/kurotu/VRCQuestTools/blob/master/LICENSE.txt",
     "dependencies": {
         "com.unity.nuget.newtonsoft-json": "2.0.2"

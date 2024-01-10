@@ -8,7 +8,7 @@ namespace KRT.VRCQuestTools.Components
     /// </summary>
     [AddComponentMenu("VRCQuestTools/VQT Converted Avatar")]
     [DisallowMultipleComponent]
-    [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/converted-avatar")]
+    [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/converted-avatar?lang=auto")]
     public class ConvertedAvatar : VRCQuestToolsEditorOnly, IVRCQuestToolsNdmfComponent
     {
     }
