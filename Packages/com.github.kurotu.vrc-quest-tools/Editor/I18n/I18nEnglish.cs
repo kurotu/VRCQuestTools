@@ -154,7 +154,9 @@ namespace KRT.VRCQuestTools.I18n
         // Platform Component Remover
         internal override string ComponentRequiresNdmf => "This component requires Non-Destructive Modular Framework (NDMF).";
         internal override string BuildTargetLabel => "Build Target";
-        internal override string PlatformComponentRemoverEditorComponentSettingsLabel => "Component Settings";
+        internal override string BuildTargetTooltip => "Select build target platform. Use Unity's target platform when Auto is selected.";
+        internal override string PlatformComponentRemoverEditorComponentSettingsLabel => "Component Remover Settings";
+        internal override string PlatformComponentRemoverEditorComponentSettingsTooltip => "Select platform to remove components.";
         internal override string ComponentLabel => "Component";
 
         // NDMF

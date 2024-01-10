@@ -31,11 +31,12 @@ namespace KRT.VRCQuestTools.Inspector
             so.Update();
 
             var buildTarget = so.FindProperty("buildTarget");
-            EditorGUILayout.PropertyField(buildTarget, new GUIContent(i18n.BuildTargetLabel));
+            EditorGUILayout.PropertyField(buildTarget, new GUIContent(i18n.BuildTargetLabel, i18n.BuildTargetTooltip));
 
             var componentSettings = so.FindProperty("componentSettings");
             var componentSettingsLabelRect = EditorGUILayout.GetControlRect();
-            using (var property = new EditorGUI.PropertyScope(componentSettingsLabelRect, new GUIContent(i18n.PlatformComponentRemoverEditorComponentSettingsLabel), componentSettings))
+            var componentSettingsLabel = new GUIContent(i18n.PlatformComponentRemoverEditorComponentSettingsLabel, i18n.PlatformComponentRemoverEditorComponentSettingsTooltip);
+            using (var property = new EditorGUI.PropertyScope(componentSettingsLabelRect, componentSettingsLabel, componentSettings))
             {
                 EditorGUI.LabelField(componentSettingsLabelRect, property.content);
             }
