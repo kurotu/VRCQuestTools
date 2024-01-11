@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.1.0] - 2024-01-11
 
 ### 追加
 - ビルドプラットフォームによってコンポーネントを削除する `VQT Platform Component Remover` コンポーネントを追加 (要NDMF)
