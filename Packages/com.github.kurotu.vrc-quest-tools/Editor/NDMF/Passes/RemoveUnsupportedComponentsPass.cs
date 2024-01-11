@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
@@ -33,7 +34,7 @@ namespace KRT.VRCQuestTools.Ndmf
 #else
                 var messages = components.Select(c => new NdmfReportWindow.ReportItem
                 {
-                    type = MessageType.Warning,
+                    type = UnityEditor.MessageType.Warning,
                     message = i18n.NdmfPluginRemovedUnsupportedComponent(c.GetType().Name, c.name),
                     gameObject = c.gameObject,
                 }).ToArray();

@@ -22,7 +22,7 @@ namespace KRT.VRCQuestTools.Ndmf
             InPhase(BuildPhase.Resolving)
                 .Run("Clear report window", ctx =>
                 {
-                    if (EditorWindow.HasOpenInstances<NdmfReportWindow>())
+                    if (UnityEditor.EditorWindow.HasOpenInstances<NdmfReportWindow>())
                     {
                         NdmfReportWindow.Clear();
                     }
