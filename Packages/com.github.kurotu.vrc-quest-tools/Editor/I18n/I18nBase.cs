@@ -157,6 +157,10 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string PlatformComponentRemoverEditorComponentSettingsTooltip { get; }
         internal abstract string ComponentLabel { get; }
 
+        // Platform GameObject Remover
+        internal abstract string PlatformGameObjectRemoverEditorRemoveOnPCLabel { get; }
+        internal abstract string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel { get; }
+
         // NDMF
         internal abstract string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName);
     }
