@@ -11,13 +11,8 @@ namespace KRT.VRCQuestTools.Components
     [AddComponentMenu("VRCQuestTools/VQT Platform Component Remover")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/ja/docs/references/components/platform-component-remover?lang=auto")]
     [DisallowMultipleComponent]
-    public class PlatformComponentRemover : VRCQuestToolsEditorOnly, IVRCQuestToolsNdmfComponent
+    public class PlatformComponentRemover : VRCQuestToolsPlatformComponent, IVRCQuestToolsNdmfComponent
     {
-        /// <summary>
-        /// Build target to enable components.
-        /// </summary>
-        public BuildTarget buildTarget = BuildTarget.Auto;
-
         /// <summary>
         /// PlatformComponentRemoverItems to manage components.
         /// </summary>
