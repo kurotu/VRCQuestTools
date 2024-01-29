@@ -4,6 +4,12 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- NDMF アセンブリのビルドに失敗することがある問題を修正 (by anatawa12)
+- NDMF 1.3.0 でコンパイルエラーになる問題を修正 (by anatawa12)
+
 ## [2.1.1] - 2024-01-11
 
 ### 修正
