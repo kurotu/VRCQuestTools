@@ -56,7 +56,7 @@ jobs:
         ndmfVersion:
           - ''
           - 1.2.5
-          - 1.3.0-rc.2
+          - 1.3.0
         exclude:
           - unityVersion: 2022.3.6f1
             vrcsdkVersion: 3.3.0
