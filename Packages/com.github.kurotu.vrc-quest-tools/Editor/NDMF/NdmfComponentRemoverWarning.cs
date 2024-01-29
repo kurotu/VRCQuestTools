@@ -19,13 +19,13 @@ namespace KRT.VRCQuestTools.Ndmf
 
         public override ErrorSeverity Severity => ErrorSeverity.Information;
 
-        protected override Localizer Localizer => NdmfLocalizer.Instance;
+        public override Localizer Localizer => NdmfLocalizer.Instance;
 
-        protected override string TitleKey => NdmfLocalizer.RemovedUnsupportedComponentTitle;
+        public override string TitleKey => NdmfLocalizer.RemovedUnsupportedComponentTitle;
 
-        protected override string DetailsKey => NdmfLocalizer.RemovedUnsupportedComponentDescription;
+        public override string DetailsKey => NdmfLocalizer.RemovedUnsupportedComponentDescription;
 
-        protected override string[] DetailsSubst => new[] { componentTypeName, objectName };
+        public override string[] DetailsSubst => new[] { componentTypeName, objectName };
     }
 }
 #endif
