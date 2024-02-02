@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- アバターのオブジェクト名の先頭や末尾が半角スペースのとき変換に失敗する問題を修正
+
 ## [2.1.2] - 2024-01-29
 
 ### 修正
