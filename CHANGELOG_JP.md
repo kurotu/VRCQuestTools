@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 追加
+- ビルドプラットフォームによって GameObject を削除する `VQT Platform GameObject Remover` コンポーネントを追加 (要NDMF)
+
 ### 修正
 - アバターのオブジェクト名の先頭や末尾が半角スペースのとき変換に失敗する問題を修正
 
