@@ -500,7 +500,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 vcr.RemoveVertexColor();
             }
 #endif
-            var platformComponents = questAvatarObject.GetComponentsInChildren<PlatformComponentRemover>(true);
+            var platformComponents = questAvatarObject.GetComponentsInChildren<VRCQuestToolsPlatformComponent>(true);
             foreach (var p in platformComponents)
             {
                 p.buildTarget = BuildTarget.Android;

@@ -158,6 +158,10 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PlatformComponentRemoverEditorComponentSettingsTooltip => "コンポーネントを削除するプラットフォームを選択します。";
         internal override string ComponentLabel => "コンポーネント";
 
+        // Platform GameObject Remover
+        internal override string PlatformGameObjectRemoverEditorRemoveOnPCLabel => "PCでは削除";
+        internal override string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel => "Androidでは削除";
+
         // NDMF
         internal override string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => $"ビルド中に非対応コンポーネント {typeName} を \"{objectName}\" から削除しました。動作に問題がないか確認してください。";
     }

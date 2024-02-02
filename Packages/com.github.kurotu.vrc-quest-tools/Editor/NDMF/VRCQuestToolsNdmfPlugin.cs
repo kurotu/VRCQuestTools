@@ -30,7 +30,8 @@ namespace KRT.VRCQuestTools.Ndmf
 #endif
 
             InPhase(BuildPhase.Resolving)
-                .Run(PlatformComponentRemoverPass.Instance);
+                .Run(PlatformGameObjectRemoverPass.Instance)
+                .Then.Run(PlatformComponentRemoverPass.Instance);
 
             InPhase(BuildPhase.Optimizing)
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
