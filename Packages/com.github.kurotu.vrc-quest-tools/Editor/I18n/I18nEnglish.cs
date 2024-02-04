@@ -152,7 +152,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertedAvatarEditorNDMFMessage => "Unsupported components will be removed in NDMF optimization phase.";
 
         // Platform Component Remover
-        internal override string ComponentRequiresNdmf => "This component requires Non-Destructive Modular Framework (NDMF).";
+        internal override string ComponentRequiresNdmf => "Non-Destructive Modular Framework (NDMF) is required.";
         internal override string BuildTargetLabel => "Build Target";
         internal override string BuildTargetTooltip => "Select build target platform. Use Unity's target platform when Auto is selected.";
         internal override string PlatformComponentRemoverEditorComponentSettingsLabel => "Component Remover Settings";
