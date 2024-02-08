@@ -57,6 +57,7 @@ jobs:
           - ''
           - 1.2.5
           - 1.3.0
+          - latest
         exclude:
           - unityVersion: 2022.3.6f1
             vrcsdkVersion: 3.3.0
@@ -79,7 +80,7 @@ jobs:
       - run: vrc-get install -y com.vrchat.avatars ${{ matrix.vrcsdkVersion }}
 
       - run: vrc-get repo add https://vpm.nadena.dev/vpm-prerelease.json
-      - run: if [ -n "${{ matrix.ndmfVersion}}" ]; then vrc-get install -y nadena.dev.ndmf ${{ matrix.ndmfVersion }}; fi
+      - run: if [ -n "${{ matrix.ndmfVersion}}" ]; then scripts/vrc-get-install.sh nadena.dev.ndmf ${{ matrix.ndmfVersion }}; fi
 
       - run: cat Packages/vpm-manifest.json
 
