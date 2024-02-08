@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add `VQT Platform GameObject Remover` component to remove game objects depending on the build platform (NDMF is required).
 - Add warning when using NDMF-required components but NDMF is not installed.
+- Add component icon (Unity 2022).
 
 ### Fixed
 - Fixed an issue where the converter fails when the avatar object name starts or ends with whitespaces.
