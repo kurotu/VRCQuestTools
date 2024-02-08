@@ -31,13 +31,16 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnEnable()
         {
-            titleContent.text = "Unity Settings for Quest";
+            titleContent.text = "Unity Settings for Android";
         }
 
         private void OnGUI()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
             var allActions = new List<Action>();
+
+            EditorGUILayout.LabelField(i18n.RecommendedUnitySettingsForAndroid, EditorStyles.boldLabel);
+            EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("Build Settings", EditorStyles.boldLabel);
 

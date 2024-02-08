@@ -125,6 +125,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string GenerateButtonLabel => "Metallic Smoothness を生成";
 
         // Unity Settings
+        internal override string RecommendedUnitySettingsForAndroid => "Android 用の推奨設定";
         internal override string TextureCompressionLabel => "Android テクスチャ圧縮";
         internal override string TextureCompressionHelp => "ASTCを使用するとAndroid用のテクスチャ圧縮に時間がかかる代わりに画質が向上します。";
         internal override string TextureCompressionButtonLabel => "ASTCでテクスチャを圧縮";

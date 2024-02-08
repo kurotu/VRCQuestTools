@@ -124,6 +124,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string GenerateButtonLabel { get; }
 
         // Unity Settings
+        internal abstract string RecommendedUnitySettingsForAndroid { get; }
         internal abstract string TextureCompressionLabel { get; }
         internal abstract string TextureCompressionHelp { get; }
         internal abstract string TextureCompressionButtonLabel { get; }
