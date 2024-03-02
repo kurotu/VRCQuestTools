@@ -56,6 +56,9 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      metadata: [
+        {name: 'google-site-verification', content: 'iHat4XFlFF2SfNgjFM-hqhqAdP7KxL_s0WEFRySldpo'},
+      ],
       // Replace with your project's social card
       image: 'img/social-card.png',
       navbar: {
