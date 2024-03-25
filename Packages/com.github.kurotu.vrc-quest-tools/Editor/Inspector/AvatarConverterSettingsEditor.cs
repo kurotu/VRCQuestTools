@@ -520,7 +520,8 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var invalidChars = Path.GetInvalidFileNameChars();
             var avatarName = new string(avatar.name.Select(c => invalidChars.Contains(c) ? '_' : c).ToArray());
-            avatarName = avatarName.Trim();
+            var invalidLastChars = new char[] { '.', ' ' };
+            avatarName = avatarName.TrimStart().TrimEnd(invalidLastChars);
 
             var outputPath = $"Assets/VRCQuestToolsOutput/{avatarName}";
             return outputPath;
