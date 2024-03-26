@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 追加
+- `VQT Platform Component Remover` および `VQT Platform GameObject Remover` に説明文を追加
+
 ### 修正
 - アバターのオブジェクト名の末尾にドットが含まれていると変換に失敗する問題を修正
 

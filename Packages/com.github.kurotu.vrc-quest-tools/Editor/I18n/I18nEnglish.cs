@@ -156,11 +156,13 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ComponentRequiresNdmf => "Non-Destructive Modular Framework (NDMF) is required.";
         internal override string BuildTargetLabel => "Build Target";
         internal override string BuildTargetTooltip => "Select build target platform. Use Unity's target platform when Auto is selected.";
+        internal override string PlatformComponentRemoverEditorDescription => "Selected components will be removed on build when their selected platform matches the target platform.";
         internal override string PlatformComponentRemoverEditorComponentSettingsLabel => "Component Remover Settings";
         internal override string PlatformComponentRemoverEditorComponentSettingsTooltip => "Select platform to remove components.";
         internal override string ComponentLabel => "Component";
 
         // Platform GameObject Remover
+        internal override string PlatformGameObjectRemoverEditorDescription => "This GameObject will be removed on build when a selected platform matches the target platform.";
         internal override string PlatformGameObjectRemoverEditorRemoveOnPCLabel => "Remove on PC";
         internal override string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel => "Remove on Android";
 

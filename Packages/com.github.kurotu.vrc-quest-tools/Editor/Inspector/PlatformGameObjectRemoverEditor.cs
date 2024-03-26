@@ -16,9 +16,13 @@ namespace KRT.VRCQuestTools.Inspector
         {
             Views.EditorGUIUtility.LanguageSelector();
             var i18n = VRCQuestToolsSettings.I18nResource;
-            #if !VQT_HAS_NDMF
+
+            EditorGUILayout.Space();
+
+#if !VQT_HAS_NDMF
             EditorGUILayout.HelpBox(i18n.ComponentRequiresNdmf, MessageType.Warning);
-            #endif
+#endif
+            EditorGUILayout.HelpBox(i18n.PlatformGameObjectRemoverEditorDescription, MessageType.Info);
 
             EditorGUILayout.Space();
 

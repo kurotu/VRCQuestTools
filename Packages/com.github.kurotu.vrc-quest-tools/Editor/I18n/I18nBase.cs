@@ -154,11 +154,13 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string ComponentRequiresNdmf { get; }
         internal abstract string BuildTargetLabel { get; }
         internal abstract string BuildTargetTooltip { get; }
+        internal abstract string PlatformComponentRemoverEditorDescription { get; }
         internal abstract string PlatformComponentRemoverEditorComponentSettingsLabel { get; }
         internal abstract string PlatformComponentRemoverEditorComponentSettingsTooltip { get; }
         internal abstract string ComponentLabel { get; }
 
         // Platform GameObject Remover
+        internal abstract string PlatformGameObjectRemoverEditorDescription { get; }
         internal abstract string PlatformGameObjectRemoverEditorRemoveOnPCLabel { get; }
         internal abstract string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel { get; }
 
