@@ -144,6 +144,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MissingScripts => "\"Missing\"\u00A0状態のコンポーネントがあります。インポートし忘れたアセットやパッケージがないか確認してください。";
 
         // Vertex Color
+        internal override string VertexColorRemoverEditorDescription => "このGameObjectに紐づくメッシュから頂点カラーを自動的に削除します。";
         internal override string VertexColorRemoverEditorRemove => "頂点カラーを削除";
         internal override string VertexColorRemoverEditorRestore => "頂点カラーを復元";
 

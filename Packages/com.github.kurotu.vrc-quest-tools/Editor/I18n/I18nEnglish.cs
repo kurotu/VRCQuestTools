@@ -145,6 +145,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MissingScripts => "There are \"missing\" scripts. Please check for assets or packages you forgot to import.";
 
         // Vertex Color
+        internal override string VertexColorRemoverEditorDescription => "Vertex color is automatically removed from this GameObject's mesh.";
         internal override string VertexColorRemoverEditorRemove => "Remove Vertex Color";
         internal override string VertexColorRemoverEditorRestore => "Restore Vertex Color";
 

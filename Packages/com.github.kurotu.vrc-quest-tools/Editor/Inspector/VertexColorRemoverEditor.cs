@@ -21,6 +21,12 @@ namespace KRT.VRCQuestTools.Inspector
             VertexColorRemover remover = target as VertexColorRemover;
             var i18n = VRCQuestToolsSettings.I18nResource;
 
+            EditorGUILayout.Space();
+
+            EditorGUILayout.HelpBox(i18n.VertexColorRemoverEditorDescription, MessageType.Info);
+
+            EditorGUILayout.Space();
+
             using (new EditorGUI.DisabledGroupScope(remover.enabled))
             {
                 if (GUILayout.Button(i18n.VertexColorRemoverEditorRemove))

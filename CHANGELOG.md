@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Added description for `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
+- Added description for `VQT Platform Component Remover`, `VQT Platform GameObject Remover` and `VQT Vertex Color Remover` components.
 
 ### Fixed
 - Fixed an issue where the converter fails when the avatar object name ends with dots.

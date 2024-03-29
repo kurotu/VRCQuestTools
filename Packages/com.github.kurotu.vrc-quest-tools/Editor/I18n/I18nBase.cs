@@ -143,6 +143,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string MissingScripts { get; }
 
         // Vertex Color
+        internal abstract string VertexColorRemoverEditorDescription { get; }
         internal abstract string VertexColorRemoverEditorRemove { get; }
         internal abstract string VertexColorRemoverEditorRestore { get; }
 
