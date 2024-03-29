@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.2.1] - 2024-03-29
 
 ### 追加
 - `VQT Platform Component Remover`, `VQT Platform GameObject Remover` `VQT Vertex Color Remover` に説明文を追加
