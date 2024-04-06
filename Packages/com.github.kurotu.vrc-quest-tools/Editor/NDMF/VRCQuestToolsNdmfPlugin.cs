@@ -16,6 +16,9 @@ namespace KRT.VRCQuestTools.Ndmf
         public override string DisplayName => "VRCQuestTools";
 
         /// <inheritdoc/>
+        public override string QualifiedName => "com.github.kurotu.vrc-quest-tools";
+
+        /// <inheritdoc/>
         protected override void Configure()
         {
             InPhase(BuildPhase.Resolving)
