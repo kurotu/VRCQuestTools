@@ -168,6 +168,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel => "Remove on Android";
 
         // NDMF
+        internal override string NdmfPluginRequiresNdmfUpdate(string version) => $"Non-Destructive Modular Framework (NDMF) {version} or later is required. Please update NDMF.";
         internal override string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => $"Removed unsupported component \"{typeName}\" from \"{objectName}\". Please test the avatar.";
     }
 }

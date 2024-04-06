@@ -18,19 +18,9 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Configure()
         {
-#if !VQT_HAS_NDMF_ERROR_REPORT
             InPhase(BuildPhase.Resolving)
-                .Run("Clear report window", ctx =>
-                {
-                    if (UnityEditor.EditorWindow.HasOpenInstances<NdmfReportWindow>())
-                    {
-                        NdmfReportWindow.Clear();
-                    }
-                });
-#endif
-
-            InPhase(BuildPhase.Resolving)
-                .Run(PlatformGameObjectRemoverPass.Instance)
+                .Run(CheckDependenciesPass.Instance)
+                .Then.Run(PlatformGameObjectRemoverPass.Instance)
                 .Then.Run(PlatformComponentRemoverPass.Instance);
 
             InPhase(BuildPhase.Optimizing)

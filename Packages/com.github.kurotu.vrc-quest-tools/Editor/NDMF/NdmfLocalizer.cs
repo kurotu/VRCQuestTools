@@ -1,21 +1,29 @@
-﻿#if VQT_HAS_NDMF_ERROR_REPORT
-using KRT.VRCQuestTools.I18n;
+#if VQT_HAS_NDMF_ERROR_REPORT
 using nadena.dev.ndmf.localization;
+#else
+using KRT.VRCQuestTools.Ndmf.Dummy;
+#endif
 using System.Collections.Generic;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
+    /// <summary>
+    /// Localizer for NDMF.
+    /// </summary>
     internal static class NdmfLocalizer
     {
-        internal static I18nBase en = new I18nEnglish();
-        internal static I18nBase ja = new I18nJapanese();
-
+#pragma warning disable SA1600
         internal const string RemovedUnsupportedComponentTitle = "Warning:Removed Unsupported Component";
         internal const string RemovedUnsupportedComponentDescription = "Removed {0} from \"{1}\".";
+#pragma warning restore SA1600
 
+        /// <summary>
+        /// Instance of Localizer.
+        /// </summary>
         internal static Localizer Instance = new Localizer("en-US", () => new List<(string, System.Func<string, string>)>
         {
-            ("en-US", (key) => {
+            ("en-US", (key) =>
+            {
                 switch (key)
                 {
                     case RemovedUnsupportedComponentTitle:
@@ -25,7 +33,8 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 return key;
             }),
-            ("ja-JP", (key) => {
+            ("ja-JP", (key) =>
+            {
                 switch (key)
                 {
                     case RemovedUnsupportedComponentTitle:
@@ -38,4 +47,3 @@ namespace KRT.VRCQuestTools.Ndmf
         });
     }
 }
-#endif

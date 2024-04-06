@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 変更
+- NDMF 関連機能を使用する場合は NDMF 1.3.0 以降が必要
+
 ## [2.2.2] - 2024-04-15
 
 ### 修正

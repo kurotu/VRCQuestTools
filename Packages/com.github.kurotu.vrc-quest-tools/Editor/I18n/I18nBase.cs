@@ -166,6 +166,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel { get; }
 
         // NDMF
+        internal abstract string NdmfPluginRequiresNdmfUpdate(string requiredVersion);
         internal abstract string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName);
     }
 }
