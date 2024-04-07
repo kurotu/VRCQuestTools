@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `VQT Platform Target Settings` component to specify the target platform for `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
+
 ### Changed
 - Require NDMF 1.3.0 or later when using NDMF related features.
+
+### Removed
+- Build Target parameter from `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
 
 ## [2.2.2] - 2024-04-15
 

@@ -1,17 +1,13 @@
 # Platform GameObject Remover
 
 Set whether to remove the game object depending on the build platform.
+To override the platform to a specific one, use the [VQT Platform Target Settings](./platform-target-settings) component.
 
 :::info
 This component requires Non-Destructive Modular Framework (NDMF).
 :::
 
 ## Properties
-
-### Build Target
-
-Select the build platform to apply.
-Use `Auto` to automatically determine based on Unity's target platform settings.
 
 ### Remove on PC
 

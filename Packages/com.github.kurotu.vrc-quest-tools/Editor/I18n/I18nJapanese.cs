@@ -152,6 +152,11 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertedAvatarEditorMessage => "このコンポーネントはアバターが VRCQuestTools で変換されたことを示します。";
         internal override string ConvertedAvatarEditorNDMFMessage => "非対応コンポーネントは NDMF の Optimization Phase で削除されます。";
 
+        // Platform Target Settings
+        internal override string PlatformTargetSettingsEditorDescription => "NDMFでのビルド時に Platform Component Remover および Platform GameObject Remover の設定を特定のプラットフォームに強制します。";
+        internal override string PlatformTargetSettingsShouldBeAttachedToAvatarRoot => "Platform Target Settings はアバターのルートオブジェクトに設定してください。";
+        internal override string PlatformTargetSettingsIsRequiredToEnforcePlatform => "特定のプラットフォーム設定を強制するにはアバターのルートオブジェクトに Platform Target Settings コンポーネントが必要です。";
+
         // Platform Component Remover
         internal override string ComponentRequiresNdmf => "Non-Destructive Modular Framework (NDMF) が必要です。";
         internal override string BuildTargetLabel => "ビルドターゲット";

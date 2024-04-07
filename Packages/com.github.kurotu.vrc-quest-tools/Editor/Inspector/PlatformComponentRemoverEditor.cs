@@ -27,15 +27,14 @@ namespace KRT.VRCQuestTools.Inspector
 #endif
             EditorGUILayout.HelpBox(i18n.PlatformComponentRemoverEditorDescription, MessageType.Info);
 
+            EditorGUILayout.HelpBox(i18n.PlatformTargetSettingsIsRequiredToEnforcePlatform, MessageType.Info);
+
             EditorGUILayout.Space();
 
             ((PlatformComponentRemover)target).UpdateComponentSettings();
 
             var so = new SerializedObject(target);
             so.Update();
-
-            var buildTarget = so.FindProperty("buildTarget");
-            EditorGUILayout.PropertyField(buildTarget, new GUIContent(i18n.BuildTargetLabel, i18n.BuildTargetTooltip));
 
             var componentSettings = so.FindProperty("componentSettings");
             var componentSettingsLabelRect = EditorGUILayout.GetControlRect();

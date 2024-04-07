@@ -153,6 +153,11 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertedAvatarEditorMessage => "This component indicates the avatar was converted by VRCQuestTools.";
         internal override string ConvertedAvatarEditorNDMFMessage => "Unsupported components will be removed in NDMF optimization phase.";
 
+        // Platform Target Settings
+        internal override string PlatformTargetSettingsEditorDescription => "Platform Component Remover and Platform GameObjectRemover components are enforced to use a specific platform settings in NDMF build process.";
+        internal override string PlatformTargetSettingsShouldBeAttachedToAvatarRoot => "PlatformTargetSettings component should be attached to the avatar root object.";
+        internal override string PlatformTargetSettingsIsRequiredToEnforcePlatform => "PlatformTargetSettings component is required to the avatar root object in order to enforce a specific platform settings.";
+
         // Platform Component Remover
         internal override string ComponentRequiresNdmf => "Non-Destructive Modular Framework (NDMF) is required.";
         internal override string BuildTargetLabel => "Build Target";

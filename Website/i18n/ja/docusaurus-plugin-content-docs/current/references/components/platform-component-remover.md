@@ -1,17 +1,13 @@
 # Platform Component Remover
 
 ビルドプラットフォームに応じて、コンポーネントを削除するかどうかを設定します。
+特定のプラットフォーム設定を強制するには、[VQT Platform Target Settings](./platform-target-settings)コンポーネントを使用してください。
 
 :::info
 このコンポーネントには Non-Destructive Modular Framework (NDMF) が必要です。
 :::
 
 ## プロパティ
-
-### ビルドターゲット
-
-適用するビルドプラットフォームを選択します。
-`Auto` の場合、Unityのターゲットプラットフォーム設定に応じて自動的に決定されます。
 
 ### コンポーネント設定
 
