@@ -15,6 +15,7 @@ namespace KRT.VRCQuestTools.I18n
     internal class I18nEnglish : I18nBase
     {
         internal override string CancelLabel => "Cancel";
+        internal override string OpenLabel => "Open";
         internal override string CloseLabel => "Close";
         internal override string DismissLabel => "Dismiss";
         internal override string YesLabel => "Yes";
@@ -171,6 +172,20 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PlatformGameObjectRemoverEditorDescription => "This GameObject will be removed on build when a selected platform matches the target platform.";
         internal override string PlatformGameObjectRemoverEditorRemoveOnPCLabel => "Remove on PC";
         internal override string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel => "Remove on Android";
+
+        // Avatar Builder
+        internal override string AvatarBuilderWindowDescription => "Build this avatar with Android build settings. This build skips validation of VRChat SDK Control Panel.";
+        internal override string AvatarBuilderWindowSucceededBuild => "Succeeded to build the avatar.";
+        internal override string AvatarBuilderWindowSucceededUpload => "Succeeded to upload the avatar.";
+        internal override string AvatarBuilderWindowFailedBuild => "Failed to build the avatar. See console logs.";
+        internal override string AvatarBuilderWindowRequiresControlPanel => "Need to open VRChat SDK Control Panel to build the avatar.";
+        internal override string AvatarBuilderWindowOfflineTestingLabel => "Offline Testing";
+        internal override string AvatarBuilderWindowOfflineTestingDescription(string name) => $"Build this avatar to test it on PC. The avatar appears as \"SDK {name}\" in the Other category of the avatars menu.";
+        internal override string AvatarBuilderWindowOnlinePublishingLabel => "Online Publishing";
+        internal override string AvatarBuilderWindowOnlinePublishingDescription => "Build this avatar then upload it to VRChat.";
+        internal override string AvatarBuilderWindowNdmfManualBakingLabel => "NDMF Manual Baking";
+        internal override string AvatarBuilderWindowNdmfManualBakingDescription => "Execute the menu, Tools -> NDM Framework -> Manual bake avatar.";
+        internal override string AvatarBuilderWindowRequiresAvatarNameAndThumb => "Need to set name and thumbnail in VRChat SDK Control Panel when uploading a new avatar.";
 
         // NDMF
         internal override string NdmfPluginRequiresNdmfUpdate(string version) => $"Non-Destructive Modular Framework (NDMF) {version} or later is required. Please update NDMF.";

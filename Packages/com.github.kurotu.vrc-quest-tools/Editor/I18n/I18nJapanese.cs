@@ -15,6 +15,7 @@ namespace KRT.VRCQuestTools.I18n
     internal class I18nJapanese : I18nBase
     {
         internal override string CancelLabel => "キャンセル";
+        internal override string OpenLabel => "開く";
         internal override string CloseLabel => "閉じる";
         internal override string DismissLabel => "閉じる";
         internal override string YesLabel => "はい";
@@ -170,6 +171,20 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PlatformGameObjectRemoverEditorDescription => "チェックを入れたプラットフォームとビルドターゲットが一致する場合、このGameObjectをビルド時に削除します。";
         internal override string PlatformGameObjectRemoverEditorRemoveOnPCLabel => "PCでは削除";
         internal override string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel => "Androidでは削除";
+
+        // Avatar Builder
+        internal override string AvatarBuilderWindowDescription => "Android 用のビルド設定でアバターをビルドします。このビルドでは VRChat SDK のコントロールパネルのバリデーションをスキップします。";
+        internal override string AvatarBuilderWindowSucceededBuild => "ビルドに成功しました。";
+        internal override string AvatarBuilderWindowSucceededUpload => "アップロードに成功しました。";
+        internal override string AvatarBuilderWindowFailedBuild => "ビルドに失敗しました。コンソールログを確認してください。";
+        internal override string AvatarBuilderWindowRequiresControlPanel => "アバターをビルドするには VRChat SDK のコントロールパネルを開く必要があります。";
+        internal override string AvatarBuilderWindowOfflineTestingLabel => "オフラインテスト";
+        internal override string AvatarBuilderWindowOfflineTestingDescription(string name) => $"アバターをビルドして PC でテストします。アバターはアバターメニューの Other カテゴリに \"SDK: {name}\" として表示されます。";
+        internal override string AvatarBuilderWindowOnlinePublishingLabel => "アップロード";
+        internal override string AvatarBuilderWindowOnlinePublishingDescription => "アバターをビルドして VRChat にアップロードします。";
+        internal override string AvatarBuilderWindowNdmfManualBakingLabel => "NDMF マニュアルベイク";
+        internal override string AvatarBuilderWindowNdmfManualBakingDescription => "Tools -> NDM Framework -> Manual bake avatar を実行します。";
+        internal override string AvatarBuilderWindowRequiresAvatarNameAndThumb => "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK のコントロールパネルで設定してください。";
 
         // NDMF
         internal override string NdmfPluginRequiresNdmfUpdate(string version) => $"Non-Destructive Modular Framework (NDMF) 1.3.0 以降が必要です。NDMF を更新してください。";

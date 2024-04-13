@@ -548,6 +548,28 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Gets the label of the content tag.
+        /// </summary>
+        /// <param name="tag">Content tag.</param>
+        /// <returns>Label string.</returns>
+        internal static string GetContentTagLabel(string tag)
+        {
+            switch (tag)
+            {
+                case "content_sex":
+                    return "Nudity/Sexuality";
+                case "content_violence":
+                    return "Realistic Violence";
+                case "content_gore":
+                    return "Blood/Gore";
+                case "content_other":
+                    return "Other NSFW";
+                default:
+                    return tag;
+            }
+        }
+
+        /// <summary>
         /// Reflection to use VRCSDK features.
         /// </summary>
         internal class Reflection
