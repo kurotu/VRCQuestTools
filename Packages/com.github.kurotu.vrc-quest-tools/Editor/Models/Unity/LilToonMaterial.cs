@@ -71,6 +71,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             var mainTexHSVG = MaterialEditor.GetMaterialProperty(mats, "_MainTexHSVG");
             var mainGradationStrength = MaterialEditor.GetMaterialProperty(mats, "_MainGradationStrength");
             var mainGradationTex = MaterialEditor.GetMaterialProperty(mats, "_MainGradationTex");
+            var mainColorAdjustMask = MaterialEditor.GetMaterialProperty(mats, "_MainColorAdjustMask");
 
             var useMain2ndTex = MaterialEditor.GetMaterialProperty(mats, "_UseMain2ndTex");
             var mainColor2nd = MaterialEditor.GetMaterialProperty(mats, "_Color2nd");
@@ -151,6 +152,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
                 hsvgMaterial.SetColor(mainColor.name, mainColor.colorValue);
                 hsvgMaterial.SetVector(mainTexHSVG.name, mainTexHSVG.vectorValue);
+                hsvgMaterial.SetTexture(mainColorAdjustMask.name, mainColorAdjustMask.textureValue);
                 hsvgMaterial.SetFloat(mainGradationStrength.name, 0.0f);
 
                 if (CheckFeature(shaderSetting.LIL_FEATURE_MAIN_GRADATION_MAP))
