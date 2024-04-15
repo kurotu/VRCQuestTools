@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Build Target parameter from `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
 
+### Fixed
+- Small textures were generated as 2x2 instead of 4x4.
+
 ## [2.2.2] - 2024-04-15
 
 ### Fixed

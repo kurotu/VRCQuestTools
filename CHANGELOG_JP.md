@@ -16,6 +16,9 @@
 ### 削除
 - `VQT Platform Component Remover` と `VQT Platform GameObject Remover` コンポーネントからビルドターゲットパラメータを削除
 
+### 修正
+- 小さいテクスチャが 4x4 ではなく 2x2 で作成されていた問題を修正
+
 ## [2.2.2] - 2024-04-15
 
 ### 修正
