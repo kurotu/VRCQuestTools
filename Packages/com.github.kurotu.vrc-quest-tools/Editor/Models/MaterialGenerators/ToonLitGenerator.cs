@@ -24,26 +24,25 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        public Material GenerateMaterial(MaterialBase material, string texturesPath)
+        public Material GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath)
         {
             var newMaterial = material.ConvertToToonLit();
             if (settings.GenerateQuestTextures)
             {
-                var texture = GenerateToonLitTexture(material, settings, texturesPath);
+                var texture = GenerateToonLitTexture(material, settings, saveTextureAsPng, texturesPath);
                 newMaterial.mainTexture = texture;
             }
             return newMaterial;
         }
 
         /// <inheritdoc/>
-        public void GenerateTextures(MaterialBase material, string texturesPath)
+        public void GenerateTextures(MaterialBase material, bool saveTextureAsPng, string texturesPath)
         {
-            GenerateToonLitTexture(material, settings, texturesPath);
+            GenerateToonLitTexture(material, settings, saveTextureAsPng, texturesPath);
         }
 
-        private Texture2D GenerateToonLitTexture(MaterialBase material, IToonLitConvertSettings settings, string texturesPath)
+        private Texture2D GenerateToonLitTexture(MaterialBase material, IToonLitConvertSettings settings, bool saveAsPng, string texturesPath)
         {
-            Directory.CreateDirectory(texturesPath);
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material.Material, out string guid, out long localId);
             using (var tex = DisposableObject.New(material.GenerateToonLitImage(settings)))
             {
@@ -61,15 +60,25 @@ namespace KRT.VRCQuestTools.Models
                             texToWrite = resized;
                         }
 
-                        var outFile = $"{texturesPath}/{material.Material.name}_from_{guid}.png";
-
-                        // When the texture is added into another asset, "/" is acceptable as name.
-                        if (material.Material.name.Contains("/"))
+                        if (saveAsPng)
                         {
-                            var dir = Path.GetDirectoryName(outFile);
-                            Directory.CreateDirectory(dir);
+                            Directory.CreateDirectory(texturesPath);
+                            var outFile = $"{texturesPath}/{material.Material.name}_from_{guid}.png";
+
+                            // When the texture is added into another asset, "/" is acceptable as name.
+                            if (material.Material.name.Contains("/"))
+                            {
+                                var dir = Path.GetDirectoryName(outFile);
+                                Directory.CreateDirectory(dir);
+                            }
+                            texture = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
                         }
-                        texture = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
+                        else
+                        {
+                            var format = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android ? TextureFormat.ASTC_6x6 : TextureFormat.DXT5;
+                            EditorUtility.CompressTexture(texToWrite, format, TextureCompressionQuality.Best);
+                            texture = UnityEngine.Object.Instantiate(texToWrite);
+                        }
                     }
                 }
                 return texture;

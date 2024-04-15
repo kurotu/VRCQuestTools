@@ -8,6 +8,7 @@
 
 ### 追加
 - `Show Avatar Builder for Android` メニューを追加して NDMF で Android ビルドターゲット用にアバターをアップロードする機能を追加
+- NDMF と `VQT Avatar Converter Settings` コンポーネントによる非破壊的なアバター変換機能を追加
 - `VQT Platform Target Settings` コンポーネントを追加して `VQT Platform Component Remover` および `VQT Platform GameObject Remover` コンポーネントの対象プラットフォームを指定する機能を追加
 
 ### 変更

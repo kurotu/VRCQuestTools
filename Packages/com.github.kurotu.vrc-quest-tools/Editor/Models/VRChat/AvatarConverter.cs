@@ -57,46 +57,56 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// V2 of ConvertForQuest.
         /// </summary>
         /// <param name="avatarConverterSettings">Avatar converter settings component.</param>
-        /// <param name="assetsDirectory">Root directory to save assets.</param>
         /// <param name="remover">ComponentRemover object.</param>
+        /// <param name="saveAssetsAsFile">Whether to save assets as file.</param>
+        /// <param name="assetsDirectory">Root directory to save assets.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted avatar.</returns>
-        internal VRChatAvatar ConvertForQuest(AvatarConverterSettings avatarConverterSettings, string assetsDirectory, ComponentRemover remover, ProgressCallback progressCallback)
+        internal VRChatAvatar ConvertForQuest(AvatarConverterSettings avatarConverterSettings, ComponentRemover remover, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
         {
-            var converted = ConvertForQuestImpl(new VRChatAvatar(avatarConverterSettings.AvatarDescriptor), assetsDirectory, remover, avatarConverterSettings, progressCallback);
-            var convertedConverter = converted.GameObject.GetComponent<Components.AvatarConverterSettings>();
-            VRCSDKUtility.DeleteAvatarDynamicsComponents(converted, convertedConverter.physBonesToKeep, convertedConverter.physBoneCollidersToKeep, convertedConverter.contactsToKeep);
+            // Duplicate the original gameobject by keeping instantiated prefabs.
+            // https://forum.unity.com/threads/solved-duplicate-prefab-issue.778553/#post-7562128
+            Selection.activeGameObject = avatarConverterSettings.AvatarDescriptor.gameObject;
+            Unsupported.DuplicateGameObjectsUsingPasteboard();
+            var questAvatarObject = Selection.activeGameObject;
+            questAvatarObject.name = avatarConverterSettings.gameObject.name + " (Android)";
 
-            var convertedConverterObj = convertedConverter.gameObject;
-            UnityEngine.Object.DestroyImmediate(convertedConverter);
-            PrefabUtility.RecordPrefabInstancePropertyModifications(convertedConverterObj);
-            return converted;
+            var convertedAvatarConverterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();
+            PrepareConvertForQuestInPlace(convertedAvatarConverterSettings);
+            ConvertForQuestInPlace(convertedAvatarConverterSettings, remover, saveAssetsAsFile, assetsDirectory, progressCallback);
+
+            return new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
         }
 
         /// <summary>
-        /// Covert the avatar for Quest.
+        /// Prepare to convert the avatar for Quest in place.
         /// </summary>
-        /// <param name="avatar">Avatar to convert.</param>
-        /// <param name="assetsDirectory">Root directory to save.</param>
-        /// <param name="remover">ComponentRemover object.</param>
-        /// <param name="setting">Converter setting object.</param>
-        /// <param name="progressCallback">Callback to show progress.</param>
-        /// <returns>Converted avatar.</returns>
-        internal virtual VRChatAvatar ConvertForQuestImpl(VRChatAvatar avatar, string assetsDirectory, ComponentRemover remover, AvatarConverterSettings setting, ProgressCallback progressCallback)
+        /// <param name="setting">Avatar converter settings component.</param>
+        internal void PrepareConvertForQuestInPlace(AvatarConverterSettings setting)
         {
-            // Convert materials and generate textures.
-            var convertedMaterials = ConvertMaterialsForAndroid(avatar.Materials, setting, assetsDirectory, progressCallback.onTextureProgress);
+            ApplyVirtualLens2Support(setting.gameObject);
+        }
 
-            // Duplicate the original gameobject by keeping instantiated prefabs.
-            // https://forum.unity.com/threads/solved-duplicate-prefab-issue.778553/#post-7562128
-            Selection.activeGameObject = avatar.AvatarDescriptor.gameObject;
-            Unsupported.DuplicateGameObjectsUsingPasteboard();
-            var questAvatarObject = Selection.activeGameObject;
+        /// <summary>
+        /// Convert the avatar for Quest in place.
+        /// </summary>
+        /// <param name="setting">Converter setting object.</param>
+        /// <param name="remover">ComponentRemover object.</param>
+        /// <param name="saveAssetsAsFile">Whether to save assets as file.</param>
+        /// <param name="assetsDirectory">Root directory to save.</param>
+        /// <param name="progressCallback">Callback to show progress.</param>
+        internal void ConvertForQuestInPlace(AvatarConverterSettings setting, ComponentRemover remover, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
+        {
+            var questAvatarObject = setting.AvatarDescriptor.gameObject;
+            var avatar = new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
+
+            // Convert materials and generate textures.
+            var convertedMaterials = ConvertMaterialsForAndroid(avatar.Materials, setting, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
 
             // Convert animator controllers and their animation clips.
             if (avatar.HasAnimatedMaterials || setting.animatorOverrideControllers.Count(oc => oc != null) > 0)
             {
-                var convertedAnimationClips = ConvertAnimationClipsForQuest(avatar.GetRuntimeAnimatorControllers(), assetsDirectory, convertedMaterials, progressCallback.onAnimationClipProgress);
+                var convertedAnimationClips = ConvertAnimationClipsForQuest(avatar.GetRuntimeAnimatorControllers(), saveAssetsAsFile, assetsDirectory, convertedMaterials, progressCallback.onAnimationClipProgress);
 
                 // Inject animation override.
                 foreach (var oc in setting.animatorOverrideControllers)
@@ -117,11 +127,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                 }
 
-                var convertedBlendTrees = ConvertBlendTreesForQuest(avatar.GetRuntimeAnimatorControllers().Select(c => (AnimatorController)c).ToArray(), assetsDirectory, convertedAnimationClips);
+                var convertedBlendTrees = ConvertBlendTreesForQuest(avatar.GetRuntimeAnimatorControllers().Select(c => (AnimatorController)c).ToArray(), saveAssetsAsFile, assetsDirectory, convertedAnimationClips);
                 var convertedAnimMotions = convertedAnimationClips.ToDictionary(c => (Motion)c.Key, c => (Motion)c.Value);
                 var convertedTreeMotions = convertedBlendTrees.ToDictionary(c => (Motion)c.Key, c => (Motion)c.Value);
                 var convertedMotions = convertedAnimMotions.Concat(convertedTreeMotions).ToDictionary(c => c.Key, c => c.Value);
-                var convertedAnimatorControllers = ConvertAnimatorControllersForQuest(avatar.GetRuntimeAnimatorControllers(), assetsDirectory, convertedMotions, progressCallback.onRuntimeAnimatorProgress);
+                var convertedAnimatorControllers = ConvertAnimatorControllersForQuest(avatar.GetRuntimeAnimatorControllers(), saveAssetsAsFile, assetsDirectory, convertedMotions, progressCallback.onRuntimeAnimatorProgress);
 
                 // Apply converted animator controllers.
 #if VQT_HAS_VRCSDK_BASE
@@ -185,21 +195,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
             ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
 
             ApplyVRCQuestToolsComponents(setting, questAvatarObject);
-            questAvatarObject.name = avatar.AvatarDescriptor.gameObject.name + " (Android)";
             questAvatarObject.SetActive(true);
-            ApplyVirtualLens2Support(questAvatarObject);
-            var prefabName = $"{assetsDirectory}/{questAvatarObject.name}.prefab";
-            return new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
+
+            var converterSetttigs = questAvatarObject.GetComponent<Components.AvatarConverterSettings>();
+            VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSetttigs.physBonesToKeep, converterSetttigs.physBoneCollidersToKeep, converterSetttigs.contactsToKeep);
+
+            UnityEngine.Object.DestroyImmediate(converterSetttigs);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(questAvatarObject);
         }
 
         /// <summary>
         /// Generates textures for Toon Lit.
         /// </summary>
         /// <param name="materials">Materials to generate textures.</param>
+        /// <param name="saveAsPng">Whether to save textures as png.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="settings">Avatar converter settings component.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
-        internal void GenerateAndroidTextures(Material[] materials, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
+        internal void GenerateAndroidTextures(Material[] materials, bool saveAsPng, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Textures";
             Directory.CreateDirectory(saveDirectory);
@@ -220,14 +233,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             if (toonLitConvertSettings.generateQuestTextures)
                             {
                                 var m2 = MaterialWrapperBuilder.Build(m);
-                                new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, saveDirectory);
+                                new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory);
                             }
                             break;
                         case MatCapLitConvertSettings matCapLitConvertSettings:
                             if (matCapLitConvertSettings.generateQuestTextures)
                             {
                                 var m2 = MaterialWrapperBuilder.Build(m);
-                                new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, saveDirectory);
+                                new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory);
                             }
                             break;
                         case MaterialReplaceSettings materialReplaceSettings:
@@ -250,15 +263,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// </summary>
         /// <param name="materials">Materials to convert.</param>
         /// <param name="avatarConverterSettings">Avatar converter settings component.</param>
+        /// <param name="saveAsFile">Whether to save materials as file.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted materials (key: original material).</returns>
-        internal Dictionary<Material, Material> ConvertMaterialsForAndroid(Material[] materials, AvatarConverterSettings avatarConverterSettings, string assetsDirectory, TextureProgressCallback progressCallback)
+        internal Dictionary<Material, Material> ConvertMaterialsForAndroid(Material[] materials, AvatarConverterSettings avatarConverterSettings, bool saveAsFile, string assetsDirectory, TextureProgressCallback progressCallback)
         {
-            var saveDirectory = $"{assetsDirectory}/Materials";
-            Directory.CreateDirectory(saveDirectory);
-            AssetDatabase.Refresh();
-
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedMaterials = new Dictionary<Material, Material>();
             for (int i = 0; i < materialsToConvert.Length; i++)
@@ -275,10 +285,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     switch (setting)
                     {
                         case ToonLitConvertSettings toonLitConvertSettings:
-                            output = new ToonLitGenerator(toonLitConvertSettings).GenerateMaterial(material, texturesPath);
+                            output = new ToonLitGenerator(toonLitConvertSettings).GenerateMaterial(material, saveAsFile, texturesPath);
                             break;
                         case MatCapLitConvertSettings matCapLitConvertSettings:
-                            output = new MatCapLitGenerator(matCapLitConvertSettings).GenerateMaterial(material, texturesPath);
+                            output = new MatCapLitGenerator(matCapLitConvertSettings).GenerateMaterial(material, saveAsFile, texturesPath);
                             break;
                         case MaterialReplaceSettings materialReplaceSettings:
                             output = materialReplaceSettings.material;
@@ -286,17 +296,23 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         default:
                             throw new InvalidProgramException($"Unhandled material convert setting: {setting.GetType().Name}");
                     }
-                    var outFile = $"{saveDirectory}/{m.name}_from_{guid}.mat";
-
-                    if (!(setting is MaterialReplaceSettings))
+                    if (saveAsFile)
                     {
-                        // When the material is added into another asset, "/" is acceptable as name.
-                        if (m.name.Contains("/"))
+                        var saveDirectory = $"{assetsDirectory}/Materials";
+                        Directory.CreateDirectory(saveDirectory);
+                        AssetDatabase.Refresh();
+                        var outFile = $"{saveDirectory}/{m.name}_from_{guid}.mat";
+
+                        if (!(setting is MaterialReplaceSettings))
                         {
-                            var dir = Path.GetDirectoryName(outFile);
-                            Directory.CreateDirectory(dir);
+                            // When the material is added into another asset, "/" is acceptable as name.
+                            if (m.name.Contains("/"))
+                            {
+                                var dir = Path.GetDirectoryName(outFile);
+                                Directory.CreateDirectory(dir);
+                            }
+                            output = AssetUtility.CreateAsset(output, outFile);
                         }
-                        output = AssetUtility.CreateAsset(output, outFile);
                     }
 
                     convertedMaterials.Add(m, output);
@@ -314,11 +330,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Converts animator controllers.
         /// </summary>
         /// <param name="controllers">Controllers to convert.</param>
+        /// <param name="saveAsAsset">Whether to save controllers as asset.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="convertedMotions">Converted motions.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted controllers (key: original controller).</returns>
-        internal Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, string assetsDirectory, Dictionary<Motion, Motion> convertedMotions, RuntimeAnimatorProgressCallback progressCallback)
+        internal Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Motion, Motion> convertedMotions, RuntimeAnimatorProgressCallback progressCallback)
         {
             var convertedControllers = new Dictionary<RuntimeAnimatorController, RuntimeAnimatorController>();
             for (var index = 0; index < controllers.Length; index++)
@@ -332,7 +349,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 progressCallback(controllers.Length, index, null, controller);
                 try
                 {
-                    AnimatorController cloneController = UnityAnimationUtility.ReplaceAnimationClips(controller, assetsDirectory, convertedMotions);
+                    AnimatorController cloneController = UnityAnimationUtility.ReplaceAnimationClips(controller, saveAsAsset, assetsDirectory, convertedMotions);
                     convertedControllers.Add(controller, cloneController);
                 }
                 catch (Exception e)
@@ -348,10 +365,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Converts blend trees.
         /// </summary>
         /// <param name="controllers">Original controllers.</param>
+        /// <param name="saveAsAsset">Whether to save blend trees as asset.</param>
         /// <param name="assetsDirectory">Root directory for converted blend trees.</param>
         /// <param name="convertedAnimationClips">Converted animation clips.</param>
         /// <returns>Converted blend trees (key: original blend tree).</returns>
-        internal Dictionary<BlendTree, BlendTree> ConvertBlendTreesForQuest(AnimatorController[] controllers, string assetsDirectory, Dictionary<AnimationClip, AnimationClip> convertedAnimationClips)
+        internal Dictionary<BlendTree, BlendTree> ConvertBlendTreesForQuest(AnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<AnimationClip, AnimationClip> convertedAnimationClips)
         {
             var trees = controllers
                 .SelectMany(c => UnityAnimationUtility.GetBlendTrees(c))
@@ -364,7 +382,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             trees.Sort((a, b) => UnityAnimationUtility.DoesMotionExistInBlendTreeDescendants(a, b) ? 1 : 0); // Sort because trees have dependency.
 
             var saveDirectory = $"{assetsDirectory}/BlendTrees";
-            if (trees.Count > 0)
+            if (trees.Count > 0 && saveAsAsset)
             {
                 Directory.CreateDirectory(saveDirectory);
                 AssetDatabase.Refresh();
@@ -406,18 +424,21 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(tree, out string guid, out long localId);
                 newTree.name += $"_from_{guid}";
 
-                var originalAssetPath = AssetDatabase.GUIDToAssetPath(guid);
-                if (!originalAssetPath.EndsWith(".controller"))
+                if (saveAsAsset)
                 {
-                    var asset = $"{saveDirectory}/{newTree.name}.asset";
-
-                    // When the tree is added into another asset, "/" is acceptable as name.
-                    if (newTree.name.Contains("/"))
+                    var originalAssetPath = AssetDatabase.GUIDToAssetPath(guid);
+                    if (!originalAssetPath.EndsWith(".controller"))
                     {
-                        var dir = Path.GetDirectoryName(asset);
-                        Directory.CreateDirectory(dir);
+                        var asset = $"{saveDirectory}/{newTree.name}.asset";
+
+                        // When the tree is added into another asset, "/" is acceptable as name.
+                        if (newTree.name.Contains("/"))
+                        {
+                            var dir = Path.GetDirectoryName(asset);
+                            Directory.CreateDirectory(dir);
+                        }
+                        newTree = AssetUtility.CreateAsset(newTree, asset);
                     }
-                    newTree = AssetUtility.CreateAsset(newTree, asset);
                 }
                 dict.Add(tree, newTree);
             }
@@ -428,15 +449,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Converts animation clips.
         /// </summary>
         /// <param name="controllers">Controllers to convert clips.</param>
+        /// <param name="saveAsAsset">Whether to save clips as asset.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="convertedMaterials">Converted materials.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted controllers (key: original controller).</returns>
-        internal Dictionary<AnimationClip, AnimationClip> ConvertAnimationClipsForQuest(RuntimeAnimatorController[] controllers, string assetsDirectory, Dictionary<Material, Material> convertedMaterials, AnimationClipProgressCallback progressCallback)
+        internal Dictionary<AnimationClip, AnimationClip> ConvertAnimationClipsForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Material, Material> convertedMaterials, AnimationClipProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Animations";
-            Directory.CreateDirectory(saveDirectory);
-            AssetDatabase.Refresh();
+            if (saveAsAsset)
+            {
+                Directory.CreateDirectory(saveDirectory);
+                AssetDatabase.Refresh();
+            }
 
             var animationClips = controllers
                 .SelectMany(c => c.animationClips)
@@ -456,21 +481,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 progressCallback(animationClips.Length, i, null, clip);
                 try
                 {
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animationClips[i], out string guid, out long localid);
-                    var originalName = animationClips[i].name;
-                    var outFile = $"{saveDirectory}/{originalName}_from_{guid}.anim";
-
-                    // When the animation clip is added into another asset, "/" is acceptable as name.
-                    if (originalName.Contains("/"))
-                    {
-                        var dir = Path.GetDirectoryName(outFile);
-                        Directory.CreateDirectory(dir);
-                    }
                     var anim = UnityAnimationUtility.ReplaceAnimationClipMaterials(animationClips[i], convertedMaterials);
 
-                    anim = AssetUtility.CreateAsset(anim, outFile);
+                    if (saveAsAsset)
+                    {
+                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animationClips[i], out string guid, out long localid);
+                        var originalName = animationClips[i].name;
+                        var outFile = $"{saveDirectory}/{originalName}_from_{guid}.anim";
+
+                        // When the animation clip is added into another asset, "/" is acceptable as name.
+                        if (originalName.Contains("/"))
+                        {
+                            var dir = Path.GetDirectoryName(outFile);
+                            Directory.CreateDirectory(dir);
+                        }
+                        anim = AssetUtility.CreateAsset(anim, outFile);
+                        Debug.Log("create asset: " + outFile);
+                    }
                     convertedAnimationClips.Add(clip, anim);
-                    Debug.Log("create asset: " + outFile);
                 }
                 catch (System.Exception e)
                 {

@@ -417,7 +417,7 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 onTextureProgress = progressCallback,
             };
-            VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, outputPath, converterSettings, progressCallback);
+            VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, true, outputPath, converterSettings, progressCallback);
             EditorUtility.ClearProgressBar();
         }
 
@@ -489,7 +489,7 @@ namespace KRT.VRCQuestTools.Inspector
                 },
             };
 
-            var questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, GetOutputPath(avatar), VRCQuestTools.ComponentRemover, progressCallback);
+            var questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, VRCQuestTools.ComponentRemover, true, GetOutputPath(avatar), progressCallback);
             EditorUtility.ClearProgressBar();
             if (questAvatar != null)
             {

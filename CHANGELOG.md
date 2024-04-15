@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `Show Avatar Builder for Android` menu to upload an avatar for Android build target with NDMF.
+- Non-destructive avatar conversion with NDMF and `VQT Avatar Converter Settings` component.
 - `VQT Platform Target Settings` component to specify the target platform for `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
 
 ### Changed

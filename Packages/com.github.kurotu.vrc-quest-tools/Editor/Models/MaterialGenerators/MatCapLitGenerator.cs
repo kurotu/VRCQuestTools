@@ -25,11 +25,12 @@ namespace KRT.VRCQuestTools.Models
         /// Generate material for MatCap Lit shader.
         /// </summary>
         /// <param name="material">Material to convert.</param>
+        /// <param name="saveTextureAsPng">Whether to save textures as png.</param>
         /// <param name="texturesPath">Path to save textures.</param>
         /// <returns>Generated material.</returns>
-        public Material GenerateMaterial(MaterialBase material, string texturesPath)
+        public Material GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath)
         {
-            var newMaterial = toonLitGenerator.GenerateMaterial(material, texturesPath);
+            var newMaterial = toonLitGenerator.GenerateMaterial(material, saveTextureAsPng, texturesPath);
             newMaterial.shader = Shader.Find("VRChat/Mobile/MatCap Lit");
             newMaterial.SetTexture("_MatCap", matCapLitConvertSettings.matCapTexture);
             return newMaterial;
@@ -39,10 +40,11 @@ namespace KRT.VRCQuestTools.Models
         /// Generate textures for MatCap Lit shader.
         /// </summary>
         /// <param name="material">Material to convert.</param>
+        /// <param name="saveAsPng">Whether to save textures as png.</param>
         /// <param name="texturesPath">Path to save textures.</param>
-        public void GenerateTextures(MaterialBase material, string texturesPath)
+        public void GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath)
         {
-            toonLitGenerator.GenerateTextures(material, texturesPath);
+            toonLitGenerator.GenerateTextures(material, saveAsPng, texturesPath);
         }
     }
 }
