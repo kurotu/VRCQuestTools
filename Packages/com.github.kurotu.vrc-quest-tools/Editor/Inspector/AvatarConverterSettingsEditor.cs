@@ -393,7 +393,7 @@ namespace KRT.VRCQuestTools.Inspector
             var toonLitSetting = convertSetting is ToonLitConvertSettings ? convertSetting as ToonLitConvertSettings : null;
             var targetAvatar = new Models.VRChat.VRChatAvatar(avatar);
 
-            TextureProgressCallback progressCallback = (int total, int index, System.Exception exception, Material material) =>
+            TextureProgressCallback progressCallback = (int total, int index, System.Exception exception, Material material, Material _) =>
             {
                 var i18n = VRCQuestToolsSettings.I18nResource;
                 if (exception != null)
@@ -435,7 +435,7 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var progressCallback = new ProgressCallback
             {
-                onTextureProgress = (total, index, exception, material) =>
+                onTextureProgress = (total, index, exception, material, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
                     if (exception != null)
@@ -453,7 +453,7 @@ namespace KRT.VRCQuestTools.Inspector
                         EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
                     }
                 },
-                onAnimationClipProgress = (total, index, exception, clip) =>
+                onAnimationClipProgress = (total, index, exception, clip, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
                     if (exception != null)
@@ -470,7 +470,7 @@ namespace KRT.VRCQuestTools.Inspector
                         EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimationCilps : {index}/{total}", progress);
                     }
                 },
-                onRuntimeAnimatorProgress = (total, index, exception, controller) =>
+                onRuntimeAnimatorProgress = (total, index, exception, controller, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
                     if (exception != null)

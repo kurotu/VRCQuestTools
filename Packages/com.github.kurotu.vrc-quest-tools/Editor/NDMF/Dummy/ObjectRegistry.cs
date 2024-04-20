@@ -17,6 +17,15 @@ namespace KRT.VRCQuestTools.Ndmf.Dummy
         {
             return new ObjectReference(obj);
         }
+
+        /// <summary>
+        /// RegisterReplacedObject is a dummy method for NDMF.
+        /// </summary>
+        /// <param name="original">Original object.</param>
+        /// <param name="replaced">Replaced object.</param>
+        internal static void RegisterReplacedObject(Object original, Object replaced)
+        {
+        }
     }
 }
 #endif

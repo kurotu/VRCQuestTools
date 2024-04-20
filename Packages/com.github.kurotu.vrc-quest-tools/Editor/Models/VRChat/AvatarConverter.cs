@@ -46,11 +46,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
 #pragma warning disable SA1600 // Elements should be documented
-        internal delegate void TextureProgressCallback(int total, int index, Exception e, Material m);
+        internal delegate void TextureProgressCallback(int total, int index, Exception e, Material original, Material converted);
 
-        internal delegate void AnimationClipProgressCallback(int total, int index, Exception e, AnimationClip clip);
+        internal delegate void AnimationClipProgressCallback(int total, int index, Exception e, AnimationClip original, AnimationClip converted);
 
-        internal delegate void RuntimeAnimatorProgressCallback(int total, int index, Exception e, RuntimeAnimatorController contoller);
+        internal delegate void RuntimeAnimatorProgressCallback(int total, int index, Exception e, RuntimeAnimatorController original, RuntimeAnimatorController converted);
 #pragma warning restore SA1600 // Elements should be documented
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
                 var m = materialsToConvert[i];
-                progressCallback(materialsToConvert.Length, i, null, m);
+                progressCallback(materialsToConvert.Length, i, null, m, null);
                 try
                 {
                     var materialSetting = settings.GetMaterialConvertSettings(m);
@@ -252,7 +252,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
                 catch (Exception e)
                 {
-                    progressCallback(materialsToConvert.Length, i, e, m);
+                    progressCallback(materialsToConvert.Length, i, e, m, null);
                     ExceptionDispatchInfo.Capture(e).Throw();
                 }
             }
@@ -273,7 +273,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var convertedMaterials = new Dictionary<Material, Material>();
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
-                progressCallback(materialsToConvert.Length, i, null, materialsToConvert[i]);
+                progressCallback(materialsToConvert.Length, i, null, materialsToConvert[i], null);
                 try
                 {
                     var m = materialsToConvert[i];
@@ -316,10 +316,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
 
                     convertedMaterials.Add(m, output);
+                    progressCallback(materialsToConvert.Length, i, null, m, output);
                 }
                 catch (Exception e)
                 {
-                    progressCallback(materialsToConvert.Length, i, e, materialsToConvert[i]);
+                    progressCallback(materialsToConvert.Length, i, e, materialsToConvert[i], null);
                     ExceptionDispatchInfo.Capture(e).Throw();
                 }
             }
@@ -346,15 +347,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     continue;
                 }
 
-                progressCallback(controllers.Length, index, null, controller);
+                progressCallback(controllers.Length, index, null, controller, null);
                 try
                 {
                     AnimatorController cloneController = UnityAnimationUtility.ReplaceAnimationClips(controller, saveAsAsset, assetsDirectory, convertedMotions);
                     convertedControllers.Add(controller, cloneController);
+                    progressCallback(controllers.Length, index, null, controller, cloneController);
                 }
                 catch (Exception e)
                 {
-                    progressCallback(controllers.Length, index, e, controller);
+                    progressCallback(controllers.Length, index, e, controller, null);
                     ExceptionDispatchInfo.Capture(e).Throw();
                 }
             }
@@ -478,7 +480,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     continue;
                 }
-                progressCallback(animationClips.Length, i, null, clip);
+                progressCallback(animationClips.Length, i, null, clip, null);
                 try
                 {
                     var anim = UnityAnimationUtility.ReplaceAnimationClipMaterials(animationClips[i], convertedMaterials);
@@ -499,10 +501,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         Debug.Log("create asset: " + outFile);
                     }
                     convertedAnimationClips.Add(clip, anim);
+                    progressCallback(animationClips.Length, i, null, clip, anim);
                 }
                 catch (System.Exception e)
                 {
-                    progressCallback(animationClips.Length, i, e, clip);
+                    progressCallback(animationClips.Length, i, e, clip, null);
                     ExceptionDispatchInfo.Capture(e).Throw();
                 }
             }

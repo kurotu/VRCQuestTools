@@ -3,6 +3,9 @@ using KRT.VRCQuestTools.Components;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEngine;
+#if !VQT_HAS_NDMF_ERROR_REPORT
+using KRT.VRCQuestTools.Ndmf.Dummy;
+#endif
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -28,28 +31,52 @@ namespace KRT.VRCQuestTools.Ndmf
             Directory.CreateDirectory(assetDirectory);
             VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, assetDirectory, new Models.VRChat.AvatarConverter.ProgressCallback()
             {
-                onTextureProgress = (_, __, e, material) =>
+                onTextureProgress = (_, __, e, original, converted) =>
                 {
                     if (e != null)
                     {
-                        Debug.LogError("Failed to convert texture for material: " + material.name, material);
-                        Debug.LogException(e, material);
+                        Debug.LogError("Failed to convert material: " + original.name, original);
+                        Debug.LogException(e, original);
+                        var matRef = ObjectRegistry.GetReference(original);
+                        var error = new MaterialConversionError(matRef, e);
+                        ErrorReport.ReportError(error);
+                        return;
+                    }
+                    if (converted != null)
+                    {
+                        ObjectRegistry.RegisterReplacedObject(original, converted);
                     }
                 },
-                onAnimationClipProgress = (_, __, e, clip) =>
+                onAnimationClipProgress = (_, __, e, original, converted) =>
                 {
                     if (e != null)
                     {
-                        Debug.LogError("Failed to convert animation clip: " + clip.name, clip);
-                        Debug.LogException(e, clip);
+                        Debug.LogError("Failed to convert animation clip: " + original.name, original);
+                        Debug.LogException(e, original);
+                        var animRef = ObjectRegistry.GetReference(original);
+                        var error = new ObjectConversionError(animRef, e);
+                        ErrorReport.ReportError(error);
+                        return;
+                    }
+                    if (converted != null)
+                    {
+                        ObjectRegistry.RegisterReplacedObject(original, converted);
                     }
                 },
-                onRuntimeAnimatorProgress = (_, __, e, controller) =>
+                onRuntimeAnimatorProgress = (_, __, e, original, converted) =>
                 {
                     if (e != null)
                     {
-                        Debug.LogError("Failed to convert runtime animator controller: " + controller.name, controller);
-                        Debug.LogException(e, controller);
+                        Debug.LogError("Failed to convert runtime animator controller: " + original.name, original);
+                        Debug.LogException(e, original);
+                        var animRef = ObjectRegistry.GetReference(original);
+                        var error = new ObjectConversionError(animRef, e);
+                        ErrorReport.ReportError(error);
+                        return;
+                    }
+                    if (converted != null)
+                    {
+                        ObjectRegistry.RegisterReplacedObject(original, converted);
                     }
                 },
             });
