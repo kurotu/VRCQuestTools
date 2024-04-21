@@ -302,7 +302,7 @@ namespace KRT.VRCQuestTools.Inspector
 
                     if (stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.Overall) > PerformanceRating.Poor)
                     {
-                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
+                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.None, () =>
                         {
                             EditorGUILayout.LabelField(i18n.WarningForPerformance, EditorStyles.wordWrappedMiniLabel);
                             EditorGUILayout.Space(2);
@@ -310,11 +310,28 @@ namespace KRT.VRCQuestTools.Inspector
                     }
                 }
 
-                Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
+                Views.EditorGUIUtility.HelpBoxGUI(MessageType.None, () =>
                 {
                     EditorGUILayout.LabelField(i18n.WarningForAppearance, EditorStyles.wordWrappedMiniLabel);
                     EditorGUILayout.Space(2);
                 });
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
+                    {
+                        EditorGUILayout.LabelField(i18n.InfoForNdmfConversion, EditorStyles.wordWrappedMiniLabel);
+                        EditorGUILayout.Space(2);
+                    });
+#if VQT_HAS_NDMF
+                    if (GUILayout.Button(i18n.OpenLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                    {
+                        var typeName = "KRT.VRCQuestTools.Ndmf.AvatarBuilderWindow";
+                        var type = SystemUtility.GetTypeByName(typeName) ?? throw new System.InvalidProgramException($"Type not found: {typeName}");
+                        EditorWindow.GetWindow(type).Show();
+                    }
+#endif
+                }
 
                 if (PrefabStageUtility.GetCurrentPrefabStage() != null)
                 {

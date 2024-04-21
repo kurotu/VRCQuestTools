@@ -191,13 +191,16 @@ namespace KRT.VRCQuestTools.Views
         {
             using (var horizontal = new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
             {
-                using (var vertical = new EditorGUILayout.VerticalScope(GUILayout.MaxWidth(32)))
+                if (type != MessageType.None)
                 {
-                    var icon = MessageTypeIconContent(type);
-                    GUILayout.Label(icon, new GUIStyle()
+                    using (var vertical = new EditorGUILayout.VerticalScope(GUILayout.MaxWidth(32)))
                     {
-                        padding = new RectOffset(0, 0, 0, 0),
-                    });
+                        var icon = MessageTypeIconContent(type);
+                        GUILayout.Label(icon, new GUIStyle()
+                        {
+                            padding = new RectOffset(0, 0, 0, 0),
+                        });
+                    }
                 }
 
                 using (var vertical = new EditorGUILayout.VerticalScope(GUILayout.ExpandWidth(true)))
@@ -284,6 +287,8 @@ namespace KRT.VRCQuestTools.Views
         {
             switch (type)
             {
+                case MessageType.None:
+                    return new GUIContent();
                 case MessageType.Info:
                     return UnityEditor.EditorGUIUtility.IconContent("console.infoicon");
                 case MessageType.Warning:
