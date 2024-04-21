@@ -22,9 +22,17 @@ namespace KRT.VRCQuestTools.Ndmf
         protected override void Configure()
         {
             InPhase(BuildPhase.Resolving)
+                .BeforePlugin("dev.logilabo.virtuallens2.apply-non-destructive") // need to configure vlens2.
                 .Run(CheckDependenciesPass.Instance)
+                .Then.Run(BuildTargetConfigurationPass.Instance)
                 .Then.Run(PlatformGameObjectRemoverPass.Instance)
-                .Then.Run(PlatformComponentRemoverPass.Instance);
+                .Then.Run(PlatformComponentRemoverPass.Instance)
+                .Then.Run(AvatarConverterResolvingPass.Instance);
+
+            InPhase(BuildPhase.Transforming)
+                .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
+                .AfterPlugin("nadena.dev.modular-avatar") // convert built avatar
+                .Run(AvatarConverterTransformingPass.Instance);
 
             InPhase(BuildPhase.Optimizing)
                 .BeforePlugin("com.anatawa12.avatar-optimizer")

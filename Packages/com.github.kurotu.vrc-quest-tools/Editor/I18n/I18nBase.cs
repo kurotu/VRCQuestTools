@@ -15,6 +15,7 @@ namespace KRT.VRCQuestTools.I18n
     internal abstract class I18nBase
     {
         internal abstract string CancelLabel { get; }
+        internal abstract string OpenLabel { get; }
         internal abstract string CloseLabel { get; }
         internal abstract string DismissLabel { get; }
         internal abstract string YesLabel { get; }
@@ -45,6 +46,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string MaterialExceptionDialogMessage { get; }
         internal abstract string AnimationClipExceptionDialogMessage { get; }
         internal abstract string AnimatorControllerExceptionDialogMessage { get; }
+        internal abstract string InfoForNdmfConversion { get; }
         internal abstract string WarningForPerformance { get; }
         internal abstract string WarningForAppearance { get; }
         internal abstract string WarningForUnsupportedShaders { get; }
@@ -169,6 +171,23 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string PlatformGameObjectRemoverEditorDescription { get; }
         internal abstract string PlatformGameObjectRemoverEditorRemoveOnPCLabel { get; }
         internal abstract string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel { get; }
+
+        // Avatar Builder
+        internal abstract string AvatarBuilderWindowExitPlayMode { get; }
+        internal abstract string AvatarBuilderWindowExitPrefabStage { get; }
+        internal abstract string AvatarBuilderWindowNoActiveAvatarsFound { get; }
+        internal abstract string AvatarBuilderWindowNoNdmfComponentsFound { get; }
+        internal abstract string AvatarBuilderWindowSucceededBuild { get; }
+        internal abstract string AvatarBuilderWindowSucceededUpload { get; }
+        internal abstract string AvatarBuilderWindowFailedBuild { get; }
+        internal abstract string AvatarBuilderWindowRequiresControlPanel { get; }
+        internal abstract string AvatarBuilderWindowOfflineTestingLabel { get; }
+        internal abstract string AvatarBuilderWindowOfflineTestingDescription(string name);
+        internal abstract string AvatarBuilderWindowOnlinePublishingLabel { get; }
+        internal abstract string AvatarBuilderWindowOnlinePublishingDescription { get; }
+        internal abstract string AvatarBuilderWindowNdmfManualBakingLabel { get; }
+        internal abstract string AvatarBuilderWindowNdmfManualBakingDescription { get; }
+        internal abstract string AvatarBuilderWindowRequiresAvatarNameAndThumb { get; }
 
         // NDMF
         internal abstract string NdmfPluginRequiresNdmfUpdate(string requiredVersion);

@@ -15,6 +15,7 @@ namespace KRT.VRCQuestTools.I18n
     internal class I18nJapanese : I18nBase
     {
         internal override string CancelLabel => "キャンセル";
+        internal override string OpenLabel => "開く";
         internal override string CloseLabel => "閉じる";
         internal override string DismissLabel => "閉じる";
         internal override string YesLabel => "はい";
@@ -49,6 +50,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string WarningForAppearance => "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n" +
             "別の Blueprint ID でのアップロードや Avatars 3.0 のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
         internal override string WarningForUnsupportedShaders => $"以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n「{GenerateAndroidTexturesLabel}」をオフにするとシェーダーのみを変更します。";
+        internal override string InfoForNdmfConversion => "プロジェクトに Non-Destructive Modular Framework (NDMF) パッケージがある場合、アバターのビルド時に非破壊的に変換をすることができます。 VRChat SDK による制限を回避するため、専用の Avatar Builder を使用してください。";
         internal override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} は Dynamic Bone を PhysBone に変換しません。アバターを変換する前に PhysBone を設定してください。";
         internal override string AlertForMissingNetIds => "ネットワークIDの割り当てられていない PhysBones があります。 PC と Android で正しく同期させるため、ネットワークIDを割り当てた後でPC用のアバターを再度アップロードしてください。";
@@ -170,6 +172,23 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PlatformGameObjectRemoverEditorDescription => "チェックを入れたプラットフォームとビルドターゲットが一致する場合、このGameObjectをビルド時に削除します。";
         internal override string PlatformGameObjectRemoverEditorRemoveOnPCLabel => "PCでは削除";
         internal override string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel => "Androidでは削除";
+
+        // Avatar Builder
+        internal override string AvatarBuilderWindowExitPlayMode => "アバターをビルドするには Play モードを終了してください。";
+        internal override string AvatarBuilderWindowExitPrefabStage => "アバターをビルドするには Prefab ステージを終了してください。";
+        internal override string AvatarBuilderWindowNoActiveAvatarsFound => "シーン内にアクティブなアバターがありません。";
+        internal override string AvatarBuilderWindowNoNdmfComponentsFound => "アバターに VRCQuestTools のコンポーネントがありません。";
+        internal override string AvatarBuilderWindowSucceededBuild => "ビルドに成功しました。";
+        internal override string AvatarBuilderWindowSucceededUpload => "アップロードに成功しました。";
+        internal override string AvatarBuilderWindowFailedBuild => "ビルドに失敗しました。コンソールログを確認してください。";
+        internal override string AvatarBuilderWindowRequiresControlPanel => "アバターをビルドするには VRChat SDK コントロールパネルを開く必要があります。";
+        internal override string AvatarBuilderWindowOfflineTestingLabel => "オフラインテスト";
+        internal override string AvatarBuilderWindowOfflineTestingDescription(string name) => $"Android 用のビルド設定でアバターをビルドして PC でテストします。アバターはアバターメニューの Other カテゴリに \"SDK: {name}\" として表示されます。";
+        internal override string AvatarBuilderWindowOnlinePublishingLabel => "アップロード";
+        internal override string AvatarBuilderWindowOnlinePublishingDescription => "Android 用のビルド設定でアバターを VRChat にアップロードします。アバターが Android 用のアップロード条件を満たしていなくても VRChat SDK コントロールパネルによる検証をスキップしてビルドを開始します。";
+        internal override string AvatarBuilderWindowNdmfManualBakingLabel => "NDMF マニュアルベイク";
+        internal override string AvatarBuilderWindowNdmfManualBakingDescription => "Android 用のビルド設定で Tools -> NDM Framework -> Manual bake avatar メニューを実行します。";
+        internal override string AvatarBuilderWindowRequiresAvatarNameAndThumb => "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK コントロールパネルで設定してください。";
 
         // NDMF
         internal override string NdmfPluginRequiresNdmfUpdate(string version) => $"Non-Destructive Modular Framework (NDMF) 1.3.0 以降が必要です。NDMF を更新してください。";

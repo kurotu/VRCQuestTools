@@ -34,6 +34,8 @@ namespace KRT.VRCQuestTools.Utils
 
         private const string LilToonPackageJsonGUID = "397d2fa9e93fb5d44a9540d5f01437fc";
 
+        private const int MinimumTextureSize = 4; // needs 4x4 for DXT.
+
         static AssetUtility()
         {
             if (IsLilToonImported())
@@ -76,6 +78,15 @@ namespace KRT.VRCQuestTools.Utils
             var shader = Shader.Find("lilToon");
             var inspector = SystemUtility.GetTypeByName("lilToon.lilToonInspector");
             return (shader != null) && (inspector != null);
+        }
+
+        /// <summary>
+        /// Creates a minimum empty texture.
+        /// </summary>
+        /// <returns>Created texture object.</returns>
+        internal static Texture2D CreateMinimumEmptyTexture()
+        {
+            return new Texture2D(MinimumTextureSize, MinimumTextureSize);
         }
 
         /// <summary>
@@ -154,7 +165,7 @@ namespace KRT.VRCQuestTools.Utils
             if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
             {
                 var isLinear = !importer.sRGBTexture;
-                var tex = new Texture2D(2, 2, TextureFormat.RGBA32, Texture.GenerateAllMips, linear: isLinear);
+                var tex = new Texture2D(MinimumTextureSize, MinimumTextureSize, TextureFormat.RGBA32, Texture.GenerateAllMips, linear: isLinear);
                 var bytes = File.ReadAllBytes(Path.GetFullPath(path));
                 tex.LoadImage(bytes);
                 tex.filterMode = FilterMode.Bilinear;

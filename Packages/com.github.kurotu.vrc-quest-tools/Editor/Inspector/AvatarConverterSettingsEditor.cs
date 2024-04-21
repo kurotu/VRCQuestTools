@@ -302,7 +302,7 @@ namespace KRT.VRCQuestTools.Inspector
 
                     if (stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.Overall) > PerformanceRating.Poor)
                     {
-                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
+                        Views.EditorGUIUtility.HelpBoxGUI(MessageType.None, () =>
                         {
                             EditorGUILayout.LabelField(i18n.WarningForPerformance, EditorStyles.wordWrappedMiniLabel);
                             EditorGUILayout.Space(2);
@@ -310,11 +310,28 @@ namespace KRT.VRCQuestTools.Inspector
                     }
                 }
 
-                Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
+                Views.EditorGUIUtility.HelpBoxGUI(MessageType.None, () =>
                 {
                     EditorGUILayout.LabelField(i18n.WarningForAppearance, EditorStyles.wordWrappedMiniLabel);
                     EditorGUILayout.Space(2);
                 });
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
+                    {
+                        EditorGUILayout.LabelField(i18n.InfoForNdmfConversion, EditorStyles.wordWrappedMiniLabel);
+                        EditorGUILayout.Space(2);
+                    });
+#if VQT_HAS_NDMF
+                    if (GUILayout.Button(i18n.OpenLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                    {
+                        var typeName = "KRT.VRCQuestTools.Ndmf.AvatarBuilderWindow";
+                        var type = SystemUtility.GetTypeByName(typeName) ?? throw new System.InvalidProgramException($"Type not found: {typeName}");
+                        EditorWindow.GetWindow(type).Show();
+                    }
+#endif
+                }
 
                 if (PrefabStageUtility.GetCurrentPrefabStage() != null)
                 {
@@ -393,7 +410,7 @@ namespace KRT.VRCQuestTools.Inspector
             var toonLitSetting = convertSetting is ToonLitConvertSettings ? convertSetting as ToonLitConvertSettings : null;
             var targetAvatar = new Models.VRChat.VRChatAvatar(avatar);
 
-            TextureProgressCallback progressCallback = (int total, int index, System.Exception exception, Material material) =>
+            TextureProgressCallback progressCallback = (int total, int index, System.Exception exception, Material material, Material _) =>
             {
                 var i18n = VRCQuestToolsSettings.I18nResource;
                 if (exception != null)
@@ -417,7 +434,7 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 onTextureProgress = progressCallback,
             };
-            VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, outputPath, converterSettings, progressCallback);
+            VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, true, outputPath, converterSettings, progressCallback);
             EditorUtility.ClearProgressBar();
         }
 
@@ -435,7 +452,7 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var progressCallback = new ProgressCallback
             {
-                onTextureProgress = (total, index, exception, material) =>
+                onTextureProgress = (total, index, exception, material, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
                     if (exception != null)
@@ -453,7 +470,7 @@ namespace KRT.VRCQuestTools.Inspector
                         EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
                     }
                 },
-                onAnimationClipProgress = (total, index, exception, clip) =>
+                onAnimationClipProgress = (total, index, exception, clip, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
                     if (exception != null)
@@ -470,7 +487,7 @@ namespace KRT.VRCQuestTools.Inspector
                         EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimationCilps : {index}/{total}", progress);
                     }
                 },
-                onRuntimeAnimatorProgress = (total, index, exception, controller) =>
+                onRuntimeAnimatorProgress = (total, index, exception, controller, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
                     if (exception != null)
@@ -489,7 +506,7 @@ namespace KRT.VRCQuestTools.Inspector
                 },
             };
 
-            var questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, GetOutputPath(avatar), VRCQuestTools.ComponentRemover, progressCallback);
+            var questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, VRCQuestTools.ComponentRemover, true, GetOutputPath(avatar), progressCallback);
             EditorUtility.ClearProgressBar();
             if (questAvatar != null)
             {

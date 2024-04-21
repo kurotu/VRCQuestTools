@@ -138,19 +138,29 @@ namespace KRT.VRCQuestTools.Utils
         /// Replace animator controller's animation clips with new clips.
         /// </summary>
         /// <param name="controller">Target controller.</param>
+        /// <param name="saveAsAsset">Whether to save as asset.</param>
         /// <param name="saveDir">Asset directory for new controller.</param>
         /// <param name="newMotions">Animation clips to replace (key: original clip).</param>
         /// <returns>New animator controller.</returns>
-        internal static AnimatorController ReplaceAnimationClips(RuntimeAnimatorController controller, string saveDir, Dictionary<Motion, Motion> newMotions)
+        internal static AnimatorController ReplaceAnimationClips(RuntimeAnimatorController controller, bool saveAsAsset, string saveDir, Dictionary<Motion, Motion> newMotions)
         {
-            Directory.CreateDirectory($"{saveDir}/AnimatorControllers");
-            AssetDatabase.Refresh();
+            string outFile = null;
+            AnimatorController cloneController;
+            if (saveAsAsset)
+            {
+                Directory.CreateDirectory($"{saveDir}/AnimatorControllers");
+                AssetDatabase.Refresh();
 
-            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(controller, out string guid, out long localId);
-            var outFile = $"{saveDir}/AnimatorControllers/{controller.name}_from_{guid}.controller";
-            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(controller), outFile);
-            AssetDatabase.Refresh();
-            AnimatorController cloneController = (AnimatorController)AssetDatabase.LoadAssetAtPath(outFile, typeof(AnimatorController));
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(controller, out string guid, out long localId);
+                outFile = $"{saveDir}/AnimatorControllers/{controller.name}_from_{guid}.controller";
+                AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(controller), outFile);
+                AssetDatabase.Refresh();
+                cloneController = (AnimatorController)AssetDatabase.LoadAssetAtPath(outFile, typeof(AnimatorController));
+            }
+            else
+            {
+                cloneController = (AnimatorController)Object.Instantiate(controller);
+            }
 
             // コピーしたコントローラーに修正したアニメーションクリップを反映
             // レイヤー→ステートマシン→ステート→アニメーションクリップ
@@ -186,7 +196,10 @@ namespace KRT.VRCQuestTools.Utils
                             return child;
                         }).ToArray();
                         motion = newTree;
-                        AssetDatabase.AddObjectToAsset(newTree, outFile);
+                        if (saveAsAsset)
+                        {
+                            AssetDatabase.AddObjectToAsset(newTree, outFile);
+                        }
                     }
                     cloneController.SetStateEffectiveMotion(childState.state, motion, layerIndex);
                 }

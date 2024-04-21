@@ -3,7 +3,9 @@
     "references": [
         "VRCQuestTools",
         "VRCQuestTools-Editor",
-        "nadena.dev.ndmf"
+        "nadena.dev.ndmf",
+        "VRC.SDK3A.Editor",
+        "VRC.SDKBase.Editor"
     ],
     "includePlatforms": [
         "Editor"

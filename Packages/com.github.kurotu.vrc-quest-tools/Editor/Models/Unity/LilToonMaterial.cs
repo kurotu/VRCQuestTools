@@ -144,11 +144,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                 // Texture bufMainTexture = mainTex.textureValue;
                 Material hsvgMaterial = new Material(ltsbaker);
 
-                Texture srcTexture = new Texture2D(2, 2);
-                Texture srcMain2 = new Texture2D(2, 2);
-                Texture srcMain3 = new Texture2D(2, 2);
-                Texture srcMask2 = new Texture2D(2, 2);
-                Texture srcMask3 = new Texture2D(2, 2);
+                Texture srcTexture = AssetUtility.CreateMinimumEmptyTexture();
+                Texture srcMain2 = AssetUtility.CreateMinimumEmptyTexture();
+                Texture srcMain3 = AssetUtility.CreateMinimumEmptyTexture();
+                Texture srcMask2 = AssetUtility.CreateMinimumEmptyTexture();
+                Texture srcMask3 = AssetUtility.CreateMinimumEmptyTexture();
 
                 hsvgMaterial.SetColor(mainColor.name, mainColor.colorValue);
                 hsvgMaterial.SetVector(mainTexHSVG.name, mainTexHSVG.vectorValue);
@@ -168,7 +168,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 }
                 else
                 {
-                    srcTexture = new Texture2D(2, 2);
+                    srcTexture = AssetUtility.CreateMinimumEmptyTexture();
                     hsvgMaterial.SetTexture(mainTex.name, Texture2D.whiteTexture);
                 }
 
@@ -198,7 +198,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                     else
                     {
-                        srcMain2 = new Texture2D(2, 2);
+                        srcMain2 = AssetUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main2ndTex.name, Texture2D.whiteTexture);
                     }
 
@@ -210,7 +210,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                     else
                     {
-                        srcMask2 = new Texture2D(2, 2);
+                        srcMask2 = AssetUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main2ndBlendMask.name, Texture2D.whiteTexture);
                     }
                 }
@@ -241,7 +241,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                     else
                     {
-                        srcMain3 = new Texture2D(2, 2);
+                        srcMain3 = AssetUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main3rdTex.name, Texture2D.whiteTexture);
                     }
 
@@ -253,7 +253,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                     else
                     {
-                        srcMask3 = new Texture2D(2, 2);
+                        srcMask3 = AssetUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main3rdBlendMask.name, Texture2D.whiteTexture);
                     }
                 }
@@ -293,7 +293,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             if (!shaderSetting.LIL_FEATURE_EMISSION_1ST && !shaderSetting.LIL_FEATURE_EMISSION_2ND)
             {
-                var baked = new Texture2D(2, 2);
+                var baked = AssetUtility.CreateMinimumEmptyTexture();
                 baked.LoadImage(main.EncodeToPNG());
                 baked.filterMode = FilterMode.Bilinear;
                 return baked;
