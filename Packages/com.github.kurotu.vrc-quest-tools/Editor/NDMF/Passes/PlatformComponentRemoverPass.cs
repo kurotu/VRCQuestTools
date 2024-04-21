@@ -16,29 +16,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
-            var buildTarget = Models.BuildTarget.Auto;
-            var targetSettings = context.AvatarRootObject.GetComponent<PlatformTargetSettings>();
-            if (targetSettings != null)
-            {
-                buildTarget = targetSettings.buildTarget;
-            }
-
-            if (buildTarget == Models.BuildTarget.Auto)
-            {
-                switch (EditorUserBuildSettings.activeBuildTarget)
-                {
-                    case BuildTarget.StandaloneWindows:
-                    case BuildTarget.StandaloneWindows64:
-                        buildTarget = Models.BuildTarget.PC;
-                        break;
-                    case BuildTarget.Android:
-                        buildTarget = Models.BuildTarget.Android;
-                        break;
-                    default:
-                        throw new System.InvalidOperationException("Unsupported build target: " + EditorUserBuildSettings.activeBuildTarget);
-                }
-            }
-
+            var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
             var components = context.AvatarRootObject.GetComponentsInChildren<PlatformComponentRemover>(true);
             foreach (var component in components)
             {

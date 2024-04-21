@@ -16,25 +16,24 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
-            var targetSettings = context.AvatarRootObject.GetComponent<PlatformTargetSettings>();
-            if (targetSettings == null)
-            {
-                return;
-            }
-
             var converterSettings = context.AvatarRootObject.GetComponent<AvatarConverterSettings>();
             if (converterSettings == null)
             {
                 return;
             }
 
-            if (targetSettings.buildTarget != Models.BuildTarget.Android)
+            var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
+            switch (buildTarget)
             {
-                Object.DestroyImmediate(converterSettings);
-                return;
+                case Models.BuildTarget.PC:
+                    Object.DestroyImmediate(converterSettings);
+                    break;
+                case Models.BuildTarget.Android:
+                    VRCQuestTools.AvatarConverter.PrepareConvertForQuestInPlace(converterSettings);
+                    break;
+                default:
+                    throw new System.InvalidProgramException($"Unsupported build target: {buildTarget}");
             }
-
-            VRCQuestTools.AvatarConverter.PrepareConvertForQuestInPlace(converterSettings);
         }
     }
 }

@@ -15,31 +15,11 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext ctx)
         {
-            var targetSettings = ctx.AvatarRootObject.GetComponent<PlatformTargetSettings>();
-            if (targetSettings == null)
-            {
-                targetSettings = ctx.AvatarRootObject.AddComponent<PlatformTargetSettings>();
-            }
-
             if (NdmfSessionState.BuildTarget != Models.BuildTarget.Auto)
             {
+                var targetSettings = ctx.AvatarRootObject.GetComponent<PlatformTargetSettings>()
+                    ?? ctx.AvatarRootObject.AddComponent<PlatformTargetSettings>();
                 targetSettings.buildTarget = NdmfSessionState.BuildTarget;
-            }
-
-            if (targetSettings.buildTarget == Models.BuildTarget.Auto)
-            {
-                switch (EditorUserBuildSettings.activeBuildTarget)
-                {
-                    case BuildTarget.StandaloneWindows:
-                    case BuildTarget.StandaloneWindows64:
-                        targetSettings.buildTarget = Models.BuildTarget.PC;
-                        break;
-                    case BuildTarget.Android:
-                        targetSettings.buildTarget = Models.BuildTarget.Android;
-                        break;
-                    default:
-                        throw new System.InvalidOperationException("Unsupported unity build target: " + EditorUserBuildSettings.activeBuildTarget);
-                }
             }
         }
     }
