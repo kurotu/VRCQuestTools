@@ -173,18 +173,21 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel => "Androidでは削除";
 
         // Avatar Builder
-        internal override string AvatarBuilderWindowDescription => "Android 用のビルド設定でアバターをビルドします。このビルドでは VRChat SDK のコントロールパネルのバリデーションをスキップします。";
+        internal override string AvatarBuilderWindowExitPlayMode => "アバターをビルドするには Play モードを終了してください。";
+        internal override string AvatarBuilderWindowExitPrefabStage => "アバターをビルドするには Prefab ステージを終了してください。";
+        internal override string AvatarBuilderWindowNoActiveAvatarsFound => "シーン内にアクティブなアバターがありません。";
+        internal override string AvatarBuilderWindowNoNdmfComponentsFound => "アバターに VRCQuestTools のコンポーネントがありません。";
         internal override string AvatarBuilderWindowSucceededBuild => "ビルドに成功しました。";
         internal override string AvatarBuilderWindowSucceededUpload => "アップロードに成功しました。";
         internal override string AvatarBuilderWindowFailedBuild => "ビルドに失敗しました。コンソールログを確認してください。";
-        internal override string AvatarBuilderWindowRequiresControlPanel => "アバターをビルドするには VRChat SDK のコントロールパネルを開く必要があります。";
+        internal override string AvatarBuilderWindowRequiresControlPanel => "アバターをビルドするには VRChat SDK コントロールパネルを開く必要があります。";
         internal override string AvatarBuilderWindowOfflineTestingLabel => "オフラインテスト";
-        internal override string AvatarBuilderWindowOfflineTestingDescription(string name) => $"アバターをビルドして PC でテストします。アバターはアバターメニューの Other カテゴリに \"SDK: {name}\" として表示されます。";
+        internal override string AvatarBuilderWindowOfflineTestingDescription(string name) => $"Android 用のビルド設定でアバターをビルドして PC でテストします。アバターはアバターメニューの Other カテゴリに \"SDK: {name}\" として表示されます。";
         internal override string AvatarBuilderWindowOnlinePublishingLabel => "アップロード";
-        internal override string AvatarBuilderWindowOnlinePublishingDescription => "アバターをビルドして VRChat にアップロードします。";
+        internal override string AvatarBuilderWindowOnlinePublishingDescription => "Android 用のビルド設定でアバターを VRChat にアップロードします。アバターが Android 用のアップロード条件を満たしていなくても VRChat SDK コントロールパネルによる検証をスキップしてビルドを開始します。";
         internal override string AvatarBuilderWindowNdmfManualBakingLabel => "NDMF マニュアルベイク";
-        internal override string AvatarBuilderWindowNdmfManualBakingDescription => "Tools -> NDM Framework -> Manual bake avatar を実行します。";
-        internal override string AvatarBuilderWindowRequiresAvatarNameAndThumb => "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK のコントロールパネルで設定してください。";
+        internal override string AvatarBuilderWindowNdmfManualBakingDescription => "Android 用のビルド設定で Tools -> NDM Framework -> Manual bake avatar メニューを実行します。";
+        internal override string AvatarBuilderWindowRequiresAvatarNameAndThumb => "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK コントロールパネルで設定してください。";
 
         // NDMF
         internal override string NdmfPluginRequiresNdmfUpdate(string version) => $"Non-Destructive Modular Framework (NDMF) 1.3.0 以降が必要です。NDMF を更新してください。";

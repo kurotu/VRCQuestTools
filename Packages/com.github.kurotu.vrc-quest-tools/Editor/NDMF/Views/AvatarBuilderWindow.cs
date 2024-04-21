@@ -2,10 +2,11 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.Core;
@@ -32,9 +33,16 @@ namespace KRT.VRCQuestTools.Ndmf
         private bool buildSecceeded = false;
         [NonSerialized]
         private bool uploadSecceeded = false;
+        [NonSerialized]
+        private string thumbnailUri;
+        [NonSerialized]
+        private Texture2D thumbnail;
+        private string noImageThumbnailPath;
 
         private Vector2 scrollPosition;
         private SynchronizationContext mainContext;
+
+        private bool IsPlayMode => EditorApplication.isPlayingOrWillChangePlaymode;
 
         private bool IsBuilding
         {
@@ -62,6 +70,10 @@ namespace KRT.VRCQuestTools.Ndmf
         {
             get
             {
+                if (IsPlayMode)
+                {
+                    return false;
+                }
                 if (targetAvatar == null)
                 {
                     return false;
@@ -89,6 +101,10 @@ namespace KRT.VRCQuestTools.Ndmf
         {
             get
             {
+                if (IsPlayMode)
+                {
+                    return false;
+                }
                 if (!CanStartLocalBuild)
                 {
                     return false;
@@ -110,16 +126,34 @@ namespace KRT.VRCQuestTools.Ndmf
             }
         }
 
+        private bool CanStartManualBake
+        {
+            get
+            {
+                if (IsPlayMode)
+                {
+                    return false;
+                }
+                if (IsBuilding)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         private void OnEnable()
         {
-            Debug.Log("AvatarBuilderWindow.OnEnable1");
-            Debug.Log(targetAvatar);
+            Debug.Log("AvatarBuilderWindow.OnEnable");
             mainContext = SynchronizationContext.Current;
             titleContent = new GUIContent("VQT Avatar Builder");
+            noImageThumbnailPath = AssetDatabase.GUIDToAssetPath("c7a6f55b56f65934e9489e35a10808cf");
+            thumbnail = LoadNoThumbnailImage();
             OnSdkPanelEnable(null, EventArgs.Empty);
             VRCSdkControlPanel.OnSdkPanelEnable += OnSdkPanelEnable;
             VRCSdkControlPanel.OnSdkPanelDisable += OnSdkPanelDisable;
-            VRCSdkControlPanel.InitAccount();
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             mainContext.Post(_ => OnChangeBlueprintId(targetBlueprintId), null);
         }
 
@@ -129,6 +163,8 @@ namespace KRT.VRCQuestTools.Ndmf
             sdkBuilder = null;
             VRCSdkControlPanel.OnSdkPanelEnable -= OnSdkPanelEnable;
             VRCSdkControlPanel.OnSdkPanelDisable -= OnSdkPanelDisable;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            thumbnail = null;
         }
 
         private void OnFocus()
@@ -148,17 +184,45 @@ namespace KRT.VRCQuestTools.Ndmf
         private void OnGUI()
         {
             Views.EditorGUIUtility.LanguageSelector();
+            Views.EditorGUIUtility.UpdateNotificationPanel();
+
+            Views.EditorGUIUtility.HorizontalDivider(2);
+
             var i18n = VRCQuestToolsSettings.I18nResource;
 
-            EditorGUILayout.Space();
+            if (IsPlayMode)
+            {
+                EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowExitPlayMode, MessageType.Warning);
+                return;
+            }
 
-            EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowDescription, MessageType.None);
+            if (sdkBuilder == null)
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowRequiresControlPanel, MessageType.Warning);
+                    if (GUILayout.Button(i18n.OpenLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                    {
+                        OnClickOpenSdkControlPanel();
+                    }
+                }
+                return;
+            }
 
-            EditorGUILayout.Space();
+            if (PrefabStageUtility.GetCurrentPrefabStage() != null)
+            {
+                EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowExitPrefabStage, MessageType.Warning);
+                return;
+            }
 
             using (new EditorGUI.DisabledScope(!CanSelectAvatar))
             {
                 var avatars = FindActiveAvatarsFromScene();
+                if (avatars.Length == 0)
+                {
+                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowNoActiveAvatarsFound, MessageType.Warning);
+                    return;
+                }
                 var selectedAvatarIndex = targetAvatar != null ? Array.IndexOf(avatars, targetAvatar) : -1;
                 if (selectedAvatarIndex < 0)
                 {
@@ -166,6 +230,10 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 selectedAvatarIndex = EditorGUILayout.Popup(i18n.AvatarLabel, selectedAvatarIndex, avatars.Select(a => a.name).ToArray());
                 targetAvatar = avatars[selectedAvatarIndex];
+                if (targetAvatar.GetComponentInChildren<IVRCQuestToolsNdmfComponent>() == null && targetAvatar.GetComponentInChildren<AvatarConverterSettings>() == null)
+                {
+                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowNoNdmfComponentsFound, MessageType.Warning);
+                }
 
                 var newBlueprintId = targetAvatar.GetComponent<PipelineManager>().blueprintId;
                 if (newBlueprintId != targetBlueprintId)
@@ -188,12 +256,14 @@ namespace KRT.VRCQuestTools.Ndmf
                         string desc;
                         string tags;
                         string visibility;
+                        string newThumbnailUri;
                         if (uploadedVrcAvatar.HasValue)
                         {
                             name = uploadedVrcAvatar.Value.Name;
                             desc = uploadedVrcAvatar.Value.Description;
                             tags = string.Join(", ", uploadedVrcAvatar.Value.Tags.Select(t => VRCSDKUtility.GetContentTagLabel(t)).ToArray());
                             visibility = uploadedVrcAvatar.Value.ReleaseStatus;
+                            newThumbnailUri = uploadedVrcAvatar.Value.ThumbnailImageUrl;
                         }
                         else
                         {
@@ -201,7 +271,40 @@ namespace KRT.VRCQuestTools.Ndmf
                             desc = AvatarBuilderSessionState.AvatarDesc;
                             tags = AvatarBuilderSessionState.AvatarTags;
                             visibility = AvatarBuilderSessionState.AvatarReleaseStatus;
+                            newThumbnailUri = AvatarBuilderSessionState.AvatarThumbPath;
+
+                            if (string.IsNullOrEmpty(newThumbnailUri))
+                            {
+                                newThumbnailUri = noImageThumbnailPath;
+                            }
                         }
+
+                        if (thumbnail == null)
+                        {
+                            thumbnail = LoadNoThumbnailImage();
+                        }
+                        if (thumbnailUri != newThumbnailUri)
+                        {
+                            if (uploadedVrcAvatar.HasValue)
+                            {
+                                VRCApi.GetImage(newThumbnailUri).ContinueWith(t =>
+                                {
+                                    var tex = t.Result;
+                                    if (tex != null)
+                                    {
+                                        thumbnail = tex;
+                                        Repaint();
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                var data = System.IO.File.ReadAllBytes(newThumbnailUri);
+                                thumbnail.LoadImage(data);
+                            }
+                            thumbnailUri = newThumbnailUri;
+                        }
+
                         if (name == string.Empty)
                         {
                             name = "(No name)";
@@ -216,6 +319,17 @@ namespace KRT.VRCQuestTools.Ndmf
                         EditorGUILayout.LabelField("Description", desc, EditorStyles.wordWrappedLabel);
                         EditorGUILayout.LabelField("Content Tags", string.Join(", ", tagLabels), EditorStyles.wordWrappedLabel);
                         EditorGUILayout.LabelField("Visibility", visibility, EditorStyles.wordWrappedLabel);
+
+                        const int thumbnailHeight = 140;
+                        using (new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.PrefixLabel("Thumbnail");
+                            var texRect = EditorGUILayout.GetControlRect();
+                            texRect.height = thumbnailHeight;
+                            texRect.width = thumbnail.width * texRect.height / thumbnail.height;
+                            GUI.DrawTexture(texRect, thumbnail);
+                        }
+                        EditorGUILayout.Space(thumbnailHeight - EditorGUIUtility.singleLineHeight);
                     }
                 }
 
@@ -243,19 +357,6 @@ namespace KRT.VRCQuestTools.Ndmf
                             lastException = null;
                         }
                     }
-                }
-
-                if (sdkBuilder == null)
-                {
-                    using (new EditorGUILayout.HorizontalScope())
-                    {
-                        EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowRequiresControlPanel, MessageType.Warning);
-                        if (GUILayout.Button(i18n.OpenLabel, GUILayout.Height(38), GUILayout.Width(60)))
-                        {
-                            OnClickOpenSdkControlPanel();
-                        }
-                    }
-                    return;
                 }
 
                 SdkBuilderProgressBar();
@@ -295,7 +396,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     }
                 }
 
-                using (new EditorGUI.DisabledScope(IsBuilding))
+                using (new EditorGUI.DisabledScope(!CanStartManualBake))
                 {
                     EditorGUILayout.LabelField(i18n.AvatarBuilderWindowNdmfManualBakingLabel, EditorStyles.largeLabel);
                     EditorGUILayout.LabelField(i18n.AvatarBuilderWindowNdmfManualBakingDescription, EditorStyles.wordWrappedMiniLabel);
@@ -410,8 +511,20 @@ namespace KRT.VRCQuestTools.Ndmf
         }
 #endif
 
+        private void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state == PlayModeStateChange.EnteredEditMode)
+            {
+                OnFocus();
+            }
+        }
+
         private void OnSdkPanelEnable(object sender, EventArgs e)
         {
+            if (sdkBuilder != null)
+            {
+                return;
+            }
             if (VRCSdkControlPanel.TryGetBuilder(out sdkBuilder))
             {
                 sdkBuilder.OnSdkBuildProgress += OnSdkBuildProgress;
@@ -541,6 +654,14 @@ namespace KRT.VRCQuestTools.Ndmf
                 // Debug.LogException(e);
                 return null;
             }
+        }
+
+        private Texture2D LoadNoThumbnailImage()
+        {
+            var tex = new Texture2D(4, 4);
+            var data = System.IO.File.ReadAllBytes(noImageThumbnailPath);
+            tex.LoadImage(data);
+            return tex;
         }
     }
 }

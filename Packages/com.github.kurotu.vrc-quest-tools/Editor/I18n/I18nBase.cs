@@ -172,7 +172,10 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel { get; }
 
         // Avatar Builder
-        internal abstract string AvatarBuilderWindowDescription { get; }
+        internal abstract string AvatarBuilderWindowExitPlayMode { get; }
+        internal abstract string AvatarBuilderWindowExitPrefabStage { get; }
+        internal abstract string AvatarBuilderWindowNoActiveAvatarsFound { get; }
+        internal abstract string AvatarBuilderWindowNoNdmfComponentsFound { get; }
         internal abstract string AvatarBuilderWindowSucceededBuild { get; }
         internal abstract string AvatarBuilderWindowSucceededUpload { get; }
         internal abstract string AvatarBuilderWindowFailedBuild { get; }
