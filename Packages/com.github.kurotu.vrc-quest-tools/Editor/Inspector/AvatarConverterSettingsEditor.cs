@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools.Inspector
     /// Inspector for <see cref="AvatarConverterSettings"/>.
     /// </summary>
     [CustomEditor(typeof(AvatarConverterSettings))]
-    public class AvatarConverterSettingsEditor : Editor
+    public class AvatarConverterSettingsEditor : VRCQuestToolsEditorOnlyEditorBase<AvatarConverterSettings>
     {
         private AvatarConverterSettings converterSettings;
 
@@ -38,13 +38,8 @@ namespace KRT.VRCQuestTools.Inspector
         private PerformanceRating avatarDynamicsPerfLimit;
 
         /// <inheritdoc/>
-        public override void OnInspectorGUI()
+        public override void OnInspectorGUIInternal()
         {
-            Views.EditorGUIUtility.LanguageSelector();
-            Views.EditorGUIUtility.UpdateNotificationPanel();
-
-            Views.EditorGUIUtility.HorizontalDivider(2);
-
             i18n = VRCQuestToolsSettings.I18nResource;
             if (editorState == null)
             {

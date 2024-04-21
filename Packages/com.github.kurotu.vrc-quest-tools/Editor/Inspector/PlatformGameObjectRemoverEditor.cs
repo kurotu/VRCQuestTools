@@ -9,10 +9,10 @@ namespace KRT.VRCQuestTools.Inspector
     /// Editor for PlatformGameObjectRemover.
     /// </summary>
     [CustomEditor(typeof(PlatformGameObjectRemover))]
-    internal class PlatformGameObjectRemoverEditor : Editor
+    internal class PlatformGameObjectRemoverEditor : VRCQuestToolsEditorOnlyEditorBase<PlatformGameObjectRemover>
     {
         /// <inheritdoc/>
-        public override void OnInspectorGUI()
+        public override void OnInspectorGUIInternal()
         {
             Views.EditorGUIUtility.LanguageSelector();
             var i18n = VRCQuestToolsSettings.I18nResource;

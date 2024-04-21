@@ -9,22 +9,16 @@ namespace KRT.VRCQuestTools.Inspector
     /// Editor for PlatformComponentRemover.
     /// </summary>
     [CustomEditor(typeof(PlatformComponentRemover))]
-    internal class PlatformComponentRemoverEditor : Editor
+    internal class PlatformComponentRemoverEditor : VRCQuestToolsEditorOnlyEditorBase<PlatformComponentRemover>
     {
         private const float PCCheckboxWidth = 20f;
         private const float AndroidCheckboxWidth = 50f;
 
         /// <inheritdoc />
-        public override void OnInspectorGUI()
+        public override void OnInspectorGUIInternal()
         {
-            Views.EditorGUIUtility.LanguageSelector();
             var i18n = VRCQuestToolsSettings.I18nResource;
 
-            EditorGUILayout.Space();
-
-#if !VQT_HAS_NDMF
-            EditorGUILayout.HelpBox(i18n.ComponentRequiresNdmf, MessageType.Warning);
-#endif
             EditorGUILayout.HelpBox(i18n.PlatformComponentRemoverEditorDescription, MessageType.Info);
 
             EditorGUILayout.HelpBox(i18n.PlatformTargetSettingsIsRequiredToEnforcePlatform, MessageType.Info);

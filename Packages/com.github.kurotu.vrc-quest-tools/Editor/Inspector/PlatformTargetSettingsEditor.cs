@@ -11,19 +11,12 @@ namespace KRT.VRCQuestTools.Inspector
     /// Editor for PlatformTargetSettings.
     /// </summary>
     [CustomEditor(typeof(PlatformTargetSettings))]
-    internal class PlatformTargetSettingsEditor : Editor
+    internal class PlatformTargetSettingsEditor : VRCQuestToolsEditorOnlyEditorBase<PlatformTargetSettings>
     {
         /// <inheritdoc/>
-        public override void OnInspectorGUI()
+        public override void OnInspectorGUIInternal()
         {
-            Views.EditorGUIUtility.LanguageSelector();
             var i18n = VRCQuestToolsSettings.I18nResource;
-
-            EditorGUILayout.Space();
-
-#if !VQT_HAS_NDMF
-            EditorGUILayout.HelpBox(i18n.ComponentRequiresNdmf, MessageType.Warning);
-#endif
             EditorGUILayout.HelpBox(i18n.PlatformTargetSettingsEditorDescription, MessageType.Info);
 
             var targetComponent = (Component)target;

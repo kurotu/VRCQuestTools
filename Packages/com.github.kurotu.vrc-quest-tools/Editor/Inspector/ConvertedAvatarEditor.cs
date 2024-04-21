@@ -8,16 +8,13 @@ namespace KRT.VRCQuestTools.Inspector
     /// Editor for ConvertedAvatar.
     /// </summary>
     [CustomEditor(typeof(ConvertedAvatar))]
-    internal class ConvertedAvatarEditor : Editor
+    internal class ConvertedAvatarEditor : VRCQuestToolsEditorOnlyEditorBase<ConvertedAvatar>
     {
         /// <inheritdoc />
-        public override void OnInspectorGUI()
+        public override void OnInspectorGUIInternal()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
             EditorGUILayout.LabelField(i18n.ConvertedAvatarEditorMessage, EditorStyles.wordWrappedLabel);
-#if VQT_HAS_NDMF
-            EditorGUILayout.HelpBox(i18n.ConvertedAvatarEditorNDMFMessage, MessageType.Info);
-#endif
         }
     }
 }

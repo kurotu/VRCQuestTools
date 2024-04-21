@@ -11,17 +11,15 @@ namespace KRT.VRCQuestTools.Inspector
     /// Inspector for VertexColorRemover to provide "restore" function.
     /// </summary>
     [CustomEditor(typeof(VertexColorRemover))]
-    public class VertexColorRemoverEditor : Editor
+    public class VertexColorRemoverEditor : VRCQuestToolsEditorOnlyEditorBase<VertexColorRemover>
     {
         /// <summary>
         /// GUI callback.
         /// </summary>
-        public override void OnInspectorGUI()
+        public override void OnInspectorGUIInternal()
         {
             VertexColorRemover remover = target as VertexColorRemover;
             var i18n = VRCQuestToolsSettings.I18nResource;
-
-            EditorGUILayout.Space();
 
             EditorGUILayout.HelpBox(i18n.VertexColorRemoverEditorDescription, MessageType.Info);
 
