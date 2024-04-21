@@ -41,12 +41,6 @@ namespace KRT.VRCQuestTools.Ndmf
                         throw new System.InvalidOperationException("Unsupported unity build target: " + EditorUserBuildSettings.activeBuildTarget);
                 }
             }
-
-            // Enforce build target to Android if unity build target is Android.
-            if (EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android)
-            {
-                targetSettings.buildTarget = Models.BuildTarget.Android;
-            }
         }
     }
 }
