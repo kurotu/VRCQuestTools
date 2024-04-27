@@ -17,7 +17,8 @@ namespace KRT.VRCQuestTools.Ndmf
         protected override void Execute(BuildContext context)
         {
 #if !VQT_HAS_NDMF_ERROR_REPORT
-            var needsNdmf = context.AvatarRootObject.GetComponentInChildren<IVRCQuestToolsNdmfComponent>() != null;
+            var needsNdmf = context.AvatarRootObject.GetComponentInChildren<IVRCQuestToolsNdmfComponent>(true) != null
+                || context.AvatarRootObject.GetComponentInChildren<AvatarConverterSettings>(true) != null;
             if (needsNdmf)
             {
                 var version = "1.3.0";
