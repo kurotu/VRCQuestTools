@@ -215,8 +215,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal void GenerateAndroidTextures(Material[] materials, bool saveAsPng, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Textures";
-            Directory.CreateDirectory(saveDirectory);
-            AssetDatabase.Refresh();
+            if (saveAsPng)
+            {
+                Directory.CreateDirectory(saveDirectory);
+                AssetDatabase.Refresh();
+            }
 
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedTextures = new Dictionary<Material, Texture2D>();

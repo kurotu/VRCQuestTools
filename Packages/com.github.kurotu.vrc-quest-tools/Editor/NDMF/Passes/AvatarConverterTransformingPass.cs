@@ -26,10 +26,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
-            var assetContainerPath = AssetDatabase.GetAssetPath(context.AssetContainer);
-            var assetDirectory = Path.GetDirectoryName(assetContainerPath).Replace('\\', '/') + "/" + Path.GetFileNameWithoutExtension(assetContainerPath) + "_VQT";
-            Directory.CreateDirectory(assetDirectory);
-            VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, assetDirectory, new Models.VRChat.AvatarConverter.ProgressCallback()
+            VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
             {
                 onTextureProgress = (_, __, e, original, converted) =>
                 {
