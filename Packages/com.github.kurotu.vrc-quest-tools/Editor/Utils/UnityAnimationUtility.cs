@@ -159,7 +159,8 @@ namespace KRT.VRCQuestTools.Utils
             }
             else
             {
-                cloneController = (AnimatorController)Object.Instantiate(controller);
+                cloneController = DeepCopyAnimatorController((AnimatorController)controller);
+                cloneController.name = controller.name + "(Clone)";
             }
 
             // コピーしたコントローラーに修正したアニメーションクリップを反映
@@ -259,6 +260,194 @@ namespace KRT.VRCQuestTools.Utils
                 .Select(keyframe => (Material)keyframe.value); // マテリアルに変換
 
             return materials.Where(m => m != null).Distinct().ToArray();
+        }
+
+        private static AnimatorController DeepCopyAnimatorController(AnimatorController controller)
+        {
+            var newController = new AnimatorController();
+            newController.hideFlags = controller.hideFlags;
+            newController.layers = controller.layers.Select(layer =>
+            {
+                var newLayer = new AnimatorControllerLayer();
+                newLayer.avatarMask = layer.avatarMask;
+                newLayer.blendingMode = layer.blendingMode;
+                newLayer.defaultWeight = layer.defaultWeight;
+                newLayer.iKPass = layer.iKPass;
+                newLayer.name = layer.name;
+                newLayer.syncedLayerIndex = layer.syncedLayerIndex;
+                newLayer.stateMachine = DeepCopyStateMachine(layer.stateMachine);
+                return newLayer;
+            }).ToArray();
+            newController.name = controller.name;
+            newController.parameters = controller.parameters.Select(p =>
+            {
+                var newParam = new AnimatorControllerParameter();
+                newParam.defaultBool = p.defaultBool;
+                newParam.defaultFloat = p.defaultFloat;
+                newParam.defaultInt = p.defaultInt;
+                newParam.name = p.name;
+                newParam.type = p.type;
+                return newParam;
+            }).ToArray();
+
+            return newController;
+        }
+
+        private static AnimatorStateMachine DeepCopyStateMachine(AnimatorStateMachine stateMachine)
+        {
+            var newMachine = new AnimatorStateMachine();
+
+            newMachine.anyStatePosition = stateMachine.anyStatePosition;
+            newMachine.anyStateTransitions = stateMachine.anyStateTransitions.Select(DeepCopyAnimatorStateTransition).ToArray();
+            newMachine.behaviours = stateMachine.behaviours.Select(b =>
+            {
+                var newBehaviour = Object.Instantiate(b);
+                return newBehaviour;
+            }).ToArray();
+            newMachine.entryPosition = stateMachine.entryPosition;
+            newMachine.entryTransitions = stateMachine.entryTransitions.Select(DeepCopyAnimatorTransition).ToArray();
+            newMachine.exitPosition = stateMachine.exitPosition;
+            newMachine.hideFlags = stateMachine.hideFlags;
+            newMachine.name = stateMachine.name;
+            newMachine.parentStateMachinePosition = stateMachine.parentStateMachinePosition;
+            newMachine.stateMachines = stateMachine.stateMachines.Select(DeepCopyChildAnimatorStateMachine).ToArray();
+            newMachine.states = stateMachine.states.Select(DeepCopyChildAnimatorState).ToArray();
+
+            // remap transition destination
+            var stateMachineMap = stateMachine.stateMachines.Select((s, i) => (s.stateMachine, i)).ToDictionary(t => t.stateMachine, t => newMachine.stateMachines[t.i].stateMachine);
+            var stateMap = stateMachine.states.Select((s, i) => (s.state, i)).ToDictionary(t => t.state, t => newMachine.states[t.i].state);
+
+            newMachine.anyStateTransitions = newMachine.anyStateTransitions.Select(t =>
+            {
+                if (t.destinationState != null)
+                {
+                    t.destinationState = stateMap[t.destinationState];
+                }
+                if (t.destinationStateMachine != null)
+                {
+                    t.destinationStateMachine = stateMachineMap[t.destinationStateMachine];
+                }
+                return t;
+            }).ToArray();
+            newMachine.entryTransitions = newMachine.entryTransitions.Select(t =>
+            {
+                if (t.destinationState != null)
+                {
+                    t.destinationState = stateMap[t.destinationState];
+                }
+                if (t.destinationStateMachine != null)
+                {
+                    t.destinationStateMachine = stateMachineMap[t.destinationStateMachine];
+                }
+                return t;
+            }).ToArray();
+            newMachine.states = newMachine.states.Select(s =>
+            {
+                s.state.transitions = s.state.transitions.Select(t =>
+                {
+                    if (t.destinationState != null)
+                    {
+                        t.destinationState = stateMap[t.destinationState];
+                    }
+                    if (t.destinationStateMachine != null)
+                    {
+                        t.destinationStateMachine = stateMachineMap[t.destinationStateMachine];
+                    }
+                    return t;
+                }).ToArray();
+                return s;
+            }).ToArray();
+
+            return newMachine;
+        }
+
+        private static AnimatorStateTransition DeepCopyAnimatorStateTransition(AnimatorStateTransition transition)
+        {
+            var newTransition = new AnimatorStateTransition();
+            newTransition.canTransitionToSelf = transition.canTransitionToSelf;
+            newTransition.conditions = transition.conditions.Select(c =>
+            {
+                var newCondition = new AnimatorCondition();
+                newCondition.mode = c.mode;
+                newCondition.parameter = c.parameter;
+                newCondition.threshold = c.threshold;
+                return newCondition;
+            }).ToArray();
+            newTransition.destinationState = transition.destinationState;
+            newTransition.destinationStateMachine = transition.destinationStateMachine;
+            newTransition.duration = transition.duration;
+            newTransition.exitTime = transition.exitTime;
+            newTransition.hasExitTime = transition.hasExitTime;
+            newTransition.hasFixedDuration = transition.hasFixedDuration;
+            newTransition.hideFlags = transition.hideFlags;
+            newTransition.interruptionSource = transition.interruptionSource;
+            newTransition.isExit = transition.isExit;
+            newTransition.mute = transition.mute;
+            newTransition.name = transition.name;
+            newTransition.offset = transition.offset;
+            newTransition.orderedInterruption = transition.orderedInterruption;
+            newTransition.solo = transition.solo;
+            return newTransition;
+        }
+
+        private static AnimatorTransition DeepCopyAnimatorTransition(AnimatorTransition transition)
+        {
+            var newTransition = new AnimatorTransition();
+            newTransition.conditions = transition.conditions.Select(c =>
+            {
+                var newCondition = new AnimatorCondition();
+                newCondition.mode = c.mode;
+                newCondition.parameter = c.parameter;
+                newCondition.threshold = c.threshold;
+                return newCondition;
+            }).ToArray();
+            newTransition.destinationState = transition.destinationState;
+            newTransition.destinationStateMachine = transition.destinationStateMachine;
+            newTransition.hideFlags = transition.hideFlags;
+            newTransition.isExit = transition.isExit;
+            newTransition.mute = transition.mute;
+            newTransition.name = transition.name;
+            newTransition.solo = transition.solo;
+            return newTransition;
+        }
+
+        private static ChildAnimatorState DeepCopyChildAnimatorState(ChildAnimatorState state)
+        {
+            var newState = new ChildAnimatorState();
+            newState.position = state.position;
+            newState.state = new AnimatorState();
+            newState.state.behaviours = state.state.behaviours.Select(b =>
+            {
+                var newBehaviour = Object.Instantiate(b);
+                return newBehaviour;
+            }).ToArray();
+            newState.state.cycleOffset = state.state.cycleOffset;
+            newState.state.cycleOffsetParameter = state.state.cycleOffsetParameter;
+            newState.state.cycleOffsetParameterActive = state.state.cycleOffsetParameterActive;
+            newState.state.hideFlags = state.state.hideFlags;
+            newState.state.iKOnFeet = state.state.iKOnFeet;
+            newState.state.mirror = state.state.mirror;
+            newState.state.mirrorParameter = state.state.mirrorParameter;
+            newState.state.mirrorParameterActive = state.state.mirrorParameterActive;
+            newState.state.motion = state.state.motion;
+            newState.state.name = state.state.name;
+            newState.state.speed = state.state.speed;
+            newState.state.speedParameter = state.state.speedParameter;
+            newState.state.speedParameterActive = state.state.speedParameterActive;
+            newState.state.tag = state.state.tag;
+            newState.state.timeParameter = state.state.timeParameter;
+            newState.state.timeParameterActive = state.state.timeParameterActive;
+            newState.state.transitions = state.state.transitions.Select(DeepCopyAnimatorStateTransition).ToArray();
+            newState.state.writeDefaultValues = state.state.writeDefaultValues;
+            return newState;
+        }
+
+        private static ChildAnimatorStateMachine DeepCopyChildAnimatorStateMachine(ChildAnimatorStateMachine stateMachine)
+        {
+            var newStateMachine = new ChildAnimatorStateMachine();
+            newStateMachine.position = stateMachine.position;
+            newStateMachine.stateMachine = DeepCopyStateMachine(stateMachine.stateMachine);
+            return newStateMachine;
         }
     }
 }
