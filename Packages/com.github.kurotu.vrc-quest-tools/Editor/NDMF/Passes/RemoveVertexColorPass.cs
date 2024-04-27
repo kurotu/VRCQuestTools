@@ -35,8 +35,10 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     continue;
                 }
-                smr.sharedMesh = Object.Instantiate(smr.sharedMesh);
-                smr.sharedMesh.colors32 = null;
+                var newMesh = Object.Instantiate(smr.sharedMesh);
+                newMesh.colors32 = null;
+                ObjectRegistry.RegisterReplacedObject(smr.sharedMesh, newMesh);
+                smr.sharedMesh = newMesh;
             }
 
             var mfs = context.AvatarRootObject.GetComponentsInChildren<MeshFilter>(true);
@@ -47,8 +49,10 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     continue;
                 }
-                mf.sharedMesh = Object.Instantiate(mf.sharedMesh);
-                mf.sharedMesh.colors32 = null;
+                var newMesh = Object.Instantiate(mf.sharedMesh);
+                newMesh.colors32 = null;
+                ObjectRegistry.RegisterReplacedObject(mf.sharedMesh, newMesh);
+                mf.sharedMesh = newMesh;
             }
         }
 
