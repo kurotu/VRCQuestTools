@@ -210,7 +210,7 @@ namespace KRT.VRCQuestTools.Ndmf
                         OnClickOpenSdkControlPanel();
                     }
                 }
-                return;
+                EditorGUILayout.Space();
             }
 
             if (PrefabStageUtility.GetCurrentPrefabStage() != null)
@@ -368,36 +368,30 @@ namespace KRT.VRCQuestTools.Ndmf
                 EditorGUILayout.Space();
 
                 var isAndroidEditor = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android;
-                using (new EditorGUI.DisabledScope(!CanStartLocalBuild))
+                using (new EditorGUI.DisabledScope(!CanStartLocalBuild || isAndroidEditor))
                 {
-                    using (new EditorGUI.DisabledScope(isAndroidEditor))
+                    EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOfflineTestingLabel, EditorStyles.largeLabel);
+                    EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOfflineTestingDescription(targetAvatar.name), EditorStyles.wordWrappedMiniLabel);
+                    if (GUILayout.Button("Build & Test on PC"))
                     {
-                        EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOfflineTestingLabel, EditorStyles.largeLabel);
-                        EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOfflineTestingDescription(targetAvatar.name), EditorStyles.wordWrappedMiniLabel);
-                        if (GUILayout.Button("Build & Test on PC"))
-                        {
-                            OnClickBuildAndTestOnPC();
-                        }
-                        EditorGUILayout.Space();
+                        OnClickBuildAndTestOnPC();
                     }
+                    EditorGUILayout.Space();
                 }
 
-                using (new EditorGUI.DisabledScope(!CanStartUpload))
+                using (new EditorGUI.DisabledScope(!CanStartUpload || !isAndroidEditor))
                 {
-                    using (new EditorGUI.DisabledScope(!isAndroidEditor))
+                    EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingLabel, EditorStyles.largeLabel);
+                    EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingDescription, EditorStyles.wordWrappedMiniLabel);
+                    if (!uploadedVrcAvatar.HasValue && (string.IsNullOrEmpty(AvatarBuilderSessionState.AvatarName) || string.IsNullOrEmpty(AvatarBuilderSessionState.AvatarThumbPath)))
                     {
-                        EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingLabel, EditorStyles.largeLabel);
-                        EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingDescription, EditorStyles.wordWrappedMiniLabel);
-                        if (!uploadedVrcAvatar.HasValue && (string.IsNullOrEmpty(AvatarBuilderSessionState.AvatarName) || string.IsNullOrEmpty(AvatarBuilderSessionState.AvatarThumbPath)))
-                        {
-                            EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowRequiresAvatarNameAndThumb, MessageType.Error);
-                        }
-                        if (GUILayout.Button("Build & Publish for Android"))
-                        {
-                            OnClickBuildAndPublishForAndroid();
-                        }
-                        EditorGUILayout.Space();
+                        EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowRequiresAvatarNameAndThumb, MessageType.Error);
                     }
+                    if (GUILayout.Button("Build & Publish for Android"))
+                    {
+                        OnClickBuildAndPublishForAndroid();
+                    }
+                    EditorGUILayout.Space();
                 }
 
                 using (new EditorGUI.DisabledScope(!CanStartManualBake))
