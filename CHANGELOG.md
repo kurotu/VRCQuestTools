@@ -13,9 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] `VQT Platform Target Settings` component to specify the target platform for `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
 - [NDMF] Warning message for using unsupported texture formats.
 
-### Changed
-- [NDMF] Require NDMF 1.3.0 or later when using NDMF related features.
-
 ### Removed
 - [NDMF] `Build Target` parameter from `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
 

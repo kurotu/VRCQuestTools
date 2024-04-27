@@ -21,10 +21,20 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Configure()
         {
+#if !VQT_HAS_NDMF_ERROR_REPORT
+            InPhase(BuildPhase.Resolving)
+                .Run("Clear report window", ctx =>
+                {
+                    if (UnityEditor.EditorWindow.HasOpenInstances<NdmfReportWindow>())
+                    {
+                        NdmfReportWindow.Clear();
+                    }
+                });
+#endif
+
             InPhase(BuildPhase.Resolving)
                 .BeforePlugin("dev.logilabo.virtuallens2.apply-non-destructive") // need to configure vlens2.
-                .Run(CheckDependenciesPass.Instance)
-                .Then.Run(BuildTargetConfigurationPass.Instance)
+                .Run(BuildTargetConfigurationPass.Instance)
                 .Then.Run(PlatformGameObjectRemoverPass.Instance)
                 .Then.Run(PlatformComponentRemoverPass.Instance)
                 .Then.Run(AvatarConverterResolvingPass.Instance);

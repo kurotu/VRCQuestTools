@@ -39,6 +39,12 @@ namespace KRT.VRCQuestTools.Ndmf.Dummy
         /// Gets DetailsSubst.
         /// </summary>
         public abstract string[] DetailsSubst { get; }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return string.Format(Localizer.Get(DetailsKey), DetailsSubst);
+        }
     }
 }
 #endif

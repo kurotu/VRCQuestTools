@@ -12,6 +12,28 @@ namespace KRT.VRCQuestTools.Ndmf.Dummy
         /// <param name="e">Error.</param>
         internal static void ReportError(SimpleError e)
         {
+            var item = new NdmfReportWindow.ReportItem();
+            item.message = e.ToString();
+            switch (e.Severity)
+            {
+                case ErrorSeverity.Information:
+                    item.type = UnityEditor.MessageType.Info;
+                    break;
+                case ErrorSeverity.Warning:
+                    item.type = UnityEditor.MessageType.Warning;
+                    break;
+                case ErrorSeverity.NonFatal:
+                    item.type = UnityEditor.MessageType.Warning;
+                    break;
+                case ErrorSeverity.Error:
+                    item.type = UnityEditor.MessageType.Error;
+                    break;
+            }
+            NdmfReportWindow.AddReportItem(item);
+            if (e.Severity == ErrorSeverity.Error)
+            {
+                throw new System.Exception(e.ToString());
+            }
         }
     }
 }
