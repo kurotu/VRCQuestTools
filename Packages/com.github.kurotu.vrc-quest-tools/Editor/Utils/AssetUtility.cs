@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
@@ -35,6 +36,73 @@ namespace KRT.VRCQuestTools.Utils
         private const string LilToonPackageJsonGUID = "397d2fa9e93fb5d44a9540d5f01437fc";
 
         private const int MinimumTextureSize = 4; // needs 4x4 for DXT.
+
+        private static readonly HashSet<TextureFormat> UncompressedFormats = new HashSet<TextureFormat>
+        {
+            TextureFormat.Alpha8,
+            TextureFormat.ARGB32,
+            TextureFormat.ARGB4444,
+            TextureFormat.BGRA32,
+            TextureFormat.R16,
+            TextureFormat.R8,
+            TextureFormat.RFloat,
+            TextureFormat.RG16,
+            TextureFormat.RG32,
+            TextureFormat.RGB24,
+            TextureFormat.RGB48,
+            TextureFormat.RGB565,
+            TextureFormat.RGB9e5Float,
+            TextureFormat.RGBA32,
+            TextureFormat.RGBA4444,
+            TextureFormat.RGBA64,
+            TextureFormat.RGBAFloat,
+            TextureFormat.RGBAHalf,
+            TextureFormat.RGFloat,
+            TextureFormat.RGHalf,
+            TextureFormat.RHalf,
+            TextureFormat.YUY2,
+        };
+
+        // https://docs.unity3d.com/2022.3/Documentation/Manual/class-TextureImporterOverride.html
+        private static readonly HashSet<TextureFormat> WindowsFormats = new HashSet<TextureFormat>
+        {
+            TextureFormat.BC4,
+            TextureFormat.BC5,
+            TextureFormat.BC6H,
+            TextureFormat.BC7,
+            TextureFormat.DXT1,
+            TextureFormat.DXT1Crunched,
+            TextureFormat.DXT5,
+            TextureFormat.DXT5Crunched,
+        };
+
+        // https://docs.unity3d.com/2022.3/Documentation/Manual/class-TextureImporterOverride.html
+        // Contains "partial" formats to simplify.
+        private static readonly HashSet<TextureFormat> AndroidFormats = new HashSet<TextureFormat>
+        {
+            TextureFormat.ASTC_4x4,
+            TextureFormat.ASTC_5x5,
+            TextureFormat.ASTC_6x6,
+            TextureFormat.ASTC_8x8,
+            TextureFormat.ASTC_10x10,
+            TextureFormat.ASTC_12x12,
+            TextureFormat.ASTC_HDR_4x4,
+            TextureFormat.ASTC_HDR_5x5,
+            TextureFormat.ASTC_HDR_6x6,
+            TextureFormat.ASTC_HDR_8x8,
+            TextureFormat.ASTC_HDR_10x10,
+            TextureFormat.ASTC_HDR_12x12,
+            TextureFormat.ETC2_RGB,
+            TextureFormat.ETC2_RGBA1,
+            TextureFormat.ETC2_RGBA8,
+            TextureFormat.ETC2_RGBA8Crunched,
+            TextureFormat.ETC_RGB4,
+            TextureFormat.ETC_RGB4Crunched,
+            TextureFormat.EAC_R,
+            TextureFormat.EAC_R_SIGNED,
+            TextureFormat.EAC_RG,
+            TextureFormat.EAC_RG_SIGNED,
+        };
 
         static AssetUtility()
         {
@@ -273,6 +341,26 @@ namespace KRT.VRCQuestTools.Utils
         internal static Texture2D CreateColorTexture(Color32 color)
         {
             return CreateColorTexture(color, 4, 4);
+        }
+
+        /// <summary>
+        /// Returns whether the texture format is supported by the build target.
+        /// </summary>
+        /// <param name="format">Texture format.</param>
+        /// <param name="buildTarget">Build target.</param>
+        /// <returns>true when the format is supported.</returns>
+        internal static bool IsSupportedTextureFormat(TextureFormat format, UnityEditor.BuildTarget buildTarget)
+        {
+            switch (buildTarget)
+            {
+                case UnityEditor.BuildTarget.StandaloneWindows:
+                case UnityEditor.BuildTarget.StandaloneWindows64:
+                    return UncompressedFormats.Contains(format) || WindowsFormats.Contains(format);
+                case UnityEditor.BuildTarget.Android:
+                    return UncompressedFormats.Contains(format) || AndroidFormats.Contains(format);
+                default:
+                    throw new NotSupportedException($"Unsupported build target: {buildTarget}");
+            }
         }
 
         /// <summary>

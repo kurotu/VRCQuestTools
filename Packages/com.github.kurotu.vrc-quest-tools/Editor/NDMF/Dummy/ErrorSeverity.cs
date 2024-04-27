@@ -17,6 +17,11 @@ namespace KRT.VRCQuestTools.Ndmf.Dummy
         Warning,
 
         /// <summary>
+        /// NonFatal.
+        /// </summary>
+        NonFatal,
+
+        /// <summary>
         /// Error.
         /// </summary>
         Error,
