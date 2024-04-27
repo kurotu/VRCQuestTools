@@ -12,6 +12,9 @@
 - [NDMF] `VQT Platform Target Settings` コンポーネントを追加して `VQT Platform Component Remover` および `VQT Platform GameObject Remover` コンポーネントの対象プラットフォームを指定する機能を追加
 - [NDMF] 非対応のテクスチャフォーマットを使用しているときに警告を表示
 
+### 変更
+- [NDMF] 頂点カラーを削除するときにメッシュを複製するように変更。元のメッシュは頂点カラーを維持
+
 ### 削除
 - [NDMF] `VQT Platform Component Remover` と `VQT Platform GameObject Remover` コンポーネントからビルドターゲットパラメータを削除
 

@@ -528,7 +528,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
                 vcr.includeChildren = true;
                 vcr.enabled = true;
-                vcr.RemoveVertexColor();
             }
 #endif
             var platformSettings = questAvatarObject.GetComponent<PlatformTargetSettings>();

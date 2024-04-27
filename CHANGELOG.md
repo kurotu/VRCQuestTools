@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] `VQT Platform Target Settings` component to specify the target platform for `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
 - [NDMF] Warning message for using unsupported texture formats.
 
+### Changed
+- [NDMF] Duplicate meshes when removing vertex colors. Original meshes keep vertex colors.
+
 ### Removed
 - [NDMF] `Build Target` parameter from `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
 

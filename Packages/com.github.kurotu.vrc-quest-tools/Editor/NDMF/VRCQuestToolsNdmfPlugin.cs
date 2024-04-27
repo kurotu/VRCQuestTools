@@ -44,6 +44,10 @@ namespace KRT.VRCQuestTools.Ndmf
                 .AfterPlugin("nadena.dev.modular-avatar") // convert built avatar
                 .Run(AvatarConverterTransformingPass.Instance);
 
+            InPhase(BuildPhase.Transforming)
+                .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control decimation
+                .Run(RemoveVertexColorPass.Instance);
+
             InPhase(BuildPhase.Optimizing)
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
                 .Run(RemoveUnsupportedComponentsPass.Instance)
