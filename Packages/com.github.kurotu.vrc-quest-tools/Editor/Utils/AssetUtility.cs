@@ -212,7 +212,7 @@ namespace KRT.VRCQuestTools.Utils
             var extension = Path.GetExtension(path).ToLower();
             if (extension == ".asset")
             {
-                return UnityEngine.Object.Instantiate(texture);
+                return texture;
             }
 
             var tex2 = LoadUncompressedTexture(path);
@@ -381,6 +381,32 @@ namespace KRT.VRCQuestTools.Utils
                 return false;
             }
             return importer.textureType == TextureImporterType.NormalMap;
+        }
+
+        /// <summary>
+        /// Destroys a texture if it's not an asset.
+        /// </summary>
+        /// <param name="texture">Texture.</param>
+        internal static void DestroyTexture(Texture texture)
+        {
+            if (texture == null)
+            {
+                return;
+            }
+
+            if (AssetDatabase.GetAssetPath(texture) != null)
+            {
+                return;
+            }
+
+            if (Application.isPlaying)
+            {
+                UnityEngine.Object.Destroy(texture);
+            }
+            else
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
         }
 
         /// <summary>

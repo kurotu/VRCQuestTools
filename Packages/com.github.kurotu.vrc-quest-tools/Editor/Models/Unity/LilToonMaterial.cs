@@ -271,12 +271,12 @@ namespace KRT.VRCQuestTools.Models.Unity
                 // Restore active render texture
                 RenderTexture.active = activeRenderTexture;
                 Object.DestroyImmediate(hsvgMaterial);
-                Object.DestroyImmediate(srcTexture);
-                Object.DestroyImmediate(srcMain2);
-                Object.DestroyImmediate(srcMain3);
-                Object.DestroyImmediate(srcMask2);
-                Object.DestroyImmediate(srcMask3);
-                Object.DestroyImmediate(dstTexture);
+                AssetUtility.DestroyTexture(srcTexture);
+                AssetUtility.DestroyTexture(srcMain2);
+                AssetUtility.DestroyTexture(srcMain3);
+                AssetUtility.DestroyTexture(srcMask2);
+                AssetUtility.DestroyTexture(srcMask3);
+                AssetUtility.DestroyTexture(dstTexture);
 
                 return outTexture;
             }
