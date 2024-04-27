@@ -78,6 +78,7 @@ namespace KRT.VRCQuestTools.Models
                             var format = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android ? TextureFormat.ASTC_6x6 : TextureFormat.DXT5;
                             EditorUtility.CompressTexture(texToWrite, format, TextureCompressionQuality.Best);
                             texture = UnityEngine.Object.Instantiate(texToWrite);
+                            texture.name = material.Material.name;
                         }
                     }
                 }
