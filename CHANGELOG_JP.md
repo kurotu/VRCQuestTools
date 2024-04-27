@@ -7,16 +7,16 @@
 ## [Unreleased]
 
 ### 追加
-- `Show Avatar Builder for Android` メニューを追加して NDMF で Android ビルドターゲット用にアバターをアップロードする機能を追加
-- NDMF と `VQT Avatar Converter Settings` コンポーネントによる非破壊的なアバター変換機能を追加
-- `VQT Platform Target Settings` コンポーネントを追加して `VQT Platform Component Remover` および `VQT Platform GameObject Remover` コンポーネントの対象プラットフォームを指定する機能を追加
-- 非対応のテクスチャフォーマットを使用しているときに警告を表示
+- [NDMF] `Show Avatar Builder for Android` メニューを追加して NDMF で Android ビルドターゲット用にアバターをアップロードする機能を追加
+- [NDMF] NDMF と `VQT Avatar Converter Settings` コンポーネントによる非破壊的なアバター変換機能を追加
+- [NDMF] `VQT Platform Target Settings` コンポーネントを追加して `VQT Platform Component Remover` および `VQT Platform GameObject Remover` コンポーネントの対象プラットフォームを指定する機能を追加
+- [NDMF] 非対応のテクスチャフォーマットを使用しているときに警告を表示
 
 ### 変更
-- NDMF 関連機能を使用する場合は NDMF 1.3.0 以降が必要
+- [NDMF] NDMF 関連機能を使用する場合は NDMF 1.3.0 以降が必要
 
 ### 削除
-- `VQT Platform Component Remover` と `VQT Platform GameObject Remover` コンポーネントからビルドターゲットパラメータを削除
+- [NDMF] `VQT Platform Component Remover` と `VQT Platform GameObject Remover` コンポーネントからビルドターゲットパラメータを削除
 
 ### 修正
 - 小さいテクスチャが 4x4 ではなく 2x2 で作成されていた問題を修正
