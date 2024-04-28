@@ -7,12 +7,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using VRC.Core;
 using VRC.Dynamics;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase;
@@ -353,7 +356,6 @@ namespace KRT.VRCQuestTools.Utils
         /// Assigns network ids to PhysBones.
         /// </summary>
         /// <param name="avatarDescriptor">Target avatar.</param>
-        /// <exception cref="NotImplementedException">VRCSDK dones't support Network IDs.</exception>
         /// <returns>Assigned network IDs.</returns>
         internal static (IEnumerable<NetworkIDPair> AllIDs, IEnumerable<NetworkIDPair> NewIDs) AssignNetworkIdsToPhysBones(VRC_AvatarDescriptor avatarDescriptor)
         {
@@ -364,6 +366,65 @@ namespace KRT.VRCQuestTools.Utils
 #else
             throw new NotImplementedException();
 #endif
+        }
+
+        /// <summary>
+        /// Assigns network ids to PhysBones by hash of hierarchy path.
+        /// </summary>
+        /// <param name="avatarDescriptor">Target avatar.</param>
+        /// <returns>Assigned network IDs.</returns>
+        internal static (IEnumerable<NetworkIDPair> AllIDs, IEnumerable<NetworkIDPair> NewIDs) AssignNetworkIdsToPhysBonesByHierarchyHash(VRC_AvatarDescriptor avatarDescriptor)
+        {
+            var netIDs = new List<INetworkID>();
+            var newIDs = new List<NetworkIDPair>();
+            using (var sha1 = SHA1.Create())
+            {
+                avatarDescriptor.GetNetworkIDObjects(netIDs);
+
+                // sort by condidate id
+                netIDs.Sort((a, b) =>
+                {
+                    var hashA = ComputeNetworkIDByHash(sha1, ((MonoBehaviour)a).transform.GetHierarchyPath(avatarDescriptor.transform));
+                    var hashB = ComputeNetworkIDByHash(sha1, ((MonoBehaviour)b).transform.GetHierarchyPath(avatarDescriptor.transform));
+                    return hashA - hashB;
+                });
+
+                foreach (var netID in netIDs)
+                {
+                    if (NetworkIDAssignment.FindID(netID, avatarDescriptor.NetworkIDCollection).HasValue)
+                    {
+                        continue;
+                    }
+                    var id = ComputeNetworkIDByHash(sha1, ((MonoBehaviour)netID).transform.GetHierarchyPath(avatarDescriptor.transform));
+                    while (avatarDescriptor.NetworkIDCollection.Any(p => p.ID == id))
+                    {
+                        id++;
+                        if (id > NetworkIDAssignment.MaxID)
+                        {
+                            id = NetworkIDAssignment.MinID;
+                        }
+                    }
+                    var pair = new NetworkIDPair { gameObject = ((MonoBehaviour)netID).gameObject, ID = id };
+                    avatarDescriptor.NetworkIDCollection.Add(pair);
+                    newIDs.Add(pair);
+                }
+            }
+            avatarDescriptor.NetworkIDCollection.RemoveAll((NetworkIDPair pair) => pair.gameObject == null);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(avatarDescriptor);
+
+            return (
+                netIDs.Select(n => new NetworkIDPair { gameObject = ((MonoBehaviour)n).gameObject, ID = NetworkIDAssignment.FindID(n, avatarDescriptor.NetworkIDCollection) ?? -1 }),
+                newIDs);
+
+            int ComputeNetworkIDByHash(HashAlgorithm algo, string str)
+            {
+                var hash = algo.ComputeHash(Encoding.UTF8.GetBytes(str));
+                hash[3] &= 0x7F; // clear sign bit
+                var hashInt = BitConverter.ToInt32(hash, 0);
+
+                var id = hashInt % (NetworkIDAssignment.MaxID - NetworkIDAssignment.MinID + 1) + NetworkIDAssignment.MinID;
+                return id;
+            }
         }
 
         /// <summary>

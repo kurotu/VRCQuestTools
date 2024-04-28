@@ -153,6 +153,14 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string ConvertedAvatarEditorMessage { get; }
         internal abstract string ConvertedAvatarEditorNDMFMessage { get; }
 
+        // Network ID Assigner
+        internal abstract string NetworkIDAssignerEditorDescription { get; }
+        internal abstract string NetworkIDAssignerEditorAssignmentMethodLabel { get; }
+        internal abstract string NetworkIDAssignerEditorAssignmentMethodHierachyHashLabel { get; }
+        internal abstract string NetworkIDAssignerEditorAssignmentMethodHierachyHashTooltip { get; }
+        internal abstract string NetworkIDAssignerEditorAssignmentMethodVRChatSDKLabel { get; }
+        internal abstract string NetworkIDAssignerEditorAssignmentMethodVRChatSDKTooltip { get; }
+
         // Platform Target Settings
         internal abstract string PlatformTargetSettingsEditorDescription { get; }
         internal abstract string PlatformTargetSettingsShouldBeAttachedToAvatarRoot { get; }

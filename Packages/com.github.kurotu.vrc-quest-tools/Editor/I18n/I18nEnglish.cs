@@ -155,6 +155,14 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertedAvatarEditorMessage => "This component indicates the avatar was converted by VRCQuestTools.";
         internal override string ConvertedAvatarEditorNDMFMessage => "Unsupported components will be removed in NDMF optimization phase.";
 
+        // Network ID Assigner
+        internal override string NetworkIDAssignerEditorDescription => "Assign Network IDs to the avatar's components such as PhysBones.";
+        internal override string NetworkIDAssignerEditorAssignmentMethodLabel => "Assignment Method";
+        internal override string NetworkIDAssignerEditorAssignmentMethodHierachyHashLabel => "Hierarchy Hash";
+        internal override string NetworkIDAssignerEditorAssignmentMethodHierachyHashTooltip => "Assign Network IDs based on hash of hierachy path from the avatar root.";
+        internal override string NetworkIDAssignerEditorAssignmentMethodVRChatSDKLabel => "VRChat SDK";
+        internal override string NetworkIDAssignerEditorAssignmentMethodVRChatSDKTooltip => "Assign Network IDs with VRChat SDK.";
+
         // Platform Target Settings
         internal override string PlatformTargetSettingsEditorDescription => "Platform Component Remover and Platform GameObjectRemover components are enforced to use a specific platform settings in NDMF build process.";
         internal override string PlatformTargetSettingsShouldBeAttachedToAvatarRoot => "PlatformTargetSettings component should be attached to the avatar root object.";

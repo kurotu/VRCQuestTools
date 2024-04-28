@@ -39,6 +39,9 @@ namespace KRT.VRCQuestTools.Ndmf
                 .Then.Run(PlatformComponentRemoverPass.Instance)
                 .Then.Run(AvatarConverterResolvingPass.Instance);
 
+            InPhase(BuildPhase.Generating)
+                .Run(AssignNetworkIDsPass.Instance);
+
             InPhase(BuildPhase.Transforming)
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
                 .AfterPlugin("nadena.dev.modular-avatar") // convert built avatar

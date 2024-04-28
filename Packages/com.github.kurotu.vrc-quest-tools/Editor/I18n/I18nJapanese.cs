@@ -154,6 +154,14 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertedAvatarEditorMessage => "このコンポーネントはアバターが VRCQuestTools で変換されたことを示します。";
         internal override string ConvertedAvatarEditorNDMFMessage => "非対応コンポーネントは NDMF の Optimization Phase で削除されます。";
 
+        // Network ID Assigner
+        internal override string NetworkIDAssignerEditorDescription => "アバター内のコンポーネント (PhysBoneなど) にネットワークIDを割り当てます。";
+        internal override string NetworkIDAssignerEditorAssignmentMethodLabel => "割り当て方法";
+        internal override string NetworkIDAssignerEditorAssignmentMethodHierachyHashLabel => "ヒエラルキーのハッシュ値";
+        internal override string NetworkIDAssignerEditorAssignmentMethodHierachyHashTooltip => "アバタールートからのヒエラルキーパスのハッシュ値を使用してネットワークIDを割り当てます。";
+        internal override string NetworkIDAssignerEditorAssignmentMethodVRChatSDKLabel => "VRChat SDK";
+        internal override string NetworkIDAssignerEditorAssignmentMethodVRChatSDKTooltip => "VRChat SDK の機能を使ってネットワークIDを割り当てます。";
+
         // Platform Target Settings
         internal override string PlatformTargetSettingsEditorDescription => "NDMFでのビルド時に Platform Component Remover および Platform GameObject Remover の設定を特定のプラットフォームに強制します。";
         internal override string PlatformTargetSettingsShouldBeAttachedToAvatarRoot => "Platform Target Settings はアバターのルートオブジェクトに設定してください。";
