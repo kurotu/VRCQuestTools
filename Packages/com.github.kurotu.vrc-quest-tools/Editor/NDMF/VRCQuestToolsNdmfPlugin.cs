@@ -51,8 +51,11 @@ namespace KRT.VRCQuestTools.Ndmf
             InPhase(BuildPhase.Optimizing)
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
                 .Run(RemoveUnsupportedComponentsPass.Instance)
-                .Then.Run(RemoveVRCQuestToolsComponentsPass.Instance)
-                .Then.Run(CheckTextureFormatPass.Instance);
+                .Then.Run(RemoveVRCQuestToolsComponentsPass.Instance);
+
+            InPhase(BuildPhase.Optimizing)
+                .AfterPlugin("com.anatawa12.avatar-optimizer")
+                .Run(CheckTextureFormatPass.Instance);
         }
     }
 }
