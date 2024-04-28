@@ -12,6 +12,8 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #else
 using UnityEditor.Experimental.SceneManagement;
+using UnityEditor.SceneManagement;
+
 #endif
 using UnityEditorInternal;
 using UnityEngine;
@@ -397,7 +399,11 @@ namespace KRT.VRCQuestTools.Inspector
 
         private void OnClickAssignNetIdsButton(VRC_AvatarDescriptor avatar)
         {
-            VRCSDKUtility.AssignNetworkIdsToPhysBones(avatar);
+            var (_, newIDs) = VRCSDKUtility.AssignNetworkIdsToPhysBones(avatar);
+            if (newIDs.Count() > 0)
+            {
+                EditorSceneManager.MarkSceneDirty(avatar.gameObject.scene);
+            }
         }
 
         private void OnClickRegenerateTexturesButton(VRC_AvatarDescriptor avatar, IMaterialConvertSettings convertSetting)

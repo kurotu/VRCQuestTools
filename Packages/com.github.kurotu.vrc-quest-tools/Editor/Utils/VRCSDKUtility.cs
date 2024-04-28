@@ -16,6 +16,7 @@ using UnityEngine.SceneManagement;
 using VRC.Dynamics;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase;
+using VRC.SDKBase.Network;
 
 #if VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
@@ -353,34 +354,13 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="avatarDescriptor">Target avatar.</param>
         /// <exception cref="NotImplementedException">VRCSDK dones't support Network IDs.</exception>
-        internal static void AssignNetworkIdsToPhysBones(VRC_AvatarDescriptor avatarDescriptor)
+        /// <returns>Assigned network IDs.</returns>
+        internal static (IEnumerable<NetworkIDPair> AllIDs, IEnumerable<NetworkIDPair> NewIDs) AssignNetworkIdsToPhysBones(VRC_AvatarDescriptor avatarDescriptor)
         {
 #if VQT_HAS_VRCSDK_BASE
-            var ids = avatarDescriptor.NetworkIDCollection;
-            var pbs = avatarDescriptor.GetComponentsInChildren(PhysBoneType, true)
-                .Select(c => new Reflection.PhysBone(c))
-                .OrderBy(pb => GetFullPathInHierarchy(pb.GameObject))
-                .ToArray();
-            var assignedIds = new HashSet<int>(ids.Select(oair => oair.ID));
-
-            int id = 10;
-            foreach (var pb in pbs)
-            {
-                while (assignedIds.Contains(id))
-                {
-                    id++;
-                }
-                var alreadyAssigned = ids.FirstOrDefault(pair => pair.gameObject == pb.GameObject) != null;
-                if (!alreadyAssigned)
-                {
-                    var pair = new VRC.SDKBase.Network.NetworkIDPair();
-                    pair.ID = id;
-                    pair.gameObject = pb.GameObject;
-                    avatarDescriptor.NetworkIDCollection.Add(pair);
-                    assignedIds.Add(id);
-                }
-            }
+            var result = NetworkIDAssignment.ConfigureNetworkIDs(avatarDescriptor);
             PrefabUtility.RecordPrefabInstancePropertyModifications(avatarDescriptor);
+            return result;
 #else
             throw new NotImplementedException();
 #endif
