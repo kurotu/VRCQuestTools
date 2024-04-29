@@ -36,6 +36,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SelectButtonLabel => "Select";
         internal override string ConvertButtonLabel => "Convert";
         internal override string AssignButtonLabel => "Assign";
+        internal override string AttachButtonLabel => "Attach";
         internal override string UpdateTexturesLabel => "Update Converted Android Textures";
         internal override string AdvancedConverterSettingsLabel => "Advanced Converter Settings";
         internal override string RemoveVertexColorLabel => "Remove Vertex Color from Meshes";
@@ -47,6 +48,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AnimationClipExceptionDialogMessage => "An error occured when converting Animation Clips. Aborted.";
         internal override string AnimatorControllerExceptionDialogMessage => "An error occured when converting Animator Controllers. Aborted.";
         internal override string InfoForNdmfConversion => "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Please use the Avatar Builder to avoid VRChat SDK limitation.";
+        internal override string InfoForNetworkIdAssigner => "You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object.";
         internal override string WarningForPerformance => $"Estimated performance rating is Very Poor. You can upload the converted avatar for Android platform, but there are following limitation.\n- Quest/PICO users see your fallback avatar by default, then need to change \"Avatar Display\" setting.\n- Android smartphone users can't see Very Poor avatars.";
         internal override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n" +
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
@@ -154,6 +156,14 @@ namespace KRT.VRCQuestTools.I18n
         // Converted Avatar
         internal override string ConvertedAvatarEditorMessage => "This component indicates the avatar was converted by VRCQuestTools.";
         internal override string ConvertedAvatarEditorNDMFMessage => "Unsupported components will be removed in NDMF optimization phase.";
+
+        // Network ID Assigner
+        internal override string NetworkIDAssignerEditorDescription => "Assign Network IDs to the avatar's components such as PhysBones.";
+        internal override string NetworkIDAssignerEditorAssignmentMethodLabel => "Assignment Method";
+        internal override string NetworkIDAssignerEditorAssignmentMethodHierachyHashLabel => "Hierarchy Hash";
+        internal override string NetworkIDAssignerEditorAssignmentMethodHierachyHashTooltip => "Assign Network IDs based on hash of hierachy path from the avatar root.";
+        internal override string NetworkIDAssignerEditorAssignmentMethodVRChatSDKLabel => "VRChat SDK";
+        internal override string NetworkIDAssignerEditorAssignmentMethodVRChatSDKTooltip => "Assign Network IDs with VRChat SDK.";
 
         // Platform Target Settings
         internal override string PlatformTargetSettingsEditorDescription => "Platform Component Remover and Platform GameObjectRemover components are enforced to use a specific platform settings in NDMF build process.";

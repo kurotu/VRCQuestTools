@@ -12,6 +12,8 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #else
 using UnityEditor.Experimental.SceneManagement;
+using UnityEditor.SceneManagement;
+
 #endif
 using UnityEditorInternal;
 using UnityEngine;
@@ -74,7 +76,7 @@ namespace KRT.VRCQuestTools.Inspector
                             }
                         }
                     }
-                    if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor))
+                    if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor) && avatar.GameObject.GetComponent<NetworkIDAssigner>() == null)
                     {
                         using (var horizontal = new EditorGUILayout.HorizontalScope())
                         {
@@ -84,6 +86,17 @@ namespace KRT.VRCQuestTools.Inspector
                                 OnClickAssignNetIdsButton(descriptor);
                             }
                         }
+
+#if VQT_HAS_NDMF
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.HelpBox(i18n.InfoForNetworkIdAssigner, MessageType.Info);
+                            if (GUILayout.Button(i18n.AttachButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                            {
+                                OnClickAttachNetworkIDAssignerButton(descriptor);
+                            }
+                        }
+#endif
                     }
 
                     var pbs = descriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
@@ -397,7 +410,17 @@ namespace KRT.VRCQuestTools.Inspector
 
         private void OnClickAssignNetIdsButton(VRC_AvatarDescriptor avatar)
         {
-            VRCSDKUtility.AssignNetworkIdsToPhysBones(avatar);
+            var (_, newIDs) = VRCSDKUtility.AssignNetworkIdsToPhysBones(avatar);
+            if (newIDs.Count() > 0)
+            {
+                EditorSceneManager.MarkSceneDirty(avatar.gameObject.scene);
+            }
+        }
+
+        private void OnClickAttachNetworkIDAssignerButton(VRC_AvatarDescriptor descriptor)
+        {
+            descriptor.gameObject.AddComponent<NetworkIDAssigner>();
+            PrefabUtility.RecordPrefabInstancePropertyModifications(descriptor.gameObject);
         }
 
         private void OnClickRegenerateTexturesButton(VRC_AvatarDescriptor avatar, IMaterialConvertSettings convertSetting)
