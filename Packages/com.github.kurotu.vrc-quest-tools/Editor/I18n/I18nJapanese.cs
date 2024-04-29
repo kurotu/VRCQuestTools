@@ -36,6 +36,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string SelectButtonLabel => "選択";
         internal override string ConvertButtonLabel => "変換";
         internal override string AssignButtonLabel => "割り当て";
+        internal override string AttachButtonLabel => "追加";
         internal override string UpdateTexturesLabel => "変換後のAndroid用テクスチャを更新";
         internal override string AdvancedConverterSettingsLabel => "高度な変換設定";
         internal override string RemoveVertexColorLabel => "メッシュから頂点カラーを削除";
@@ -51,6 +52,7 @@ namespace KRT.VRCQuestTools.I18n
             "別の Blueprint ID でのアップロードや Avatars 3.0 のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
         internal override string WarningForUnsupportedShaders => $"以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n「{GenerateAndroidTexturesLabel}」をオフにするとシェーダーのみを変更します。";
         internal override string InfoForNdmfConversion => "プロジェクトに Non-Destructive Modular Framework (NDMF) パッケージがある場合、アバターのビルド時に非破壊的に変換をすることができます。 VRChat SDK による制限を回避するため、専用の Avatar Builder を使用してください。";
+        internal override string InfoForNetworkIdAssigner => "アバターに Network ID Assigner コンポーネントを追加することで非破壊的にネットワークIDを割り当てることができます。";
         internal override string AlertForComponents => "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} は Dynamic Bone を PhysBone に変換しません。アバターを変換する前に PhysBone を設定してください。";
         internal override string AlertForMissingNetIds => "ネットワークIDの割り当てられていない PhysBones があります。 PC と Android で正しく同期させるため、ネットワークIDを割り当てた後でPC用のアバターを再度アップロードしてください。";

@@ -36,6 +36,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string SelectButtonLabel { get; }
         internal abstract string ConvertButtonLabel { get; }
         internal abstract string AssignButtonLabel { get; }
+        internal abstract string AttachButtonLabel { get; }
         internal abstract string UpdateTexturesLabel { get; }
         internal abstract string AdvancedConverterSettingsLabel { get; }
         internal abstract string RemoveVertexColorLabel { get; }
@@ -47,6 +48,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AnimationClipExceptionDialogMessage { get; }
         internal abstract string AnimatorControllerExceptionDialogMessage { get; }
         internal abstract string InfoForNdmfConversion { get; }
+        internal abstract string InfoForNetworkIdAssigner { get; }
         internal abstract string WarningForPerformance { get; }
         internal abstract string WarningForAppearance { get; }
         internal abstract string WarningForUnsupportedShaders { get; }
