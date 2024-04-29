@@ -18,6 +18,7 @@ using UnityEngine.SceneManagement;
 using VRC.Core;
 using VRC.Dynamics;
 using VRC.SDK3.Dynamics.PhysBone.Components;
+using VRC.SDK3A.Editor;
 using VRC.SDKBase;
 using VRC.SDKBase.Network;
 
@@ -110,6 +111,8 @@ namespace KRT.VRCQuestTools.Utils
         private static readonly Regex VpmSdk3DemoPattern = new Regex($"{VpmSdk3DemoFolder}/.*", RegexOptions.Compiled);
         private static readonly Regex VpmBetaSdk3ProxyAnimPattern = new Regex("Assets/Samples/VRChat SDK - Avatars/.*/AV3 Demo Assets/Animation/ProxyAnim/.*\\.anim", RegexOptions.Compiled);
         private static readonly Regex VpmBetaSdk3DemoPattern = new Regex("Assets/Samples/VRChat SDK - Avatars/.*/AV3 Demo Assets/.*", RegexOptions.Compiled);
+
+        private static readonly FieldInfo SdkControlPanelSelectedAvatarField = typeof(VRCSdkControlPanelAvatarBuilder).GetField("_selectedAvatar", BindingFlags.NonPublic | BindingFlags.Static);
 
         /// <summary>
         /// Whether the game object is a VRC avatar root.
@@ -608,6 +611,19 @@ namespace KRT.VRCQuestTools.Utils
                 default:
                     return tag;
             }
+        }
+
+        /// <summary>
+        /// Gets the selected avatar in the SDK control panel.
+        /// </summary>
+        /// <returns>Selected avatgar.</returns>
+        internal static VRC_AvatarDescriptor GetSdkControlPanelSelectedAvatar()
+        {
+            if (SdkControlPanelSelectedAvatarField == null)
+            {
+                throw new NotSupportedException("SdkControlPanelSelectedAvatarField is null: Incompatible SDK.");
+            }
+            return (VRC_AvatarDescriptor)SdkControlPanelSelectedAvatarField.GetValue(null);
         }
 
         /// <summary>

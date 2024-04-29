@@ -2,6 +2,7 @@
     "name": "VRCQuestTools-Editor",
     "references": [
         "VRCQuestTools",
+        "VRC.SDK3A.Editor",
         "nadena.dev.modular-avatar.core"
     ],
     "includePlatforms": [

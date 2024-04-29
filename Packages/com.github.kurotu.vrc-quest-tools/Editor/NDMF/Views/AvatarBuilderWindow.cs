@@ -15,6 +15,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.Core;
 using VRC.SDK3A.Editor;
+using VRC.SDKBase;
 using VRC.SDKBase.Editor;
 using VRC.SDKBase.Editor.Api;
 
@@ -26,7 +27,7 @@ namespace KRT.VRCQuestTools.Ndmf
     internal class AvatarBuilderWindow : EditorWindow
     {
         private IVRCSdkAvatarBuilderApi sdkBuilder;
-        private GameObject targetAvatar;
+        private VRC_AvatarDescriptor targetAvatar;
         private string targetBlueprintId;
         private VRCAvatar? uploadedVrcAvatar;
 
@@ -82,7 +83,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     return false;
                 }
-                if (!targetAvatar.activeInHierarchy)
+                if (!targetAvatar.gameObject.activeInHierarchy)
                 {
                     return false;
                 }
@@ -227,13 +228,26 @@ namespace KRT.VRCQuestTools.Ndmf
                     EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowNoActiveAvatarsFound, MessageType.Warning);
                     return;
                 }
-                var selectedAvatarIndex = targetAvatar != null ? Array.IndexOf(avatars, targetAvatar) : -1;
-                if (selectedAvatarIndex < 0)
+
+                EditorGUILayout.LabelField(i18n.AvatarBuilderWindowSelectAvatar, EditorStyles.wordWrappedLabel);
+                EditorGUILayout.Space();
+                try
                 {
-                    selectedAvatarIndex = 0;
+                    targetAvatar = VRCSDKUtility.GetSdkControlPanelSelectedAvatar();
                 }
-                selectedAvatarIndex = EditorGUILayout.Popup(i18n.AvatarLabel, selectedAvatarIndex, avatars.Select(a => a.name).ToArray());
-                targetAvatar = avatars[selectedAvatarIndex];
+                catch (NotSupportedException)
+                {
+                    EditorGUILayout.HelpBox(i18n.IncompatibleSDK, MessageType.Error);
+                    return;
+                }
+                if (targetAvatar == null)
+                {
+                    return;
+                }
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.ObjectField("Selected Avatar", targetAvatar, targetAvatar.GetType(), true);
+                }
                 if (targetAvatar.GetComponentInChildren<IVRCQuestToolsNdmfComponent>() == null && targetAvatar.GetComponentInChildren<AvatarConverterSettings>() == null)
                 {
                     EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowNoNdmfComponentsFound, MessageType.Warning);
@@ -473,7 +487,7 @@ namespace KRT.VRCQuestTools.Ndmf
             SetBuildTarget(Models.BuildTarget.Android);
 
             var avatar = targetAvatar;
-            var task = BuildAndTest(avatar);
+            var task = BuildAndTest(avatar.gameObject);
             task.ContinueWith(t =>
             {
                 SetBuildTarget(Models.BuildTarget.Auto);
@@ -486,7 +500,7 @@ namespace KRT.VRCQuestTools.Ndmf
             SetBuildTarget(Models.BuildTarget.Android);
 
             var avatar = targetAvatar;
-            var task = BuildAndPublish(avatar);
+            var task = BuildAndPublish(avatar.gameObject);
             task.ContinueWith(t =>
             {
                 SetBuildTarget(Models.BuildTarget.Auto);
@@ -500,7 +514,7 @@ namespace KRT.VRCQuestTools.Ndmf
             SetBuildTarget(Models.BuildTarget.Android);
             try
             {
-                nadena.dev.ndmf.AvatarProcessor.ProcessAvatarUI(targetAvatar);
+                nadena.dev.ndmf.AvatarProcessor.ProcessAvatarUI(targetAvatar.gameObject);
             }
             finally
             {

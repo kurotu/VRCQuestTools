@@ -25,6 +25,8 @@ namespace KRT.VRCQuestTools.I18n
 
         internal abstract string Maximum { get; }
 
+        internal abstract string IncompatibleSDK { get; }
+
         // Convert Avatar for Quest
         internal abstract string ExitPlayModeToEdit { get; }
         internal abstract string BeingConvertSettingsButtonLabel { get; }
@@ -186,6 +188,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AvatarBuilderWindowExitPlayMode { get; }
         internal abstract string AvatarBuilderWindowExitPrefabStage { get; }
         internal abstract string AvatarBuilderWindowNoActiveAvatarsFound { get; }
+        internal abstract string AvatarBuilderWindowSelectAvatar { get; }
         internal abstract string AvatarBuilderWindowNoNdmfComponentsFound { get; }
         internal abstract string AvatarBuilderWindowSucceededBuild { get; }
         internal abstract string AvatarBuilderWindowSucceededUpload { get; }

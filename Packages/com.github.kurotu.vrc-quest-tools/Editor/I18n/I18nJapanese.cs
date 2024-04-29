@@ -24,6 +24,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string RemoveLabel => "削除";
 
         internal override string Maximum => "最大";
+        internal override string IncompatibleSDK => "非対応の VRChat SDK です。報告をお願いします。";
 
         // Convert Avatar for Quest
         internal override string ExitPlayModeToEdit => "編集するには再生モードを終了してください。";
@@ -187,6 +188,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarBuilderWindowExitPlayMode => "アバターをビルドするには Play モードを終了してください。";
         internal override string AvatarBuilderWindowExitPrefabStage => "アバターをビルドするには Prefab ステージを終了してください。";
         internal override string AvatarBuilderWindowNoActiveAvatarsFound => "シーン内にアクティブなアバターがありません。";
+        internal override string AvatarBuilderWindowSelectAvatar => "VRChat SDK コントロールパネルでアバターを選択してください。";
         internal override string AvatarBuilderWindowNoNdmfComponentsFound => "アバターに VRCQuestTools のコンポーネントがありません。";
         internal override string AvatarBuilderWindowSucceededBuild => "ビルドに成功しました。";
         internal override string AvatarBuilderWindowSucceededUpload => "アップロードに成功しました。";

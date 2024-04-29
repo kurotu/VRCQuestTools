@@ -25,6 +25,8 @@ namespace KRT.VRCQuestTools.I18n
 
         internal override string Maximum => "Maximum";
 
+        internal override string IncompatibleSDK => "Incompatible VRChat SDK. Please report.";
+
         // Convert Avatar for Quest
         internal override string ExitPlayModeToEdit => "Exit play mode to edit.";
         internal override string BeingConvertSettingsButtonLabel => $"Begin Converter Settings";
@@ -188,6 +190,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarBuilderWindowExitPlayMode => "Exit play mode to build the avatar.";
         internal override string AvatarBuilderWindowExitPrefabStage => "Exit prefab stage to build the avatar.";
         internal override string AvatarBuilderWindowNoActiveAvatarsFound => "No active avatars in the scene.";
+        internal override string AvatarBuilderWindowSelectAvatar => "Select an avatar to build in VRChat SDK Control Panel.";
         internal override string AvatarBuilderWindowNoNdmfComponentsFound => "No VRCQuestTools components found in the avatar.";
 
         internal override string AvatarBuilderWindowSucceededBuild => "Succeeded to build the avatar.";
