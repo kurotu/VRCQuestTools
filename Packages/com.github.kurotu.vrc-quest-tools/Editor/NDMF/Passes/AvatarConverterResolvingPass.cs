@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.Ndmf
             switch (buildTarget)
             {
                 case Models.BuildTarget.PC:
-                    Object.DestroyImmediate(converterSettings);
+                    // do nothing
                     break;
                 case Models.BuildTarget.Android:
                     VRCQuestTools.AvatarConverter.PrepareConvertForQuestInPlace(converterSettings);

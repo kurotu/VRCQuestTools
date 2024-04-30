@@ -21,6 +21,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     ?? ctx.AvatarRootObject.AddComponent<PlatformTargetSettings>();
                 targetSettings.buildTarget = NdmfSessionState.BuildTarget;
             }
+            NdmfSessionState.BuildTarget = Models.BuildTarget.Auto;
         }
     }
 }

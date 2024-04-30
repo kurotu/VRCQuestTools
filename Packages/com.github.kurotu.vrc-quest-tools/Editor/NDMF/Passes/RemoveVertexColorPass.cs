@@ -25,6 +25,12 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
+            var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
+            if (buildTarget != Models.BuildTarget.Android)
+            {
+                return;
+            }
+
             if (!settings.removeVertexColor)
             {
                 return;

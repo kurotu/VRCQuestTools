@@ -26,6 +26,12 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
+            var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
+            if (buildTarget != Models.BuildTarget.Android)
+            {
+                return;
+            }
+
             VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
             {
                 onTextureProgress = (_, __, e, original, converted) =>
