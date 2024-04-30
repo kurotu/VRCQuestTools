@@ -159,11 +159,6 @@ namespace KRT.VRCQuestTools.I18n
 
         // Network ID Assigner
         internal abstract string NetworkIDAssignerEditorDescription { get; }
-        internal abstract string NetworkIDAssignerEditorAssignmentMethodLabel { get; }
-        internal abstract string NetworkIDAssignerEditorAssignmentMethodHierachyHashLabel { get; }
-        internal abstract string NetworkIDAssignerEditorAssignmentMethodHierachyHashTooltip { get; }
-        internal abstract string NetworkIDAssignerEditorAssignmentMethodVRChatSDKLabel { get; }
-        internal abstract string NetworkIDAssignerEditorAssignmentMethodVRChatSDKTooltip { get; }
 
         // Platform Target Settings
         internal abstract string PlatformTargetSettingsEditorDescription { get; }

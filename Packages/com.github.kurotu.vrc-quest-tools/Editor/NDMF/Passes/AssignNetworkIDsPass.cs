@@ -22,15 +22,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
-            switch (assigner.assignmentMethod)
-            {
-                case NetworkIDAssignmentMethod.HierarchyHash:
-                    VRCSDKUtility.AssignNetworkIdsToPhysBonesByHierarchyHash(context.AvatarDescriptor);
-                    break;
-                case NetworkIDAssignmentMethod.VRChatSDK:
-                    VRCSDKUtility.AssignNetworkIdsToPhysBones(context.AvatarDescriptor);
-                    break;
-            }
+            VRCSDKUtility.AssignNetworkIdsToPhysBonesByHierarchyHash(context.AvatarDescriptor);
         }
     }
 }

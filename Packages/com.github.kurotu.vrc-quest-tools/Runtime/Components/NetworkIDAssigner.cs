@@ -12,9 +12,6 @@ namespace KRT.VRCQuestTools.Components
     [DisallowMultipleComponent]
     public class NetworkIDAssigner : VRCQuestToolsEditorOnly, IVRCQuestToolsNdmfComponent
     {
-        /// <summary>
-        /// How to assign network IDs.
-        /// </summary>
-        public NetworkIDAssignmentMethod assignmentMethod = NetworkIDAssignmentMethod.HierarchyHash;
+        // no members.
     }
 }
