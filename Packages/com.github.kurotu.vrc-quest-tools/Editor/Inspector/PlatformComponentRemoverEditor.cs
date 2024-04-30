@@ -45,8 +45,8 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.LabelField(i18n.ComponentLabel, GUILayout.MinWidth(30));
                     using (new EditorGUI.IndentLevelScope(-1))
                     {
-                        EditorGUILayout.LabelField("PC", GUILayout.Width(PCCheckboxWidth));
-                        EditorGUILayout.LabelField("Android", GUILayout.Width(AndroidCheckboxWidth));
+                        EditorGUILayout.LabelField(new GUIContent("PC", i18n.PlatformComponentRemoverEditorCheckboxPCTooltip), GUILayout.Width(PCCheckboxWidth));
+                        EditorGUILayout.LabelField(new GUIContent("Android", i18n.PlatformComponentRemoverEditorCheckboxAndroidTooltip), GUILayout.Width(AndroidCheckboxWidth));
                     }
                 }
                 var count = componentSettings.arraySize;
@@ -64,9 +64,9 @@ namespace KRT.VRCQuestTools.Inspector
                         using (new EditorGUI.IndentLevelScope(-1))
                         {
                             var removeOnPC = element.FindPropertyRelative("removeOnPC");
-                            EditorGUILayout.PropertyField(removeOnPC, GUIContent.none, GUILayout.Width(PCCheckboxWidth));
+                            Views.EditorGUIUtility.InvertedBoolPropertyField(removeOnPC, GUIContent.none, GUILayout.Width(PCCheckboxWidth));
                             var removeOnAndroid = element.FindPropertyRelative("removeOnAndroid");
-                            EditorGUILayout.PropertyField(removeOnAndroid, GUIContent.none, GUILayout.Width(AndroidCheckboxWidth));
+                            Views.EditorGUIUtility.InvertedBoolPropertyField(removeOnAndroid, GUIContent.none, GUILayout.Width(AndroidCheckboxWidth));
                         }
                     }
                 }

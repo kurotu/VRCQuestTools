@@ -16,6 +16,7 @@
 ### 変更
 - [NDMF] 頂点カラーを削除するときにメッシュを複製するように変更。元のメッシュは頂点カラーを維持
 - `VQT Avatar Converter Settings` でアバターに Network ID を割り当てるときに VRChat SDK の機能を使用するように変更
+- `VQT Platform Component Remover` と `VQT Platform GameObject Remover` コンポーネントのチェックボックスを反転し、維持する場合にチェックを入れるように変更
 
 ### 削除
 - [NDMF] `VQT Platform Component Remover` と `VQT Platform GameObject Remover` コンポーネントからビルドターゲットパラメータを削除

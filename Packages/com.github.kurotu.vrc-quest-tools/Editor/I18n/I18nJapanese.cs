@@ -174,15 +174,17 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ComponentRequiresNdmf => "Non-Destructive Modular Framework (NDMF) が必要です。";
         internal override string BuildTargetLabel => "ビルドターゲット";
         internal override string BuildTargetTooltip => "ビルド時のプラットフォームを指定します。Autoの場合、Unityのターゲットプラットフォームと同じになります。";
-        internal override string PlatformComponentRemoverEditorDescription => "チェックを入れたプラットフォームとビルドターゲットが一致する場合、チェックを入れたコンポーネントをビルド時に削除します。";
-        internal override string PlatformComponentRemoverEditorComponentSettingsLabel => "コンポーネント削除設定";
-        internal override string PlatformComponentRemoverEditorComponentSettingsTooltip => "コンポーネントを削除するプラットフォームを選択します。";
+        internal override string PlatformComponentRemoverEditorDescription => "チェックを入れていないビルドターゲットでは、そのコンポーネントをビルド時に削除します。";
+        internal override string PlatformComponentRemoverEditorComponentSettingsLabel => "コンポーネント維持設定";
+        internal override string PlatformComponentRemoverEditorComponentSettingsTooltip => "コンポーネントを維持するプラットフォームを選択します。";
+        internal override string PlatformComponentRemoverEditorCheckboxPCTooltip => "チェックを入れたコンポーネントをPCビルドで維持します。";
+        internal override string PlatformComponentRemoverEditorCheckboxAndroidTooltip => "チェックを入れたコンポーネントをAndroidビルドで維持します。";
         internal override string ComponentLabel => "コンポーネント";
 
         // Platform GameObject Remover
-        internal override string PlatformGameObjectRemoverEditorDescription => "チェックを入れたプラットフォームとビルドターゲットが一致する場合、このGameObjectをビルド時に削除します。";
-        internal override string PlatformGameObjectRemoverEditorRemoveOnPCLabel => "PCでは削除";
-        internal override string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel => "Androidでは削除";
+        internal override string PlatformGameObjectRemoverEditorDescription => "チェックマークを入れていないビルドターゲットでは、このGameObjectをビルド時に削除します。";
+        internal override string PlatformGameObjectRemoverEditorKeepOnPCLabel => "PCで維持";
+        internal override string PlatformGameObjectRemoverEditorKeepOnAndroidLabel => "Androidで維持";
 
         // Avatar Builder
         internal override string AvatarBuilderWindowExitPlayMode => "アバターをビルドするには Play モードを終了してください。";

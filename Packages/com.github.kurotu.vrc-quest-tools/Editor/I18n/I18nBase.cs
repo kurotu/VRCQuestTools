@@ -177,12 +177,14 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string PlatformComponentRemoverEditorDescription { get; }
         internal abstract string PlatformComponentRemoverEditorComponentSettingsLabel { get; }
         internal abstract string PlatformComponentRemoverEditorComponentSettingsTooltip { get; }
+        internal abstract string PlatformComponentRemoverEditorCheckboxPCTooltip { get; }
+        internal abstract string PlatformComponentRemoverEditorCheckboxAndroidTooltip { get; }
         internal abstract string ComponentLabel { get; }
 
         // Platform GameObject Remover
         internal abstract string PlatformGameObjectRemoverEditorDescription { get; }
-        internal abstract string PlatformGameObjectRemoverEditorRemoveOnPCLabel { get; }
-        internal abstract string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel { get; }
+        internal abstract string PlatformGameObjectRemoverEditorKeepOnPCLabel { get; }
+        internal abstract string PlatformGameObjectRemoverEditorKeepOnAndroidLabel { get; }
 
         // Avatar Builder
         internal abstract string AvatarBuilderWindowExitPlayMode { get; }

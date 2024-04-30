@@ -211,6 +211,21 @@ namespace KRT.VRCQuestTools.Views
         }
 
         /// <summary>
+        /// Draw inverted bool property field.
+        /// </summary>
+        /// <param name="boolProperty">Bool property.</param>
+        /// <param name="label">Label to show.</param>
+        /// <param name="options">Layout options.</param>
+        internal static void InvertedBoolPropertyField(SerializedProperty boolProperty, GUIContent label, params GUILayoutOption[] options)
+        {
+            var rect = EditorGUILayout.GetControlRect(options);
+            using (var prop = new EditorGUI.PropertyScope(rect, label, boolProperty))
+            {
+                boolProperty.boolValue = !EditorGUI.Toggle(rect, prop.content, !boolProperty.boolValue);
+            }
+        }
+
+        /// <summary>
         /// List to select objects.
         /// </summary>
         /// <typeparam name="T">Component type.</typeparam>

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [NDMF] Duplicate meshes when removing vertex colors. Original meshes keep vertex colors.
 - `VQT Avatar Converter Settings` now uses VRChat SDK feature to assign Network IDs to the avatar.
+- Invert the meaning of checkboxes for `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components. Select checkboxes to keep components or objects.
 
 ### Removed
 - [NDMF] `Build Target` parameter from `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.

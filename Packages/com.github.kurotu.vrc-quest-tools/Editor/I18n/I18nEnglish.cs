@@ -176,15 +176,17 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ComponentRequiresNdmf => "Non-Destructive Modular Framework (NDMF) is required.";
         internal override string BuildTargetLabel => "Build Target";
         internal override string BuildTargetTooltip => "Select build target platform. Use Unity's target platform when Auto is selected.";
-        internal override string PlatformComponentRemoverEditorDescription => "Selected components will be removed on build when their selected platform matches the target platform.";
-        internal override string PlatformComponentRemoverEditorComponentSettingsLabel => "Component Remover Settings";
-        internal override string PlatformComponentRemoverEditorComponentSettingsTooltip => "Select platform to remove components.";
+        internal override string PlatformComponentRemoverEditorDescription => "Components will be removed on build for unselected build targets.";
+        internal override string PlatformComponentRemoverEditorComponentSettingsLabel => "Components to Keep";
+        internal override string PlatformComponentRemoverEditorComponentSettingsTooltip => "Select platform to keep components.";
+        internal override string PlatformComponentRemoverEditorCheckboxPCTooltip => "Keep selected components on PC build.";
+        internal override string PlatformComponentRemoverEditorCheckboxAndroidTooltip => "Keep selected components on Android build.";
         internal override string ComponentLabel => "Component";
 
         // Platform GameObject Remover
-        internal override string PlatformGameObjectRemoverEditorDescription => "This GameObject will be removed on build when a selected platform matches the target platform.";
-        internal override string PlatformGameObjectRemoverEditorRemoveOnPCLabel => "Remove on PC";
-        internal override string PlatformGameObjectRemoverEditorRemoveOnAndroidLabel => "Remove on Android";
+        internal override string PlatformGameObjectRemoverEditorDescription => "This GameObject will be removed on build for unselected build targets.";
+        internal override string PlatformGameObjectRemoverEditorKeepOnPCLabel => "Keep on PC";
+        internal override string PlatformGameObjectRemoverEditorKeepOnAndroidLabel => "Keep on Android";
 
         // Avatar Builder
         internal override string AvatarBuilderWindowExitPlayMode => "Exit play mode to build the avatar.";

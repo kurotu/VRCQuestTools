@@ -32,10 +32,10 @@ namespace KRT.VRCQuestTools.Inspector
             so.Update();
 
             var removeOnPC = so.FindProperty("removeOnPC");
-            EditorGUILayout.PropertyField(removeOnPC, new GUIContent(i18n.PlatformGameObjectRemoverEditorRemoveOnPCLabel));
+            Views.EditorGUIUtility.InvertedBoolPropertyField(removeOnPC, new GUIContent(i18n.PlatformGameObjectRemoverEditorKeepOnPCLabel));
 
             var removeOnAndroid = so.FindProperty("removeOnAndroid");
-            EditorGUILayout.PropertyField(removeOnAndroid, new GUIContent(i18n.PlatformGameObjectRemoverEditorRemoveOnAndroidLabel));
+            Views.EditorGUIUtility.InvertedBoolPropertyField(removeOnAndroid, new GUIContent(i18n.PlatformGameObjectRemoverEditorKeepOnAndroidLabel));
 
             so.ApplyModifiedProperties();
         }
