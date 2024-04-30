@@ -53,6 +53,8 @@ jobs:
             vrcsdkVersion: 3.4.2
           - unityVersion: 2022.3.6f1
             vrcsdkVersion: 3.5.0
+          - unityVersion: 2022.3.22f1
+            vrcsdkVersion: 3.6.0-beta.1
         ndmfVersion:
           - ''
           - 1.2.5
@@ -77,9 +79,11 @@ jobs:
 
       - run: cat Packages/vpm-manifest.json
 
-      - uses: game-ci/unity-test-runner@v2
+      - uses: game-ci/unity-test-runner@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           unityVersion: ${{ matrix.sdk.unityVersion }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
