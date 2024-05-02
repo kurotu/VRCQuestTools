@@ -150,7 +150,6 @@ namespace KRT.VRCQuestTools.Ndmf
 
         private void OnEnable()
         {
-            Debug.Log("AvatarBuilderWindow.OnEnable");
             mainContext = SynchronizationContext.Current;
             titleContent = new GUIContent("VQT Avatar Builder");
             noImageThumbnailPath = AssetDatabase.GUIDToAssetPath("c7a6f55b56f65934e9489e35a10808cf");
@@ -164,7 +163,6 @@ namespace KRT.VRCQuestTools.Ndmf
 
         private void OnDisable()
         {
-            Debug.Log("AvatarBuilderWindow.OnDisable");
             sdkBuilder = null;
             VRCSdkControlPanel.OnSdkPanelEnable -= OnSdkPanelEnable;
             VRCSdkControlPanel.OnSdkPanelDisable -= OnSdkPanelDisable;
@@ -471,7 +469,6 @@ namespace KRT.VRCQuestTools.Ndmf
             }
             GetVRCAvatar(blueprintId).ContinueWith(a =>
             {
-                Debug.Log("GetVRCAvatar " + a.Result.HasValue);
                 uploadedVrcAvatar = a.Result;
                 PostRepaint();
             });
