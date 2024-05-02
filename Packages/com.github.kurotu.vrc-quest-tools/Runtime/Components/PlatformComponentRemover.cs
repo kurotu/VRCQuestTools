@@ -9,7 +9,7 @@ namespace KRT.VRCQuestTools.Components
     /// Selected components are automatically removed on build.
     /// </summary>
     [AddComponentMenu("VRCQuestTools/VQT Platform Component Remover")]
-    [HelpURL("https://kurotu.github.io/VRCQuestTools/ja/docs/references/components/platform-component-remover?lang=auto")]
+    [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/platform-component-remover?lang=auto")]
     [DisallowMultipleComponent]
     public class PlatformComponentRemover : VRCQuestToolsEditorOnly, INdmfComponent
     {
