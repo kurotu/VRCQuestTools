@@ -35,9 +35,24 @@ namespace KRT.VRCQuestTools.Inspector
 
         private I18nBase i18n;
         private AvatarConverterSettingsEditorState editorState;
+
         private ReorderableList additionalMaterialConvertSettingsReorderableList;
         private AvatarPerformanceStatsLevelSet statsLevelSet;
         private PerformanceRating avatarDynamicsPerfLimit;
+
+        /// <inheritdoc/>
+        protected override string Description
+        {
+            get
+            {
+                var i18n = VRCQuestToolsSettings.I18nResource;
+#if VQT_HAS_NDMF
+                return i18n.AvatarConverterSettingsEditorDescriptionNDMF;
+#else
+                return i18n.AvatarConverterSettingsEditorDescription;
+#endif
+            }
+        }
 
         /// <inheritdoc/>
         public override void OnInspectorGUIInternal()
@@ -125,7 +140,6 @@ namespace KRT.VRCQuestTools.Inspector
                 }
                 else
                 {
-                    EditorGUILayout.HelpBox(i18n.AvatarConverterMustBeOnAvatarRoot, MessageType.Error);
                     canConvert = false;
                 }
 

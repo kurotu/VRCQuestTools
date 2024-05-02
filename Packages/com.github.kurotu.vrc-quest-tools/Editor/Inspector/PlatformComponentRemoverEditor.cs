@@ -14,18 +14,15 @@ namespace KRT.VRCQuestTools.Inspector
         private const float PCCheckboxWidth = 20f;
         private const float AndroidCheckboxWidth = 50f;
 
+        /// <inheritdoc/>
+        protected override string Description => VRCQuestToolsSettings.I18nResource.PlatformComponentRemoverEditorDescription;
+
         /// <inheritdoc />
         public override void OnInspectorGUIInternal()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
 
-            EditorGUILayout.HelpBox(i18n.PlatformComponentRemoverEditorDescription, MessageType.Info);
-
-            EditorGUILayout.HelpBox(i18n.PlatformTargetSettingsIsRequiredToEnforcePlatform, MessageType.Info);
-
-            EditorGUILayout.Space();
-
-            ((PlatformComponentRemover)target).UpdateComponentSettings();
+            TargetComponent.UpdateComponentSettings();
 
             var so = new SerializedObject(target);
             so.Update();

@@ -248,7 +248,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     EditorGUILayout.ObjectField("Selected Avatar", targetAvatar, targetAvatar.GetType(), true);
                 }
-                if (targetAvatar.GetComponentInChildren<IVRCQuestToolsNdmfComponent>() == null && targetAvatar.GetComponentInChildren<AvatarConverterSettings>() == null)
+                if (targetAvatar.GetComponentInChildren<INdmfComponent>() == null && targetAvatar.GetComponentInChildren<AvatarConverterSettings>() == null)
                 {
                     EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowNoNdmfComponentsFound, MessageType.Warning);
                 }

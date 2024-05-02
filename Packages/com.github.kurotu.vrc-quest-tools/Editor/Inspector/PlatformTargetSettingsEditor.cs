@@ -14,18 +14,12 @@ namespace KRT.VRCQuestTools.Inspector
     internal class PlatformTargetSettingsEditor : VRCQuestToolsEditorOnlyEditorBase<PlatformTargetSettings>
     {
         /// <inheritdoc/>
+        protected override string Description => VRCQuestToolsSettings.I18nResource.PlatformTargetSettingsEditorDescription;
+
+        /// <inheritdoc/>
         public override void OnInspectorGUIInternal()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-            EditorGUILayout.HelpBox(i18n.PlatformTargetSettingsEditorDescription, MessageType.Info);
-
-            var targetComponent = (Component)target;
-            if (!VRCSDKUtility.IsAvatarRoot(targetComponent.gameObject))
-            {
-                EditorGUILayout.HelpBox(i18n.PlatformTargetSettingsShouldBeAttachedToAvatarRoot, MessageType.Error);
-            }
-
-            EditorGUILayout.Space();
 
             var so = new SerializedObject(target);
             so.Update();
@@ -37,12 +31,14 @@ namespace KRT.VRCQuestTools.Inspector
 
             EditorGUILayout.Space();
 
+            EditorGUILayout.LabelField(i18n.ComponentLabel);
             using (new EditorGUI.DisabledScope(true))
             {
-                var component = (PlatformTargetSettings)target;
-                Component[] componentRemovers = component.GetComponentsInChildren<PlatformComponentRemover>(true);
-                Component[] gameObjectRemovers = component.GetComponentsInChildren<PlatformGameObjectRemover>(true);
-                var components = componentRemovers.Concat(gameObjectRemovers).ToArray();
+                var platformComponents = TargetComponent.GetComponentsInChildren<IPlatformDependentComponent>(true)
+                    .Select(c => (Component)c);
+                Component[] convertSettings = TargetComponent.GetComponentsInChildren<AvatarConverterSettings>(true);
+
+                var components = platformComponents.Concat(convertSettings).ToArray();
                 foreach (var c in components)
                 {
                     EditorGUILayout.ObjectField(c, c.GetType(), true);

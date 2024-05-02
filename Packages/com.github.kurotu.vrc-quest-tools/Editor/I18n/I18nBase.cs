@@ -28,6 +28,8 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string IncompatibleSDK { get; }
 
         // Convert Avatar for Quest
+        internal abstract string AvatarConverterSettingsEditorDescription { get; }
+        internal abstract string AvatarConverterSettingsEditorDescriptionNDMF { get; }
         internal abstract string ExitPlayModeToEdit { get; }
         internal abstract string BeingConvertSettingsButtonLabel { get; }
         internal abstract string AvatarLabel { get; }
@@ -60,7 +62,6 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AlertForAvatarDynamicsPerformance { get; }
         internal abstract string AlertForComponents { get; }
 
-        internal abstract string AvatarConverterMustBeOnAvatarRoot { get; }
         internal abstract string AvatarConverterMaterialConvertSettingsLabel { get; }
         internal abstract string AvatarConverterDefaultMaterialConvertSettingLabel { get; }
         internal abstract string AvatarConverterAdditionalMaterialConvertSettingsLabel { get; }
@@ -148,6 +149,9 @@ namespace KRT.VRCQuestTools.I18n
         // Validations
         internal abstract string MissingScripts { get; }
 
+        // Inspector
+        internal abstract string AvatarRootComponentMustBeOnAvatarRoot { get; }
+
         // Vertex Color
         internal abstract string VertexColorRemoverEditorDescription { get; }
         internal abstract string VertexColorRemoverEditorRemove { get; }
@@ -162,7 +166,6 @@ namespace KRT.VRCQuestTools.I18n
 
         // Platform Target Settings
         internal abstract string PlatformTargetSettingsEditorDescription { get; }
-        internal abstract string PlatformTargetSettingsShouldBeAttachedToAvatarRoot { get; }
         internal abstract string PlatformTargetSettingsIsRequiredToEnforcePlatform { get; }
 
         // Platform Component Remover

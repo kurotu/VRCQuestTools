@@ -12,21 +12,12 @@ namespace KRT.VRCQuestTools.Inspector
     internal class PlatformGameObjectRemoverEditor : VRCQuestToolsEditorOnlyEditorBase<PlatformGameObjectRemover>
     {
         /// <inheritdoc/>
+        protected override string Description => VRCQuestToolsSettings.I18nResource.PlatformGameObjectRemoverEditorDescription;
+
+        /// <inheritdoc/>
         public override void OnInspectorGUIInternal()
         {
-            Views.EditorGUIUtility.LanguageSelector();
             var i18n = VRCQuestToolsSettings.I18nResource;
-
-            EditorGUILayout.Space();
-
-#if !VQT_HAS_NDMF
-            EditorGUILayout.HelpBox(i18n.ComponentRequiresNdmf, MessageType.Warning);
-#endif
-            EditorGUILayout.HelpBox(i18n.PlatformGameObjectRemoverEditorDescription, MessageType.Info);
-
-            EditorGUILayout.HelpBox(i18n.PlatformTargetSettingsIsRequiredToEnforcePlatform, MessageType.Info);
-
-            EditorGUILayout.Space();
 
             var so = new SerializedObject(target);
             so.Update();

@@ -28,6 +28,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string IncompatibleSDK => "Incompatible VRChat SDK. Please report.";
 
         // Convert Avatar for Quest
+        internal override string AvatarConverterSettingsEditorDescription => "Convert this avatar uploadable for Android platform.";
+        internal override string AvatarConverterSettingsEditorDescriptionNDMF => "Convert this avatar uploadable for Android platform when the target platform is Android.";
         internal override string ExitPlayModeToEdit => "Exit play mode to edit.";
         internal override string BeingConvertSettingsButtonLabel => $"Begin Converter Settings";
         internal override string AvatarLabel => "Avatar";
@@ -60,7 +62,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForMissingNetIds => "There are PhysBones which don't have Network ID. To keep sync between PC and Android, assign Network IDs then re-upload the PC avatar.";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not able to upload for Android.  Please keep \"Poor\" rating in avatar dynamics categories.";
 
-        internal override string AvatarConverterMustBeOnAvatarRoot => "This component must be attached to VRC_AvatarDescriptor GameObject.";
         internal override string AvatarConverterMaterialConvertSettingsLabel => "Material Conversion Settings";
         internal override string AvatarConverterDefaultMaterialConvertSettingLabel => "Default Material Conversion Settings";
         internal override string AvatarConverterAdditionalMaterialConvertSettingsLabel => "Additional Material Conversion Settings";
@@ -150,6 +151,9 @@ namespace KRT.VRCQuestTools.I18n
         // Validations
         internal override string MissingScripts => "There are \"missing\" scripts. Please check for assets or packages you forgot to import.";
 
+        // Inspector
+        internal override string AvatarRootComponentMustBeOnAvatarRoot => "This component must be attached to VRC_AvatarDescriptor GameObject.";
+
         // Vertex Color
         internal override string VertexColorRemoverEditorDescription => "Vertex color is automatically removed from this GameObject's mesh.";
         internal override string VertexColorRemoverEditorRemove => "Remove Vertex Color";
@@ -157,14 +161,13 @@ namespace KRT.VRCQuestTools.I18n
 
         // Converted Avatar
         internal override string ConvertedAvatarEditorMessage => "This component indicates the avatar was converted by VRCQuestTools.";
-        internal override string ConvertedAvatarEditorNDMFMessage => "Unsupported components will be removed in NDMF optimization phase.";
+        internal override string ConvertedAvatarEditorNDMFMessage => "Components which are not supported on Android will be removed in NDMF optimization phase.";
 
         // Network ID Assigner
         internal override string NetworkIDAssignerEditorDescription => "Assign Network IDs to the avatar's components such as PhysBones. IDs are determined by hash values of hierarchy paths from the avatar root.";
 
         // Platform Target Settings
-        internal override string PlatformTargetSettingsEditorDescription => "Platform Component Remover and Platform GameObjectRemover components are enforced to use a specific platform settings in NDMF build process.";
-        internal override string PlatformTargetSettingsShouldBeAttachedToAvatarRoot => "PlatformTargetSettings component should be attached to the avatar root object.";
+        internal override string PlatformTargetSettingsEditorDescription => "Components are enforced to use a specific platform settings in NDMF build process.";
         internal override string PlatformTargetSettingsIsRequiredToEnforcePlatform => "PlatformTargetSettings component is required to the avatar root object in order to enforce a specific platform settings.";
 
         // Platform Component Remover

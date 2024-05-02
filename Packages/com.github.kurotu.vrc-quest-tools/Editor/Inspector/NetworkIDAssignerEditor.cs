@@ -11,11 +11,13 @@ namespace KRT.VRCQuestTools.Inspector
     [CustomEditor(typeof(NetworkIDAssigner))]
     internal class NetworkIDAssignerEditor : VRCQuestToolsEditorOnlyEditorBase<NetworkIDAssigner>
     {
+        /// <inheritdoc/>
+        protected override string Description => VRCQuestToolsSettings.I18nResource.NetworkIDAssignerEditorDescription;
+
         /// <inheritdoc />
         public override void OnInspectorGUIInternal()
         {
-            var i18n = VRCQuestToolsSettings.I18nResource;
-            EditorGUILayout.LabelField(i18n.NetworkIDAssignerEditorDescription, EditorStyles.wordWrappedLabel);
+            // Do nothing
         }
     }
 }

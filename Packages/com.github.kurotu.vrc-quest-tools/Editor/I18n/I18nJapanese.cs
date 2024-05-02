@@ -27,6 +27,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string IncompatibleSDK => "非対応の VRChat SDK です。報告をお願いします。";
 
         // Convert Avatar for Quest
+        internal override string AvatarConverterSettingsEditorDescription => "このアバターを Android プラットフォームにアップロードできるように変換します。";
+        internal override string AvatarConverterSettingsEditorDescriptionNDMF => "ビルドターゲットが Android の場合、このアバターを Android プラットフォームにアップロードできるように変換します。";
         internal override string ExitPlayModeToEdit => "編集するには再生モードを終了してください。";
         internal override string BeingConvertSettingsButtonLabel => "変換の設定を始める";
         internal override string AvatarLabel => "アバター";
@@ -60,7 +62,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForMultiplePhysBones => "1つの GameObject に複数の PhysBone があります。Android 用に PhysBone を削除した場合、PC と Android で正しく同期しない可能性があります。";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones, Contacts) のパフォーマンスランクが Very Poor になっており Android 用にアップロードできません。 Avatar Dynamics のパフォーマンスランクが Poor に収まるようコンポーネントを削減してください。";
 
-        internal override string AvatarConverterMustBeOnAvatarRoot => "VRC_AvatarDescriptor のあるオブジェクトに配置してください。";
         internal override string AvatarConverterMaterialConvertSettingsLabel => "マテリアル変換設定";
         internal override string AvatarConverterDefaultMaterialConvertSettingLabel => "デフォルトのマテリアル変換設定";
         internal override string AvatarConverterAdditionalMaterialConvertSettingsLabel => "追加のマテリアル変換設定";
@@ -148,6 +149,9 @@ namespace KRT.VRCQuestTools.I18n
         // Validations
         internal override string MissingScripts => "\"Missing\"\u00A0状態のコンポーネントがあります。インポートし忘れたアセットやパッケージがないか確認してください。";
 
+        // Inspector
+        internal override string AvatarRootComponentMustBeOnAvatarRoot => "このコンポーネントは VRC_AvatarDescriptor のあるオブジェクトに追加してください。";
+
         // Vertex Color
         internal override string VertexColorRemoverEditorDescription => "このGameObjectに紐づくメッシュから頂点カラーを自動的に削除します。";
         internal override string VertexColorRemoverEditorRemove => "頂点カラーを削除";
@@ -155,14 +159,13 @@ namespace KRT.VRCQuestTools.I18n
 
         // Converted Avatar
         internal override string ConvertedAvatarEditorMessage => "このコンポーネントはアバターが VRCQuestTools で変換されたことを示します。";
-        internal override string ConvertedAvatarEditorNDMFMessage => "非対応コンポーネントは NDMF の Optimization Phase で削除されます。";
+        internal override string ConvertedAvatarEditorNDMFMessage => "Android 非対応コンポーネントは NDMF の Optimization Phase で削除されます。";
 
         // Network ID Assigner
-        internal override string NetworkIDAssignerEditorDescription => "アバター内のコンポーネント (PhysBoneなど) にネットワークIDを割り当てます。IDはアバタールートからのヒエラルキーパスのハッシュ値をもとに決定します。";
+        internal override string NetworkIDAssignerEditorDescription => "アバター内のコンポーネント (PhysBoneなど) にネットワーク ID を割り当てます。ID はアバタールートからのヒエラルキーパスのハッシュ値をもとに決定します。";
 
         // Platform Target Settings
-        internal override string PlatformTargetSettingsEditorDescription => "NDMFでのビルド時に Platform Component Remover および Platform GameObject Remover の設定を特定のプラットフォームに強制します。";
-        internal override string PlatformTargetSettingsShouldBeAttachedToAvatarRoot => "Platform Target Settings はアバターのルートオブジェクトに設定してください。";
+        internal override string PlatformTargetSettingsEditorDescription => "ビルド時にコンポーネントの設定を特定のプラットフォームに強制します。";
         internal override string PlatformTargetSettingsIsRequiredToEnforcePlatform => "特定のプラットフォーム設定を強制するにはアバターのルートオブジェクトに Platform Target Settings コンポーネントが必要です。";
 
         // Platform Component Remover

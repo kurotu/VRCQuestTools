@@ -11,10 +11,13 @@ namespace KRT.VRCQuestTools.Inspector
     internal class ConvertedAvatarEditor : VRCQuestToolsEditorOnlyEditorBase<ConvertedAvatar>
     {
         /// <inheritdoc />
+        protected override string Description => VRCQuestToolsSettings.I18nResource.ConvertedAvatarEditorMessage;
+
+        /// <inheritdoc />
         public override void OnInspectorGUIInternal()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-            EditorGUILayout.LabelField(i18n.ConvertedAvatarEditorMessage, EditorStyles.wordWrappedLabel);
+            EditorGUILayout.LabelField(i18n.ConvertedAvatarEditorNDMFMessage, EditorStyles.wordWrappedLabel);
         }
     }
 }
