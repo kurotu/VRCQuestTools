@@ -9,7 +9,7 @@ namespace KRT.VRCQuestTools.Components
     [AddComponentMenu("VRCQuestTools/VQT Platform Target Settings")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/ja/docs/references/components/platform-target-settings?lang=auto")]
     [DisallowMultipleComponent]
-    public class PlatformTargetSettings : VRCQuestToolsEditorOnly, IVRCQuestToolsNdmfComponent
+    public class PlatformTargetSettings : VRCQuestToolsEditorOnly, INdmfComponent
     {
         /// <summary>
         /// Build target to control VQT Platform components.

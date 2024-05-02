@@ -9,7 +9,7 @@ namespace KRT.VRCQuestTools.Components
 #if UNITY_2021_2_OR_NEWER
     [Icon("Packages/com.github.kurotu.vrc-quest-tools/Runtime/Images/VRCQuestTools-Icon.png")]
 #endif
-    public class VRCQuestToolsEditorOnly : MonoBehaviour, IEditorOnly
+    public abstract class VRCQuestToolsEditorOnly : MonoBehaviour, IEditorOnly
     {
     }
 }

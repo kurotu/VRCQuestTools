@@ -10,7 +10,7 @@ namespace KRT.VRCQuestTools.Components
     [AddComponentMenu("VRCQuestTools/VQT Network ID Assigner")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/ja/docs/references/components/network-id-assigner?lang=auto")]
     [DisallowMultipleComponent]
-    public class NetworkIDAssigner : VRCQuestToolsEditorOnly, IVRCQuestToolsNdmfComponent
+    public class NetworkIDAssigner : VRCQuestToolsEditorOnly, INdmfComponent
     {
         // no members.
     }
