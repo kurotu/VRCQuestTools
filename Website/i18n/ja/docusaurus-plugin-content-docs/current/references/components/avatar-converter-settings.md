@@ -100,19 +100,33 @@ Animator Override Controller で指定したアニメーションクリップを
 3. 変換したアニメーションクリップを使用するようにAnimator Controllerを変換し、Animator Override Controllerを解決します。
 4. 元のアバターを複製し、変換したアセットをセットします。
 5. Constraintなどのサポートされていないコンポーネントを削除します。
-6. 特殊な変換処理(後述)を実行します。
-7. シーン内の元のアバターを非アクティブにします。
+6. [Platform Target Settings](./platform-target-settings)を追加し、ビルドターゲットをAndroidに設定します。
+7. 特殊な変換処理(後述)を実行します。
+8. シーン内の元のアバターを非アクティブにします。
 
 ### 特殊な変換処理
 
 導入しているアセットに応じて、特殊な変換処理を実行します。
-
-#### Platform Component Remover, Platform GameObject Remover
-
-ビルドターゲットを `Android` に設定します。
 
 #### VirtualLens2
 
 VirtualLensSettings コンポーネントの `Remote Only Mode` を `Force Enable` に設定します。
 
 破壊的セットアップを使用している場合、`_VirtualLens_Root` および `VirtualLensOrigin` オブジェクトに `EditorOnly` タグを設定します。
+
+## NDMF
+
+Non-Destructive Modular Framework (NDMF) が導入されているプロジェクトではVRCQuestToolsプラグインによって以下の処理を実行します。
+VRChat SDKのバリデーションを回避するために、Android向けにビルドするときはAvatar Builderウィンドウを使用してアバターをビルドしてください。
+
+### Resolving Phase
+
+VirtualLens2の設定をAndroid用に変更します。
+
+### Transforming Phase
+
+アバターの変換を実行します。
+この処理はTexTransToolおよびModular Avatarの後に実行されます。
+
+メッシュから頂点カラーを削除します。
+この処理はNDMF Mantis LOD Editorの後に実行されます。

@@ -11,7 +11,11 @@ This component requires Non-Destructive Modular Framework (NDMF).
 
 ### Component Settings
 
-When the platform checkbox is checked, the component is removed on the selected platform.
+When the platform checkbox is unselected, the component is removed when building for the platform.
+
+In the example below, the `RemoveMeshByBlendShape` component is removed when building for PC.
+
+![Platform Component Remover](/img/platform-component-remover.png)
 
 ## NDMF
 
@@ -19,4 +23,4 @@ The VRCQuestTools plugin performs the following processes.
 
 ### Resolving Phase
 
-Remove components whose checkboxes for the current build target in the component settings are checked.
+Remove components by component settings.
