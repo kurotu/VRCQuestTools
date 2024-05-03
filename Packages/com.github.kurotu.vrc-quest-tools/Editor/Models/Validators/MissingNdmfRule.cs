@@ -17,7 +17,7 @@ namespace KRT.VRCQuestTools.Models.Validators
 #if VQT_HAS_NDMF
             return null;
 #else
-            var components = avatar.GameObject.GetComponentsInChildren<IVRCQuestToolsNdmfComponent>(true);
+            var components = avatar.GameObject.GetComponentsInChildren<INdmfComponent>(true);
             if (components.Length == 0)
             {
                 return null;
@@ -30,7 +30,7 @@ namespace KRT.VRCQuestTools.Models.Validators
                     return true;
                 }
 
-                var c = avatar.GameObject.GetComponentsInChildren<IVRCQuestToolsNdmfComponent>(true);
+                var c = avatar.GameObject.GetComponentsInChildren<INdmfComponent>(true);
                 if (c.Length == 0)
                 {
                     return true;
