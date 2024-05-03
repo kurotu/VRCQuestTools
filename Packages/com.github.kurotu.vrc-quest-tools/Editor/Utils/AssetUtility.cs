@@ -364,6 +364,20 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Sets whether the texture uses streaming mipmaps.
+        /// </summary>
+        /// <param name="texture">Texture.</param>
+        /// <param name="useStreamingMipmaps">Streaming Mipmaps.</param>
+        internal static void SetStreamingMipMaps(Texture2D texture, bool useStreamingMipmaps)
+        {
+            var so = new SerializedObject(texture);
+            so.Update();
+            var streamingMipmaps = so.FindProperty("m_StreamingMipmaps");
+            streamingMipmaps.boolValue = useStreamingMipmaps;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
         /// Gets whether the texture is a normal map asset.
         /// </summary>
         /// <param name="texture">Texture.</param>
