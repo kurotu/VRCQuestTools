@@ -1,10 +1,9 @@
 # Platform Target Settings
 
-[VQT Platform Component Remover]および[VQT Platform GameObject Remover]コンポーネントのビルドターゲットを設定します。
-
+[VQT Platform Component Remover]や[VQT Platform GameObject Remover]などの、ビルドターゲットに応じて処理の切り替わるコンポーネントのビルドターゲットを設定します。
 
 :::info
-This component requires Non-Destructive Modular Framework (NDMF).
+このコンポーネントには Non-Destructive Modular Framework (NDMF) が必要です。
 :::
 
 ## プロパティ
@@ -16,11 +15,8 @@ This component requires Non-Destructive Modular Framework (NDMF).
 
 ## NDMF
 
-VRCQuestToolsプラグインによって以下の処理を実行します。
-
-### Resolving Phase
-
-[VQT Platform Component Remover]および[VQT Platform GameObject Remover]コンポーネントでビルドターゲットを選択したプラットフォームに強制します。
+このコンポーネントは特定の処理を実行しません。
+他のコンポーネントから参照されてビルドターゲットに依存する処理を変更します。
 
 [VQT Platform Component Remover]: ./platform-component-remover
 [VQT Platform GameObject Remover]: ./platform-gameobject-remover

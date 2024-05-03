@@ -101,19 +101,33 @@ Typically, the avatar is converted in the following steps.
 3. Convert the Animator Controller to use the converted animation clip and resolve the Animator Override Controller.
 4. Duplicate the original avatar and set the converted assets.
 5. Delete unsupported components such as Constraints.
-6. Execute special conversion process (described below).
-7. Deactivate the original avatar in the scene.
+6. Add [Platform Target Settings](./platform-target-settings) and set the build target to Android.
+7. Execute special conversion process (described below).
+8. Deactivate the original avatar in the scene.
 
 ### Special conversion process
 
 Depending on the assets you are using, a special conversion process is executed.
-
-#### Platform Component Remover
-
-Set `Build Target` to `Android`.
 
 #### VirtualLens2
 
 Set `Remote Only Mode` of VirtualLensSettings component to `Force Enable`.
 
 If you are using VirtualLens2 with the destructive setup, set `EditorOnly` tag to `_VirtualLens_Root` and `VirtualLensOrigin` objects.
+
+## NDMF
+
+The VRCQuestTools plugin performs the following processes in the project which have Non-Destructive Modular Framework (NDMF).
+To avoid VRChat SDK validation, use the Avatar Builder window to build the avatar when building for Android.
+
+### Resolving Phase
+
+Change VirtualLens2 settings for Android.
+
+### Transform Phase
+
+Convert the avatar for Android.
+This process is performed after TexTransTool and Modular Avatar.
+
+Remove vertex colors from the meshes.
+This process is performed after NDMF Mantis LOD Editor.

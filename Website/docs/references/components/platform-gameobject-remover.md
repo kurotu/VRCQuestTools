@@ -9,13 +9,13 @@ This component requires Non-Destructive Modular Framework (NDMF).
 
 ## Properties
 
-### Remove on PC
+### Keep on PC
 
-When the build target is PC, remove the game object this component is attached.
+When the build target is PC, keep the game object this component is attached.
 
-### Remove on Android
+### Keep on Android
 
-When the build target is Android, remove the game object this component is attached.
+When the build target is Android, keep the game object this component is attached.
 
 ## NDMF
 
