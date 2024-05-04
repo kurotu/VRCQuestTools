@@ -317,6 +317,10 @@ namespace KRT.VRCQuestTools.Utils
             var stateMachineMap = stateMachine.stateMachines.Select((s, i) => (s.stateMachine, i)).ToDictionary(t => t.stateMachine, t => newMachine.stateMachines[t.i].stateMachine);
             var stateMap = stateMachine.states.Select((s, i) => (s.state, i)).ToDictionary(t => t.state, t => newMachine.states[t.i].state);
 
+            if (stateMachine.defaultState != null)
+            {
+                newMachine.defaultState = stateMap[stateMachine.defaultState];
+            }
             newMachine.anyStateTransitions = newMachine.anyStateTransitions.Select(t =>
             {
                 if (t.destinationState != null)
