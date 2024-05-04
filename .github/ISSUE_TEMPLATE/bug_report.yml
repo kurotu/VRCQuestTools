@@ -1,0 +1,93 @@
+name: Bug Report / バグレポート
+description: Create a report to help us improve
+
+body:
+  - type: textarea
+    attributes:
+      label: Describe the bug / バグの説明
+      description: |
+        A clear and concise description of what the bug is.
+        問題点について説明してください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: To Reproduce / 再現手順
+      description: |
+        Steps to reproduce the behavior.
+        問題を再現する手順を説明してください。
+      placeholder: |
+        Example:
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. An error, '....' occurs
+
+        例:
+        1. ....を開く
+        2. ....をクリックする
+        3. ....までスクロールする
+        4. ....というエラーになる
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected behavior / 期待する動作
+      description: |
+        A clear and concise description of what you expected to happen.
+        期待される動作について説明してください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Screenshots / スクリーンショット
+      description: |
+        If applicable, add screenshots to help explain your problem.
+        問題を説明するのに役立つスクリーンショットを追加してください。
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Used assets / 使用したアセット
+      description: |
+        URLs for assets you used (avatars, outfits, tools, etc.)
+        使用したアセットのURL (アバター、衣装、ツールなど)
+      placeholder: |
+        Example:
+        - Avatar: https://...
+        - Outfit: https://...
+        - Tool: https://...
+
+        例:
+        - アバター: https://...
+        - 衣装: https://...
+        - ツール: https://...
+    validations:
+      required: false
+
+  - type: input
+    attributes:
+      label: VRCQuestTools version / VRCQuestToolsのバージョン
+      placeholder: 2.0.0
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Unity version / Unityのバージョン
+      placeholder: 2022.3.6f1
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional context / その他の情報
+      description: |
+        Add any other context about the problem here.
+        問題に関するその他の情報を追加してください。
+    validations:
+      required: false
