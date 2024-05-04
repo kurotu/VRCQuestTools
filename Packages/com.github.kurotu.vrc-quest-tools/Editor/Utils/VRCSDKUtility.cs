@@ -416,7 +416,7 @@ namespace KRT.VRCQuestTools.Utils
 
                 foreach (var netID in netIDs)
                 {
-                    if (NetworkIDAssignment.FindID(netID, avatarDescriptor.NetworkIDCollection).HasValue)
+                    if (FindID(netID, avatarDescriptor.NetworkIDCollection).HasValue)
                     {
                         continue;
                     }
@@ -438,7 +438,7 @@ namespace KRT.VRCQuestTools.Utils
             PrefabUtility.RecordPrefabInstancePropertyModifications(avatarDescriptor);
 
             return (
-                netIDs.Select(n => new NetworkIDPair { gameObject = ((MonoBehaviour)n).gameObject, ID = NetworkIDAssignment.FindID(n, avatarDescriptor.NetworkIDCollection) ?? -1 }),
+                netIDs.Select(n => new NetworkIDPair { gameObject = ((MonoBehaviour)n).gameObject, ID = FindID(n, avatarDescriptor.NetworkIDCollection) ?? -1 }),
                 newIDs);
 
             int ComputeNetworkIDByHash(HashAlgorithm algo, string str)
@@ -449,6 +449,16 @@ namespace KRT.VRCQuestTools.Utils
 
                 var id = hashInt % (NetworkIDAssignment.MaxID - NetworkIDAssignment.MinID + 1) + NetworkIDAssignment.MinID;
                 return id;
+            }
+
+            int? FindID(INetworkID netID, List<NetworkIDPair> pairs)
+            {
+                var pair = pairs.FirstOrDefault(p => p.gameObject == ((MonoBehaviour)netID).gameObject);
+                if (pair == null)
+                {
+                    return null;
+                }
+                return pair.ID;
             }
         }
 
