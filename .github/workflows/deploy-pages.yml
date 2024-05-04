@@ -42,7 +42,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: repo
           path: index.json
@@ -61,7 +61,7 @@ jobs:
       - run: ./scripts/generate-changelog-links.sh | cat CHANGELOG.md - > Website/docs/changelog.md
       - run: ./scripts/generate-changelog-links.sh | cat CHANGELOG_JP.md - > Website/i18n/ja/docusaurus-plugin-content-docs/current/changelog.md
       - run: cd Website && npm run build
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: docs
           path: Website/build
@@ -73,12 +73,12 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4
         with:
           name: repo
           path: ${{env.listPublishDirectory}}
 
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4
         with:
           name: docs
           path: ${{env.listPublishDirectory}}
