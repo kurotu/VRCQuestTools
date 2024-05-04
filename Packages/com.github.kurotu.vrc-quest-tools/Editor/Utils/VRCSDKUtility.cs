@@ -359,13 +359,35 @@ namespace KRT.VRCQuestTools.Utils
         /// Assigns network ids to PhysBones.
         /// </summary>
         /// <param name="avatarDescriptor">Target avatar.</param>
-        /// <returns>Assigned network IDs.</returns>
-        internal static (IEnumerable<NetworkIDPair> AllIDs, IEnumerable<NetworkIDPair> NewIDs) AssignNetworkIdsToPhysBones(VRC_AvatarDescriptor avatarDescriptor)
+        /// <exception cref="NotImplementedException">VRCSDK dones't support Network IDs.</exception>
+        internal static void AssignNetworkIdsToPhysBones(VRC_AvatarDescriptor avatarDescriptor)
         {
 #if VQT_HAS_VRCSDK_BASE
-            var result = NetworkIDAssignment.ConfigureNetworkIDs(avatarDescriptor);
+            var ids = avatarDescriptor.NetworkIDCollection;
+            var pbs = avatarDescriptor.GetComponentsInChildren(PhysBoneType, true)
+                .Select(c => new Reflection.PhysBone(c))
+                .OrderBy(pb => GetFullPathInHierarchy(pb.GameObject))
+                .ToArray();
+            var assignedIds = new HashSet<int>(ids.Select(oair => oair.ID));
+
+            int id = 10;
+            foreach (var pb in pbs)
+            {
+                while (assignedIds.Contains(id))
+                {
+                    id++;
+                }
+                var alreadyAssigned = ids.FirstOrDefault(pair => pair.gameObject == pb.GameObject) != null;
+                if (!alreadyAssigned)
+                {
+                    var pair = new VRC.SDKBase.Network.NetworkIDPair();
+                    pair.ID = id;
+                    pair.gameObject = pb.GameObject;
+                    avatarDescriptor.NetworkIDCollection.Add(pair);
+                    assignedIds.Add(id);
+                }
+            }
             PrefabUtility.RecordPrefabInstancePropertyModifications(avatarDescriptor);
-            return result;
 #else
             throw new NotImplementedException();
 #endif
