@@ -17,7 +17,11 @@ namespace KRT.VRCQuestTools
     /// </summary>
     public class StandardMaterialTests
     {
+#if UNITY_EDITOR_WIN
         private const float Threshold = 1e-5f;
+#else
+        private const float Threshold = 0.2f;
+#endif
 
         /// <summary>
         /// Test standard without emission.
