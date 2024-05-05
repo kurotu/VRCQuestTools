@@ -8,21 +8,20 @@
 
 ### 追加
 - [NDMF] `Show Avatar Builder for Android` メニューを追加して NDMF で Android ビルドターゲット用にアバターをアップロードする機能を追加
-- [NDMF] NDMF と `VQT Avatar Converter Settings` コンポーネントによる非破壊的なアバター変換機能を追加
+- [NDMF] `VQT Avatar Converter Settings` コンポーネントによる非破壊的なアバター変換機能を追加
 - [NDMF] `VQT Platform Target Settings` コンポーネントを追加して `VQT Platform Component Remover` および `VQT Platform GameObject Remover` コンポーネントの対象プラットフォームを指定する機能を追加
 - [NDMF] 非対応のテクスチャフォーマットを使用しているときに警告を表示
 - [NDMF] `VQT Network ID Assigner` コンポーネントにより Network ID を割り当てる機能を追加
 
 ### 変更
 - [NDMF] 頂点カラーを削除するときにメッシュを複製するように変更。元のメッシュは頂点カラーを維持
-- `VQT Avatar Converter Settings` でアバターに Network ID を割り当てるときに VRChat SDK の機能を使用するように変更
 - `VQT Platform Component Remover` と `VQT Platform GameObject Remover` コンポーネントのチェックボックスを反転し、維持する場合にチェックを入れるように変更
 
 ### 削除
 - [NDMF] `VQT Platform Component Remover` と `VQT Platform GameObject Remover` コンポーネントからビルドターゲットパラメータを削除
 
 ### 修正
-- 小さいテクスチャが 4x4 ではなく 2x2 で作成されていた問題を修正
+- 小さいテクスチャが 4x4 ではなく 2x2 で作成され適切に圧縮できない問題を修正
 
 ## [2.2.2] - 2024-04-15
 

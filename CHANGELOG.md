@@ -9,21 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - [NDMF] `Show Avatar Builder for Android` menu to upload an avatar for Android build target with NDMF.
-- [NDMF] Non-destructive avatar conversion with NDMF and `VQT Avatar Converter Settings` component.
+- [NDMF] Non-destructive avatar conversion with `VQT Avatar Converter Settings` component.
 - [NDMF] `VQT Platform Target Settings` component to specify the target platform for `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
 - [NDMF] Warning message for using unsupported texture formats.
 - [NDMF] `VQT Network ID Assigner` component to assign Network IDs to the avatar.
 
 ### Changed
 - [NDMF] Duplicate meshes when removing vertex colors. Original meshes keep vertex colors.
-- `VQT Avatar Converter Settings` now uses VRChat SDK feature to assign Network IDs to the avatar.
 - Invert the meaning of checkboxes for `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components. Select checkboxes to keep components or objects.
 
 ### Removed
 - [NDMF] `Build Target` parameter from `VQT Platform Component Remover` and `VQT Platform GameObject Remover` components.
 
 ### Fixed
-- Small textures were generated as 2x2 instead of 4x4.
+- Small textures were generated as 2x2 instead of 4x4 so they were not properly compressed.
 
 ## [2.2.2] - 2024-04-15
 
