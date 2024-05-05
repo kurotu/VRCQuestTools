@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.3.0] - 2024-05-05
 
 ### 追加
 - [NDMF] `Show Avatar Builder for Android` メニューを追加して NDMF で Android ビルドターゲット用にアバターをアップロードする機能を追加
