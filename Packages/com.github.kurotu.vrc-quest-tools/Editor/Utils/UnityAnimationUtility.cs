@@ -264,6 +264,8 @@ namespace KRT.VRCQuestTools.Utils
 
         private static AnimatorController DeepCopyAnimatorController(AnimatorController controller)
         {
+            var stateMachineMap = new Dictionary<AnimatorStateMachine, AnimatorStateMachine>();
+            var stateMap = new Dictionary<AnimatorState, AnimatorState>();
             var newController = new AnimatorController();
             newController.hideFlags = controller.hideFlags;
             newController.layers = controller.layers.Select(layer =>
@@ -275,7 +277,7 @@ namespace KRT.VRCQuestTools.Utils
                 newLayer.iKPass = layer.iKPass;
                 newLayer.name = layer.name;
                 newLayer.syncedLayerIndex = layer.syncedLayerIndex;
-                newLayer.stateMachine = DeepCopyStateMachine(layer.stateMachine);
+                newLayer.stateMachine = DeepCopyStateMachine(layer.stateMachine, stateMachineMap, stateMap);
                 return newLayer;
             }).ToArray();
             newController.name = controller.name;
@@ -293,7 +295,7 @@ namespace KRT.VRCQuestTools.Utils
             return newController;
         }
 
-        private static AnimatorStateMachine DeepCopyStateMachine(AnimatorStateMachine stateMachine)
+        private static AnimatorStateMachine DeepCopyStateMachine(AnimatorStateMachine stateMachine, Dictionary<AnimatorStateMachine, AnimatorStateMachine> stateMachineMap, Dictionary<AnimatorState, AnimatorState> stateMap)
         {
             var newMachine = new AnimatorStateMachine();
 
@@ -310,12 +312,18 @@ namespace KRT.VRCQuestTools.Utils
             newMachine.hideFlags = stateMachine.hideFlags;
             newMachine.name = stateMachine.name;
             newMachine.parentStateMachinePosition = stateMachine.parentStateMachinePosition;
-            newMachine.stateMachines = stateMachine.stateMachines.Select(DeepCopyChildAnimatorStateMachine).ToArray();
-            newMachine.states = stateMachine.states.Select(DeepCopyChildAnimatorState).ToArray();
-
-            // remap transition destination
-            var stateMachineMap = stateMachine.stateMachines.Select((s, i) => (s.stateMachine, i)).ToDictionary(t => t.stateMachine, t => newMachine.stateMachines[t.i].stateMachine);
-            var stateMap = stateMachine.states.Select((s, i) => (s.state, i)).ToDictionary(t => t.state, t => newMachine.states[t.i].state);
+            newMachine.stateMachines = stateMachine.stateMachines.Select(machine =>
+            {
+                var newChild = DeepCopyChildAnimatorStateMachine(machine, stateMachineMap, stateMap);
+                stateMachineMap[machine.stateMachine] = newChild.stateMachine;
+                return newChild;
+            }).ToArray();
+            newMachine.states = stateMachine.states.Select(state =>
+            {
+                var newChild = DeepCopyChildAnimatorState(state);
+                stateMap[state.state] = newChild.state;
+                return newChild;
+            }).ToArray();
 
             if (stateMachine.defaultState != null)
             {
@@ -446,11 +454,11 @@ namespace KRT.VRCQuestTools.Utils
             return newState;
         }
 
-        private static ChildAnimatorStateMachine DeepCopyChildAnimatorStateMachine(ChildAnimatorStateMachine stateMachine)
+        private static ChildAnimatorStateMachine DeepCopyChildAnimatorStateMachine(ChildAnimatorStateMachine stateMachine, Dictionary<AnimatorStateMachine, AnimatorStateMachine> stateMachineMap, Dictionary<AnimatorState, AnimatorState> stateMap)
         {
             var newStateMachine = new ChildAnimatorStateMachine();
             newStateMachine.position = stateMachine.position;
-            newStateMachine.stateMachine = DeepCopyStateMachine(stateMachine.stateMachine);
+            newStateMachine.stateMachine = DeepCopyStateMachine(stateMachine.stateMachine, stateMachineMap, stateMap);
             return newStateMachine;
         }
     }
