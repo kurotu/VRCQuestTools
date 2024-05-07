@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - [NDMF] Fixed an issue where entry transitions for sub state machines were not duplicated correctly when duplicating animator controllers.
+- Fix an issue where material animations of sub state machines were not converted.
 
 ## [2.3.0] - 2024-05-05
 

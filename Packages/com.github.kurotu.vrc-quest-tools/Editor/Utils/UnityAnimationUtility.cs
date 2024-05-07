@@ -173,37 +173,7 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     stateMachine = cloneController.layers[layer.syncedLayerIndex].stateMachine;
                 }
-                foreach (var childState in stateMachine.states)
-                {
-                    var motion = cloneController.GetStateEffectiveMotion(childState.state, layerIndex);
-                    if (VRCSDKUtility.IsExampleAsset(motion))
-                    {
-                        continue;
-                    }
-                    if (motion != null && newMotions.ContainsKey(motion))
-                    {
-                        motion = newMotions[motion];
-                    }
-                    else if (motion is BlendTree tree)
-                    {
-                        // embedded blend tree
-                        var newTree = DeepCopyBlendTree(tree);
-                        newTree.children = newTree.children.Select(child =>
-                        {
-                            if (child.motion != null && newMotions.ContainsKey(child.motion))
-                            {
-                                child.motion = newMotions[child.motion];
-                            }
-                            return child;
-                        }).ToArray();
-                        motion = newTree;
-                        if (saveAsAsset)
-                        {
-                            AssetDatabase.AddObjectToAsset(newTree, outFile);
-                        }
-                    }
-                    cloneController.SetStateEffectiveMotion(childState.state, motion, layerIndex);
-                }
+                ReplaceAnimationClips(saveAsAsset, newMotions, outFile, cloneController, layerIndex, stateMachine);
             }
 
             AssetDatabase.SaveAssets();
@@ -260,6 +230,46 @@ namespace KRT.VRCQuestTools.Utils
                 .Select(keyframe => (Material)keyframe.value); // マテリアルに変換
 
             return materials.Where(m => m != null).Distinct().ToArray();
+        }
+
+        private static void ReplaceAnimationClips(bool saveAsAsset, Dictionary<Motion, Motion> newMotions, string outFile, AnimatorController cloneController, int layerIndex, AnimatorStateMachine stateMachine)
+        {
+            foreach (var childState in stateMachine.states)
+            {
+                var motion = cloneController.GetStateEffectiveMotion(childState.state, layerIndex);
+                if (VRCSDKUtility.IsExampleAsset(motion))
+                {
+                    continue;
+                }
+                if (motion != null && newMotions.ContainsKey(motion))
+                {
+                    motion = newMotions[motion];
+                }
+                else if (motion is BlendTree tree)
+                {
+                    // embedded blend tree
+                    var newTree = DeepCopyBlendTree(tree);
+                    newTree.children = newTree.children.Select(child =>
+                    {
+                        if (child.motion != null && newMotions.ContainsKey(child.motion))
+                        {
+                            child.motion = newMotions[child.motion];
+                        }
+                        return child;
+                    }).ToArray();
+                    motion = newTree;
+                    if (saveAsAsset)
+                    {
+                        AssetDatabase.AddObjectToAsset(newTree, outFile);
+                    }
+                }
+                cloneController.SetStateEffectiveMotion(childState.state, motion, layerIndex);
+            }
+
+            foreach (var childStateMachine in stateMachine.stateMachines)
+            {
+                ReplaceAnimationClips(saveAsAsset, newMotions, outFile, cloneController, layerIndex, childStateMachine.stateMachine);
+            }
         }
 
         private static AnimatorController DeepCopyAnimatorController(AnimatorController controller)
