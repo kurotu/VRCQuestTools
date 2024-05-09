@@ -9,6 +9,7 @@
     },
     "changelogUrl": "https://kurotu.github.io/VRCQuestTools/docs/changelog?lang=auto",
     "documentationUrl": "https://kurotu.github.io/VRCQuestTools/?lang=auto",
+    "license": "MIT",
     "licensesUrl": "https://github.com/kurotu/VRCQuestTools/blob/master/LICENSE.txt",
     "dependencies": {
         "com.unity.nuget.newtonsoft-json": "2.0.2"
