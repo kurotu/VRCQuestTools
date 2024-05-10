@@ -56,7 +56,7 @@ jobs:
           - unityVersion: 2022.3.6f1
             vrcsdkVersion: 3.5.0
           - unityVersion: 2022.3.22f1
-            vrcsdkVersion: 3.6.0-beta.1
+            vrcsdkVersion: 3.6.0
         ndmfVersion:
           - ''
           - 1.2.5
