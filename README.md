@@ -1,5 +1,3 @@
-[ English | [日本語](README_JP.md) ]
-
 # VRCQuestTools
 
 Avatar Converter and Utilities for Quest.
@@ -14,7 +12,10 @@ Avatar Converter and Utilities for Quest.
 This tool helps you to make your avatar compatible with Android (Quest, PICO).
 Convert your PC avatar to Android in a few steps.
 
-## Features
+アバターの Android (Quest, PICO) 対応を支援するツールです。
+数ステップでPCアバターをAndroid用にアップロード可能に変換します。
+
+## Features / 主な特徴
 
 - Duplicate the avatar and materials so that the original avatar is not affected.
 - Generate textures for Android according to the material settings.
@@ -23,25 +24,43 @@ Convert your PC avatar to Android in a few steps.
 - Remove vertex colors to display textures correctly.
 - Change Unity to recommended settings.
 
-## Install
+<!-- -->
+
+- アバターとマテリアルを複製し、元のアバターに影響しないようにします。
+- マテリアルの設定にしたがって Android 用のテクスチャを生成します。
+- Constraint などの非対応コンポーネントを削除します。
+- PhysBone の削減を簡単にします。
+- 頂点カラーを削除し、テクスチャの色を正しく表示できるようにします。
+- Unity を推奨設定へ変更します。
+
+## Install / インストール
 
 Use [this link](https://kurotu.github.io/vpm-repos/vpm.html) to add the repository to VCC.
 Then add `VRCQuestTools` package to your projects.
 
-## Usage
+[このリンク](https://kurotu.github.io/vpm-repos/vpm.html)を使用して VCC にリポジトリを追加します。
+その後、プロジェクトに `VRCQuestTools` パッケージを追加します。
+
+## Usage / 使い方
 
 See [the documentation site](https://kurotu.github.io/VRCQuestTools/).
 
-## License
+[ドキュメント](https://kurotu.github.io/VRCQuestTools/ja/)を参照してください。
+
+## License / 利用規約
 
 The MIT License.
 
-## Contact
+本ツールは MIT ライセンスで提供されます。
+
+## Contact / 連絡先
 
 - VRCID: kurotu
-- Twitter: [@kurotu](https://twitter.com/kurotu)
+- X: [@kurotu](https://x.com/kurotu)
 - GitHub: [kurotu/VRCQuestTools](https://github.com/kurotu/VRCQuestTools)
 
-## Donation
+## Donation / 投げ銭版
 
 Available on [Booth](https://kurotu.booth.pm/items/2436054).
+
+[Booth](https://kurotu.booth.pm/items/2436054) で提供しています。
