@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - [NDMF] VQT Avatar Builder failed to detect active avatars when multiple scenes are loaded in the hierarchy.
+- Automated avatar validation was not working for all avatars when multiple scenes are loaded in the hierarchy.
 
 ## [2.3.1] - 2024-05-09
 

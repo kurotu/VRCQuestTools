@@ -259,19 +259,15 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Gets avatar root objects from the scene.
+        /// Gets avatar root objects from loaded scenes.
         /// </summary>
-        /// <param name="scene">Target scene.</param>
         /// <returns>Avatar root objects.</returns>
-        internal static VRC_AvatarDescriptor[] GetAvatarsFromScene(Scene scene)
+        internal static VRC_AvatarDescriptor[] GetAvatarsFromLoadedScenes()
         {
-            var avatars = new List<VRC_AvatarDescriptor>();
-            var rootGameObjects = scene.GetRootGameObjects();
-            foreach (var obj in rootGameObjects)
-            {
-                avatars.AddRange(obj.GetComponentsInChildren<VRC_AvatarDescriptor>());
-            }
-            return avatars.ToArray();
+            var scenes = Enumerable.Range(0, SceneManager.sceneCount)
+                .Select(i => SceneManager.GetSceneAt(i))
+                .Where(s => s.isLoaded);
+            return scenes.SelectMany(s => GetAvatarsFromScene(s)).ToArray();
         }
 
         /// <summary>
@@ -656,6 +652,22 @@ namespace KRT.VRCQuestTools.Utils
                 throw new NotSupportedException("SdkControlPanelSelectedAvatarField is null: Incompatible SDK.");
             }
             return (VRC_AvatarDescriptor)SdkControlPanelSelectedAvatarField.GetValue(null);
+        }
+
+        /// <summary>
+        /// Gets avatar root objects from the scene.
+        /// </summary>
+        /// <param name="scene">Target scene.</param>
+        /// <returns>Avatar root objects.</returns>
+        private static VRC_AvatarDescriptor[] GetAvatarsFromScene(Scene scene)
+        {
+            var avatars = new List<VRC_AvatarDescriptor>();
+            var rootGameObjects = scene.GetRootGameObjects();
+            foreach (var obj in rootGameObjects)
+            {
+                avatars.AddRange(obj.GetComponentsInChildren<VRC_AvatarDescriptor>());
+            }
+            return avatars.ToArray();
         }
 
         /// <summary>

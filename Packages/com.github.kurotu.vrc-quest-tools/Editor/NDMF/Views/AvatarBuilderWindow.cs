@@ -567,10 +567,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
         private GameObject[] FindActiveAvatarsFromScene()
         {
-            var avatars = Enumerable.Repeat(-1, SceneManager.sceneCount).SelectMany((_,i)=>{
-                var scene = SceneManager.GetSceneAt(i);
-                return VRCSDKUtility.GetAvatarsFromScene(scene);
-            });
+            var avatars = VRCSDKUtility.GetAvatarsFromLoadedScenes();
             return avatars
                 .Where(a => a.gameObject.activeInHierarchy)
                 .Where(a => VRCSDKUtility.IsAvatarRoot(a.gameObject))

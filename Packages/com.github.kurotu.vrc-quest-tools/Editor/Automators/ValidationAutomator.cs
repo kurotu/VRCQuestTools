@@ -48,8 +48,7 @@ namespace KRT.VRCQuestTools.Automators
 
         private static void Update()
         {
-            var scene = SceneManager.GetActiveScene();
-            var avatars = VRCSDKUtility.GetAvatarsFromScene(scene);
+            var avatars = VRCSDKUtility.GetAvatarsFromLoadedScenes();
             foreach (var avatar in avatars)
             {
                 foreach (var rule in AvatarValidationRules.Rules)
