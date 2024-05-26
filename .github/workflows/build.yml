@@ -26,6 +26,9 @@ jobs:
       - uses: anatawa12/sh-actions/resolve-vpm-packages@master
       - run: vrc-get install
 
+      - name: Copy README
+        run: cp README.md Packages/com.github.kurotu.vrc-quest-tools/
+
       - uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -110,6 +113,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Copy README
+        run: cp README.md Packages/com.github.kurotu.vrc-quest-tools/
       - name: Make zip
         run: |
           cd Packages/com.github.kurotu.vrc-quest-tools
