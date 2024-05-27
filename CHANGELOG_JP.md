@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.3.2] - 2024-05-27
 
 ### 修正
 - [NDMF] 複数のシーンをヒエラルキーにロードしているとVQT Avatar Builderがアクティブなアバターを検出できないことがある問題を修正
