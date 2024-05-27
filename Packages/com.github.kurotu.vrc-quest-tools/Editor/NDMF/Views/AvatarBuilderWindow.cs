@@ -12,7 +12,6 @@ using UnityEditor.SceneManagement;
 using UnityEditor.Experimental.SceneManagement;
 #endif
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using VRC.Core;
 using VRC.SDK3A.Editor;
 using VRC.SDKBase;
