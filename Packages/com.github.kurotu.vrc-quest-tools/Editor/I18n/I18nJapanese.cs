@@ -50,7 +50,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MaterialExceptionDialogMessage => "マテリアルの変換中にエラーが発生しました。変換を中止します。";
         internal override string AnimationClipExceptionDialogMessage => "アニメーションの変換中にエラーが発生しました。変換を中止します。";
         internal override string AnimatorControllerExceptionDialogMessage => "Animator Controllerの変換中にエラーが発生しました。変換を中止します。";
-        internal override string WarningForPerformance => $"変換後のアバターの推定パフォーマンスランクは Very Poor です。Android 用にアップロードできますが、以下の制限があります。\n・デフォルトではフォールバックアバターが表示され、見る側が Avatar Display 設定で個別に表示する必要があります。\n・Android スマートフォン版 VRChat では表示できません。";
+        internal override string WarningForPerformance => $"変換後のアバターの推定パフォーマンスランクは Very Poor です。Android 用にアップロードできますが、以下の制限があります。\n・デフォルトではフォールバックアバターが表示され、見る側が「アバターの表示」設定を個別に変更する必要があります。\n・Android スマートフォン版 VRChat では表示できません。";
         internal override string WarningForAppearance => "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n" +
             "別の Blueprint ID でのアップロードや Avatars 3.0 のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。";
         internal override string WarningForUnsupportedShaders => $"以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n「{GenerateAndroidTexturesLabel}」をオフにするとシェーダーのみを変更します。";
@@ -114,7 +114,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PhysBonesTransformsShouldBeReduced => "Android用にアップロードできません。 PhysBone の数を減らすか、PhysBone の子オブジェクトの数を減らしてください。";
 
         internal override string PhysBonesCollisionCheckCountShouldBeReduced => "Android用にアップロードできません。 PhysBone と PhysBoneCollider の衝突判定の数を減らしてください。";
-        internal override string PhysBonesShouldHaveNetworkID => "PhysBone を正しく同期させるには PhysBone の Network ID をPC版と一致させる必要があります。VRCSDK の Network ID Utility を使用してPC用とAndroid用で同じ Network ID を割り当てた後、両方を再アップロードしてください。";
+        internal override string PhysBonesShouldHaveNetworkID => "PhysBone を正しく同期させるには PhysBone のネットワーク ID をPC版と一致させる必要があります。VRCSDK の Network ID Utility を使用してPC用とAndroid用で同じネットワーク ID を割り当てた後、両方を再アップロードしてください。";
         internal override string EstimatedPerformanceStats => "推定パフォーマンスランク";
         internal override string DeleteUnselectedComponents => "選択していないコンポーネントを削除";
 
@@ -195,7 +195,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarBuilderWindowFailedBuild => "ビルドに失敗しました。コンソールログを確認してください。";
         internal override string AvatarBuilderWindowRequiresControlPanel => "アバターをビルドするには VRChat SDK コントロールパネルを開く必要があります。";
         internal override string AvatarBuilderWindowOfflineTestingLabel => "オフラインテスト (PC)";
-        internal override string AvatarBuilderWindowOfflineTestingDescription(string name) => $"Android 用のビルド設定でアバターをビルドして PC でテストします。アバターはアバターメニューの Other カテゴリに \"SDK: {name}\" として表示されます。";
+        internal override string AvatarBuilderWindowOfflineTestingDescription(string name) => $"Android 用のビルド設定でアバターをビルドして PC でテストします。アバターはアバターメニューの「その他」カテゴリに「SDK: {name}」として表示されます。";
         internal override string AvatarBuilderWindowOnlinePublishingLabel => "アップロード (Android)";
         internal override string AvatarBuilderWindowOnlinePublishingDescription => "Android 用のビルド設定でアバターを VRChat にアップロードします。アバターが Android 用のアップロード条件を満たしていなくても VRChat SDK コントロールパネルによる検証をスキップしてビルドを開始します。";
         internal override string AvatarBuilderWindowNdmfManualBakingLabel => "NDMF マニュアルベイク";
