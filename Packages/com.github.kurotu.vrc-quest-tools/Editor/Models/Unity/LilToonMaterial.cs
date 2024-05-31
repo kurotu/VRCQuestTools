@@ -29,18 +29,10 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <inheritdoc/>
         internal override Texture2D GenerateToonLitImage(IToonLitConvertSettings settings)
         {
-            try
+            using (var main = DisposableObject.New(TextureBake(Material, 0)))
             {
-                using (var main = DisposableObject.New(TextureBake(Material, 0)))
-                {
-                    var baked = EmissionBake(main.Object, Material, settings);
-                    return baked;
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogException(e);
-                throw new System.Exception($"Compatibility issue for lilToon {AssetUtility.LilToonVersion}. Please report this. (Inner Exception: {e.Message})", e);
+                var baked = EmissionBake(main.Object, Material, settings);
+                return baked;
             }
         }
 
@@ -400,17 +392,17 @@ namespace KRT.VRCQuestTools.Models.Unity
             {
                 if (!AssetUtility.IsLilToonImported())
                 {
-                    throw new System.InvalidOperationException("lilToon not found in Assets.");
+                    throw new LilToonCompatibilityException("lilToon not found in Assets.");
                 }
                 var lilToonSetting = SystemUtility.GetTypeByName("lilToonSetting");
                 if (lilToonSetting == null)
                 {
-                    throw new System.InvalidOperationException($"lilToon found, but lilToonSetting not found");
+                    throw new LilToonCompatibilityException($"lilToon found, but lilToonSetting not found");
                 }
                 var field = lilToonSetting.GetField(name);
                 if (field == null)
                 {
-                    throw new System.MissingFieldException($"Field {lilToonSetting.Name}.{name} not found");
+                    throw new LilToonCompatibilityException($"Field {lilToonSetting.Name}.{name} not found");
                 }
                 return (T)field.GetValue(settingObject);
             }
@@ -428,19 +420,27 @@ namespace KRT.VRCQuestTools.Models.Unity
             {
                 if (!AssetUtility.IsLilToonImported())
                 {
-                    throw new System.InvalidOperationException("lilToon not found in Assets");
+                    throw new LilToonCompatibilityException("lilToon not found in Assets");
                 }
                 var lilToonInspector = SystemUtility.GetTypeByName("lilToon.lilToonInspector");
                 if (lilToonInspector == null)
                 {
-                    throw new System.InvalidOperationException("lilToon found, but lilToon.lilToonInspector not found");
+                    throw new LilToonCompatibilityException("lilToon found, but lilToon.lilToonInspector not found");
                 }
                 var method = lilToonInspector.GetMethod(name);
                 if (method == null)
                 {
-                    throw new System.MissingMethodException($"{lilToonInspector.Name}.{name} not found");
+                    throw new LilToonCompatibilityException($"{lilToonInspector.Name}.{name} not found");
                 }
                 return method.Invoke(null, null) as T;
+            }
+        }
+
+        private class LilToonCompatibilityException : System.Exception
+        {
+            public LilToonCompatibilityException(string message)
+                : base($"Compatibility issue for lilToon {AssetUtility.LilToonVersion}. Please report this error: " + message)
+            {
             }
         }
     }
