@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Improved error message when failed to convert lilToon material.
 
+### Fixed
+- Material animation might not be converted in some cases.
+
 ## [2.3.2] - 2024-05-27
 
 ### Fixed

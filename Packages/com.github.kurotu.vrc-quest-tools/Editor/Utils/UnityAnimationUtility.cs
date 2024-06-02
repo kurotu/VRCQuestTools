@@ -113,7 +113,7 @@ namespace KRT.VRCQuestTools.Utils
             EditorCurveBinding[] binding = AnimationUtility.GetObjectReferenceCurveBindings(anim);
             for (int j = 0; j < binding.Length; j++)
             {
-                if (binding[j].type == typeof(MeshRenderer) || binding[j].type == typeof(SkinnedMeshRenderer))
+                if (typeof(Renderer).IsAssignableFrom(binding[j].type))
                 {
                     var keyframes = AnimationUtility.GetObjectReferenceCurve(anim, binding[j]);
                     for (int k = 0; k < keyframes.Length; k++)
@@ -223,7 +223,7 @@ namespace KRT.VRCQuestTools.Utils
         internal static Material[] GetMaterials(AnimationClip clip)
         {
             EditorCurveBinding[] binding = AnimationUtility.GetObjectReferenceCurveBindings(clip); // Animationに設定されているオブジェクト
-            binding = binding.Where(b => b.type == typeof(MeshRenderer) || b.type == typeof(SkinnedMeshRenderer)).ToArray(); // Renderer系のみ
+            binding = binding.Where(b => typeof(Renderer).IsAssignableFrom(b.type)).ToArray(); // Renderer系のみ
 
             var keyframes = binding.SelectMany(b => AnimationUtility.GetObjectReferenceCurve(clip, b)); // keyframeに設定されているオブジェクト
             var materials = keyframes.Where(keyframe => keyframe.value && keyframe.value.GetType() == typeof(Material)) // マテリアルのみ取得
