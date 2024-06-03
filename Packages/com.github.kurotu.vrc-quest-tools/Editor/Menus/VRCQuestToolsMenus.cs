@@ -55,7 +55,7 @@ namespace KRT.VRCQuestTools.Menus
         internal static class GameObjectMenuPaths
         {
             private const string MenuPrefix = "GameObject/VRCQuestTools/";
-            internal const string ConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Quest";
+            internal const string ConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Android";
             internal const string RemovePhysBones = MenuPrefix + "Remove PhysBones";
             internal const string RemoveMissingComponents = MenuPrefix + "Remove Missing Components";
             internal const string RemoveUnsupportedComponents = MenuPrefix + "Remove Unsupported Components";
