@@ -27,9 +27,11 @@ namespace KRT.VRCQuestTools.Utils
         {
 #if VQT_HAS_MODULAR_AVATAR
             var types = new Type[] {
-                typeof(ModularAvatarVisibleHeadAccessory),
-                #if VQT_HAS_MODULAR_AVATAR_WFO
-                typeof(ModularAvatarWorldFixedObject),
+                #if !VQT_HAS_MODULAR_AVATAR_WFO_ANDROID
+                    typeof(ModularAvatarVisibleHeadAccessory),
+                    #if VQT_HAS_MODULAR_AVATAR_WFO
+                    typeof(ModularAvatarWorldFixedObject),
+                    #endif
                 #endif
             };
             var components = types.SelectMany(t => gameObject.GetComponentsInChildren(t, includeInactive)).ToArray();

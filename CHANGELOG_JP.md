@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 変更
+- Modular Avatar 1.9.0 以降を使用している場合 `MA Visible Head Accessory` と `MA World Fixed Object` コンポーネントを削除しないように変更
+
 ## [2.3.3] - 2024-06-03
 
 ### 変更
