@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `MA Visible Head Accessory` and `MA World Fixed Object` components are no longer removed when using Modular Avatar 1.9.0 or later.
 
+## [2.3.4] - 2024-07-17
+
+### Fixed
+- Fix an issue where `Audio Source` might not be removed when removing unsupported components.
+
 ## [2.3.3] - 2024-06-03
 
 ### Changed

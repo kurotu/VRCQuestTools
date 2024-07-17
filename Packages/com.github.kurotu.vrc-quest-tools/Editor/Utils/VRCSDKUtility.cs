@@ -90,12 +90,10 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         internal static readonly System.Type ContactSenderType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.Contact.Components.VRCContactSender");
 
-        private const string VpmSdk3DemoFolder = "Packages/com.vrchat.avatars/Samples/AV3 Demo Assets";
-
         /// <summary>
         /// Types which is not allowed for Quest avatars. (except FinalIK).
         /// </summary>
-        private static readonly System.Type[] UnsupportedComponentTypes = new System.Type[]
+        internal static readonly System.Type[] UnsupportedComponentTypes = new System.Type[]
         {
             SystemUtility.GetTypeByName("DynamicBoneColliderBase"), SystemUtility.GetTypeByName("DynamicBone"), // DynamicBone may be missing
             typeof(Cloth),
@@ -105,7 +103,9 @@ namespace KRT.VRCQuestTools.Utils
             typeof(AudioSource),
             typeof(Joint), typeof(Rigidbody), typeof(Collider),
             typeof(UnityEngine.Animations.IConstraint),
-        }.Where(e => e != null).ToArray();
+        }.Where(e => e != null).Concat(FinalIKUtility.ComponentTypes).ToArray();
+
+        private const string VpmSdk3DemoFolder = "Packages/com.vrchat.avatars/Samples/AV3 Demo Assets";
 
         private static readonly Regex VpmSdk3ProxyAnimPattern = new Regex($"{VpmSdk3DemoFolder}/Animation/ProxyAnim/.*\\.anim", RegexOptions.Compiled);
         private static readonly Regex VpmSdk3DemoPattern = new Regex($"{VpmSdk3DemoFolder}/.*", RegexOptions.Compiled);
