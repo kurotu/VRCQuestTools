@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.3.4] - 2024-07-17
 
 ### 修正
 - 非対応コンポーネントを削除するとき `Audio Source` が削除されないことがある問題を修正
