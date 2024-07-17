@@ -33,6 +33,24 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
+        /// Test removing AudioSource and VRC_SpatialAudioSource.
+        /// </summary>
+        [Test]
+        public void TestAudioSource()
+        {
+            var go = new GameObject();
+            go.AddComponent<AudioSource>();
+            go.AddComponent<VRC.SDK3.Avatars.Components.VRCSpatialAudioSource>();
+            Assert.AreEqual(1, go.GetComponents<AudioSource>().Length);
+            Assert.AreEqual(1, go.GetComponents<VRC.SDK3.Avatars.Components.VRCSpatialAudioSource>().Length);
+
+            remover.RemoveUnsupportedComponentsInChildren(go, true);
+
+            Assert.AreEqual(0, go.GetComponents<AudioSource>().Length);
+            Assert.AreEqual(0, go.GetComponents<VRC.SDK3.Avatars.Components.VRCSpatialAudioSource>().Length);
+        }
+
+        /// <summary>
         /// Test DynamicBone classes.
         /// </summary>
         /// <param name="typeName">type name to test.</param>
