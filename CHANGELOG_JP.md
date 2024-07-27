@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.3.5] - 2024-07-27
 
 ### 修正
 - Final IK が存在するときに `VQT Avatar Converter Settings` が正常に動作しない問題を修正
