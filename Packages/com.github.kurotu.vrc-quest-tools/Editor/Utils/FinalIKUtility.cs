@@ -16,10 +16,11 @@ namespace KRT.VRCQuestTools.Utils
     internal static class FinalIKUtility
     {
         /// <summary>
-        /// Gets FinalIK component types.
+        /// Gets FinalIK component types excepting abstract classes.
         /// </summary>
         internal static IEnumerable<Type> ComponentTypes => AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(asm => asm.GetTypes())
+            .Where(type => !type.IsAbstract)
             .Where(IsFinalIKComponent);
 
         /// <summary>
@@ -39,11 +40,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>FinalIK: true.</returns>
         internal static bool IsFinalIKComponent(System.Type type)
         {
-            if (type.FullName.StartsWith("RootMotion.FinalIK."))
-            {
-                return true;
-            }
-            return false;
+            return typeof(Component).IsAssignableFrom(type) && type.FullName.StartsWith("RootMotion.FinalIK.");
         }
     }
 }

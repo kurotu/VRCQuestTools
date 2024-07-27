@@ -9,6 +9,11 @@
 ### 変更
 - Modular Avatar 1.9.0 以降を使用している場合 `MA Visible Head Accessory` と `MA World Fixed Object` コンポーネントを削除しないように変更
 
+## [2.3.5] - 2024-07-27
+
+### 修正
+- Final IK が存在するときに `VQT Avatar Converter Settings` が正常に動作しない問題を修正
+
 ## [2.3.4] - 2024-07-17
 
 ### 修正

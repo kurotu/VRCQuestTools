@@ -67,7 +67,7 @@ VRChatを起動し、アバターをテストしましょう。
 
 1. Unityのビルド設定をAndroidに変更します。
 2. VRChat SDKコントロールパネルを開き、アップロードするアバターを**Builder**タブで選択します。
-3. メニューバーの**Tools** > **VRCQuestTools** > **Convert Avatar for Quest**を選択します。
+3. メニューバーの**Tools** > **VRCQuestTools** > **Show Avatar Builder**を選択します。
 4. **VQT Avatar Builder**ウィンドウが表示されます。
 5. **Build & Publish for Android**ボタンをクリックします。
 6. アップロードが完了すると、アバターのサムネイルに緑色のMobileアイコンが表示されます。

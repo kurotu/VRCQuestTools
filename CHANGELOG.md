@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `MA Visible Head Accessory` and `MA World Fixed Object` components are no longer removed when using Modular Avatar 1.9.0 or later.
 
+## [2.3.5] - 2024-07-27
+
+### Fixed
+- Fix `VQT Avatar Converter Settings` not working when Final IK exists.
+
 ## [2.3.4] - 2024-07-17
 
 ### Fixed
