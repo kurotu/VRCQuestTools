@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 追加
+- `VQT Avatar Converter Settings` に Unity Constraints を VRChat Constraints へ変換することを提案する警告を追加
+
 ### 変更
 - Modular Avatar 1.9.0 以降を使用している場合 `MA Visible Head Accessory` と `MA World Fixed Object` コンポーネントを削除しないように変更
 

@@ -57,6 +57,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string WarningForAppearance { get; }
         internal abstract string WarningForUnsupportedShaders { get; }
         internal abstract string AlertForDynamicBoneConversion { get; }
+        internal abstract string AlertForUnityConstraintsConversion { get; }
         internal abstract string AlertForMissingNetIds { get; }
         internal abstract string AlertForMultiplePhysBones { get; }
         internal abstract string AlertForAvatarDynamicsPerformance { get; }

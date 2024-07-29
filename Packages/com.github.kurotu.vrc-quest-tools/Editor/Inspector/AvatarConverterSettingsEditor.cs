@@ -89,6 +89,19 @@ namespace KRT.VRCQuestTools.Inspector
                             }
                         }
                     }
+#if VQT_HAS_VRCSDK_CONSTRAINTS
+                    if (avatar.HasUnityConstraints)
+                    {
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.HelpBox(i18n.AlertForUnityConstraintsConversion, MessageType.Warning);
+                            if (GUILayout.Button(i18n.ConvertButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                            {
+                                OnClickConvertToVRCConstraintsButton(descriptor);
+                            }
+                        }
+                    }
+#endif
                     if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor) && avatar.GameObject.GetComponent<NetworkIDAssigner>() == null)
                     {
                         using (var horizontal = new EditorGUILayout.HorizontalScope())
@@ -418,6 +431,12 @@ namespace KRT.VRCQuestTools.Inspector
         {
             Selection.activeGameObject = avatar.gameObject;
             EditorApplication.ExecuteMenuItem("VRChat SDK/Utilities/Convert DynamicBones To PhysBones");
+        }
+
+        private void OnClickConvertToVRCConstraintsButton(VRC_AvatarDescriptor avatar)
+        {
+            Selection.activeGameObject = avatar.gameObject;
+            EditorApplication.ExecuteMenuItem("VRChat SDK/Utilities/Convert Unity Constraints To VRChat Constraints");
         }
 
         private void OnClickAssignNetIdsButton(VRC_AvatarDescriptor avatar)

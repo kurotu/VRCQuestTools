@@ -25,8 +25,8 @@
     "versionDefines": [
         {
             "name": "com.vrchat.base",
-            "expression": "3.3.0",
-            "define": "VQT_HAS_VRCSDK_BASE"
+            "expression": "3.6.2-constraints.2",
+            "define": "VQT_HAS_VRCSDK_CONSTRAINTS"
         },
         {
             "name": "com.unity.nuget.newtonsoft-json",

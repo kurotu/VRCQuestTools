@@ -15,6 +15,7 @@ using nadena.dev.modular_avatar.core;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.Animations;
 using VRC.SDKBase.Validation.Performance.Stats;
 
 #if VQT_HAS_VRCSDK_BASE
@@ -109,6 +110,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 return false;
             }
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the avatar has Unity constraints.
+        /// </summary>
+        internal bool HasUnityConstraints => GameObject.GetComponentsInChildren<IConstraint>(true).Length > 0;
 
         /// <summary>
         /// Gets runtime animator controllers which are related.
