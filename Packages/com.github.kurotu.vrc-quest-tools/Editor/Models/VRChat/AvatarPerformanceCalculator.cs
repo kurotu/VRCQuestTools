@@ -78,36 +78,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     return statsLevel.physBone.collisionCheckCount;
                 case AvatarPerformanceCategory.ContactCount:
                     return statsLevel.contactCount;
-                case AvatarPerformanceCategory.None:
-                case AvatarPerformanceCategory.Overall:
-                case AvatarPerformanceCategory.DownloadSize:
-                case AvatarPerformanceCategory.PolyCount:
-                case AvatarPerformanceCategory.AABB:
-                case AvatarPerformanceCategory.SkinnedMeshCount:
-                case AvatarPerformanceCategory.MeshCount:
-                case AvatarPerformanceCategory.MaterialCount:
-                case AvatarPerformanceCategory.DynamicBoneComponentCount:
-                case AvatarPerformanceCategory.DynamicBoneSimulatedBoneCount:
-                case AvatarPerformanceCategory.DynamicBoneColliderCount:
-                case AvatarPerformanceCategory.DynamicBoneCollisionCheckCount:
-                case AvatarPerformanceCategory.AnimatorCount:
-                case AvatarPerformanceCategory.BoneCount:
-                case AvatarPerformanceCategory.LightCount:
-                case AvatarPerformanceCategory.ParticleSystemCount:
-                case AvatarPerformanceCategory.ParticleTotalCount:
-                case AvatarPerformanceCategory.ParticleMaxMeshPolyCount:
-                case AvatarPerformanceCategory.ParticleTrailsEnabled:
-                case AvatarPerformanceCategory.ParticleCollisionEnabled:
-                case AvatarPerformanceCategory.TrailRendererCount:
-                case AvatarPerformanceCategory.LineRendererCount:
-                case AvatarPerformanceCategory.ClothCount:
-                case AvatarPerformanceCategory.ClothMaxVertices:
-                case AvatarPerformanceCategory.PhysicsColliderCount:
-                case AvatarPerformanceCategory.PhysicsRigidbodyCount:
-                case AvatarPerformanceCategory.AudioSourceCount:
-                case AvatarPerformanceCategory.TextureMegabytes:
-                case AvatarPerformanceCategory.AvatarPerformanceCategoryCount:
-                    throw new System.InvalidProgramException();
                 default:
                     throw new System.NotImplementedException();
             }

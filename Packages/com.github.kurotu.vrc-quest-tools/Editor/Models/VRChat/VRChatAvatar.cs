@@ -234,7 +234,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 stats.clothMaxVertices = null;
                 stats.constraintsCount = null;
                 stats.downloadSizeBytes = null;
+#if !VQT_HAS_VRCSDK_CONSTRAINTS
                 stats.dynamicBone = null;
+#endif
                 stats.lightCount = null;
                 stats.physicsColliderCount = null;
                 stats.physicsRigidbodyCount = null;
