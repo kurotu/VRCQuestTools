@@ -1,5 +1,7 @@
 using KRT.VRCQuestTools.Ndmf;
 using nadena.dev.ndmf;
+using UnityEditor;
+using UnityEngine;
 
 [assembly: ExportsPlugin(typeof(VRCQuestToolsNdmfPlugin))]
 
@@ -17,6 +19,12 @@ namespace KRT.VRCQuestTools.Ndmf
 
         /// <inheritdoc/>
         public override string QualifiedName => "com.github.kurotu.vrc-quest-tools";
+
+#if VQT_HAS_NDMF_ERROR_REPORT
+        private static readonly Texture2D logoTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("e6a14816c3530ec498d3a7f1aad45a5a"));
+        /// <inheritdoc/>
+        public override Texture2D LogoTexture => logoTexture;
+#endif
 
         /// <inheritdoc/>
         protected override void Configure()

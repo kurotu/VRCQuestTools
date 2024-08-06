@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 追加
+- [NDMF] NDMFコンソールにロゴを追加
+
 ### 変更
 - Modular Avatar 1.9.0 以降を使用している場合 `MA Visible Head Accessory` と `MA World Fixed Object` コンポーネントを削除しないように変更
 
