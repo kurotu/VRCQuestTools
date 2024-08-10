@@ -52,14 +52,18 @@ jobs:
       fail-fast: false
       matrix:
         sdk:
+          # First public APIs
           - unityVersion: 2019.4.31f1
             vrcsdkVersion: 3.3.0
+          # Unity 2019 last SDK
           - unityVersion: 2019.4.31f1
             vrcsdkVersion: 3.4.2
+          # Unity 2022 first SDK
           - unityVersion: 2022.3.6f1
             vrcsdkVersion: 3.5.0
+          # VRC Constraints
           - unityVersion: 2022.3.22f1
-            vrcsdkVersion: 3.6.0
+            vrcsdkVersion: 3.6.2-constraints.3
         ndmfVersion:
           - ''
           - 1.2.5

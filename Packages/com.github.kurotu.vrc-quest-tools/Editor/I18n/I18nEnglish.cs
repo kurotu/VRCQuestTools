@@ -59,6 +59,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string WarningForUnsupportedShaders => $"Following materials are using unsupported shaders. Textures might not properly be generated.\nDisabling \"{GenerateAndroidTexturesLabel}\" option changes only shader.";
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
+        internal override string AlertForUnityConstraintsConversion => $"{VRCQuestTools.Name} doesn't convert Unity constraints to VRChat constraints. Please set up VRChat constraints before converting the avatar.";
         internal override string AlertForMissingNetIds => "There are PhysBones which don't have Network ID. To keep sync between PC and Android, assign Network IDs then re-upload the PC avatar.";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not able to upload for Android.  Please keep \"Poor\" rating in avatar dynamics categories.";
 
