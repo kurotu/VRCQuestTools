@@ -8,6 +8,7 @@
 
 ### 追加
 - [NDMF] NDMFコンソールにロゴを追加
+- [NDMF] VQT Avatar Builder でフォールバックアバターを設定する機能を追加
 - `VQT Avatar Converter Settings` に Unity Constraints を VRChat Constraints へ変換することを提案する警告を追加
 - iOS プラットフォームへのアバターの変換とアップロード (Android と同様)
 

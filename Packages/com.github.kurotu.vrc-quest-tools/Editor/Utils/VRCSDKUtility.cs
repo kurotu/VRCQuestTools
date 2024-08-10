@@ -575,6 +575,16 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Gets the performance rating suitable for fallback avatar.
+        /// </summary>
+        /// <param name="overallRating">Overall performance rating.</param>
+        /// <returns>true for Good or better.</returns>
+        internal static bool IsAllowedForFallbackAvatar(PerformanceRating overallRating)
+        {
+            return overallRating == PerformanceRating.Excellent || overallRating == PerformanceRating.Good;
+        }
+
+        /// <summary>
         /// Loads the icon of the performance rating.
         /// </summary>
         /// <param name="rating">Rating.</param>
@@ -628,14 +638,16 @@ namespace KRT.VRCQuestTools.Utils
         {
             switch (tag)
             {
-                case "content_sex":
+                case AvatarContentTag.Sex:
                     return "Nudity/Sexuality";
-                case "content_violence":
+                case AvatarContentTag.Violence:
                     return "Realistic Violence";
-                case "content_gore":
+                case AvatarContentTag.Gore:
                     return "Blood/Gore";
-                case "content_other":
+                case AvatarContentTag.Other:
                     return "Other NSFW";
+                case AvatarContentTag.Fallback:
+                    return "Fallback";
                 default:
                     return tag;
             }
@@ -668,6 +680,20 @@ namespace KRT.VRCQuestTools.Utils
                 avatars.AddRange(obj.GetComponentsInChildren<VRC_AvatarDescriptor>());
             }
             return avatars.ToArray();
+        }
+
+        /// <summary>
+        /// Content tags for avatars.
+        /// </summary>
+        internal static class AvatarContentTag
+        {
+#pragma warning disable SA1600
+            internal const string Sex = "content_sex";
+            internal const string Violence = "content_violence";
+            internal const string Gore = "content_gore";
+            internal const string Other = "content_other";
+            internal const string Fallback = "author_quest_fallback";
+#pragma warning restore SA1600
         }
 
         /// <summary>

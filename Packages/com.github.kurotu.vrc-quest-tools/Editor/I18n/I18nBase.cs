@@ -199,6 +199,9 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AvatarBuilderWindowOfflineTestingDescription(string name);
         internal abstract string AvatarBuilderWindowOnlinePublishingLabel(string platformName);
         internal abstract string AvatarBuilderWindowOnlinePublishingDescription { get; }
+        internal abstract string AvatarBuilderWindowSetAsFallbackIfPossible { get; }
+        internal abstract string AvatarBuilderWindowSetAsFallbackIfPossibleTooltip { get; }
+        internal abstract string AvatarBuilderWindowFallbackNotAllowed(string rating);
         internal abstract string AvatarBuilderWindowNdmfManualBakingLabel { get; }
         internal abstract string AvatarBuilderWindowNdmfManualBakingDescription { get; }
         internal abstract string AvatarBuilderWindowRequiresAvatarNameAndThumb { get; }
