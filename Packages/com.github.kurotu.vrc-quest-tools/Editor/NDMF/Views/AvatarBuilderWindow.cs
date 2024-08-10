@@ -281,7 +281,7 @@ namespace KRT.VRCQuestTools.Ndmf
                         {
                             name = uploadedVrcAvatar.Value.Name;
                             desc = uploadedVrcAvatar.Value.Description;
-                            tags = string.Join(", ", uploadedVrcAvatar.Value.Tags.Select(t => VRCSDKUtility.GetContentTagLabel(t)).ToArray());
+                            tags = string.Join("|", uploadedVrcAvatar.Value.Tags);
                             visibility = uploadedVrcAvatar.Value.ReleaseStatus;
                             newThumbnailUri = uploadedVrcAvatar.Value.ThumbnailImageUrl;
                         }
@@ -333,12 +333,16 @@ namespace KRT.VRCQuestTools.Ndmf
                         {
                             desc = "(No description)";
                         }
-                        var tagLabels = tags == string.Empty ? new string[] { "(No tags)" } : tags.Trim('|').Split('|').Select(t => VRCSDKUtility.GetContentTagLabel(t)).ToArray();
-
+                        var contentTags = tags.Trim('|').Split('|').Where(t => t.StartsWith("content_")).ToArray();
+                        var contentTagLabels = contentTags.Length == 0
+                            ? new string[] { "(No tags)" }
+                            : contentTags.Select(t => VRCSDKUtility.GetContentTagLabel(t)).ToArray();
+                        var isFallback = tags.Contains(VRCSDKUtility.AvatarContentTag.Fallback);
                         EditorGUILayout.LabelField("Name", name, EditorStyles.wordWrappedLabel);
                         EditorGUILayout.LabelField("Description", desc, EditorStyles.wordWrappedLabel);
-                        EditorGUILayout.LabelField("Content Tags", string.Join(", ", tagLabels), EditorStyles.wordWrappedLabel);
-                        EditorGUILayout.LabelField("Visibility", visibility, EditorStyles.wordWrappedLabel);
+                        EditorGUILayout.LabelField("Content Tags", string.Join(", ", contentTagLabels), EditorStyles.wordWrappedLabel);
+                        EditorGUILayout.LabelField("Visibility", System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(visibility.ToLower()), EditorStyles.wordWrappedLabel);
+                        EditorGUILayout.LabelField("Fallback", isFallback ? "Yes" : "No", EditorStyles.wordWrappedLabel);
 
                         const int thumbnailHeight = 140;
                         using (new EditorGUILayout.HorizontalScope())
