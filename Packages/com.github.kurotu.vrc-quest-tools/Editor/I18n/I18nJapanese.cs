@@ -197,7 +197,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarBuilderWindowRequiresControlPanel => "アバターをビルドするには VRChat SDK コントロールパネルを開く必要があります。";
         internal override string AvatarBuilderWindowOfflineTestingLabel => "オフラインテスト (PC)";
         internal override string AvatarBuilderWindowOfflineTestingDescription(string name) => $"Android 用のビルド設定でアバターをビルドして PC でテストします。アバターはアバターメニューの「その他」カテゴリに「SDK: {name}」として表示されます。";
-        internal override string AvatarBuilderWindowOnlinePublishingLabel => "アップロード (Android)";
+        internal override string AvatarBuilderWindowOnlinePublishingLabel(string platformName) => $"アップロード ({platformName})";
         internal override string AvatarBuilderWindowOnlinePublishingDescription => "Android 用のビルド設定でアバターを VRChat にアップロードします。アバターが Android 用のアップロード条件を満たしていなくても VRChat SDK コントロールパネルによる検証をスキップしてビルドを開始します。";
         internal override string AvatarBuilderWindowNdmfManualBakingLabel => "NDMF マニュアルベイク";
         internal override string AvatarBuilderWindowNdmfManualBakingDescription => "Android 用のビルド設定で Tools -> NDM Framework -> Manual bake avatar メニューを実行します。";

@@ -23,13 +23,29 @@ namespace KRT.VRCQuestTools.Ndmf
         protected override void Execute(BuildContext context)
         {
             var unsupportedTextures = new List<Texture2D>();
+            var unknownTextures = new List<Texture2D>();
             foreach (var asset in context.AvatarRootObject.ReferencedAssets())
             {
                 if (asset is Texture2D texture)
                 {
-                    if (!AssetUtility.IsSupportedTextureFormat(texture.format, EditorUserBuildSettings.activeBuildTarget))
+                    try
                     {
-                        unsupportedTextures.Add(texture);
+                        if (!AssetUtility.IsSupportedTextureFormat(texture.format, EditorUserBuildSettings.activeBuildTarget))
+                        {
+                            if (AssetUtility.IsKnownTextureFormat(texture.format))
+                            {
+                                unknownTextures.Add(texture);
+                            }
+                            else
+                            {
+                                unsupportedTextures.Add(texture);
+                            }
+                        }
+                    }
+                    catch (System.NotSupportedException e)
+                    {
+                        Debug.LogWarning($"[{VRCQuestTools.Name}] Texture format check is skipped: {e.Message}");
+                        return;
                     }
                 }
             }
@@ -41,6 +57,16 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     var textures = unsupportedTextures.Where(t => t.format == format).OrderBy(t => t.name).ToArray();
                     ErrorReport.ReportError(new UnsupportedTextureFormatError(format, EditorUserBuildSettings.activeBuildTarget, textures));
+                }
+            }
+
+            if (unknownTextures.Count > 0)
+            {
+                var formats = unknownTextures.Select(t => t.format).Distinct();
+                foreach (var format in formats)
+                {
+                    var textures = unknownTextures.Where(t => t.format == format).OrderBy(t => t.name).ToArray();
+                    ErrorReport.ReportError(new UnknownTextureFormatError(format, EditorUserBuildSettings.activeBuildTarget, textures));
                 }
             }
         }

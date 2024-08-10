@@ -76,7 +76,7 @@ namespace KRT.VRCQuestTools.Models
                         else
                         {
                             AssetUtility.SetStreamingMipMaps(texToWrite, true);
-                            var format = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android ? TextureFormat.ASTC_6x6 : TextureFormat.DXT5;
+                            var format = (EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS) ? TextureFormat.ASTC_6x6 : TextureFormat.DXT5;
                             EditorUtility.CompressTexture(texToWrite, format, TextureCompressionQuality.Best);
                             texture = UnityEngine.Object.Instantiate(texToWrite);
                             texture.name = material.Material.name;

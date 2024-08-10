@@ -197,7 +197,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AvatarBuilderWindowRequiresControlPanel { get; }
         internal abstract string AvatarBuilderWindowOfflineTestingLabel { get; }
         internal abstract string AvatarBuilderWindowOfflineTestingDescription(string name);
-        internal abstract string AvatarBuilderWindowOnlinePublishingLabel { get; }
+        internal abstract string AvatarBuilderWindowOnlinePublishingLabel(string platformName);
         internal abstract string AvatarBuilderWindowOnlinePublishingDescription { get; }
         internal abstract string AvatarBuilderWindowNdmfManualBakingLabel { get; }
         internal abstract string AvatarBuilderWindowNdmfManualBakingDescription { get; }
