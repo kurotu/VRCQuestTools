@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `MA Visible Head Accessory` and `MA World Fixed Object` components are no longer removed when using Modular Avatar 1.9.0 or later.
+- [NDMF] Changed to display a warning instead of an error when unknown texture formats are used.
 
 ### Fixed
 - Compilation error when using VRChat SDK 3.6.2-constraints.3.

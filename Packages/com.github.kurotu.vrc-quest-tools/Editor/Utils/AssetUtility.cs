@@ -376,6 +376,16 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Returns whether the texture format is known by the tool.
+        /// </summary>
+        /// <param name="format">Texture format.</param>
+        /// <returns>true when the format is known by the tool.</returns>
+        internal static bool IsKnownTextureFormat(TextureFormat format)
+        {
+            return UncompressedFormats.Contains(format) || WindowsFormats.Contains(format) || AndroidFormats.Contains(format) || IosFormats.Contains(format);
+        }
+
+        /// <summary>
         /// Returns whether the texture format is supported by the build target.
         /// </summary>
         /// <param name="format">Texture format.</param>
