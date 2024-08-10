@@ -104,6 +104,38 @@ namespace KRT.VRCQuestTools.Utils
             TextureFormat.EAC_RG_SIGNED,
         };
 
+        // https://docs.unity3d.com/2022.3/Documentation/Manual/class-TextureImporterOverride.html
+        // Contains "partial" formats to simplify.
+        private static readonly HashSet<TextureFormat> IosFormats = new HashSet<TextureFormat>
+        {
+            TextureFormat.ASTC_4x4,
+            TextureFormat.ASTC_5x5,
+            TextureFormat.ASTC_6x6,
+            TextureFormat.ASTC_8x8,
+            TextureFormat.ASTC_10x10,
+            TextureFormat.ASTC_12x12,
+            TextureFormat.ASTC_HDR_4x4,
+            TextureFormat.ASTC_HDR_5x5,
+            TextureFormat.ASTC_HDR_6x6,
+            TextureFormat.ASTC_HDR_8x8,
+            TextureFormat.ASTC_HDR_10x10,
+            TextureFormat.ASTC_HDR_12x12,
+            TextureFormat.ETC2_RGB,
+            TextureFormat.ETC2_RGBA1,
+            TextureFormat.ETC2_RGBA8,
+            TextureFormat.ETC2_RGBA8Crunched,
+            TextureFormat.ETC_RGB4,
+            TextureFormat.ETC_RGB4Crunched,
+            TextureFormat.EAC_R,
+            TextureFormat.EAC_R_SIGNED,
+            TextureFormat.EAC_RG,
+            TextureFormat.EAC_RG_SIGNED,
+            TextureFormat.PVRTC_RGB2,
+            TextureFormat.PVRTC_RGB4,
+            TextureFormat.PVRTC_RGBA2,
+            TextureFormat.PVRTC_RGBA4,
+        };
+
         static AssetUtility()
         {
             if (IsLilToonImported())
@@ -358,6 +390,8 @@ namespace KRT.VRCQuestTools.Utils
                     return UncompressedFormats.Contains(format) || WindowsFormats.Contains(format);
                 case UnityEditor.BuildTarget.Android:
                     return UncompressedFormats.Contains(format) || AndroidFormats.Contains(format);
+                case UnityEditor.BuildTarget.iOS:
+                    return UncompressedFormats.Contains(format) || IosFormats.Contains(format);
                 default:
                     throw new NotSupportedException($"Unsupported build target: {buildTarget}");
             }

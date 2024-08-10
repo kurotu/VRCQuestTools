@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - [NDMF] Logo to the NDMF Console.
 - Add warning to suggest converting Unity constraints to VRChat constraints in `VQT Avatar Converter Settings`.
+- Build and publish for iOS platform (as well as Android).
 
 ### Changed
 - `MA Visible Head Accessory` and `MA World Fixed Object` components are no longer removed when using Modular Avatar 1.9.0 or later.

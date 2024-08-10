@@ -378,7 +378,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
                 EditorGUILayout.Space();
 
-                var isAndroidEditor = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android;
+                var isAndroidEditor = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS;
                 using (new EditorGUI.DisabledScope(!CanStartLocalBuild || isAndroidEditor))
                 {
                     EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOfflineTestingLabel, EditorStyles.largeLabel);
@@ -392,13 +392,14 @@ namespace KRT.VRCQuestTools.Ndmf
 
                 using (new EditorGUI.DisabledScope(!CanStartUpload || !isAndroidEditor))
                 {
-                    EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingLabel, EditorStyles.largeLabel);
+                    var targetName = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android ? "Android" : "iOS";
+                    EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingLabel(targetName), EditorStyles.largeLabel);
                     EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingDescription, EditorStyles.wordWrappedMiniLabel);
                     if (!uploadedVrcAvatar.HasValue && (string.IsNullOrEmpty(AvatarBuilderSessionState.AvatarName) || string.IsNullOrEmpty(AvatarBuilderSessionState.AvatarThumbPath)))
                     {
                         EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowRequiresAvatarNameAndThumb, MessageType.Error);
                     }
-                    if (GUILayout.Button("Build & Publish for Android"))
+                    if (GUILayout.Button($"Build & Publish for {targetName}"))
                     {
                         OnClickBuildAndPublishForAndroid();
                     }

@@ -200,7 +200,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarBuilderWindowRequiresControlPanel => "Need to open VRChat SDK Control Panel to build the avatar.";
         internal override string AvatarBuilderWindowOfflineTestingLabel => "Offline Testing (PC)";
         internal override string AvatarBuilderWindowOfflineTestingDescription(string name) => $"Build this avatar with Android build setting to test it on PC. The avatar will appear as \"SDK {name}\" in the Other category of the avatars menu.";
-        internal override string AvatarBuilderWindowOnlinePublishingLabel => "Online Publishing (Android)";
+        internal override string AvatarBuilderWindowOnlinePublishingLabel(string platformName) => $"Online Publishing ({platformName})";
         internal override string AvatarBuilderWindowOnlinePublishingDescription => "Upload this avatar to VRChat with Android build setting. The pre-build validation of VRChat SDK Control Panel will be skipped even if the avatar doesn't satisfy Android limitation.";
         internal override string AvatarBuilderWindowNdmfManualBakingLabel => "NDMF Manual Baking";
         internal override string AvatarBuilderWindowNdmfManualBakingDescription => "Execute the menu, Tools -> NDM Framework -> Manual bake avatar with Android build setting.";
