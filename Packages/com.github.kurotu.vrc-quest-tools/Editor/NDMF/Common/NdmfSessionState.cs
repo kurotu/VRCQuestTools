@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
+using VRC.SDKBase.Validation.Performance;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -7,6 +10,11 @@ namespace KRT.VRCQuestTools.Ndmf
     /// </summary>
     internal static class NdmfSessionState
     {
+        /// <summary>
+        /// Gets or sets the last actual performance rating.
+        /// </summary>
+        internal static readonly Dictionary<string, PerformanceRating> LastActualPerformanceRating = new Dictionary<string, PerformanceRating>();
+
         private const string BaseKey = "KRT.VRCQuestTools.Ndmf.";
         private const string BuildTargetKey = BaseKey + "BuildTarget";
 

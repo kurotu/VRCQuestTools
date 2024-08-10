@@ -202,6 +202,9 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarBuilderWindowOfflineTestingDescription(string name) => $"Build this avatar with Android build setting to test it on PC. The avatar will appear as \"SDK {name}\" in the Other category of the avatars menu.";
         internal override string AvatarBuilderWindowOnlinePublishingLabel(string platformName) => $"Online Publishing ({platformName})";
         internal override string AvatarBuilderWindowOnlinePublishingDescription => "Upload this avatar to VRChat with Android build setting. The pre-build validation of VRChat SDK Control Panel will be skipped even if the avatar doesn't satisfy Android limitation.";
+        internal override string AvatarBuilderWindowSetAsFallbackIfPossible => "Set as a fallback avatar if possible";
+        internal override string AvatarBuilderWindowSetAsFallbackIfPossibleTooltip => "Performance rank must be Good or better after building the avatar.";
+        internal override string AvatarBuilderWindowFallbackNotAllowed(string rating) => $"Could not set as a fallback avatar because the performance rank is {rating}.";
         internal override string AvatarBuilderWindowNdmfManualBakingLabel => "NDMF Manual Baking";
         internal override string AvatarBuilderWindowNdmfManualBakingDescription => "Execute the menu, Tools -> NDM Framework -> Manual bake avatar with Android build setting.";
         internal override string AvatarBuilderWindowRequiresAvatarNameAndThumb => "Need to set name and thumbnail in VRChat SDK Control Panel when uploading a new avatar.";

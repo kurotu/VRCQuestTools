@@ -29,6 +29,7 @@ namespace KRT.VRCQuestTools.Ndmf
         private VRC_AvatarDescriptor targetAvatar;
         private string targetBlueprintId;
         private VRCAvatar? uploadedVrcAvatar;
+        private bool tryToSetFallbackFlag = false;
 
         private string sdkBuildProgress = string.Empty;
         private (string Status, float Percentage) sdkUploadProgress = (string.Empty, 0.0f);
@@ -175,12 +176,16 @@ namespace KRT.VRCQuestTools.Ndmf
             if (pipeline == null)
             {
                 targetBlueprintId = null;
+                OnChangeBlueprintId(targetBlueprintId);
             }
             else
             {
+                if (targetBlueprintId != pipeline.blueprintId || !uploadedVrcAvatar.HasValue)
+                {
+                    OnChangeBlueprintId(pipeline.blueprintId);
+                }
                 targetBlueprintId = pipeline.blueprintId;
             }
-            OnChangeBlueprintId(targetBlueprintId);
         }
 
         private void OnGUI()
@@ -399,6 +404,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     {
                         EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowRequiresAvatarNameAndThumb, MessageType.Error);
                     }
+                    tryToSetFallbackFlag = EditorGUILayout.ToggleLeft(new GUIContent(i18n.AvatarBuilderWindowSetAsFallbackIfPossible, i18n.AvatarBuilderWindowSetAsFallbackIfPossibleTooltip), tryToSetFallbackFlag);
                     if (GUILayout.Button($"Build & Publish for {targetName}"))
                     {
                         OnClickBuildAndPublishForAndroid();
@@ -470,6 +476,10 @@ namespace KRT.VRCQuestTools.Ndmf
             GetVRCAvatar(blueprintId).ContinueWith(a =>
             {
                 uploadedVrcAvatar = a.Result;
+                if (a.Result.HasValue)
+                {
+                    tryToSetFallbackFlag = a.Result.Value.Tags.Contains(VRCSDKUtility.AvatarContentTag.Fallback);
+                }
                 PostRepaint();
             });
         }
@@ -611,7 +621,8 @@ namespace KRT.VRCQuestTools.Ndmf
             var pipeline = avatarObject.GetComponent<PipelineManager>();
             try
             {
-                var avatar = await GetVRCAvatar(pipeline.blueprintId);
+                var blueprintId = pipeline.blueprintId;
+                var avatar = await GetVRCAvatar(blueprintId);
                 var isNewAvatar = !avatar.HasValue;
                 string thumbPath = null;
                 if (isNewAvatar)
@@ -626,6 +637,23 @@ namespace KRT.VRCQuestTools.Ndmf
                     thumbPath = AvatarBuilderSessionState.AvatarThumbPath;
                 }
                 await sdkBuilder.BuildAndUpload(avatarObject, avatar.Value, thumbPath);
+                if (tryToSetFallbackFlag)
+                {
+                    var overallRating = NdmfSessionState.LastActualPerformanceRating[blueprintId];
+                    if (VRCSDKUtility.IsAllowedForFallbackAvatar(overallRating))
+                    {
+                        if (!avatar.Value.Tags.Contains(VRCSDKUtility.AvatarContentTag.Fallback))
+                        {
+                            Debug.Log($"[{VRCQuestTools.Name}] Setting avatar as fallback");
+                            uploadedVrcAvatar = await VRCApi.SetAvatarAsFallback(blueprintId, avatar.Value);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[{VRCQuestTools.Name}] The avatar is not allowed to be set as a fallback avatar: {overallRating}");
+                        EditorUtility.DisplayDialog(VRCQuestTools.Name, VRCQuestToolsSettings.I18nResource.AvatarBuilderWindowFallbackNotAllowed(overallRating.ToString()), "OK");
+                    }
+                }
                 uploadSecceeded = true;
             }
             catch (Exception e)
