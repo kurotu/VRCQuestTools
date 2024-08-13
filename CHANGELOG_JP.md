@@ -7,17 +7,17 @@
 ## [Unreleased]
 
 ### 追加
-- [NDMF] NDMFコンソールにロゴを追加
-- [NDMF] VQT Avatar Builder でフォールバックアバターを設定する機能を追加
+- iOS プラットフォームのサポート (Android と同様)
 - `VQT Avatar Converter Settings` に Unity Constraints を VRChat Constraints へ変換することを提案する警告を追加
-- iOS プラットフォームへのアバターの変換とアップロード (Android と同様)
+- [NDMF] VQT Avatar Builder でフォールバックアバターを設定する機能を追加
+- [NDMF] NDMFコンソールにロゴを追加
 
 ### 変更
 - Modular Avatar 1.9.0 以降を使用している場合 `MA Visible Head Accessory` と `MA World Fixed Object` コンポーネントを削除しないように変更
 - [NDMF] 未知のテクスチャフォーマットが使用されているときにエラーではなく警告を表示するように変更
 
 ### 修正
-- VRChat SDK 3.6.2-constraints.3 でコンパイルエラーになる問題を修正
+- VRChat SDK 3.6.2-constraints.3 以降でコンパイルエラーになる問題を修正
 
 ## [2.3.5] - 2024-07-27
 
