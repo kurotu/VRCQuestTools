@@ -15,6 +15,7 @@
 ### 変更
 - Modular Avatar 1.9.0 以降を使用している場合 `MA Visible Head Accessory` と `MA World Fixed Object` コンポーネントを削除しないように変更
 - [NDMF] 未知のテクスチャフォーマットが使用されているときにエラーではなく警告を表示するように変更
+- [NDMF] 非対応のプラットフォームではテクスチャフォーマットをチェックしないように変更
 
 ### 修正
 - VRChat SDK 3.6.2-constraints.3 以降でコンパイルエラーになる問題を修正
