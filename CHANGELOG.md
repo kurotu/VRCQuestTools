@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Error message that the converter can't perform in the prefab mode.
 
+### Fixed
+- [NDMF] Known texture formats were reported as unknown texture formats when using unsupported texture formats for the current platform.
+
 ## [2.4.0] - 2024-08-14
 
 ### Added

@@ -34,11 +34,11 @@ namespace KRT.VRCQuestTools.Ndmf
                         {
                             if (AssetUtility.IsKnownTextureFormat(texture.format))
                             {
-                                unknownTextures.Add(texture);
+                                unsupportedTextures.Add(texture);
                             }
                             else
                             {
-                                unsupportedTextures.Add(texture);
+                                unknownTextures.Add(texture);
                             }
                         }
                     }
