@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 追加
+- Prefab モードではアバターを変換できないことに対してのエラーメッセージを追加
+
 ## [2.4.0] - 2024-08-14
 
 ### 追加

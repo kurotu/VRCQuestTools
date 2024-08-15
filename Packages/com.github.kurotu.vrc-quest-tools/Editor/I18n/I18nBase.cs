@@ -62,6 +62,7 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AlertForMultiplePhysBones { get; }
         internal abstract string AlertForAvatarDynamicsPerformance { get; }
         internal abstract string AlertForComponents { get; }
+        internal abstract string ErrorForPrefabStage { get; }
 
         internal abstract string AvatarConverterMaterialConvertSettingsLabel { get; }
         internal abstract string AvatarConverterDefaultMaterialConvertSettingLabel { get; }

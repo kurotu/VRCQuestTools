@@ -71,6 +71,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarConverterPhysBonesTooltip => "変換時に残しておく PhysBone を選択します。";
         internal override string AvatarConverterPhysBoneCollidersTooltip => "変換時に残しておく PhysBoneCollider を選択します。";
         internal override string AvatarConverterContactsTooltip => "変換時に残しておく ContactSender と ContactReceiver を選択します。";
+        internal override string ErrorForPrefabStage => "Prefab モードではアバターを変換できません。Prefab モードを抜けてシーンに戻ってください。";
 
         // IMaterialConvertSettings
         internal override string IMaterialConvertSettingsTexturesSizeLimitLabel => "最大テクスチャサイズ";

@@ -369,6 +369,10 @@ namespace KRT.VRCQuestTools.Inspector
                 if (PrefabStageUtility.GetCurrentPrefabStage() != null)
                 {
                     canConvert = false;
+                    Views.EditorGUIUtility.HelpBoxGUI(MessageType.Error, () =>
+                    {
+                        EditorGUILayout.LabelField(i18n.ErrorForPrefabStage, EditorStyles.wordWrappedMiniLabel);
+                    });
                 }
 
                 using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
