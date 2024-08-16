@@ -95,10 +95,6 @@ namespace KRT.VRCQuestTools.Inspector
                         using (var horizontal = new EditorGUILayout.HorizontalScope())
                         {
                             EditorGUILayout.HelpBox(i18n.AlertForUnityConstraintsConversion, MessageType.Warning);
-                            if (GUILayout.Button(i18n.ConvertButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
-                            {
-                                OnClickConvertToVRCConstraintsButton(descriptor);
-                            }
                         }
                     }
 #endif

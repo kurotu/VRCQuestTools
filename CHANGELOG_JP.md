@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 削除
+- `VQT Avatar Converter Settings` の Unity Constraints を VRChat Constraints へ変換するボタンを削除
+
 ## [2.4.1] - 2024-08-15
 
 ### 追加
