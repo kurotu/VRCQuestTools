@@ -490,7 +490,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
         private void PostRepaint()
         {
-            mainContext.Post(_ => Repaint(), null);
+            mainContext?.Post(_ => Repaint(), null);
         }
 
         private void OnClickBuildAndTestOnPC()

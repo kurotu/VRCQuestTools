@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- [NDMF] Unity の起動時に VQT Avatar Builder がエラーを出すことがある問題を修正
+
 ## [2.4.2] - 2024-08-16
 
 ### 削除
