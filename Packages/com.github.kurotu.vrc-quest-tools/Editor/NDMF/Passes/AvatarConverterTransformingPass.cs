@@ -45,7 +45,8 @@ namespace KRT.VRCQuestTools.Ndmf
                         ErrorReport.ReportError(error);
                         return;
                     }
-                    if (converted != null)
+                    // Register converted material to ObjectRegistry when it is not an asset..
+                    if (converted != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(converted)))
                     {
                         ObjectRegistry.RegisterReplacedObject(original, converted);
                     }

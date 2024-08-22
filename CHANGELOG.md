@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - [NDMF] VQT Avatar Builder might put an error when launching Unity.
+- [NDMF] Error when replacing multiple materials with the same one in material conversion settings.
 
 ## [2.4.2] - 2024-08-16
 
