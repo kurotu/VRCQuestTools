@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Texture generation now uses Unity's imported textures when using other than PNG or JPEG.
+
 ### Fixed
 - [NDMF] VQT Avatar Builder might put an error when launching Unity.
 - [NDMF] Error when replacing multiple materials with the same one in material conversion settings.
+- [NDMF] Texture generation error when a material uses other than PNG or JPEG textures.
 
 ## [2.4.2] - 2024-08-16
 

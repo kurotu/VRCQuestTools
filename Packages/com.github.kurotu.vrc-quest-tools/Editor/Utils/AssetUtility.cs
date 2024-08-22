@@ -247,7 +247,7 @@ namespace KRT.VRCQuestTools.Utils
                 return texture;
             }
 
-            var tex2 = LoadUncompressedTexture(path);
+            var tex2 = LoadUncompressedTexture(path, false);
             tex2.wrapMode = texture.wrapMode;
             return tex2;
         }
@@ -257,8 +257,9 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <see href="https://github.com/lilxyzw/lilToon/issues/17">lilxyzw/lilToon#17.</see>
         /// <param name="path">path to image.</param>
+        /// <param name="makeReadable">instanciate a readable one.</param>
         /// <returns>Loaded texture.</returns>
-        internal static Texture2D LoadUncompressedTexture(string path)
+        internal static Texture2D LoadUncompressedTexture(string path, bool makeReadable)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             var extension = Path.GetExtension(path).ToLower();
@@ -270,6 +271,11 @@ namespace KRT.VRCQuestTools.Utils
                 tex.LoadImage(bytes);
                 tex.filterMode = FilterMode.Bilinear;
                 return tex;
+            }
+
+            if (!makeReadable)
+            {
+                return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             }
 
             const string AndroidPlatform = "Android";

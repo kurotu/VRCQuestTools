@@ -3,6 +3,8 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using UnityEditor;
+
 namespace KRT.VRCQuestTools.Utils
 {
     /// <summary>
@@ -31,7 +33,7 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         public void Dispose()
         {
-            if (this.Object != null)
+            if (this.Object != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(this.Object)))
             {
                 UnityEngine.Object.DestroyImmediate(this.Object);
             }
