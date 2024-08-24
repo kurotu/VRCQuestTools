@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] VQT Avatar Builder might put an error when launching Unity.
 - [NDMF] Error when replacing multiple materials with the same one in material conversion settings.
 - [NDMF] Texture generation error when a material uses other than PNG or JPEG textures.
+- [NDMF] Exception occured in the preview configuration window of NDMF 1.5.0 when reloading scripts. (by @ReinaS-64892)
 
 ## [2.4.2] - 2024-08-16
 
