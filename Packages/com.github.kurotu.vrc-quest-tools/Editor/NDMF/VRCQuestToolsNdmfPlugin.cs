@@ -1,8 +1,8 @@
+using System;
 using KRT.VRCQuestTools.Ndmf;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEngine;
-using System;
 
 [assembly: ExportsPlugin(typeof(VRCQuestToolsNdmfPlugin))]
 
