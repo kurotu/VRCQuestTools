@@ -77,6 +77,11 @@ In other words, even if your avatar is ranked as "Very Poor", you must pass "Poo
 ## Convert Avatar
 
 :::tip
+You can convert your avatar non-destructively if you are using NDMF-based non-destructive tools such as Modular Avatar.
+(Reference: [Tutorial: Non-Destructive Conversion](./non-destructive-workflow))
+:::
+
+:::tip
 It's good time to create a prefab (or prefab variant) if you are using prefab workflow.
 VRCQuestTools keeps references to prefabs after conversion.
 And you can reuse the converter settings.

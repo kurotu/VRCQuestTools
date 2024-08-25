@@ -77,6 +77,11 @@ https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits
 ## アバターの変換
 
 :::tip
+Modular Avatar等のNDMF対応の非破壊ツールを使用している場合、VRCQuestToolsによるアバターの変換も非破壊的に行うことができます。
+(参照: [チュートリアル: 非破壊的な変換](./non-destructive-workflow))。
+:::
+
+:::tip
 Prefabワークフローを使用している場合、このタイミングでPrefab (またはPrefab Variant)を作成するとよいでしょう。
 VRCQuestToolsはアバターの変換後もプレハブへの参照を保持します。
 また、同じ変換設定を流用することができます。
