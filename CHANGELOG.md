@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Texture generation now uses Unity's imported textures when using other than PNG or JPEG.
+- [NDMF] Convert avatars in the optimizing phase for TexTransTool interoperability.
 
 ### Fixed
 - [NDMF] VQT Avatar Builder might put an error when launching Unity.

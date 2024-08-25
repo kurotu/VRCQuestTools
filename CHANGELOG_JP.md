@@ -8,6 +8,7 @@
 
 ### 変更
 - テクスチャ生成時に PNG および JPEG 以外の画像に対しては Unity がインポートしたテクスチャを使用するように変更
+- [NDMF] TexTransTool との相互運用性のために Optimizing Phase でアバターを変換するように変更
 
 ### 修正
 - [NDMF] Unity の起動時に VQT Avatar Builder がエラーを出すことがある問題を修正

@@ -52,17 +52,14 @@ namespace KRT.VRCQuestTools.Ndmf
                 .Run(AssignNetworkIDsPass.Instance);
 
             InPhase(BuildPhase.Transforming)
-                .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
-                .AfterPlugin("nadena.dev.modular-avatar") // convert built avatar
-                .Run(AvatarConverterTransformingPass.Instance);
-
-            InPhase(BuildPhase.Transforming)
                 .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control decimation
                 .Run(RemoveVertexColorPass.Instance);
 
             InPhase(BuildPhase.Optimizing)
+                .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
-                .Run(RemoveUnsupportedComponentsPass.Instance)
+                .Run(AvatarConverterTransformingPass.Instance)
+                .Then.Run(RemoveUnsupportedComponentsPass.Instance)
                 .Then.Run(RemoveVRCQuestToolsComponentsPass.Instance);
 
             InPhase(BuildPhase.Optimizing)
