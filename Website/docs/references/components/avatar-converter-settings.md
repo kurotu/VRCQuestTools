@@ -124,10 +124,12 @@ To avoid VRChat SDK validation, use the Avatar Builder window to build the avata
 
 Change VirtualLens2 settings for Android.
 
-### Transform Phase
-
-Convert the avatar for Android.
-This process is performed after TexTransTool and Modular Avatar.
+### Transforming Phase
 
 Remove vertex colors from the meshes.
 This process is performed after NDMF Mantis LOD Editor.
+
+### Optimizing Phase
+
+Convert the avatar for Android.
+This process is performed between TexTransTool and AAO: Avatar Optimizer.

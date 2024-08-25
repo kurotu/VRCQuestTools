@@ -125,8 +125,10 @@ VirtualLens2の設定をAndroid用に変更します。
 
 ### Transforming Phase
 
-アバターの変換を実行します。
-この処理はTexTransToolおよびModular Avatarの後に実行されます。
-
 メッシュから頂点カラーを削除します。
 この処理はNDMF Mantis LOD Editorの後に実行されます。
+
+### Optimizing Phase
+
+アバターの変換を実行します。
+この処理はTexTransToolとAAO: Avatar Optimizerの間で実行されます。
