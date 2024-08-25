@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.4.3] - 2024-08-25
 
 ### 変更
 - テクスチャ生成時に PNG および JPEG 以外の画像に対しては Unity がインポートしたテクスチャを使用するように変更
