@@ -265,6 +265,7 @@ namespace KRT.VRCQuestTools.Inspector
                 {
                     EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent(i18n.AnimationOverrideLabel, i18n.AnimationOverrideTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
+                    EditorGUILayout.PropertyField(so.FindProperty("ndmfPhase"), new GUIContent(i18n.NdmfPhaseLabel, i18n.NdmfPhaseTooltip));
                 }
 
                 Views.EditorGUIUtility.HorizontalDivider(2);

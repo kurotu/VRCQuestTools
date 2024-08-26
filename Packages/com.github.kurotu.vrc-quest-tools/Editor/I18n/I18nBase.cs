@@ -47,6 +47,8 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string RemoveVertexColorTooltip { get; }
         internal abstract string AnimationOverrideLabel { get; }
         internal abstract string AnimationOverrideTooltip { get; }
+        internal abstract string NdmfPhaseLabel { get; }
+        internal abstract string NdmfPhaseTooltip { get; }
         internal abstract string GeneratingTexturesDialogMessage { get; }
         internal abstract string MaterialExceptionDialogMessage { get; }
         internal abstract string AnimationClipExceptionDialogMessage { get; }
