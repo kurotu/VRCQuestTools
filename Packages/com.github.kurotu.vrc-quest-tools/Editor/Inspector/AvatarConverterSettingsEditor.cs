@@ -451,6 +451,7 @@ namespace KRT.VRCQuestTools.Inspector
         {
             descriptor.gameObject.AddComponent<NetworkIDAssigner>();
             PrefabUtility.RecordPrefabInstancePropertyModifications(descriptor.gameObject);
+            EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NetworkIdAssignerAttached, "OK");
         }
 
         private void OnClickRegenerateTexturesButton(VRC_AvatarDescriptor avatar, IMaterialConvertSettings convertSetting)

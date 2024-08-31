@@ -97,6 +97,12 @@ namespace KRT.VRCQuestTools.Views
         {
             var converterSettings = targetRoot.gameObject.AddComponent<AvatarConverterSettings>();
             editor = Editor.CreateEditor(converterSettings);
+            if (targetRoot.gameObject.GetComponent<NetworkIDAssigner>() == null)
+            {
+                var i18n = VRCQuestToolsSettings.I18nResource;
+                targetRoot.gameObject.AddComponent<NetworkIDAssigner>();
+                EditorUtility.DisplayDialog("VRCQuestTools", i18n.NetworkIdAssignerAttached, "OK");
+            }
         }
     }
 }
