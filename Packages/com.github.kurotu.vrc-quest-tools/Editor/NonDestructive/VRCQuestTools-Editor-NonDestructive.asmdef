@@ -1,0 +1,33 @@
+{
+    "name": "VRCQuestTools-Editor-NonDestructive",
+    "rootNamespace": "",
+    "references": [
+        "VRCQuestTools",
+        "VRCQuestTools-Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "!VQT_HAS_NDMF",
+        "VQT_HAS_VRCSDK_BASE"
+    ],
+    "versionDefines": [
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "",
+            "define": "VQT_HAS_NDMF"
+        },
+        {
+            "name": "com.vrchat.base",
+            "expression": "",
+            "define": "VQT_HAS_VRCSDK_BASE"
+        }
+    ],
+    "noEngineReferences": false
+}
