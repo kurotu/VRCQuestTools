@@ -62,7 +62,7 @@ namespace KRT.VRCQuestTools.Components
         /// NDMF phase to convert the avatar.
         /// </summary>
         [SerializeField]
-        public AvatarConverterNdmfPhase ndmfPhase = AvatarConverterNdmfPhase.Optimizing;
+        public AvatarConverterNdmfPhase ndmfPhase = AvatarConverterNdmfPhase.Transforming;
 
         /// <summary>
         /// Gets avatar descriptor of the avatar root object.
