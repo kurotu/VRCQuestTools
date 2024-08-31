@@ -6,6 +6,7 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDKBase;
 using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace KRT.VRCQuestTools.NonDestructive
@@ -42,6 +43,8 @@ namespace KRT.VRCQuestTools.NonDestructive
                 VRCSDKUtility.RemoveMissingComponentsInChildren(avatarGameObject, true);
             }
 
+            AssignNetworkIDs(avatarGameObject);
+
             var removers = avatarGameObject.GetComponentsInChildren<VertexColorRemover>(true);
             foreach (var r in removers)
             {
@@ -55,6 +58,18 @@ namespace KRT.VRCQuestTools.NonDestructive
             }
 
             return true;
+        }
+
+        private static void AssignNetworkIDs(GameObject avatarGameObject)
+        {
+            var assigner = avatarGameObject.GetComponent<NetworkIDAssigner>();
+            if (assigner == null)
+            {
+                return;
+            }
+            var descriptor = avatarGameObject.GetComponent<VRC_AvatarDescriptor>();
+
+            VRCSDKUtility.AssignNetworkIdsToPhysBonesByHierarchyHash(descriptor);
         }
     }
 }

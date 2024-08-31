@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `VQT Network ID Assigner` works without NDMF.
+
 ### Changed
 - [NDMF] Hide the warning about unassigned Network IDs
 

@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 追加
+- `VQT Network ID Assigner` が NDMF なしで動作する機能を追加
+
 ### 変更
 - [NDMF] ネットワークIDの未割り当てに関する警告を表示しないように変更
 

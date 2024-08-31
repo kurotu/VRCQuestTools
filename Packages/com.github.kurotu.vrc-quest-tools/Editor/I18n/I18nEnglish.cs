@@ -168,7 +168,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertedAvatarEditorNDMFMessage => "Components which are not supported on Android will be removed in NDMF optimization phase.";
 
         // Network ID Assigner
-        internal override string NetworkIDAssignerEditorDescription => "Assign Network IDs to the avatar's components such as PhysBones. IDs are determined by hash values of hierarchy paths from the avatar root.";
+        internal override string NetworkIDAssignerEditorDescription => "Assign Network IDs to the avatar's components such as PhysBones in build process. IDs are determined by hash values of hierarchy paths from the avatar root.";
 
         // Platform Target Settings
         internal override string PlatformTargetSettingsEditorDescription => "Components are enforced to use a specific platform settings in NDMF build process.";

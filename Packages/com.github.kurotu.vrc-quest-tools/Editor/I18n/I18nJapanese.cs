@@ -165,7 +165,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertedAvatarEditorNDMFMessage => "Android 非対応コンポーネントは NDMF の Optimization Phase で削除されます。";
 
         // Network ID Assigner
-        internal override string NetworkIDAssignerEditorDescription => "アバター内のコンポーネント (PhysBoneなど) にネットワーク ID を割り当てます。ID はアバタールートからのヒエラルキーパスのハッシュ値をもとに決定します。";
+        internal override string NetworkIDAssignerEditorDescription => "アバターのビルド時にコンポーネント (PhysBoneなど) にネットワーク ID を割り当てます。ID はアバタールートからのヒエラルキーパスのハッシュ値をもとに決定します。";
 
         // Platform Target Settings
         internal override string PlatformTargetSettingsEditorDescription => "ビルド時にコンポーネントの設定を特定のプラットフォームに強制します。";
