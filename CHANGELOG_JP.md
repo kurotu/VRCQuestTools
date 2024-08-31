@@ -10,7 +10,10 @@
 - `VQT Network ID Assigner` が NDMF なしで動作する機能を追加
 
 ### 変更
-- [NDMF] ネットワークIDの未割り当てに関する警告を表示しないように変更
+- `Convert Avatar for Android` ウィンドウで変換設定を始めるときに `VQT Network ID Assigner` をアバターに追加するように変更
+
+### 削除
+- ネットワークIDの未割り当てに関する警告を削除
 
 ## [2.4.3] - 2024-08-25
 

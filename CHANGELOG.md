@@ -11,7 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `VQT Network ID Assigner` works without NDMF.
 
 ### Changed
-- [NDMF] Hide the warning about unassigned Network IDs
+- `Convert Avatar for Android` window attaches `VQT Network ID Assigner` to the avatar.
+
+### Removed
+- Warning about unassigned Network IDs.
 
 ## [2.4.3] - 2024-08-25
 
