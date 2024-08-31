@@ -61,7 +61,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
         internal override string AlertForUnityConstraintsConversion => $"{VRCQuestTools.Name} doesn't convert Unity constraints to VRChat constraints. Please set up VRChat constraints before converting the avatar.";
-        internal override string AlertForMissingNetIds => "There are PhysBones which don't have Network ID. To keep sync between PC and Android, assign Network IDs then re-upload the PC avatar.";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not able to upload for Android.  Please keep \"Poor\" rating in avatar dynamics categories.";
 
         internal override string ErrorForPrefabStage => "Can't convert the avatar in prefab mode. Please go back to a scene from prefab mode.";

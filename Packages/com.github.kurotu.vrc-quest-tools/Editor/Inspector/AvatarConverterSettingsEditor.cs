@@ -98,30 +98,16 @@ namespace KRT.VRCQuestTools.Inspector
                         }
                     }
 #endif
-                    if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor))
+                    if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor) && avatar.GameObject.GetComponent<NetworkIDAssigner>() == null)
                     {
-#if VQT_HAS_NDMF
-                        if (avatar.GameObject.GetComponent<NetworkIDAssigner>() == null)
-                        {
-                            using (var horizontal = new EditorGUILayout.HorizontalScope())
-                            {
-                                EditorGUILayout.HelpBox(i18n.InfoForNetworkIdAssigner, MessageType.Info);
-                                if (GUILayout.Button(i18n.AttachButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
-                                {
-                                    OnClickAttachNetworkIDAssignerButton(descriptor);
-                                }
-                            }
-                        }
-#else
                         using (var horizontal = new EditorGUILayout.HorizontalScope())
                         {
-                            EditorGUILayout.HelpBox(i18n.AlertForMissingNetIds, MessageType.Warning);
-                            if (GUILayout.Button(i18n.AssignButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                            EditorGUILayout.HelpBox(i18n.InfoForNetworkIdAssigner, MessageType.Info);
+                            if (GUILayout.Button(i18n.AttachButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
                             {
-                                OnClickAssignNetIdsButton(descriptor);
+                                OnClickAttachNetworkIDAssignerButton(descriptor);
                             }
                         }
-#endif
                     }
 
                     var pbs = descriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
