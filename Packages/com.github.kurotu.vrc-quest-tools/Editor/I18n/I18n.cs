@@ -26,6 +26,8 @@ namespace KRT.VRCQuestTools.I18n
                     return new I18nJapanese();
                 case DisplayLanguage.English:
                     return new I18nEnglish();
+                case DisplayLanguage.Russian:
+                    return new I18nRussian();
                 default:
                     throw new System.NotImplementedException($"I18n for {VRCQuestToolsSettings.DisplayLanguage} is not implemented");
             }
@@ -37,6 +39,10 @@ namespace KRT.VRCQuestTools.I18n
             if (systemCultureName == "ja-JP")
             {
                 return new I18nJapanese();
+            } 
+            else if (systemCultureName == "ru-RU")
+            {
+                return new I18nRussian();
             }
             return new I18nEnglish();
         }

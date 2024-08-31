@@ -7,17 +7,20 @@ using KRT.VRCQuestTools.Models.Validators;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
+using KRT.VRCQuestTools.Menus;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 
 namespace KRT.VRCQuestTools.Automators
 {
+
     /// <summary>
     /// Automator for validation.
     /// </summary>
     [InitializeOnLoad]
     internal static class ValidationAutomator
     {
+
         static ValidationAutomator()
         {
             EditorApplication.playModeStateChanged += PlayModeStateChanged;
@@ -48,6 +51,8 @@ namespace KRT.VRCQuestTools.Automators
 
         private static void Update()
         {
+            if (DisableNotificationMenu.DisableNotificationState)
+                return;
             var avatars = VRCSDKUtility.GetAvatarsFromLoadedScenes();
             foreach (var avatar in avatars)
             {

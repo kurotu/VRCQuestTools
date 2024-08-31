@@ -25,10 +25,12 @@ namespace KRT.VRCQuestTools.Menus
             internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
             internal const string MSMapGenerator = RootMenu + "Metallic Smoothness Map";
             internal const string UnitySettings = RootMenu + "Unity Settings for Android";
+            internal const string DisableNotification = RootMenu + "Disable Notifications";
             private const string LanguageMenu = RootMenu + "Languages/";
             internal const string LanguageAuto = LanguageMenu + "Auto (default)";
             internal const string LanguageEnglish = LanguageMenu + "English";
             internal const string LanguageJapanese = LanguageMenu + "日本語";
+            internal const string LanguageRussian = LanguageMenu + "Русский";
             internal const string CheckForUpdate = RootMenu + "Check for Update";
             internal const string MissingSDK = RootMenu + "VRCSDK is missing or incompatible";
             internal const string Version = RootMenu + "Version " + VRCQuestTools.Version;
@@ -44,9 +46,11 @@ namespace KRT.VRCQuestTools.Menus
             BlendShapesCopy = 800,
             MSMapGenerator,
             UnitySettings = 900,
+            DisableNotification,
             LanguageAuto = 1000,
             LanguageEnglish,
             LanguageJapanese,
+            LanguageRussian,
             CheckForUpdate = 1100,
             MissingSDK,
             Version,

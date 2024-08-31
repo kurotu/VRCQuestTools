@@ -60,6 +60,15 @@ namespace KRT.VRCQuestTools.Menus
             SetLanguage(DisplayLanguage.Japanese);
         }
 
+        /// <summary>
+        /// Use Russian.
+        /// </summary>
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.LanguageRussian, false, (int)VRCQuestToolsMenus.MenuPriorities.LanguageRussian)]
+        private static void LanguageRussian()
+        {
+            SetLanguage(DisplayLanguage.Russian);
+        }
+
         private static void SetLanguage(DisplayLanguage language)
         {
             VRCQuestToolsSettings.DisplayLanguage = language;
@@ -73,6 +82,7 @@ namespace KRT.VRCQuestTools.Menus
                 { DisplayLanguage.Auto, VRCQuestToolsMenus.MenuPaths.LanguageAuto },
                 { DisplayLanguage.English, VRCQuestToolsMenus.MenuPaths.LanguageEnglish },
                 { DisplayLanguage.Japanese, VRCQuestToolsMenus.MenuPaths.LanguageJapanese },
+                { DisplayLanguage.Russian, VRCQuestToolsMenus.MenuPaths.LanguageRussian },
             };
             Debug.Assert(menus.Count == Enum.GetValues(typeof(DisplayLanguage)).Length);
 
