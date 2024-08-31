@@ -1,9 +1,9 @@
 #pragma warning disable SA1300 // Elements should should begin with an uppercase letter
 
+using System.Text.RegularExpressions;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDKBase.Editor.BuildPipeline;
@@ -18,7 +18,10 @@ namespace KRT.VRCQuestTools.NonDestructive
         /// <summary>
         /// Gets execution order for the moment.
         /// </summary>
-        public int callbackOrder => -2000; // AAO: -1025 https://vpm.anatawa12.com/avatar-optimizer/ja/docs/developers/make-your-components-compatible-with-aao/#remove-component
+        ///
+        /// -1100: LI(without NDMF) https://github.com/lilxyzw/lilycalInventory/blob/1.0.1/Editor/VRChat/VRChatProcessor.cs
+        /// -10000: VRCFury https://github.com/VRCFury/VRCFury/blob/com.vrcfury.vrcfury/1.1014.0/com.vrcfury.vrcfury/Editor/VF/Hooks/VrcPreuploadHook.cs
+        public int callbackOrder => -12000;
 
         /// <summary>
         /// Execute before build an avatar.
