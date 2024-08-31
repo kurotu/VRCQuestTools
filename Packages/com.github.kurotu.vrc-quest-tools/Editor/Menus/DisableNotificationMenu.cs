@@ -1,10 +1,11 @@
-﻿using UnityEditor;
+﻿#pragma warning disable SA1600 // Elements should be documented
+
+using UnityEditor;
 
 namespace KRT.VRCQuestTools.Menus
 {
     internal static class DisableNotificationMenu
     {
-
         private const string PrefsDisableNotification = "VRCQuestTools.DisableNotification";
 
         internal static bool DisableNotificationState

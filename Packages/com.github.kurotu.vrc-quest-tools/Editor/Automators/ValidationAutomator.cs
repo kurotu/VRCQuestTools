@@ -3,11 +3,11 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using KRT.VRCQuestTools.Menus;
 using KRT.VRCQuestTools.Models.Validators;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
-using KRT.VRCQuestTools.Menus;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 
@@ -52,7 +52,10 @@ namespace KRT.VRCQuestTools.Automators
         private static void Update()
         {
             if (DisableNotificationMenu.DisableNotificationState)
+            {
                 return;
+            }
+
             var avatars = VRCSDKUtility.GetAvatarsFromLoadedScenes();
             foreach (var avatar in avatars)
             {
