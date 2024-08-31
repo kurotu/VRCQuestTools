@@ -39,7 +39,7 @@ namespace KRT.VRCQuestTools.I18n
             if (systemCultureName == "ja-JP")
             {
                 return new I18nJapanese();
-            } 
+            }
             else if (systemCultureName == "ru-RU")
             {
                 return new I18nRussian();

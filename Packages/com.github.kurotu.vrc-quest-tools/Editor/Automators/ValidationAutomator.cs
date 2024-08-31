@@ -13,14 +13,12 @@ using UnityEngine.SceneManagement;
 
 namespace KRT.VRCQuestTools.Automators
 {
-
     /// <summary>
     /// Automator for validation.
     /// </summary>
     [InitializeOnLoad]
     internal static class ValidationAutomator
     {
-
         static ValidationAutomator()
         {
             EditorApplication.playModeStateChanged += PlayModeStateChanged;
