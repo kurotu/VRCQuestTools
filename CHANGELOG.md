@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `VQT Network ID Assigner` works without NDMF.
+- Add `NDMF Phase to Convert` option to `VQT Avatar Converter Settings` component.
+    - Transforming
+    - Optimizing
 
 ### Changed
 - `Convert Avatar for Android` window attaches `VQT Network ID Assigner` to the avatar.
+- [NDMF] Changed the default execution order of the avatar conversion process to match the behavior prior to 2.4.3 (Transforming).
 
 ### Removed
 - Warning about unassigned Network IDs.
