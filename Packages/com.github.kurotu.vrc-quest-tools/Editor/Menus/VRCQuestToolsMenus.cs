@@ -25,7 +25,6 @@ namespace KRT.VRCQuestTools.Menus
             internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
             internal const string MSMapGenerator = RootMenu + "Metallic Smoothness Map";
             internal const string UnitySettings = RootMenu + "Unity Settings for Android";
-            internal const string DisableNotification = RootMenu + "Disable Notifications";
             private const string LanguageMenu = RootMenu + "Languages/";
             internal const string LanguageAuto = LanguageMenu + "Auto (default)";
             internal const string LanguageEnglish = LanguageMenu + "English";
@@ -46,7 +45,6 @@ namespace KRT.VRCQuestTools.Menus
             BlendShapesCopy = 800,
             MSMapGenerator,
             UnitySettings = 900,
-            DisableNotification,
             LanguageAuto = 1000,
             LanguageEnglish,
             LanguageJapanese,
