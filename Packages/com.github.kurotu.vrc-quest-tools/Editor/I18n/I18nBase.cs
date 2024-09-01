@@ -53,12 +53,12 @@ namespace KRT.VRCQuestTools.I18n
         internal abstract string AnimatorControllerExceptionDialogMessage { get; }
         internal abstract string InfoForNdmfConversion { get; }
         internal abstract string InfoForNetworkIdAssigner { get; }
+        internal abstract string NetworkIdAssignerAttached { get; }
         internal abstract string WarningForPerformance { get; }
         internal abstract string WarningForAppearance { get; }
         internal abstract string WarningForUnsupportedShaders { get; }
         internal abstract string AlertForDynamicBoneConversion { get; }
         internal abstract string AlertForUnityConstraintsConversion { get; }
-        internal abstract string AlertForMissingNetIds { get; }
         internal abstract string AlertForMultiplePhysBones { get; }
         internal abstract string AlertForAvatarDynamicsPerformance { get; }
         internal abstract string AlertForComponents { get; }

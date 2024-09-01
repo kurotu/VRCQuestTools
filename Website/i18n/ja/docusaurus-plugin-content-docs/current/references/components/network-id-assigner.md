@@ -3,10 +3,6 @@
 ビルド時にPhysBoneにネットワークIDを割り当てます。
 VRChat SDKとは異なりヒエラルキーパスのハッシュ値をもとにIDを割り当てるため、オブジェクトが増減しても同じIDが割り当てられます。
 
-:::info
-このコンポーネントには Non-Destructive Modular Framework (NDMF) が必要です。
-:::
-
 ## NDMF
 
 VRCQuestToolsプラグインによって以下の処理を実行します。

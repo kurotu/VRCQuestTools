@@ -102,23 +102,12 @@ namespace KRT.VRCQuestTools.Inspector
                     {
                         using (var horizontal = new EditorGUILayout.HorizontalScope())
                         {
-                            EditorGUILayout.HelpBox(i18n.AlertForMissingNetIds, MessageType.Warning);
-                            if (GUILayout.Button(i18n.AssignButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
-                            {
-                                OnClickAssignNetIdsButton(descriptor);
-                            }
-                        }
-
-#if VQT_HAS_NDMF
-                        using (var horizontal = new EditorGUILayout.HorizontalScope())
-                        {
                             EditorGUILayout.HelpBox(i18n.InfoForNetworkIdAssigner, MessageType.Info);
                             if (GUILayout.Button(i18n.AttachButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
                             {
                                 OnClickAttachNetworkIDAssignerButton(descriptor);
                             }
                         }
-#endif
                     }
 
                     var pbs = descriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
@@ -448,6 +437,7 @@ namespace KRT.VRCQuestTools.Inspector
         {
             descriptor.gameObject.AddComponent<NetworkIDAssigner>();
             PrefabUtility.RecordPrefabInstancePropertyModifications(descriptor.gameObject);
+            EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NetworkIdAssignerAttached, "OK");
         }
 
         private void OnClickRegenerateTexturesButton(VRC_AvatarDescriptor avatar, IMaterialConvertSettings convertSetting)

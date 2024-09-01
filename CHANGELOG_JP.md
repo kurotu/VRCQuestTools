@@ -4,6 +4,17 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 追加
+- `VQT Network ID Assigner` が NDMF なしで動作する機能を追加
+
+### 変更
+- `Convert Avatar for Android` ウィンドウで変換設定を始めるときに `VQT Network ID Assigner` をアバターに追加するように変更
+
+### 削除
+- ネットワークIDの未割り当てに関する警告を削除
+
 ## [2.4.3] - 2024-08-25
 
 ### 変更
