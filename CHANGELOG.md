@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- `VQT Network ID Assigner` works without NDMF.
+- Add `NDMF Phase to Convert` option to `VQT Avatar Converter Settings` component.
+    - Transforming
+    - Optimizing
+
+### Changed
+- `Convert Avatar for Android` window attaches `VQT Network ID Assigner` to the avatar.
+- [NDMF] Changed the default execution order of the avatar conversion process to match the behavior prior to 2.4.3 (Transforming).
+
+### Removed
+- Warning about unassigned Network IDs.
+
 ## [2.4.3] - 2024-08-25
 
 ### Changed

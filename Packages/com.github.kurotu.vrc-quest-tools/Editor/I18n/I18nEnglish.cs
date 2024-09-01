@@ -47,12 +47,15 @@ namespace KRT.VRCQuestTools.I18n
         internal override string RemoveVertexColorTooltip => "Usually you don't have to disable this option. You can disable this option to prevent unexpected behavior when you are using special shaders which require vertex colors in PC avatars.\nRestore from the avatar's \"VertexColorRemover\" component if vertex color is accidentally removed.";
         internal override string AnimationOverrideLabel => "Animation Override";
         internal override string AnimationOverrideTooltip => "Convert Animator Controllers with Animator Override Controller's animations.";
+        internal override string NdmfPhaseLabel => "NDMF Phase to Convert";
+        internal override string NdmfPhaseTooltip => "Convert the avatar in the selected NDMF phase.";
         internal override string GeneratingTexturesDialogMessage => "Generating textures...";
         internal override string MaterialExceptionDialogMessage => "An error occured when converting materials. Aborted.";
         internal override string AnimationClipExceptionDialogMessage => "An error occured when converting Animation Clips. Aborted.";
         internal override string AnimatorControllerExceptionDialogMessage => "An error occured when converting Animator Controllers. Aborted.";
         internal override string InfoForNdmfConversion => "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Please use the Avatar Builder to avoid VRChat SDK limitation.";
         internal override string InfoForNetworkIdAssigner => "You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again to apply IDs after attaching the component.";
+        internal override string NetworkIdAssignerAttached => "Network ID Assigner has been attached to the avatar. Please upload the non-converted avatar to PC platform to synchronize PhysBones between PC and Android.";
         internal override string WarningForPerformance => $"Estimated performance rating is Very Poor. You can upload the converted avatar for Android platform, but there are following limitation.\n- Quest/PICO users see your fallback avatar by default, then need to change \"Avatar Display\" setting.\n- Android smartphone users can't see Very Poor avatars.";
         internal override string WarningForAppearance => "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n" +
             "You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing.";
@@ -60,7 +63,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForComponents => "Following unsupported components will be removed. Check avatar features after conversion.";
         internal override string AlertForDynamicBoneConversion => $"{VRCQuestTools.Name} doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar.";
         internal override string AlertForUnityConstraintsConversion => $"{VRCQuestTools.Name} doesn't convert Unity constraints to VRChat constraints. Please set up VRChat constraints before converting the avatar.";
-        internal override string AlertForMissingNetIds => "There are PhysBones which don't have Network ID. To keep sync between PC and Android, assign Network IDs then re-upload the PC avatar.";
         internal override string AlertForAvatarDynamicsPerformance => "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not able to upload for Android.  Please keep \"Poor\" rating in avatar dynamics categories.";
 
         internal override string ErrorForPrefabStage => "Can't convert the avatar in prefab mode. Please go back to a scene from prefab mode.";
@@ -167,7 +169,7 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ConvertedAvatarEditorNDMFMessage => "Components which are not supported on Android will be removed in NDMF optimization phase.";
 
         // Network ID Assigner
-        internal override string NetworkIDAssignerEditorDescription => "Assign Network IDs to the avatar's components such as PhysBones. IDs are determined by hash values of hierarchy paths from the avatar root.";
+        internal override string NetworkIDAssignerEditorDescription => "Assign Network IDs to the avatar's components such as PhysBones in build process. IDs are determined by hash values of hierarchy paths from the avatar root.";
 
         // Platform Target Settings
         internal override string PlatformTargetSettingsEditorDescription => "Components are enforced to use a specific platform settings in NDMF build process.";
