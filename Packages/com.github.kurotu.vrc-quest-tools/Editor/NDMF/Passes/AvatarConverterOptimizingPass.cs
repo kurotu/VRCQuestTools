@@ -1,15 +1,18 @@
 using KRT.VRCQuestTools.Components;
 using nadena.dev.ndmf;
+#if !VQT_HAS_NDMF_ERROR_REPORT
+using KRT.VRCQuestTools.Ndmf.Dummy;
+#endif
 
 namespace KRT.VRCQuestTools.Ndmf
 {
     /// <summary>
     /// Convert the avatar with AvatarConverterSettings component in NDMF.
     /// </summary>
-    internal class AvatarConverterTransformingPass : Pass<AvatarConverterTransformingPass>
+    internal class AvatarConverterOptimizingPass : Pass<AvatarConverterOptimizingPass>
     {
         /// <inheritdoc/>
-        public override string DisplayName => "Convert avatar for Android in transforming phase";
+        public override string DisplayName => "Convert avatar for Android in optimizing phase";
 
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
@@ -19,8 +22,7 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 return;
             }
-
-            if (settings.ndmfPhase == Models.AvatarConverterNdmfPhase.Transforming)
+            if (settings.ndmfPhase == Models.AvatarConverterNdmfPhase.Optimizing)
             {
                 NdmfPluginUtility.ConvertAvatarInPass(context, settings);
             }

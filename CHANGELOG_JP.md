@@ -8,9 +8,13 @@
 
 ### 追加
 - `VQT Network ID Assigner` が NDMF なしで動作する機能を追加
+- `VQT Avatar Converter Settings` に `NDMF変換フェーズ` 設定を追加
+    - Transforming
+    - Optimizing
 
 ### 変更
 - `Convert Avatar for Android` ウィンドウで変換設定を始めるときに `VQT Network ID Assigner` をアバターに追加するように変更
+- [NDMF] アバターの変換処理の実行順のデフォルト設定を 2.4.3 より前と同じに変更 (Transforming)
 
 ### 削除
 - ネットワークIDの未割り当てに関する警告を削除

@@ -91,6 +91,10 @@ Add the [Vertex Color Remover](./vertex-color-remover) component to the converte
 
 You don't usually need to turn this option off. Turn it off if you are using a special shader for PC avatars that uses vertex colors in order to prevent unintended behavior.
 
+### NDMF Phase to Convert
+
+Select a NDMF phase to convert the avatar.
+
 ## Convert
 
 Execute the conversion of the avatar.
@@ -129,7 +133,10 @@ Change VirtualLens2 settings for Android.
 Remove vertex colors from the meshes.
 This process is performed after NDMF Mantis LOD Editor.
 
+Convert the avatar for Android when the NDMF conversion phase is Transforming.
+This process is performed after TexTransTool and Modular Avatar.
+
 ### Optimizing Phase
 
-Convert the avatar for Android.
-This process is performed between TexTransTool and AAO: Avatar Optimizer.
+Convert the avatar for Android when the NDMF conversion phase is Optimizing.
+This process is performed after TexTransTool and before AAO: Avatar Optimizer.

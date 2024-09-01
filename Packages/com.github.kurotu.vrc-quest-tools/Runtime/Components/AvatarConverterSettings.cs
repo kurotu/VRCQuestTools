@@ -59,6 +59,12 @@ namespace KRT.VRCQuestTools.Components
         public bool removeVertexColor = true;
 
         /// <summary>
+        /// NDMF phase to convert the avatar.
+        /// </summary>
+        [SerializeField]
+        public AvatarConverterNdmfPhase ndmfPhase = AvatarConverterNdmfPhase.Transforming;
+
+        /// <summary>
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();

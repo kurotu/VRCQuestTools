@@ -47,6 +47,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string RemoveVertexColorTooltip => "Usually you don't have to disable this option. You can disable this option to prevent unexpected behavior when you are using special shaders which require vertex colors in PC avatars.\nRestore from the avatar's \"VertexColorRemover\" component if vertex color is accidentally removed.";
         internal override string AnimationOverrideLabel => "Animation Override";
         internal override string AnimationOverrideTooltip => "Convert Animator Controllers with Animator Override Controller's animations.";
+        internal override string NdmfPhaseLabel => "NDMF Phase to Convert";
+        internal override string NdmfPhaseTooltip => "Convert the avatar in the selected NDMF phase.";
         internal override string GeneratingTexturesDialogMessage => "Generating textures...";
         internal override string MaterialExceptionDialogMessage => "An error occured when converting materials. Aborted.";
         internal override string AnimationClipExceptionDialogMessage => "An error occured when converting Animation Clips. Aborted.";

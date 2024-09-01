@@ -90,6 +90,10 @@ Animator Override Controller で指定したアニメーションクリップを
 
 通常、このオプションをオフにする必要はありません。PC版アバターで頂点カラーを使用する特殊なシェーダーを使用している場合に、意図しない動作を防ぐためにオフにします。
 
+### NDMF変換フェーズ
+
+NDMFでアバターを変換するときの実行フェーズを選択します。
+
 ## 変換
 
 アバターの変換を実行します。
@@ -128,7 +132,10 @@ VirtualLens2の設定をAndroid用に変更します。
 メッシュから頂点カラーを削除します。
 この処理はNDMF Mantis LOD Editorの後に実行されます。
 
+NDMF変換フェーズがTransformingであるときアバターの変換を実行します。
+この処理はTexTransToolおよびModular Avatarの後で実行されます。
+
 ### Optimizing Phase
 
-アバターの変換を実行します。
-この処理はTexTransToolとAAO: Avatar Optimizerの間で実行されます。
+NDMF変換フェーズがOptimizingであるときアバターの変換を実行します。
+この処理はTexTransToolの後、AAO: Avatar Optimizerの前に実行されます。

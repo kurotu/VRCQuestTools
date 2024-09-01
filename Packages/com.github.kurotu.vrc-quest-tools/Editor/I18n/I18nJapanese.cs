@@ -46,6 +46,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string RemoveVertexColorTooltip => "通常このオプションを無効にする必要はありません。PC用アバターで頂点カラーの必要な特別なシェーダーを使用している場合は、誤動作を防ぐためにこのオプションを無効にできます。\n誤って頂点カラーを削除した場合は、アバターの\"VertexColorRemover\"コンポーネントで復元できます。";
         internal override string AnimationOverrideLabel => "アニメーションオーバーライド";
         internal override string AnimationOverrideTooltip => "Animator Override Controller で指定したアニメーションを使用して Animator Controller を変換します。";
+        internal override string NdmfPhaseLabel => "NDMF変換フェーズ";
+        internal override string NdmfPhaseTooltip => "選択したNDMFフェーズでアバターを変換します。";
         internal override string GeneratingTexturesDialogMessage => "テクスチャを生成中";
         internal override string MaterialExceptionDialogMessage => "マテリアルの変換中にエラーが発生しました。変換を中止します。";
         internal override string AnimationClipExceptionDialogMessage => "アニメーションの変換中にエラーが発生しました。変換を中止します。";
