@@ -17,8 +17,12 @@ namespace KRT.VRCQuestTools.I18n
         internal override string NoLabel => "Нет";
         internal override string AbortLabel => "Прервать";
         internal override string RemoveLabel => "Удалить";
+
         internal override string Maximum => "Максимум";
+
         internal override string IncompatibleSDK => "Несовместимый VRChat SDK. Пожалуйста, сообщите об этом.";
+
+        // Convert Avatar for Quest
         internal override string AvatarConverterSettingsEditorDescription => "Конвертировать этот аватар для загрузки на платформу Android.";
         internal override string AvatarConverterSettingsEditorDescriptionNDMF => "Конвертировать этот аватар для загрузки на платформу Android, когда целевая платформа - Android.";
         internal override string ExitPlayModeToEdit => "Выйдите из игрового режима для редактирования.";
@@ -38,6 +42,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string RemoveVertexColorTooltip => "Обычно вам не нужно отключать эту опцию. Вы можете отключить эту опцию, чтобы предотвратить неожиданное поведение при использовании специальных шейдеров, которые требуют цвет вершин в аватарах ПК.";
         internal override string AnimationOverrideLabel => "Переопределение анимации";
         internal override string AnimationOverrideTooltip => "Конвертировать контроллеры анимации с анимациями контроллера переопределения анимации.";
+        internal override string NdmfPhaseLabel => "Этап NDMF для конвертации";
+        internal override string NdmfPhaseTooltip => "Конвертировать аватар на выбранном этапе NDMF.";
         internal override string GeneratingTexturesDialogMessage => "Создание текстур...";
         internal override string MaterialExceptionDialogMessage => "Произошла ошибка при конвертации материалов. Прервано.";
         internal override string AnimationClipExceptionDialogMessage => "Произошла ошибка при конвертации клипов анимации. Прервано.";
@@ -52,14 +58,19 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AlertForUnityConstraintsConversion => "Не конвертируйте ограничения Unity в ограничения VRChat. Пожалуйста, настройте ограничения VRChat перед конвертацией аватара.";
         internal override string AlertForMissingNetIds => "Есть физические кости, у которых нет сетевого ID. Чтобы сохранить синхронизацию между ПК и Android, назначьте сетевые ID, затем повторно загрузите аватар для ПК.";
         internal override string AlertForAvatarDynamicsPerformance => "Оценка производительности динамики аватара (физические кости и контакты) будет \"Очень Плохо\", поэтому вы не сможете загрузить для Android.";
+        
         internal override string ErrorForPrefabStage => "Невозможно конвертировать аватар в режиме префаба. Пожалуйста, вернитесь к сцене из режима префаба.";
+
         internal override string AvatarConverterMaterialConvertSettingsLabel => "Настройки конвертации материалов";
         internal override string AvatarConverterDefaultMaterialConvertSettingLabel => "Настройки конвертации материалов по умолчанию";
         internal override string AvatarConverterAdditionalMaterialConvertSettingsLabel => "Дополнительные настройки конвертации материалов";
+
         internal override string AvatarConverterAvatarDynamicsSettingsLabel => "Настройки динамики аватара";
         internal override string AvatarConverterPhysBonesTooltip => "Установите физические кости, которые нужно сохранить во время конвертации.";
         internal override string AvatarConverterPhysBoneCollidersTooltip => "Установите коллайдеры физической кости, которые нужно сохранить во время конвертации.";
         internal override string AvatarConverterContactsTooltip => "Установите отправители и получатели контактов, которые нужно сохранить во время конвертации.";
+
+        // IMaterialConvertSettings
         internal override string IMaterialConvertSettingsTexturesSizeLimitLabel => "Ограничение размера текстур";
         internal override string IMaterialConvertSettingsMainTextureBrightnessLabel => "Яркость основной текстуры";
         internal override string IMaterialConvertSettingsMainTextureBrightnessTooltip => "Настройте цвет основной текстуры.";
@@ -73,16 +84,24 @@ namespace KRT.VRCQuestTools.I18n
         internal override string MaterialConvertTypePopupLabelMaterialReplace => "Замена материала";
         internal override string MaterialReplaceSettingsMaterialLabel => "Заменяемый материал";
         internal override string MaterialReplaceSettingsMaterialTooltip => "Целевой материал будет заменен этим материалом.";
+
+        // Remove Missing Components
         internal override string NoMissingComponentsMessage(string objectName) => $"В {objectName} нет \"недостающих\" компонентов.";
         internal override string MissingRemoverConfirmationMessage(string objectName) => $"Удалить \"недостающие\" компоненты из {objectName}?";
         internal override string UnpackPrefabMessage => "Это также выполняет операцию \"Разупаковать префаб\".";
         internal override string MissingRemoverOnBuildDialogMessage(string objectName) => $"{objectName} имеет \"недостающие\" компоненты. Вы хотите продолжить сборку аватара без таких компонентов?";
+
+        // BlendShapes Copy
         internal override string SourceMeshLabel => "Исходная сетка";
         internal override string TargetMeshLabel => "Целевая сетка";
         internal override string CopyButtonLabel => "Копировать веса BlendShape";
         internal override string SwitchButtonLabel => "Переключить источник/цель";
+
+        // Remove Unsupported Components
         internal override string NoUnsupportedComponentsMessage(string objectName) => $"В {objectName} нет неподдерживаемых компонентов.";
         internal override string UnsupportedRemoverConfirmationMessage(string objectName) => $"Удалить следующие неподдерживаемые компоненты из {objectName}?";
+
+        // Remove PhysBones
         internal override string PhysBonesSDKRequired => "Требуется VRCSDK, поддерживающий динамику аватара.";
         internal override string SelectComponentsToKeep => "Выберите компоненты для сохранения.";
         internal override string PhysBonesListTooltip => "Список компонентов и их корневых трансформаций.";
@@ -92,19 +111,27 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "Все коллайдеры PhysBone будут удалены во время выполнения на Android. Пожалуйста, уменьшите количество компонентов PhysBoneCollider.";
         internal override string ContactsWillBeRemovedAtRunTime => "Вы не можете загрузить этот аватар для Android. Пожалуйста, уменьшите количество компонентов VRCContact.";
         internal override string PhysBonesTransformsShouldBeReduced => "Вы не можете загрузить этот аватар для Android. Пожалуйста, уменьшите количество компонентов VRCPhysBone или количество трансформаций в иерархии под компонентами VRCPhysBone.";
+        
         internal override string PhysBonesCollisionCheckCountShouldBeReduced => "Вы не можете загрузить этот аватар для Android. Пожалуйста, уменьшите количество проверок столкновений между компонентами VRCPhysBone и VRCPhysBoneCollider.";
+        
         internal override string PhysBonesShouldHaveNetworkID => "Чтобы правильно синхронизировать физические кости, физические кости должны иметь одинаковый сетевой ID между ПК и Android.";
         internal override string AlertForMultiplePhysBones => "В одном GameObject есть несколько физических костей. Они могут быть неправильно синхронизированы между ПК и Android после удаления физических костей.";
         internal override string EstimatedPerformanceStats => "Оценка производительности";
         internal override string DeleteUnselectedComponents => "Удалить невыбранные компоненты";
+
+        // Avatar Dynamics Selector
         internal override string SelectAllButtonLabel => "Выбрать все";
         internal override string DeselectAllButtonLabel => "Снять выделение";
         internal override string ApplyButtonLabel => "Применить";
+
+        // Metallic Smoothness
         internal override string TextureLabel => "Текстура";
         internal override string InvertLabel => "Инвертировать";
         internal override string SaveFileDialogTitle(string thing) => $"Сохранить {thing}";
         internal override string SaveFileDialogMessage => "Пожалуйста, введите имя файла для сохранения текстуры";
         internal override string GenerateButtonLabel => "Создать металлическую гладкость";
+
+        // Unity Settings
         internal override string RecommendedUnitySettingsForAndroid => "Рекомендуемые настройки для Android";
         internal override string TextureCompressionLabel => "Сжатие текстур для Android";
         internal override string TextureCompressionHelp => "ASTC улучшает качество текстур для Android в обмен на длительное время сжатия";
@@ -112,21 +139,37 @@ namespace KRT.VRCQuestTools.I18n
         internal override string ApplyAllButtonLabel => "Применить все настройки";
         internal override string ShowOnStartupLabel => "Показывать при запуске";
         internal override string AllAppliedHelp => "Хорошо, все рекомендуемые настройки применены.";
+
+        // Check for Update
         internal override string GetUpdate => "Получить обновление";
         internal override string SeeChangelog => "Журнал изменений";
         internal override string SkipThisVersion => "Пропустить эту версию";
         internal override string NewVersionIsAvailable(string latestVersion) => $"Доступна новая версия {latestVersion}.";
         internal override string NewVersionHasBreakingChanges => $"Эта версия может иметь критические изменения в совместимости.";
+
+        // Validations
         internal override string MissingScripts => "Есть \"недостающие\" скрипты. Пожалуйста, проверьте активы или пакеты, которые вы забыли импортировать.";
+
+        // Inspector
         internal override string AvatarRootComponentMustBeOnAvatarRoot => "Этот компонент должен быть прикреплен к объекту VRC_AvatarDescriptor.";
+
+        // Vertex Color
         internal override string VertexColorRemoverEditorDescription => "Цвет вершин автоматически удаляется из сетки этого объекта.";
         internal override string VertexColorRemoverEditorRemove => "Удалить цвет вершин";
         internal override string VertexColorRemoverEditorRestore => "Восстановить цвет вершин";
+
+        // Converted Avatar
         internal override string ConvertedAvatarEditorMessage => "Этот компонент указывает на то, что аватар был конвертирован с помощью VRCQuestTools.";
         internal override string ConvertedAvatarEditorNDMFMessage => "Компоненты, которые не поддерживаются на Android, будут удалены на этапе оптимизации NDMF.";
+
+        // Network ID Assigner
         internal override string NetworkIDAssignerEditorDescription => "Назначьте сетевые ID компонентам аватара, таким как физические кости. ID определяются хеш-значениями иерархических путей от корня аватара.";
+
+        // Platform Target Settings
         internal override string PlatformTargetSettingsEditorDescription => "Компоненты принудительно используют определенные настройки платформы в процессе сборки NDMF.";
         internal override string PlatformTargetSettingsIsRequiredToEnforcePlatform => "Компонент настройки целевой платформы требуется для корневого объекта аватара, чтобы принудительно применить определенные настройки платформы.";
+
+        // Platform Component Remover
         internal override string ComponentRequiresNdmf => "Требуется Неразрушаемая Модульная Структура (NDMF).";
         internal override string BuildTargetLabel => "Целевая сборка";
         internal override string BuildTargetTooltip => "Выберите целевую платформу сборки. Используйте целевую платформу Unity, когда выбрана Авто.";
@@ -136,14 +179,20 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PlatformComponentRemoverEditorCheckboxPCTooltip => "Сохранить выбранные компоненты при сборке для ПК.";
         internal override string PlatformComponentRemoverEditorCheckboxAndroidTooltip => "Сохранить выбранные компоненты при сборке для Android.";
         internal override string ComponentLabel => "Компонент";
+
+        // Platform GameObject Remover
         internal override string PlatformGameObjectRemoverEditorDescription => "Этот объект будет удален при сборке для невыбранных целевых платформ.";
         internal override string PlatformGameObjectRemoverEditorKeepOnPCLabel => "Сохранить на ПК";
         internal override string PlatformGameObjectRemoverEditorKeepOnAndroidLabel => "Сохранить на Android";
+
+        // Avatar Builder
         internal override string AvatarBuilderWindowExitPlayMode => "Выйдите из игрового режима, чтобы собрать аватар.";
         internal override string AvatarBuilderWindowExitPrefabStage => "Выйдите из режима редактирования префаба, чтобы собрать аватар.";
         internal override string AvatarBuilderWindowNoActiveAvatarsFound => "Нет активных аватаров в сцене.";
         internal override string AvatarBuilderWindowSelectAvatar => "Выберите аватар для сборки в панели управления VRChat SDK.";
         internal override string AvatarBuilderWindowNoNdmfComponentsFound => "В аватаре не найдено компонентов VRCQuestTools.";
+
+
         internal override string AvatarBuilderWindowSucceededBuild => "Сборка аватара прошла успешно.";
         internal override string AvatarBuilderWindowSucceededUpload => "Загрузка аватара прошла успешно.";
         internal override string AvatarBuilderWindowFailedBuild => "Не удалось собрать аватар. Посмотрите журналы консоли.";
@@ -158,6 +207,8 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarBuilderWindowNdmfManualBakingLabel => "Ручное выпекание NDMF";
         internal override string AvatarBuilderWindowNdmfManualBakingDescription => "Выполните меню, Инструменты -> NDM Framework -> Ручное выпекание аватара с настройками сборки для Android.";
         internal override string AvatarBuilderWindowRequiresAvatarNameAndThumb => "Необходимо установить имя и миниатюру в панели управления VRChat SDK при загрузке нового аватара.";
+
+        // NDMF
         internal override string NdmfPluginRequiresNdmfUpdate(string version) => $"Требуется Неразрушаемая Модульная Структура (NDMF) {version} или более поздняя версия. Пожалуйста, обновите NDMF.";
         internal override string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => $"Удален неподдерживаемый компонент \"{typeName}\" из \"{objectName}\". Пожалуйста, протестируйте аватар.";
     }
