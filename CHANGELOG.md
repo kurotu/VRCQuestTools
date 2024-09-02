@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `NDMF Phase to Convert` option to `VQT Avatar Converter Settings` component.
     - Transforming
     - Optimizing
+- Russian (Русский) translation. (by @CoderCoV)
 
 ### Changed
 - `Convert Avatar for Android` window attaches `VQT Network ID Assigner` to the avatar.

@@ -11,6 +11,7 @@
 - `VQT Avatar Converter Settings` に `NDMF変換フェーズ` 設定を追加
     - Transforming
     - Optimizing
+- ロシア語 (Русский) 翻訳 (by @CoderCoV)
 
 ### 変更
 - `Convert Avatar for Android` ウィンドウで変換設定を始めるときに `VQT Network ID Assigner` をアバターに追加するように変更
