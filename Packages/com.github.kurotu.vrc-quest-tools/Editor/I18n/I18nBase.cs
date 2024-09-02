@@ -36,7 +36,7 @@ namespace KRT.VRCQuestTools.I18n
                 AssetDatabase.LoadAssetAtPath<LocalizationAsset>(AssetDatabase.GUIDToAssetPath(assetGuid)));
         }
 
-        private string GetText(string key)
+        internal string GetText(string key)
         {
             var str = localizationAsset.Value.GetLocalizedString(key);
             if ((key == str) && (localizationAsset.Value != fallback.Value))
