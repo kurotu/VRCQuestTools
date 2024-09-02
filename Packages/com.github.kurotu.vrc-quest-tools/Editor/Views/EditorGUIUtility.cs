@@ -28,6 +28,8 @@ namespace KRT.VRCQuestTools.Views
                         return "English";
                     case DisplayLanguage.Japanese:
                         return "日本語";
+                    case DisplayLanguage.Russian:
+                        return "Русский";
                     default:
                         throw new System.InvalidProgramException();
                 }

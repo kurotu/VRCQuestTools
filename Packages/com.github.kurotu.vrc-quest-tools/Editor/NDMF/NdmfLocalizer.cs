@@ -106,6 +106,44 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 return key;
             }),
+            ("ru-RU", (key) =>
+            {
+                switch (key)
+                {
+                    case RemovedUnsupportedComponentTitle:
+                        return "Удалён неподдерживаемый компонент";
+                    case RemovedUnsupportedComponentDescription:
+                        return "Неподдерживаемый компонент {0} был удалён из \"{1}\" во время сборки. Пожалуйста, протестируйте аватар.";
+                    case MaterialConversionErrorTitle:
+                        return "Ошибка конвертации материала";
+                    case MaterialConversionErrorDescription:
+                        return "Произошла ошибка при конвертации материала.\n" +
+                        "\n" +
+                        "Материал: {0}\n" +
+                        "Шейдер: {1}\n" +
+                        "\n" +
+                        "{2}: {3}\n" +
+                        "{4}";
+                    case ObjectConversionErrorTitle:
+                        return "Ошибка конвертации {0}";
+                    case ObjectConversionErrorDescription:
+                        return "Произошла ошибка при конвертации {0}.\n" +
+                        "\n" +
+                        "{0}: {1}\n" +
+                        "\n" +
+                        "{2}: {3}\n" +
+                        "{4}";
+                    case UnsupportedTextureFormatTitle:
+                        return "Неподдерживаемый формат текстуры";
+                    case UnsupportedTextureFormatDescription:
+                        return "Используется неподдерживаемый формат текстуры {0} для {1}. Когда текстуры были сгенерированы вручную, переключите целевую платформу, затем выполните ручное выпекание снова.";
+                    case UnknownTextureFormatTitle:
+                        return "Неизвестный формат текстуры";
+                    case UnknownTextureFormatDescription:
+                        return "Используется неизвестный формат текстуры {0} для {1}. Пожалуйста, сообщите разработчику инструмента, чтобы подавить это предупреждение.";
+                }
+                return key;
+            }),
         });
     }
 }

@@ -24,5 +24,10 @@ namespace KRT.VRCQuestTools.Models
         /// Japanese.
         /// </summary>
         Japanese,
+
+        /// <summary>
+        /// Russian.
+        /// </summary>
+        Russian,
     }
 }
