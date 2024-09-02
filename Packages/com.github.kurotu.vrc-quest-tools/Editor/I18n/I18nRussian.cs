@@ -50,15 +50,15 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AnimatorControllerExceptionDialogMessage => "Произошла ошибка при конвертации контроллеров анимации. Прервано.";
         internal override string InfoForNdmfConversion => "Вы можете неразрушающе конвертировать аватар во время сборки, когда проект имеет пакет Неразрушаемая Модульная Структура (NDMF). Пожалуйста, используйте Конструктор Аватаров, чтобы избежать ограничений VRChat SDK.";
         internal override string InfoForNetworkIdAssigner => "Вы можете неразрушающе назначить сетевые ID, прикрепив компонент назначателя сетевых ID к корневому объекту аватара. Пожалуйста, загрузите снова, чтобы применить ID после прикрепления компонента.";
+        internal override string NetworkIdAssignerAttached => "Network ID Assigner был прикреплен к аватару. Пожалуйста, загрузите неконвертированный аватар на платформу ПК для синхронизации PhysBones между ПК и Android.";
         internal override string WarningForPerformance => $"Оценка производительности составляет Очень Плохо. Вы можете загрузить конвертированный аватар для Android, но есть следующие ограничения.";
         internal override string WarningForAppearance => "Прозрачность текстуры не оказывает никакого эффекта, поэтому это будет проблемой для выражения лица.";
         internal override string WarningForUnsupportedShaders => $"Следующие материалы используют неподдерживаемые шейдеры. Текстуры могут быть сгенерированы неправильно.";
         internal override string AlertForComponents => "Следующие неподдерживаемые компоненты будут удалены. Проверьте функции аватара после конвертации.";
         internal override string AlertForDynamicBoneConversion => "Не конвертируйте динамические кости(PhysBone) в физические кости(DynamicBone). Пожалуйста, настройте физические кости перед конвертацией аватара.";
         internal override string AlertForUnityConstraintsConversion => "Не конвертируйте ограничения Unity в ограничения VRChat. Пожалуйста, настройте ограничения VRChat перед конвертацией аватара.";
-        internal override string AlertForMissingNetIds => "Есть физические кости, у которых нет сетевого ID. Чтобы сохранить синхронизацию между ПК и Android, назначьте сетевые ID, затем повторно загрузите аватар для ПК.";
         internal override string AlertForAvatarDynamicsPerformance => "Оценка производительности динамики аватара (физические кости и контакты) будет \"Очень Плохо\", поэтому вы не сможете загрузить для Android.";
-        
+
         internal override string ErrorForPrefabStage => "Невозможно конвертировать аватар в режиме префаба. Пожалуйста, вернитесь к сцене из режима префаба.";
 
         internal override string AvatarConverterMaterialConvertSettingsLabel => "Настройки конвертации материалов";
@@ -111,9 +111,9 @@ namespace KRT.VRCQuestTools.I18n
         internal override string PhysBoneCollidersWillBeRemovedAtRunTime => "Все коллайдеры PhysBone будут удалены во время выполнения на Android. Пожалуйста, уменьшите количество компонентов PhysBoneCollider.";
         internal override string ContactsWillBeRemovedAtRunTime => "Вы не можете загрузить этот аватар для Android. Пожалуйста, уменьшите количество компонентов VRCContact.";
         internal override string PhysBonesTransformsShouldBeReduced => "Вы не можете загрузить этот аватар для Android. Пожалуйста, уменьшите количество компонентов VRCPhysBone или количество трансформаций в иерархии под компонентами VRCPhysBone.";
-        
+
         internal override string PhysBonesCollisionCheckCountShouldBeReduced => "Вы не можете загрузить этот аватар для Android. Пожалуйста, уменьшите количество проверок столкновений между компонентами VRCPhysBone и VRCPhysBoneCollider.";
-        
+
         internal override string PhysBonesShouldHaveNetworkID => "Чтобы правильно синхронизировать физические кости, физические кости должны иметь одинаковый сетевой ID между ПК и Android.";
         internal override string AlertForMultiplePhysBones => "В одном GameObject есть несколько физических костей. Они могут быть неправильно синхронизированы между ПК и Android после удаления физических костей.";
         internal override string EstimatedPerformanceStats => "Оценка производительности";
@@ -191,7 +191,6 @@ namespace KRT.VRCQuestTools.I18n
         internal override string AvatarBuilderWindowNoActiveAvatarsFound => "Нет активных аватаров в сцене.";
         internal override string AvatarBuilderWindowSelectAvatar => "Выберите аватар для сборки в панели управления VRChat SDK.";
         internal override string AvatarBuilderWindowNoNdmfComponentsFound => "В аватаре не найдено компонентов VRCQuestTools.";
-
 
         internal override string AvatarBuilderWindowSucceededBuild => "Сборка аватара прошла успешно.";
         internal override string AvatarBuilderWindowSucceededUpload => "Загрузка аватара прошла успешно.";
