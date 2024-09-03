@@ -1,12 +1,13 @@
-#if VQT_HAS_NDMF_ERROR_REPORT
 using System;
+using System.Collections.Generic;
 using KRT.VRCQuestTools.I18n;
+
+#if VQT_HAS_NDMF_ERROR_REPORT
 using nadena.dev.ndmf.localization;
 
 #else
 using KRT.VRCQuestTools.Ndmf.Dummy;
 #endif
-using System.Collections.Generic;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -28,10 +29,6 @@ namespace KRT.VRCQuestTools.Ndmf
         internal const string UnknownTextureFormatDescription = "NDMF:UnknownTextureFormatDescription";
 #pragma warning restore SA1600
 
-        internal static readonly Lazy<I18nEnglish> enUS = new Lazy<I18nEnglish>(() => new I18nEnglish());
-        internal static readonly Lazy<I18nJapanese> jaJP = new Lazy<I18nJapanese>(() => new I18nJapanese());
-        internal static readonly Lazy<I18nRussian> ruRU = new Lazy<I18nRussian>(() => new I18nRussian());
-
         /// <summary>
         /// Instance of Localizer.
         /// </summary>
@@ -39,16 +36,20 @@ namespace KRT.VRCQuestTools.Ndmf
         {
             ("en-US", (key) =>
             {
-                return enUS.Value.GetText(key);
+                return EnUS.Value.GetText(key);
             }),
             ("ja-JP", (key) =>
             {
-                return jaJP.Value.GetText(key);
+                return JaJP.Value.GetText(key);
             }),
             ("ru-RU", (key) =>
             {
-                return ruRU.Value.GetText(key);
+                return RuRU.Value.GetText(key);
             }),
         });
+
+        private static readonly Lazy<I18nEnglish> EnUS = new Lazy<I18nEnglish>(() => new I18nEnglish());
+        private static readonly Lazy<I18nJapanese> JaJP = new Lazy<I18nJapanese>(() => new I18nJapanese());
+        private static readonly Lazy<I18nRussian> RuRU = new Lazy<I18nRussian>(() => new I18nRussian());
     }
 }
