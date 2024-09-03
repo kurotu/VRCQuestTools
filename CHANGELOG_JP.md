@@ -11,6 +11,7 @@
 - `VQT Avatar Converter Settings` に `NDMF変換フェーズ` 設定を追加
     - Transforming
     - Optimizing
+- .po ファイルをベースにしたローカライズ機構を追加
 - ロシア語 (Русский) 翻訳 (by @CoderCoV)
 
 ### 変更

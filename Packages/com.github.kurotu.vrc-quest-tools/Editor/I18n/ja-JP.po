@@ -1,0 +1,494 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja-JP\n"
+
+msgid "CancelLabel"
+msgstr "キャンセル"
+
+msgid "OpenLabel"
+msgstr "開く"
+
+msgid "CloseLabel"
+msgstr "閉じる"
+
+msgid "DismissLabel"
+msgstr "閉じる"
+
+msgid "YesLabel"
+msgstr "はい"
+
+msgid "NoLabel"
+msgstr "いいえ"
+
+msgid "AbortLabel"
+msgstr "中止"
+
+msgid "RemoveLabel"
+msgstr "削除"
+
+msgid "Maximum"
+msgstr "最大"
+
+msgid "IncompatibleSDK"
+msgstr "非対応の VRChat SDK です。報告をお願いします。"
+
+msgid "AvatarConverterSettingsEditorDescription"
+msgstr "このアバターを Android プラットフォームにアップロードできるように変換します。"
+
+msgid "AvatarConverterSettingsEditorDescriptionNDMF"
+msgstr "ビルドターゲットが Android の場合、このアバターを Android プラットフォームにアップロードできるように変換します。"
+
+msgid "ExitPlayModeToEdit"
+msgstr "編集するには再生モードを終了してください。"
+
+msgid "BeingConvertSettingsButtonLabel"
+msgstr "変換の設定を始める"
+
+msgid "AvatarLabel"
+msgstr "アバター"
+
+msgid "GenerateAndroidTexturesLabel"
+msgstr "Android用のテクスチャを生成する"
+
+msgid "GenerateAndroidTexturesTooltip"
+msgstr "メインテクスチャ以外にもマテリアルのパラメーターを参照してテクスチャを生成し、PC版アバターの外観に近づけます。"
+
+msgid "SupportedShadersLabel"
+msgstr "対応シェーダー"
+
+msgid "SaveToLabel"
+msgstr "保存先フォルダ"
+
+msgid "SelectButtonLabel"
+msgstr "選択"
+
+msgid "ConvertButtonLabel"
+msgstr "変換"
+
+msgid "AssignButtonLabel"
+msgstr "割り当て"
+
+msgid "AttachButtonLabel"
+msgstr "追加"
+
+msgid "UpdateTexturesLabel"
+msgstr "変換後のAndroid用テクスチャを更新"
+
+msgid "AdvancedConverterSettingsLabel"
+msgstr "高度な変換設定"
+
+msgid "RemoveVertexColorLabel"
+msgstr "メッシュから頂点カラーを削除"
+
+msgid "RemoveVertexColorTooltip"
+msgstr "通常このオプションを無効にする必要はありません。PC用アバターで頂点カラーの必要な特別なシェーダーを使用している場合は、誤動作を防ぐためにこのオプションを無効にできます。\n誤って頂点カラーを削除した場合は、アバターの\"VertexColorRemover\"コンポーネントで復元できます。"
+
+msgid "AnimationOverrideLabel"
+msgstr "アニメーションオーバーライド"
+
+msgid "AnimationOverrideTooltip"
+msgstr "Animator Override Controller で指定したアニメーションを使用して Animator Controller を変換します。"
+
+msgid "NdmfPhaseLabel"
+msgstr "NDMF変換フェーズ"
+
+msgid "NdmfPhaseTooltip"
+msgstr "選択したNDMFフェーズでアバターを変換します。"
+
+msgid "GeneratingTexturesDialogMessage"
+msgstr "テクスチャを生成中"
+
+msgid "MaterialExceptionDialogMessage"
+msgstr "マテリアルの変換中にエラーが発生しました。変換を中止します。"
+
+msgid "AnimationClipExceptionDialogMessage"
+msgstr "アニメーションの変換中にエラーが発生しました。変換を中止します。"
+
+msgid "AnimatorControllerExceptionDialogMessage"
+msgstr "Animator Controllerの変換中にエラーが発生しました。変換を中止します。"
+
+msgid "WarningForPerformance"
+msgstr "変換後のアバターの推定パフォーマンスランクは Very Poor です。Android 用にアップロードできますが、以下の制限があります。\n・デフォルトではフォールバックアバターが表示され、見る側が「アバターの表示」設定を個別に変更する必要があります。\n・Android スマートフォン版 VRChat では表示できません。"
+
+msgid "WarningForAppearance"
+msgstr "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n別の Blueprint ID でのアップロードや Avatars 3.0 のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。"
+
+msgid "WarningForUnsupportedShaders"
+msgstr "以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n「Android用のテクスチャを生成する」をオフにするとシェーダーのみを変更します。"
+
+msgid "InfoForNdmfConversion"
+msgstr "プロジェクトに Non-Destructive Modular Framework (NDMF) パッケージがある場合、アバターのビルド時に非破壊的に変換をすることができます。 VRChat SDK による制限を回避するため、専用の Avatar Builder を使用してください。"
+
+msgid "InfoForNetworkIdAssigner"
+msgstr "アバターに Network ID Assigner コンポーネントを追加することで非破壊的にネットワークIDを割り当てることができます。コンポーネントを追加した後、IDを反映するために再度アップロードしてください。"
+
+msgid "NetworkIdAssignerAttached"
+msgstr "Network ID Assignerがアバターに追加されました。PCとAndroidでPhysBoneを同期させるために、変換前のアバターをPC向けにアップロードしてください。"
+
+msgid "AlertForComponents"
+msgstr "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。"
+
+msgid "AlertForDynamicBoneConversion"
+msgstr "VRCQuestTools は Dynamic Bone を PhysBone に変換しません。アバターを変換する前に PhysBone を設定してください。"
+
+msgid "AlertForUnityConstraintsConversion"
+msgstr "VRCQuestTools は Unity Constraints を VRChat Constraints に変換しません。アバターを変換する前に VRChat Constraints を設定してください。"
+
+msgid "AlertForMultiplePhysBones"
+msgstr "1つの GameObject に複数の PhysBone があります。Android 用に PhysBone を削除した場合、PC と Android で正しく同期しない可能性があります。"
+
+msgid "AlertForAvatarDynamicsPerformance"
+msgstr "Avatar Dynamics (PhysBones, Contacts) のパフォーマンスランクが Very Poor になっており Android 用にアップロードできません。 Avatar Dynamics のパフォーマンスランクが Poor に収まるようコンポーネントを削減してください。"
+
+msgid "AvatarConverterMaterialConvertSettingsLabel"
+msgstr "マテリアル変換設定"
+
+msgid "AvatarConverterDefaultMaterialConvertSettingLabel"
+msgstr "デフォルトのマテリアル変換設定"
+
+msgid "AvatarConverterAdditionalMaterialConvertSettingsLabel"
+msgstr "追加のマテリアル変換設定"
+
+msgid "AvatarConverterAvatarDynamicsSettingsLabel"
+msgstr "Avatar Dynamics 設定"
+
+msgid "AvatarConverterPhysBonesTooltip"
+msgstr "変換時に残しておく PhysBone を選択します。"
+
+msgid "AvatarConverterPhysBoneCollidersTooltip"
+msgstr "変換時に残しておく PhysBoneCollider を選択します。"
+
+msgid "AvatarConverterContactsTooltip"
+msgstr "変換時に残しておく ContactSender と ContactReceiver を選択します。"
+
+msgid "ErrorForPrefabStage"
+msgstr "Prefab モードではアバターを変換できません。Prefab モードを抜けてシーンに戻ってください。"
+
+msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
+msgstr "最大テクスチャサイズ"
+
+msgid "IMaterialConvertSettingsMainTextureBrightnessLabel"
+msgstr "メインテクスチャの明るさ"
+
+msgid "IMaterialConvertSettingsMainTextureBrightnessTooltip"
+msgstr "メインテクスチャの色を調整します。"
+
+msgid "ToonLitConvertSettingsGenerateShadowFromNormalMapLabel"
+msgstr "ノーマルマップから影を生成する"
+
+msgid "MatCapLitConvertSettingsMatCapTextureLabel"
+msgstr "MatCap テクスチャ"
+
+msgid "MatCapLitConvertSettingsMatCapTextureWarning"
+msgstr "MatCap テクスチャを設定してください。"
+
+msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
+msgstr "対象マテリアル"
+
+msgid "AdditionalMaterialConvertSettingsSelectMaterialLabel"
+msgstr "マテリアルを選択"
+
+msgid "MaterialConvertTypePopupLabelToonLit"
+msgstr "Toon Lit"
+
+msgid "MaterialConvertTypePopupLabelMatCapLit"
+msgstr "MatCap Lit"
+
+msgid "MaterialConvertTypePopupLabelMaterialReplace"
+msgstr "マテリアル置換"
+
+msgid "MaterialReplaceSettingsMaterialLabel"
+msgstr "置換マテリアル"
+
+msgid "MaterialReplaceSettingsMaterialTooltip"
+msgstr "対象マテリアルはこのマテリアルで置換されます。"
+
+msgid "NoMissingComponentsMessage"
+msgstr "{0} に \"Missing\" 状態のコンポーネントはありません。"
+
+msgid "MissingRemoverConfirmationMessage"
+msgstr "{0} から \"Missing\" 状態のコンポーネントを削除します。"
+
+msgid "UnpackPrefabMessage"
+msgstr "同時に Unpack Prefab を実行します。"
+
+msgid "MissingRemoverOnBuildDialogMessage"
+msgstr "{0} には \"Missing\" 状態のコンポーネントがあります。コンポーネントを削除した状態でビルドを続けますか？"
+
+msgid "SourceMeshLabel"
+msgstr "コピー元メッシュ"
+
+msgid "TargetMeshLabel"
+msgstr "コピー先メッシュ"
+
+msgid "CopyButtonLabel"
+msgstr "ブレンドシェイプの値をコピー"
+
+msgid "SwitchButtonLabel"
+msgstr "コピー元/コピー先を入れ替え"
+
+msgid "NoUnsupportedComponentsMessage"
+msgstr "{0} に非対応コンポーネントはありません。"
+
+msgid "UnsupportedRemoverConfirmationMessage"
+msgstr "{0} から以下の非対応コンポーネントを削除します。"
+
+msgid "PhysBonesSDKRequired"
+msgstr "Avatar Dynamics に対応した VRCSDK が必要です。"
+
+msgid "SelectComponentsToKeep"
+msgstr "削除せずに残すコンポーネントを選択してください。"
+
+msgid "PhysBonesListTooltip"
+msgstr "コンポーネントと Root Transform の一覧"
+
+msgid "KeepAll"
+msgstr "すべて残す"
+
+msgid "AvatarDynamicsPreventsUpload"
+msgstr "Android用にアップロードできません。 Avatar Dynamics のランクは少なくとも Poor にしてください。"
+
+msgid "PhysBonesWillBeRemovedAtRunTime"
+msgstr "Android用にアップロードできません。 PhysBone の数を減らしてください。"
+
+msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
+msgstr "Android用にアップロードしても PhysBoneCollider は動作しません。 PhysBoneCollider の数を減らしてください。"
+
+msgid "ContactsWillBeRemovedAtRunTime"
+msgstr "Android用にアップロードできません。 ContactReceiver と ContactSender の数を減らしてください。"
+
+msgid "PhysBonesTransformsShouldBeReduced"
+msgstr "Android用にアップロードできません。 PhysBone の数を減らすか、PhysBone の子オブジェクトの数を減らしてください。"
+
+msgid "PhysBonesCollisionCheckCountShouldBeReduced"
+msgstr "Android用にアップロードできません。 PhysBone と PhysBoneCollider の衝突判定の数を減らしてください。"
+
+msgid "PhysBonesShouldHaveNetworkID"
+msgstr "PhysBone を正しく同期させるには PhysBone のネットワーク ID をPC版と一致させる必要があります。VRCSDK の Network ID Utility を使用してPC用とAndroid用で同じネットワーク ID を割り当てた後、両方を再アップロードしてください。"
+
+msgid "EstimatedPerformanceStats"
+msgstr "推定パフォーマンスランク"
+
+msgid "DeleteUnselectedComponents"
+msgstr "選択していないコンポーネントを削除"
+
+msgid "SelectAllButtonLabel"
+msgstr "すべて選択"
+
+msgid "DeselectAllButtonLabel"
+msgstr "すべて解除"
+
+msgid "ApplyButtonLabel"
+msgstr "適用"
+
+msgid "TextureLabel"
+msgstr "テクスチャ"
+
+msgid "InvertLabel"
+msgstr "反転"
+
+msgid "SaveFileDialogTitle"
+msgstr "{0} を保存"
+
+msgid "SaveFileDialogMessage"
+msgstr "テクスチャの保存先を選択してください"
+
+msgid "GenerateButtonLabel"
+msgstr "Metallic Smoothness を生成"
+
+msgid "RecommendedUnitySettingsForAndroid"
+msgstr "Android 用の推奨設定"
+
+msgid "TextureCompressionLabel"
+msgstr "Android テクスチャ圧縮"
+
+msgid "TextureCompressionHelp"
+msgstr "ASTCを使用するとAndroid用のテクスチャ圧縮に時間がかかる代わりに画質が向上します。"
+
+msgid "TextureCompressionButtonLabel"
+msgstr "ASTCでテクスチャを圧縮"
+
+msgid "ApplyAllButtonLabel"
+msgstr "すべての設定を適用"
+
+msgid "ShowOnStartupLabel"
+msgstr "起動時に表示"
+
+msgid "AllAppliedHelp"
+msgstr "すべての推奨設定が適用されています。"
+
+msgid "GetUpdate"
+msgstr "アップデート"
+
+msgid "SeeChangelog"
+msgstr "変更履歴"
+
+msgid "SkipThisVersion"
+msgstr "スキップ"
+
+msgid "NewVersionIsAvailable"
+msgstr "新しいバージョン {0} があります。"
+
+msgid "NewVersionHasBreakingChanges"
+msgstr "このバージョンには互換性に関する重要な変更がある可能性があります。"
+
+msgid "MissingScripts"
+msgstr "\"Missing\"\u00A0状態のコンポーネントがあります。インポートし忘れたアセットやパッケージがないか確認してください。"
+
+msgid "AvatarRootComponentMustBeOnAvatarRoot"
+msgstr "このコンポーネントは VRC_AvatarDescriptor のあるオブジェクトに追加してください。"
+
+msgid "VertexColorRemoverEditorDescription"
+msgstr "このGameObjectに紐づくメッシュから頂点カラーを自動的に削除します。"
+
+msgid "VertexColorRemoverEditorRemove"
+msgstr "頂点カラーを削除"
+
+msgid "VertexColorRemoverEditorRestore"
+msgstr "頂点カラーを復元"
+
+msgid "ConvertedAvatarEditorMessage"
+msgstr "このコンポーネントはアバターが VRCQuestTools で変換されたことを示します。"
+
+msgid "ConvertedAvatarEditorNDMFMessage"
+msgstr "Android 非対応コンポーネントは NDMF の Optimization Phase で削除されます。"
+
+msgid "NetworkIDAssignerEditorDescription"
+msgstr "アバターのビルド時にコンポーネント (PhysBoneなど) にネットワーク ID を割り当てます。ID はアバタールートからのヒエラルキーパスのハッシュ値をもとに決定します。"
+
+msgid "PlatformTargetSettingsEditorDescription"
+msgstr "ビルド時にコンポーネントの設定を特定のプラットフォームに強制します。"
+
+msgid "PlatformTargetSettingsIsRequiredToEnforcePlatform"
+msgstr "特定のプラットフォーム設定を強制するにはアバターのルートオブジェクトに Platform Target Settings コンポーネントが必要です。"
+
+msgid "ComponentRequiresNdmf"
+msgstr "Non-Destructive Modular Framework (NDMF) が必要です。"
+
+msgid "BuildTargetLabel"
+msgstr "ビルドターゲット"
+
+msgid "BuildTargetTooltip"
+msgstr "ビルド時のプラットフォームを指定します。Autoの場合、Unityのターゲットプラットフォームと同じになります。"
+
+msgid "PlatformComponentRemoverEditorDescription"
+msgstr "チェックを入れていないビルドターゲットでは、そのコンポーネントをビルド時に削除します。"
+
+msgid "PlatformComponentRemoverEditorComponentSettingsLabel"
+msgstr "コンポーネント維持設定"
+
+msgid "PlatformComponentRemoverEditorComponentSettingsTooltip"
+msgstr "コンポーネントを維持するプラットフォームを選択します。"
+
+msgid "PlatformComponentRemoverEditorCheckboxPCTooltip"
+msgstr "チェックを入れたコンポーネントをPCビルドで維持します。"
+
+msgid "PlatformComponentRemoverEditorCheckboxAndroidTooltip"
+msgstr "チェックを入れたコンポーネントをAndroidビルドで維持します。"
+
+msgid "ComponentLabel"
+msgstr "コンポーネント"
+
+msgid "PlatformGameObjectRemoverEditorDescription"
+msgstr "チェックマークを入れていないビルドターゲットでは、このGameObjectをビルド時に削除します。"
+
+msgid "PlatformGameObjectRemoverEditorKeepOnPCLabel"
+msgstr "PCで維持"
+
+msgid "PlatformGameObjectRemoverEditorKeepOnAndroidLabel"
+msgstr "Androidで維持"
+
+msgid "AvatarBuilderWindowExitPlayMode"
+msgstr "アバターをビルドするには Play モードを終了してください。"
+
+msgid "AvatarBuilderWindowExitPrefabStage"
+msgstr "アバターをビルドするには Prefab ステージを終了してください。"
+
+msgid "AvatarBuilderWindowNoActiveAvatarsFound"
+msgstr "シーン内にアクティブなアバターがありません。"
+
+msgid "AvatarBuilderWindowSelectAvatar"
+msgstr "VRChat SDK コントロールパネルでアバターを選択してください。"
+
+msgid "AvatarBuilderWindowNoNdmfComponentsFound"
+msgstr "アバターに VRCQuestTools のコンポーネントがありません。"
+
+msgid "AvatarBuilderWindowSucceededBuild"
+msgstr "ビルドに成功しました。"
+
+msgid "AvatarBuilderWindowSucceededUpload"
+msgstr "アップロードに成功しました。"
+
+msgid "AvatarBuilderWindowFailedBuild"
+msgstr "ビルドに失敗しました。コンソールログを確認してください。"
+
+msgid "AvatarBuilderWindowRequiresControlPanel"
+msgstr "アバターをビルドするには VRChat SDK コントロールパネルを開く必要があります。"
+
+msgid "AvatarBuilderWindowOfflineTestingLabel"
+msgstr "オフラインテスト (PC)"
+
+msgid "AvatarBuilderWindowOfflineTestingDescription"
+msgstr "Android 用のビルド設定でアバターをビルドして PC でテストします。アバターはアバターメニューの「その他」カテゴリに「SDK: {0}」として表示されます。"
+
+msgid "AvatarBuilderWindowOnlinePublishingLabel"
+msgstr "アップロード ({0})"
+
+msgid "AvatarBuilderWindowOnlinePublishingDescription"
+msgstr "Android 用のビルド設定でアバターを VRChat にアップロードします。アバターが Android 用のアップロード条件を満たしていなくても VRChat SDK コントロールパネルによる検証をスキップしてビルドを開始します。"
+
+msgid "AvatarBuilderWindowSetAsFallbackIfPossible"
+msgstr "可能な場合はフォールバックアバターにする"
+
+msgid "AvatarBuilderWindowSetAsFallbackIfPossibleTooltip"
+msgstr "ビルド後の最終的なパフォーマンスランクがGood以上である必要があります。"
+
+msgid "AvatarBuilderWindowFallbackNotAllowed"
+msgstr "ビルド後のパフォーマンスランクが {0} のためフォールバックアバターに設定できません。"
+
+msgid "AvatarBuilderWindowNdmfManualBakingLabel"
+msgstr "NDMF マニュアルベイク"
+
+msgid "AvatarBuilderWindowNdmfManualBakingDescription"
+msgstr "Android 用のビルド設定で Tools -> NDM Framework -> Manual bake avatar メニューを実行します。"
+
+msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
+msgstr "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK コントロールパネルで設定してください。"
+
+msgid "NdmfPluginRequiresNdmfUpdate"
+msgstr "Non-Destructive Modular Framework (NDMF) 1.3.0 以降が必要です。NDMF を更新してください。"
+
+msgid "NdmfPluginRemovedUnsupportedComponent"
+msgstr "ビルド中に非対応コンポーネント {0} を \"{1}\" から削除しました。動作に問題がないか確認してください。"
+
+msgid "NDMF:RemovedUnsupportedComponentTitle"
+msgstr "非対応コンポーネントの削除"
+
+msgid "NDMF:RemovedUnsupportedComponentDescription"
+msgstr "ビルド中に非対応コンポーネント {0} を \"{1}\" から削除しました。動作に支障がないか確認してください。"
+
+msgid "NDMF:MaterialConversionErrorTitle"
+msgstr "マテリアル変換エラー"
+
+msgid "NDMF:MaterialConversionErrorDescription"
+msgstr "マテリアルの変換中にエラーが発生しました。\n\nMaterial: {0}\nShader: {1}\n\n{2}: {3}\n{4}"
+
+msgid "NDMF:ObjectConversionErrorTitle"
+msgstr "オブジェクト変換エラー"
+
+msgid "NDMF:ObjectConversionErrorDescription"
+msgstr "{0} の変換中にエラーが発生しました。\n\n{0}: {1}\n\n{2}: {3}\n{4}"
+
+msgid "NDMF:UnsupportedTextureFormatTitle"
+msgstr "非対応テクスチャフォーマット"
+
+msgid "NDMF:UnsupportedTextureFormatDescription"
+msgstr "非対応のテクスチャフォーマット {0} が {1} で使用されています。テクスチャがマニュアルベイクで作成されている場合、ターゲットプラットフォームを変更した後で再度マニュアルベイクしてください。"
+
+msgid "NDMF:UnknownTextureFormatTitle"
+msgstr "未知のテクスチャフォーマット"
+
+msgid "NDMF:UnknownTextureFormatDescription"
+msgstr "未知のテクスチャフォーマット {0} が {1} で使用されています。この警告を抑制するためには、ツールの開発者に報告してください。"
