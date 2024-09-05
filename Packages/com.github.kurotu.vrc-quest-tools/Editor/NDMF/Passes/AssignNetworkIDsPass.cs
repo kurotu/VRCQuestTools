@@ -1,7 +1,9 @@
 using KRT.VRCQuestTools.Components;
-using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf;
+#if !VQT_HAS_NDMF_ERROR_REPORT
+using KRT.VRCQuestTools.Ndmf.Dummy;
+#endif
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -19,6 +21,10 @@ namespace KRT.VRCQuestTools.Ndmf
             var assigner = context.AvatarRootObject.GetComponent<NetworkIDAssigner>();
             if (assigner == null)
             {
+                if (context.AvatarRootObject.GetComponent<AvatarConverterSettings>() != null && VRCSDKUtility.HasMissingNetworkIds(context.AvatarDescriptor))
+                {
+                    ErrorReport.ReportError(new MissingNetworkIDAssignerWarning());
+                }
                 return;
             }
 

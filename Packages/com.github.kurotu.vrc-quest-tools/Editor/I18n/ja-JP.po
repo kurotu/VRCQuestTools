@@ -492,3 +492,9 @@ msgstr "未知のテクスチャフォーマット"
 
 msgid "NDMF:UnknownTextureFormatDescription"
 msgstr "未知のテクスチャフォーマット {0} が {1} で使用されています。この警告を抑制するためには、ツールの開発者に報告してください。"
+
+msgid "NDMF:MissingNetworkIDAssignerTitle"
+msgstr "ネットワークIDの割り当て"
+
+msgid "NDMF:MissingNetworkIDAssignerDescription"
+msgstr "PhysBone を正しく同期させるには PhysBone のネットワーク ID をPC版と一致させる必要があります。\nアバターに Network ID Assigner コンポーネントを追加することで非破壊的にネットワークIDを割り当てることができます。コンポーネントを追加した後、IDを反映するために各プラットフォームに再度アップロードしてください。"

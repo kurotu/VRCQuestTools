@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Optimizing
 - New localization mechanism based on .po files.
 - Russian (Русский) translation. (by @CoderCoV)
+- [NDMF] Warning when an avatar which has `VQT Avatar Converter Settings` doesn't have `VQT Network ID Assigner`.
 
 ### Changed
 - `Convert Avatar for Android` window attaches `VQT Network ID Assigner` to the avatar.

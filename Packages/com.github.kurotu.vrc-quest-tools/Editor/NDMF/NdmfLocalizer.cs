@@ -27,6 +27,8 @@ namespace KRT.VRCQuestTools.Ndmf
         internal const string UnsupportedTextureFormatDescription = "NDMF:UnsupportedTextureFormatDescription";
         internal const string UnknownTextureFormatTitle = "NDMF:UnknownTextureFormatTitle";
         internal const string UnknownTextureFormatDescription = "NDMF:UnknownTextureFormatDescription";
+        internal const string MissingNetworkIDAssignerTitle = "NDMF:MissingNetworkIDAssignerTitle";
+        internal const string MissingNetworkIDAssignerDescription = "NDMF:MissingNetworkIDAssignerDescription";
 #pragma warning restore SA1600
 
         /// <summary>

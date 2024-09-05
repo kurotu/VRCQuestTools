@@ -13,6 +13,7 @@
     - Optimizing
 - .po ファイルをベースにしたローカライズ機構を追加
 - ロシア語 (Русский) 翻訳 (by @CoderCoV)
+- [NDMF] `VQT Avatar Converter Settings` のあるアバターに `VQT Network ID Assigner` がないときに警告を表示
 
 ### 変更
 - `Convert Avatar for Android` ウィンドウで変換設定を始めるときに `VQT Network ID Assigner` をアバターに追加するように変更

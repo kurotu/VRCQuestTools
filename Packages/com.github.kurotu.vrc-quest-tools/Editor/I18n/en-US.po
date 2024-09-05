@@ -492,3 +492,9 @@ msgstr "Unknown Texture Format"
 
 msgid "NDMF:UnknownTextureFormatDescription"
 msgstr "Unknown texture format {0} is used for {1}. Please report to the tool's developer to suppress this warning."
+
+msgid "NDMF:MissingNetworkIDAssignerTitle"
+msgstr "Network ID Assignment"
+
+msgid "NDMF:MissingNetworkIDAssignerDescription"
+msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Android.\nYou can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again for each platform to apply IDs after attaching the component."

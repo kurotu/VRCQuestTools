@@ -38,7 +38,7 @@ namespace KRT.VRCQuestTools.Ndmf.Dummy
         /// <summary>
         /// Gets DetailsSubst.
         /// </summary>
-        public abstract string[] DetailsSubst { get; }
+        public virtual string[] DetailsSubst => new string[] { };
 
         /// <inheritdoc/>
         public override string ToString()
