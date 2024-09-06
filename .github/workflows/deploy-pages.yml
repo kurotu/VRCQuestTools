@@ -6,7 +6,7 @@ on:
     workflows: [Build]
     types:
       - completed
-    branches: [master, current-docs]
+    branches: [master, latest-docs]
   release:
     types: [published, unpublished]
 
@@ -52,7 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: current-docs
+          ref: latest-docs
       - uses: actions/checkout@v4
         with:
           ref: master
