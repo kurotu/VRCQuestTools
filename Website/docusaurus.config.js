@@ -75,8 +75,12 @@ const config = {
             label: 'Docs',
           },
           {
+            type: 'docsVersionDropdown',
+            position: 'right',
+          },
+          {
             type: 'localeDropdown',
-            position: 'left',
+            position: 'right',
           },
           {
             href: 'https://github.com/kurotu/VRCQuestTools',

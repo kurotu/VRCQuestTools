@@ -53,13 +53,37 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: current-docs
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          path: current
+
       - uses: actions/setup-node@v4
         with:
           cache: 'npm'
           cache-dependency-path: Website/package-lock.json
       - run: cd Website && npm ci
-      - run: ./scripts/generate-changelog-links.sh | cat CHANGELOG.md - > Website/docs/changelog.md
-      - run: ./scripts/generate-changelog-links.sh | cat CHANGELOG_JP.md - > Website/i18n/ja/docusaurus-plugin-content-docs/current/changelog.md
+
+      - name: Generate changelog
+        run: |
+          ./scripts/generate-changelog-links.sh | cat CHANGELOG.md - > Website/docs/changelog.md
+          ./scripts/generate-changelog-links.sh | cat CHANGELOG_JP.md - > Website/i18n/ja/docusaurus-plugin-content-docs/current/changelog.md
+
+      - name: Make versioned docs
+        run: cd Website && npm run docusaurus docs:version $(jq -r .version ../Packages/com.github.kurotu.vrc-quest-tools/package.json)
+
+      - name: Copy current docs
+        run: |
+          rm -r Website/docs
+          cp -r current/Website/docs Website/
+          rm -r Website/i18n/ja/docusaurus-plugin-content-docs/current
+          cp -r current/Website/i18n/ja/docusaurus-plugin-content-docs/current Website/i18n/ja/docusaurus-plugin-content-docs/
+
+      - name: Generate current changelog
+        run: |
+          ./scripts/generate-changelog-links.sh | cat current/CHANGELOG.md - > Website/docs/changelog.md
+          ./scripts/generate-changelog-links.sh | cat current/CHANGELOG_JP.md - > Website/i18n/ja/docusaurus-plugin-content-docs/current/changelog.md
+
       - run: cd Website && npm run build
       - uses: actions/upload-artifact@v4
         with:
