@@ -28,22 +28,7 @@ VRCQuestTools can't help such avatars, so you need to modify them manually.
 Before converting your avatar, you should upload your avatar for PC platform.
 But before uploading your avatar for PC platform, you should do additional work.
 
-### Assign Network IDs to PhysBones
-
-You need to assign Network IDs to PhysBones to synchronize them correctly between PC and Android.
-
-1. Select **VRChat SDK** > **Utilities** > **Network ID Import and Export Utility** in the menu bar.
-2. **Network ID Utility** window appears.
-3. Select your avatar in the **Target** dropdown.
-4. Click **Regenerate Scene IDs** button.
-5. **Generate New Scene IDs** dialog appears and click **Generate New IDs** button.
-6. List of PhysBones appears.
-
-### Upload Avatar
-
-Upload your avatar as usual for PC.
-
-## Set up Avatar Converter Settings
+## Prepare Avatar Converter Settings
 
 Set up settings to convert your avatar to Android compatible.
 
@@ -52,6 +37,17 @@ Set up settings to convert your avatar to Android compatible.
 3. **Convert Avatar for Android** window appears.
 4. Click **Begin Converter Settings** button of the window.
 5. **VQT Avatar Converter Settings** component is added to your avatar and settings appear.
+
+### Assign Network IDs to PhysBones
+
+Network ID is an ID which is used to synchronize PhysBones between players.
+Normally, it is automatically assigned by VRChat SDK and you don't need to care about it.
+But the number of PhysBones is different between PC and Android, so Network IDs may be changed and not synchronized correctly.
+
+In the previous step 5, **VQT Network ID Assigner** component is attached to your avatar, and you can assign Network IDs required for synchronization between PC and Android.
+Upload your avatar for PC platform as usual in this state.
+
+## Avatar Converter Settings
 
 Do settings for the following items.
 

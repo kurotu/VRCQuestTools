@@ -23,27 +23,7 @@ VRCQuestToolsだけでは対応できず、別途作業が必要です。
 - VRChat用の基本的なUnityの知識
 - VRChatにアバターをアップロードする方法
 
-## PCアバターのアップロード
-
-アバターを変換する前に、PC向けのアバターをアップロードしておきます。
-ただし通常のPC向けのアップロードの前に、追加の作業をします。
-
-### PhysBoneへのネットワークIDの割り当て
-
-PCとAndroidでPhysBoneを正しく同期させるために、PhysBoneにネットワークIDを割り当てる必要があります。
-
-1. メニューバーの**VRChat SDK** > **Utilities** > **Network ID Import and Export Utility**を選択します。
-2. **Network ID Utility**ウィンドウが表示されます。
-3. **Target**ドロップダウンからアバターを選択します。
-4. **Regenerate Scene IDs**ボタンをクリックします。
-5. **Generate New Scene IDs**ダイアログの**Generate New IDs**ボタンをクリックします。
-6. PhysBoneの一覧が表示されます。
-
-### アバターのアップロード
-
-通常通りアバターをPC用にアップロードします。
-
-## アバターの変換設定
+## アバターの変換設定の準備
 
 アバターをAndroid対応に変換するための設定をします。
 
@@ -52,6 +32,17 @@ PCとAndroidでPhysBoneを正しく同期させるために、PhysBoneにネッ�
 3. **Convert Avatar for Android**ウィンドウが表示されます。
 4. ウィンドウの**変換の設定を始める**ボタンをクリックします。
 5. アバターに**VQT Avatar Converter Settings**コンポーネントが追加され、変換の設定が表示されます。
+
+### PhysBoneへのネットワークIDの割り当て
+
+ネットワークIDはPhysBoneをプレイヤー間で同期するために使用されるIDです。
+通常はVRChat SDKによって自動的に割り当てられており気にする必要はありません。
+しかしPCとAndroidではPhysBoneの数が異なるため、ネットワークIDが変わってしまい正しく同期されないことがあります。
+
+先ほどの手順5.では**VQT Network ID Assigner**コンポーネントがアバターにアタッチされており、PCとAndroidの間での同期に必要なネットワークIDを割り当てることができます。
+この状態で通常通りアバターをPC用にアップロードします。
+
+## アバターの変換設定
 
 以下の項目の設定をします。
 
