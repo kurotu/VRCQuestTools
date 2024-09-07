@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.5.0] - 2024-09-07
 
 ### 追加
 - `VQT Network ID Assigner` が NDMF なしで動作する機能を追加
