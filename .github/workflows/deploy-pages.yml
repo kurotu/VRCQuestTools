@@ -72,6 +72,12 @@ jobs:
       - name: Make versioned docs
         run: cd Website && npm run docusaurus docs:version $(jq -r .version ../Packages/com.github.kurotu.vrc-quest-tools/package.json)
 
+      - name: Copy i18n file
+        run: |
+          VERSION=$(jq -r .version Packages/com.github.kurotu.vrc-quest-tools/package.json)
+          cd Website/i18n/ja/docusaurus-plugin-content-docs
+          jq --arg version $VERSION '."version.label".message = $version' current.json > version-${VERSION}.json
+
       - name: Copy current docs
         run: |
           rm -r Website/docs
