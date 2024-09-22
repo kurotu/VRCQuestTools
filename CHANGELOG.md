@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- [NDMF] Speed up texture format checking.
+
 ### Fixed
 - Accidentally modified original animator controllers when they have wrong object references.
 - [NDMF] Failed to convert animator controllers which have sub state machines in some cases.

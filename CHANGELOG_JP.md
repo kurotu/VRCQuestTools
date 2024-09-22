@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 変更
+- [NDMF] テクスチャフォーマットのチェックを高速化。
+
 ### 修正
 - オブジェクト参照の正しくないAnimator Controllerがあると変換元のAnimator Controllerを変更してしまう問題を修正。
 - [NDMF] サブステートマシンを持つAnimator Controllerの変換に失敗することがある問題を修正。
