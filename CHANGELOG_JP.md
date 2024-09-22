@@ -4,6 +4,12 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- オブジェクト参照の正しくないAnimator Controllerがあると変換元のAnimator Controllerを変更してしまう問題を修正。
+- [NDMF] サブステートマシンを持つAnimator Controllerの変換に失敗することがある問題を修正。
+
 ## [2.5.0] - 2024-09-07
 
 ### 追加
