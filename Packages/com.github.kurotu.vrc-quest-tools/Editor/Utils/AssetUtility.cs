@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
@@ -479,14 +480,17 @@ namespace KRT.VRCQuestTools.Utils
         /// <typeparam name="T">Type of asset.</typeparam>
         /// <param name="asset">Asset to save.</param>
         /// <param name="path">Path to save.</param>
+        /// <param name="postCreateAction">Action to execute after AssetDatabase.CreateAsset() for further objects.</param>
         /// <returns>Created asset.</returns>
         /// <remarks>Do not use `asset` object after this method. Use the returned object.</remarks>
-        internal static T CreateAsset<T>(T asset, string path)
+        internal static T CreateAsset<T>(T asset, string path, Action<T> postCreateAction = null)
             where T : UnityEngine.Object
         {
             if (!File.Exists(path))
             {
                 AssetDatabase.CreateAsset(asset, path);
+                postCreateAction?.Invoke(asset);
+                AssetDatabase.SaveAssets();
                 return AssetDatabase.LoadAssetAtPath<T>(path);
             }
 
@@ -501,6 +505,8 @@ namespace KRT.VRCQuestTools.Utils
                     Directory.CreateDirectory(tmpDir);
                 }
                 AssetDatabase.CreateAsset(asset, tmpPath);
+                postCreateAction?.Invoke(asset);
+                AssetDatabase.SaveAssets();
                 File.Copy(tmpPath, path, true);
             }
             catch (Exception e)
@@ -530,6 +536,36 @@ namespace KRT.VRCQuestTools.Utils
             AssetDatabase.Refresh();
             var newAsset = AssetDatabase.LoadAssetAtPath<T>(path);
             return newAsset;
+        }
+
+        /// <summary>
+        /// Get all object references in the object.
+        /// </summary>
+        /// <param name="o">Object.</param>
+        /// <returns>All referenced objects.</returns>
+        internal static UnityEngine.Object[] GetAllObjectReferences(UnityEngine.Object o)
+        {
+            var list = new HashSet<UnityEngine.Object>();
+            GetAllObjectReferencesImpl(o, list);
+            return list.ToArray();
+        }
+
+        private static void GetAllObjectReferencesImpl(UnityEngine.Object o, HashSet<UnityEngine.Object> list)
+        {
+            var so = new SerializedObject(o);
+            var itr = so.GetIterator();
+            while (itr.Next(true))
+            {
+                if (itr.propertyType == SerializedPropertyType.ObjectReference)
+                {
+                    var obj = itr.objectReferenceValue;
+                    if (obj != null && !list.Contains(obj))
+                    {
+                        list.Add(obj);
+                        GetAllObjectReferencesImpl(obj, list);
+                    }
+                }
+            }
         }
 
         [Serializable]
