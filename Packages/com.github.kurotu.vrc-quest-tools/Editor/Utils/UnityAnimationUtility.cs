@@ -322,16 +322,16 @@ namespace KRT.VRCQuestTools.Utils
             newMachine.hideFlags = stateMachine.hideFlags;
             newMachine.name = stateMachine.name;
             newMachine.parentStateMachinePosition = stateMachine.parentStateMachinePosition;
-            newMachine.stateMachines = stateMachine.stateMachines.Select(machine =>
-            {
-                var newChild = DeepCopyChildAnimatorStateMachine(machine, stateMachineMap, stateMap);
-                stateMachineMap[machine.stateMachine] = newChild.stateMachine;
-                return newChild;
-            }).ToArray();
             newMachine.states = stateMachine.states.Select(state =>
             {
                 var newChild = DeepCopyChildAnimatorState(state);
                 stateMap[state.state] = newChild.state;
+                return newChild;
+            }).ToArray();
+            newMachine.stateMachines = stateMachine.stateMachines.Select(machine =>
+            {
+                var newChild = DeepCopyChildAnimatorStateMachine(machine, stateMachineMap, stateMap);
+                stateMachineMap[machine.stateMachine] = newChild.stateMachine;
                 return newChild;
             }).ToArray();
 
