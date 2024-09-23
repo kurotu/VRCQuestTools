@@ -19,3 +19,16 @@ jobs:
           ./scripts/bump.sh ${{ github.event.inputs.version }}
           git push
           git push --tags
+
+  update-docs:
+    needs: bump
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: latest-docs
+          fetch-tags: true
+      - name: Merge latest release
+        run: |
+          git merge --ff-only v${{ github.event.inputs.version }}
+          git push
