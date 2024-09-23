@@ -145,7 +145,8 @@ namespace KRT.VRCQuestTools.Utils
         internal static AnimatorController ReplaceAnimationClips(RuntimeAnimatorController controller, bool saveAsAsset, string saveDir, Dictionary<Motion, Motion> newMotions)
         {
             string outFile = null;
-            AnimatorController cloneController;
+            AnimatorController cloneController = DeepCopyAnimatorController((AnimatorController)controller);
+            cloneController.name = controller.name + "(Clone)";
             if (saveAsAsset)
             {
                 Directory.CreateDirectory($"{saveDir}/AnimatorControllers");
@@ -153,14 +154,16 @@ namespace KRT.VRCQuestTools.Utils
 
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(controller, out string guid, out long localId);
                 outFile = $"{saveDir}/AnimatorControllers/{controller.name}_from_{guid}.controller";
-                AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(controller), outFile);
-                AssetDatabase.Refresh();
-                cloneController = (AnimatorController)AssetDatabase.LoadAssetAtPath(outFile, typeof(AnimatorController));
-            }
-            else
-            {
-                cloneController = DeepCopyAnimatorController((AnimatorController)controller);
-                cloneController.name = controller.name + "(Clone)";
+                cloneController = AssetUtility.CreateAsset(cloneController, outFile, c =>
+                {
+                    foreach (var obj in AssetUtility.GetAllObjectReferences(cloneController))
+                    {
+                        if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(obj)))
+                        {
+                            AssetDatabase.AddObjectToAsset(obj, c);
+                        }
+                    }
+                });
             }
 
             // コピーしたコントローラーに修正したアニメーションクリップを反映
@@ -322,16 +325,16 @@ namespace KRT.VRCQuestTools.Utils
             newMachine.hideFlags = stateMachine.hideFlags;
             newMachine.name = stateMachine.name;
             newMachine.parentStateMachinePosition = stateMachine.parentStateMachinePosition;
-            newMachine.stateMachines = stateMachine.stateMachines.Select(machine =>
-            {
-                var newChild = DeepCopyChildAnimatorStateMachine(machine, stateMachineMap, stateMap);
-                stateMachineMap[machine.stateMachine] = newChild.stateMachine;
-                return newChild;
-            }).ToArray();
             newMachine.states = stateMachine.states.Select(state =>
             {
                 var newChild = DeepCopyChildAnimatorState(state);
                 stateMap[state.state] = newChild.state;
+                return newChild;
+            }).ToArray();
+            newMachine.stateMachines = stateMachine.stateMachines.Select(machine =>
+            {
+                var newChild = DeepCopyChildAnimatorStateMachine(machine, stateMachineMap, stateMap);
+                stateMachineMap[machine.stateMachine] = newChild.stateMachine;
                 return newChild;
             }).ToArray();
 
