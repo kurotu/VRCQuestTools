@@ -12,13 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
       - name: Make release commit and push it
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           ./scripts/bump.sh ${{ github.event.inputs.version }}
           git push
-          git push --tags
+          git push origin v${{ github.event.inputs.version }}
 
   update-docs:
     needs: bump
@@ -27,7 +29,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: latest-docs
-          fetch-tags: true
+          token: ${{ secrets.PAT }}
+      - name: Fetch tags
+        run: git fetch --prune --unshallow --tags
       - name: Merge latest release
         run: |
           git merge --ff-only v${{ github.event.inputs.version }}
