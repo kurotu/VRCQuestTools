@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- [NDMF] 再帰的な Expressions Menu を使用しているとスタックオーバーフローが発生する問題を修正。
+
 ## [2.5.1] - 2024-09-23
 
 ### 変更
