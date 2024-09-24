@@ -17,6 +17,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.Core;
 using VRC.Dynamics;
+using VRC.SDK3.Avatars.ScriptableObjects;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDK3A.Editor;
 using VRC.SDKBase;
@@ -664,6 +665,15 @@ namespace KRT.VRCQuestTools.Utils
                 throw new NotSupportedException("SdkControlPanelSelectedAvatarField is null: Incompatible SDK.");
             }
             return (VRC_AvatarDescriptor)SdkControlPanelSelectedAvatarField.GetValue(null);
+        }
+
+        /// <summary>
+        /// Gets the textures from the menu.
+        /// </summary>
+        /// <param name="menu">Menu to inspect.</param>
+        internal static Texture2D[] GetTexturesFromMenu(VRCExpressionsMenu menu)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

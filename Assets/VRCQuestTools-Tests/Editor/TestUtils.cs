@@ -63,6 +63,20 @@ namespace KRT.VRCQuestTools
         internal static string TexturesFolder => FixturesFolder + "/Textures";
 
         /// <summary>
+        /// Load fixture asset from FixturesFolder.
+        /// </summary>
+        /// <typeparam name="T">Asset type.</typeparam>
+        /// <param name="file">File name.</param>
+        /// <returns>Asset object.</returns>
+        internal static T LoadFixtureAssetAtPath<T>(string file)
+            where T : Object
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<T>(FixturesFolder + "/" + file);
+            Assert.NotNull(asset);
+            return asset;
+        }
+
+        /// <summary>
         /// Load material from materials folder.
         /// </summary>
         /// <param name="file">File name.</param>
