@@ -21,8 +21,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           ./scripts/bump.sh ${{ github.event.inputs.version }}
-          git push
           git push origin v${{ github.event.inputs.version }}
+          git push
 
   update-docs:
     needs: bump
