@@ -668,12 +668,32 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Gets the textures from the menu.
+        /// Gets the textures from the menu recursively..
         /// </summary>
         /// <param name="menu">Menu to inspect.</param>
+        /// <returns>Textures.</returns>
         internal static Texture2D[] GetTexturesFromMenu(VRCExpressionsMenu menu)
         {
-            throw new NotImplementedException();
+            var textures = new HashSet<Texture2D>();
+            var knownMenu = new HashSet<VRCExpressionsMenu>();
+            GetMenuTexturesFromMenuImpl(menu, textures, knownMenu);
+            return textures.ToArray();
+        }
+
+        private static void GetMenuTexturesFromMenuImpl(VRCExpressionsMenu menu, HashSet<Texture2D> textures, HashSet<VRCExpressionsMenu> knownMenus)
+        {
+            knownMenus.Add(menu);
+            foreach (var control in menu.controls)
+            {
+                if (control.icon != null)
+                {
+                    textures.Add(control.icon);
+                }
+                if (control.subMenu != null && !knownMenus.Contains(control.subMenu))
+                {
+                    GetMenuTexturesFromMenuImpl(control.subMenu, textures, knownMenus);
+                }
+            }
         }
 
         /// <summary>
