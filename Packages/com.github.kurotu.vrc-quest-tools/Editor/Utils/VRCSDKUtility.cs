@@ -17,6 +17,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.Core;
 using VRC.Dynamics;
+using VRC.SDK3.Avatars.ScriptableObjects;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDK3A.Editor;
 using VRC.SDKBase;
@@ -664,6 +665,35 @@ namespace KRT.VRCQuestTools.Utils
                 throw new NotSupportedException("SdkControlPanelSelectedAvatarField is null: Incompatible SDK.");
             }
             return (VRC_AvatarDescriptor)SdkControlPanelSelectedAvatarField.GetValue(null);
+        }
+
+        /// <summary>
+        /// Gets the textures from the menu recursively..
+        /// </summary>
+        /// <param name="menu">Menu to inspect.</param>
+        /// <returns>Textures.</returns>
+        internal static Texture2D[] GetTexturesFromMenu(VRCExpressionsMenu menu)
+        {
+            var textures = new HashSet<Texture2D>();
+            var knownMenu = new HashSet<VRCExpressionsMenu>();
+            GetMenuTexturesFromMenuImpl(menu, textures, knownMenu);
+            return textures.ToArray();
+        }
+
+        private static void GetMenuTexturesFromMenuImpl(VRCExpressionsMenu menu, HashSet<Texture2D> textures, HashSet<VRCExpressionsMenu> knownMenus)
+        {
+            knownMenus.Add(menu);
+            foreach (var control in menu.controls)
+            {
+                if (control.icon != null)
+                {
+                    textures.Add(control.icon);
+                }
+                if (control.subMenu != null && !knownMenus.Contains(control.subMenu))
+                {
+                    GetMenuTexturesFromMenuImpl(control.subMenu, textures, knownMenus);
+                }
+            }
         }
 
         /// <summary>

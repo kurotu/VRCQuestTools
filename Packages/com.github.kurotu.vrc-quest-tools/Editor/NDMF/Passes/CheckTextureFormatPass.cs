@@ -37,7 +37,7 @@ namespace KRT.VRCQuestTools.Ndmf
             .Where(t => t is Texture2D)
             .Cast<Texture2D>();
 
-            var menuTextures = GetMenuTextures(context.AvatarDescriptor.expressionsMenu);
+            var menuTextures = VRCSDKUtility.GetTexturesFromMenu(context.AvatarDescriptor.expressionsMenu);
 
             var allTextures = materialTextures.Concat(menuTextures).Distinct().ToArray();
             foreach (var texture in allTextures)
@@ -80,29 +80,6 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     var textures = unknownTextures.Where(t => t.format == format).OrderBy(t => t.name).ToArray();
                     ErrorReport.ReportError(new UnknownTextureFormatError(format, EditorUserBuildSettings.activeBuildTarget, textures));
-                }
-            }
-        }
-
-        private HashSet<Texture2D> GetMenuTextures(VRCExpressionsMenu menu)
-        {
-            var textures = new HashSet<Texture2D>();
-            var knownMenu = new HashSet<VRCExpressionsMenu>();
-            GetMenuTexturesImpl(menu, textures, knownMenu);
-            return textures;
-        }
-
-        private void GetMenuTexturesImpl(VRCExpressionsMenu menu, HashSet<Texture2D> textures, HashSet<VRCExpressionsMenu> knownMenus)
-        {
-            foreach (var control in menu.controls)
-            {
-                if (control.icon != null)
-                {
-                    textures.Add(control.icon);
-                }
-                if (control.subMenu != null && !knownMenus.Contains(control.subMenu))
-                {
-                    GetMenuTexturesImpl(control.subMenu, textures, knownMenus);
                 }
             }
         }
