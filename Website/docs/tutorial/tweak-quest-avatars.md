@@ -45,7 +45,7 @@ So you can suppress them by editing animations.
 :::tip
 After creating new animation clips, you can create an **[Animator Override Controller](https://docs.unity3d.com/2019.4/Documentation/Manual/AnimatorOverrideController.html)** to override the original animations.
 VRCQuestTools autocmatically creates new Animator Controller by resolving Animator Override Controllers when converting an avatar.
-See [the reference page](./#) for more details.
+See [the reference page](../references/components/avatar-converter-settings) for more details.
 :::
 
 ### Delete Transparent Meshes

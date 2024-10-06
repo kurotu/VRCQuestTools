@@ -45,7 +45,7 @@ Androidアバターは半透明なマテリアルをサポートしていませ�
 :::tip
 新しいアニメーションクリップを作成した後、元のアニメーションをオーバーライドするために**[Animator Override Controller](https://docs.unity3d.com/2019.4/Documentation/Manual/AnimatorOverrideController.html)**を作成できます。
 VRCQuestToolsはアバターを変換する際に自動的にAnimator Override Controllerを解決して新しいAnimator Controllerを作成します。
-詳細については、[リファレンスページ](./#)を参照してください。
+詳細については、[リファレンスページ](../references/components/avatar-converter-settings)を参照してください。
 :::
 
 ### 半透明メッシュの削除
