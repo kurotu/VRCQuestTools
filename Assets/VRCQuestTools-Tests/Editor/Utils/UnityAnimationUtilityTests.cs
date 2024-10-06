@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UnityEditor;
@@ -45,6 +46,20 @@ namespace KRT.VRCQuestTools.Utils
             var guid2 = TestUtils.GetAssetGUID(controller2.animationClips[0]);
             Assert.AreEqual(guid, guid1);
             Assert.AreEqual(guid, guid2);
+        }
+
+        /// <summary>
+        /// Case which an animator controller has nested state machines.
+        /// </summary>
+        [Test]
+        public void DuplicateNestedStateMachines()
+        {
+            var fixturesFolder = TestUtils.FixturesFolder + "/Animations";
+
+            var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(fixturesFolder + "/NestedStateMachines.controller");
+            Assert.NotNull(controller);
+
+            Assert.DoesNotThrow(() => UnityAnimationUtility.ReplaceAnimationClips(controller, false, null, new Dictionary<Motion, Motion> { }));
         }
     }
 }

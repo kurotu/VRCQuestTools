@@ -4,6 +4,15 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 変更
+- Animator Controller の複製処理をリライト。
+  - 複雑な Animator Controller の複製が改善されます。
+
+### 修正
+- GoGo Loco を使用したFXレイヤーの変換に失敗する問題を修正。
+
 ## [2.5.2] - 2024-09-25
 
 ### 修正
