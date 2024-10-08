@@ -682,6 +682,10 @@ namespace KRT.VRCQuestTools.Utils
 
         private static void GetMenuTexturesFromMenuImpl(VRCExpressionsMenu menu, HashSet<Texture2D> textures, HashSet<VRCExpressionsMenu> knownMenus)
         {
+            if (menu == null)
+            {
+                return;
+            }
             knownMenus.Add(menu);
             foreach (var control in menu.controls)
             {
