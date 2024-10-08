@@ -508,6 +508,35 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Gets the root transform of the component.
+        /// </summary>
+        /// <param name="component">Avatar Dynamics component.</param>
+        /// <returns>Root Transform</returns>
+        internal static Transform GetRootTransform(Component component)
+        {
+            var type = component.GetType();
+            if (type == PhysBoneType)
+            {
+                var bone = new Reflection.PhysBone(component);
+                return bone.RootTransform;
+            }
+
+            if (type == PhysBoneColliderType)
+            {
+                var collider = new Reflection.PhysBoneCollider(component);
+                return collider.RootTransform;
+            }
+
+            if (type == ContactReceiverType || type == ContactSenderType)
+            {
+                var contact = new Reflection.ContactBase(component);
+                return contact.RootTransform;
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Stripes unused network ids from the avatar.
         /// </summary>
         /// <param name="avatarDescriptor">Target avatar.</param>

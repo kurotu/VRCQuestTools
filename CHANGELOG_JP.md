@@ -7,6 +7,7 @@
 ## [Unreleased]
 
 ### 修正
+- Avatar Dynamics Selector ウィンドウに Root Transform の列が表示されていない問題を修正。
 - [NDMF] アバターに Expression Menu がないときテクスチャフォーマットのチェックで発生するエラーを修正。
 
 ## [2.5.3] - 2024-10-06

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
@@ -22,6 +23,8 @@ namespace KRT.VRCQuestTools.Views
     /// </summary>
     internal class AvatarDynamicsSelectorWindow : EditorWindow
     {
+        private const int CheckBoxWidth = 16;
+
         /// <summary>
         /// AvatarConverterSettings to edit.
         /// </summary>
@@ -108,7 +111,7 @@ namespace KRT.VRCQuestTools.Views
                                         physBonesToKeep = new VRCPhysBone[] { };
                                     }
                                 }
-                                physBonesToKeep = EditorGUIUtility.ObjectSelectorList(pbs, physBonesToKeep);
+                                physBonesToKeep = ComponentSelectorList(pbs, physBonesToKeep);
                             }
                         }
                     }
@@ -141,7 +144,7 @@ namespace KRT.VRCQuestTools.Views
                                         physBoneCollidersToKeep = new VRCPhysBoneCollider[] { };
                                     }
                                 }
-                                physBoneCollidersToKeep = EditorGUIUtility.ObjectSelectorList(colliders, physBoneCollidersToKeep);
+                                physBoneCollidersToKeep = ComponentSelectorList(colliders, physBoneCollidersToKeep);
                             }
                         }
                     }
@@ -174,7 +177,7 @@ namespace KRT.VRCQuestTools.Views
                                         contactsToKeep = new VRC.Dynamics.ContactBase[] { };
                                     }
                                 }
-                                contactsToKeep = EditorGUIUtility.ObjectSelectorList(contacts, contactsToKeep);
+                                contactsToKeep = ComponentSelectorList(contacts, contactsToKeep);
                             }
                         }
                     }
@@ -215,6 +218,37 @@ namespace KRT.VRCQuestTools.Views
             }
 
             EditorGUILayout.Space();
+        }
+
+        private static T[] ComponentSelectorList<T>(T[] objects, T[] selectedObjects)
+            where T : UnityEngine.Component
+        {
+            var afterSelected = new List<T>();
+            foreach (var obj in objects)
+            {
+                using (var horizontal = new EditorGUILayout.HorizontalScope())
+                {
+                    var isSelected = GUIToggleComponentField(selectedObjects.Contains(obj), obj);
+                    if (isSelected)
+                    {
+                        afterSelected.Add(obj);
+                    }
+                }
+            }
+            return afterSelected.ToArray();
+        }
+
+        private static bool GUIToggleComponentField(bool value, Component component)
+        {
+            using (var horizontal = new EditorGUILayout.HorizontalScope())
+            {
+                var selected = EditorGUILayout.Toggle(value, GUILayout.Width(CheckBoxWidth));
+                GUILayout.Space(2);
+                EditorGUILayout.ObjectField(component, component.GetType(), true);
+                GUILayout.Space(2);
+                EditorGUILayout.ObjectField(VRCSDKUtility.GetRootTransform(component), typeof(Transform), true);
+                return selected;
+            }
         }
     }
 }

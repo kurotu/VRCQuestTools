@@ -67,30 +67,6 @@ namespace KRT.VRCQuestTools.Views
             window.Show();
         }
 
-        private static Transform GetRootTransform(Component component)
-        {
-            var type = component.GetType();
-            if (type == VRCSDKUtility.PhysBoneType)
-            {
-                var bone = new VRCSDKUtility.Reflection.PhysBone(component);
-                return bone.RootTransform;
-            }
-
-            if (type == VRCSDKUtility.PhysBoneColliderType)
-            {
-                var collider = new VRCSDKUtility.Reflection.PhysBoneCollider(component);
-                return collider.RootTransform;
-            }
-
-            if (type == VRCSDKUtility.ContactReceiverType || type == VRCSDKUtility.ContactSenderType)
-            {
-                var contact = new VRCSDKUtility.Reflection.ContactBase(component);
-                return contact.RootTransform;
-            }
-
-            return null;
-        }
-
         private void OnEnable()
         {
             titleContent.text = "PhysBones Remover";
@@ -281,7 +257,7 @@ namespace KRT.VRCQuestTools.Views
                 GUILayout.Space(2);
                 EditorGUILayout.ObjectField(component, component.GetType(), true);
                 GUILayout.Space(2);
-                EditorGUILayout.ObjectField(GetRootTransform(component), typeof(Transform), true);
+                EditorGUILayout.ObjectField(VRCSDKUtility.GetRootTransform(component), typeof(Transform), true);
                 return selected;
             }
         }
