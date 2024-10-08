@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
@@ -83,7 +84,7 @@ namespace KRT.VRCQuestTools.Views
             {
                 scrollPosition = scrollView.scrollPosition;
 
-                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutPhysBones, "PhysBones"))
+                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutPhysBones, new GUIContent("PhysBones", i18n.PhysBonesListTooltip)))
                 {
                     foldoutPhysBones = foldout.Foldout;
                     if (foldoutPhysBones)
@@ -108,15 +109,16 @@ namespace KRT.VRCQuestTools.Views
                                         physBonesToKeep = new VRCPhysBone[] { };
                                     }
                                 }
-                                physBonesToKeep = EditorGUIUtility.ObjectSelectorList(pbs, physBonesToKeep);
+                                physBonesToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(pbs, physBonesToKeep);
                             }
                         }
                     }
                 }
+                EditorGUILayout.EndFoldoutHeaderGroup();
 
                 EditorGUILayout.Space();
 
-                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutPhysBonesColliders, "PhysBone Colliders"))
+                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutPhysBonesColliders, new GUIContent("PhysBone Colliders", i18n.PhysBonesListTooltip)))
                 {
                     foldoutPhysBonesColliders = foldout.Foldout;
                     if (foldoutPhysBonesColliders)
@@ -141,15 +143,16 @@ namespace KRT.VRCQuestTools.Views
                                         physBoneCollidersToKeep = new VRCPhysBoneCollider[] { };
                                     }
                                 }
-                                physBoneCollidersToKeep = EditorGUIUtility.ObjectSelectorList(colliders, physBoneCollidersToKeep);
+                                physBoneCollidersToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(colliders, physBoneCollidersToKeep);
                             }
                         }
                     }
                 }
+                EditorGUILayout.EndFoldoutHeaderGroup();
 
                 EditorGUILayout.Space();
 
-                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutContacts, "Contact Senders & Contact Receivers"))
+                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutContacts, new GUIContent("Contact Senders & Contact Receivers", i18n.PhysBonesListTooltip)))
                 {
                     foldoutContacts = foldout.Foldout;
                     if (foldoutContacts)
@@ -174,11 +177,12 @@ namespace KRT.VRCQuestTools.Views
                                         contactsToKeep = new VRC.Dynamics.ContactBase[] { };
                                     }
                                 }
-                                contactsToKeep = EditorGUIUtility.ObjectSelectorList(contacts, contactsToKeep);
+                                contactsToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(contacts, contactsToKeep);
                             }
                         }
                     }
                 }
+                EditorGUILayout.EndFoldoutHeaderGroup();
             }
 
             EditorGUILayout.Space();

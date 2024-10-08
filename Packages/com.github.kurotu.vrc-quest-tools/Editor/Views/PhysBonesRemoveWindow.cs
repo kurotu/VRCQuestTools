@@ -32,7 +32,6 @@ namespace KRT.VRCQuestTools.Views
     /// </summary>
     internal class PhysBonesRemoveWindow : EditorWindow
     {
-        private const int CheckBoxWidth = 16;
         private GUIStyle foldedContentPanel;
 
         [SerializeField]
@@ -65,30 +64,6 @@ namespace KRT.VRCQuestTools.Views
         {
             var window = GetWindow<PhysBonesRemoveWindow>();
             window.Show();
-        }
-
-        private static Transform GetRootTransform(Component component)
-        {
-            var type = component.GetType();
-            if (type == VRCSDKUtility.PhysBoneType)
-            {
-                var bone = new VRCSDKUtility.Reflection.PhysBone(component);
-                return bone.RootTransform;
-            }
-
-            if (type == VRCSDKUtility.PhysBoneColliderType)
-            {
-                var collider = new VRCSDKUtility.Reflection.PhysBoneCollider(component);
-                return collider.RootTransform;
-            }
-
-            if (type == VRCSDKUtility.ContactReceiverType || type == VRCSDKUtility.ContactSenderType)
-            {
-                var contact = new VRCSDKUtility.Reflection.ContactBase(component);
-                return contact.RootTransform;
-            }
-
-            return null;
         }
 
         private void OnEnable()
@@ -132,102 +107,93 @@ namespace KRT.VRCQuestTools.Views
             {
                 scrollPosition = scrollView.scrollPosition;
 
-                if (showPhysBones = EditorGUILayout.BeginFoldoutHeaderGroup(showPhysBones, new GUIContent($"PhysBones Components ({model.PhysBonesToKeep.Count()}/{VRCSDKUtility.PoorPhysBonesCountLimit})", i18n.PhysBonesListTooltip)))
+                if (showPhysBones = EditorGUILayout.BeginFoldoutHeaderGroup(showPhysBones, new GUIContent("PhysBones", i18n.PhysBonesListTooltip)))
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
                         var physBones = model.Avatar.GetPhysBones().OrderBy(p => VRCSDKUtility.GetFullPathInHierarchy(p.gameObject)).ToArray();
                         if (physBones.Length > 0)
                         {
-                            var allSelected = GUIToggleAllField(i18n.KeepAll, model.DoesSelectAllPhysBones);
-                            if (allSelected)
+                            using (var horizontal = new EditorGUILayout.HorizontalScope())
                             {
-                                model.SelectAllPhysBones(true);
-                            }
-                            if (model.DoesSelectAllPhysBones && !allSelected)
-                            {
-                                model.SelectAllPhysBones(false);
-                            }
-                            var newSelectedPhysBones = new List<Component>();
-                            foreach (var c in physBones)
-                            {
-                                var selected = GUIToggleComponentField(model.PhysBonesToKeep.Contains(c), c);
-                                if (selected)
+                                if (GUILayout.Button(i18n.SelectAllButtonLabel))
                                 {
-                                    newSelectedPhysBones.Add(c);
+                                    model.SelectAllPhysBones(true);
+                                }
+                                if (GUILayout.Button(i18n.DeselectAllButtonLabel))
+                                {
+                                    model.SelectAllPhysBones(false);
                                 }
                             }
-                            model.SelectAllPhysBones(false);
-                            foreach (var c in newSelectedPhysBones)
-                            {
-                                model.SelectPhysBone(c, true);
-                            }
+                            var selected = model.PhysBonesToKeep.ToArray();
+                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(model.Avatar.GetPhysBones(), selected);
+                            model.SetSelectedPhysBones(selected);
                         }
                         else
                         {
-                            EditorGUILayout.LabelField("No PhysBones Components");
+                            EditorGUILayout.LabelField("No PhysBones found.");
                         }
                         EditorGUILayout.Space();
                     }
                 }
                 EditorGUILayout.EndFoldoutHeaderGroup();
 
-                if (showPhysBoneColliders = EditorGUILayout.BeginFoldoutHeaderGroup(showPhysBoneColliders, new GUIContent($"PhysBones Colliders ({model.PhysBoneCollidersToKeep.Count()}/{VRCSDKUtility.PoorPhysBoneCollidersCountLimit})", i18n.PhysBonesListTooltip)))
+                if (showPhysBoneColliders = EditorGUILayout.BeginFoldoutHeaderGroup(showPhysBoneColliders, new GUIContent("PhysBone Colliders", i18n.PhysBonesListTooltip)))
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
                         var colliders = model.Avatar.GetPhysBoneColliders();
                         if (colliders.Length > 0)
                         {
-                            var allSelected = GUIToggleAllField(i18n.KeepAll, model.DoesSelectAllPhysBoneColliders);
-                            if (allSelected)
+                            using (var horizontal = new EditorGUILayout.HorizontalScope())
                             {
-                                model.SelectAllPhysBoneColliders(true);
+                                if (GUILayout.Button(i18n.SelectAllButtonLabel))
+                                {
+                                    model.SelectAllPhysBoneColliders(true);
+                                }
+                                if (GUILayout.Button(i18n.DeselectAllButtonLabel))
+                                {
+                                    model.SelectAllPhysBoneColliders(false);
+                                }
                             }
-                            if (model.DoesSelectAllPhysBoneColliders && !allSelected)
-                            {
-                                model.SelectAllPhysBoneColliders(false);
-                            }
-                            foreach (var c in colliders)
-                            {
-                                var selected = GUIToggleComponentField(model.PhysBoneCollidersToKeep.Contains(c), c);
-                                model.SelectPhysBoneCollider(c, selected);
-                            }
+                            var selected = model.PhysBoneCollidersToKeep.ToArray();
+                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(model.Avatar.GetPhysBoneColliders(), selected);
+                            model.SetSelectedPhysBoneColliders(selected);
                         }
                         else
                         {
-                            EditorGUILayout.LabelField("No PhysBones Colliders");
+                            EditorGUILayout.LabelField("No PhysBone Colliders found.");
                         }
                         EditorGUILayout.Space();
                     }
                 }
                 EditorGUILayout.EndFoldoutHeaderGroup();
 
-                if (showContacts = EditorGUILayout.BeginFoldoutHeaderGroup(showContacts, new GUIContent($"Avatar Dynamics Contacts ({model.ContactsToKeep.Count()}/{VRCSDKUtility.PoorContactsCountLimit})", i18n.PhysBonesListTooltip)))
+                if (showContacts = EditorGUILayout.BeginFoldoutHeaderGroup(showContacts, new GUIContent("Contact Senders & Contact Receivers", i18n.PhysBonesListTooltip)))
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
                         var contacts = model.Avatar.GetContacts();
                         if (contacts.Length > 0)
                         {
-                            var allSelected = GUIToggleAllField(i18n.KeepAll, model.DoesSelectAllContacts);
-                            if (allSelected)
+                            using (var horizontal = new EditorGUILayout.HorizontalScope())
                             {
-                                model.SelectAllContacts(true);
+                                if (GUILayout.Button(i18n.SelectAllButtonLabel))
+                                {
+                                    model.SelectAllContacts(true);
+                                }
+                                if (GUILayout.Button(i18n.DeselectAllButtonLabel))
+                                {
+                                    model.SelectAllContacts(false);
+                                }
                             }
-                            if (model.DoesSelectAllContacts && !allSelected)
-                            {
-                                model.SelectAllContacts(false);
-                            }
-                            foreach (var c in model.Avatar.GetContacts())
-                            {
-                                var selected = GUIToggleComponentField(model.ContactsToKeep.Contains(c), c);
-                                model.SelectContact(c, selected);
-                            }
+                            var selected = model.ContactsToKeep.ToArray();
+                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(model.Avatar.GetContacts(), selected);
+                            model.SetSelectedContacts(selected);
                         }
                         else
                         {
-                            EditorGUILayout.LabelField("No Avatar Dynamics Contacts");
+                            EditorGUILayout.LabelField("No Contact Senders & Contact Receivers found.");
                         }
                         EditorGUILayout.Space();
                     }
@@ -261,29 +227,6 @@ namespace KRT.VRCQuestTools.Views
             }
 
             EditorGUILayout.Space();
-        }
-
-        private bool GUIToggleAllField(string label, bool allSelected)
-        {
-            using (var horizontal = new EditorGUILayout.HorizontalScope())
-            {
-                var selected = EditorGUILayout.Toggle(allSelected, GUILayout.Width(CheckBoxWidth));
-                EditorGUILayout.LabelField(label);
-                return selected;
-            }
-        }
-
-        private bool GUIToggleComponentField(bool value, Component component)
-        {
-            using (var horizontal = new EditorGUILayout.HorizontalScope())
-            {
-                var selected = EditorGUILayout.Toggle(value, GUILayout.Width(CheckBoxWidth));
-                GUILayout.Space(2);
-                EditorGUILayout.ObjectField(component, component.GetType(), true);
-                GUILayout.Space(2);
-                EditorGUILayout.ObjectField(GetRootTransform(component), typeof(Transform), true);
-                return selected;
-            }
         }
 
         private void OnSelectAvatar(VRC_AvatarDescriptor avatar)

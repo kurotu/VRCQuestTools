@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Use same UI layout for Avatar Dynamics Selector and PhysBones Remover.
+
 ### Fixed
+- Missing column for root transform in the Avatar Dynamics Selector.
 - [NDMF] Error in the texture format check when the avatar has no expression menu.
 
 ## [2.5.3] - 2024-10-06

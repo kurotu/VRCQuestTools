@@ -105,6 +105,51 @@ namespace KRT.VRCQuestTools.Views
         }
 
         /// <summary>
+        /// Show a check list to select components.
+        /// </summary>
+        /// <typeparam name="T">Component type.</typeparam>
+        /// <param name="objects">Components to list.</param>
+        /// <param name="selectedObjects">Already selected components.</param>
+        /// <returns>New selected components.</returns>
+        internal static T[] AvatarDynamicsComponentSelectorList<T>(T[] objects, T[] selectedObjects)
+            where T : UnityEngine.Component
+        {
+            var afterSelected = new List<T>();
+            foreach (var obj in objects)
+            {
+                using (var horizontal = new EditorGUILayout.HorizontalScope())
+                {
+                    var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Contains(obj), obj);
+                    if (isSelected)
+                    {
+                        afterSelected.Add(obj);
+                    }
+                }
+            }
+            return afterSelected.ToArray();
+        }
+
+        /// <summary>
+        /// Show a toggle field for Avatar Dynamics component.
+        /// </summary>
+        /// <param name="value">Current state.</param>
+        /// <param name="component">Component to show.</param>
+        /// <returns>true for selected.</returns>
+        internal static bool ToggleAvatarDynamicsComponentField(bool value, Component component)
+        {
+            const int CheckBoxWidth = 16;
+            using (var horizontal = new EditorGUILayout.HorizontalScope())
+            {
+                var selected = EditorGUILayout.Toggle(value, GUILayout.Width(CheckBoxWidth));
+                GUILayout.Space(2);
+                EditorGUILayout.ObjectField(component, component.GetType(), true);
+                GUILayout.Space(2);
+                EditorGUILayout.ObjectField(VRCSDKUtility.GetRootTransform(component), typeof(Transform), true);
+                return selected;
+            }
+        }
+
+        /// <summary>
         /// Show performance rating panel.
         /// </summary>
         /// <param name="rating">Performance rating.</param>
@@ -331,10 +376,10 @@ namespace KRT.VRCQuestTools.Views
             /// Initializes a new instance of the <see cref="FoldoutHeaderGroupScope"/> class.
             /// </summary>
             /// <param name="foldout">Is foldout opened.</param>
-            /// <param name="label">Label string to show.</param>
-            internal FoldoutHeaderGroupScope(bool foldout, string label)
+            /// <param name="content">Content to show.</param>
+            internal FoldoutHeaderGroupScope(bool foldout, GUIContent content)
             {
-                this.Foldout = EditorGUILayout.BeginFoldoutHeaderGroup(foldout, label);
+                this.Foldout = EditorGUILayout.BeginFoldoutHeaderGroup(foldout, content);
             }
 
             /// <summary>
