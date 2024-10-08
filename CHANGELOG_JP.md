@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 変更
+- Avatar Dynamics Selector と PhysBones Remover の UI レイアウトを統一
+
 ### 修正
 - Avatar Dynamics Selector ウィンドウに Root Transform の列が表示されていない問題を修正。
 - [NDMF] アバターに Expression Menu がないときテクスチャフォーマットのチェックで発生するエラーを修正。

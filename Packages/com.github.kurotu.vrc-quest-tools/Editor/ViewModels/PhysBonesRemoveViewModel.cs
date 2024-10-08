@@ -108,6 +108,16 @@ namespace KRT.VRCQuestTools.ViewModels
         }
 
         /// <summary>
+        /// Set selected PhysBones.
+        /// </summary>
+        /// <param name="physBones">Components.</param>
+        internal void SetSelectedPhysBones(IEnumerable<Component> physBones)
+        {
+            physBonesToKeep.Clear();
+            physBonesToKeep.AddRange(physBones);
+        }
+
+        /// <summary>
         /// Select a PhysBone.
         /// </summary>
         /// <param name="physBone">Target component.</param>
@@ -141,6 +151,16 @@ namespace KRT.VRCQuestTools.ViewModels
         }
 
         /// <summary>
+        /// Set selected PhysBoneColliders.
+        /// </summary>
+        /// <param name="physBoneColliders">Components.</param>
+        internal void SetSelectedPhysBoneColliders(IEnumerable<Component> physBoneColliders)
+        {
+            physBoneCollidersToKeep.Clear();
+            physBoneCollidersToKeep.AddRange(physBoneColliders);
+        }
+
+        /// <summary>
         /// Select a PhysBoneCollider.
         /// </summary>
         /// <param name="collider">Target component.</param>
@@ -170,6 +190,16 @@ namespace KRT.VRCQuestTools.ViewModels
             {
                 SelectPhysBoneCollider(c, select);
             }
+        }
+
+        /// <summary>
+        /// Set selected ContactReceivers and ContactSenders.
+        /// </summary>
+        /// <param name="contacts">Components.</param>
+        internal void SetSelectedContacts(IEnumerable<Component> contacts)
+        {
+            contactsToKeep.Clear();
+            contactsToKeep.AddRange(contacts);
         }
 
         /// <summary>

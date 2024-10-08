@@ -23,8 +23,6 @@ namespace KRT.VRCQuestTools.Views
     /// </summary>
     internal class AvatarDynamicsSelectorWindow : EditorWindow
     {
-        private const int CheckBoxWidth = 16;
-
         /// <summary>
         /// AvatarConverterSettings to edit.
         /// </summary>
@@ -86,7 +84,7 @@ namespace KRT.VRCQuestTools.Views
             {
                 scrollPosition = scrollView.scrollPosition;
 
-                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutPhysBones, "PhysBones"))
+                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutPhysBones, new GUIContent("PhysBones", i18n.PhysBonesListTooltip)))
                 {
                     foldoutPhysBones = foldout.Foldout;
                     if (foldoutPhysBones)
@@ -111,15 +109,16 @@ namespace KRT.VRCQuestTools.Views
                                         physBonesToKeep = new VRCPhysBone[] { };
                                     }
                                 }
-                                physBonesToKeep = ComponentSelectorList(pbs, physBonesToKeep);
+                                physBonesToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(pbs, physBonesToKeep);
                             }
                         }
                     }
                 }
+                EditorGUILayout.EndFoldoutHeaderGroup();
 
                 EditorGUILayout.Space();
 
-                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutPhysBonesColliders, "PhysBone Colliders"))
+                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutPhysBonesColliders, new GUIContent("PhysBone Colliders", i18n.PhysBonesListTooltip)))
                 {
                     foldoutPhysBonesColliders = foldout.Foldout;
                     if (foldoutPhysBonesColliders)
@@ -144,15 +143,16 @@ namespace KRT.VRCQuestTools.Views
                                         physBoneCollidersToKeep = new VRCPhysBoneCollider[] { };
                                     }
                                 }
-                                physBoneCollidersToKeep = ComponentSelectorList(colliders, physBoneCollidersToKeep);
+                                physBoneCollidersToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(colliders, physBoneCollidersToKeep);
                             }
                         }
                     }
                 }
+                EditorGUILayout.EndFoldoutHeaderGroup();
 
                 EditorGUILayout.Space();
 
-                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutContacts, "Contact Senders & Contact Receivers"))
+                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutContacts, new GUIContent("Contact Senders & Contact Receivers", i18n.PhysBonesListTooltip)))
                 {
                     foldoutContacts = foldout.Foldout;
                     if (foldoutContacts)
@@ -177,11 +177,12 @@ namespace KRT.VRCQuestTools.Views
                                         contactsToKeep = new VRC.Dynamics.ContactBase[] { };
                                     }
                                 }
-                                contactsToKeep = ComponentSelectorList(contacts, contactsToKeep);
+                                contactsToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(contacts, contactsToKeep);
                             }
                         }
                     }
                 }
+                EditorGUILayout.EndFoldoutHeaderGroup();
             }
 
             EditorGUILayout.Space();
@@ -218,37 +219,6 @@ namespace KRT.VRCQuestTools.Views
             }
 
             EditorGUILayout.Space();
-        }
-
-        private static T[] ComponentSelectorList<T>(T[] objects, T[] selectedObjects)
-            where T : UnityEngine.Component
-        {
-            var afterSelected = new List<T>();
-            foreach (var obj in objects)
-            {
-                using (var horizontal = new EditorGUILayout.HorizontalScope())
-                {
-                    var isSelected = GUIToggleComponentField(selectedObjects.Contains(obj), obj);
-                    if (isSelected)
-                    {
-                        afterSelected.Add(obj);
-                    }
-                }
-            }
-            return afterSelected.ToArray();
-        }
-
-        private static bool GUIToggleComponentField(bool value, Component component)
-        {
-            using (var horizontal = new EditorGUILayout.HorizontalScope())
-            {
-                var selected = EditorGUILayout.Toggle(value, GUILayout.Width(CheckBoxWidth));
-                GUILayout.Space(2);
-                EditorGUILayout.ObjectField(component, component.GetType(), true);
-                GUILayout.Space(2);
-                EditorGUILayout.ObjectField(VRCSDKUtility.GetRootTransform(component), typeof(Transform), true);
-                return selected;
-            }
         }
     }
 }

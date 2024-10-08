@@ -511,7 +511,7 @@ namespace KRT.VRCQuestTools.Utils
         /// Gets the root transform of the component.
         /// </summary>
         /// <param name="component">Avatar Dynamics component.</param>
-        /// <returns>Root Transform</returns>
+        /// <returns>Root Transform.</returns>
         internal static Transform GetRootTransform(Component component)
         {
             var type = component.GetType();
