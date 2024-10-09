@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.5.4] - 2024-10-09
 
 ### 変更
 - Avatar Dynamics Selector と PhysBones Remover の UI レイアウトを統一
