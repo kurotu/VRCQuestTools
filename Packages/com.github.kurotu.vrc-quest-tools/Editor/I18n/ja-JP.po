@@ -337,6 +337,9 @@ msgstr "このバージョンには互換性に関する重要な変更がある
 msgid "MissingScripts"
 msgstr "\"Missing\" 状態のコンポーネントがあります。インポートし忘れたアセットやパッケージがないか確認してください。"
 
+msgid "ExperimentalComponentWarning"
+msgstr "このコンポーネントは実験的機能です。"
+
 msgid "AvatarRootComponentMustBeOnAvatarRoot"
 msgstr "このコンポーネントは VRC_AvatarDescriptor のあるオブジェクトに追加してください。"
 
@@ -399,6 +402,30 @@ msgstr "PCで維持"
 
 msgid "PlatformGameObjectRemoverEditorKeepOnAndroidLabel"
 msgstr "Androidで維持"
+
+msgid "MeshFlipperEditorDescription"
+msgstr "メッシュのポリゴンを複製して両面にします。または面を反転します。"
+
+msgid "MeshFlipperEditorDirectionLabel"
+msgstr "メッシュの向き"
+
+msgid "MeshFlipperEditorEnabledOnPCLabel"
+msgstr "PCで有効"
+
+msgid "MeshFlipperEditorEnabledOnAndroidLabel"
+msgstr "Androidで有効"
+
+msgid "MeshFlipperEditorEnabledOnPCWarning"
+msgstr "このコンポーネントを使用しなくてもシェーダーの設定で実現できる可能性があります。"
+
+msgid "MeshFlipperEditorEnabledOnAndroidWarning"
+msgstr "このメッシュのポリゴン数は2倍になります。"
+
+msgid "MeshFlipperMeshDirectionFlip"
+msgstr "反転"
+
+msgid "MeshFlipperMeshDirectionBothSides"
+msgstr "両面"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "アバターをビルドするには Play モードを終了してください。"
