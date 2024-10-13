@@ -424,7 +424,7 @@ msgstr "The polygon count for this mesh is doubled."
 msgid "MeshFlipperMeshDirectionFlip"
 msgstr "Flipped"
 
-msgid "MeshFlipperMeshDirectionBothSides"
+msgid "MeshFlipperMeshDirectionDoubleSide"
 msgstr "Double Sided"
 
 msgid "AvatarBuilderWindowExitPlayMode"

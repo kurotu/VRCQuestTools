@@ -9,12 +9,12 @@ namespace KRT.VRCQuestTools.Components
     public enum MeshFlipperMeshDirection
     {
         /// <summary>
-        /// Flip the mesh.
+        /// Create a flipped mesh.
         /// </summary>
         Flip,
 
         /// <summary>
-        /// Create both sides of the mesh.
+        /// Create a double-sided mesh.
         /// </summary>
         BothSides,
     }

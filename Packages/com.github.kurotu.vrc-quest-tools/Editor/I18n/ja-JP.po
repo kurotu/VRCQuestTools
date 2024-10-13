@@ -424,7 +424,7 @@ msgstr "このメッシュのポリゴン数は2倍になります。"
 msgid "MeshFlipperMeshDirectionFlip"
 msgstr "反転"
 
-msgid "MeshFlipperMeshDirectionBothSides"
+msgid "MeshFlipperMeshDirectionDoubleSide"
 msgstr "両面"
 
 msgid "AvatarBuilderWindowExitPlayMode"

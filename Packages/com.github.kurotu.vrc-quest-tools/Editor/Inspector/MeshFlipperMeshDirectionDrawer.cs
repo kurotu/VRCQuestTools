@@ -35,7 +35,7 @@ namespace KRT.VRCQuestTools.Inspector
             return new string[]
             {
                 i18n.MeshFlipperMeshDirectionFlip,
-                i18n.MeshFlipperMeshDirectionBothSides,
+                i18n.MeshFlipperMeshDirectionDoubleSide,
             };
         }
     }
