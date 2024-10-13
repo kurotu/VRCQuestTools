@@ -18,9 +18,20 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
+            var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
+
             Dictionary<Mesh, Mesh> flippedMeshes = new Dictionary<Mesh, Mesh>();
             foreach (var meshFlipper in context.AvatarRootObject.GetComponentsInChildren<Components.MeshFlipper>(true))
             {
+                if (buildTarget == Models.BuildTarget.PC && !meshFlipper.enabledOnPC)
+                {
+                    continue;
+                }
+                if (buildTarget == Models.BuildTarget.Android && !meshFlipper.enabledOnAndroid)
+                {
+                    continue;
+                }
+
                 var originalMesh = meshFlipper.GetSharedMesh();
                 var key = originalMesh;
 

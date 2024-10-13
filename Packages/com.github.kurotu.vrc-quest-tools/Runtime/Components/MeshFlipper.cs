@@ -33,6 +33,16 @@ namespace KRT.VRCQuestTools.Components
         public MeshFlipperMeshDirection direction = MeshFlipperMeshDirection.BothSides;
 
         /// <summary>
+        /// Enable on PC target.
+        /// </summary>
+        public bool enabledOnPC = false;
+
+        /// <summary>
+        /// Enable on Android target.
+        /// </summary>
+        public bool enabledOnAndroid = true;
+
+        /// <summary>
         /// Get shared mesh of the component.
         /// </summary>
         /// <returns>Shared mesh object.</returns>
