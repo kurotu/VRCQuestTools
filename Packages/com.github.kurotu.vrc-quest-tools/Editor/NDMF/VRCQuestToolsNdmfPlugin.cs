@@ -58,7 +58,8 @@ namespace KRT.VRCQuestTools.Ndmf
 
             InPhase(BuildPhase.Transforming)
                 .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control decimation
-                .Run(RemoveVertexColorPass.Instance);
+                .Run(RemoveVertexColorPass.Instance)
+                .Then.Run(MeshFlipperPass.Instance);
 
             InPhase(BuildPhase.Optimizing)
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
