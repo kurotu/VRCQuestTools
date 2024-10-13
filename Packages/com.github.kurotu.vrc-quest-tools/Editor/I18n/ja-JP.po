@@ -335,7 +335,7 @@ msgid "NewVersionHasBreakingChanges"
 msgstr "このバージョンには互換性に関する重要な変更がある可能性があります。"
 
 msgid "MissingScripts"
-msgstr "\"Missing\"\u00A0状態のコンポーネントがあります。インポートし忘れたアセットやパッケージがないか確認してください。"
+msgstr "\"Missing\" 状態のコンポーネントがあります。インポートし忘れたアセットやパッケージがないか確認してください。"
 
 msgid "AvatarRootComponentMustBeOnAvatarRoot"
 msgstr "このコンポーネントは VRC_AvatarDescriptor のあるオブジェクトに追加してください。"
