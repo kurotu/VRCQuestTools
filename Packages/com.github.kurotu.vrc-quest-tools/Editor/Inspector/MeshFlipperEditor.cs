@@ -25,6 +25,11 @@ namespace KRT.VRCQuestTools.Inspector
             var direction = so.FindProperty("direction");
             EditorGUILayout.PropertyField(direction, new GUIContent(i18n.MeshFlipperEditorDirectionLabel));
 
+            if (direction.enumValueIndex == (int)MeshFlipperMeshDirection.BothSides)
+            {
+                EditorGUILayout.HelpBox(i18n.MeshFlipperEditorEnabledOnAndroidWarning, MessageType.Warning);
+            }
+
             var enabledOnPC = so.FindProperty("enabledOnPC");
             EditorGUILayout.PropertyField(enabledOnPC, new GUIContent(i18n.MeshFlipperEditorEnabledOnPCLabel));
 
@@ -35,11 +40,6 @@ namespace KRT.VRCQuestTools.Inspector
 
             var enabledOnAndroid = so.FindProperty("enabledOnAndroid");
             EditorGUILayout.PropertyField(enabledOnAndroid, new GUIContent(i18n.MeshFlipperEditorEnabledOnAndroidLabel));
-
-            if (enabledOnAndroid.boolValue && direction.enumValueIndex == (int)MeshFlipperMeshDirection.BothSides)
-            {
-                EditorGUILayout.HelpBox(i18n.MeshFlipperEditorEnabledOnAndroidWarning, MessageType.Warning);
-            }
 
             so.ApplyModifiedProperties();
         }
