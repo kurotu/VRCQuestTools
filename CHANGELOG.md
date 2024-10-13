@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- [NDMF] `VQT Mesh Flipper` component to flip the mesh of the avatar.
+
 ### Fixed
 - [NDMF] ArgumentNullException on play mode when the avatar has a newly created Pipeline Manager.
 

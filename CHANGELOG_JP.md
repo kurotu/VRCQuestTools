@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 追加
+- [NDMF] `VQT Mesh Flipper` コンポーネントによるメッシュの向きを反転する機能を追加。
+
 ### 修正
 - [NDMF] 作成したばかりの Pipeline Manager を持つアバターがあるとき Play Mode で ArgumentNullException が発生する問題を修正。
 
