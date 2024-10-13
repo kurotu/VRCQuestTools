@@ -25,10 +25,20 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <returns>always true.</returns>
         public bool OnPreprocessAvatar(GameObject avatarGameObject)
         {
+            // Callback is called also on play mode by "Apply on Play" of non-destructive context.
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                return true;
+            }
+            var pipelineManager = avatarGameObject.GetComponent<PipelineManager>();
+            if (string.IsNullOrEmpty(pipelineManager.blueprintId))
+            {
+                return true;
+            }
+
             var isMobile = EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS;
             var stats = VRCSDKUtility.CalculatePerformanceStats(avatarGameObject, isMobile);
             var rating = stats.GetPerformanceRatingForCategory(VRC.SDKBase.Validation.Performance.AvatarPerformanceCategory.Overall);
-            var pipelineManager = avatarGameObject.GetComponent<PipelineManager>();
             NdmfSessionState.LastActualPerformanceRating[pipelineManager.blueprintId] = rating;
             return true;
         }
