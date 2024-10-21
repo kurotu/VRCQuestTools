@@ -246,21 +246,24 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     return;
                 }
-                using (new EditorGUI.DisabledScope(true))
-                {
-                    EditorGUILayout.ObjectField("Selected Avatar", targetAvatar, targetAvatar.GetType(), true);
-                }
-                if (targetAvatar.GetComponentInChildren<INdmfComponent>() == null && targetAvatar.GetComponentInChildren<AvatarConverterSettings>() == null)
-                {
-                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowNoNdmfComponentsFound, MessageType.Warning);
-                }
 
-                var newBlueprintId = targetAvatar.GetComponent<PipelineManager>().blueprintId;
-                if (newBlueprintId != targetBlueprintId)
+                using (var ccs = new EditorGUI.ChangeCheckScope())
                 {
-                    targetBlueprintId = newBlueprintId;
-                    uploadedVrcAvatar = null;
-                    OnChangeBlueprintId(targetBlueprintId);
+                    var index = avatars.ToList().IndexOf(targetAvatar.gameObject);
+                    var selectedIndex = EditorGUILayout.Popup("Selected Avatar", index, avatars.Select(a => a.name).ToArray());
+                    if (ccs.changed)
+                    {
+                        targetAvatar = avatars[selectedIndex].GetComponent<VRC_AvatarDescriptor>();
+                        VRCSdkControlPanelAvatarBuilder.SelectAvatar(targetAvatar);
+                    }
+
+                    var newBlueprintId = targetAvatar.GetComponent<PipelineManager>().blueprintId;
+                    if (newBlueprintId != targetBlueprintId || ccs.changed)
+                    {
+                        targetBlueprintId = newBlueprintId;
+                        uploadedVrcAvatar = null;
+                        OnChangeBlueprintId(targetBlueprintId);
+                    }
                 }
             }
 
