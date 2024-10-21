@@ -20,6 +20,10 @@ Select the mesh direction to generate.
 - `Flipped` - Flips the mesh's polygons.
 - `Double Sided` - Duplicates the mesh's polygons to make it double-sided.
 
+:::warning
+Selecting `Double Sided` will double the polygon count because the mesh's polygons are duplicated.
+:::
+
 ### Enable on PC
 
 Enable this component when the build target is PC.
