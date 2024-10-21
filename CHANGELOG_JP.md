@@ -9,6 +9,9 @@
 ### 追加
 - [NDMF] `VQT Mesh Flipper` コンポーネントによるメッシュの向きを反転する機能を追加。
 
+### 変更
+- [NDMF] テクスチャフォーマットのチェックを TexTransTool の後で実行するように変更。
+
 ### 修正
 - [NDMF] 作成したばかりの Pipeline Manager を持つアバターがあるとき Play Mode で ArgumentNullException が発生する問題を修正。
 

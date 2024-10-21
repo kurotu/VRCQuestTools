@@ -79,6 +79,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 .Then.Run(RemoveVRCQuestToolsComponentsPass.Instance);
 
             InPhase(BuildPhase.Optimizing)
+                .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
                 .AfterPlugin("com.anatawa12.avatar-optimizer")
                 .Run(CheckTextureFormatPass.Instance);
         }
