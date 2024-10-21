@@ -335,22 +335,19 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.Space(2);
                 });
 
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    Views.EditorGUIUtility.HelpBoxGUI(MessageType.Info, () =>
-                    {
-                        EditorGUILayout.LabelField(i18n.InfoForNdmfConversion, EditorStyles.wordWrappedMiniLabel);
-                        EditorGUILayout.Space(2);
-                    });
+                Views.EditorGUIUtility.HorizontalDivider(2);
+
+                EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion, MessageType.Info);
 #if VQT_HAS_NDMF
-                    if (GUILayout.Button(i18n.OpenLabel, GUILayout.Height(38), GUILayout.Width(60)))
-                    {
-                        var typeName = "KRT.VRCQuestTools.Ndmf.AvatarBuilderWindow";
-                        var type = SystemUtility.GetTypeByName(typeName) ?? throw new System.InvalidProgramException($"Type not found: {typeName}");
-                        EditorWindow.GetWindow(type).Show();
-                    }
-#endif
+                if (GUILayout.Button(i18n.OpenAvatarBuilder, GUILayout.Height(38)))
+                {
+                    var typeName = "KRT.VRCQuestTools.Ndmf.AvatarBuilderWindow";
+                    var type = SystemUtility.GetTypeByName(typeName) ?? throw new System.InvalidProgramException($"Type not found: {typeName}");
+                    EditorWindow.GetWindow(type).Show();
                 }
+#endif
+
+                EditorGUILayout.Space();
 
                 if (PrefabStageUtility.GetCurrentPrefabStage() != null)
                 {
@@ -361,6 +358,20 @@ namespace KRT.VRCQuestTools.Inspector
                     });
                 }
 
+#if VQT_HAS_NDMF
+                editorState.foldOutManualConversion = EditorGUILayout.Foldout(editorState.foldOutManualConversion, i18n.ManualConversionLabel, true);
+                if (editorState.foldOutManualConversion)
+                {
+                    EditorGUILayout.HelpBox(i18n.ManualConversionWarning, MessageType.Warning);
+                    using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
+                    {
+                        if (GUILayout.Button(i18n.ManualConvertButtonLabel))
+                        {
+                            OnClickConvertButton(descriptor);
+                        }
+                    }
+                }
+#else
                 using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
                 {
                     if (GUILayout.Button(i18n.ConvertButtonLabel))
@@ -368,6 +379,7 @@ namespace KRT.VRCQuestTools.Inspector
                         OnClickConvertButton(descriptor);
                     }
                 }
+#endif
             }
 
             so.ApplyModifiedProperties();

@@ -37,5 +37,11 @@ namespace KRT.VRCQuestTools.Inspector
         /// </summary>
         [SerializeField]
         internal bool foldOutAdvancedSettings = false;
+
+        /// <summary>
+        /// Whether to show the foldout for manual conversion.
+        /// </summary>
+        [SerializeField]
+        internal bool foldOutManualConversion = false;
     }
 }
