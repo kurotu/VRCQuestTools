@@ -14,6 +14,24 @@ namespace KRT.VRCQuestTools.Ndmf
     internal static class NdmfPluginUtility
     {
         /// <summary>
+        /// Manual bake with Android buold target settings.
+        /// </summary>
+        /// <param name="avatar">Target avatar.</param>
+        /// <returns>Baked avatar.</returns>
+        internal static GameObject ManualBakeWithAndroidSettings(GameObject avatar)
+        {
+            SetBuildTarget(Models.BuildTarget.Android);
+            try
+            {
+                return AvatarProcessor.ProcessAvatarUI(avatar);
+            }
+            finally
+            {
+                SetBuildTarget(Models.BuildTarget.Auto);
+            }
+        }
+
+        /// <summary>
         /// Convert the avatar with AvatarConverterSettings component in NDMF.
         /// </summary>
         /// <param name="context">BuildContext.</param>
@@ -79,6 +97,11 @@ namespace KRT.VRCQuestTools.Ndmf
                     }
                 },
             });
+        }
+
+        private static void SetBuildTarget(Models.BuildTarget target)
+        {
+            NdmfSessionState.BuildTarget = target;
         }
     }
 }

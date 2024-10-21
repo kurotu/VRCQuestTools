@@ -519,20 +519,10 @@ namespace KRT.VRCQuestTools.Ndmf
             });
         }
 
-#if VQT_HAS_NDMF
         private void OnClickManualBakeWithConverterSettings()
         {
-            SetBuildTarget(Models.BuildTarget.Android);
-            try
-            {
-                nadena.dev.ndmf.AvatarProcessor.ProcessAvatarUI(targetAvatar.gameObject);
-            }
-            finally
-            {
-                SetBuildTarget(Models.BuildTarget.Auto);
-            }
+            NdmfPluginUtility.ManualBakeWithAndroidSettings(targetAvatar.gameObject);
         }
-#endif
 
         private void OnPlayModeStateChanged(PlayModeStateChange state)
         {

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - [NDMF] `VQT Mesh Flipper` component to flip the mesh of the avatar.
+- [NDMF] `[NDMF] Manual Bake with Android Settings` menu to the right-click menu of the avatar.
 
 ### Changed
 - [NDMF] Check texture format after TexTransTool.
