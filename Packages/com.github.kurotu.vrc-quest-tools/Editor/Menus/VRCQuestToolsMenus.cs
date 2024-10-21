@@ -18,6 +18,7 @@ namespace KRT.VRCQuestTools.Menus
         {
             internal const string RootMenu = "Tools/" + VRCQuestTools.Name + "/";
             internal const string ConvertAvatarForAndroid = RootMenu + "Convert Avatar for Android";
+            internal const string ShowAvatarBuilder = RootMenu + "Show Avatar Builder";
             internal const string RemoveUnsupportedComponents = RootMenu + "Remove Unsupported Components";
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
             internal const string RemoveAllVertexColors = RootMenu + "Remove All Vertex Colors";
@@ -38,6 +39,7 @@ namespace KRT.VRCQuestTools.Menus
         internal enum MenuPriorities : int
         {
             ConvertAvatarForQuest = 600, // VRChat SDK/Splash Screen: 500
+            ShowAvatarBuilder,
             RemovePhysBones = 700,
             RemoveMissingComponents,
             RemoveUnsupportedComponents,

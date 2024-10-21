@@ -259,6 +259,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarBuilderWindowRequiresAvatarNameAndThumb => GetText("AvatarBuilderWindowRequiresAvatarNameAndThumb");
 
         // NDMF
+        internal string FeatureRequiresNdmf => GetText("FeatureRequiresNdmf");
         internal string NdmfPluginRequiresNdmfUpdate(string requiredVersion) => GetText("NdmfPluginRequiresNdmfUpdate", requiredVersion);
         internal string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => GetText("NdmfPluginRemovedUnsupportedComponent", typeName, objectName);
     }

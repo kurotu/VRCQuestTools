@@ -1,7 +1,9 @@
-﻿using KRT.VRCQuestTools.Menus;
+#if !VQT_HAS_NDMF
+using KRT.VRCQuestTools.Menus;
+using KRT.VRCQuestTools.Models;
 using UnityEditor;
 
-namespace KRT.VRCQuestTools.Ndmf
+namespace KRT.VRCQuestTools.Menu
 {
     /// <summary>
     /// Menu for avatar builder.
@@ -11,7 +13,8 @@ namespace KRT.VRCQuestTools.Ndmf
         [MenuItem(VRCQuestToolsMenus.MenuPaths.ShowAvatarBuilder, false, (int)VRCQuestToolsMenus.MenuPriorities.ShowAvatarBuilder)]
         private static void InitFromMenu()
         {
-            EditorWindow.GetWindow<AvatarBuilderWindow>().Show();
+            EditorUtility.DisplayDialog(VRCQuestTools.Name, VRCQuestToolsSettings.I18nResource.FeatureRequiresNdmf, "OK");
         }
     }
 }
+#endif

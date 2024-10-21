@@ -484,6 +484,9 @@ msgstr "Выполните меню, Инструменты -> NDM Framework -> 
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "Необходимо установить имя и миниатюру в панели управления VRChat SDK при загрузке нового аватара."
 
+msgid "FeatureRequiresNdmf"
+msgstr "Требуется Неразрушаемая Модульная Структура (NDMF)."
+
 msgid "NdmfPluginRequiresNdmfUpdate"
 msgstr "Требуется Неразрушаемая Модульная Структура (NDMF) {0} или более поздняя версия. Пожалуйста, обновите NDMF."
 

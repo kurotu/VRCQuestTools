@@ -88,7 +88,7 @@ namespace KRT.VRCQuestTools.Menus
 
             foreach (var kvp in menus)
             {
-                Menu.SetChecked(kvp.Value, kvp.Key == language);
+                UnityEditor.Menu.SetChecked(kvp.Value, kvp.Key == language);
             }
         }
     }

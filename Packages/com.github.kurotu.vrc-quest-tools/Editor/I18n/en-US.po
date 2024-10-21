@@ -484,6 +484,9 @@ msgstr "Execute the menu, Tools -> NDM Framework -> Manual bake avatar with Andr
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "Need to set name and thumbnail in VRChat SDK Control Panel when uploading a new avatar."
 
+msgid "FeatureRequiresNdmf"
+msgstr "Non-Destructive Modular Framework is required."
+
 msgid "NdmfPluginRequiresNdmfUpdate"
 msgstr "Non-Destructive Modular Framework (NDMF) {0} or later is required. Please update NDMF."
 
