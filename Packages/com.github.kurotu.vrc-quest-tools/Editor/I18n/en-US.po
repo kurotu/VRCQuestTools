@@ -337,6 +337,9 @@ msgstr "This version might have breaking changes about compatibility."
 msgid "MissingScripts"
 msgstr "There are \"missing\" scripts. Please check for assets or packages you forgot to import."
 
+msgid "ExperimentalComponentWarning"
+msgstr "This component is an experimental feature."
+
 msgid "AvatarRootComponentMustBeOnAvatarRoot"
 msgstr "This component must be attached to VRC_AvatarDescriptor GameObject."
 
@@ -399,6 +402,30 @@ msgstr "Keep on PC"
 
 msgid "PlatformGameObjectRemoverEditorKeepOnAndroidLabel"
 msgstr "Keep on Android"
+
+msgid "MeshFlipperEditorDescription"
+msgstr "Duplicate the polygons of a mesh to make it double-sided. Or flip the faces."
+
+msgid "MeshFlipperEditorDirectionLabel"
+msgstr "Mesh Direction"
+
+msgid "MeshFlipperEditorEnabledOnPCLabel"
+msgstr "Enable on PC"
+
+msgid "MeshFlipperEditorEnabledOnAndroidLabel"
+msgstr "Enable on Android"
+
+msgid "MeshFlipperEditorEnabledOnPCWarning"
+msgstr "It may be possible to achieve this with shader settings without using this component."
+
+msgid "MeshFlipperEditorEnabledOnAndroidWarning"
+msgstr "The polygon count for this mesh is doubled."
+
+msgid "MeshFlipperMeshDirectionFlip"
+msgstr "Flipped"
+
+msgid "MeshFlipperMeshDirectionDoubleSide"
+msgstr "Double Sided"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Exit play mode to build the avatar."

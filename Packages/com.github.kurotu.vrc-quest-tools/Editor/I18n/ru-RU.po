@@ -337,6 +337,9 @@ msgstr "Эта версия может иметь критические изм�
 msgid "MissingScripts"
 msgstr "Есть \"недостающие\" скрипты. Пожалуйста, проверьте активы или пакеты, которые вы забыли импортировать."
 
+msgid "ExperimentalComponentWarning"
+msgstr "Этот компонент является экспериментальной функцией."
+
 msgid "AvatarRootComponentMustBeOnAvatarRoot"
 msgstr "Этот компонент должен быть прикреплен к объекту VRC_AvatarDescriptor."
 
@@ -399,6 +402,30 @@ msgstr "Сохранить на ПК"
 
 msgid "PlatformGameObjectRemoverEditorKeepOnAndroidLabel"
 msgstr "Сохранить на Android"
+
+msgid "MeshFlipperEditorDescription"
+msgstr "Дублируйте полигоны сетки, чтобы сделать ее двусторонней. Или переверните грани."
+
+msgid "MeshFlipperEditorDirectionLabel"
+msgstr "Направление сетки"
+
+msgid "MeshFlipperEditorEnabledOnPCLabel"
+msgstr "Включить на ПК"
+
+msgid "MeshFlipperEditorEnabledOnAndroidLabel"
+msgstr "Включить на Android"
+
+msgid "MeshFlipperEditorEnabledOnPCWarning"
+msgstr "Возможно, это можно сделать с помощью настроек шейдера без использования этого компонента."
+
+msgid "MeshFlipperEditorEnabledOnAndroidWarning"
+msgstr "Количество полигонов для этой сетки удваивается."
+
+msgid "MeshFlipperMeshDirectionFlip"
+msgstr "Перевернуто"
+
+msgid "MeshFlipperMeshDirectionBothSides"
+msgstr "Двусторонний"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Выйдите из игрового режима, чтобы собрать аватар."

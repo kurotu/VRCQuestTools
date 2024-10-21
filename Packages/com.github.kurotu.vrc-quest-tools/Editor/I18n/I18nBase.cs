@@ -192,6 +192,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string MissingScripts => GetText("MissingScripts");
 
         // Inspector
+        internal string ExperimentalComponentWarning => GetText("ExperimentalComponentWarning");
         internal string AvatarRootComponentMustBeOnAvatarRoot => GetText("AvatarRootComponentMustBeOnAvatarRoot");
 
         // Vertex Color
@@ -225,6 +226,16 @@ namespace KRT.VRCQuestTools.I18n
         internal string PlatformGameObjectRemoverEditorDescription => GetText("PlatformGameObjectRemoverEditorDescription");
         internal string PlatformGameObjectRemoverEditorKeepOnPCLabel => GetText("PlatformGameObjectRemoverEditorKeepOnPCLabel");
         internal string PlatformGameObjectRemoverEditorKeepOnAndroidLabel => GetText("PlatformGameObjectRemoverEditorKeepOnAndroidLabel");
+
+        // Mesh Flipper
+        internal string MeshFlipperEditorDescription => GetText("MeshFlipperEditorDescription");
+        internal string MeshFlipperEditorDirectionLabel => GetText("MeshFlipperEditorDirectionLabel");
+        internal string MeshFlipperEditorEnabledOnPCLabel => GetText("MeshFlipperEditorEnabledOnPCLabel");
+        internal string MeshFlipperEditorEnabledOnAndroidLabel => GetText("MeshFlipperEditorEnabledOnAndroidLabel");
+        internal string MeshFlipperEditorEnabledOnPCWarning => GetText("MeshFlipperEditorEnabledOnPCWarning");
+        internal string MeshFlipperEditorEnabledOnAndroidWarning => GetText("MeshFlipperEditorEnabledOnAndroidWarning");
+        internal string MeshFlipperMeshDirectionFlip => GetText("MeshFlipperMeshDirectionFlip");
+        internal string MeshFlipperMeshDirectionDoubleSide => GetText("MeshFlipperMeshDirectionDoubleSide");
 
         // Avatar Builder
         internal string AvatarBuilderWindowExitPlayMode => GetText("AvatarBuilderWindowExitPlayMode");

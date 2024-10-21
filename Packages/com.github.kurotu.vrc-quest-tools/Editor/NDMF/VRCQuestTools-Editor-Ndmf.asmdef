@@ -28,6 +28,11 @@
             "name": "nadena.dev.ndmf",
             "expression": "1.3.0",
             "define": "VQT_HAS_NDMF_ERROR_REPORT"
+        },
+        {
+            "name": "jp.lilxyzw.ndmfmeshsimplifier",
+            "expression": "0.2.0",
+            "define": "VQT_LIL_NDMF_MESH_SIMPLIFIER"
         }
     ],
     "noEngineReferences": false

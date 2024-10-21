@@ -34,6 +34,12 @@ namespace KRT.VRCQuestTools.Inspector
 
             Views.EditorGUIUtility.HorizontalDivider(2);
 
+            if (target is IExperimentalComponent)
+            {
+                EditorGUILayout.HelpBox(i18n.ExperimentalComponentWarning, MessageType.Warning);
+                Views.EditorGUIUtility.HorizontalDivider(2);
+            }
+
             var description = Description;
             if (target is INdmfComponent)
             {
