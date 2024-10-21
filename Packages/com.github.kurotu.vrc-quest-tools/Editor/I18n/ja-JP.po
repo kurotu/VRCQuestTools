@@ -163,6 +163,18 @@ msgstr "変換時に残しておく PhysBoneCollider を選択します。"
 msgid "AvatarConverterContactsTooltip"
 msgstr "変換時に残しておく ContactSender と ContactReceiver を選択します。"
 
+msgid "OpenAvatarBuilder"
+msgstr "Avatar Builder を開く"
+
+msgid "ManualConversionLabel"
+msgstr "手動変換"
+
+msgid "ManualConversionWarning"
+msgstr "手動で変換する場合 MA Merge Animator 以外の非破壊コンポーネントを考慮しません。組み合わせた後の動作に予期せぬ問題があるかもしれません。"
+
+msgid "ManualConvertButtonLabel"
+msgstr "手動で変換する"
+
 msgid "ErrorForPrefabStage"
 msgstr "Prefab モードではアバターを変換できません。Prefab モードを抜けてシーンに戻ってください。"
 

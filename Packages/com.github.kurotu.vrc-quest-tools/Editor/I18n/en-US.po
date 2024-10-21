@@ -163,6 +163,18 @@ msgstr "Set PhysBoneColliders to keep while conversion."
 msgid "AvatarConverterContactsTooltip"
 msgstr "Set ContactSenders and ContactReceivers to keep while conversion."
 
+msgid "OpenAvatarBuilder"
+msgstr "Open Avatar Builder"
+
+msgid "ManualConversionLabel"
+msgstr "Manual Conversion"
+
+msgid "ManualConversionWarning"
+msgstr "When converting manually, non-destructive components other than MA Merge Animator are not considered. Unexpected issues may arise in the behavior after combining."
+
+msgid "ManualConvertButtonLabel"
+msgstr "Convert Manually"
+
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "Textures Size Limit"
 
