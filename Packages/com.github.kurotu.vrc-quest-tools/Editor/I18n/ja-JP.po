@@ -163,6 +163,18 @@ msgstr "変換時に残しておく PhysBoneCollider を選択します。"
 msgid "AvatarConverterContactsTooltip"
 msgstr "変換時に残しておく ContactSender と ContactReceiver を選択します。"
 
+msgid "OpenAvatarBuilder"
+msgstr "Avatar Builder を開く"
+
+msgid "ManualConversionLabel"
+msgstr "手動変換"
+
+msgid "ManualConversionWarning"
+msgstr "手動で変換する場合 MA Merge Animator 以外の非破壊コンポーネントを考慮しません。組み合わせた後の動作に予期せぬ問題があるかもしれません。"
+
+msgid "ManualConvertButtonLabel"
+msgstr "手動で変換する"
+
 msgid "ErrorForPrefabStage"
 msgstr "Prefab モードではアバターを変換できません。Prefab モードを抜けてシーンに戻ってください。"
 
@@ -484,8 +496,11 @@ msgstr "Android 用のビルド設定で Tools -> NDM Framework -> Manual bake a
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK コントロールパネルで設定してください。"
 
+msgid "FeatureRequiresNdmf"
+msgstr "Non-Destructive Modular Framework (NDMF) が必要です。"
+
 msgid "NdmfPluginRequiresNdmfUpdate"
-msgstr "Non-Destructive Modular Framework (NDMF) 1.3.0 以降が必要です。NDMF を更新してください。"
+msgstr "Non-Destructive Modular Framework (NDMF) {0} 以降が必要です。NDMF を更新してください。"
 
 msgid "NdmfPluginRemovedUnsupportedComponent"
 msgstr "ビルド中に非対応コンポーネント {0} を \"{1}\" から削除しました。動作に問題がないか確認してください。"

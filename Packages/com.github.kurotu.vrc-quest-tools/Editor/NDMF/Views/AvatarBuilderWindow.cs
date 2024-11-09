@@ -246,21 +246,24 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     return;
                 }
-                using (new EditorGUI.DisabledScope(true))
-                {
-                    EditorGUILayout.ObjectField("Selected Avatar", targetAvatar, targetAvatar.GetType(), true);
-                }
-                if (targetAvatar.GetComponentInChildren<INdmfComponent>() == null && targetAvatar.GetComponentInChildren<AvatarConverterSettings>() == null)
-                {
-                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowNoNdmfComponentsFound, MessageType.Warning);
-                }
 
-                var newBlueprintId = targetAvatar.GetComponent<PipelineManager>().blueprintId;
-                if (newBlueprintId != targetBlueprintId)
+                using (var ccs = new EditorGUI.ChangeCheckScope())
                 {
-                    targetBlueprintId = newBlueprintId;
-                    uploadedVrcAvatar = null;
-                    OnChangeBlueprintId(targetBlueprintId);
+                    var index = avatars.ToList().IndexOf(targetAvatar.gameObject);
+                    var selectedIndex = EditorGUILayout.Popup("Selected Avatar", index, avatars.Select(a => a.name).ToArray());
+                    if (ccs.changed)
+                    {
+                        targetAvatar = avatars[selectedIndex].GetComponent<VRC_AvatarDescriptor>();
+                        VRCSdkControlPanelAvatarBuilder.SelectAvatar(targetAvatar);
+                    }
+
+                    var newBlueprintId = targetAvatar.GetComponent<PipelineManager>().blueprintId;
+                    if (newBlueprintId != targetBlueprintId || ccs.changed)
+                    {
+                        targetBlueprintId = newBlueprintId;
+                        uploadedVrcAvatar = null;
+                        OnChangeBlueprintId(targetBlueprintId);
+                    }
                 }
             }
 
@@ -401,7 +404,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
                 using (new EditorGUI.DisabledScope(!CanStartUpload || !isAndroidEditor))
                 {
-                    var targetName = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android ? "Android" : "iOS";
+                    var targetName = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS ? "iOS" : "Android";
                     EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingLabel(targetName), EditorStyles.largeLabel);
                     EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingDescription, EditorStyles.wordWrappedMiniLabel);
                     if (!uploadedVrcAvatar.HasValue && (string.IsNullOrEmpty(AvatarBuilderSessionState.AvatarName) || string.IsNullOrEmpty(AvatarBuilderSessionState.AvatarThumbPath)))
@@ -519,20 +522,10 @@ namespace KRT.VRCQuestTools.Ndmf
             });
         }
 
-#if VQT_HAS_NDMF
         private void OnClickManualBakeWithConverterSettings()
         {
-            SetBuildTarget(Models.BuildTarget.Android);
-            try
-            {
-                nadena.dev.ndmf.AvatarProcessor.ProcessAvatarUI(targetAvatar.gameObject);
-            }
-            finally
-            {
-                SetBuildTarget(Models.BuildTarget.Auto);
-            }
+            NdmfPluginUtility.ManualBakeWithAndroidSettings(targetAvatar.gameObject);
         }
-#endif
 
         private void OnPlayModeStateChanged(PlayModeStateChange state)
         {

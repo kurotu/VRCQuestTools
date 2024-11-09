@@ -1,6 +1,6 @@
 ﻿using KRT.VRCQuestTools.Menus;
-using KRT.VRCQuestTools.Views;
 using UnityEditor;
+using VRC.SDK3.Avatars.Components;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -9,10 +9,22 @@ namespace KRT.VRCQuestTools.Ndmf
     /// </summary>
     internal static class AvatarBuilderMenu
     {
-        [MenuItem(VRCQuestToolsMenus.MenuPaths.RootMenu + "Show Avatar Builder", false, (int)VRCQuestToolsMenus.MenuPriorities.ConvertAvatarForQuest + 1)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.ShowAvatarBuilder, false, (int)VRCQuestToolsMenus.MenuPriorities.ShowAvatarBuilder)]
         private static void InitFromMenu()
         {
             EditorWindow.GetWindow<AvatarBuilderWindow>().Show();
+        }
+
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithAndroidSettings, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfManualBakeWithAndroidSettings)]
+        private static void ManualBake()
+        {
+            NdmfPluginUtility.ManualBakeWithAndroidSettings(Selection.activeGameObject);
+        }
+
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithAndroidSettings, true)]
+        private static bool ManualBakeValidate()
+        {
+            return Selection.activeGameObject.GetComponent<VRCAvatarDescriptor>() != null;
         }
     }
 }

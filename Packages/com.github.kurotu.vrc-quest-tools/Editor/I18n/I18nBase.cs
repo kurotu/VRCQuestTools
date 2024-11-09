@@ -112,6 +112,10 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarConverterPhysBonesTooltip => GetText("AvatarConverterPhysBonesTooltip");
         internal string AvatarConverterPhysBoneCollidersTooltip => GetText("AvatarConverterPhysBoneCollidersTooltip");
         internal string AvatarConverterContactsTooltip => GetText("AvatarConverterContactsTooltip");
+        internal string OpenAvatarBuilder => GetText("OpenAvatarBuilder");
+        internal string ManualConversionLabel => GetText("ManualConversionLabel");
+        internal string ManualConversionWarning => GetText("ManualConversionWarning");
+        internal string ManualConvertButtonLabel => GetText("ManualConvertButtonLabel");
 
         // IMaterialConvertSettings
         internal string IMaterialConvertSettingsTexturesSizeLimitLabel => GetText("IMaterialConvertSettingsTexturesSizeLimitLabel");
@@ -259,6 +263,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarBuilderWindowRequiresAvatarNameAndThumb => GetText("AvatarBuilderWindowRequiresAvatarNameAndThumb");
 
         // NDMF
+        internal string FeatureRequiresNdmf => GetText("FeatureRequiresNdmf");
         internal string NdmfPluginRequiresNdmfUpdate(string requiredVersion) => GetText("NdmfPluginRequiresNdmfUpdate", requiredVersion);
         internal string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => GetText("NdmfPluginRemovedUnsupportedComponent", typeName, objectName);
     }

@@ -8,9 +8,13 @@
 
 ### 追加
 - [NDMF] `VQT Mesh Flipper` コンポーネントによるメッシュの向きを反転する機能を追加。
+- [NDMF] アバターの右クリックメニューに `[NDMF] Manual Bake with Android Settings` メニューを追加。
+- [NDMF] `VQT Avatar Builder` にアップロード対象のアバターを選択する機能を追加。
 
 ### 変更
 - [NDMF] テクスチャフォーマットのチェックを TexTransTool の後で実行するように変更。
+- [NDMF] 非破壊変換の優先度が高くなるように `VQT Avatar Converter Settings` のインスペクターを変更。
+- [NDMF] Transforming Phase でのアバターの変換を lilycalInventory の後で実行するように変更。
 
 ### 修正
 - [NDMF] 作成したばかりの Pipeline Manager を持つアバターがあるとき Play Mode で ArgumentNullException が発生する問題を修正。

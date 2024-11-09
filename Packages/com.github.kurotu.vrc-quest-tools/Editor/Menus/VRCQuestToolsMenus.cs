@@ -18,6 +18,7 @@ namespace KRT.VRCQuestTools.Menus
         {
             internal const string RootMenu = "Tools/" + VRCQuestTools.Name + "/";
             internal const string ConvertAvatarForAndroid = RootMenu + "Convert Avatar for Android";
+            internal const string ShowAvatarBuilder = RootMenu + "Show Avatar Builder";
             internal const string RemoveUnsupportedComponents = RootMenu + "Remove Unsupported Components";
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
             internal const string RemoveAllVertexColors = RootMenu + "Remove All Vertex Colors";
@@ -38,6 +39,7 @@ namespace KRT.VRCQuestTools.Menus
         internal enum MenuPriorities : int
         {
             ConvertAvatarForQuest = 600, // VRChat SDK/Splash Screen: 500
+            ShowAvatarBuilder,
             RemovePhysBones = 700,
             RemoveMissingComponents,
             RemoveUnsupportedComponents,
@@ -57,7 +59,8 @@ namespace KRT.VRCQuestTools.Menus
         internal static class GameObjectMenuPaths
         {
             private const string MenuPrefix = "GameObject/VRCQuestTools/";
-            internal const string ConvertAvatarForQuest = MenuPrefix + "Convert Avatar For Android";
+            internal const string ConvertAvatarForQuest = MenuPrefix + "Convert Avatar for Android";
+            internal const string NdmfManualBakeWithAndroidSettings = MenuPrefix + "[NDMF] Manual Bake with Android Settings";
             internal const string RemovePhysBones = MenuPrefix + "Remove PhysBones";
             internal const string RemoveMissingComponents = MenuPrefix + "Remove Missing Components";
             internal const string RemoveUnsupportedComponents = MenuPrefix + "Remove Unsupported Components";
@@ -67,7 +70,8 @@ namespace KRT.VRCQuestTools.Menus
         internal enum GameObjectMenuPriorities : int
         {
             GameObjectConvertAvatarForQuest = 30,
-            GameObjectRemovePhysBones,
+            GameObjectNdmfManualBakeWithAndroidSettings,
+            GameObjectRemovePhysBones = 130,
             GameObjectRemoveMissingComponents,
             GameObjectRemoveUnsupportedComponents,
             GameObjectRemoveAllVertexColors,

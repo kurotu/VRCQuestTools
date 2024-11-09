@@ -163,6 +163,18 @@ msgstr "Set PhysBoneColliders to keep while conversion."
 msgid "AvatarConverterContactsTooltip"
 msgstr "Set ContactSenders and ContactReceivers to keep while conversion."
 
+msgid "OpenAvatarBuilder"
+msgstr "Open Avatar Builder"
+
+msgid "ManualConversionLabel"
+msgstr "Manual Conversion"
+
+msgid "ManualConversionWarning"
+msgstr "When converting manually, non-destructive components other than MA Merge Animator are not considered. Unexpected issues may arise in the behavior after combining."
+
+msgid "ManualConvertButtonLabel"
+msgstr "Convert Manually"
+
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "Textures Size Limit"
 
@@ -483,6 +495,9 @@ msgstr "Execute the menu, Tools -> NDM Framework -> Manual bake avatar with Andr
 
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "Need to set name and thumbnail in VRChat SDK Control Panel when uploading a new avatar."
+
+msgid "FeatureRequiresNdmf"
+msgstr "Non-Destructive Modular Framework is required."
 
 msgid "NdmfPluginRequiresNdmfUpdate"
 msgstr "Non-Destructive Modular Framework (NDMF) {0} or later is required. Please update NDMF."
