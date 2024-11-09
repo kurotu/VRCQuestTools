@@ -8,9 +8,8 @@ using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
-#if UNITY_2021_2_OR_NEWER
 using UnityEditor.SceneManagement;
-#else
+#if !UNITY_2021_2_OR_NEWER
 using UnityEditor.Experimental.SceneManagement;
 #endif
 using UnityEditorInternal;
@@ -337,49 +336,56 @@ namespace KRT.VRCQuestTools.Inspector
 
                 Views.EditorGUIUtility.HorizontalDivider(2);
 
-                EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion, MessageType.Info);
-#if VQT_HAS_NDMF
-                if (GUILayout.Button(i18n.OpenAvatarBuilder, GUILayout.Height(38)))
-                {
-                    var typeName = "KRT.VRCQuestTools.Ndmf.AvatarBuilderWindow";
-                    var type = SystemUtility.GetTypeByName(typeName) ?? throw new System.InvalidProgramException($"Type not found: {typeName}");
-                    EditorWindow.GetWindow(type).Show();
-                }
-#endif
-
-                EditorGUILayout.Space();
-
                 if (PrefabStageUtility.GetCurrentPrefabStage() != null)
                 {
                     canConvert = false;
                     Views.EditorGUIUtility.HelpBoxGUI(MessageType.Error, () =>
                     {
                         EditorGUILayout.LabelField(i18n.ErrorForPrefabStage, EditorStyles.wordWrappedMiniLabel);
+                        if (GUILayout.Button(i18n.ExitPrefabStageButtonLabel))
+                        {
+                            OnClickPrefabStageExitButton();
+                        }
+                        EditorGUILayout.Space(2);
                     });
                 }
+                else
+                {
+                    EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion, MessageType.Info);
+#if VQT_HAS_NDMF
+                    if (GUILayout.Button(i18n.OpenAvatarBuilder, GUILayout.Height(38)))
+                    {
+                        var typeName = "KRT.VRCQuestTools.Ndmf.AvatarBuilderWindow";
+                        var type = SystemUtility.GetTypeByName(typeName) ?? throw new System.InvalidProgramException($"Type not found: {typeName}");
+                        EditorWindow.GetWindow(type).Show();
+                    }
+#endif
+
+                    EditorGUILayout.Space();
 
 #if VQT_HAS_NDMF
-                editorState.foldOutManualConversion = EditorGUILayout.Foldout(editorState.foldOutManualConversion, i18n.ManualConversionLabel, true);
-                if (editorState.foldOutManualConversion)
-                {
-                    EditorGUILayout.HelpBox(i18n.ManualConversionWarning, MessageType.Warning);
+                    editorState.foldOutManualConversion = EditorGUILayout.Foldout(editorState.foldOutManualConversion, i18n.ManualConversionLabel, true);
+                    if (editorState.foldOutManualConversion)
+                    {
+                        EditorGUILayout.HelpBox(i18n.ManualConversionWarning, MessageType.Warning);
+                        using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
+                        {
+                            if (GUILayout.Button(i18n.ManualConvertButtonLabel))
+                            {
+                                OnClickConvertButton(descriptor);
+                            }
+                        }
+                    }
+#else
                     using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
                     {
-                        if (GUILayout.Button(i18n.ManualConvertButtonLabel))
+                        if (GUILayout.Button(i18n.ConvertButtonLabel))
                         {
                             OnClickConvertButton(descriptor);
                         }
                     }
-                }
-#else
-                using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
-                {
-                    if (GUILayout.Button(i18n.ConvertButtonLabel))
-                    {
-                        OnClickConvertButton(descriptor);
-                    }
-                }
 #endif
+                }
             }
 
             so.ApplyModifiedProperties();
@@ -494,6 +500,11 @@ namespace KRT.VRCQuestTools.Inspector
             window.physBoneCollidersToKeep = converterSettings.physBoneCollidersToKeep;
             window.contactsToKeep = converterSettings.contactsToKeep;
             window.Show();
+        }
+
+        private void OnClickPrefabStageExitButton()
+        {
+            StageUtility.GoToMainStage();
         }
 
         private void OnClickConvertButton(VRC_AvatarDescriptor avatar)

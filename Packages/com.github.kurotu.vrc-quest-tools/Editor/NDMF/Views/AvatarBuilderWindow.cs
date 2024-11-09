@@ -6,9 +6,8 @@ using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
-#if UNITY_2021_2_OR_NEWER
 using UnityEditor.SceneManagement;
-#else
+#if !UNITY_2021_2_OR_NEWER
 using UnityEditor.Experimental.SceneManagement;
 #endif
 using UnityEngine;
@@ -218,7 +217,14 @@ namespace KRT.VRCQuestTools.Ndmf
 
             if (PrefabStageUtility.GetCurrentPrefabStage() != null)
             {
-                EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowExitPrefabStage, MessageType.Warning);
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowExitPrefabStage, MessageType.Warning);
+                    if (GUILayout.Button(i18n.ExitLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                    {
+                        OnClickExitPrefabStage();
+                    }
+                }
                 return;
             }
 
@@ -470,6 +476,11 @@ namespace KRT.VRCQuestTools.Ndmf
         private void OnClickOpenSdkControlPanel()
         {
             GetWindow<VRCSdkControlPanel>().Show();
+        }
+
+        private void OnClickExitPrefabStage()
+        {
+            StageUtility.GoToMainStage();
         }
 
         private void OnChangeBlueprintId(string blueprintId)

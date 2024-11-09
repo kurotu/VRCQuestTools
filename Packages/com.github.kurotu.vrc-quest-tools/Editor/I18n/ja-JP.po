@@ -16,6 +16,9 @@ msgstr "閉じる"
 msgid "DismissLabel"
 msgstr "閉じる"
 
+msgid "ExitLabel"
+msgstr "終了"
+
 msgid "YesLabel"
 msgstr "はい"
 
@@ -177,6 +180,9 @@ msgstr "手動で変換する"
 
 msgid "ErrorForPrefabStage"
 msgstr "Prefab モードではアバターを変換できません。Prefab モードを抜けてシーンに戻ってください。"
+
+msgid "ExitPrefabStageButtonLabel"
+msgstr "シーンに戻る"
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "最大テクスチャサイズ"

@@ -56,6 +56,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string OpenLabel => GetText("OpenLabel");
         internal string CloseLabel => GetText("CloseLabel");
         internal string DismissLabel => GetText("DismissLabel");
+        internal string ExitLabel => GetText("ExitLabel");
         internal string YesLabel => GetText("YesLabel");
         internal string NoLabel => GetText("NoLabel");
         internal string AbortLabel => GetText("AbortLabel");
@@ -103,6 +104,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string AlertForAvatarDynamicsPerformance => GetText("AlertForAvatarDynamicsPerformance");
         internal string AlertForComponents => GetText("AlertForComponents");
         internal string ErrorForPrefabStage => GetText("ErrorForPrefabStage");
+        internal string ExitPrefabStageButtonLabel => GetText("ExitPrefabStageButtonLabel");
 
         internal string AvatarConverterMaterialConvertSettingsLabel => GetText("AvatarConverterMaterialConvertSettingsLabel");
         internal string AvatarConverterDefaultMaterialConvertSettingLabel => GetText("AvatarConverterDefaultMaterialConvertSettingLabel");

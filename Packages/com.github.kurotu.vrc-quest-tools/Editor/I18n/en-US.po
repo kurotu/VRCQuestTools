@@ -16,6 +16,9 @@ msgstr "Close"
 msgid "DismissLabel"
 msgstr "Dismiss"
 
+msgid "ExitLabel"
+msgstr "Exit"
+
 msgid "YesLabel"
 msgstr "Yes"
 
@@ -141,6 +144,9 @@ msgstr "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Ve
 
 msgid "ErrorForPrefabStage"
 msgstr "Can't convert the avatar in prefab mode. Please go back to a scene from prefab mode."
+
+msgid "ExitPrefabStageButtonLabel"
+msgstr "Back to Scene"
 
 msgid "AvatarConverterMaterialConvertSettingsLabel"
 msgstr "Material Conversion Settings"
