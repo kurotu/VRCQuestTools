@@ -54,6 +54,7 @@ namespace KRT.VRCQuestTools.Ndmf
             InPhase(BuildPhase.Transforming)
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
                 .AfterPlugin("nadena.dev.modular-avatar") // convert built avatar
+                .AfterPlugin("jp.lilxyzw.lilycalinventory") // convert built avatar
                 .Run(AvatarConverterTransformingPass.Instance);
 
             InPhase(BuildPhase.Transforming)

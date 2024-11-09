@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [NDMF] Check texture format after TexTransTool.
 - [NDMF] Change the inspector of `VQT Avatar Converter Settings` to prioritize non-destructive conversion.
+- [NDMF] Convert avatars after lilycalInventory in the transforming phase.
 
 ### Fixed
 - [NDMF] ArgumentNullException on play mode when the avatar has a newly created Pipeline Manager.
