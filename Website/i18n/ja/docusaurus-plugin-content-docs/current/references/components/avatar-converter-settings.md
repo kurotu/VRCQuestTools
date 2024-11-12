@@ -86,7 +86,7 @@ Animator Override Controller で指定したアニメーションクリップを
 
 ### メッシュから頂点カラーを削除
 
-変換されたアバターに[Vertex Color Remover](./vertex-color-remover)コンポーネントを追加することで頂点カラーを削除します。
+変換されたアバターに[Vertex Color Remover](vertex-color-remover.md)コンポーネントを追加することで頂点カラーを削除します。
 
 通常、このオプションをオフにする必要はありません。PC版アバターで頂点カラーを使用する特殊なシェーダーを使用している場合に、意図しない動作を防ぐためにオフにします。
 
@@ -104,7 +104,7 @@ NDMFでアバターを変換するときの実行フェーズを選択します�
 3. 変換したアニメーションクリップを使用するようにAnimator Controllerを変換し、Animator Override Controllerを解決します。
 4. 元のアバターを複製し、変換したアセットをセットします。
 5. Constraintなどのサポートされていないコンポーネントを削除します。
-6. [Platform Target Settings](./platform-target-settings)を追加し、ビルドターゲットをAndroidに設定します。
+6. [Platform Target Settings](platform-target-settings.md)を追加し、ビルドターゲットをAndroidに設定します。
 7. 特殊な変換処理(後述)を実行します。
 8. シーン内の元のアバターを非アクティブにします。
 

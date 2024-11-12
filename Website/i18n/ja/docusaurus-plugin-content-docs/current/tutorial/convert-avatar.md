@@ -69,7 +69,7 @@ https://docs.vrchat.com/docs/avatar-performance-ranking-system#quest-limits
 
 :::tip
 Modular Avatar等のNDMF対応の非破壊ツールを使用している場合、VRCQuestToolsによるアバターの変換も非破壊的に行うことができます。
-(参照: [チュートリアル: 非破壊的な変換](./non-destructive-workflow))。
+(参照: [チュートリアル: 非破壊的な変換](non-destructive-workflow.md))。
 :::
 
 :::tip
