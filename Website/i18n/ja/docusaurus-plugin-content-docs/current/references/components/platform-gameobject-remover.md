@@ -1,7 +1,7 @@
 # Platform GameObject Remover
 
 ビルドプラットフォームに応じて、GameObjectを削除するかどうかを設定します。
-特定のプラットフォーム設定を強制するには、[VQT Platform Target Settings](./platform-target-settings)コンポーネントを使用してください。
+特定のプラットフォーム設定を強制するには、[VQT Platform Target Settings](platform-target-settings.md)コンポーネントを使用してください。
 
 :::info
 このコンポーネントには Non-Destructive Modular Framework (NDMF) が必要です。

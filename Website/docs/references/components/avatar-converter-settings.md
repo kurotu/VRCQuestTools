@@ -87,7 +87,7 @@ Use the animation clips specified in Animator Override Controller to create a ne
 
 ### Remove Vertex Color from Meshes
 
-Add the [Vertex Color Remover](./vertex-color-remover) component to the converted avatar to remove vertex colors.
+Add the [Vertex Color Remover](vertex-color-remover.md) component to the converted avatar to remove vertex colors.
 
 You don't usually need to turn this option off. Turn it off if you are using a special shader for PC avatars that uses vertex colors in order to prevent unintended behavior.
 
@@ -105,7 +105,7 @@ Typically, the avatar is converted in the following steps.
 3. Convert the Animator Controller to use the converted animation clip and resolve the Animator Override Controller.
 4. Duplicate the original avatar and set the converted assets.
 5. Delete unsupported components such as Constraints.
-6. Add [Platform Target Settings](./platform-target-settings) and set the build target to Android.
+6. Add [Platform Target Settings](platform-target-settings.md) and set the build target to Android.
 7. Execute special conversion process (described below).
 8. Deactivate the original avatar in the scene.
 

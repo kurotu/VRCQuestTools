@@ -18,5 +18,5 @@
 このコンポーネントは特定の処理を実行しません。
 他のコンポーネントから参照されてビルドターゲットに依存する処理を変更します。
 
-[VQT Platform Component Remover]: ./platform-component-remover
-[VQT Platform GameObject Remover]: ./platform-gameobject-remover
+[VQT Platform Component Remover]: platform-component-remover.md
+[VQT Platform GameObject Remover]: platform-gameobject-remover.md

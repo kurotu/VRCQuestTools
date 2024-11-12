@@ -74,7 +74,7 @@ In other words, even if your avatar is ranked as "Very Poor", you must pass "Poo
 
 :::tip
 You can convert your avatar non-destructively if you are using NDMF-based non-destructive tools such as Modular Avatar.
-(Reference: [Tutorial: Non-Destructive Conversion](./non-destructive-workflow))
+(Reference: [Tutorial: Non-Destructive Conversion](non-destructive-workflow.md))
 :::
 
 :::tip

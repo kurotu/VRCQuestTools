@@ -18,5 +18,5 @@ Use `Auto` to automatically determine based on Unity's target platform settings.
 This component does not perform any specific processes.
 It is referenced by other components to change the process depending on the build target.
 
-[VQT Platform Component Remover]: ./platform-component-remover
-[VQT Platform GameObject Remover]: ./platform-gameobject-remover
+[VQT Platform Component Remover]: platform-component-remover.md
+[VQT Platform GameObject Remover]: platform-gameobject-remover.md
