@@ -8,6 +8,7 @@
 
 ### 修正
 - [NDMF] 作成したばかりの Pipeline Manager を持つアバターがあるとき Play Mode で ArgumentNullException が発生する問題を修正。
+- [NDMF] 他のプラグインが生成したテクスチャの読み込みに失敗することがある問題を修正。
 
 ## [2.5.4] - 2024-10-09
 
