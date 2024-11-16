@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - [NDMF] ArgumentNullException on play mode when the avatar has a newly created Pipeline Manager.
+- [NDMF] Fixed an issue where unsupported components were removed when using Android build target even if the avatar was not converted.
 
 ## [2.5.4] - 2024-10-09
 

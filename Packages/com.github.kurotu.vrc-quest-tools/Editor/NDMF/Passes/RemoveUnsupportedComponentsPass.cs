@@ -22,10 +22,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
-            var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
-
-            var shouldRemove = buildTarget == BuildTarget.Android
-                || context.AvatarRootObject.GetComponent<ConvertedAvatar>() != null;
+            var shouldRemove = context.AvatarRootObject.GetComponent<ConvertedAvatar>() != null;
 
             if (shouldRemove)
             {
