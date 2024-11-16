@@ -242,6 +242,13 @@ namespace KRT.VRCQuestTools.Utils
                 return UnityEngine.Object.Instantiate(texture);
             }
 
+            // unsaved asset
+            if (string.IsNullOrEmpty(path))
+            {
+                return texture;
+            }
+
+            // already saved as an asset file
             var extension = Path.GetExtension(path).ToLower();
             if (extension == ".asset")
             {
