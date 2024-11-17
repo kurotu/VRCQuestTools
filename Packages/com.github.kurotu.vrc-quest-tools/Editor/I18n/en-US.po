@@ -28,6 +28,9 @@ msgstr "No"
 msgid "AbortLabel"
 msgstr "Abort"
 
+msgid "AddLabel"
+msgstr "Add"
+
 msgid "RemoveLabel"
 msgstr "Remove"
 
@@ -135,6 +138,9 @@ msgstr "Following unsupported components will be removed. Check avatar features 
 
 msgid "AlertForDynamicBoneConversion"
 msgstr "VRCQuestTools doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar."
+
+msgid "AlertForMAConvertConstraints"
+msgstr "Unity Constraints cannot be used on Android. You can non-destructively convert Unity Constraints to VRChat Constraints by adding a MA Convert Constraints component to the avatar."
 
 msgid "AlertForUnityConstraintsConversion"
 msgstr "VRCQuestTools doesn't convert Unity constraints to VRChat constraints. Please set up VRChat constraints before converting the avatar."

@@ -28,6 +28,9 @@ msgstr "Нет"
 msgid "AbortLabel"
 msgstr "Прервать"
 
+msgid "AddLabel"
+msgstr "Добавить"
+
 msgid "RemoveLabel"
 msgstr "Удалить"
 
@@ -135,6 +138,9 @@ msgstr "Следующие неподдерживаемые компоненты
 
 msgid "AlertForDynamicBoneConversion"
 msgstr "Не конвертируйте динамические кости(PhysBone) в физические кости(DynamicBone). Пожалуйста, настройте физические кости перед конвертацией аватара."
+
+msgid "AlertForMAConvertConstraints"
+msgstr "Unity Constraints нельзя использовать на Android. Вы можете без разрушения преобразовать Unity Constraints в VRChat Constraints, добавив компонент MA Convert Constraints к аватару."
 
 msgid "AlertForUnityConstraintsConversion"
 msgstr "Не конвертируйте ограничения Unity в ограничения VRChat. Пожалуйста, настройте ограничения VRChat перед конвертацией аватара."

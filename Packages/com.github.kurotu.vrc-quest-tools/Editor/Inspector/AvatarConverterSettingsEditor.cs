@@ -88,15 +88,31 @@ namespace KRT.VRCQuestTools.Inspector
                             }
                         }
                     }
+
 #if VQT_HAS_VRCSDK_CONSTRAINTS
                     if (avatar.HasUnityConstraints)
                     {
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+                        if (avatar.GameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
+                        {
+                            using (var horizontal = new EditorGUILayout.HorizontalScope())
+                            {
+                                EditorGUILayout.HelpBox(i18n.AlertForMAConvertConstraints, MessageType.Warning);
+                                if (GUILayout.Button(i18n.AddLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                                {
+                                    OnClickAddConvertConstraintsButton(descriptor);
+                                }
+                            }
+                        }
+#else
                         using (var horizontal = new EditorGUILayout.HorizontalScope())
                         {
                             EditorGUILayout.HelpBox(i18n.AlertForUnityConstraintsConversion, MessageType.Warning);
                         }
+#endif
                     }
 #endif
+
                     if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor) && avatar.GameObject.GetComponent<NetworkIDAssigner>() == null)
                     {
                         using (var horizontal = new EditorGUILayout.HorizontalScope())
@@ -441,11 +457,12 @@ namespace KRT.VRCQuestTools.Inspector
             EditorApplication.ExecuteMenuItem("VRChat SDK/Utilities/Convert DynamicBones To PhysBones");
         }
 
-        private void OnClickConvertToVRCConstraintsButton(VRC_AvatarDescriptor avatar)
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+        private void OnClickAddConvertConstraintsButton(VRC_AvatarDescriptor avatar)
         {
-            Selection.activeGameObject = avatar.gameObject;
-            EditorApplication.ExecuteMenuItem("VRChat SDK/Utilities/Convert Unity Constraints To VRChat Constraints");
+            avatar.gameObject.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>();
         }
+#endif
 
         private void OnClickAssignNetIdsButton(VRC_AvatarDescriptor avatar)
         {
