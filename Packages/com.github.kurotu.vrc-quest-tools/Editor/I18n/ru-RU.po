@@ -28,6 +28,9 @@ msgstr "Нет"
 msgid "AbortLabel"
 msgstr "Прервать"
 
+msgid "AddLabel"
+msgstr "Добавить"
+
 msgid "RemoveLabel"
 msgstr "Удалить"
 
@@ -136,6 +139,9 @@ msgstr "Следующие неподдерживаемые компоненты
 msgid "AlertForDynamicBoneConversion"
 msgstr "Не конвертируйте динамические кости(PhysBone) в физические кости(DynamicBone). Пожалуйста, настройте физические кости перед конвертацией аватара."
 
+msgid "AlertForMAConvertConstraints"
+msgstr "Unity Constraints нельзя использовать на Android. Вы можете без разрушения преобразовать Unity Constraints в VRChat Constraints, добавив компонент MA Convert Constraints к аватару."
+
 msgid "AlertForUnityConstraintsConversion"
 msgstr "Не конвертируйте ограничения Unity в ограничения VRChat. Пожалуйста, настройте ограничения VRChat перед конвертацией аватара."
 
@@ -180,6 +186,9 @@ msgstr "При ручном преобразовании не учитывают
 
 msgid "ManualConvertButtonLabel"
 msgstr "Преобразовать Вручную"
+
+msgid "ConfirmationForUnityConstraints"
+msgstr "Ручное преобразование удалит Unity Constraints. Вы можете без разрушения преобразовать их в VRChat Constraints, добавив компонент MA Convert Constraints к аватару и используя Avatar Builder для загрузки. Вы действительно хотите продолжить преобразование?"
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "Ограничение размера текстур"

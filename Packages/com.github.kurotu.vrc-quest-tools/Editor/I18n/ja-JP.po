@@ -28,6 +28,9 @@ msgstr "いいえ"
 msgid "AbortLabel"
 msgstr "中止"
 
+msgid "AddLabel"
+msgstr "追加"
+
 msgid "RemoveLabel"
 msgstr "削除"
 
@@ -136,6 +139,9 @@ msgstr "以下の非対応コンポーネントを削除します。変換後、
 msgid "AlertForDynamicBoneConversion"
 msgstr "VRCQuestTools は Dynamic Bone を PhysBone に変換しません。アバターを変換する前に PhysBone を設定してください。"
 
+msgid "AlertForMAConvertConstraints"
+msgstr "Android では Unity Constraints を使用できません。アバターに MA Convert Constraints コンポーネントを追加することで非破壊的に Unity Constraints を VRChat Constraints に変換することができます。"
+
 msgid "AlertForUnityConstraintsConversion"
 msgstr "VRCQuestTools は Unity Constraints を VRChat Constraints に変換しません。アバターを変換する前に VRChat Constraints を設定してください。"
 
@@ -177,6 +183,9 @@ msgstr "手動で変換する場合 MA Merge Animator 以外の非破壊コン�
 
 msgid "ManualConvertButtonLabel"
 msgstr "手動で変換する"
+
+msgid "ConfirmationForUnityConstraints"
+msgstr "手動変換では Unity Constraints が削除されます。アバターに MA Convert Constraints コンポーネントを追加し Avatar Builder を使用してアップロードすることで VRChat Constraints に非破壊的に変換することができますが、本当に変換を続行しますか？"
 
 msgid "ErrorForPrefabStage"
 msgstr "Prefab モードではアバターを変換できません。Prefab モードを抜けてシーンに戻ってください。"

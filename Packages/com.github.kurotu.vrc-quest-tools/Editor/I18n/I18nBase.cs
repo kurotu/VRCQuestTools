@@ -60,6 +60,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string YesLabel => GetText("YesLabel");
         internal string NoLabel => GetText("NoLabel");
         internal string AbortLabel => GetText("AbortLabel");
+        internal string AddLabel => GetText("AddLabel");
         internal string RemoveLabel => GetText("RemoveLabel");
 
         internal string Maximum => GetText("Maximum");
@@ -99,6 +100,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string WarningForAppearance => GetText("WarningForAppearance");
         internal string WarningForUnsupportedShaders => GetText("WarningForUnsupportedShaders");
         internal string AlertForDynamicBoneConversion => GetText("AlertForDynamicBoneConversion");
+        internal string AlertForMAConvertConstraints => GetText("AlertForMAConvertConstraints");
         internal string AlertForUnityConstraintsConversion => GetText("AlertForUnityConstraintsConversion");
         internal string AlertForMultiplePhysBones => GetText("AlertForMultiplePhysBones");
         internal string AlertForAvatarDynamicsPerformance => GetText("AlertForAvatarDynamicsPerformance");
@@ -118,6 +120,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string ManualConversionLabel => GetText("ManualConversionLabel");
         internal string ManualConversionWarning => GetText("ManualConversionWarning");
         internal string ManualConvertButtonLabel => GetText("ManualConvertButtonLabel");
+        internal string ConfirmationForUnityConstraints => GetText("ConfirmationForUnityConstraints");
 
         // IMaterialConvertSettings
         internal string IMaterialConvertSettingsTexturesSizeLimitLabel => GetText("IMaterialConvertSettingsTexturesSizeLimitLabel");

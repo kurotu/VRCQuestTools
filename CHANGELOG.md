@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] `[NDMF] Manual Bake with Android Settings` menu to the right-click menu of the avatar.
 - [NDMF] Feature to select an avatar to upload in the `VQT Avatar Builder`.
 - Buttons to back to the scene in warning about prefab stage.
+- [NDMF] Messages and a dialog to suggest to use `MA Convert Constraints` component and non-destructive conversion.
 
 ### Changed
 - [NDMF] Check texture format after TexTransTool.
