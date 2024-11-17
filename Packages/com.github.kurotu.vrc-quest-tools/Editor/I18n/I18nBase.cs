@@ -120,6 +120,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string ManualConversionLabel => GetText("ManualConversionLabel");
         internal string ManualConversionWarning => GetText("ManualConversionWarning");
         internal string ManualConvertButtonLabel => GetText("ManualConvertButtonLabel");
+        internal string ConfirmationForUnityConstraints => GetText("ConfirmationForUnityConstraints");
 
         // IMaterialConvertSettings
         internal string IMaterialConvertSettingsTexturesSizeLimitLabel => GetText("IMaterialConvertSettingsTexturesSizeLimitLabel");

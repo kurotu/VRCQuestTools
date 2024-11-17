@@ -187,6 +187,9 @@ msgstr "When converting manually, non-destructive components other than MA Merge
 msgid "ManualConvertButtonLabel"
 msgstr "Convert Manually"
 
+msgid "ConfirmationForUnityConstraints"
+msgstr "Ручное преобразование удалит Unity Constraints. Вы можете без разрушения преобразовать их в VRChat Constraints, добавив компонент MA Convert Constraints к аватару и используя Avatar Builder для загрузки. Вы действительно хотите продолжить преобразование?"
+
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "Textures Size Limit"
 

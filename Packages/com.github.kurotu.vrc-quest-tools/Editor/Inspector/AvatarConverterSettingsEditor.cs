@@ -526,6 +526,16 @@ namespace KRT.VRCQuestTools.Inspector
 
         private void OnClickConvertButton(VRC_AvatarDescriptor avatar)
         {
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+            if (new VRChatAvatar(avatar).HasUnityConstraints)
+            {
+                if (!EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForUnityConstraints, i18n.YesLabel, i18n.NoLabel))
+                {
+                    return;
+                }
+            }
+#endif
+
             var progressCallback = new ProgressCallback
             {
                 onTextureProgress = (total, index, exception, material, _) =>
