@@ -11,6 +11,7 @@
 - [NDMF] アバターの右クリックメニューに `[NDMF] Manual Bake with Android Settings` メニューを追加。
 - [NDMF] `VQT Avatar Builder` にアップロード対象のアバターを選択する機能を追加。
 - Prefab ステージに関する警告にシーンに戻るためのボタンを追加
+- [NDMF] `MA Convert Constraints` コンポーネントと非破壊変換を提案するメッセージとダイアログを追加。
 
 ### 変更
 - [NDMF] テクスチャフォーマットのチェックを TexTransTool の後で実行するように変更。
