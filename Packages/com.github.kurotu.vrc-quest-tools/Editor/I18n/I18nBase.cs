@@ -41,7 +41,7 @@ namespace KRT.VRCQuestTools.I18n
             var str = localizationAsset.Value.GetLocalizedString(key);
             if ((key == str) && (localizationAsset.Value != fallback.Value))
             {
-                fallback.Value.GetLocalizedString(key);
+                return fallback.Value.GetLocalizedString(key);
             }
             return str;
         }

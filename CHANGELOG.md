@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] Convert avatars after lilycalInventory in the transforming phase.
 
 ### Fixed
+- Fallback for untranslated phrases not working.
 - [NDMF] Fixed an issue where unsupported components were removed when using Android build target even if the avatar was not converted.
 
 ## [2.5.5] - 2024-11-16
