@@ -17,6 +17,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader BakeShader => Shader.Find("Hidden/VRCQuestTools/Poiyomi");
+        internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/Poiyomi");
     }
 }

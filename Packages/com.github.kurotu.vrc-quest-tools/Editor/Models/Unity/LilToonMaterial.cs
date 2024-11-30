@@ -4,6 +4,7 @@
 // </copyright>
 
 using KRT.VRCQuestTools.Utils;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,7 +25,67 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader BakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
+        internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
+
+        internal override Shader StandardLiteMainBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_main");
+
+        internal override Shader StandardLiteMetallicSmoothnessBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_metallic_smoothness");
+
+        internal override Material ConvertToStandardLite()
+        {
+            var newShader = Shader.Find("VRChat/Mobile/Standard Lite");
+            var newMaterial = new Material(newShader)
+            {
+                color = Material.color,
+                doubleSidedGI = Material.doubleSidedGI,
+                enableInstancing = true,
+                globalIlluminationFlags = Material.globalIlluminationFlags,
+                hideFlags = Material.hideFlags,
+                mainTexture = Material.mainTexture ?? Material.GetTexture("_MainTex"),
+                mainTextureOffset = Material.mainTextureOffset,
+                mainTextureScale = Material.mainTextureScale,
+                name = $"{Material.name}_{newShader.name.Split('/').Last()}",
+                renderQueue = Material.renderQueue,
+                shader = newShader,
+                shaderKeywords = null,
+            };
+
+            var mats = new[] { Material };
+
+            var useReflection = Material.GetFloat("_UseReflection") > 0.0;
+            var applyReflection = Material.GetFloat("_ApplyReflection") > 0.0;
+            if (useReflection && applyReflection)
+            {
+                newMaterial.DisableKeyword("_GLOSSYREFLECTIONS_OFF");
+                newMaterial.SetFloat("_GlossyReflections", 1);
+            }
+            else
+            {
+                newMaterial.EnableKeyword("_GLOSSYREFLECTIONS_OFF");
+                newMaterial.SetFloat("_GlossyReflections", 0);
+            }
+            newMaterial.SetFloat("_Metallic", useReflection ? Material.GetFloat("_Metallic") : 0.0f);
+            newMaterial.SetFloat("_Glossiness", useReflection ? Material.GetFloat("_Smoothness") : 0.0f);
+            newMaterial.SetTexture("_BumpMap", Material.GetFloat("_UseBumpMap") > 0.0 ? Material.GetTexture("_BumpMap") : null);
+
+            var useEmission = Material.GetFloat("_UseEmission") > 0.0;
+            if (useEmission)
+            {
+                newMaterial.EnableKeyword("_EMISSION");
+                var so = new SerializedObject(newMaterial);
+                so.Update();
+                so.FindProperty("m_LightmapFlags").intValue = 6;
+                so.ApplyModifiedProperties();
+            }
+            else
+            {
+                newMaterial.DisableKeyword("_EMISSION");
+            }
+            newMaterial.SetTexture("_EmissionMap", useEmission ? Material.GetTexture("_EmissionMap") : null);
+            newMaterial.SetColor("_EmissionColor", useEmission ? Material.GetColor("_EmissionColor") : Color.white);
+
+            return newMaterial;
+        }
 
         /// <inheritdoc/>
         internal override Texture2D GenerateToonLitImage(IToonLitConvertSettings settings)
@@ -34,6 +95,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                 var baked = EmissionBake(main.Object, Material, settings);
                 return baked;
             }
+        }
+
+        internal override Texture2D GenerateStandardLiteMainImage(StandardLiteConvertSettings settings)
+        {
+            return TextureBake(Material, 0);
         }
 
         private static LilToonSetting LoadShaderSetting()

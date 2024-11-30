@@ -22,7 +22,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader BakeShader => Material.shader.name.Contains("EmissiveFreak/")
+        internal override Shader ToonLitBakeShader => Material.shader.name.Contains("EmissiveFreak/")
             ? Shader.Find("Hidden/VRCQuestTools/arktoon/EmissiveFreak")
             : Shader.Find("Hidden/VRCQuestTools/arktoon/Opaque");
     }

@@ -246,6 +246,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
                                 new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory);
                             }
                             break;
+                        case StandardLiteConvertSettings standardLiteConvertSettings:
+                            if (standardLiteConvertSettings.generateQuestTextures)
+                            {
+                                var m2 = MaterialWrapperBuilder.Build(m);
+                                new StandardLiteGenerator(standardLiteConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory);
+                            }
+                            break;
                         case MaterialReplaceSettings materialReplaceSettings:
                             // don't have to generate textures
                             break;
@@ -292,6 +299,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             break;
                         case MatCapLitConvertSettings matCapLitConvertSettings:
                             output = new MatCapLitGenerator(matCapLitConvertSettings).GenerateMaterial(material, saveAsFile, texturesPath);
+                            break;
+                        case StandardLiteConvertSettings standardLiteConvertSettings:
+                            output = new StandardLiteGenerator(standardLiteConvertSettings).GenerateMaterial(material, saveAsFile, texturesPath);
                             break;
                         case MaterialReplaceSettings materialReplaceSettings:
                             output = materialReplaceSettings.material;

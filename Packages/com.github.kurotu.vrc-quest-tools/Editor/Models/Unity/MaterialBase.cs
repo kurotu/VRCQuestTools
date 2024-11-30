@@ -29,9 +29,19 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
-        /// Gets shader to bake texture.
+        /// Gets shader to bake Toon Lit texture.
         /// </summary>
-        internal abstract Shader BakeShader { get; }
+        internal abstract Shader ToonLitBakeShader { get; }
+
+        /// <summary>
+        /// Gets shader to bake Standard Lite main texture.
+        /// </summary>
+        internal abstract Shader StandardLiteMainBakeShader { get; }
+
+        /// <summary>
+        /// Gets shader to bake Standard Lite metallic smoothness texture.
+        /// </summary>
+        internal abstract Shader StandardLiteMetallicSmoothnessBakeShader { get; }
 
         /// <summary>
         /// Convert internal material to Toon Lit.
@@ -58,6 +68,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Convert internal material to Standard Lite.
+        /// </summary>
+        /// <returns>Converted material.</returns>
+        internal virtual Material ConvertToStandardLite()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <summary>
         /// Generates an image for Toon Lit main texture.
         /// </summary>
         /// <param name="settings">Setting object.</param>
@@ -74,9 +93,101 @@ namespace KRT.VRCQuestTools.Models.Unity
 #if UNITY_2022_1_OR_NEWER
                 baker.Object.parent = null;
 #endif
-                baker.Object.shader = BakeShader;
+                baker.Object.shader = ToonLitBakeShader;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
                 baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);
+                foreach (var name in Material.GetTexturePropertyNames())
+                {
+                    var t = Material.GetTexture(name);
+                    if (t is Cubemap)
+                    {
+                        continue;
+                    }
+                    if (AssetUtility.IsNormalMapAsset(t))
+                    {
+                        continue;
+                    }
+                    var tex = AssetUtility.LoadUncompressedTexture(t);
+                    disposables.Add(DisposableObject.New(tex));
+                    baker.Object.SetTexture(name, tex);
+                }
+
+                var main = baker.Object.mainTexture;
+
+                // Remember active render texture
+                var activeRenderTexture = RenderTexture.active;
+                Graphics.Blit(main, dstTexture.Object, baker.Object);
+
+                Texture2D outTexture = new Texture2D(width, height);
+                outTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                outTexture.Apply();
+
+                // Restore active render texture
+                RenderTexture.active = activeRenderTexture;
+                return outTexture;
+            }
+        }
+
+        internal virtual Texture2D GenerateStandardLiteMainImage(StandardLiteConvertSettings settings)
+        {
+            var width = Material.mainTexture?.width ?? 4;
+            var height = Material.mainTexture?.height ?? 4;
+
+            using (var disposables = new CompositeDisposable())
+            using (var baker = DisposableObject.New(Object.Instantiate(Material)))
+            using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
+            {
+#if UNITY_2022_1_OR_NEWER
+                baker.Object.parent = null;
+#endif
+                baker.Object.shader = StandardLiteMainBakeShader;
+                // baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
+                foreach (var name in Material.GetTexturePropertyNames())
+                {
+                    var t = Material.GetTexture(name);
+                    if (t is Cubemap)
+                    {
+                        continue;
+                    }
+                    if (AssetUtility.IsNormalMapAsset(t))
+                    {
+                        continue;
+                    }
+                    var tex = AssetUtility.LoadUncompressedTexture(t);
+                    disposables.Add(DisposableObject.New(tex));
+                    baker.Object.SetTexture(name, tex);
+                }
+
+                var main = baker.Object.mainTexture;
+
+                // Remember active render texture
+                var activeRenderTexture = RenderTexture.active;
+                Graphics.Blit(main, dstTexture.Object, baker.Object);
+
+                Texture2D outTexture = new Texture2D(width, height);
+                outTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                outTexture.Apply();
+
+                // Restore active render texture
+                RenderTexture.active = activeRenderTexture;
+                return outTexture;
+            }
+        }
+
+        internal virtual Texture2D GenerateStandardLiteMetallicSmoothnessImage(StandardLiteConvertSettings settings)
+        {
+            var width = Material.mainTexture?.width ?? 4;
+            var height = Material.mainTexture?.height ?? 4;
+
+            using (var disposables = new CompositeDisposable())
+            using (var baker = DisposableObject.New(Object.Instantiate(Material)))
+            using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
+            {
+#if UNITY_2022_1_OR_NEWER
+                baker.Object.parent = null;
+#endif
+                baker.Object.shader = StandardLiteMetallicSmoothnessBakeShader;
+                // baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
                 foreach (var name in Material.GetTexturePropertyNames())
                 {
                     var t = Material.GetTexture(name);

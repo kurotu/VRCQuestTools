@@ -22,10 +22,27 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader BakeShader => null;
+        internal override Shader ToonLitBakeShader => null;
+
+        /// <inheritdoc/>
+        internal override Shader StandardLiteMainBakeShader => null;
+
+        /// <inheritdoc/>
+        internal override Shader StandardLiteMetallicSmoothnessBakeShader => null;
 
         /// <inheritdoc/>
         internal override Texture2D GenerateToonLitImage(IToonLitConvertSettings settings)
+        {
+            return GenerateTexture();
+        }
+
+        /// <inheritdoc/>
+        internal override Texture2D GenerateStandardLiteMainImage(StandardLiteConvertSettings settings)
+        {
+            return GenerateTexture();
+        }
+
+        private Texture2D GenerateTexture()
         {
             if (Material.shader.name.ToLower().Contains("/UnlitPreview".ToLower()))
             {
