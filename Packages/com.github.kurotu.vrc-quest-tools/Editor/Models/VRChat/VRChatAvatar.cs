@@ -215,6 +215,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 .Concat(AvatarDescriptor.GetComponentsInChildren<ContactSender>(true))
                 .ToArray();
         }
+
+        /// <summary>
+        /// Gets local ContactReceivers.
+        /// </summary>
+        /// <returns>All attaches local ContactReceivers.</returns>
+        internal ContactReceiver[] GetLocalContactReceivers()
+        {
+            return AvatarDescriptor.GetComponentsInChildren<ContactReceiver>(true).Where(c => c.IsLocalOnly).ToArray();
+        }
 #endif
 
         /// <summary>

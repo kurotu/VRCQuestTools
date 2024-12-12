@@ -198,7 +198,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
             questAvatarObject.SetActive(true);
 
             var converterSetttigs = questAvatarObject.GetComponent<Components.AvatarConverterSettings>();
-            VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSetttigs.physBonesToKeep, converterSetttigs.physBoneCollidersToKeep, converterSetttigs.contactsToKeep);
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
+            var contactsToKeep = converterSetttigs.contactsToKeep.Concat(avatar.GetLocalContactReceivers()).Distinct().ToArray();
+#else
+            var contactsToKeep = converterSetttigs.contactsToKeep;
+#endif
+            VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSetttigs.physBonesToKeep, converterSetttigs.physBoneCollidersToKeep, contactsToKeep);
 
             UnityEngine.Object.DestroyImmediate(converterSetttigs);
             PrefabUtility.RecordPrefabInstancePropertyModifications(questAvatarObject);
