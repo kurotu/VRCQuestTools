@@ -152,17 +152,26 @@ namespace KRT.VRCQuestTools.Views
 
                 EditorGUILayout.Space();
 
-                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutContacts, new GUIContent("Contact Senders & Contact Receivers", i18n.PhysBonesListTooltip)))
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
+                var contactsHeader = "Contact Senders & Non-Local Contact Receivers";
+#else
+                var contactsHeader = "Contact Senders & Contact Receivers";
+#endif
+                using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutContacts, new GUIContent(contactsHeader, i18n.PhysBonesListTooltip)))
                 {
                     foldoutContacts = foldout.Foldout;
                     if (foldoutContacts)
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
                         {
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
+                            var contacts = new VRChatAvatar(converterSettings.AvatarDescriptor).GetNonLocalContacts();
+#else
                             var contacts = converterSettings.AvatarDescriptor.GetComponentsInChildren<VRC.Dynamics.ContactBase>(true);
+#endif
                             if (contacts.Length == 0)
                             {
-                                EditorGUILayout.LabelField("No Contact Senders & Contact Receivers found.");
+                                EditorGUILayout.LabelField($"No {contactsHeader} found.");
                             }
                             else
                             {

@@ -16,6 +16,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Animations;
+using VRC.Dynamics;
 using VRC.SDKBase.Validation.Performance.Stats;
 
 #if VQT_HAS_VRCSDK_BASE
@@ -201,6 +202,20 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
             return new Component[] { };
         }
+
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
+        /// <summary>
+        /// Gets non-local ContactReceivers and ContactSenders.
+        /// </summary>
+        /// <returns>All attached non-local ContactReceivers and ContactSenders.</returns>
+        internal ContactBase[] GetNonLocalContacts()
+        {
+            return new ContactBase[] { }
+                .Concat(AvatarDescriptor.GetComponentsInChildren<ContactReceiver>(true).Where(c => !c.IsLocalOnly))
+                .Concat(AvatarDescriptor.GetComponentsInChildren<ContactSender>(true))
+                .ToArray();
+        }
+#endif
 
         /// <summary>
         /// Estimates performance stats.

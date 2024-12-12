@@ -29,6 +29,11 @@
             "define": "VQT_HAS_VRCSDK_CONSTRAINTS"
         },
         {
+            "name": "com.vrchat.avatars",
+            "expression": "3.7.5",
+            "define": "VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER"
+        },
+        {
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "VQT_HAS_NEWTONSOFT_JSON"

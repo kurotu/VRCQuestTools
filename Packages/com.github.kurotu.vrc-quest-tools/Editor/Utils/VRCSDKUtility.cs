@@ -908,6 +908,23 @@ namespace KRT.VRCQuestTools.Utils
                 /// Gets root tansform set by inspector.
                 /// </summary>
                 internal Transform RootTransform => (Transform)RootTransformField.GetValue(component);
+
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
+                /// <summary>
+                /// Gets whether the component is local only.
+                /// </summary>
+                internal bool IsLocalOnly
+                {
+                    get
+                    {
+                        if (component is ContactReceiver receiver)
+                        {
+                            return receiver.IsLocalOnly;
+                        }
+                        return false;
+                    }
+                }
+#endif
             }
         }
     }
