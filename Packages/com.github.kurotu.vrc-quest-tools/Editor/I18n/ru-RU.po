@@ -178,9 +178,6 @@ msgstr "Установите отправители и получатели ко
 msgid "OpenAvatarBuilder"
 msgstr "Открыть Avatar Builder"
 
-msgid "ManualConversionLabel"
-msgstr "Ручное Преобразование"
-
 msgid "ManualConversionWarning"
 msgstr "При ручном преобразовании не учитываются неразрушающие компоненты, кроме MA Merge Animator. Могут возникнуть неожиданные проблемы с работой после комбинирования."
 

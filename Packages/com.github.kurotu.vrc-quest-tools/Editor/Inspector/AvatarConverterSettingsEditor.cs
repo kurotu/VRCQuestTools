@@ -380,16 +380,12 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.Space();
 
 #if VQT_HAS_NDMF
-                    editorState.foldOutManualConversion = EditorGUILayout.Foldout(editorState.foldOutManualConversion, i18n.ManualConversionLabel, true);
-                    if (editorState.foldOutManualConversion)
+                    EditorGUILayout.HelpBox(i18n.ManualConversionWarning, MessageType.Warning);
+                    using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
                     {
-                        EditorGUILayout.HelpBox(i18n.ManualConversionWarning, MessageType.Warning);
-                        using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
+                        if (GUILayout.Button(i18n.ManualConvertButtonLabel))
                         {
-                            if (GUILayout.Button(i18n.ManualConvertButtonLabel))
-                            {
-                                OnClickConvertButton(descriptor);
-                            }
+                            OnClickConvertButton(descriptor);
                         }
                     }
 #else

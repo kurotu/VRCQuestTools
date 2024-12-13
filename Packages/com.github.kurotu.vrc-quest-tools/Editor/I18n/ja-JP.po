@@ -175,9 +175,6 @@ msgstr "変換時に残しておく ContactSender と ContactReceiver を選択�
 msgid "OpenAvatarBuilder"
 msgstr "Avatar Builder を開く"
 
-msgid "ManualConversionLabel"
-msgstr "手動変換"
-
 msgid "ManualConversionWarning"
 msgstr "手動で変換する場合 MA Merge Animator 以外の非破壊コンポーネントを考慮しません。組み合わせた後の動作に予期せぬ問題があるかもしれません。"
 
