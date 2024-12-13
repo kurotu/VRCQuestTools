@@ -1,3 +1,4 @@
+using System.Linq;
 using KRT.VRCQuestTools.Models;
 using UnityEngine;
 using VRC.Dynamics;
@@ -91,7 +92,15 @@ namespace KRT.VRCQuestTools.Components
             var descriptor = AvatarDescriptor;
             physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>() : new VRCPhysBone[] { };
             physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>() : new VRCPhysBoneCollider[] { };
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
+            contactsToKeep = descriptor ? new ContactBase[] { }
+                .Concat(descriptor.gameObject.GetComponentsInChildren<ContactSender>())
+                .Concat(descriptor.gameObject.GetComponentsInChildren<ContactReceiver>().Where(c => !c.IsLocalOnly))
+                .ToArray()
+                : new ContactBase[] { };
+#else
             contactsToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<ContactBase>() : new ContactBase[] { };
+#endif
         }
     }
 }
