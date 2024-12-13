@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fallback for untranslated phrases not working.
+- Fixed an issue where inactive Avatar Dynamics components were not selected by default in `VQT Avatar Converter Settings`.
 - [NDMF] Fixed an issue where unsupported components were removed when using Android build target even if the avatar was not converted.
 
 ## [2.5.5] - 2024-11-16

@@ -90,16 +90,16 @@ namespace KRT.VRCQuestTools.Components
         private void Reset()
         {
             var descriptor = AvatarDescriptor;
-            physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>() : new VRCPhysBone[] { };
-            physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>() : new VRCPhysBoneCollider[] { };
+            physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>(true) : new VRCPhysBone[] { };
+            physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>(true) : new VRCPhysBoneCollider[] { };
 #if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
             contactsToKeep = descriptor ? new ContactBase[] { }
-                .Concat(descriptor.gameObject.GetComponentsInChildren<ContactSender>())
-                .Concat(descriptor.gameObject.GetComponentsInChildren<ContactReceiver>().Where(c => !c.IsLocalOnly))
+                .Concat(descriptor.gameObject.GetComponentsInChildren<ContactSender>(true))
+                .Concat(descriptor.gameObject.GetComponentsInChildren<ContactReceiver>(true).Where(c => !c.IsLocalOnly))
                 .ToArray()
                 : new ContactBase[] { };
 #else
-            contactsToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<ContactBase>() : new ContactBase[] { };
+            contactsToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<ContactBase>(true) : new ContactBase[] { };
 #endif
         }
     }
