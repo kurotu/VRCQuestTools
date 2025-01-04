@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- GameObject を選択していない状態でヒエラルキーを右クリックするとエラーが発生する問題を修正。
+
 ## [2.6.0] - 2024-12-14
 
 ### 追加
