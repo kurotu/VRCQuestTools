@@ -182,7 +182,7 @@ msgid "ManualConversionWarning"
 msgstr "When converting manually, non-destructive components other than MA Merge Animator are not considered. Unexpected issues may arise in the behavior after combining."
 
 msgid "ManualConvertButtonLabel"
-msgstr "Convert Manually"
+msgstr "Convert"
 
 msgid "ConfirmationForUnityConstraints"
 msgstr "Ручное преобразование удалит Unity Constraints. Вы можете без разрушения преобразовать их в VRChat Constraints, добавив компонент MA Convert Constraints к аватару и используя Avatar Builder для загрузки. Вы действительно хотите продолжить преобразование?"

@@ -179,7 +179,7 @@ msgid "ManualConversionWarning"
 msgstr "手動で変換する場合 MA Merge Animator 以外の非破壊コンポーネントを考慮しません。組み合わせた後の動作に予期せぬ問題があるかもしれません。"
 
 msgid "ManualConvertButtonLabel"
-msgstr "手動で変換する"
+msgstr "変換する"
 
 msgid "ConfirmationForUnityConstraints"
 msgstr "手動変換では Unity Constraints が削除されます。アバターに MA Convert Constraints コンポーネントを追加し Avatar Builder を使用してアップロードすることで VRChat Constraints に非破壊的に変換することができますが、本当に変換を続行しますか？"
