@@ -251,6 +251,14 @@ namespace KRT.VRCQuestTools.I18n
         internal string MeshFlipperMeshDirectionFlip => GetText("MeshFlipperMeshDirectionFlip");
         internal string MeshFlipperMeshDirectionDoubleSide => GetText("MeshFlipperMeshDirectionDoubleSide");
 
+        // Material Swap
+        internal string MaterialSwapEditorDescription => GetText("MaterialSwapEditorDescription");
+        internal string MaterialSwapEditorEnabledOnAndroidLabel => GetText("MaterialSwapEditorEnabledOnAndroidLabel");
+        internal string MaterialSwapEditorIncludeChildrenLabel => GetText("MaterialSwapEditorIncludeChildrenLabel");
+        internal string MaterialSwapEditorNoRendererWarning => GetText("MaterialSwapEditorNoRendererWarning");
+        internal string MaterialSwapEditorOriginalMaterialLabel => GetText("MaterialSwapEditorOriginalMaterialLabel");
+        internal string MaterialSwapEditorReplacementMaterialLabel => GetText("MaterialSwapEditorReplacementMaterialLabel");
+
         // Avatar Builder
         internal string AvatarBuilderWindowExitPlayMode => GetText("AvatarBuilderWindowExitPlayMode");
         internal string AvatarBuilderWindowExitPrefabStage => GetText("AvatarBuilderWindowExitPrefabStage");

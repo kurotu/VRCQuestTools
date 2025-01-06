@@ -469,6 +469,24 @@ msgstr "Flipped"
 msgid "MeshFlipperMeshDirectionDoubleSide"
 msgstr "Double Sided"
 
+msgid "MaterialSwapEditorDescription"
+msgstr "Replace materials on this GameObject and optionally its children for platform-specific optimization."
+
+msgid "MaterialSwapEditorEnabledOnAndroidLabel"
+msgstr "Enable on Android"
+
+msgid "MaterialSwapEditorIncludeChildrenLabel"
+msgstr "Include Child Objects"
+
+msgid "MaterialSwapEditorNoRendererWarning"
+msgstr "No renderer found on this GameObject. Add this component to an object with a renderer."
+
+msgid "MaterialSwapEditorOriginalMaterialLabel"
+msgstr "Original Material"
+
+msgid "MaterialSwapEditorReplacementMaterialLabel" 
+msgstr "Replacement Material"
+
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Exit play mode to build the avatar."
 
