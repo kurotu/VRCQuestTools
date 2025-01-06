@@ -152,7 +152,7 @@ msgid "ErrorForPrefabStage"
 msgstr "Невозможно конвертировать аватар в режиме префаба. Пожалуйста, вернитесь к сцене из режима префаба."
 
 msgid "ExitPrefabStageButtonLabel"
-msgstr "Назад к Scene""
+msgstr "Назад к Scene"
 
 msgid "AvatarConverterMaterialConvertSettingsLabel"
 msgstr "Настройки конвертации материалов"
