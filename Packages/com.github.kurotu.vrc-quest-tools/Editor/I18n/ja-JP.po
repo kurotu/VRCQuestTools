@@ -517,8 +517,6 @@ msgstr "アバターをビルドするには VRChat SDK コントロールパネ
 msgid "AvatarBuilderWindowOfflineTestingLabel"
 msgstr "オフラインテスト (PC)"
 
-msgstr "オフラインテスト (PC)"
-
 msgid "AvatarBuilderWindowOfflineTestingDescription"
 msgstr "Android 用のビルド設定でアバターをビルドして PC でテストします。アバターはアバターメニューの「その他」カテゴリに「SDK: {0}」として表示されます。"
 
