@@ -58,19 +58,12 @@ namespace KRT.VRCQuestTools.Ndmf
                 .Run(AvatarConverterTransformingPass.Instance);
 
             InPhase(BuildPhase.Transforming)
-                .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control decimation
-                .Run(RemoveVertexColorPass.Instance)
-#if !VQT_LIL_NDMF_MESH_SIMPLIFIER
-                .Then.Run(MeshFlipperPass.Instance)
-#endif
-                ;
-
-#if VQT_LIL_NDMF_MESH_SIMPLIFIER
-            InPhase(BuildPhase.Optimizing)
-                .AfterPlugin("jp.lilxyzw.ndmfmeshsimplifier.NDMF.NDMFPlugin")
-                .BeforePlugin("com.anatawa12.avatar-optimizer")
+                .BeforePlugin("MantisLODEditor.ndmf") // needs unmodified UVs for mask textures
                 .Run(MeshFlipperPass.Instance);
-#endif
+
+            InPhase(BuildPhase.Transforming)
+                .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control decimation
+                .Run(RemoveVertexColorPass.Instance);
 
             InPhase(BuildPhase.Optimizing)
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
