@@ -62,6 +62,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string AbortLabel => GetText("AbortLabel");
         internal string AddLabel => GetText("AddLabel");
         internal string RemoveLabel => GetText("RemoveLabel");
+        internal string FixLabel => GetText("FixLabel");
 
         internal string Maximum => GetText("Maximum");
 
@@ -238,10 +239,15 @@ namespace KRT.VRCQuestTools.I18n
         // Mesh Flipper
         internal string MeshFlipperEditorDescription => GetText("MeshFlipperEditorDescription");
         internal string MeshFlipperEditorDirectionLabel => GetText("MeshFlipperEditorDirectionLabel");
+        internal string MeshFlipperEditorUseMaskLabel => GetText("MeshFlipperEditorUseMaskLabel");
+        internal string MeshFlipperEditorMaskTextureLabel => GetText("MeshFlipperEditorMaskTextureLabel");
+        internal string MeshFlipperEditorMaskModeLabel => GetText("MeshFlipperEditorMaskModeLabel");
         internal string MeshFlipperEditorEnabledOnPCLabel => GetText("MeshFlipperEditorEnabledOnPCLabel");
         internal string MeshFlipperEditorEnabledOnAndroidLabel => GetText("MeshFlipperEditorEnabledOnAndroidLabel");
         internal string MeshFlipperEditorEnabledOnPCWarning => GetText("MeshFlipperEditorEnabledOnPCWarning");
         internal string MeshFlipperEditorEnabledOnAndroidWarning => GetText("MeshFlipperEditorEnabledOnAndroidWarning");
+        internal string MeshFlipperEditorMaskTextureMissingError => GetText("MeshFlipperEditorMaskTextureMissingError");
+        internal string MeshFlipperEditorMaskTextureNotReadableError => GetText("MeshFlipperEditorMaskTextureNotReadableError");
         internal string MeshFlipperMeshDirectionFlip => GetText("MeshFlipperMeshDirectionFlip");
         internal string MeshFlipperMeshDirectionDoubleSide => GetText("MeshFlipperMeshDirectionDoubleSide");
 
