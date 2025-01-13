@@ -443,7 +443,7 @@ msgid "MeshFlipperEditorEnabledOnPCWarning"
 msgstr "Возможно, это можно сделать с помощью настроек шейдера без использования этого компонента."
 
 msgid "MeshFlipperEditorEnabledOnAndroidWarning"
-msgstr "Количество полигонов для этой сетки удваивается."
+msgstr "Количество полигонов для этой сетки увеличится."
 
 msgid "MeshFlipperMeshDirectionFlip"
 msgstr "Перевернуто"
