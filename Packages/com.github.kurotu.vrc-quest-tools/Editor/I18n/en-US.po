@@ -11,554 +11,567 @@ msgstr ""
 "X-Crowdin-File-ID: 22\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-01-13 15:02\n"
+"PO-Revision-Date: 2025-01-13 17:13\n"
 
 msgid "CancelLabel"
-msgstr ""
+msgstr "Cancel"
 
 msgid "OpenLabel"
-msgstr ""
+msgstr "Open"
 
 msgid "CloseLabel"
-msgstr ""
+msgstr "Close"
 
 msgid "DismissLabel"
-msgstr ""
+msgstr "Dismiss"
 
 msgid "ExitLabel"
-msgstr ""
+msgstr "Exit"
 
 msgid "YesLabel"
-msgstr ""
+msgstr "Yes"
 
 msgid "NoLabel"
-msgstr ""
+msgstr "No"
 
 msgid "AbortLabel"
-msgstr ""
+msgstr "Abort"
 
 msgid "AddLabel"
-msgstr ""
+msgstr "Add"
 
 msgid "RemoveLabel"
-msgstr ""
+msgstr "Remove"
 
 msgid "Maximum"
-msgstr ""
+msgstr "Maximum"
 
 msgid "IncompatibleSDK"
-msgstr ""
+msgstr "Incompatible VRChat SDK. Please report."
 
 msgid "AvatarConverterSettingsEditorDescription"
-msgstr ""
+msgstr "Convert this avatar uploadable for Android platform."
 
 msgid "AvatarConverterSettingsEditorDescriptionNDMF"
-msgstr ""
+msgstr "Convert this avatar uploadable for Android platform when the target platform is Android."
 
 msgid "ExitPlayModeToEdit"
-msgstr ""
+msgstr "Exit play mode to edit."
 
 msgid "BeingConvertSettingsButtonLabel"
-msgstr ""
+msgstr "Begin Converter Settings"
 
 msgid "AvatarLabel"
-msgstr ""
+msgstr "Avatar"
 
 msgid "GenerateAndroidTexturesLabel"
-msgstr ""
+msgstr "Generate Textures for Android"
 
 msgid "GenerateAndroidTexturesTooltip"
-msgstr ""
+msgstr "By generating new textures which applying material's parameters not only main textures, get closer to PC version of the avatar"
 
 msgid "SupportedShadersLabel"
-msgstr ""
+msgstr "Supported Shaders"
 
 msgid "SaveToLabel"
-msgstr ""
+msgstr "Folder to Save"
 
 msgid "SelectButtonLabel"
-msgstr ""
+msgstr "Select"
 
 msgid "ConvertButtonLabel"
-msgstr ""
+msgstr "Convert"
 
 msgid "AssignButtonLabel"
-msgstr ""
+msgstr "Assign"
 
 msgid "AttachButtonLabel"
-msgstr ""
+msgstr "Attach"
 
 msgid "UpdateTexturesLabel"
-msgstr ""
+msgstr "Update Converted Android Textures"
 
 msgid "AdvancedConverterSettingsLabel"
-msgstr ""
+msgstr "Advanced Converter Settings"
 
 msgid "RemoveVertexColorLabel"
-msgstr ""
+msgstr "Remove Vertex Color from Meshes"
 
 msgid "RemoveVertexColorTooltip"
-msgstr ""
+msgstr "Usually you don't have to disable this option. You can disable this option to prevent unexpected behavior when you are using special shaders which require vertex colors in PC avatars.\n"
+"Restore from the avatar's \"VertexColorRemover\" component if vertex color is accidentally removed."
 
 msgid "AnimationOverrideLabel"
-msgstr ""
+msgstr "Animation Override"
 
 msgid "AnimationOverrideTooltip"
-msgstr ""
+msgstr "Convert Animator Controllers with Animator Override Controller's animations."
 
 msgid "NdmfPhaseLabel"
-msgstr ""
+msgstr "NDMF Phase to Convert"
 
 msgid "NdmfPhaseTooltip"
-msgstr ""
+msgstr "Convert the avatar in the selected NDMF phase."
 
 msgid "GeneratingTexturesDialogMessage"
-msgstr ""
+msgstr "Generating textures..."
 
 msgid "MaterialExceptionDialogMessage"
-msgstr ""
+msgstr "An error occured when converting materials. Aborted."
 
 msgid "AnimationClipExceptionDialogMessage"
-msgstr ""
+msgstr "An error occured when converting Animation Clips. Aborted."
 
 msgid "AnimatorControllerExceptionDialogMessage"
-msgstr ""
+msgstr "An error occured when converting Animator Controllers. Aborted."
 
 msgid "InfoForNdmfConversion"
-msgstr ""
+msgstr "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Please use the Avatar Builder to avoid VRChat SDK limitation."
 
 msgid "InfoForNetworkIdAssigner"
-msgstr ""
+msgstr "You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again to apply IDs after attaching the component."
 
 msgid "NetworkIdAssignerAttached"
-msgstr ""
+msgstr "Network ID Assigner has been attached to the avatar. Please upload the non-converted avatar to PC platform to synchronize PhysBones between PC and Android."
 
 msgid "WarningForPerformance"
-msgstr ""
+msgstr "Estimated performance rating is Very Poor. You can upload the converted avatar for Android platform, but there are following limitation.\n"
+"- Quest/PICO users see your fallback avatar by default, then need to change \"Avatar Display\" setting.\n"
+"- Android smartphone users can't see Very Poor avatars."
 
 msgid "WarningForAppearance"
-msgstr ""
+msgstr "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n"
+"You should check converted avatar's appearance on PC by uploading with another Blueprint ID or using Avatars 3.0 local testing."
 
 msgid "WarningForUnsupportedShaders"
-msgstr ""
+msgstr "Following materials are using unsupported shaders. Textures might not properly be generated.\n"
+"Disabling \"Generate Textures for Android\" option changes only shader."
 
 msgid "AlertForComponents"
-msgstr ""
+msgstr "Following unsupported components will be removed. Check avatar features after conversion."
 
 msgid "AlertForDynamicBoneConversion"
-msgstr ""
+msgstr "VRCQuestTools doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar."
 
 msgid "AlertForMAConvertConstraints"
-msgstr ""
+msgstr "Unity Constraints cannot be used on Android. You can non-destructively convert Unity Constraints to VRChat Constraints by adding a MA Convert Constraints component to the avatar."
 
 msgid "AlertForUnityConstraintsConversion"
-msgstr ""
+msgstr "VRCQuestTools doesn't convert Unity constraints to VRChat constraints. Please set up VRChat constraints before converting the avatar."
 
 msgid "AlertForAvatarDynamicsPerformance"
-msgstr ""
+msgstr "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not able to upload for Android.  Please keep \"Poor\" rating in avatar dynamics categories."
 
 msgid "ErrorForPrefabStage"
-msgstr ""
+msgstr "Can't convert the avatar in prefab mode. Please go back to a scene from prefab mode."
 
 msgid "ExitPrefabStageButtonLabel"
-msgstr ""
+msgstr "Back to Scene"
 
 msgid "AvatarConverterMaterialConvertSettingsLabel"
-msgstr ""
+msgstr "Material Conversion Settings"
 
 msgid "AvatarConverterDefaultMaterialConvertSettingLabel"
-msgstr ""
+msgstr "Default Material Conversion Settings"
 
 msgid "AvatarConverterAdditionalMaterialConvertSettingsLabel"
-msgstr ""
+msgstr "Additional Material Conversion Settings"
 
 msgid "AvatarConverterAvatarDynamicsSettingsLabel"
-msgstr ""
+msgstr "Avatar Dynamics Settings"
 
 msgid "AvatarConverterPhysBonesTooltip"
-msgstr ""
+msgstr "Set PhysBones to keep while conversion."
 
 msgid "AvatarConverterPhysBoneCollidersTooltip"
-msgstr ""
+msgstr "Set PhysBoneColliders to keep while conversion."
 
 msgid "AvatarConverterContactsTooltip"
-msgstr ""
+msgstr "Set ContactSenders and ContactReceivers to keep while conversion."
 
 msgid "OpenAvatarBuilder"
-msgstr ""
+msgstr "Open Avatar Builder"
 
 msgid "ManualConversionWarning"
-msgstr ""
+msgstr "When converting manually, non-destructive components other than MA Merge Animator are not considered. Unexpected issues may arise in the behavior after combining."
 
 msgid "ManualConvertButtonLabel"
-msgstr ""
+msgstr "Convert"
 
 msgid "ConfirmationForUnityConstraints"
-msgstr ""
+msgstr "Ручное преобразование удалит Unity Constraints. Вы можете без разрушения преобразовать их в VRChat Constraints, добавив компонент MA Convert Constraints к аватару и используя Avatar Builder для загрузки. Вы действительно хотите продолжить преобразование?"
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
-msgstr ""
+msgstr "Textures Size Limit"
 
 msgid "IMaterialConvertSettingsMainTextureBrightnessLabel"
-msgstr ""
+msgstr "Main Texture Brightness"
 
 msgid "IMaterialConvertSettingsMainTextureBrightnessTooltip"
-msgstr ""
+msgstr "Tweak main texture color."
 
 msgid "ToonLitConvertSettingsGenerateShadowFromNormalMapLabel"
-msgstr ""
+msgstr "Generate shadow from normal map"
 
 msgid "MatCapLitConvertSettingsMatCapTextureLabel"
-msgstr ""
+msgstr "MatCap Texture"
 
 msgid "MatCapLitConvertSettingsMatCapTextureWarning"
-msgstr ""
+msgstr "Set MatCap texture."
 
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
-msgstr ""
+msgstr "Target Material"
 
 msgid "AdditionalMaterialConvertSettingsSelectMaterialLabel"
-msgstr ""
+msgstr "Select Material"
 
 msgid "MaterialConvertTypePopupLabelToonLit"
-msgstr ""
+msgstr "Toon Lit"
 
 msgid "MaterialConvertTypePopupLabelMatCapLit"
-msgstr ""
+msgstr "MatCap Lit"
 
 msgid "MaterialConvertTypePopupLabelMaterialReplace"
-msgstr ""
+msgstr "Material Replacement"
 
 msgid "MaterialReplaceSettingsMaterialLabel"
-msgstr ""
+msgstr "Replaced Material"
 
 msgid "MaterialReplaceSettingsMaterialTooltip"
-msgstr ""
+msgstr "Target material will be replaced by this material."
 
 msgid "NoMissingComponentsMessage"
-msgstr ""
+msgstr "There are no \"missing\" components in {0}."
 
 msgid "MissingRemoverConfirmationMessage"
-msgstr ""
+msgstr "Remove \"missing\" components from {0}."
 
 msgid "UnpackPrefabMessage"
-msgstr ""
+msgstr "This also executes \"Unpack Prefab\" operation."
 
 msgid "MissingRemoverOnBuildDialogMessage"
-msgstr ""
+msgstr "{0} has \"missing\" components. Would you like to continue building the avatar without such components?"
 
 msgid "SourceMeshLabel"
-msgstr ""
+msgstr "Source Mesh"
 
 msgid "TargetMeshLabel"
-msgstr ""
+msgstr "Target Mesh"
 
 msgid "CopyButtonLabel"
-msgstr ""
+msgstr "Copy BlendShape Weights"
 
 msgid "SwitchButtonLabel"
-msgstr ""
+msgstr "Switch Source/Target"
 
 msgid "NoUnsupportedComponentsMessage"
-msgstr ""
+msgstr "There are no unsupported components in {0}."
 
 msgid "UnsupportedRemoverConfirmationMessage"
-msgstr ""
+msgstr "Remove following unsupported components from {0}."
 
 msgid "PhysBonesSDKRequired"
-msgstr ""
+msgstr "VRCSDK which supports Avatar Dynamics is required."
 
 msgid "SelectComponentsToKeep"
-msgstr ""
+msgstr "Select components to keep."
 
 msgid "PhysBonesListTooltip"
-msgstr ""
+msgstr "The list of components and their root transforms."
 
 msgid "KeepAll"
-msgstr ""
+msgstr "Keep All"
 
 msgid "AvatarDynamicsPreventsUpload"
-msgstr ""
+msgstr "You can't upload this avatar for Android. At least Avatar Dynamics must keep \"Poor\" rating."
 
 msgid "PhysBonesWillBeRemovedAtRunTime"
-msgstr ""
+msgstr "You can't upload this avatar for Android. Please reduce PhysBone components."
 
 msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
-msgstr ""
+msgstr "All PhysBone colliders will be removed at runtime on Android. Please reduce PhysBoneCollider components."
 
 msgid "ContactsWillBeRemovedAtRunTime"
-msgstr ""
+msgstr "You can't upload this avatar for Android. Please reduce VRCContact components."
 
 msgid "PhysBonesTransformsShouldBeReduced"
-msgstr ""
+msgstr "You can't upload this avatar for Android. Please reduce VRCPhysBone components or number of transforms in hierarchy under VRCPhysBone components."
 
 msgid "PhysBonesCollisionCheckCountShouldBeReduced"
-msgstr ""
+msgstr "You can't upload this avatar for Android. Please reduce collision check count between VRCPhysBone components and VRCPhysBoneCollider components."
 
 msgid "PhysBonesShouldHaveNetworkID"
-msgstr ""
+msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Android. Please assign Network IDs to both of PC version and Android version with Network ID Utility of VRCSDK, then re-upload both."
 
 msgid "AlertForMultiplePhysBones"
-msgstr ""
+msgstr "There are multiple PhysBones in a single GameObject. They may not be properly synchronized between PC and Android after removing PhysBones."
 
 msgid "EstimatedPerformanceStats"
-msgstr ""
+msgstr "Estimated Performance Stats"
 
 msgid "DeleteUnselectedComponents"
-msgstr ""
+msgstr "Delete Unselected Components"
 
 msgid "SelectAllButtonLabel"
-msgstr ""
+msgstr "Select All"
 
 msgid "DeselectAllButtonLabel"
-msgstr ""
+msgstr "Deselect All"
 
 msgid "ApplyButtonLabel"
-msgstr ""
+msgstr "Apply"
 
 msgid "TextureLabel"
-msgstr ""
+msgstr "Texture"
 
 msgid "InvertLabel"
-msgstr ""
+msgstr "Invert"
 
 msgid "SaveFileDialogTitle"
-msgstr ""
+msgstr "Save {0}"
 
 msgid "SaveFileDialogMessage"
-msgstr ""
+msgstr "Please enter a file name to save the texture to"
 
 msgid "GenerateButtonLabel"
-msgstr ""
+msgstr "Generate Metallic Smoothness"
 
 msgid "RecommendedUnitySettingsForAndroid"
-msgstr ""
+msgstr "Recommended Settings for Android"
 
 msgid "TextureCompressionLabel"
-msgstr ""
+msgstr "Android Texture Compression"
 
 msgid "TextureCompressionHelp"
-msgstr ""
+msgstr "ASTC improves Android texture quality in exchange for long compression time"
 
 msgid "TextureCompressionButtonLabel"
-msgstr ""
+msgstr "Set texture compression to ASTC"
 
 msgid "ApplyAllButtonLabel"
-msgstr ""
+msgstr "Apply All Settings"
 
 msgid "ShowOnStartupLabel"
-msgstr ""
+msgstr "Show on startup"
 
 msgid "AllAppliedHelp"
-msgstr ""
+msgstr "OK, all recommended settings are applied."
 
 msgid "GetUpdate"
-msgstr ""
+msgstr "Get Update"
 
 msgid "SeeChangelog"
-msgstr ""
+msgstr "Changelog"
 
 msgid "SkipThisVersion"
-msgstr ""
+msgstr "Skip This"
 
 msgid "NewVersionIsAvailable"
-msgstr ""
+msgstr "New version {0} is available."
 
 msgid "NewVersionHasBreakingChanges"
-msgstr ""
+msgstr "This version might have breaking changes about compatibility."
 
 msgid "MissingScripts"
-msgstr ""
+msgstr "There are \"missing\" scripts. Please check for assets or packages you forgot to import."
 
 msgid "ExperimentalComponentWarning"
-msgstr ""
+msgstr "This component is an experimental feature."
 
 msgid "AvatarRootComponentMustBeOnAvatarRoot"
-msgstr ""
+msgstr "This component must be attached to VRC_AvatarDescriptor GameObject."
 
 msgid "VertexColorRemoverEditorDescription"
-msgstr ""
+msgstr "Vertex color is automatically removed from this GameObject's mesh."
 
 msgid "VertexColorRemoverEditorRemove"
-msgstr ""
+msgstr "Remove Vertex Color"
 
 msgid "VertexColorRemoverEditorRestore"
-msgstr ""
+msgstr "Restore Vertex Color"
 
 msgid "ConvertedAvatarEditorMessage"
-msgstr ""
+msgstr "This component indicates the avatar was converted by VRCQuestTools."
 
 msgid "ConvertedAvatarEditorNDMFMessage"
-msgstr ""
+msgstr "Components which are not supported on Android will be removed in NDMF optimization phase."
 
 msgid "NetworkIDAssignerEditorDescription"
-msgstr ""
+msgstr "Assign Network IDs to the avatar's components such as PhysBones in build process. IDs are determined by hash values of hierarchy paths from the avatar root."
 
 msgid "PlatformTargetSettingsEditorDescription"
-msgstr ""
+msgstr "Components are enforced to use a specific platform settings in NDMF build process."
 
 msgid "PlatformTargetSettingsIsRequiredToEnforcePlatform"
-msgstr ""
+msgstr "PlatformTargetSettings component is required to the avatar root object in order to enforce a specific platform settings."
 
 msgid "ComponentRequiresNdmf"
-msgstr ""
+msgstr "Non-Destructive Modular Framework (NDMF) is required."
 
 msgid "BuildTargetLabel"
-msgstr ""
+msgstr "Build Target"
 
 msgid "BuildTargetTooltip"
-msgstr ""
+msgstr "Select build target platform. Use Unity's target platform when Auto is selected."
 
 msgid "PlatformComponentRemoverEditorDescription"
-msgstr ""
+msgstr "Components will be removed on build for unselected build targets."
 
 msgid "PlatformComponentRemoverEditorComponentSettingsLabel"
-msgstr ""
+msgstr "Components to Keep"
 
 msgid "PlatformComponentRemoverEditorComponentSettingsTooltip"
-msgstr ""
+msgstr "Select platform to keep components."
 
 msgid "PlatformComponentRemoverEditorCheckboxPCTooltip"
-msgstr ""
+msgstr "Keep selected components on PC build."
 
 msgid "PlatformComponentRemoverEditorCheckboxAndroidTooltip"
-msgstr ""
+msgstr "Keep selected components on Android build."
 
 msgid "ComponentLabel"
-msgstr ""
+msgstr "Component"
 
 msgid "PlatformGameObjectRemoverEditorDescription"
-msgstr ""
+msgstr "This GameObject will be removed on build for unselected build targets."
 
 msgid "PlatformGameObjectRemoverEditorKeepOnPCLabel"
-msgstr ""
+msgstr "Keep on PC"
 
 msgid "PlatformGameObjectRemoverEditorKeepOnAndroidLabel"
-msgstr ""
+msgstr "Keep on Android"
 
 msgid "MeshFlipperEditorDescription"
-msgstr ""
+msgstr "Duplicate the polygons of a mesh to make it double-sided. Or flip the faces."
 
 msgid "MeshFlipperEditorDirectionLabel"
-msgstr ""
+msgstr "Mesh Direction"
 
 msgid "MeshFlipperEditorEnabledOnPCLabel"
-msgstr ""
+msgstr "Enable on PC"
 
 msgid "MeshFlipperEditorEnabledOnAndroidLabel"
-msgstr ""
+msgstr "Enable on Android"
 
 msgid "MeshFlipperEditorEnabledOnPCWarning"
-msgstr ""
+msgstr "It may be possible to achieve this with shader settings without using this component."
 
 msgid "MeshFlipperEditorEnabledOnAndroidWarning"
-msgstr ""
+msgstr "The polygon count for this mesh is doubled."
 
 msgid "MeshFlipperMeshDirectionFlip"
-msgstr ""
+msgstr "Flipped"
 
 msgid "MeshFlipperMeshDirectionDoubleSide"
-msgstr ""
+msgstr "Double Sided"
 
 msgid "AvatarBuilderWindowExitPlayMode"
-msgstr ""
+msgstr "Exit play mode to build the avatar."
 
 msgid "AvatarBuilderWindowExitPrefabStage"
-msgstr ""
+msgstr "Exit prefab stage to build the avatar."
 
 msgid "AvatarBuilderWindowNoActiveAvatarsFound"
-msgstr ""
+msgstr "No active avatars in the scene."
 
 msgid "AvatarBuilderWindowSelectAvatar"
-msgstr ""
+msgstr "Select an avatar to build in VRChat SDK Control Panel."
 
 msgid "AvatarBuilderWindowNoNdmfComponentsFound"
-msgstr ""
+msgstr "No VRCQuestTools components found in the avatar."
 
 msgid "AvatarBuilderWindowSucceededBuild"
-msgstr ""
+msgstr "Succeeded to build the avatar."
 
 msgid "AvatarBuilderWindowSucceededUpload"
-msgstr ""
+msgstr "Succeeded to upload the avatar."
 
 msgid "AvatarBuilderWindowFailedBuild"
-msgstr ""
+msgstr "Failed to build the avatar. See console logs."
 
 msgid "AvatarBuilderWindowRequiresControlPanel"
-msgstr ""
+msgstr "Need to open VRChat SDK Control Panel to build the avatar."
 
 msgid "AvatarBuilderWindowOfflineTestingLabel"
-msgstr ""
+msgstr "Offline Testing (PC)"
 
 msgid "AvatarBuilderWindowOfflineTestingDescription"
-msgstr ""
+msgstr "Build this avatar with Android build setting to test it on PC. The avatar will appear as \"SDK {0}\" in the Other category of the avatars menu."
 
 msgid "AvatarBuilderWindowOnlinePublishingLabel"
-msgstr ""
+msgstr "Online Publishing ({0})"
 
 msgid "AvatarBuilderWindowOnlinePublishingDescription"
-msgstr ""
+msgstr "Upload this avatar to VRChat with Android build setting. The pre-build validation of VRChat SDK Control Panel will be skipped even if the avatar doesn't satisfy Android limitation."
 
 msgid "AvatarBuilderWindowSetAsFallbackIfPossible"
-msgstr ""
+msgstr "Set as a fallback avatar if possible"
 
 msgid "AvatarBuilderWindowSetAsFallbackIfPossibleTooltip"
-msgstr ""
+msgstr "Performance rank must be Good or better after building the avatar."
 
 msgid "AvatarBuilderWindowFallbackNotAllowed"
-msgstr ""
+msgstr "Could not set as a fallback avatar because the performance rank is {0}."
 
 msgid "AvatarBuilderWindowNdmfManualBakingLabel"
-msgstr ""
+msgstr "NDMF Manual Baking"
 
 msgid "AvatarBuilderWindowNdmfManualBakingDescription"
-msgstr ""
+msgstr "Execute the menu, Tools -> NDM Framework -> Manual bake avatar with Android build setting."
 
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
-msgstr ""
+msgstr "Need to set name and thumbnail in VRChat SDK Control Panel when uploading a new avatar."
 
 msgid "FeatureRequiresNdmf"
-msgstr ""
+msgstr "Non-Destructive Modular Framework is required."
 
 msgid "NdmfPluginRequiresNdmfUpdate"
-msgstr ""
+msgstr "Non-Destructive Modular Framework (NDMF) {0} or later is required. Please update NDMF."
 
 msgid "NdmfPluginRemovedUnsupportedComponent"
-msgstr ""
+msgstr "Removed unsupported component \"{0}\" from \"{1}\". Please test the avatar."
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
-msgstr ""
+msgstr "Removed Unsupported Component"
 
 msgid "NDMF:RemovedUnsupportedComponentDescription"
-msgstr ""
+msgstr "Unsupported component {0} is removed from \"{1}\" during build. Please test the avatar."
 
 msgid "NDMF:MaterialConversionErrorTitle"
-msgstr ""
+msgstr "Material Conversion Error"
 
 msgid "NDMF:MaterialConversionErrorDescription"
-msgstr ""
+msgstr "An error occured when conversion a material.\n\n"
+"Material: {0}\n"
+"Shader: {1}\n\n"
+"{2}: {3}\n"
+"{4}"
 
 msgid "NDMF:ObjectConversionErrorTitle"
-msgstr ""
+msgstr "{0} Conversion Error"
 
 msgid "NDMF:ObjectConversionErrorDescription"
-msgstr ""
+msgstr "An error occured when converting {0}.\n\n"
+"{0}: {1}\n\n"
+"{2}: {3}\n"
+"{4}"
 
 msgid "NDMF:UnsupportedTextureFormatTitle"
-msgstr ""
+msgstr "Unsupported Texture Format"
 
 msgid "NDMF:UnsupportedTextureFormatDescription"
-msgstr ""
+msgstr "Unsupported texture format {0} is used for {1}. When textures were generated by manual bake, switch target platform then execute manual bake again."
 
 msgid "NDMF:UnknownTextureFormatTitle"
-msgstr ""
+msgstr "Unknown Texture Format"
 
 msgid "NDMF:UnknownTextureFormatDescription"
-msgstr ""
+msgstr "Unknown texture format {0} is used for {1}. Please report to the tool's developer to suppress this warning."
 
 msgid "NDMF:MissingNetworkIDAssignerTitle"
-msgstr ""
+msgstr "Network ID Assignment"
 
 msgid "NDMF:MissingNetworkIDAssignerDescription"
-msgstr ""
+msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Android.\n"
+"You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again for each platform to apply IDs after attaching the component."
 
