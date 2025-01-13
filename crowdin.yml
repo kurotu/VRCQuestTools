@@ -1,0 +1,3 @@
+files:
+  - source: Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po
+    translation: Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/%locale%.po
