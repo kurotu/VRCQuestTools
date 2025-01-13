@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- [NDMF] Feature to control behavior of `VQT Mesh Flipper` by mask textures.
+
+### Changed
+- [NDMF] `VQT Mesh Flipper` works before `NDMF Mantis LOD Editor` in the transforming phase.
+
 ### Fixes
 - Fixed an issue where an error would occur when right-clicking on the hierarchy without selecting a GameObject.
 

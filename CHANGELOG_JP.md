@@ -6,6 +6,12 @@
 
 ## [Unreleased]
 
+### 追加
+- [NDMF] `VQT Mesh Flipper` にマスクテクスチャによって動作を制御する機能を追加。
+
+### 変更
+- [NDMF] Transforming Phase で `VQT Mesh Flipper` が `NDMF Mantis LOD Editor` より先に動作するように変更。
+
 ### 修正
 - GameObject を選択していない状態でヒエラルキーを右クリックするとエラーが発生する問題を修正。
 
