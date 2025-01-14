@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 22\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-01-13 17:13\n"
+"PO-Revision-Date: 2025-01-14 12:00\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -42,6 +42,9 @@ msgstr "追加"
 
 msgid "RemoveLabel"
 msgstr "削除"
+
+msgid "FixLabel"
+msgstr "修正"
 
 msgid "Maximum"
 msgstr "最大"
@@ -453,11 +456,26 @@ msgstr "PCで有効"
 msgid "MeshFlipperEditorEnabledOnAndroidLabel"
 msgstr "Androidで有効"
 
+msgid "MeshFlipperEditorUseMaskLabel"
+msgstr "マスクを使用する"
+
+msgid "MeshFlipperEditorMaskTextureLabel"
+msgstr "マスクテクスチャ"
+
+msgid "MeshFlipperEditorMaskModeLabel"
+msgstr "マスクモード"
+
 msgid "MeshFlipperEditorEnabledOnPCWarning"
 msgstr "このコンポーネントを使用しなくてもシェーダーの設定で実現できる可能性があります。"
 
 msgid "MeshFlipperEditorEnabledOnAndroidWarning"
-msgstr "このメッシュのポリゴン数は2倍になります。"
+msgstr "このメッシュのポリゴン数は増加します。"
+
+msgid "MeshFlipperEditorMaskTextureMissingError"
+msgstr "マスクテクスチャがありません。"
+
+msgid "MeshFlipperEditorMaskTextureNotReadableError"
+msgstr "マスクテクスチャは読み取り可能に設定されている必要があります。"
 
 msgid "MeshFlipperMeshDirectionFlip"
 msgstr "反転"
@@ -574,4 +592,16 @@ msgstr "ネットワークIDの割り当て"
 msgid "NDMF:MissingNetworkIDAssignerDescription"
 msgstr "PhysBone を正しく同期させるには PhysBone のネットワーク ID をPC版と一致させる必要があります。\n"
 "アバターに Network ID Assigner コンポーネントを追加することで非破壊的にネットワークIDを割り当てることができます。コンポーネントを追加した後、IDを反映するために各プラットフォームに再度アップロードしてください。"
+
+msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
+msgstr "未設定のマスクテクスチャ"
+
+msgid "NDMF:MeshFlipperMaskMissingErrorDescription"
+msgstr "マスクテクスチャがありません。テクスチャを設定してください。"
+
+msgid "NDMF:MeshFlipperMaskNotReadableErrorTitle"
+msgstr "読み取り不能なマスクテクスチャ"
+
+msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
+msgstr "マスクテクスチャが読み取り可能に設定されていません。テクスチャのインポート設定を変更してください。"
 
