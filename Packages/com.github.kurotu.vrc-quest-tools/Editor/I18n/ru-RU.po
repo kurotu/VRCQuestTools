@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 22\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-01-13 15:02\n"
+"PO-Revision-Date: 2025-01-14 12:00\n"
 
 msgid "CancelLabel"
 msgstr ""
@@ -41,6 +41,9 @@ msgid "AddLabel"
 msgstr ""
 
 msgid "RemoveLabel"
+msgstr ""
+
+msgid "FixLabel"
 msgstr ""
 
 msgid "Maximum"
@@ -448,10 +451,25 @@ msgstr ""
 msgid "MeshFlipperEditorEnabledOnAndroidLabel"
 msgstr ""
 
+msgid "MeshFlipperEditorUseMaskLabel"
+msgstr ""
+
+msgid "MeshFlipperEditorMaskTextureLabel"
+msgstr ""
+
+msgid "MeshFlipperEditorMaskModeLabel"
+msgstr ""
+
 msgid "MeshFlipperEditorEnabledOnPCWarning"
 msgstr ""
 
 msgid "MeshFlipperEditorEnabledOnAndroidWarning"
+msgstr ""
+
+msgid "MeshFlipperEditorMaskTextureMissingError"
+msgstr ""
+
+msgid "MeshFlipperEditorMaskTextureNotReadableError"
 msgstr ""
 
 msgid "MeshFlipperMeshDirectionFlip"
@@ -560,5 +578,17 @@ msgid "NDMF:MissingNetworkIDAssignerTitle"
 msgstr ""
 
 msgid "NDMF:MissingNetworkIDAssignerDescription"
+msgstr ""
+
+msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
+msgstr ""
+
+msgid "NDMF:MeshFlipperMaskMissingErrorDescription"
+msgstr ""
+
+msgid "NDMF:MeshFlipperMaskNotReadableErrorTitle"
+msgstr ""
+
+msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
 msgstr ""
 
