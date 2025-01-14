@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using KRT.VRCQuestTools.Components;
 using nadena.dev.ndmf;
 using UnityEngine;
 #if !VQT_HAS_NDMF_ERROR_REPORT
@@ -41,10 +42,22 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 else
                 {
-                    var mesh = meshFlipper.CreateMesh();
-                    flippedMeshes[key] = mesh;
-                    meshFlipper.SetSharedMesh(mesh);
-                    ObjectRegistry.RegisterReplacedObject(originalMesh, mesh);
+                    try
+                    {
+                        var mesh = meshFlipper.CreateMesh();
+                        flippedMeshes[key] = mesh;
+                        meshFlipper.SetSharedMesh(mesh);
+                        ObjectRegistry.RegisterReplacedObject(originalMesh, mesh);
+                    }
+                    catch (MeshFlipperMaskMissingException)
+                    {
+                        ErrorReport.ReportError(new MeshFlipperMaskMissingError(meshFlipper));
+                    }
+                    catch (MeshFlipperMaskNotReadableException e)
+                    {
+                        var obj = ObjectRegistry.GetReference(e.texture);
+                        ErrorReport.ReportError(new MeshFlipperMaskNotReadableError(meshFlipper, obj));
+                    }
                 }
             }
         }

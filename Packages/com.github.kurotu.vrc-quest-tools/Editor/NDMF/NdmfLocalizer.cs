@@ -29,6 +29,10 @@ namespace KRT.VRCQuestTools.Ndmf
         internal const string UnknownTextureFormatDescription = "NDMF:UnknownTextureFormatDescription";
         internal const string MissingNetworkIDAssignerTitle = "NDMF:MissingNetworkIDAssignerTitle";
         internal const string MissingNetworkIDAssignerDescription = "NDMF:MissingNetworkIDAssignerDescription";
+        internal const string MeshFlipperMaskMissingErrorTitle = "NDMF:MeshFlipperMaskMissingErrorTitle";
+        internal const string MeshFlipperMaskMissingErrorDescription = "NDMF:MeshFlipperMaskMissingErrorDescription";
+        internal const string MeshFlipperMaskNotReadableErrorTitle = "NDMF:MeshFlipperMaskNotReadableErrorTitle";
+        internal const string MeshFlipperMaskNotReadableErrorDescription = "NDMF:MeshFlipperMaskNotReadableErrorDescription";
 #pragma warning restore SA1600
 
         /// <summary>

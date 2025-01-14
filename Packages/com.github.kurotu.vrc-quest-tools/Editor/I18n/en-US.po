@@ -34,6 +34,9 @@ msgstr "Add"
 msgid "RemoveLabel"
 msgstr "Remove"
 
+msgid "FixLabel"
+msgstr "Fix"
+
 msgid "Maximum"
 msgstr "Maximum"
 
@@ -439,11 +442,26 @@ msgstr "Enable on PC"
 msgid "MeshFlipperEditorEnabledOnAndroidLabel"
 msgstr "Enable on Android"
 
+msgid "MeshFlipperEditorUseMaskLabel"
+msgstr "Use Mask"
+
+msgid "MeshFlipperEditorMaskTextureLabel"
+msgstr "Mask Texture"
+
+msgid "MeshFlipperEditorMaskModeLabel"
+msgstr "Mask Mode"
+
 msgid "MeshFlipperEditorEnabledOnPCWarning"
 msgstr "It may be possible to achieve this with shader settings without using this component."
 
 msgid "MeshFlipperEditorEnabledOnAndroidWarning"
-msgstr "The polygon count for this mesh is doubled."
+msgstr "The polygon count for this mesh will increase."
+
+msgid "MeshFlipperEditorMaskTextureMissingError"
+msgstr "Mask texture is missing."
+
+msgid "MeshFlipperEditorMaskTextureNotReadableError"
+msgstr "Mask texture must be readable."
 
 msgid "MeshFlipperMeshDirectionFlip"
 msgstr "Flipped"
@@ -552,3 +570,15 @@ msgstr "Network ID Assignment"
 
 msgid "NDMF:MissingNetworkIDAssignerDescription"
 msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Android.\nYou can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again for each platform to apply IDs after attaching the component."
+
+msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
+msgstr "Missing Mask Texture"
+
+msgid "NDMF:MeshFlipperMaskMissingErrorDescription"
+msgstr "Mask texture is missing. Set a texture."
+
+msgid "NDMF:MeshFlipperMaskNotReadableErrorTitle"
+msgstr "Unreadable Mask Texture"
+
+msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
+msgstr "The mask texture is not readable. Change the texture's import settings."
