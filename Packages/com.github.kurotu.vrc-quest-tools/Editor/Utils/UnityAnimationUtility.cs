@@ -66,13 +66,14 @@ namespace KRT.VRCQuestTools.Utils
                 trees.AddRange(childStateMachineTrees);
             }
             var directTrees = stateMachine.states
-                .Select(state =>
+                .SelectMany(state =>
                 {
                     if (state.state.motion is BlendTree tree)
                     {
-                        return tree;
+                        var descendants = GetDescendantBlendTrees(tree, new List<BlendTree>());
+                        return descendants.Append(tree);
                     }
-                    return null;
+                    return new BlendTree[] { };
                 })
                .Where(t => t != null);
             trees.AddRange(directTrees);
@@ -279,6 +280,18 @@ namespace KRT.VRCQuestTools.Utils
         {
             var duplicator = new AnimatorControllerDuplicator();
             return duplicator.Duplicate(controller);
+        }
+
+        private static BlendTree[] GetDescendantBlendTrees(BlendTree blendTree, List<BlendTree> currentTrees)
+        {
+            currentTrees.Add(blendTree);
+            var childTrees = blendTree.children
+                .Where(child => child.motion is BlendTree)
+                .Select(child => child.motion as BlendTree)
+                .Where(tree => !currentTrees.Contains(tree))
+                .ToArray();
+            var descendants = childTrees.SelectMany(tree => GetDescendantBlendTrees(tree, currentTrees));
+            return childTrees.Concat(descendants).Distinct().ToArray();
         }
     }
 }
