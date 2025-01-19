@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 22\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-01-19 08:30\n"
+"PO-Revision-Date: 2025-01-19 12:14\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -194,7 +194,7 @@ msgid "ManualConversionWarning"
 msgstr "При ручном преобразовании не учитываются неразрушающие компоненты, кроме MA Merge Animator. Могут возникнуть неожиданные проблемы с работой после комбинирования."
 
 msgid "ManualConvertButtonLabel"
-msgstr "Преобразовать Вручную"
+msgstr "Преобразовать"
 
 msgid "ConfirmationForUnityConstraints"
 msgstr "Ручное преобразование удалит Unity Constraints. Вы можете без разрушения преобразовать их в VRChat Constraints, добавив компонент MA Convert Constraints к аватару и используя Avatar Builder для загрузки. Вы действительно хотите продолжить преобразование?"
@@ -464,7 +464,7 @@ msgid "MeshFlipperEditorEnabledOnPCWarning"
 msgstr "Возможно, это можно сделать с помощью настроек шейдера без использования этого компонента."
 
 msgid "MeshFlipperEditorEnabledOnAndroidWarning"
-msgstr "Количество полигонов для этой сетки удваивается."
+msgstr "Количество полигонов для этой сетки увеличится."
 
 msgid "MeshFlipperEditorMaskTextureMissingError"
 msgstr ""
