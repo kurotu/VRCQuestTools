@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 22\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-01-19 08:30\n"
+"PO-Revision-Date: 2025-01-19 12:14\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -199,7 +199,7 @@ msgid "ManualConversionWarning"
 msgstr "When converting manually, non-destructive components other than MA Merge Animator are not considered. Unexpected issues may arise in the behavior after combining."
 
 msgid "ManualConvertButtonLabel"
-msgstr "Convert Manually"
+msgstr "Convert"
 
 msgid "ConfirmationForUnityConstraints"
 msgstr "Manual conversion will remove Unity Constraints. You can non-destructively convert them to VRChat Constraints by adding a MA Convert Constraints component to the avatar and using Avatar Builder to upload. Do you really want to continue conversion?"
@@ -469,7 +469,7 @@ msgid "MeshFlipperEditorEnabledOnPCWarning"
 msgstr "It may be possible to achieve this with shader settings without using this component."
 
 msgid "MeshFlipperEditorEnabledOnAndroidWarning"
-msgstr "The polygon count for this mesh is doubled."
+msgstr "The polygon count for this mesh will increase."
 
 msgid "MeshFlipperEditorMaskTextureMissingError"
 msgstr "Mask texture is missing."
