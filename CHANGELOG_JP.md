@@ -4,7 +4,10 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.6.1] - 2025-01-19
+
+### 追加
+- lilToon のベイク処理でマテリアルのプロパティの型に不整合がある場合に追加情報を表示する機能を追加。
 
 ### 追加
 - lilToon のベイク処理でマテリアルのプロパティの型に不整合がある場合に追加情報を表示する機能を追加。
