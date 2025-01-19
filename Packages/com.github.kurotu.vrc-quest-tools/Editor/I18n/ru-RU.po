@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 22\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-01-19 12:14\n"
+"PO-Revision-Date: 2025-01-19 13:43\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -476,7 +476,7 @@ msgid "MeshFlipperMeshDirectionFlip"
 msgstr "Перевернуто"
 
 msgid "MeshFlipperMeshDirectionDoubleSide"
-msgstr ""
+msgstr "Двусторонний"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Выйдите из игрового режима, чтобы собрать аватар."
