@@ -44,6 +44,46 @@ namespace KRT.VRCQuestTools.Models.Unity
             return new LilToonSetting(lilToonSetting);
         }
 
+        private static void CopyMaterialProperty(Material target, Material source, MaterialProperty property)
+        {
+            var targetProp = MaterialEditor.GetMaterialProperty(new[] { target }, property.name);
+            if (targetProp == null)
+            {
+                Debug.LogWarning(
+                    $"[{VRCQuestTools.Name}] Property {property.name} not found in target material.\n" +
+                    $"Material: {source}, Shader: {source.shader.name}");
+            }
+            else if (targetProp.type != property.type)
+            {
+                Debug.LogWarning(
+                    $"[{VRCQuestTools.Name}] Property {property.name} type mismatch: target: {targetProp.type}, source: {property.type}.\n" +
+                    $"Material: {source}, Shader: {source.shader.name}");
+            }
+            switch (property.type)
+            {
+                case MaterialProperty.PropType.Color:
+                    target.SetColor(property.name, property.colorValue);
+                    break;
+                case MaterialProperty.PropType.Float:
+                    target.SetFloat(property.name, property.floatValue);
+                    break;
+                case MaterialProperty.PropType.Range:
+                    target.SetFloat(property.name, property.floatValue);
+                    break;
+                case MaterialProperty.PropType.Texture:
+                    target.SetTexture(property.name, property.textureValue);
+                    break;
+                case MaterialProperty.PropType.Vector:
+                    target.SetVector(property.name, property.vectorValue);
+                    break;
+#if UNITY_2021_1_OR_NEWER
+                case MaterialProperty.PropType.Int:
+                    target.SetInt(property.name, property.intValue);
+                    break;
+#endif
+            }
+        }
+
         /// <summary>
         /// Reused codes from lilInspector.cs v1.2.12 with some modification.
         /// </summary>
@@ -142,15 +182,15 @@ namespace KRT.VRCQuestTools.Models.Unity
                 Texture srcMask2 = AssetUtility.CreateMinimumEmptyTexture();
                 Texture srcMask3 = AssetUtility.CreateMinimumEmptyTexture();
 
-                hsvgMaterial.SetColor(mainColor.name, mainColor.colorValue);
-                hsvgMaterial.SetVector(mainTexHSVG.name, mainTexHSVG.vectorValue);
-                hsvgMaterial.SetTexture(mainColorAdjustMask.name, mainColorAdjustMask.textureValue);
+                CopyMaterialProperty(hsvgMaterial, material, mainColor);
+                CopyMaterialProperty(hsvgMaterial, material, mainTexHSVG);
+                CopyMaterialProperty(hsvgMaterial, material, mainColorAdjustMask);
                 hsvgMaterial.SetFloat(mainGradationStrength.name, 0.0f);
 
                 if (CheckFeature(shaderSetting.LIL_FEATURE_MAIN_GRADATION_MAP))
                 {
-                    hsvgMaterial.SetFloat(mainGradationStrength.name, mainGradationStrength.floatValue);
-                    hsvgMaterial.SetTexture(mainGradationTex.name, mainGradationTex.textureValue);
+                    CopyMaterialProperty(hsvgMaterial, material, mainGradationStrength);
+                    CopyMaterialProperty(hsvgMaterial, material, mainGradationTex);
                 }
 
                 srcTexture = AssetUtility.LoadUncompressedTexture(material.GetTexture(mainTex.name));
@@ -166,17 +206,17 @@ namespace KRT.VRCQuestTools.Models.Unity
 
                 if (bake2nd)
                 {
-                    hsvgMaterial.SetFloat(useMain2ndTex.name, useMain2ndTex.floatValue);
-                    hsvgMaterial.SetColor(mainColor2nd.name, mainColor2nd.colorValue);
-                    hsvgMaterial.SetFloat(main2ndTexAngle.name, main2ndTexAngle.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexIsDecal.name, main2ndTexIsDecal.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexIsLeftOnly.name, main2ndTexIsLeftOnly.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexIsRightOnly.name, main2ndTexIsRightOnly.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexShouldCopy.name, main2ndTexShouldCopy.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexShouldFlipMirror.name, main2ndTexShouldFlipMirror.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexShouldFlipCopy.name, main2ndTexShouldFlipCopy.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexIsMSDF.name, main2ndTexIsMSDF.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexBlendMode.name, main2ndTexBlendMode.floatValue);
+                    CopyMaterialProperty(hsvgMaterial, material, useMain2ndTex);
+                    CopyMaterialProperty(hsvgMaterial, material, mainColor2nd);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexAngle);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsDecal);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsLeftOnly);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsRightOnly);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexShouldCopy);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexShouldFlipMirror);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexShouldFlipCopy);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsMSDF);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexBlendMode);
                     hsvgMaterial.SetTextureOffset(main2ndTex.name, material.GetTextureOffset(main2ndTex.name));
                     hsvgMaterial.SetTextureScale(main2ndTex.name, material.GetTextureScale(main2ndTex.name));
                     hsvgMaterial.SetTextureOffset(main2ndBlendMask.name, material.GetTextureOffset(main2ndBlendMask.name));
@@ -209,17 +249,17 @@ namespace KRT.VRCQuestTools.Models.Unity
 
                 if (bake3rd)
                 {
-                    hsvgMaterial.SetFloat(useMain3rdTex.name, useMain3rdTex.floatValue);
-                    hsvgMaterial.SetColor(mainColor3rd.name, mainColor3rd.colorValue);
-                    hsvgMaterial.SetFloat(main3rdTexAngle.name, main3rdTexAngle.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexIsDecal.name, main3rdTexIsDecal.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexIsLeftOnly.name, main3rdTexIsLeftOnly.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexIsRightOnly.name, main3rdTexIsRightOnly.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexShouldCopy.name, main3rdTexShouldCopy.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexShouldFlipMirror.name, main3rdTexShouldFlipMirror.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexShouldFlipCopy.name, main3rdTexShouldFlipCopy.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexIsMSDF.name, main3rdTexIsMSDF.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexBlendMode.name, main3rdTexBlendMode.floatValue);
+                    CopyMaterialProperty(hsvgMaterial, material, useMain3rdTex);
+                    CopyMaterialProperty(hsvgMaterial, material, mainColor3rd);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexAngle);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsDecal);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsLeftOnly);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsRightOnly);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexShouldCopy);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexShouldFlipMirror);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexShouldFlipCopy);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsMSDF);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexBlendMode);
                     hsvgMaterial.SetTextureOffset(main3rdTex.name, material.GetTextureOffset(main3rdTex.name));
                     hsvgMaterial.SetTextureScale(main3rdTex.name, material.GetTextureScale(main3rdTex.name));
                     hsvgMaterial.SetTextureOffset(main3rdBlendMask.name, material.GetTextureOffset(main3rdBlendMask.name));
