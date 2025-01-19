@@ -5,17 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.6.1] - 2025-01-19
+## [Unreleased]
 
 ### Added
-- Additional information to logs when incorrect material property type is detected in lilToon baking.
-
-### Added
-- Additional information to logs when incorrect material property type is detected in lilToon baking.
 - [NDMF] Feature to control behavior of `VQT Mesh Flipper` by mask textures.
 
 ### Changed
 - [NDMF] `VQT Mesh Flipper` works before `NDMF Mantis LOD Editor` in the transforming phase.
+
+## [2.6.1] - 2025-01-19
+
+### Added
+- Additional information to logs when incorrect material property type is detected in lilToon baking.
 
 ### Fixes
 - Fixed an issue where an error would occur when right-clicking on the hierarchy without selecting a GameObject.
