@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.6.2] - 2025-01-21
 
 ### 修正
 - lilToon FakeShadowのマテリアルの変換に失敗する問題を修正。
