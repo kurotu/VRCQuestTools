@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Additional information to logs when incorrect material property type is detected in lilToon baking.
 
-### Fixes
+### Fixed
 - Fixed an issue where an error would occur when right-clicking on the hierarchy without selecting a GameObject.
 - Fixed an issue where nested Blend Trees were not converted properly.
 - Invalid localization files. (by @Amoenus)
