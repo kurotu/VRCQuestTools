@@ -12,6 +12,11 @@
 ### 変更
 - [NDMF] Transforming Phase で `VQT Mesh Flipper` が `NDMF Mantis LOD Editor` より先に動作するように変更。
 
+## [2.6.2] - 2025-01-21
+
+### 修正
+- lilToon FakeShadowのマテリアルの変換に失敗する問題を修正。
+
 ## [2.6.1] - 2025-01-19
 
 ### 追加
