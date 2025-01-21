@@ -46,8 +46,13 @@ namespace KRT.VRCQuestTools.Models.Unity
 
         private static void CopyMaterialProperty(Material target, Material source, MaterialProperty property)
         {
+            if (property.name == null)
+            {
+                // The property is missing in the source material.
+                return;
+            }
             var targetProp = MaterialEditor.GetMaterialProperty(new[] { target }, property.name);
-            if (targetProp == null)
+            if (targetProp.name == null)
             {
                 Debug.LogWarning(
                     $"[{VRCQuestTools.Name}] Property {property.name} not found in target material.\n" +
