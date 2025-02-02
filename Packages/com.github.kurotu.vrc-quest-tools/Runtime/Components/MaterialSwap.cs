@@ -29,16 +29,6 @@ namespace KRT.VRCQuestTools.Components
         public List<MaterialMapping> materialMappings = new List<MaterialMapping>();
 
         /// <summary>
-        /// Enable swapping on Android target
-        /// </summary> 
-        public bool enabledOnAndroid = true;
-
-        /// <summary>
-        /// Include child renderers in material swap
-        /// </summary>
-        public bool includeChildren = true;
-
-        /// <summary>
         /// Gets all current materials from the renderer
         /// </summary>
         public Material[] GetCurrentMaterials()
@@ -52,9 +42,7 @@ namespace KRT.VRCQuestTools.Components
         /// </summary>
         public void ApplyMaterialSwaps()
         {
-            var renderers = includeChildren ?
-                GetComponentsInChildren<Renderer>(true) :
-                new[] { GetComponent<Renderer>() };
+            var renderers = GetComponentsInChildren<Renderer>(true);
 
             foreach (var renderer in renderers)
             {

@@ -55,17 +55,9 @@ namespace KRT.VRCQuestTools.Inspector
             materialMappingsList.DoLayoutList();
             EditorGUILayout.Space();
 
-            // Platform toggle
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("enabledOnAndroid"),
-                new GUIContent(i18n.MaterialSwapEditorEnabledOnAndroidLabel));
-
-            // Child inclusion toggle  
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("includeChildren"),
-                new GUIContent(i18n.MaterialSwapEditorIncludeChildrenLabel));
-
             // Validation warnings
             var component = target as MaterialSwap;
-            if (component.GetComponent<Renderer>() == null)
+            if (component.GetComponentsInChildren<Renderer>(true).Length == 0)
             {
                 EditorGUILayout.HelpBox(i18n.MaterialSwapEditorNoRendererWarning, MessageType.Error);
             }

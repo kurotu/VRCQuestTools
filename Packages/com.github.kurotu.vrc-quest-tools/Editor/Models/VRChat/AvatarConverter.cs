@@ -325,7 +325,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             foreach (var swap in materialSwaps)
             {
-                if (!swap.enabledOnAndroid) continue;
                 foreach (var mapping in swap.materialMappings)
                 {
                     if (mapping.originalMaterial != null && mapping.replacementMaterial != null)
