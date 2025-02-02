@@ -104,13 +104,13 @@ namespace KRT.VRCQuestTools.Inspector
             });
         }
 
-        private static bool ShouldShowMaterialWarning(SerializedProperty replacementMaterial)
+        private bool ShouldShowMaterialWarning(SerializedProperty replacementMaterial)
         {
             Material replacement = (Material)replacementMaterial.objectReferenceValue;
             return replacement != null && !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(replacement);
         }
 
-        private static Material[] GetChildrenMaterials(MaterialSwap materialSwap)
+        private Material[] GetChildrenMaterials(MaterialSwap materialSwap)
         {
             var avatarDescriptor = materialSwap.GetComponent<VRCAvatarDescriptor>();
             if (avatarDescriptor)

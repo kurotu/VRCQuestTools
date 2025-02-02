@@ -1,8 +1,8 @@
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
+
 namespace KRT.VRCQuestTools.Inspector
 {
     /// <summary>
@@ -11,8 +11,10 @@ namespace KRT.VRCQuestTools.Inspector
     [CustomEditor(typeof(MaterialSwap))]
     internal class MaterialSwapEditor : VRCQuestToolsEditorOnlyEditorBase<MaterialSwap>
     {
+        /// <inheritdoc />
         protected override string Description => VRCQuestToolsSettings.I18nResource.MaterialSwapEditorDescription;
 
+        /// <inheritdoc />
         public override void OnInspectorGUIInternal()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;

@@ -275,7 +275,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted materials (key: original material).</returns>
-        internal Dictionary<Material, Material> ConvertMaterialsForAndroid(
+        private Dictionary<Material, Material> ConvertMaterialsForAndroid(
             Material[] materials,
             AvatarConverterSettings avatarConverterSettings,
             bool saveAsFile,
@@ -380,7 +380,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 MaterialReplaceSettings replaceSettings =>
                     replaceSettings.material,
 
-                _ => throw new InvalidProgramException($"Unhandled material convert setting: {settings.GetType().Name}")
+                _ => throw new InvalidProgramException($"Unhandled material convert setting: {settings.GetType().Name}"),
             };
         }
 
@@ -411,7 +411,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="convertedMotions">Converted motions.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted controllers (key: original controller).</returns>
-        internal Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Motion, Motion> convertedMotions, RuntimeAnimatorProgressCallback progressCallback)
+        private Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Motion, Motion> convertedMotions, RuntimeAnimatorProgressCallback progressCallback)
         {
             var convertedControllers = new Dictionary<RuntimeAnimatorController, RuntimeAnimatorController>();
             for (var index = 0; index < controllers.Length; index++)
@@ -446,7 +446,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="assetsDirectory">Root directory for converted blend trees.</param>
         /// <param name="convertedAnimationClips">Converted animation clips.</param>
         /// <returns>Converted blend trees (key: original blend tree).</returns>
-        internal Dictionary<BlendTree, BlendTree> ConvertBlendTreesForQuest(AnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<AnimationClip, AnimationClip> convertedAnimationClips)
+        private Dictionary<BlendTree, BlendTree> ConvertBlendTreesForQuest(AnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<AnimationClip, AnimationClip> convertedAnimationClips)
         {
             var trees = controllers
                 .SelectMany(c => UnityAnimationUtility.GetBlendTrees(c))
@@ -531,7 +531,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="convertedMaterials">Converted materials.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted controllers (key: original controller).</returns>
-        internal Dictionary<AnimationClip, AnimationClip> ConvertAnimationClipsForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Material, Material> convertedMaterials, AnimationClipProgressCallback progressCallback)
+        private Dictionary<AnimationClip, AnimationClip> ConvertAnimationClipsForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Material, Material> convertedMaterials, AnimationClipProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Animations";
             if (saveAsAsset)
@@ -587,7 +587,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return convertedAnimationClips;
         }
 
-        private static void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
+        private void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
         {
             if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
             {
