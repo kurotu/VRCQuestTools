@@ -472,11 +472,8 @@ msgstr "Double Sided"
 msgid "MaterialSwapEditorDescription"
 msgstr "Replace materials on this GameObject and optionally its children for platform-specific optimization."
 
-msgid "MaterialSwapEditorEnabledOnAndroidLabel"
-msgstr "Enable on Android"
-
-msgid "MaterialSwapEditorIncludeChildrenLabel"
-msgstr "Include Child Objects"
+msgid "MaterialSwapEditorMaterialMappingsLabel"
+msgstr "Material Mappings"
 
 msgid "MaterialSwapEditorNoRendererWarning"
 msgstr "No renderer found on this GameObject. Add this component to an object with a renderer."
@@ -486,6 +483,12 @@ msgstr "Original Material"
 
 msgid "MaterialSwapEditorReplacementMaterialLabel" 
 msgstr "Replacement Material"
+
+msgid "MaterialSwapEditorSelectMaterialLabel"
+msgstr "Select Material"
+
+msgid "MaterialSwapEditorReplacementMaterialWarning"
+msgstr "This material's shader is not allowed for Android avatars"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Exit play mode to build the avatar."

@@ -253,11 +253,12 @@ namespace KRT.VRCQuestTools.I18n
 
         // Material Swap
         internal string MaterialSwapEditorDescription => GetText("MaterialSwapEditorDescription");
-        internal string MaterialSwapEditorEnabledOnAndroidLabel => GetText("MaterialSwapEditorEnabledOnAndroidLabel");
-        internal string MaterialSwapEditorIncludeChildrenLabel => GetText("MaterialSwapEditorIncludeChildrenLabel");
+        internal string MaterialSwapEditorMaterialMappingsLabel => GetText("MaterialSwapEditorMaterialMappingsLabel");
         internal string MaterialSwapEditorNoRendererWarning => GetText("MaterialSwapEditorNoRendererWarning");
         internal string MaterialSwapEditorOriginalMaterialLabel => GetText("MaterialSwapEditorOriginalMaterialLabel");
         internal string MaterialSwapEditorReplacementMaterialLabel => GetText("MaterialSwapEditorReplacementMaterialLabel");
+        internal string MaterialSwapEditorSelectMaterialLabel => GetText("MaterialSwapEditorSelectMaterialLabel");
+        internal string MaterialSwapEditorReplacementMaterialWarning => GetText("MaterialSwapEditorReplacementMaterialWarning");
 
         // Avatar Builder
         internal string AvatarBuilderWindowExitPlayMode => GetText("AvatarBuilderWindowExitPlayMode");

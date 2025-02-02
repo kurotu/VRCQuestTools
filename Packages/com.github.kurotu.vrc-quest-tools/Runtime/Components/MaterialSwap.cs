@@ -29,15 +29,6 @@ namespace KRT.VRCQuestTools.Components
         public List<MaterialMapping> materialMappings = new List<MaterialMapping>();
 
         /// <summary>
-        /// Gets all current materials from the renderer
-        /// </summary>
-        public Material[] GetCurrentMaterials()
-        {
-            var renderer = GetComponent<Renderer>();
-            return renderer != null ? renderer.sharedMaterials : new Material[0];
-        }
-
-        /// <summary>
         /// Apply material swaps based on the mapping
         /// </summary>
         public void ApplyMaterialSwaps()
@@ -75,22 +66,5 @@ namespace KRT.VRCQuestTools.Components
                 }
             }
         }
-
-#if UNITY_EDITOR
-    private void Reset()
-    {
-        // Initialize mappings with current materials
-        var currentMaterials = GetCurrentMaterials();
-        materialMappings.Clear();
-        
-        foreach (var material in currentMaterials.Where(m => m != null))
-        {
-            materialMappings.Add(new MaterialMapping {
-                originalMaterial = material,
-                replacementMaterial = null
-            });
-        }
-    }
-#endif
     }
 }
