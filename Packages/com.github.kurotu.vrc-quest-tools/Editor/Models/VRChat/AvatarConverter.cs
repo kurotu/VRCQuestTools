@@ -369,19 +369,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             var texturesPath = $"{assetsDirectory}/Textures";
 
-            return settings switch
+            switch (settings)
             {
-                ToonLitConvertSettings toonLitSettings =>
-                    new ToonLitGenerator(toonLitSettings).GenerateMaterial(material, false, texturesPath),
-
-                MatCapLitConvertSettings matCapSettings =>
-                    new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, false, texturesPath),
-
-                MaterialReplaceSettings replaceSettings =>
-                    replaceSettings.material,
-
-                _ => throw new InvalidProgramException($"Unhandled material convert setting: {settings.GetType().Name}"),
-            };
+                case ToonLitConvertSettings toonLitSettings:
+                    return new ToonLitGenerator(toonLitSettings).GenerateMaterial(material, false, texturesPath);
+                case MatCapLitConvertSettings matCapSettings:
+                    return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, false, texturesPath);
+                case MaterialReplaceSettings replaceSettings:
+                    return replaceSettings.material;
+                default:
+                    throw new InvalidProgramException($"Unhandled material convert setting: {settings.GetType().Name}");
+            }
         }
 
         private Material SaveMaterialAsset(Material material, string originalName, string guid, string assetsDirectory)
