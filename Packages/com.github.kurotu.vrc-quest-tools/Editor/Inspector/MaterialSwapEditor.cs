@@ -25,13 +25,6 @@ namespace KRT.VRCQuestTools.Inspector
             EditorGUILayout.PropertyField(serializedObject.FindProperty("materialMappings"), new GUIContent(i18n.MaterialSwapEditorMaterialMappingsLabel));
             EditorGUILayout.Space();
 
-            // Validation warnings
-            var component = target as MaterialSwap;
-            if (component.GetComponentsInChildren<Renderer>(true).Length == 0)
-            {
-                EditorGUILayout.HelpBox(i18n.MaterialSwapEditorNoRendererWarning, MessageType.Error);
-            }
-
             serializedObject.ApplyModifiedProperties();
         }
     }

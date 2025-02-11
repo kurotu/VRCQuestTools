@@ -485,10 +485,10 @@ msgid "MaterialSwapEditorReplacementMaterialLabel"
 msgstr "Replacement Material"
 
 msgid "MaterialSwapEditorSelectMaterialLabel"
-msgstr "Select Material"
+msgstr "Select from children"
 
-msgid "MaterialSwapEditorReplacementMaterialWarning"
-msgstr "This material's shader is not allowed for Android avatars"
+msgid "MaterialSwapEditorReplacementMaterialError"
+msgstr "This material's shader is not allowed for mobile avatars"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Exit play mode to build the avatar."

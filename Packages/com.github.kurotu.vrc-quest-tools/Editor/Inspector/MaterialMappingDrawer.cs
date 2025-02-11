@@ -67,10 +67,7 @@ namespace KRT.VRCQuestTools.Inspector
                 rightRect.width = fieldRect.width * 0.25f;
                 rightRect.x = leftRect.x + leftRect.width;
                 var originalMaterial = property.FindPropertyRelative("originalMaterial");
-                using (new EditorGUI.DisabledGroupScope(true))
-                {
-                    EditorGUI.PropertyField(leftRect, originalMaterial, new GUIContent(i18n.MaterialSwapEditorOriginalMaterialLabel));
-                }
+                EditorGUI.PropertyField(leftRect, originalMaterial, new GUIContent(i18n.MaterialSwapEditorOriginalMaterialLabel));
                 if (GUI.Button(rightRect, i18n.MaterialSwapEditorSelectMaterialLabel))
                 {
                     OnClickMaterialSelectButton(originalMaterial);
@@ -84,7 +81,7 @@ namespace KRT.VRCQuestTools.Inspector
                 {
                     fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                     fieldRect.height = EditorGUIUtility.singleLineHeight * 2;
-                    EditorGUI.HelpBox(fieldRect, i18n.MaterialSwapEditorReplacementMaterialWarning, MessageType.Warning);
+                    EditorGUI.HelpBox(fieldRect, i18n.MaterialSwapEditorReplacementMaterialError, MessageType.Error);
                 }
 
                 EditorGUI.indentLevel--;
