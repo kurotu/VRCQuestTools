@@ -347,7 +347,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var convertSettings = settings.GetMaterialConvertSettings(material);
 
             // Generate converted material based on settings
-            var convertedMaterial = GenerateConvertedMaterial(materialWrapper, convertSettings, assetsDirectory);
+            var convertedMaterial = GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory);
 
             // Save as asset if required
             if (saveAsFile && !(convertSettings is MaterialReplaceSettings))
@@ -365,6 +365,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         private Material GenerateConvertedMaterial(
             MaterialBase material,
             IMaterialConvertSettings settings,
+            bool saveAsFile,
             string assetsDirectory)
         {
             var texturesPath = $"{assetsDirectory}/Textures";
@@ -372,9 +373,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             switch (settings)
             {
                 case ToonLitConvertSettings toonLitSettings:
-                    return new ToonLitGenerator(toonLitSettings).GenerateMaterial(material, false, texturesPath);
+                    return new ToonLitGenerator(toonLitSettings).GenerateMaterial(material, saveAsFile, texturesPath);
                 case MatCapLitConvertSettings matCapSettings:
-                    return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, false, texturesPath);
+                    return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, saveAsFile, texturesPath);
                 case MaterialReplaceSettings replaceSettings:
                     return replaceSettings.material;
                 default:
