@@ -620,6 +620,14 @@ namespace KRT.VRCQuestTools.Inspector
                     dialogException = e.InnerException;
                     context = e.source;
                     break;
+                case InvalidReplacementMaterialException e:
+                    message = $"{i18n.InvalidReplacementMaterialExceptionDialogMessage}\n" +
+                        $"\n" +
+                        $"Material: {e.replacementMaterial.name}\n" +
+                        $"Shader: {e.replacementMaterial.shader.name}";
+                    dialogException = e;
+                    context = e.component;
+                    break;
             }
             if (exception.InnerException != null)
             {

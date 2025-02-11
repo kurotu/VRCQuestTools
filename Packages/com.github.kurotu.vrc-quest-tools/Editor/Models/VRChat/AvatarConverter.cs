@@ -327,6 +327,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     if (mapping.originalMaterial != null && mapping.replacementMaterial != null)
                     {
+                        if (!VRCSDKUtility.IsMaterialAllowedForQuestAvatar(mapping.replacementMaterial))
+                        {
+                            throw new InvalidReplacementMaterialException("Replacement material is not allowed for mobile avatars", swap, mapping.replacementMaterial);
+                        }
                         convertedMaterials[mapping.originalMaterial] = mapping.replacementMaterial;
                         processedMaterials.Add(mapping.originalMaterial);
                     }

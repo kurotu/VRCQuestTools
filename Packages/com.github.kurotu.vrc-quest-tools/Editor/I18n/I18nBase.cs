@@ -95,6 +95,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string MaterialExceptionDialogMessage => GetText("MaterialExceptionDialogMessage");
         internal string AnimationClipExceptionDialogMessage => GetText("AnimationClipExceptionDialogMessage");
         internal string AnimatorControllerExceptionDialogMessage => GetText("AnimatorControllerExceptionDialogMessage");
+        internal string InvalidReplacementMaterialExceptionDialogMessage => GetText("InvalidReplacementMaterialExceptionDialogMessage");
         internal string InfoForNdmfConversion => GetText("InfoForNdmfConversion");
         internal string InfoForNetworkIdAssigner => GetText("InfoForNetworkIdAssigner");
         internal string NetworkIdAssignerAttached => GetText("NetworkIdAssignerAttached");

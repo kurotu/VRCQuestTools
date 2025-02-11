@@ -126,6 +126,12 @@ namespace KRT.VRCQuestTools.Ndmf
                         var error = new ObjectConversionError(animRef, e);
                     }
                     break;
+                case InvalidReplacementMaterialException e:
+                    {
+                        var error = new ReplacementMaterialError(e.component, e.replacementMaterial);
+                        ErrorReport.ReportError(error);
+                    }
+                    break;
             }
             if (exception.InnerException != null)
             {

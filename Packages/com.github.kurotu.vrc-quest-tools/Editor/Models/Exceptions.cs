@@ -51,4 +51,24 @@ namespace KRT.VRCQuestTools.Models
         {
         }
     }
+
+    /// <summary>
+    /// Exception for replacement material is not allowed for mobile.
+    /// </summary>
+    internal class InvalidReplacementMaterialException : System.Exception
+    {
+        public readonly Component component;
+        public readonly Material replacementMaterial;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvalidReplacementMaterialException"/> class.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        public InvalidReplacementMaterialException(string message, Component component, Material replacementMaterial)
+            : base(message)
+        {
+            this.component = component;
+            this.replacementMaterial = replacementMaterial;
+        }
+    }
 }
