@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Models.VRChat;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDKBase;
 #if !VQT_HAS_NDMF_ERROR_REPORT
 using KRT.VRCQuestTools.Ndmf.Dummy;
 #endif
@@ -48,7 +51,8 @@ namespace KRT.VRCQuestTools.Ndmf
 
             try
             {
-                RegisterMaterialSwapsToObjectRegistry(context.AvatarRootObject);
+                TrackObjectRegistryForMaterialSwaps(context.AvatarRootObject);
+                TrackObjectRegistryForConverterSettings(context, settings);
 
                 VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
                 {
@@ -87,17 +91,69 @@ namespace KRT.VRCQuestTools.Ndmf
             NdmfSessionState.BuildTarget = target;
         }
 
-        private static void RegisterMaterialSwapsToObjectRegistry(GameObject avatarRoot)
+        /// <summary>
+        /// Track object registry then add as new settings.
+        /// </summary>
+        private static void TrackObjectRegistryForConverterSettings(BuildContext context, AvatarConverterSettings settings)
+        {
+            var avatar = new VRChatAvatar(context.AvatarDescriptor);
+            var currentMaterials = avatar.Materials;
+
+            // Create new additional material settings by tracking object registry.
+            var newAdditionalMappings = new List<AdditionalMaterialConvertSettings>();
+            foreach (var material in currentMaterials)
+            {
+                var original = (Material)ObjectRegistry.GetReference(material).Object;
+                var setting = settings.additionalMaterialConvertSettings.FirstOrDefault(s => s.targetMaterial == original);
+                if (setting == null)
+                {
+                    continue;
+                }
+                var newSetting = new AdditionalMaterialConvertSettings
+                {
+                    targetMaterial = material,
+                    materialConvertSettings = setting.materialConvertSettings,
+                };
+                newAdditionalMappings.Add(newSetting);
+            }
+
+            settings.additionalMaterialConvertSettings = settings.additionalMaterialConvertSettings.Concat(newAdditionalMappings).ToArray();
+        }
+
+        private static void TrackObjectRegistryForMaterialSwaps(GameObject avatarRoot)
         {
             var swaps = avatarRoot.GetComponentsInChildren<MaterialSwap>();
-            foreach (var swap in swaps)
+            var mappings = swaps.SelectMany(s => s.materialMappings);
+            var map = new Dictionary<Material, Material>();
+
+            // Create global material mapping.
+            foreach (var mapping in mappings)
             {
-                foreach (var mapping in swap.materialMappings)
+                if (mapping.originalMaterial == null)
                 {
-                    if (mapping.originalMaterial != null && mapping.replacementMaterial != null)
+                    continue;
+                }
+                if (map.ContainsKey(mapping.originalMaterial))
+                {
+                    continue;
+                }
+                map[mapping.originalMaterial] = mapping.replacementMaterial;
+            }
+
+            // Register material mapping to root swap and ObjectRegistry.
+            var materials = new VRChatAvatar(avatarRoot.GetComponent<VRC_AvatarDescriptor>()).Materials;
+            var rootSwap = VRC.Core.ExtensionMethods.GetOrAddComponent<MaterialSwap>(avatarRoot);
+            foreach (var material in materials)
+            {
+                var original = (Material)ObjectRegistry.GetReference(material).Object;
+                if (map.ContainsKey(original))
+                {
+                    ObjectRegistry.RegisterReplacedObject(material, map[original]);
+                    rootSwap.materialMappings.Add(new MaterialSwap.MaterialMapping
                     {
-                        ObjectRegistry.RegisterReplacedObject(mapping.originalMaterial, mapping.replacementMaterial);
-                    }
+                        originalMaterial = material,
+                        replacementMaterial = map[original],
+                    });
                 }
             }
         }
