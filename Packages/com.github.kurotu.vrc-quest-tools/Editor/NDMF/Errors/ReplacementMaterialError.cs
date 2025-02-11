@@ -1,11 +1,13 @@
 using System.Collections.Generic;
-using KRT.VRCQuestTools.Components;
 using nadena.dev.ndmf;
 using nadena.dev.ndmf.localization;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
+    /// <summary>
+    /// Error for replacement material.
+    /// </summary>
     internal class ReplacementMaterialError : SimpleError
     {
         private readonly Material replacementMaterial;
@@ -13,22 +15,14 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <summary>
         /// Initializes a new instance of the <see cref="ReplacementMaterialError"/> class.
         /// </summary>
-        /// <param name="objectReference">Reference for converting object.</param>
-        /// <param name="exception">Throwed exception.</param>
+        /// <param name="component">Component which has the error.</param>
+        /// <param name="replacementMaterial">Replacement material which has the error.</param>
         public ReplacementMaterialError(Component component, Material replacementMaterial)
         {
             this.replacementMaterial = replacementMaterial;
-            _references = new List<ObjectReference> {
+            _references = new List<ObjectReference>
+            {
                 ObjectRegistry.GetReference(component),
-                ObjectRegistry.GetReference(replacementMaterial),
-            };
-        }
-
-        public ReplacementMaterialError(AvatarConverterSettings settings, Material replacementMaterial)
-        {
-            this.replacementMaterial = replacementMaterial;
-            _references = new List<ObjectReference> {
-                ObjectRegistry.GetReference(settings),
                 ObjectRegistry.GetReference(replacementMaterial),
             };
         }

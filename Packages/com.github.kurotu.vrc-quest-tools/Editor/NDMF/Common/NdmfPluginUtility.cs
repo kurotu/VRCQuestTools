@@ -1,4 +1,5 @@
-﻿using KRT.VRCQuestTools.Components;
+﻿using System.Collections.Generic;
+using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using nadena.dev.ndmf;
 using UnityEditor;

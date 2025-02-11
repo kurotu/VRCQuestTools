@@ -591,7 +591,7 @@ namespace KRT.VRCQuestTools.Inspector
             }
         }
 
-        private void HandleConversionException( System.Exception exception)
+        private void HandleConversionException(System.Exception exception)
         {
             var message = i18n.AvatarConverterFailedDialogMessage;
             var dialogException = exception;
