@@ -1,4 +1,5 @@
 ﻿using KRT.VRCQuestTools.Components;
+using KRT.VRCQuestTools.Models;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEngine;
@@ -44,61 +45,40 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
-            RegisterMaterialSwapsToObjectRegistry(context.AvatarRootObject);
-
-            VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
+            try
             {
-                onTextureProgress = (_, __, e, original, converted) =>
-                {
-                    if (e != null)
-                    {
-                        Debug.LogError("Failed to convert material: " + original.name, original);
-                        Debug.LogException(e, original);
-                        var matRef = ObjectRegistry.GetReference(original);
-                        var error = new MaterialConversionError(matRef, e);
-                        ErrorReport.ReportError(error);
-                        return;
-                    }
+                RegisterMaterialSwapsToObjectRegistry(context.AvatarRootObject);
 
-                    // Register converted material to ObjectRegistry when it is not an asset..
-                    if (converted != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(converted)))
-                    {
-                        ObjectRegistry.RegisterReplacedObject(original, converted);
-                    }
-                },
-                onAnimationClipProgress = (_, __, e, original, converted) =>
+                VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
                 {
-                    if (e != null)
+                    onTextureProgress = (_, __, original, converted) =>
                     {
-                        Debug.LogError("Failed to convert animation clip: " + original.name, original);
-                        Debug.LogException(e, original);
-                        var animRef = ObjectRegistry.GetReference(original);
-                        var error = new ObjectConversionError(animRef, e);
-                        ErrorReport.ReportError(error);
-                        return;
-                    }
-                    if (converted != null)
+                        // Register converted material to ObjectRegistry when it is not an asset..
+                        if (converted != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(converted)))
+                        {
+                            ObjectRegistry.RegisterReplacedObject(original, converted);
+                        }
+                    },
+                    onAnimationClipProgress = (_, __, original, converted) =>
                     {
-                        ObjectRegistry.RegisterReplacedObject(original, converted);
-                    }
-                },
-                onRuntimeAnimatorProgress = (_, __, e, original, converted) =>
-                {
-                    if (e != null)
+                        if (converted != null)
+                        {
+                            ObjectRegistry.RegisterReplacedObject(original, converted);
+                        }
+                    },
+                    onRuntimeAnimatorProgress = (_, __, original, converted) =>
                     {
-                        Debug.LogError("Failed to convert runtime animator controller: " + original.name, original);
-                        Debug.LogException(e, original);
-                        var animRef = ObjectRegistry.GetReference(original);
-                        var error = new ObjectConversionError(animRef, e);
-                        ErrorReport.ReportError(error);
-                        return;
-                    }
-                    if (converted != null)
-                    {
-                        ObjectRegistry.RegisterReplacedObject(original, converted);
-                    }
-                },
-            });
+                        if (converted != null)
+                        {
+                            ObjectRegistry.RegisterReplacedObject(original, converted);
+                        }
+                    },
+                });
+            }
+            catch (System.Exception exception)
+            {
+                HandleConversionException(exception);
+            }
         }
 
         private static void SetBuildTarget(Models.BuildTarget target)
@@ -119,6 +99,39 @@ namespace KRT.VRCQuestTools.Ndmf
                     }
                 }
             }
+        }
+
+        private static void HandleConversionException(System.Exception exception)
+        {
+            var message = exception.Message;
+            var dialogException = exception;
+            switch (exception)
+            {
+                case MaterialConversionException e:
+                    {
+                        var matRef = ObjectRegistry.GetReference(e.source);
+                        var error = new MaterialConversionError(matRef, e);
+                        ErrorReport.ReportError(error);
+                    }
+                    break;
+                case AnimationClipConversionException e:
+                    {
+                        var animRef = ObjectRegistry.GetReference(e.source);
+                        var error = new ObjectConversionError(animRef, e);
+                    }
+                    break;
+                case AnimatorControllerConversionException e:
+                    {
+                        var animRef = ObjectRegistry.GetReference(e.source);
+                        var error = new ObjectConversionError(animRef, e);
+                    }
+                    break;
+            }
+            if (exception.InnerException != null)
+            {
+                Debug.LogException(exception.InnerException);
+            }
+            Debug.LogException(exception);
         }
     }
 }

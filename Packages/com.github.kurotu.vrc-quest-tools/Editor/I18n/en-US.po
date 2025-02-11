@@ -119,6 +119,9 @@ msgstr "Convert the avatar in the selected NDMF phase."
 msgid "GeneratingTexturesDialogMessage"
 msgstr "Generating textures..."
 
+msgid "AvatarConverterFailedDialogMessage"
+msgstr "An error occured when converting the avatar. Aborted."
+
 msgid "MaterialExceptionDialogMessage"
 msgstr "An error occured when converting materials. Aborted."
 
