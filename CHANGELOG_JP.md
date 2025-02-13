@@ -7,7 +7,8 @@
 ## [Unreleased]
 
 ### 追加
-- [NDMF] `VQT Mesh Flipper` にマスクテクスチャによって動作を制御する機能を追加。
+- [NDMF] `VQT Mesh Flipper` にマスクテクスチャによって動作範囲を制御する機能を追加。
+- [NDMF] (実験的機能) `VQT Material Swap` コンポーネントによる Android ビルド時のマテリアル置換設定を追加。
 
 ### 変更
 - [NDMF] Transforming Phase で `VQT Mesh Flipper` が `NDMF Mantis LOD Editor` より先に動作するように変更。
