@@ -7,11 +7,11 @@ msgstr ""
 "X-Crowdin-Project: vrc-quest-tools\n"
 "X-Crowdin-Project-ID: 712497\n"
 "X-Crowdin-Language: en\n"
-"X-Crowdin-File: /master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
-"X-Crowdin-File-ID: 22\n"
+"X-Crowdin-File: /[kurotu.VRCQuestTools] master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
+"X-Crowdin-File-ID: 46\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-01-19 12:14\n"
+"PO-Revision-Date: 2025-02-13 16:01\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -484,25 +484,25 @@ msgid "MeshFlipperMeshDirectionDoubleSide"
 msgstr "Double Sided"
 
 msgid "MaterialSwapEditorDescription"
-msgstr "Replace materials on this GameObject and optionally its children for platform-specific optimization."
+msgstr "Replace materials of this avatar for mobile platform build."
 
 msgid "MaterialSwapEditorMaterialMappingsLabel"
 msgstr "Material Mappings"
 
 msgid "MaterialSwapEditorNoRendererWarning"
-msgstr "No renderer found on this GameObject. Add this component to an object with a renderer."
+msgstr ""
 
 msgid "MaterialSwapEditorOriginalMaterialLabel"
 msgstr "Original Material"
 
-msgid "MaterialSwapEditorReplacementMaterialLabel" 
+msgid "MaterialSwapEditorReplacementMaterialLabel"
 msgstr "Replacement Material"
 
 msgid "MaterialSwapEditorSelectMaterialLabel"
 msgstr "Select from children"
 
 msgid "MaterialSwapEditorReplacementMaterialError"
-msgstr "This material's shader is not allowed for mobile avatars"
+msgstr "This material's shader is not allowed for mobile avatars."
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Exit play mode to build the avatar."
