@@ -44,6 +44,8 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
+            RegisterMaterialSwapsToObjectRegistry(context.AvatarRootObject);
+
             VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
             {
                 onTextureProgress = (_, __, e, original, converted) =>
@@ -102,6 +104,21 @@ namespace KRT.VRCQuestTools.Ndmf
         private static void SetBuildTarget(Models.BuildTarget target)
         {
             NdmfSessionState.BuildTarget = target;
+        }
+
+        private static void RegisterMaterialSwapsToObjectRegistry(GameObject avatarRoot)
+        {
+            var swaps = avatarRoot.GetComponentsInChildren<MaterialSwap>();
+            foreach (var swap in swaps)
+            {
+                foreach (var mapping in swap.materialMappings)
+                {
+                    if (mapping.originalMaterial != null && mapping.replacementMaterial != null)
+                    {
+                        ObjectRegistry.RegisterReplacedObject(mapping.originalMaterial, mapping.replacementMaterial);
+                    }
+                }
+            }
         }
     }
 }

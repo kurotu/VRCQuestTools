@@ -483,6 +483,24 @@ msgstr "反転"
 msgid "MeshFlipperMeshDirectionDoubleSide"
 msgstr "両面"
 
+msgid "MaterialSwapEditorDescription"
+msgstr "プラットフォーム最適化のため、このGameObjectとその子オブジェクトのマテリアルを置き換えます。"
+
+msgid "MaterialSwapEditorReplacementMaterialLabel"
+msgstr "置換マテリアル"
+
+msgid "MaterialSwapEditorOriginalMaterialLabel"
+msgstr "元のマテリアル"
+
+msgid "MaterialSwapEditorEnabledOnAndroidLabel"
+msgstr "Androidで有効"
+
+msgid "MaterialSwapEditorIncludeChildrenLabel"
+msgstr "子オブジェクトを含める"
+
+msgid "MaterialSwapEditorNoRendererWarning"
+msgstr "このGameObjectにレンダラーがありません。レンダラーのあるオブジェクトにこのコンポーネントを追加してください。"
+
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "アバターをビルドするには Play モードを終了してください。"
 

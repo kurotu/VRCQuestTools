@@ -478,6 +478,24 @@ msgstr "Перевернуто"
 msgid "MeshFlipperMeshDirectionDoubleSide"
 msgstr "Двусторонний"
 
+msgid "MaterialSwapEditorDescription"
+msgstr "Заменить материалы на этом GameObject и опционально на его дочерних объектах для оптимизации под конкретную платформу."
+
+msgid "MaterialSwapEditorEnabledOnAndroidLabel"
+msgstr "Включить на Android"
+
+msgid "MaterialSwapEditorIncludeChildrenLabel"
+msgstr "Включая дочерние объекты"
+
+msgid "MaterialSwapEditorNoRendererWarning"
+msgstr "На этом GameObject не найден рендерер. Добавьте этот компонент к объекту с рендерером."
+
+msgid "MaterialSwapEditorOriginalMaterialLabel"
+msgstr "Исходный материал"
+
+msgid "MaterialSwapEditorReplacementMaterialLabel"
+msgstr "Заменяющий материал"
+
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Выйдите из игрового режима, чтобы собрать аватар."
 
