@@ -7,11 +7,11 @@ msgstr ""
 "X-Crowdin-Project: vrc-quest-tools\n"
 "X-Crowdin-Project-ID: 712497\n"
 "X-Crowdin-Language: ru\n"
-"X-Crowdin-File: /master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
-"X-Crowdin-File-ID: 22\n"
+"X-Crowdin-File: /[kurotu.VRCQuestTools] master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
+"X-Crowdin-File-ID: 46\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-01-19 13:43\n"
+"PO-Revision-Date: 2025-02-13 16:01\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -479,22 +479,25 @@ msgid "MeshFlipperMeshDirectionDoubleSide"
 msgstr "Двусторонний"
 
 msgid "MaterialSwapEditorDescription"
-msgstr "Заменить материалы на этом GameObject и опционально на его дочерних объектах для оптимизации под конкретную платформу."
+msgstr ""
 
-msgid "MaterialSwapEditorEnabledOnAndroidLabel"
-msgstr "Включить на Android"
-
-msgid "MaterialSwapEditorIncludeChildrenLabel"
-msgstr "Включая дочерние объекты"
+msgid "MaterialSwapEditorMaterialMappingsLabel"
+msgstr ""
 
 msgid "MaterialSwapEditorNoRendererWarning"
-msgstr "На этом GameObject не найден рендерер. Добавьте этот компонент к объекту с рендерером."
+msgstr ""
 
 msgid "MaterialSwapEditorOriginalMaterialLabel"
-msgstr "Исходный материал"
+msgstr ""
 
 msgid "MaterialSwapEditorReplacementMaterialLabel"
-msgstr "Заменяющий материал"
+msgstr ""
+
+msgid "MaterialSwapEditorSelectMaterialLabel"
+msgstr ""
+
+msgid "MaterialSwapEditorReplacementMaterialError"
+msgstr ""
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Выйдите из игрового режима, чтобы собрать аватар."
