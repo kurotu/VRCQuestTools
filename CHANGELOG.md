@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - [NDMF] Feature to control operational area of `VQT Mesh Flipper` by mask textures.
 - [NDMF] (Experimental) `VQT Material Swap` component to swap materials on Android build.
+- Error for unsupported materials in Material Replacement settings.
 
 ### Changed
 - [NDMF] `VQT Mesh Flipper` works before `NDMF Mantis LOD Editor` in the transforming phase.

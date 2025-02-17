@@ -11,6 +11,7 @@
 - [NDMF] (実験的機能) `VQT Material Swap` コンポーネントによる Android ビルド時のマテリアル置換設定を追加。
 
 ### 変更
+- マテリアル置換設定で非対応マテリアルを指定したときのエラーを追加
 - [NDMF] Transforming Phase で `VQT Mesh Flipper` が `NDMF Mantis LOD Editor` より先に動作するように変更。
 
 ## [2.6.2] - 2025-01-21
