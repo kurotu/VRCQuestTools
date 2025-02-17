@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 46\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-02-13 16:01\n"
+"PO-Revision-Date: 2025-02-17 13:53\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -118,6 +118,9 @@ msgstr "Конвертировать аватар на выбранном эта
 msgid "GeneratingTexturesDialogMessage"
 msgstr "Создание текстур..."
 
+msgid "AvatarConverterFailedDialogMessage"
+msgstr ""
+
 msgid "MaterialExceptionDialogMessage"
 msgstr "Произошла ошибка при конвертации материалов. Прервано."
 
@@ -126,6 +129,9 @@ msgstr "Произошла ошибка при конвертации клипо
 
 msgid "AnimatorControllerExceptionDialogMessage"
 msgstr "Произошла ошибка при конвертации контроллеров анимации. Прервано."
+
+msgid "InvalidReplacementMaterialExceptionDialogMessage"
+msgstr ""
 
 msgid "InfoForNdmfConversion"
 msgstr "Вы можете неразрушающе конвертировать аватар во время сборки, когда проект имеет пакет Неразрушаемая Модульная Структура (NDMF). Пожалуйста, используйте Конструктор Аватаров, чтобы избежать ограничений VRChat SDK."
@@ -237,6 +243,9 @@ msgstr "Заменяемый материал"
 
 msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "Целевой материал будет заменен этим материалом."
+
+msgid "MaterialReplaceSettingsMaterialWarning"
+msgstr ""
 
 msgid "NoMissingComponentsMessage"
 msgstr "В {0} нет \"недостающих\" компонентов."
@@ -619,5 +628,11 @@ msgid "NDMF:MeshFlipperMaskNotReadableErrorTitle"
 msgstr ""
 
 msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
+msgstr ""
+
+msgid "NDMF:ReplacementMaterialErrorTitle"
+msgstr ""
+
+msgid "NDMF:ReplacementMaterialErrorDescription"
 msgstr ""
 
