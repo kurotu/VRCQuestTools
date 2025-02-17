@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 46\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-02-13 16:01\n"
+"PO-Revision-Date: 2025-02-17 13:53\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -119,6 +119,9 @@ msgstr "Convert the avatar in the selected NDMF phase."
 msgid "GeneratingTexturesDialogMessage"
 msgstr "Generating textures..."
 
+msgid "AvatarConverterFailedDialogMessage"
+msgstr ""
+
 msgid "MaterialExceptionDialogMessage"
 msgstr "An error occured when converting materials. Aborted."
 
@@ -127,6 +130,9 @@ msgstr "An error occured when converting Animation Clips. Aborted."
 
 msgid "AnimatorControllerExceptionDialogMessage"
 msgstr "An error occured when converting Animator Controllers. Aborted."
+
+msgid "InvalidReplacementMaterialExceptionDialogMessage"
+msgstr ""
 
 msgid "InfoForNdmfConversion"
 msgstr "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Please use the Avatar Builder to avoid VRChat SDK limitation."
@@ -242,6 +248,9 @@ msgstr "Replaced Material"
 
 msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "Target material will be replaced by this material."
+
+msgid "MaterialReplaceSettingsMaterialWarning"
+msgstr ""
 
 msgid "NoMissingComponentsMessage"
 msgstr "There are no \"missing\" components in {0}."
@@ -625,4 +634,10 @@ msgstr "Unreadable Mask Texture"
 
 msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
 msgstr "The mask texture is not readable. Change the texture's import settings."
+
+msgid "NDMF:ReplacementMaterialErrorTitle"
+msgstr ""
+
+msgid "NDMF:ReplacementMaterialErrorDescription"
+msgstr ""
 
