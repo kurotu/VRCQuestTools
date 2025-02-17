@@ -249,6 +249,9 @@ msgstr "Replaced Material"
 msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "Target material will be replaced by this material."
 
+msgid "MaterialReplaceSettingsMaterialWarning"
+msgstr "This material's shader is not allowed for mobile avatars."
+
 msgid "NoMissingComponentsMessage"
 msgstr "There are no \"missing\" components in {0}."
 

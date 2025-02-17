@@ -138,6 +138,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string MaterialConvertTypePopupLabelMaterialReplace => GetText("MaterialConvertTypePopupLabelMaterialReplace");
         internal string MaterialReplaceSettingsMaterialLabel => GetText("MaterialReplaceSettingsMaterialLabel");
         internal string MaterialReplaceSettingsMaterialTooltip => GetText("MaterialReplaceSettingsMaterialTooltip");
+        internal string MaterialReplaceSettingsMaterialWarning => GetText("MaterialReplaceSettingsMaterialWarning");
 
         // Remove Missing Components
         internal string NoMissingComponentsMessage(string objectName) => GetText("NoMissingComponentsMessage", objectName);

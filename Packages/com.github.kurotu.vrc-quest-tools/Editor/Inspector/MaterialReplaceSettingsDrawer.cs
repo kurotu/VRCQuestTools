@@ -1,4 +1,5 @@
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ namespace KRT.VRCQuestTools.Inspector
     [CustomPropertyDrawer(typeof(MaterialReplaceSettings))]
     internal class MaterialReplaceSettingsDrawer : PropertyDrawer
     {
+        private readonly float helpBoxHeight = EditorGUIUtility.singleLineHeight * 2.0f;
+
         /// <inheritdoc />
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -17,6 +20,13 @@ namespace KRT.VRCQuestTools.Inspector
             height += EditorGUIUtility.singleLineHeight;
             height += EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUIUtility.singleLineHeight;
+
+            var replacementMaterial = property.FindPropertyRelative("material");
+            if (ShouldShowMaterialWarning(replacementMaterial))
+            {
+                height += helpBoxHeight;
+                height += EditorGUIUtility.standardVerticalSpacing;
+            }
             return height;
         }
 
@@ -45,10 +55,24 @@ namespace KRT.VRCQuestTools.Inspector
                 EditorGUI.indentLevel++;
 
                 var materialLabel = new GUIContent(i18n.MaterialReplaceSettingsMaterialLabel, i18n.MaterialReplaceSettingsMaterialTooltip);
-                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("material"), materialLabel);
+                var replacementMaterial = property.FindPropertyRelative("material");
+                EditorGUI.PropertyField(fieldRect, replacementMaterial, materialLabel);
+
+                if (ShouldShowMaterialWarning(replacementMaterial))
+                {
+                    fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                    fieldRect.height = helpBoxHeight;
+                    EditorGUI.HelpBox(fieldRect, i18n.MaterialReplaceSettingsMaterialWarning, MessageType.Error);
+                }
 
                 EditorGUI.indentLevel--;
             }
+        }
+
+        private bool ShouldShowMaterialWarning(SerializedProperty replacementMaterial)
+        {
+            Material replacement = (Material)replacementMaterial.objectReferenceValue;
+            return replacement != null && !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(replacement);
         }
     }
 }
