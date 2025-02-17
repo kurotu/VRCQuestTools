@@ -33,6 +33,8 @@ namespace KRT.VRCQuestTools.Ndmf
         internal const string MeshFlipperMaskMissingErrorDescription = "NDMF:MeshFlipperMaskMissingErrorDescription";
         internal const string MeshFlipperMaskNotReadableErrorTitle = "NDMF:MeshFlipperMaskNotReadableErrorTitle";
         internal const string MeshFlipperMaskNotReadableErrorDescription = "NDMF:MeshFlipperMaskNotReadableErrorDescription";
+        internal const string ReplacementMaterialErrorTitle = "NDMF:ReplacementMaterialErrorTitle";
+        internal const string ReplacementMaterialErrorDescription = "NDMF:ReplacementMaterialErrorDescription";
 #pragma warning restore SA1600
 
         /// <summary>

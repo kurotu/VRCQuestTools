@@ -477,23 +477,11 @@ namespace KRT.VRCQuestTools.Inspector
             var toonLitSetting = convertSetting is ToonLitConvertSettings ? convertSetting as ToonLitConvertSettings : null;
             var targetAvatar = new Models.VRChat.VRChatAvatar(avatar);
 
-            TextureProgressCallback progressCallback = (int total, int index, System.Exception exception, Material material, Material _) =>
+            TextureProgressCallback progressCallback = (int total, int index, Material material, Material _) =>
             {
                 var i18n = VRCQuestToolsSettings.I18nResource;
-                if (exception != null)
-                {
-                    var message = $"{i18n.MaterialExceptionDialogMessage}\n" +
-                        "\n" +
-                        $"Material: {AssetDatabase.GetAssetPath(material)}\n" +
-                        $"Shader: {material.shader.name}";
-                    DisplayErrorDialog(message, exception);
-                    EditorUtility.ClearProgressBar();
-                }
-                else
-                {
-                    var progress = (float)index / total;
-                    EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
-                }
+                var progress = (float)index / total;
+                EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
             };
             var outputPath = GetOutputPath(avatar);
             Directory.CreateDirectory(outputPath);
@@ -501,8 +489,18 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 onTextureProgress = progressCallback,
             };
-            VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, true, outputPath, converterSettings, progressCallback);
-            EditorUtility.ClearProgressBar();
+            try
+            {
+                VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, true, outputPath, converterSettings, progressCallback);
+            }
+            catch (System.Exception exception)
+            {
+                HandleConversionException(exception);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
         }
 
         private void OnClickSelectAvatarDynamicsComponentsButton(VRC_AvatarDescriptor avatar)
@@ -534,62 +532,40 @@ namespace KRT.VRCQuestTools.Inspector
 
             var progressCallback = new ProgressCallback
             {
-                onTextureProgress = (total, index, exception, material, _) =>
+                onTextureProgress = (total, index, material, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
-                    if (exception != null)
-                    {
-                        var message = $"{i18n.MaterialExceptionDialogMessage}\n" +
-                            "\n" +
-                            $"Material: {AssetDatabase.GetAssetPath(material)}\n" +
-                            $"Shader: {material.shader.name}";
-                        DisplayErrorDialog(message, exception);
-                        EditorUtility.ClearProgressBar();
-                    }
-                    else
-                    {
-                        var progress = (float)index / total;
-                        EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
-                    }
+                    var progress = (float)index / total;
+                    EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
                 },
-                onAnimationClipProgress = (total, index, exception, clip, _) =>
+                onAnimationClipProgress = (total, index, clip, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
-                    if (exception != null)
-                    {
-                        var message = $"{i18n.AnimationClipExceptionDialogMessage}\n" +
-                            $"\n" +
-                            $"AnimationClip: {clip.name}";
-                        DisplayErrorDialog(message, exception);
-                        EditorUtility.ClearProgressBar();
-                    }
-                    else
-                    {
-                        var progress = (float)index / total;
-                        EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimationCilps : {index}/{total}", progress);
-                    }
+                    var progress = (float)index / total;
+                    EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimationCilps : {index}/{total}", progress);
                 },
-                onRuntimeAnimatorProgress = (total, index, exception, controller, _) =>
+                onRuntimeAnimatorProgress = (total, index, controller, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
-                    if (exception != null)
-                    {
-                        var message = $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
-                            $"\n" +
-                            $"AnimatorController: {controller.name}";
-                        DisplayErrorDialog(message, exception);
-                        EditorUtility.ClearProgressBar();
-                    }
-                    else
-                    {
-                        var progress = (float)index / total;
-                        EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimatorControllers : {index + 1}/{total}", progress);
-                    }
+                    var progress = (float)index / total;
+                    EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimatorControllers : {index + 1}/{total}", progress);
                 },
             };
 
-            var questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, VRCQuestTools.ComponentRemover, true, GetOutputPath(avatar), progressCallback);
-            EditorUtility.ClearProgressBar();
+            VRChatAvatar questAvatar;
+            try
+            {
+                questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, VRCQuestTools.ComponentRemover, true, GetOutputPath(avatar), progressCallback);
+            }
+            catch (System.Exception exception)
+            {
+                HandleConversionException(exception);
+                return;
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
             if (questAvatar != null)
             {
                 Selection.activeGameObject = questAvatar.GameObject;
@@ -613,6 +589,52 @@ namespace KRT.VRCQuestTools.Inspector
 
                 converterSettings.AvatarDescriptor.gameObject.SetActive(false);
             }
+        }
+
+        private void HandleConversionException(System.Exception exception)
+        {
+            var message = i18n.AvatarConverterFailedDialogMessage;
+            var dialogException = exception;
+            Object context = null;
+            switch (exception)
+            {
+                case MaterialConversionException e:
+                    message = $"{i18n.MaterialExceptionDialogMessage}\n" +
+                        "\n" +
+                        $"Material: {AssetDatabase.GetAssetPath(e.source)}\n" +
+                        $"Shader: {e.source.shader.name}";
+                    dialogException = e.InnerException;
+                    context = e.source;
+                    break;
+                case AnimationClipConversionException e:
+                    message = $"{i18n.AnimationClipExceptionDialogMessage}\n" +
+                        $"\n" +
+                        $"AnimationClip: {e.source.name}";
+                    dialogException = e.InnerException;
+                    context = e.source;
+                    break;
+                case AnimatorControllerConversionException e:
+                    message = $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
+                        $"\n" +
+                        $"AnimatorController: {e.source.name}";
+                    dialogException = e.InnerException;
+                    context = e.source;
+                    break;
+                case InvalidReplacementMaterialException e:
+                    message = $"{i18n.InvalidReplacementMaterialExceptionDialogMessage}\n" +
+                        $"\n" +
+                        $"Material: {e.replacementMaterial.name}\n" +
+                        $"Shader: {e.replacementMaterial.shader.name}";
+                    dialogException = e;
+                    context = e.component;
+                    break;
+            }
+            if (exception.InnerException != null)
+            {
+                Debug.LogException(exception.InnerException, context);
+            }
+            Debug.LogException(exception, context);
+            DisplayErrorDialog(message, dialogException);
         }
 
         private string GetOutputPath(VRC_AvatarDescriptor avatar)

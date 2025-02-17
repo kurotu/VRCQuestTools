@@ -119,6 +119,9 @@ msgstr "Convert the avatar in the selected NDMF phase."
 msgid "GeneratingTexturesDialogMessage"
 msgstr "Generating textures..."
 
+msgid "AvatarConverterFailedDialogMessage"
+msgstr "An error occured when converting the avatar. Aborted."
+
 msgid "MaterialExceptionDialogMessage"
 msgstr "An error occured when converting materials. Aborted."
 
@@ -127,6 +130,9 @@ msgstr "An error occured when converting Animation Clips. Aborted."
 
 msgid "AnimatorControllerExceptionDialogMessage"
 msgstr "An error occured when converting Animator Controllers. Aborted."
+
+msgid "InvalidReplacementMaterialExceptionDialogMessage"
+msgstr "The replacement material is not allowed for mobile avatars. Aborted."
 
 msgid "InfoForNdmfConversion"
 msgstr "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Please use the Avatar Builder to avoid VRChat SDK limitation."
@@ -242,6 +248,9 @@ msgstr "Replaced Material"
 
 msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "Target material will be replaced by this material."
+
+msgid "MaterialReplaceSettingsMaterialWarning"
+msgstr "This material's shader is not allowed for mobile avatars."
 
 msgid "NoMissingComponentsMessage"
 msgstr "There are no \"missing\" components in {0}."
@@ -626,3 +635,8 @@ msgstr "Unreadable Mask Texture"
 msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
 msgstr "The mask texture is not readable. Change the texture's import settings."
 
+msgid "NDMF:ReplacementMaterialErrorTitle"
+msgstr "Invalid Replacement Material"
+
+msgid "NDMF:ReplacementMaterialErrorDescription"
+msgstr "The replacement material {0} uses a shader {1} which is not allowed for mobile avatars."

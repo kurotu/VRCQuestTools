@@ -46,11 +46,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
 #pragma warning disable SA1600 // Elements should be documented
-        internal delegate void TextureProgressCallback(int total, int index, Exception e, Material original, Material converted);
+        internal delegate void TextureProgressCallback(int total, int index, Material original, Material converted);
 
-        internal delegate void AnimationClipProgressCallback(int total, int index, Exception e, AnimationClip original, AnimationClip converted);
+        internal delegate void AnimationClipProgressCallback(int total, int index, AnimationClip original, AnimationClip converted);
 
-        internal delegate void RuntimeAnimatorProgressCallback(int total, int index, Exception e, RuntimeAnimatorController original, RuntimeAnimatorController converted);
+        internal delegate void RuntimeAnimatorProgressCallback(int total, int index, RuntimeAnimatorController original, RuntimeAnimatorController converted);
 #pragma warning restore SA1600 // Elements should be documented
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
                 var m = materialsToConvert[i];
-                progressCallback(materialsToConvert.Length, i, null, m, null);
+                progressCallback(materialsToConvert.Length, i, m, null);
                 try
                 {
                     var materialSetting = settings.GetMaterialConvertSettings(m);
@@ -260,8 +260,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
                 catch (Exception e)
                 {
-                    progressCallback(materialsToConvert.Length, i, e, m, null);
-                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw new MaterialConversionException("Failed to generate texture", m, e);
                 }
             }
         }
@@ -298,18 +297,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
                 var material = materialsToConvert[i];
-                progressCallback(materialsToConvert.Length, i, null, material, null);
+                progressCallback(materialsToConvert.Length, i, material, null);
 
                 try
                 {
                     Material output = ConvertSingleMaterial(material, avatarConverterSettings, saveAsFile, assetsDirectory);
                     convertedMaterials[material] = output;
-                    progressCallback(materialsToConvert.Length, i, null, material, output);
+                    progressCallback(materialsToConvert.Length, i, material, output);
                 }
                 catch (Exception e)
                 {
-                    progressCallback(materialsToConvert.Length, i, e, material, null);
-                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw new MaterialConversionException("Failed to convert material", material, e);
                 }
             }
 
@@ -329,6 +327,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     if (mapping.originalMaterial != null && mapping.replacementMaterial != null)
                     {
+                        if (!VRCSDKUtility.IsMaterialAllowedForQuestAvatar(mapping.replacementMaterial))
+                        {
+                            throw new InvalidReplacementMaterialException("Replacement material is not allowed for mobile avatars", swap, mapping.replacementMaterial);
+                        }
                         convertedMaterials[mapping.originalMaterial] = mapping.replacementMaterial;
                         processedMaterials.Add(mapping.originalMaterial);
                     }
@@ -421,17 +423,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     continue;
                 }
 
-                progressCallback(controllers.Length, index, null, controller, null);
+                progressCallback(controllers.Length, index, controller, null);
                 try
                 {
                     AnimatorController cloneController = UnityAnimationUtility.ReplaceAnimationClips(controller, saveAsAsset, assetsDirectory, convertedMotions);
                     convertedControllers.Add(controller, cloneController);
-                    progressCallback(controllers.Length, index, null, controller, cloneController);
+                    progressCallback(controllers.Length, index, controller, cloneController);
                 }
                 catch (Exception e)
                 {
-                    progressCallback(controllers.Length, index, e, controller, null);
-                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw new AnimatorControllerConversionException("Failed to convert animator controller", controller, e);
                 }
             }
             return convertedControllers;
@@ -554,7 +555,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     continue;
                 }
-                progressCallback(animationClips.Length, i, null, clip, null);
+                progressCallback(animationClips.Length, i, clip, null);
                 try
                 {
                     var anim = UnityAnimationUtility.ReplaceAnimationClipMaterials(animationClips[i], convertedMaterials);
@@ -575,12 +576,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         Debug.Log("create asset: " + outFile);
                     }
                     convertedAnimationClips.Add(clip, anim);
-                    progressCallback(animationClips.Length, i, null, clip, anim);
+                    progressCallback(animationClips.Length, i, clip, anim);
                 }
                 catch (System.Exception e)
                 {
-                    progressCallback(animationClips.Length, i, e, clip, null);
-                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw new AnimationClipConversionException("Failed to convert animation clip", clip, e);
                 }
             }
             return convertedAnimationClips;

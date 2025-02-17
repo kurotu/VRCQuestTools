@@ -91,9 +91,11 @@ namespace KRT.VRCQuestTools.I18n
         internal string NdmfPhaseLabel => GetText("NdmfPhaseLabel");
         internal string NdmfPhaseTooltip => GetText("NdmfPhaseTooltip");
         internal string GeneratingTexturesDialogMessage => GetText("GeneratingTexturesDialogMessage");
+        internal string AvatarConverterFailedDialogMessage => GetText("AvatarConverterFailedDialogMessage");
         internal string MaterialExceptionDialogMessage => GetText("MaterialExceptionDialogMessage");
         internal string AnimationClipExceptionDialogMessage => GetText("AnimationClipExceptionDialogMessage");
         internal string AnimatorControllerExceptionDialogMessage => GetText("AnimatorControllerExceptionDialogMessage");
+        internal string InvalidReplacementMaterialExceptionDialogMessage => GetText("InvalidReplacementMaterialExceptionDialogMessage");
         internal string InfoForNdmfConversion => GetText("InfoForNdmfConversion");
         internal string InfoForNetworkIdAssigner => GetText("InfoForNetworkIdAssigner");
         internal string NetworkIdAssignerAttached => GetText("NetworkIdAssignerAttached");
@@ -136,6 +138,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string MaterialConvertTypePopupLabelMaterialReplace => GetText("MaterialConvertTypePopupLabelMaterialReplace");
         internal string MaterialReplaceSettingsMaterialLabel => GetText("MaterialReplaceSettingsMaterialLabel");
         internal string MaterialReplaceSettingsMaterialTooltip => GetText("MaterialReplaceSettingsMaterialTooltip");
+        internal string MaterialReplaceSettingsMaterialWarning => GetText("MaterialReplaceSettingsMaterialWarning");
 
         // Remove Missing Components
         internal string NoMissingComponentsMessage(string objectName) => GetText("NoMissingComponentsMessage", objectName);
