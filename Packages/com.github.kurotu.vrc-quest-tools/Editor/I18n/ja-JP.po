@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 46\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-02-13 16:01\n"
+"PO-Revision-Date: 2025-02-17 13:53\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -119,6 +119,9 @@ msgstr "選択したNDMFフェーズでアバターを変換します。"
 msgid "GeneratingTexturesDialogMessage"
 msgstr "テクスチャを生成中"
 
+msgid "AvatarConverterFailedDialogMessage"
+msgstr ""
+
 msgid "MaterialExceptionDialogMessage"
 msgstr "マテリアルの変換中にエラーが発生しました。変換を中止します。"
 
@@ -127,6 +130,9 @@ msgstr "アニメーションの変換中にエラーが発生しました。変
 
 msgid "AnimatorControllerExceptionDialogMessage"
 msgstr "Animator Controllerの変換中にエラーが発生しました。変換を中止します。"
+
+msgid "InvalidReplacementMaterialExceptionDialogMessage"
+msgstr ""
 
 msgid "InfoForNdmfConversion"
 msgstr "プロジェクトに Non-Destructive Modular Framework (NDMF) パッケージがある場合、アバターのビルド時に非破壊的に変換をすることができます。 VRChat SDK による制限を回避するため、専用の Avatar Builder を使用してください。"
@@ -242,6 +248,9 @@ msgstr "置換マテリアル"
 
 msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "対象マテリアルはこのマテリアルで置換されます。"
+
+msgid "MaterialReplaceSettingsMaterialWarning"
+msgstr ""
 
 msgid "NoMissingComponentsMessage"
 msgstr "{0} に \"Missing\" 状態のコンポーネントはありません。"
@@ -625,4 +634,10 @@ msgstr "読み取り不能なマスクテクスチャ"
 
 msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
 msgstr "マスクテクスチャが読み取り可能に設定されていません。テクスチャのインポート設定を変更してください。"
+
+msgid "NDMF:ReplacementMaterialErrorTitle"
+msgstr ""
+
+msgid "NDMF:ReplacementMaterialErrorDescription"
+msgstr ""
 
