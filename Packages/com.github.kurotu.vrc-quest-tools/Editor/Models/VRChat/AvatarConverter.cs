@@ -100,6 +100,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var questAvatarObject = setting.AvatarDescriptor.gameObject;
             var avatar = new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
 
+            // Remove extra material slots such as lilToon FakeShadow.
+            if (setting.removeExtraMaterialSlots)
+            {
+                RemoveExtraMaterialSlots(questAvatarObject);
+            }
+
             // Convert materials and generate textures.
             var convertedMaterials = ConvertMaterialsForAndroid(avatar.Materials, setting, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
 
@@ -312,6 +318,23 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             return convertedMaterials;
+        }
+
+        private void RemoveExtraMaterialSlots(GameObject questAvatarObject)
+        {
+            var renderers = questAvatarObject.GetComponentsInChildren<Renderer>(true);
+            foreach (var renderer in renderers)
+            {
+                var mesh = RendererUtility.GetSharedMesh(renderer);
+                if (mesh == null)
+                {
+                    continue;
+                }
+                if (renderer.sharedMaterials.Length > mesh.subMeshCount)
+                {
+                    renderer.sharedMaterials = renderer.sharedMaterials.Take(mesh.subMeshCount).ToArray();
+                }
+            }
         }
 
         private void ProcessMaterialSwaps(
