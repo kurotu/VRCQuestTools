@@ -86,6 +86,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string AdvancedConverterSettingsLabel => GetText("AdvancedConverterSettingsLabel");
         internal string RemoveVertexColorLabel => GetText("RemoveVertexColorLabel");
         internal string RemoveVertexColorTooltip => GetText("RemoveVertexColorTooltip");
+        internal string RemoveExtraMaterialSlotsLabel => GetText("RemoveExtraMaterialSlotsLabel");
+        internal string RemoveExtraMaterialSlotsTooltip => GetText("RemoveExtraMaterialSlotsTooltip");
         internal string AnimationOverrideLabel => GetText("AnimationOverrideLabel");
         internal string AnimationOverrideTooltip => GetText("AnimationOverrideTooltip");
         internal string NdmfPhaseLabel => GetText("NdmfPhaseLabel");

@@ -104,6 +104,12 @@ msgid "RemoveVertexColorTooltip"
 msgstr "Usually you don't have to disable this option. You can disable this option to prevent unexpected behavior when you are using special shaders which require vertex colors in PC avatars.\n"
 "Restore from the avatar's \"VertexColorRemover\" component if vertex color is accidentally removed."
 
+msgid "RemoveExtraMaterialSlotsLabel"
+msgstr "Remove Extra Material Slots"
+
+msgid "RemoveExtraMaterialSlotsTooltip"
+msgstr "Remove extra material slots that are greater than the number of submeshes for each Renderer."
+
 msgid "AnimationOverrideLabel"
 msgstr "Animation Override"
 

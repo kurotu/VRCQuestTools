@@ -60,6 +60,12 @@ namespace KRT.VRCQuestTools.Components
         public bool removeVertexColor = true;
 
         /// <summary>
+        /// Whether to remove redundant material slots that are greater than the number of submeshes.
+        /// </summary>
+        [SerializeField]
+        public bool removeExtraMaterialSlots = true;
+
+        /// <summary>
         /// NDMF phase to convert the avatar.
         /// </summary>
         [SerializeField]

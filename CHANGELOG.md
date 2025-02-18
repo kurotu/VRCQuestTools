@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] (Experimental) `VQT Material Swap` component to swap materials on Android build. (by @Amoenus)
 - [NDMF] Ability to track when materials subject to Additional Material Conversion Settings have been modified by other plugins.
 - Error for unsupported materials in Material Replacement settings.
+- Feature to remove extra material slots in the `VQT Avatar Converter Settings` component.
 
 ### Changed
 - [NDMF] `VQT Mesh Flipper` works before `NDMF Mantis LOD Editor` in the transforming phase.
