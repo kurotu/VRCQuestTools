@@ -91,6 +91,12 @@ Add the [Vertex Color Remover](vertex-color-remover.md) component to the convert
 
 You don't usually need to turn this option off. Turn it off if you are using a special shader for PC avatars that uses vertex colors in order to prevent unintended behavior.
 
+### Remove Extra Material Slots
+
+Remove material slots that are greater than the number of submeshes for each renderer.
+
+This option is useful when the original avatar uses additional material slot for some reason (for example, lilToon's Fake Shadow).
+
 ### NDMF Phase to Convert
 
 Select a NDMF phase to convert the avatar.
