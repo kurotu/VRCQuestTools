@@ -7,11 +7,11 @@ msgstr ""
 "X-Crowdin-Project: vrc-quest-tools\n"
 "X-Crowdin-Project-ID: 712497\n"
 "X-Crowdin-Language: ru\n"
-"X-Crowdin-File: /[kurotu.VRCQuestTools] master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
-"X-Crowdin-File-ID: 46\n"
+"X-Crowdin-File: /master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
+"X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-02-13 16:01\n"
+"PO-Revision-Date: 2025-02-18 13:43\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -103,6 +103,12 @@ msgstr "Удалить цвет вершин из сеток"
 msgid "RemoveVertexColorTooltip"
 msgstr "Обычно вам не нужно отключать эту опцию. Вы можете отключить эту опцию, чтобы предотвратить неожиданное поведение при использовании специальных шейдеров, которые требуют цвет вершин в аватарах ПК."
 
+msgid "RemoveExtraMaterialSlotsLabel"
+msgstr ""
+
+msgid "RemoveExtraMaterialSlotsTooltip"
+msgstr ""
+
 msgid "AnimationOverrideLabel"
 msgstr "Переопределение анимации"
 
@@ -118,6 +124,9 @@ msgstr "Конвертировать аватар на выбранном эта
 msgid "GeneratingTexturesDialogMessage"
 msgstr "Создание текстур..."
 
+msgid "AvatarConverterFailedDialogMessage"
+msgstr ""
+
 msgid "MaterialExceptionDialogMessage"
 msgstr "Произошла ошибка при конвертации материалов. Прервано."
 
@@ -126,6 +135,9 @@ msgstr "Произошла ошибка при конвертации клипо
 
 msgid "AnimatorControllerExceptionDialogMessage"
 msgstr "Произошла ошибка при конвертации контроллеров анимации. Прервано."
+
+msgid "InvalidReplacementMaterialExceptionDialogMessage"
+msgstr ""
 
 msgid "InfoForNdmfConversion"
 msgstr "Вы можете неразрушающе конвертировать аватар во время сборки, когда проект имеет пакет Неразрушаемая Модульная Структура (NDMF). Пожалуйста, используйте Конструктор Аватаров, чтобы избежать ограничений VRChat SDK."
@@ -237,6 +249,9 @@ msgstr "Заменяемый материал"
 
 msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "Целевой материал будет заменен этим материалом."
+
+msgid "MaterialReplaceSettingsMaterialWarning"
+msgstr ""
 
 msgid "NoMissingComponentsMessage"
 msgstr "В {0} нет \"недостающих\" компонентов."
@@ -616,5 +631,11 @@ msgid "NDMF:MeshFlipperMaskNotReadableErrorTitle"
 msgstr ""
 
 msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
+msgstr ""
+
+msgid "NDMF:ReplacementMaterialErrorTitle"
+msgstr ""
+
+msgid "NDMF:ReplacementMaterialErrorDescription"
 msgstr ""
 
