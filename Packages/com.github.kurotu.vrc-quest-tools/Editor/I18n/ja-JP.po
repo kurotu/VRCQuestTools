@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-02-18 13:43\n"
+"PO-Revision-Date: 2025-02-18 15:15\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -105,10 +105,10 @@ msgstr "通常このオプションを無効にする必要はありません。
 "誤って頂点カラーを削除した場合は、アバターの\"VertexColorRemover\"コンポーネントで復元できます。"
 
 msgid "RemoveExtraMaterialSlotsLabel"
-msgstr ""
+msgstr "余分なマテリアルスロットを削除する"
 
 msgid "RemoveExtraMaterialSlotsTooltip"
-msgstr ""
+msgstr "各Rendererに紐づいているメッシュのサブメッシュ数より多いマテリアルスロットを削除します。"
 
 msgid "AnimationOverrideLabel"
 msgstr "アニメーションオーバーライド"
@@ -126,7 +126,7 @@ msgid "GeneratingTexturesDialogMessage"
 msgstr "テクスチャを生成中"
 
 msgid "AvatarConverterFailedDialogMessage"
-msgstr ""
+msgstr "アバターの変換中にエラーが発生しました。変換を中止します。"
 
 msgid "MaterialExceptionDialogMessage"
 msgstr "マテリアルの変換中にエラーが発生しました。変換を中止します。"
@@ -138,7 +138,7 @@ msgid "AnimatorControllerExceptionDialogMessage"
 msgstr "Animator Controllerの変換中にエラーが発生しました。変換を中止します。"
 
 msgid "InvalidReplacementMaterialExceptionDialogMessage"
-msgstr ""
+msgstr "置換先マテリアルが Mobile アバターでは許可されていません。変換を中止します。"
 
 msgid "InfoForNdmfConversion"
 msgstr "プロジェクトに Non-Destructive Modular Framework (NDMF) パッケージがある場合、アバターのビルド時に非破壊的に変換をすることができます。 VRChat SDK による制限を回避するため、専用の Avatar Builder を使用してください。"
@@ -256,7 +256,7 @@ msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "対象マテリアルはこのマテリアルで置換されます。"
 
 msgid "MaterialReplaceSettingsMaterialWarning"
-msgstr ""
+msgstr "このマテリアルのシェーダーは Mobile アバターでは許可されていません。"
 
 msgid "NoMissingComponentsMessage"
 msgstr "{0} に \"Missing\" 状態のコンポーネントはありません。"
@@ -639,8 +639,8 @@ msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
 msgstr "マスクテクスチャが読み取り可能に設定されていません。テクスチャのインポート設定を変更してください。"
 
 msgid "NDMF:ReplacementMaterialErrorTitle"
-msgstr ""
+msgstr "不正な置換先マテリアル"
 
 msgid "NDMF:ReplacementMaterialErrorDescription"
-msgstr ""
+msgstr "置換先マテリアル {0} は Mobile アバターで使用できないシェーダー {1} を使用しています。"
 
