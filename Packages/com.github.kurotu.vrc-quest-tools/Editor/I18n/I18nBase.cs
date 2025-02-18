@@ -257,7 +257,6 @@ namespace KRT.VRCQuestTools.I18n
         // Material Swap
         internal string MaterialSwapEditorDescription => GetText("MaterialSwapEditorDescription");
         internal string MaterialSwapEditorMaterialMappingsLabel => GetText("MaterialSwapEditorMaterialMappingsLabel");
-        internal string MaterialSwapEditorNoRendererWarning => GetText("MaterialSwapEditorNoRendererWarning");
         internal string MaterialSwapEditorOriginalMaterialLabel => GetText("MaterialSwapEditorOriginalMaterialLabel");
         internal string MaterialSwapEditorReplacementMaterialLabel => GetText("MaterialSwapEditorReplacementMaterialLabel");
         internal string MaterialSwapEditorSelectMaterialLabel => GetText("MaterialSwapEditorSelectMaterialLabel");

@@ -489,9 +489,6 @@ msgstr "Mobile プラットフォームのビルドではこのアバターの�
 msgid "MaterialSwapEditorMaterialMappingsLabel"
 msgstr "マテリアル置換設定"
 
-msgid "MaterialSwapEditorNoRendererWarning"
-msgstr ""
-
 msgid "MaterialSwapEditorOriginalMaterialLabel"
 msgstr "元のマテリアル"
 

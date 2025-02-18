@@ -484,9 +484,6 @@ msgstr ""
 msgid "MaterialSwapEditorMaterialMappingsLabel"
 msgstr ""
 
-msgid "MaterialSwapEditorNoRendererWarning"
-msgstr ""
-
 msgid "MaterialSwapEditorOriginalMaterialLabel"
 msgstr ""
 

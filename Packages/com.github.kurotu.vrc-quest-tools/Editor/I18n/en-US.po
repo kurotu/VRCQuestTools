@@ -498,9 +498,6 @@ msgstr "Replace materials of this avatar for mobile platform build."
 msgid "MaterialSwapEditorMaterialMappingsLabel"
 msgstr "Material Mappings"
 
-msgid "MaterialSwapEditorNoRendererWarning"
-msgstr ""
-
 msgid "MaterialSwapEditorOriginalMaterialLabel"
 msgstr "Original Material"
 
