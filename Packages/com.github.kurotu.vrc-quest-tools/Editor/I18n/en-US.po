@@ -7,11 +7,11 @@ msgstr ""
 "X-Crowdin-Project: vrc-quest-tools\n"
 "X-Crowdin-Project-ID: 712497\n"
 "X-Crowdin-Language: en\n"
-"X-Crowdin-File: /[kurotu.VRCQuestTools] master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
-"X-Crowdin-File-ID: 46\n"
+"X-Crowdin-File: /master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
+"X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-02-13 16:01\n"
+"PO-Revision-Date: 2025-02-18 13:43\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -47,7 +47,7 @@ msgid "FixLabel"
 msgstr "Fix"
 
 msgid "Maximum"
-msgstr "Maximum"
+msgstr ""
 
 msgid "IncompatibleSDK"
 msgstr "Incompatible VRChat SDK. Please report."
@@ -643,3 +643,4 @@ msgstr "Invalid Replacement Material"
 
 msgid "NDMF:ReplacementMaterialErrorDescription"
 msgstr "The replacement material {0} uses a shader {1} which is not allowed for mobile avatars."
+
