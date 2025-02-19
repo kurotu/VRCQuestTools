@@ -322,7 +322,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
         private void RemoveExtraMaterialSlots(GameObject questAvatarObject)
         {
-            var renderers = questAvatarObject.GetComponentsInChildren<Renderer>(true);
+            var renderers = questAvatarObject.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                .Cast<Renderer>()
+                .Concat(questAvatarObject.GetComponentsInChildren<MeshRenderer>(true));
             foreach (var renderer in renderers)
             {
                 var mesh = RendererUtility.GetSharedMesh(renderer);
