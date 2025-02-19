@@ -7,11 +7,11 @@ msgstr ""
 "X-Crowdin-Project: vrc-quest-tools\n"
 "X-Crowdin-Project-ID: 712497\n"
 "X-Crowdin-Language: ja\n"
-"X-Crowdin-File: /[kurotu.VRCQuestTools] master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
-"X-Crowdin-File-ID: 46\n"
+"X-Crowdin-File: /master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
+"X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-02-13 16:01\n"
+"PO-Revision-Date: 2025-02-18 15:15\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -104,6 +104,12 @@ msgid "RemoveVertexColorTooltip"
 msgstr "通常このオプションを無効にする必要はありません。PC用アバターで頂点カラーの必要な特別なシェーダーを使用している場合は、誤動作を防ぐためにこのオプションを無効にできます。\n"
 "誤って頂点カラーを削除した場合は、アバターの\"VertexColorRemover\"コンポーネントで復元できます。"
 
+msgid "RemoveExtraMaterialSlotsLabel"
+msgstr "余分なマテリアルスロットを削除する"
+
+msgid "RemoveExtraMaterialSlotsTooltip"
+msgstr "各Rendererに紐づいているメッシュのサブメッシュ数より多いマテリアルスロットを削除します。"
+
 msgid "AnimationOverrideLabel"
 msgstr "アニメーションオーバーライド"
 
@@ -119,6 +125,9 @@ msgstr "選択したNDMFフェーズでアバターを変換します。"
 msgid "GeneratingTexturesDialogMessage"
 msgstr "テクスチャを生成中"
 
+msgid "AvatarConverterFailedDialogMessage"
+msgstr "アバターの変換中にエラーが発生しました。変換を中止します。"
+
 msgid "MaterialExceptionDialogMessage"
 msgstr "マテリアルの変換中にエラーが発生しました。変換を中止します。"
 
@@ -127,6 +136,9 @@ msgstr "アニメーションの変換中にエラーが発生しました。変
 
 msgid "AnimatorControllerExceptionDialogMessage"
 msgstr "Animator Controllerの変換中にエラーが発生しました。変換を中止します。"
+
+msgid "InvalidReplacementMaterialExceptionDialogMessage"
+msgstr "置換先マテリアルが Mobile アバターでは許可されていません。変換を中止します。"
 
 msgid "InfoForNdmfConversion"
 msgstr "プロジェクトに Non-Destructive Modular Framework (NDMF) パッケージがある場合、アバターのビルド時に非破壊的に変換をすることができます。 VRChat SDK による制限を回避するため、専用の Avatar Builder を使用してください。"
@@ -242,6 +254,9 @@ msgstr "置換マテリアル"
 
 msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "対象マテリアルはこのマテリアルで置換されます。"
+
+msgid "MaterialReplaceSettingsMaterialWarning"
+msgstr "このマテリアルのシェーダーは Mobile アバターでは許可されていません。"
 
 msgid "NoMissingComponentsMessage"
 msgstr "{0} に \"Missing\" 状態のコンポーネントはありません。"
@@ -622,4 +637,10 @@ msgstr "読み取り不能なマスクテクスチャ"
 
 msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
 msgstr "マスクテクスチャが読み取り可能に設定されていません。テクスチャのインポート設定を変更してください。"
+
+msgid "NDMF:ReplacementMaterialErrorTitle"
+msgstr "不正な置換先マテリアル"
+
+msgid "NDMF:ReplacementMaterialErrorDescription"
+msgstr "置換先マテリアル {0} は Mobile アバターで使用できないシェーダー {1} を使用しています。"
 
