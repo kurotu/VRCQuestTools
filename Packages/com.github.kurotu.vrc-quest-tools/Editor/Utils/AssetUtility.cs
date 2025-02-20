@@ -11,6 +11,7 @@ using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Utils
 {
@@ -364,18 +365,44 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Resized texture.</returns>
         internal static Texture2D ResizeTexture(Texture2D texture, int width, int height)
         {
-            using (var rt = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
+            var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+            rt.autoGenerateMips = texture.mipmapCount > 1;
+            var activeRT = RenderTexture.active;
+
+            try
             {
-                var activeRT = RenderTexture.active;
+                RenderTexture.active = rt;
+                Graphics.Blit(texture, rt);
+                var request = AsyncGPUReadback.Request(rt, 0, TextureFormat.RGBA32);
+                request.WaitForCompletion();
 
-                RenderTexture.active = rt.Object;
-                Graphics.Blit(texture, rt.Object);
-                var result = new Texture2D(width, height);
-                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                result.Apply();
-
+                if (texture.mipmapCount == 1)
+                {
+                    using (var data = request.GetData<Color32>())
+                    {
+                        var result = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                        result.LoadRawTextureData(data);
+                        result.Apply();
+                        return result;
+                    }
+                }
+                else
+                {
+                    var result = new Texture2D(width, height, TextureFormat.RGBA32, true);
+                    var mipmapCount = rt.mipmapCount;
+                    for (int i = 0; i < mipmapCount; i++)
+                    {
+                        var data = request.GetData<Color32>(i);
+                        result.SetPixelData(data, i);
+                    }
+                    result.Apply();
+                    return result;
+                }
+            }
+            finally
+            {
                 RenderTexture.active = activeRT;
-                return result;
+                RenderTexture.ReleaseTemporary(rt);
             }
         }
 

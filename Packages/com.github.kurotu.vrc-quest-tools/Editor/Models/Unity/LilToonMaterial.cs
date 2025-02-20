@@ -6,6 +6,7 @@
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models.Unity
 {
@@ -295,27 +296,39 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                 }
 
-                RenderTexture dstTexture = new RenderTexture(srcTexture.width, srcTexture.height, 0, RenderTextureFormat.ARGB32);
+                var dstTexture = RenderTexture.GetTemporary(srcTexture.width, srcTexture.height, 0, RenderTextureFormat.ARGB32);
 
                 // Remember active render texture
                 var activeRenderTexture = RenderTexture.active;
-                Graphics.Blit(srcTexture, dstTexture, hsvgMaterial);
+                try
+                {
+                    Graphics.Blit(srcTexture, dstTexture, hsvgMaterial);
 
-                Texture2D outTexture = new Texture2D(srcTexture.width, srcTexture.height);
-                outTexture.ReadPixels(new Rect(0, 0, srcTexture.width, srcTexture.height), 0, 0);
-                outTexture.Apply();
+                    var request = AsyncGPUReadback.Request(dstTexture, 0, TextureFormat.RGBA32);
+                    request.WaitForCompletion();
 
-                // Restore active render texture
-                RenderTexture.active = activeRenderTexture;
-                Object.DestroyImmediate(hsvgMaterial);
-                AssetUtility.DestroyTexture(srcTexture);
-                AssetUtility.DestroyTexture(srcMain2);
-                AssetUtility.DestroyTexture(srcMain3);
-                AssetUtility.DestroyTexture(srcMask2);
-                AssetUtility.DestroyTexture(srcMask3);
-                AssetUtility.DestroyTexture(dstTexture);
+                    using (var data = request.GetData<Color32>())
+                    {
+                        Texture2D outTexture = new Texture2D(srcTexture.width, srcTexture.height, TextureFormat.RGBA32, false);
+                        outTexture.LoadRawTextureData(data);
+                        outTexture.Apply();
 
-                return outTexture;
+                        // Restore active render texture
+                        Object.DestroyImmediate(hsvgMaterial);
+                        AssetUtility.DestroyTexture(srcTexture);
+                        AssetUtility.DestroyTexture(srcMain2);
+                        AssetUtility.DestroyTexture(srcMain3);
+                        AssetUtility.DestroyTexture(srcMask2);
+                        AssetUtility.DestroyTexture(srcMask3);
+
+                        return outTexture;
+                    }
+                }
+                finally
+                {
+                    RenderTexture.active = activeRenderTexture;
+                    RenderTexture.ReleaseTemporary(dstTexture);
+                }
             }
         }
 
@@ -351,7 +364,6 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var srcEmission2ndMap = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndMap.textureValue)))
             using (var srcEmission2ndBlendMask = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndBlendMask.textureValue)))
             using (var srcEmission2ndGradTex = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndGradTex.textureValue)))
-            using (var dstTexture = DisposableObject.New(new RenderTexture(main.width, main.height, 0, RenderTextureFormat.ARGB32)))
             {
                 var lilBaker = Shader.Find("Hidden/VRCQuestTools/lilToon");
 #if UNITY_2022_1_OR_NEWER
@@ -378,17 +390,35 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
+                var dstTexture = RenderTexture.GetTemporary(main.width, main.height, 0, RenderTextureFormat.ARGB32);
+                dstTexture.autoGenerateMips = true;
+
                 // Remember active render texture
                 var activeRenderTexture = RenderTexture.active;
-                Graphics.Blit(main, dstTexture.Object, baker.Object);
 
-                Texture2D outTexture = new Texture2D(main.width, main.height);
-                outTexture.ReadPixels(new Rect(0, 0, main.width, main.height), 0, 0);
-                outTexture.Apply();
+                try
+                {
+                    Graphics.Blit(main, dstTexture, baker.Object);
+                    var request = AsyncGPUReadback.Request(dstTexture, 0, TextureFormat.RGBA32);
+                    request.WaitForCompletion();
 
-                // Restore active render texture
-                RenderTexture.active = activeRenderTexture;
-                return outTexture;
+                    Texture2D outTexture = new Texture2D(main.width, main.height, TextureFormat.RGBA32, true);
+                    var mipmapCount = dstTexture.mipmapCount;
+                    for (var i = 0; i < mipmapCount; i++)
+                    {
+                        using (var data = request.GetData<Color32>(i))
+                        {
+                            outTexture.SetPixelData(data, i);
+                        }
+                    }
+                    outTexture.Apply();
+                    return outTexture;
+                }
+                finally
+                {
+                    RenderTexture.active = activeRenderTexture;
+                    RenderTexture.ReleaseTemporary(dstTexture);
+                }
             }
         }
 

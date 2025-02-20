@@ -6,6 +6,7 @@
 using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models.Unity
 {
@@ -69,7 +70,6 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             using (var disposables = new CompositeDisposable())
             using (var baker = DisposableObject.New(Object.Instantiate(Material)))
-            using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
             {
 #if UNITY_2022_1_OR_NEWER
                 baker.Object.parent = null;
@@ -95,17 +95,34 @@ namespace KRT.VRCQuestTools.Models.Unity
 
                 var main = baker.Object.mainTexture;
 
+                var dstTexture = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+                dstTexture.autoGenerateMips = true;
+
                 // Remember active render texture
                 var activeRenderTexture = RenderTexture.active;
-                Graphics.Blit(main, dstTexture.Object, baker.Object);
+                try
+                {
+                    Graphics.Blit(main, dstTexture, baker.Object);
+                    var request = AsyncGPUReadback.Request(dstTexture, 0, TextureFormat.RGBA32);
+                    request.WaitForCompletion();
 
-                Texture2D outTexture = new Texture2D(width, height);
-                outTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                outTexture.Apply();
+                    Texture2D outTexture = new Texture2D(width, height, TextureFormat.RGBA32, true);
 
-                // Restore active render texture
-                RenderTexture.active = activeRenderTexture;
-                return outTexture;
+                    var mipmapCount = dstTexture.mipmapCount;
+                    for (int i = 0; i < mipmapCount; i++)
+                    {
+                        var data = request.GetData<Color32>(i);
+                        outTexture.SetPixelData(data, i);
+                    }
+                    outTexture.Apply();
+
+                    return outTexture;
+                }
+                finally
+                {
+                    RenderTexture.active = activeRenderTexture;
+                    RenderTexture.ReleaseTemporary(dstTexture);
+                }
             }
         }
     }
