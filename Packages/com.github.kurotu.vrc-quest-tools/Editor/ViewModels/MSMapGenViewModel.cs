@@ -56,26 +56,8 @@ namespace KRT.VRCQuestTools.ViewModels
                 baker.Object.SetTexture("_SmoothnessMap", smoothness.Object);
                 baker.Object.SetInt("_InvertSmoothness", invertSmoothness ? 1 : 0);
 
-                // Remember active render texture
-                var activeRenderTexture = RenderTexture.active;
-                try
-                {
-                    Graphics.Blit(metallic.Object, dstTexture, baker.Object);
-                    var request = AsyncGPUReadback.Request(dstTexture, 0, TextureFormat.RGBA32);
-                    Texture2D outTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
-                    using (var data = request.GetData<Color32>())
-                    {
-                        outTexture.LoadRawTextureData(data);
-                        outTexture.Apply();
-                    }
-
-                    AssetUtility.SaveUncompressedTexture(destPath, outTexture, false);
-                }
-                finally
-                {
-                    RenderTexture.active = activeRenderTexture;
-                    RenderTexture.ReleaseTemporary(dstTexture);
-                }
+                var outTexture = AssetUtility.BakeTexture(metallic.Object, baker.Object, width, height, false);
+                AssetUtility.SaveUncompressedTexture(destPath, outTexture, false);
             }
         }
     }

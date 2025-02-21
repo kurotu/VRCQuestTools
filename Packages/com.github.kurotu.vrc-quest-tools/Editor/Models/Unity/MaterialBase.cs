@@ -93,36 +93,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     baker.Object.SetTexture(name, tex);
                 }
 
-                var main = baker.Object.mainTexture;
-
-                var dstTexture = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
-                dstTexture.autoGenerateMips = true;
-
-                // Remember active render texture
-                var activeRenderTexture = RenderTexture.active;
-                try
-                {
-                    Graphics.Blit(main, dstTexture, baker.Object);
-                    var request = AsyncGPUReadback.Request(dstTexture, 0, TextureFormat.RGBA32);
-                    request.WaitForCompletion();
-
-                    Texture2D outTexture = new Texture2D(width, height, TextureFormat.RGBA32, true);
-
-                    var mipmapCount = dstTexture.mipmapCount;
-                    for (int i = 0; i < mipmapCount; i++)
-                    {
-                        var data = request.GetData<Color32>(i);
-                        outTexture.SetPixelData(data, i);
-                    }
-                    outTexture.Apply();
-
-                    return outTexture;
-                }
-                finally
-                {
-                    RenderTexture.active = activeRenderTexture;
-                    RenderTexture.ReleaseTemporary(dstTexture);
-                }
+                return AssetUtility.BakeTexture(baker.Object.mainTexture, baker.Object, width, height, true);
             }
         }
     }

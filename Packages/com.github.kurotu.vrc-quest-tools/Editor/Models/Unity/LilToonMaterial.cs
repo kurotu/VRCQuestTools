@@ -296,39 +296,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                 }
 
-                var dstTexture = RenderTexture.GetTemporary(srcTexture.width, srcTexture.height, 0, RenderTextureFormat.ARGB32);
-
-                // Remember active render texture
-                var activeRenderTexture = RenderTexture.active;
-                try
-                {
-                    Graphics.Blit(srcTexture, dstTexture, hsvgMaterial);
-
-                    var request = AsyncGPUReadback.Request(dstTexture, 0, TextureFormat.RGBA32);
-                    request.WaitForCompletion();
-
-                    using (var data = request.GetData<Color32>())
-                    {
-                        Texture2D outTexture = new Texture2D(srcTexture.width, srcTexture.height, TextureFormat.RGBA32, false);
-                        outTexture.LoadRawTextureData(data);
-                        outTexture.Apply();
-
-                        // Restore active render texture
-                        Object.DestroyImmediate(hsvgMaterial);
-                        AssetUtility.DestroyTexture(srcTexture);
-                        AssetUtility.DestroyTexture(srcMain2);
-                        AssetUtility.DestroyTexture(srcMain3);
-                        AssetUtility.DestroyTexture(srcMask2);
-                        AssetUtility.DestroyTexture(srcMask3);
-
-                        return outTexture;
-                    }
-                }
-                finally
-                {
-                    RenderTexture.active = activeRenderTexture;
-                    RenderTexture.ReleaseTemporary(dstTexture);
-                }
+                return AssetUtility.BakeTexture(srcTexture, hsvgMaterial, srcTexture.width, srcTexture.height, false);
             }
         }
 
@@ -390,35 +358,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
-                var dstTexture = RenderTexture.GetTemporary(main.width, main.height, 0, RenderTextureFormat.ARGB32);
-                dstTexture.autoGenerateMips = true;
-
-                // Remember active render texture
-                var activeRenderTexture = RenderTexture.active;
-
-                try
-                {
-                    Graphics.Blit(main, dstTexture, baker.Object);
-                    var request = AsyncGPUReadback.Request(dstTexture, 0, TextureFormat.RGBA32);
-                    request.WaitForCompletion();
-
-                    Texture2D outTexture = new Texture2D(main.width, main.height, TextureFormat.RGBA32, true);
-                    var mipmapCount = dstTexture.mipmapCount;
-                    for (var i = 0; i < mipmapCount; i++)
-                    {
-                        using (var data = request.GetData<Color32>(i))
-                        {
-                            outTexture.SetPixelData(data, i);
-                        }
-                    }
-                    outTexture.Apply();
-                    return outTexture;
-                }
-                finally
-                {
-                    RenderTexture.active = activeRenderTexture;
-                    RenderTexture.ReleaseTemporary(dstTexture);
-                }
+                return AssetUtility.BakeTexture(main, baker.Object, main.width, main.height, true);
             }
         }
 
