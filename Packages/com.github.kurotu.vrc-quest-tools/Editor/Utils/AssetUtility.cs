@@ -444,6 +444,18 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Compresses a texture for the build target.
+        /// </summary>
+        /// <param name="texture">Texture to compress.</param>
+        /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
+        internal static void CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget)
+        {
+            var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
+            var format = isMobile ? TextureFormat.ASTC_6x6 : TextureFormat.DXT5;
+            EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);
+        }
+
+        /// <summary>
         /// Creates a single color 4x4 texture.
         /// </summary>
         /// <param name="color">Color to use.</param>

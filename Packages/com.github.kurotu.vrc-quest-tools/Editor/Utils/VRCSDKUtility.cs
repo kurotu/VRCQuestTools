@@ -709,6 +709,95 @@ namespace KRT.VRCQuestTools.Utils
             return textures.ToArray();
         }
 
+        /// <summary>
+        /// Duplicates the expressions menu.
+        /// </summary>
+        /// <param name="rootMenu">Root menu to duplicate.</param>
+        /// <returns>Duplicated menu.</returns>
+        internal static VRCExpressionsMenu DuplicateExpressionsMenu(VRCExpressionsMenu rootMenu)
+        {
+            if (rootMenu == null)
+            {
+                return null;
+            }
+
+            var menuMap = new Dictionary<VRCExpressionsMenu, VRCExpressionsMenu>();
+            VRCExpressionsMenu Duplicate(VRCExpressionsMenu menu)
+            {
+                var newMenu = ScriptableObject.Instantiate(menu);
+                newMenu.name = menu.name + " (VQT Clone)";
+                menuMap.Add(menu, newMenu);
+                foreach (var control in menu.controls)
+                {
+                    var subMenu = control.subMenu;
+                    if (subMenu != null)
+                    {
+                        if (menuMap.ContainsKey(subMenu))
+                        {
+                            control.subMenu = menuMap[subMenu];
+                        }
+                        else
+                        {
+                            control.subMenu = Duplicate(subMenu);
+                        }
+                    }
+                }
+                return newMenu;
+            }
+
+            return Duplicate(rootMenu);
+        }
+
+        /// <summary>
+        /// Resizes the icons in the expressions menu.
+        /// </summary>
+        /// <param name="rootMenu">Root menu.</param>
+        /// <param name="maxSize">Max texture size. Set 0 to remove.</param>
+        /// <param name="progressCallback">Callback for created textures.</param>
+        internal static void ResizeExpressionMenuIcons(VRCExpressionsMenu rootMenu, int maxSize, Action<Texture2D, Texture2D> progressCallback)
+        {
+            if (rootMenu == null)
+            {
+                return;
+            }
+
+            HashSet<VRCExpressionsMenu> knownMenus = new HashSet<VRCExpressionsMenu>();
+            Dictionary<Texture2D, Texture2D> resizedTextures = new Dictionary<Texture2D, Texture2D>();
+            void ResizeExpressionMenuIconsImpl(VRCExpressionsMenu menu)
+            {
+                knownMenus.Add(menu);
+                foreach (var control in menu.controls)
+                {
+                    if (maxSize == 0)
+                    {
+                        control.icon = null;
+                    }
+                    else if (control.icon != null)
+                    {
+                        var icon = control.icon;
+                        if (resizedTextures.ContainsKey(icon))
+                        {
+                            control.icon = resizedTextures[icon];
+                        }
+                        else if (icon.width > maxSize || icon.height > maxSize)
+                        {
+                            var newIcon = AssetUtility.ResizeTexture(icon, maxSize, maxSize);
+                            newIcon.name = icon.name + " (VQT Resize)";
+                            control.icon = newIcon;
+                            resizedTextures.Add(icon, newIcon);
+                            progressCallback?.Invoke(icon, newIcon);
+                        }
+                    }
+
+                    if (control.subMenu != null && !knownMenus.Contains(control.subMenu))
+                    {
+                        ResizeExpressionMenuIconsImpl(control.subMenu);
+                    }
+                }
+            }
+            ResizeExpressionMenuIconsImpl(rootMenu);
+        }
+
         private static void GetMenuTexturesFromMenuImpl(VRCExpressionsMenu menu, HashSet<Texture2D> textures, HashSet<VRCExpressionsMenu> knownMenus)
         {
             if (menu == null)
