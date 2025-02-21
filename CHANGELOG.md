@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] Ability to track when materials subject to Additional Material Conversion Settings have been modified by other plugins.
 - Error for unsupported materials in Material Replacement settings.
 - Feature to remove extra material slots in the `VQT Avatar Converter Settings` component.
+- Feature to convert materials which use lilToon custom shaders. (as well as regular lilToon materials)
 
 ### Changed
 - Accelerated the texture generation process.
