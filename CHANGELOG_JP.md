@@ -14,6 +14,7 @@
 - `VQT Avatar Converter Settings` に余分なマテリアルスロットを削除する機能を追加。
 
 ### 変更
+- テクスチャの生成処理を高速化。
 - [NDMF] Transforming Phase で `VQT Mesh Flipper` が `NDMF Mantis LOD Editor` より先に動作するように変更。
 
 ## [2.6.2] - 2025-01-21
