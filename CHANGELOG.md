@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Feature to remove extra material slots in the `VQT Avatar Converter Settings` component.
 
 ### Changed
+- Accelerated the texture generation process.
 - [NDMF] `VQT Mesh Flipper` works before `NDMF Mantis LOD Editor` in the transforming phase.
 
 ## [2.6.2] - 2025-01-21

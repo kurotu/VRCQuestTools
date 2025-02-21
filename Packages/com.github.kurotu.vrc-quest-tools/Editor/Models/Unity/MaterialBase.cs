@@ -6,6 +6,7 @@
 using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models.Unity
 {
@@ -69,7 +70,6 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             using (var disposables = new CompositeDisposable())
             using (var baker = DisposableObject.New(Object.Instantiate(Material)))
-            using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
             {
 #if UNITY_2022_1_OR_NEWER
                 baker.Object.parent = null;
@@ -93,19 +93,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     baker.Object.SetTexture(name, tex);
                 }
 
-                var main = baker.Object.mainTexture;
-
-                // Remember active render texture
-                var activeRenderTexture = RenderTexture.active;
-                Graphics.Blit(main, dstTexture.Object, baker.Object);
-
-                Texture2D outTexture = new Texture2D(width, height);
-                outTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                outTexture.Apply();
-
-                // Restore active render texture
-                RenderTexture.active = activeRenderTexture;
-                return outTexture;
+                return AssetUtility.BakeTexture(baker.Object.mainTexture, baker.Object, width, height, true);
             }
         }
     }

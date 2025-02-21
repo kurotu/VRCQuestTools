@@ -6,6 +6,7 @@
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models.Unity
 {
@@ -295,27 +296,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                 }
 
-                RenderTexture dstTexture = new RenderTexture(srcTexture.width, srcTexture.height, 0, RenderTextureFormat.ARGB32);
-
-                // Remember active render texture
-                var activeRenderTexture = RenderTexture.active;
-                Graphics.Blit(srcTexture, dstTexture, hsvgMaterial);
-
-                Texture2D outTexture = new Texture2D(srcTexture.width, srcTexture.height);
-                outTexture.ReadPixels(new Rect(0, 0, srcTexture.width, srcTexture.height), 0, 0);
-                outTexture.Apply();
-
-                // Restore active render texture
-                RenderTexture.active = activeRenderTexture;
-                Object.DestroyImmediate(hsvgMaterial);
-                AssetUtility.DestroyTexture(srcTexture);
-                AssetUtility.DestroyTexture(srcMain2);
-                AssetUtility.DestroyTexture(srcMain3);
-                AssetUtility.DestroyTexture(srcMask2);
-                AssetUtility.DestroyTexture(srcMask3);
-                AssetUtility.DestroyTexture(dstTexture);
-
-                return outTexture;
+                return AssetUtility.BakeTexture(srcTexture, hsvgMaterial, srcTexture.width, srcTexture.height, false);
             }
         }
 
@@ -351,7 +332,6 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var srcEmission2ndMap = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndMap.textureValue)))
             using (var srcEmission2ndBlendMask = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndBlendMask.textureValue)))
             using (var srcEmission2ndGradTex = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndGradTex.textureValue)))
-            using (var dstTexture = DisposableObject.New(new RenderTexture(main.width, main.height, 0, RenderTextureFormat.ARGB32)))
             {
                 var lilBaker = Shader.Find("Hidden/VRCQuestTools/lilToon");
 #if UNITY_2022_1_OR_NEWER
@@ -378,17 +358,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
-                // Remember active render texture
-                var activeRenderTexture = RenderTexture.active;
-                Graphics.Blit(main, dstTexture.Object, baker.Object);
-
-                Texture2D outTexture = new Texture2D(main.width, main.height);
-                outTexture.ReadPixels(new Rect(0, 0, main.width, main.height), 0, 0);
-                outTexture.Apply();
-
-                // Restore active render texture
-                RenderTexture.active = activeRenderTexture;
-                return outTexture;
+                return AssetUtility.BakeTexture(main, baker.Object, main.width, main.height, true);
             }
         }
 
