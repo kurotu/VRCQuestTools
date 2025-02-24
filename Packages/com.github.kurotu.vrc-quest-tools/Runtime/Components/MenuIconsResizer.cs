@@ -13,12 +13,17 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// Maximum texture size for PC target.
         /// </summary>
-        public TextureResizeMode resizeModePC = TextureResizeMode.Keep;
+        public TextureResizeMode resizeModePC = TextureResizeMode.DoNotResize;
 
         /// <summary>
         /// Maximum texture size for Android target.
         /// </summary>
-        public TextureResizeMode resizeModeAndroid = TextureResizeMode.Max128x128;
+        public TextureResizeMode resizeModeAndroid = TextureResizeMode.DoNotResize;
+
+        /// <summary>
+        /// Compress existing textures if needed.
+        /// </summary>
+        public bool compressTextures = true;
 
         /// <summary>
         /// Texture size limit for quest.
@@ -29,7 +34,7 @@ namespace KRT.VRCQuestTools.Components
             /// <summary>
             /// Keep textures.
             /// </summary>
-            Keep = -1,
+            DoNotResize = -1,
 
             /// <summary>
             /// Remove textures..

@@ -753,8 +753,9 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="rootMenu">Root menu.</param>
         /// <param name="maxSize">Max texture size. Set 0 to remove.</param>
+        /// <param name="compressTextures">Whether to compress textures. Compress them in progressCallback.</param>
         /// <param name="progressCallback">Callback for created textures.</param>
-        internal static void ResizeExpressionMenuIcons(VRCExpressionsMenu rootMenu, int maxSize, Action<Texture2D, Texture2D> progressCallback)
+        internal static void ResizeExpressionMenuIcons(VRCExpressionsMenu rootMenu, int maxSize, bool compressTextures, Action<Texture2D, Texture2D> progressCallback)
         {
             if (rootMenu == null)
             {
@@ -775,13 +776,16 @@ namespace KRT.VRCQuestTools.Utils
                     else if (control.icon != null)
                     {
                         var icon = control.icon;
+                        var needToCompress = compressTextures && AssetUtility.IsUncompressedFormat(icon.format);
                         if (resizedTextures.ContainsKey(icon))
                         {
                             control.icon = resizedTextures[icon];
                         }
-                        else if (icon.width > maxSize || icon.height > maxSize)
+                        else if (icon.width > maxSize || icon.height > maxSize || needToCompress)
                         {
-                            var newIcon = AssetUtility.ResizeTexture(icon, maxSize, maxSize);
+                            var newWidth = Math.Min(maxSize, icon.width);
+                            var newHeight = Math.Min(maxSize, icon.height);
+                            var newIcon = AssetUtility.ResizeTexture(icon, newWidth, newHeight);
                             newIcon.name = icon.name + " (VQT Resize)";
                             control.icon = newIcon;
                             resizedTextures.Add(icon, newIcon);

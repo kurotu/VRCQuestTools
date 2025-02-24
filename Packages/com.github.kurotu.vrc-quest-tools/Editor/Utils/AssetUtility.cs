@@ -498,6 +498,16 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Returns whether the texture format is uncompressed.
+        /// </summary>
+        /// <param name="format">Texture format.</param>
+        /// <returns>true when the format is for uncompressed.</returns>
+        internal static bool IsUncompressedFormat(TextureFormat format)
+        {
+            return UncompressedFormats.Contains(format);
+        }
+
+        /// <summary>
         /// Sets whether the texture uses streaming mipmaps.
         /// </summary>
         /// <param name="texture">Texture.</param>

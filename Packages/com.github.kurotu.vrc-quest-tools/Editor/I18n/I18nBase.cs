@@ -88,6 +88,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string RemoveVertexColorTooltip => GetText("RemoveVertexColorTooltip");
         internal string RemoveExtraMaterialSlotsLabel => GetText("RemoveExtraMaterialSlotsLabel");
         internal string RemoveExtraMaterialSlotsTooltip => GetText("RemoveExtraMaterialSlotsTooltip");
+        internal string CompressExpressionsMenuIconsLabel => GetText("CompressExpressionsMenuIconsLabel");
+        internal string CompressExpressionsMenuIconsTooltip => GetText("CompressExpressionsMenuIconsTooltip");
         internal string AnimationOverrideLabel => GetText("AnimationOverrideLabel");
         internal string AnimationOverrideTooltip => GetText("AnimationOverrideTooltip");
         internal string NdmfPhaseLabel => GetText("NdmfPhaseLabel");
@@ -263,6 +265,12 @@ namespace KRT.VRCQuestTools.I18n
         internal string MaterialSwapEditorReplacementMaterialLabel => GetText("MaterialSwapEditorReplacementMaterialLabel");
         internal string MaterialSwapEditorSelectMaterialLabel => GetText("MaterialSwapEditorSelectMaterialLabel");
         internal string MaterialSwapEditorReplacementMaterialError => GetText("MaterialSwapEditorReplacementMaterialError");
+
+        // Menu Icons Resizer
+        internal string MenuIconsResizerEditorDescription => GetText("MenuIconsResizerEditorDescription");
+        internal string MenuIconsResizerEditorResizeModePCLabel => GetText("MenuIconsResizerEditorResizeModePCLabel");
+        internal string MenuIconsResizerEditorResizeModeAndroidLabel => GetText("MenuIconsResizerEditorResizeModeAndroidLabel");
+        internal string MenuIconsResizerEditorCompressTexturesLabel => GetText("MenuIconsResizerEditorCompressTexturesLabel");
 
         // Avatar Builder
         internal string AvatarBuilderWindowExitPlayMode => GetText("AvatarBuilderWindowExitPlayMode");
