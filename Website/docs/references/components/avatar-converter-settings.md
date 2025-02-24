@@ -97,6 +97,12 @@ Remove material slots that are greater than the number of submeshes for each ren
 
 This option is useful when the original avatar uses additional material slot for some reason (for example, lilToon's Fake Shadow).
 
+### Compress Menu Icons
+
+Compress expressions menu icons which are not compressed.
+
+This options is useful to reduce avatar's build size when other tools generate a bunch of icons.
+
 ### NDMF Phase to Convert
 
 Select a NDMF phase to convert the avatar.
@@ -146,3 +152,5 @@ This process is performed after TexTransTool and Modular Avatar.
 
 Convert the avatar for Android when the NDMF conversion phase is Optimizing.
 This process is performed after TexTransTool and before AAO: Avatar Optimizer.
+
+Compress menu icons which are not compressed.
