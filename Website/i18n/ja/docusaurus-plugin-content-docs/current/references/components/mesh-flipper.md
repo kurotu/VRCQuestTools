@@ -38,5 +38,4 @@ VRCQuestToolsプラグインによって以下の処理を実行します。
 
 アタッチされたコンポーネントのMeshFilterまたはSkinnedMeshRendererに対して新しいメッシュを生成します。
 
-この処理は NDMF Mantis LOD Editor の後に実行されます。
-ただしlilNDMFMeshSimplifierが存在する場合は、lilNDMFMeshSimplifierの後・AAO: Avatar Optimizerの前に遅延されます。
+この処理は NDMF Mantis LOD Editor よりも前に実行されます。
