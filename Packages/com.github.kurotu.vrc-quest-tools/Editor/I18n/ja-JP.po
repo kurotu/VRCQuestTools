@@ -210,7 +210,7 @@ msgid "AvatarConverterContactsTooltip"
 msgstr "変換時に残しておく ContactSender と ContactReceiver を選択します。"
 
 msgid "OpenAvatarBuilder"
-msgstr "非破壊的に変換"
+msgstr "非破壊的に変換する"
 
 msgid "ManualConversionWarning"
 msgstr "手動で変換する場合 MA Merge Animator 以外の非破壊コンポーネントを考慮しません。組み合わせた後の動作に予期せぬ問題があるかもしれません。"
