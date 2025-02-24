@@ -37,5 +37,62 @@ namespace KRT.VRCQuestTools.Utils
             });
             Assert.AreEqual(1, textures.Length);
         }
+
+        /// <summary>
+        /// DuplicateMenu test.
+        /// </summary>
+        [Test]
+        public void DuplicateMenu()
+        {
+            var menu = TestUtils.LoadFixtureAssetAtPath<VRCExpressionsMenu>("Expressions/RecursiveExMenu.asset");
+            var newMenu = VRCSDKUtility.DuplicateExpressionsMenu(menu);
+            Assert.AreNotEqual(menu, newMenu);
+            Assert.AreEqual(menu.controls.Count, newMenu.controls.Count);
+            for (int i = 0; i < menu.controls.Count; i++)
+            {
+                Assert.AreNotEqual(menu.controls[i], newMenu.controls[i]);
+                Assert.AreEqual(menu.controls[i].name, newMenu.controls[i].name);
+
+                Assert.NotNull(newMenu.controls[0].subMenu);
+                Assert.AreEqual(newMenu, newMenu.controls[0].subMenu);
+            }
+        }
+
+        /// <summary>
+        /// ResizeMenuIcons test.
+        /// </summary>
+        [Test]
+        public void ResizeMenuIcons()
+        {
+            var menu = TestUtils.LoadFixtureAssetAtPath<VRCExpressionsMenu>("Expressions/RecursiveExMenu.asset");
+            var newMenu = VRCSDKUtility.DuplicateExpressionsMenu(menu);
+            var newSize = 128;
+            var callbackCalled = false;
+            VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, newSize, true, (oldTex, newTex) =>
+            {
+                callbackCalled = true;
+                Assert.LessOrEqual(newTex.width, newSize);
+                Assert.LessOrEqual(newTex.height, newSize);
+                Assert.IsTrue(AssetUtility.IsUncompressedFormat(newTex.format));
+            });
+            Assert.IsTrue(callbackCalled);
+        }
+
+        /// <summary>
+        /// RemoveMenuIcons test.
+        /// </summary>
+        [Test]
+        public void RemoveMenuIcons()
+        {
+            var menu = TestUtils.LoadFixtureAssetAtPath<VRCExpressionsMenu>("Expressions/RecursiveExMenu.asset");
+            var newMenu = VRCSDKUtility.DuplicateExpressionsMenu(menu);
+            var newSize = 0;
+            var callbackCalled = false;
+            VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, newSize, true, (oldTex, newTex) =>
+            {
+                callbackCalled = true;
+            });
+            Assert.IsFalse(callbackCalled);
+        }
     }
 }

@@ -727,18 +727,18 @@ namespace KRT.VRCQuestTools.Utils
                 var newMenu = ScriptableObject.Instantiate(menu);
                 newMenu.name = menu.name + " (VQT Clone)";
                 menuMap.Add(menu, newMenu);
-                foreach (var control in menu.controls)
+                for (var i = 0; i < menu.controls.Count; i++)
                 {
-                    var subMenu = control.subMenu;
+                    var subMenu = menu.controls[i].subMenu;
                     if (subMenu != null)
                     {
                         if (menuMap.ContainsKey(subMenu))
                         {
-                            control.subMenu = menuMap[subMenu];
+                            newMenu.controls[i].subMenu = menuMap[subMenu];
                         }
                         else
                         {
-                            control.subMenu = Duplicate(subMenu);
+                            newMenu.controls[i].subMenu = Duplicate(subMenu);
                         }
                     }
                 }
