@@ -30,11 +30,6 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var resizer = context.AvatarRootObject.GetComponentInChildren<MenuIconsResizer>(true);
-            var settings = context.AvatarRootObject.GetComponent<AvatarConverterSettings>();
-            if (resizer == null && settings == null)
-            {
-                return;
-            }
 
             var target = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
 
@@ -50,7 +45,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
             var compressTextures =
                 (resizer != null ? resizer.compressTextures : false)
-                || (settings != null ? settings.compressExpressionsMenuIcons : false);
+                || context.GetState<NdmfState>().compressExpressionsMenuIcons;
 
             if (maxSize == MaxActionTextureSize && compressTextures == false)
             {
