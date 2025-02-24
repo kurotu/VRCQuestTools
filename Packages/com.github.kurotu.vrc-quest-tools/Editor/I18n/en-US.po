@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-02-24 10:32\n"
+"PO-Revision-Date: 2025-02-24 12:49\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -531,7 +531,7 @@ msgid "MenuIconsResizerEditorResizeModeAndroidLabel"
 msgstr "Resize Mode (Android)"
 
 msgid "MenuIconsResizerEditorCompressTexturesLabel"
-msgstr "Compress Existing Textures"
+msgstr "Compress Uncompressed Textures"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Exit play mode to build the avatar."
