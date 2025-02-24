@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-02-24 08:14\n"
+"PO-Revision-Date: 2025-02-24 10:32\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -206,7 +206,7 @@ msgid "AvatarConverterContactsTooltip"
 msgstr "Установите отправители и получатели контактов, которые нужно сохранить во время конвертации."
 
 msgid "OpenAvatarBuilder"
-msgstr "Открыть Avatar Builder"
+msgstr "Неразрушающее преобразование"
 
 msgid "ManualConversionWarning"
 msgstr "При ручном преобразовании не учитываются неразрушающие компоненты, кроме MA Merge Animator. Могут возникнуть неожиданные проблемы с работой после комбинирования."
