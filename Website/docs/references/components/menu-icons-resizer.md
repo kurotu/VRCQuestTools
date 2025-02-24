@@ -18,7 +18,7 @@ Select the resize mode for each build target.
 - `Remove` - Removes the icons instead of resizing.
 - `Max NxN` - Resizes the icons to the specified size.
 
-### Compress Existing Textures
+### Compress Uncompressed Textures
 
 Compress textures which are not compressed.
 

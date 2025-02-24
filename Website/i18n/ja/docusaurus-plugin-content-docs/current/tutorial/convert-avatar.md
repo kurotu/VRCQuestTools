@@ -94,8 +94,6 @@ VRCQuestToolsはアバターのパフォーマンスを最適化しません。
 Androidでは、セーフティのMinimum Displayed Performance Rankは「Good」または「Poor」になります。
 これは「Very Poor」のアバターは常にブロックされ、他の人が個別にAvatar Display設定(「Show Avatar」機能として知られています)を変更しない限り、フォールバックアバターまたはインポスターで置き換えられることを意味します。
 
-また、スマートフォン版VRChatではVery Poorのアバターは表示されません。
-
 参照:
 - [Quest Limits - Performance Ranks](https://creators.vrchat.com/avatars/avatar-performance-ranking-system/#quest-limits)
 - [Avatar Fallback System](https://docs.vrchat.com/docs/avatar-fallback-system)
