@@ -152,7 +152,9 @@ namespace KRT.VRCQuestTools.Views
 
                 EditorGUILayout.Space();
 
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
+                var contactsHeader = "Non-Local Contact Senders & Non-Local Contact Receivers";
+#elif VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
                 var contactsHeader = "Contact Senders & Non-Local Contact Receivers";
 #else
                 var contactsHeader = "Contact Senders & Contact Receivers";
@@ -164,11 +166,7 @@ namespace KRT.VRCQuestTools.Views
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
                         {
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
                             var contacts = new VRChatAvatar(converterSettings.AvatarDescriptor).GetNonLocalContacts();
-#else
-                            var contacts = converterSettings.AvatarDescriptor.GetComponentsInChildren<VRC.Dynamics.ContactBase>(true);
-#endif
                             if (contacts.Length == 0)
                             {
                                 EditorGUILayout.LabelField($"No {contactsHeader} found.");
