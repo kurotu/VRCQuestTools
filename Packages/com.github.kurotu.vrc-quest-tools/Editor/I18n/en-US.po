@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-02-18 13:56\n"
+"PO-Revision-Date: 2025-02-24 08:14\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -109,6 +109,12 @@ msgstr "Remove Extra Material Slots"
 
 msgid "RemoveExtraMaterialSlotsTooltip"
 msgstr "Remove extra material slots that are greater than the number of submeshes for each Renderer."
+
+msgid "CompressExpressionsMenuIconsLabel"
+msgstr "Compress Menu Icons"
+
+msgid "CompressExpressionsMenuIconsTooltip"
+msgstr "Compress expressions menu icons if they are not compressed."
 
 msgid "AnimationOverrideLabel"
 msgstr "Animation Override"
@@ -515,6 +521,18 @@ msgstr "Select from children"
 
 msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr "This material's shader is not allowed for mobile avatars."
+
+msgid "MenuIconsResizerEditorDescription"
+msgstr "Resize menu icons in the avatar's expressions menu."
+
+msgid "MenuIconsResizerEditorResizeModePCLabel"
+msgstr "Resize Mode (PC)"
+
+msgid "MenuIconsResizerEditorResizeModeAndroidLabel"
+msgstr "Resize Mode (Android)"
+
+msgid "MenuIconsResizerEditorCompressTexturesLabel"
+msgstr "Compress Existing Textures"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Exit play mode to build the avatar."
