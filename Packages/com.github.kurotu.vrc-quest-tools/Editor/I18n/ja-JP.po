@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-02-18 15:15\n"
+"PO-Revision-Date: 2025-02-24 08:14\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -109,6 +109,12 @@ msgstr "余分なマテリアルスロットを削除する"
 
 msgid "RemoveExtraMaterialSlotsTooltip"
 msgstr "各Rendererに紐づいているメッシュのサブメッシュ数より多いマテリアルスロットを削除します。"
+
+msgid "CompressExpressionsMenuIconsLabel"
+msgstr ""
+
+msgid "CompressExpressionsMenuIconsTooltip"
+msgstr ""
 
 msgid "AnimationOverrideLabel"
 msgstr "アニメーションオーバーライド"
@@ -515,6 +521,18 @@ msgstr "子オブジェクトから選択"
 
 msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr "このマテリアルのシェーダーはモバイルアバターでは許可されていません。"
+
+msgid "MenuIconsResizerEditorDescription"
+msgstr ""
+
+msgid "MenuIconsResizerEditorResizeModePCLabel"
+msgstr ""
+
+msgid "MenuIconsResizerEditorResizeModeAndroidLabel"
+msgstr ""
+
+msgid "MenuIconsResizerEditorCompressTexturesLabel"
+msgstr ""
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "アバターをビルドするには Play モードを終了してください。"
