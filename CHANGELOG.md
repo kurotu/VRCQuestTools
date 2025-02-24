@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Feature to remove extra material slots in the `VQT Avatar Converter Settings` component.
 - Feature to compress menu icons in the `VQT Avatar Converter Settings` component.
 - Feature to convert materials which use lilToon custom shaders. (as well as regular lilToon materials)
+- Support for local-only contact senders.
 
 ### Changed
 - Accelerated the texture generation process.

@@ -537,6 +537,28 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Gets the contact is local-only.
+        /// </summary>
+        /// <param name="contact">Contact to inspect.</param>
+        /// <returns>true when the contact is local-only.</returns>
+        internal static bool IsLocalOnlyContact(ContactBase contact)
+        {
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
+            if (contact is ContactReceiver receiver)
+            {
+                return receiver.IsLocalOnly;
+            }
+#endif
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
+            if (contact is ContactSender sender)
+            {
+                return sender.IsLocalOnly;
+            }
+#endif
+            return false;
+        }
+
+        /// <summary>
         /// Stripes unused network ids from the avatar.
         /// </summary>
         /// <param name="avatarDescriptor">Target avatar.</param>
@@ -1002,22 +1024,20 @@ namespace KRT.VRCQuestTools.Utils
                 /// </summary>
                 internal Transform RootTransform => (Transform)RootTransformField.GetValue(component);
 
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
                 /// <summary>
-                /// Gets whether the component is local only.
+                /// Gets a value indicating whether the component is local only.
                 /// </summary>
                 internal bool IsLocalOnly
                 {
                     get
                     {
-                        if (component is ContactReceiver receiver)
+                        if (component is VRC.Dynamics.ContactBase contact)
                         {
-                            return receiver.IsLocalOnly;
+                            return IsLocalOnlyContact(contact);
                         }
                         return false;
                     }
                 }
-#endif
             }
         }
     }

@@ -104,15 +104,25 @@ namespace KRT.VRCQuestTools.Components
             var descriptor = AvatarDescriptor;
             physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>(true) : new VRCPhysBone[] { };
             physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>(true) : new VRCPhysBoneCollider[] { };
+            contactsToKeep = descriptor ? descriptor.GetComponentsInChildren<ContactBase>(true)
+                .Where(c =>
+                {
+                    switch (c)
+                    {
 #if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
-            contactsToKeep = descriptor ? new ContactBase[] { }
-                .Concat(descriptor.gameObject.GetComponentsInChildren<ContactSender>(true))
-                .Concat(descriptor.gameObject.GetComponentsInChildren<ContactReceiver>(true).Where(c => !c.IsLocalOnly))
+                        case ContactReceiver receiver:
+                            return !receiver.IsLocalOnly;
+#endif
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
+                        case ContactSender sender:
+                            return !sender.IsLocalOnly;
+#endif
+                        default:
+                            return true;
+                    }
+                })
                 .ToArray()
                 : new ContactBase[] { };
-#else
-            contactsToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<ContactBase>(true) : new ContactBase[] { };
-#endif
         }
     }
 }
