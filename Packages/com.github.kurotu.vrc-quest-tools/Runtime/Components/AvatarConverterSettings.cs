@@ -66,6 +66,12 @@ namespace KRT.VRCQuestTools.Components
         public bool removeExtraMaterialSlots = true;
 
         /// <summary>
+        /// Whether to compress existing expressions menu icons if they'are uncompressed.
+        /// </summary>
+        [SerializeField]
+        public bool compressExpressionsMenuIcons = true;
+
+        /// <summary>
         /// NDMF phase to convert the avatar.
         /// </summary>
         [SerializeField]
