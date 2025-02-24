@@ -15,6 +15,7 @@
 - `VQT Avatar Converter Settings` に余分なマテリアルスロットを削除する機能を追加。
 - `VQT Avatar Converter Settings` にメニューアイコンを圧縮する機能を追加。
 - lilToon のカスタムシェーダーを使用するマテリアルの変換に対応。(通常の lilToon と同様の処理)
+- Local-Only Contact Sender に対応。
 
 ### 変更
 - テクスチャの生成処理を高速化。
