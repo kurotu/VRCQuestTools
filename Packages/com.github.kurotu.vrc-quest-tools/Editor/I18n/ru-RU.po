@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-02-18 13:43\n"
+"PO-Revision-Date: 2025-02-24 08:14\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -107,6 +107,12 @@ msgid "RemoveExtraMaterialSlotsLabel"
 msgstr ""
 
 msgid "RemoveExtraMaterialSlotsTooltip"
+msgstr ""
+
+msgid "CompressExpressionsMenuIconsLabel"
+msgstr ""
+
+msgid "CompressExpressionsMenuIconsTooltip"
 msgstr ""
 
 msgid "AnimationOverrideLabel"
@@ -509,6 +515,18 @@ msgid "MaterialSwapEditorSelectMaterialLabel"
 msgstr ""
 
 msgid "MaterialSwapEditorReplacementMaterialError"
+msgstr ""
+
+msgid "MenuIconsResizerEditorDescription"
+msgstr ""
+
+msgid "MenuIconsResizerEditorResizeModePCLabel"
+msgstr ""
+
+msgid "MenuIconsResizerEditorResizeModeAndroidLabel"
+msgstr ""
+
+msgid "MenuIconsResizerEditorCompressTexturesLabel"
 msgstr ""
 
 msgid "AvatarBuilderWindowExitPlayMode"
