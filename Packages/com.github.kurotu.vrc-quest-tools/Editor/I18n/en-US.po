@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-02-18 13:56\n"
+"PO-Revision-Date: 2025-02-24 12:49\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -156,9 +156,8 @@ msgid "NetworkIdAssignerAttached"
 msgstr "Network ID Assigner has been attached to the avatar. Please upload the non-converted avatar to PC platform to synchronize PhysBones between PC and Android."
 
 msgid "WarningForPerformance"
-msgstr "Estimated performance rating is Very Poor. You can upload the converted avatar for Android platform, but there are following limitation.\n"
-"- Quest/PICO users see your fallback avatar by default, then need to change \"Avatar Display\" setting.\n"
-"- Android smartphone users can't see Very Poor avatars."
+msgstr "Estimated performance rating is Very Poor. You can upload the converted avatar for Android platform, but mobile users will see its imposter or fallback avatar by default.\n"
+"However, mobile users can see the avatar by changing \"Avatar Display\" setting (as known as \"Show Avatar\")."
 
 msgid "WarningForAppearance"
 msgstr "Texture's transparency doesn't make any effects, so this will be an issue for facial expression. In this case, please take steps by yourself (for example, by editing animation clips or deleting problematic meshes).\n"
@@ -211,7 +210,7 @@ msgid "AvatarConverterContactsTooltip"
 msgstr "Set ContactSenders and ContactReceivers to keep while conversion."
 
 msgid "OpenAvatarBuilder"
-msgstr "Open Avatar Builder"
+msgstr "Convert Non-Destructively"
 
 msgid "ManualConversionWarning"
 msgstr "When converting manually, non-destructive components other than MA Merge Animator are not considered. Unexpected issues may arise in the behavior after combining."
@@ -532,7 +531,7 @@ msgid "MenuIconsResizerEditorResizeModeAndroidLabel"
 msgstr "Resize Mode (Android)"
 
 msgid "MenuIconsResizerEditorCompressTexturesLabel"
-msgstr "Compress Existing Textures"
+msgstr "Compress Uncompressed Textures"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Exit play mode to build the avatar."

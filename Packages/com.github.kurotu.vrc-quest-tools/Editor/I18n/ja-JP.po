@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-02-18 15:15\n"
+"PO-Revision-Date: 2025-02-24 12:49\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -110,6 +110,12 @@ msgstr "余分なマテリアルスロットを削除する"
 msgid "RemoveExtraMaterialSlotsTooltip"
 msgstr "各Rendererに紐づいているメッシュのサブメッシュ数より多いマテリアルスロットを削除します。"
 
+msgid "CompressExpressionsMenuIconsLabel"
+msgstr "メニューアイコンを圧縮"
+
+msgid "CompressExpressionsMenuIconsTooltip"
+msgstr "Expressions Menuのアイコンが圧縮されていなければ圧縮します。"
+
 msgid "AnimationOverrideLabel"
 msgstr "アニメーションオーバーライド"
 
@@ -150,9 +156,8 @@ msgid "NetworkIdAssignerAttached"
 msgstr "Network ID Assignerがアバターに追加されました。PCとAndroidでPhysBoneを同期させるために、変換前のアバターをPC向けにアップロードしてください。"
 
 msgid "WarningForPerformance"
-msgstr "変換後のアバターの推定パフォーマンスランクは Very Poor です。Android 用にアップロードできますが、以下の制限があります。\n"
-"・デフォルトではフォールバックアバターが表示され、見る側が「アバターの表示」設定を個別に変更する必要があります。\n"
-"・Android スマートフォン版 VRChat では表示できません。"
+msgstr "変換後のアバターの推定パフォーマンスランクは Very Poor です。Android 用にアップロードできますが、デフォルトではインポスターまたはフォールバックアバターが表示されます。\n"
+"ただし、見る側が「アバターの表示」設定を個別に変更することで表示できます。 (Show Avatar 操作)"
 
 msgid "WarningForAppearance"
 msgstr "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n"
@@ -205,7 +210,7 @@ msgid "AvatarConverterContactsTooltip"
 msgstr "変換時に残しておく ContactSender と ContactReceiver を選択します。"
 
 msgid "OpenAvatarBuilder"
-msgstr "Avatar Builder を開く"
+msgstr "非破壊的に変換"
 
 msgid "ManualConversionWarning"
 msgstr "手動で変換する場合 MA Merge Animator 以外の非破壊コンポーネントを考慮しません。組み合わせた後の動作に予期せぬ問題があるかもしれません。"
@@ -515,6 +520,18 @@ msgstr "子オブジェクトから選択"
 
 msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr "このマテリアルのシェーダーはモバイルアバターでは許可されていません。"
+
+msgid "MenuIconsResizerEditorDescription"
+msgstr "Expressions Menuのアイコンをリサイズします。"
+
+msgid "MenuIconsResizerEditorResizeModePCLabel"
+msgstr "サイズ変更モード (PC)"
+
+msgid "MenuIconsResizerEditorResizeModeAndroidLabel"
+msgstr "サイズ変更モード (Android)"
+
+msgid "MenuIconsResizerEditorCompressTexturesLabel"
+msgstr "未圧縮のテクスチャを圧縮"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "アバターをビルドするには Play モードを終了してください。"
