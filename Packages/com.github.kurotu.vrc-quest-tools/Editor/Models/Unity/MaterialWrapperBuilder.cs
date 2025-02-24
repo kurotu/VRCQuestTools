@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using UnityEditor;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models.Unity
@@ -67,6 +68,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             // Shader name may be changed for Shader Blocking System (case sensitive). So compare shader name case insensitive.
             // https://niwaka.fanbox.cc/posts/1612078
             var shaderName = material.shader.name.ToLower();
+            var shaderPath = AssetDatabase.GetAssetPath(material.shader).ToLower();
             if (shaderName == "Standard".ToLower() || shaderName == "Standard (Specular setup)".ToLower() || shaderName.StartsWith("Standard/".ToLower()))
             {
                 return ShaderCategory.Standard;
@@ -96,6 +98,10 @@ namespace KRT.VRCQuestTools.Models.Unity
                 return ShaderCategory.Sunao;
             }
             if (shaderName.Contains("liltoon"))
+            {
+                return ShaderCategory.LilToon;
+            }
+            if (shaderPath.EndsWith(".lilcontainer"))
             {
                 return ShaderCategory.LilToon;
             }

@@ -203,16 +203,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return new Component[] { };
         }
 
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
         /// <summary>
         /// Gets non-local ContactReceivers and ContactSenders.
         /// </summary>
         /// <returns>All attached non-local ContactReceivers and ContactSenders.</returns>
         internal ContactBase[] GetNonLocalContacts()
         {
-            return new ContactBase[] { }
-                .Concat(AvatarDescriptor.GetComponentsInChildren<ContactReceiver>(true).Where(c => !c.IsLocalOnly))
-                .Concat(AvatarDescriptor.GetComponentsInChildren<ContactSender>(true))
+            return AvatarDescriptor.GetComponentsInChildren<ContactBase>(true)
+                .Where(c => !VRCSDKUtility.IsLocalOnlyContact(c))
                 .ToArray();
         }
 
@@ -222,9 +220,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>All attaches local ContactReceivers.</returns>
         internal ContactReceiver[] GetLocalContactReceivers()
         {
-            return AvatarDescriptor.GetComponentsInChildren<ContactReceiver>(true).Where(c => c.IsLocalOnly).ToArray();
+            return AvatarDescriptor.GetComponentsInChildren<ContactReceiver>(true)
+                .Where(VRCSDKUtility.IsLocalOnlyContact).ToArray();
         }
-#endif
+
+        /// <summary>
+        /// Gets local ContactSenders.
+        /// </summary>
+        /// <returns>All attaches local ContactSenders.</returns>
+        internal ContactSender[] GetLocalContactSenders()
+        {
+            return AvatarDescriptor.GetComponentsInChildren<ContactSender>(true)
+                .Where(VRCSDKUtility.IsLocalOnlyContact).ToArray();
+        }
 
         /// <summary>
         /// Estimates performance stats.

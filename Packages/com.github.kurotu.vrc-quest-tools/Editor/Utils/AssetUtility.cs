@@ -11,6 +11,7 @@ using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Utils
 {
@@ -356,6 +357,81 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Bake a texture to a new one.
+        /// </summary>
+        /// <param name="input">Input texture.</param>
+        /// <param name="width">Desired width.</param>
+        /// <param name="height">Desired height.</param>
+        /// <param name="useMipmap">Use mip map.</param>
+        /// <returns>New texture.</returns>
+        internal static Texture2D BakeTexture(Texture input, int width, int height, bool useMipmap)
+        {
+            return BakeTexture(input, null, width, height, useMipmap);
+        }
+
+        /// <summary>
+        /// Bake a texture to a new one.
+        /// </summary>
+        /// <param name="input">Input texture.</param>
+        /// <param name="material">Material to bake.</param>
+        /// <param name="width">Desired width.</param>
+        /// <param name="height">Desired height.</param>
+        /// <param name="useMipmap">Use mip map.</param>
+        /// <returns>New texture.</returns>
+        internal static Texture2D BakeTexture(Texture input, Material material, int width, int height, bool useMipmap)
+        {
+            var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+            var activeRT = RenderTexture.active;
+            try
+            {
+                if (material)
+                {
+                    Graphics.Blit(input, rt, material);
+                }
+                else
+                {
+                    Graphics.Blit(input, rt);
+                }
+
+                var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap);
+                if (SystemInfo.supportsAsyncGPUReadback)
+                {
+                    var request = AsyncGPUReadback.Request(rt, 0, TextureFormat.RGBA32);
+                    request.WaitForCompletion();
+                    if (useMipmap)
+                    {
+                        var mipmapCount = rt.mipmapCount;
+                        for (int i = 0; i < mipmapCount; i++)
+                        {
+                            using (var data = request.GetData<Color32>(i))
+                            {
+                                result.SetPixelData(data, i);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (var data = request.GetData<Color32>())
+                        {
+                            result.LoadRawTextureData(data);
+                        }
+                    }
+                }
+                else
+                {
+                    result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                }
+                result.Apply();
+                return result;
+            }
+            finally
+            {
+                RenderTexture.active = activeRT;
+                RenderTexture.ReleaseTemporary(rt);
+            }
+        }
+
+        /// <summary>
         /// Resizes a texture to desired size.
         /// </summary>
         /// <param name="texture">Texture to resize.</param>
@@ -364,19 +440,19 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Resized texture.</returns>
         internal static Texture2D ResizeTexture(Texture2D texture, int width, int height)
         {
-            using (var rt = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
-            {
-                var activeRT = RenderTexture.active;
+            return BakeTexture(texture, width, height, texture.mipmapCount > 1);
+        }
 
-                RenderTexture.active = rt.Object;
-                Graphics.Blit(texture, rt.Object);
-                var result = new Texture2D(width, height);
-                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                result.Apply();
-
-                RenderTexture.active = activeRT;
-                return result;
-            }
+        /// <summary>
+        /// Compresses a texture for the build target.
+        /// </summary>
+        /// <param name="texture">Texture to compress.</param>
+        /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
+        internal static void CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget)
+        {
+            var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
+            var format = isMobile ? TextureFormat.ASTC_6x6 : TextureFormat.DXT5;
+            EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);
         }
 
         /// <summary>
@@ -419,6 +495,16 @@ namespace KRT.VRCQuestTools.Utils
                 default:
                     throw new NotSupportedException($"Unsupported build target: {buildTarget}");
             }
+        }
+
+        /// <summary>
+        /// Returns whether the texture format is uncompressed.
+        /// </summary>
+        /// <param name="format">Texture format.</param>
+        /// <returns>true when the format is for uncompressed.</returns>
+        internal static bool IsUncompressedFormat(TextureFormat format)
+        {
+            return UncompressedFormats.Contains(format);
         }
 
         /// <summary>

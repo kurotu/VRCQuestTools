@@ -49,6 +49,8 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
+            context.GetState<NdmfState>().compressExpressionsMenuIcons = settings.compressExpressionsMenuIcons;
+
             try
             {
                 TrackObjectRegistryForMaterialSwaps(context.AvatarRootObject);

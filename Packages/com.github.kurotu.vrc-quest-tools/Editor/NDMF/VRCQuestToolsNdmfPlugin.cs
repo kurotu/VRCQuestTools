@@ -67,9 +67,11 @@ namespace KRT.VRCQuestTools.Ndmf
 
             InPhase(BuildPhase.Optimizing)
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
+                .AfterPlugin("jp.unisakistudio.posingsystemeditor.posingsystemconverter") // needs created menus
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
                 .Run(AvatarConverterOptimizingPass.Instance)
                 .Then.Run(RemoveUnsupportedComponentsPass.Instance)
+                .Then.Run(MenuIconsResizerPass.Instance)
                 .Then.Run(RemoveVRCQuestToolsComponentsPass.Instance);
 
             InPhase(BuildPhase.Optimizing)

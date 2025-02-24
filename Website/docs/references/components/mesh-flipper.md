@@ -40,5 +40,4 @@ The VRCQuestTools plugin performs the following processes.
 
 Geneates a new mesh for attached component's MeshFilter or SkinnedMeshRenderer.
 
-This process is performed after NDMF Mantis LOD Editor.
-But it's delayed after lilNDMFMeshSimplifier and before AAO: Avatar Optimizer when lilNDMFMeshSimplifier exists.
+This process is performed before NDMF Mantis LOD Editor.

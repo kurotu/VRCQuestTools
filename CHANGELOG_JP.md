@@ -9,11 +9,16 @@
 ### 追加
 - [NDMF] `VQT Mesh Flipper` にマスクテクスチャによって動作範囲を制御する機能を追加。
 - [NDMF] (実験的機能) `VQT Material Swap` コンポーネントによる Android ビルド時のマテリアル置換設定を追加。 (by @Amoenus)
+- [NDMF] `VQT Menu Icons Resizer` によるメニューアイコンのサイズ変更機能を追加。
 - [NDMF] 追加のマテリアル変換設定の対象となるマテリアルが他のプラグインによって変更された場合に追跡する機能を追加。
 - マテリアル置換設定で非対応マテリアルを指定したときのエラーを追加。
 - `VQT Avatar Converter Settings` に余分なマテリアルスロットを削除する機能を追加。
+- `VQT Avatar Converter Settings` にメニューアイコンを圧縮する機能を追加。
+- lilToon のカスタムシェーダーを使用するマテリアルの変換に対応。(通常の lilToon と同様の処理)
+- Local-Only Contact Sender に対応。
 
 ### 変更
+- テクスチャの生成処理を高速化。
 - [NDMF] Transforming Phase で `VQT Mesh Flipper` が `NDMF Mantis LOD Editor` より先に動作するように変更。
 
 ## [2.6.2] - 2025-01-21

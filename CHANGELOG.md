@@ -10,11 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - [NDMF] Feature to control operational area of `VQT Mesh Flipper` by mask textures.
 - [NDMF] (Experimental) `VQT Material Swap` component to swap materials on Android build. (by @Amoenus)
+- [NDMF] `VQT Menu Icons Resizer` component to resize menu icons for Android build.
 - [NDMF] Ability to track when materials subject to Additional Material Conversion Settings have been modified by other plugins.
 - Error for unsupported materials in Material Replacement settings.
 - Feature to remove extra material slots in the `VQT Avatar Converter Settings` component.
+- Feature to compress menu icons in the `VQT Avatar Converter Settings` component.
+- Feature to convert materials which use lilToon custom shaders. (as well as regular lilToon materials)
+- Support for local-only contact senders.
 
 ### Changed
+- Accelerated the texture generation process.
 - [NDMF] `VQT Mesh Flipper` works before `NDMF Mantis LOD Editor` in the transforming phase.
 
 ## [2.6.2] - 2025-01-21
