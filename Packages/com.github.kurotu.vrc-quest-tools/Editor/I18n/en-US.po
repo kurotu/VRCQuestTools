@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-02-24 12:49\n"
+"PO-Revision-Date: 2025-02-25 11:53\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -521,16 +521,16 @@ msgstr "Select from children"
 msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr "This material's shader is not allowed for mobile avatars."
 
-msgid "MenuIconsResizerEditorDescription"
+msgid "MenuIconResizerEditorDescription"
 msgstr "Resize menu icons in the avatar's expressions menu."
 
-msgid "MenuIconsResizerEditorResizeModePCLabel"
+msgid "MenuIconResizerEditorResizeModePCLabel"
 msgstr "Resize Mode (PC)"
 
-msgid "MenuIconsResizerEditorResizeModeAndroidLabel"
+msgid "MenuIconResizerEditorResizeModeAndroidLabel"
 msgstr "Resize Mode (Android)"
 
-msgid "MenuIconsResizerEditorCompressTexturesLabel"
+msgid "MenuIconResizerEditorCompressTexturesLabel"
 msgstr "Compress Uncompressed Textures"
 
 msgid "AvatarBuilderWindowExitPlayMode"
