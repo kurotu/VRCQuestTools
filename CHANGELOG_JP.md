@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.7.0] - 2025-02-25
 
 ### 追加
 - [NDMF] `VQT Mesh Flipper` にマスクテクスチャによって動作範囲を制御する機能を追加。
