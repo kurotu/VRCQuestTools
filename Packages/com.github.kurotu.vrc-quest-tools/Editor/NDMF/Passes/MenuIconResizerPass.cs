@@ -15,6 +15,9 @@ namespace KRT.VRCQuestTools.Ndmf
         private const int MaxActionTextureSize = 256;
 
         /// <inheritdoc/>
+        public override string DisplayName => "Resize menu icons";
+
+        /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
             var menu = context.AvatarDescriptor.expressionsMenu;
