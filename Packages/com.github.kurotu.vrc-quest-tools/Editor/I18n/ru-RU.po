@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-02-24 10:32\n"
+"PO-Revision-Date: 2025-02-25 11:53\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -517,16 +517,16 @@ msgstr ""
 msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr ""
 
-msgid "MenuIconsResizerEditorDescription"
+msgid "MenuIconResizerEditorDescription"
 msgstr ""
 
-msgid "MenuIconsResizerEditorResizeModePCLabel"
+msgid "MenuIconResizerEditorResizeModePCLabel"
 msgstr ""
 
-msgid "MenuIconsResizerEditorResizeModeAndroidLabel"
+msgid "MenuIconResizerEditorResizeModeAndroidLabel"
 msgstr ""
 
-msgid "MenuIconsResizerEditorCompressTexturesLabel"
+msgid "MenuIconResizerEditorCompressTexturesLabel"
 msgstr ""
 
 msgid "AvatarBuilderWindowExitPlayMode"
