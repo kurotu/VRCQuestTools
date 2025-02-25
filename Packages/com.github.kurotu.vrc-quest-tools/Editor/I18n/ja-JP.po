@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-02-24 12:49\n"
+"PO-Revision-Date: 2025-02-25 11:53\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -521,16 +521,16 @@ msgstr "子オブジェクトから選択"
 msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr "このマテリアルのシェーダーはモバイルアバターでは許可されていません。"
 
-msgid "MenuIconsResizerEditorDescription"
+msgid "MenuIconResizerEditorDescription"
 msgstr "Expressions Menuのアイコンをリサイズします。"
 
-msgid "MenuIconsResizerEditorResizeModePCLabel"
+msgid "MenuIconResizerEditorResizeModePCLabel"
 msgstr "サイズ変更モード (PC)"
 
-msgid "MenuIconsResizerEditorResizeModeAndroidLabel"
+msgid "MenuIconResizerEditorResizeModeAndroidLabel"
 msgstr "サイズ変更モード (Android)"
 
-msgid "MenuIconsResizerEditorCompressTexturesLabel"
+msgid "MenuIconResizerEditorCompressTexturesLabel"
 msgstr "未圧縮のテクスチャを圧縮"
 
 msgid "AvatarBuilderWindowExitPlayMode"
