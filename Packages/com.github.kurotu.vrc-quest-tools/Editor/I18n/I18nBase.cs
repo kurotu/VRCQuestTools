@@ -267,10 +267,10 @@ namespace KRT.VRCQuestTools.I18n
         internal string MaterialSwapEditorReplacementMaterialError => GetText("MaterialSwapEditorReplacementMaterialError");
 
         // Menu Icons Resizer
-        internal string MenuIconsResizerEditorDescription => GetText("MenuIconsResizerEditorDescription");
-        internal string MenuIconsResizerEditorResizeModePCLabel => GetText("MenuIconsResizerEditorResizeModePCLabel");
-        internal string MenuIconsResizerEditorResizeModeAndroidLabel => GetText("MenuIconsResizerEditorResizeModeAndroidLabel");
-        internal string MenuIconsResizerEditorCompressTexturesLabel => GetText("MenuIconsResizerEditorCompressTexturesLabel");
+        internal string MenuIconResizerEditorDescription => GetText("MenuIconResizerEditorDescription");
+        internal string MenuIconResizerEditorResizeModePCLabel => GetText("MenuIconResizerEditorResizeModePCLabel");
+        internal string MenuIconResizerEditorResizeModeAndroidLabel => GetText("MenuIconResizerEditorResizeModeAndroidLabel");
+        internal string MenuIconResizerEditorCompressTexturesLabel => GetText("MenuIconResizerEditorCompressTexturesLabel");
 
         // Avatar Builder
         internal string AvatarBuilderWindowExitPlayMode => GetText("AvatarBuilderWindowExitPlayMode");

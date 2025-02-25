@@ -517,16 +517,16 @@ msgstr ""
 msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr ""
 
-msgid "MenuIconsResizerEditorDescription"
+msgid "MenuIconResizerEditorDescription"
 msgstr ""
 
-msgid "MenuIconsResizerEditorResizeModePCLabel"
+msgid "MenuIconResizerEditorResizeModePCLabel"
 msgstr ""
 
-msgid "MenuIconsResizerEditorResizeModeAndroidLabel"
+msgid "MenuIconResizerEditorResizeModeAndroidLabel"
 msgstr ""
 
-msgid "MenuIconsResizerEditorCompressTexturesLabel"
+msgid "MenuIconResizerEditorCompressTexturesLabel"
 msgstr ""
 
 msgid "AvatarBuilderWindowExitPlayMode"

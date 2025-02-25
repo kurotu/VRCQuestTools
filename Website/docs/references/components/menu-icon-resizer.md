@@ -1,4 +1,4 @@
-# Menu Icons Resizer
+# Menu Icon Resizer
 
 This component resizes, compresses, or removes the icons in the expressions menu at build time.
 

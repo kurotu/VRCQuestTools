@@ -10,7 +10,7 @@ namespace KRT.VRCQuestTools.Ndmf
     /// <summary>
     /// Pass to resize menu icons in expressions menu.
     /// </summary>
-    public class MenuIconsResizerPass : Pass<MenuIconsResizerPass>
+    public class MenuIconResizerPass : Pass<MenuIconResizerPass>
     {
         private const int MaxActionTextureSize = 256;
 
@@ -29,7 +29,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
-            var resizer = context.AvatarRootObject.GetComponentInChildren<MenuIconsResizer>(true);
+            var resizer = context.AvatarRootObject.GetComponentInChildren<MenuIconResizer>(true);
 
             var target = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
 
@@ -37,7 +37,7 @@ namespace KRT.VRCQuestTools.Ndmf
             if (resizer != null)
             {
                 var resizeMode = target == BuildTarget.PC ? resizer.resizeModePC : resizer.resizeModeAndroid;
-                if (resizeMode != MenuIconsResizer.TextureResizeMode.DoNotResize)
+                if (resizeMode != MenuIconResizer.TextureResizeMode.DoNotResize)
                 {
                     maxSize = (int)resizeMode;
                 }

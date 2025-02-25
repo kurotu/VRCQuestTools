@@ -5,10 +5,10 @@ namespace KRT.VRCQuestTools.Components
     /// <summary>
     /// Resize menu icons in expressions menu.
     /// </summary>
-    [AddComponentMenu("VRCQuestTools/VQT Menu Icons Resizer")]
-    [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/menu-icons-resizer?lang=auto")]
+    [AddComponentMenu("VRCQuestTools/VQT Menu Icon Resizer")]
+    [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/menu-icon-resizer?lang=auto")]
     [DisallowMultipleComponent]
-    public class MenuIconsResizer : VRCQuestToolsEditorOnly, IPlatformDependentComponent, INdmfComponent
+    public class MenuIconResizer : VRCQuestToolsEditorOnly, IPlatformDependentComponent, INdmfComponent
     {
         /// <summary>
         /// Maximum texture size for PC target.

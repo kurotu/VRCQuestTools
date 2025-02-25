@@ -71,7 +71,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
                 .Run(AvatarConverterOptimizingPass.Instance)
                 .Then.Run(RemoveUnsupportedComponentsPass.Instance)
-                .Then.Run(MenuIconsResizerPass.Instance)
+                .Then.Run(MenuIconResizerPass.Instance)
                 .Then.Run(RemoveVRCQuestToolsComponentsPass.Instance);
 
             InPhase(BuildPhase.Optimizing)

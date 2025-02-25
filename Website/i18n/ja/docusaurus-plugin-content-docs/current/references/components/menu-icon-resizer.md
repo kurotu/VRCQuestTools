@@ -1,4 +1,4 @@
-# Menu Icons Resizer
+# Menu Icon Resizer
 
 メニューアイコンをリサイズ、圧縮、削除します。
 

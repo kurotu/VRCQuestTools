@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - [NDMF] Feature to control operational area of `VQT Mesh Flipper` by mask textures.
 - [NDMF] (Experimental) `VQT Material Swap` component to swap materials on Android build. (by @Amoenus)
-- [NDMF] `VQT Menu Icons Resizer` component to resize menu icons for Android build.
+- [NDMF] `VQT Menu Icon Resizer` component to resize menu icons for Android build.
 - [NDMF] Ability to track when materials subject to Additional Material Conversion Settings have been modified by other plugins.
 - Error for unsupported materials in Material Replacement settings.
 - Feature to remove extra material slots in the `VQT Avatar Converter Settings` component.
