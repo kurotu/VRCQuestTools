@@ -394,7 +394,7 @@ namespace KRT.VRCQuestTools.Utils
                 }
 
                 var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap);
-                if (SystemInfo.supportsAsyncGPUReadback)
+                if (ShouldUseAsyncGPUReadback())
                 {
                     var request = AsyncGPUReadback.Request(rt, 0, TextureFormat.RGBA32);
                     request.WaitForCompletion();
@@ -659,6 +659,15 @@ namespace KRT.VRCQuestTools.Utils
                     }
                 }
             }
+        }
+
+        private static bool ShouldUseAsyncGPUReadback()
+        {
+#if UNITY_2022_1_OR_NEWER
+            return SystemInfo.supportsAsyncGPUReadback;
+#else
+            return false;
+#endif
         }
 
         [Serializable]
