@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.7.1] - 2025-02-26
 
 ### 変更
 - Unity 2019でのテクスチャの生成処理を2.6.2以前のバージョンと同じに変更。
