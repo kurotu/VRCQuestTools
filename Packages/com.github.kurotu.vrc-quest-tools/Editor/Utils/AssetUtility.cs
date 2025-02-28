@@ -393,42 +393,47 @@ namespace KRT.VRCQuestTools.Utils
                     Graphics.Blit(input, rt);
                 }
 
-                var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap);
-                if (ShouldUseAsyncGPUReadback())
-                {
-                    var request = AsyncGPUReadback.Request(rt, 0, TextureFormat.RGBA32);
-                    request.WaitForCompletion();
-                    if (useMipmap)
-                    {
-                        var mipmapCount = rt.mipmapCount;
-                        for (int i = 0; i < mipmapCount; i++)
-                        {
-                            using (var data = request.GetData<Color32>(i))
-                            {
-                                result.SetPixelData(data, i);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        using (var data = request.GetData<Color32>())
-                        {
-                            result.LoadRawTextureData(data);
-                        }
-                    }
-                }
-                else
-                {
-                    result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                }
-                result.Apply();
-                return result;
+                return ReadbackRenderTexture(rt, width, height, useMipmap);
             }
             finally
             {
                 RenderTexture.active = activeRT;
                 RenderTexture.ReleaseTemporary(rt);
             }
+        }
+
+        internal static Texture2D ReadbackRenderTexture(RenderTexture renderTexture, int width, int height, bool useMipmap)
+        {
+            var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap);
+            if (ShouldUseAsyncGPUReadback())
+            {
+                var request = AsyncGPUReadback.Request(renderTexture, 0, TextureFormat.RGBA32);
+                request.WaitForCompletion();
+                if (useMipmap)
+                {
+                    var mipmapCount = renderTexture.mipmapCount;
+                    for (int i = 0; i < mipmapCount; i++)
+                    {
+                        using (var data = request.GetData<Color32>(i))
+                        {
+                            result.SetPixelData(data, i);
+                        }
+                    }
+                }
+                else
+                {
+                    using (var data = request.GetData<Color32>())
+                    {
+                        result.LoadRawTextureData(data);
+                    }
+                }
+            }
+            else
+            {
+                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+            }
+            result.Apply();
+            return result;
         }
 
         /// <summary>
