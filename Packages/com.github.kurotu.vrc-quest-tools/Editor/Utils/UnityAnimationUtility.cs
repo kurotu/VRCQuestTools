@@ -302,7 +302,7 @@ namespace KRT.VRCQuestTools.Utils
                         AssetDatabase.AddObjectToAsset(newTree, outFile);
                     }
                 }
-                cloneController.SetStateEffectiveMotion(childState.state, motion, layerIndex);
+                SetStateEffectiveMotion(cloneController, childState.state, motion, layerIndex);
             }
 
             foreach (var childStateMachine in stateMachine.stateMachines)
@@ -327,6 +327,27 @@ namespace KRT.VRCQuestTools.Utils
                 .ToArray();
             var descendants = childTrees.SelectMany(tree => GetDescendantBlendTrees(tree, currentTrees));
             return childTrees.Concat(descendants).Distinct().ToArray();
+        }
+
+        /// <summary>
+        /// Simplified AnimatorController.SetStateEffectiveMotion.
+        /// This method doesn't destroy the original blendtreee motion.
+        /// </summary>
+        /// <param name="controller">Target Animator Controller.</param>
+        /// <param name="state">State to set the motion.</param>
+        /// <param name="motion">Motion to set.</param>
+        /// <param name="layerIndex">Layer index to manipulate.</param>
+        private static void SetStateEffectiveMotion(AnimatorController controller, AnimatorState state, Motion motion, int layerIndex)
+        {
+            if (controller.layers[layerIndex].syncedLayerIndex == -1)
+            {
+                state.motion = motion;
+                return;
+            }
+
+            AnimatorControllerLayer[] array = controller.layers;
+            array[layerIndex].SetOverrideMotion(state, motion);
+            controller.layers = array;
         }
     }
 }
