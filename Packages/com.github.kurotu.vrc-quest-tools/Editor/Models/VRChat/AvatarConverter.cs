@@ -133,7 +133,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                 }
 
-                var convertedBlendTrees = ConvertBlendTreesForQuest(avatar.GetRuntimeAnimatorControllers().Select(c => (AnimatorController)c).ToArray(), saveAssetsAsFile, assetsDirectory, convertedAnimationClips);
+                var convertedBlendTrees = ConvertBlendTreesForQuest(
+                    avatar.GetRuntimeAnimatorControllers().Where(c => c is AnimatorController).Cast<AnimatorController>().ToArray(),
+                    saveAssetsAsFile,
+                    assetsDirectory,
+                    convertedAnimationClips);
                 var convertedAnimMotions = convertedAnimationClips.ToDictionary(c => (Motion)c.Key, c => (Motion)c.Value);
                 var convertedTreeMotions = convertedBlendTrees.ToDictionary(c => (Motion)c.Key, c => (Motion)c.Value);
                 var convertedMotions = convertedAnimMotions.Concat(convertedTreeMotions).ToDictionary(c => c.Key, c => c.Value);
@@ -452,9 +456,28 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 progressCallback(controllers.Length, index, controller, null);
                 try
                 {
-                    AnimatorController cloneController = UnityAnimationUtility.ReplaceAnimationClips(controller, saveAsAsset, assetsDirectory, convertedMotions);
-                    convertedControllers.Add(controller, cloneController);
-                    progressCallback(controllers.Length, index, controller, cloneController);
+                    RuntimeAnimatorController cloneController = null;
+                    switch (controller)
+                    {
+                        case AnimatorController animatorController:
+                            cloneController = UnityAnimationUtility.ReplaceAnimationClips(animatorController, saveAsAsset, assetsDirectory, convertedMotions);
+                            break;
+                        case AnimatorOverrideController overrideController:
+                            cloneController = UnityAnimationUtility.ReplaceAnimationClips(overrideController, saveAsAsset, assetsDirectory, convertedMotions);
+                            if (overrideController.runtimeAnimatorController)
+                            {
+                                ((AnimatorOverrideController)cloneController).runtimeAnimatorController = convertedControllers[overrideController.runtimeAnimatorController];
+                            }
+                            break;
+                        default:
+                            Debug.LogWarning($"Unsupported controller type: {controller.name}: {controller.GetType().Name}");
+                            break;
+                    }
+                    if (cloneController)
+                    {
+                        convertedControllers.Add(controller, cloneController);
+                        progressCallback(controllers.Length, index, controller, cloneController);
+                    }
                 }
                 catch (Exception e)
                 {

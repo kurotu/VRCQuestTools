@@ -143,10 +143,10 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="saveDir">Asset directory for new controller.</param>
         /// <param name="newMotions">Animation clips to replace (key: original clip).</param>
         /// <returns>New animator controller.</returns>
-        internal static AnimatorController ReplaceAnimationClips(RuntimeAnimatorController controller, bool saveAsAsset, string saveDir, Dictionary<Motion, Motion> newMotions)
+        internal static AnimatorController ReplaceAnimationClips(AnimatorController controller, bool saveAsAsset, string saveDir, Dictionary<Motion, Motion> newMotions)
         {
             string outFile = null;
-            AnimatorController cloneController = DeepCopyAnimatorController((AnimatorController)controller);
+            AnimatorController cloneController = DeepCopyAnimatorController(controller);
             cloneController.name = controller.name + "(Clone)";
             if (saveAsAsset)
             {
@@ -181,6 +181,41 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             AssetDatabase.SaveAssets();
+            return cloneController;
+        }
+
+        /// <summary>
+        /// Replace override controller's animation clips with new clips.
+        /// </summary>
+        /// <param name="controller">Target controller.</param>
+        /// <param name="saveAsAsset">Whether to save as asset.</param>
+        /// <param name="saveDir">Asset directory for new controller.</param>
+        /// <param name="newMotions">Animation clips to replace (key: original clip).</param>
+        /// <returns>New animator override controller.</returns>
+        internal static AnimatorOverrideController ReplaceAnimationClips(AnimatorOverrideController controller, bool saveAsAsset, string saveDir, Dictionary<Motion, Motion> newMotions)
+        {
+            string outFile = null;
+            AnimatorOverrideController cloneController = Object.Instantiate(controller);
+            cloneController.name = controller.name + "(Clone)";
+            if (saveAsAsset)
+            {
+                Directory.CreateDirectory($"{saveDir}/AnimatorControllers");
+                AssetDatabase.Refresh();
+
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(controller, out string guid, out long localId);
+                outFile = $"{saveDir}/AnimatorControllers/{controller.name}_from_{guid}.overrideController";
+                cloneController = AssetUtility.CreateAsset(cloneController, outFile);
+            }
+
+            var clipPairs = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+            cloneController.GetOverrides(clipPairs);
+            foreach (var pair in clipPairs)
+            {
+                if (pair.Value && newMotions.ContainsKey(pair.Value))
+                {
+                    cloneController[pair.Key] = newMotions[pair.Value] as AnimationClip;
+                }
+            }
             return cloneController;
         }
 

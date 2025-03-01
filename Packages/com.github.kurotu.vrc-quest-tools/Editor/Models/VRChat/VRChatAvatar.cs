@@ -149,7 +149,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 .Select(ma => ma.animator)
                 .ToArray();
 #endif
-            return layers.Concat(avatercontrollers).Concat(mergeAnimators).Where(c => c != null).Distinct().ToArray();
+
+            var controllers = layers.Concat(avatercontrollers).Concat(mergeAnimators).Where(c => c != null).ToArray();
+            var overrideBases = controllers
+                .Where(c => c is AnimatorOverrideController)
+                .Cast<AnimatorOverrideController>()
+                .Select(o => o.runtimeAnimatorController)
+                .Where(c => c != null);
+            return overrideBases.Concat(controllers).Distinct().ToArray();
         }
 
         /// <summary>
