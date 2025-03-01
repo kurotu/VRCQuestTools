@@ -280,29 +280,27 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     continue;
                 }
+
                 if (motion != null && newMotions.ContainsKey(motion))
                 {
-                    motion = newMotions[motion];
-                }
-                else if (motion is BlendTree tree)
-                {
-                    // embedded blend tree
-                    var newTree = DeepCopyBlendTree(tree);
-                    newTree.children = newTree.children.Select(child =>
+                    var newMotion = newMotions[motion];
+                    if (newMotion is BlendTree tree)
                     {
-                        if (child.motion != null && newMotions.ContainsKey(child.motion))
+                        tree.children = tree.children.Select(child =>
                         {
-                            child.motion = newMotions[child.motion];
+                            if (child.motion != null && newMotions.ContainsKey(child.motion))
+                            {
+                                child.motion = newMotions[child.motion];
+                            }
+                            return child;
+                        }).ToArray();
+                        if (saveAsAsset && !AssetDatabase.IsMainAsset(tree))
+                        {
+                            AssetDatabase.AddObjectToAsset(tree, outFile);
                         }
-                        return child;
-                    }).ToArray();
-                    motion = newTree;
-                    if (saveAsAsset)
-                    {
-                        AssetDatabase.AddObjectToAsset(newTree, outFile);
                     }
+                    SetStateEffectiveMotion(cloneController, childState.state, newMotion, layerIndex);
                 }
-                SetStateEffectiveMotion(cloneController, childState.state, motion, layerIndex);
             }
 
             foreach (var childStateMachine in stateMachine.stateMachines)
