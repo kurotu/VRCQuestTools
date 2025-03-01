@@ -9,6 +9,10 @@
 ### 追加
 - Animator Override Controller の変換に対応。
 
+### 修正
+- Animator Controller に埋め込まれた Blend Tree を変換すると元々の Blend Tree が削除される問題を修正。
+- Animator Controller に埋め込まれた Blend Tree が変換された後に正しく保存されない問題を修正。
+
 ## [2.7.1] - 2025-02-26
 
 ### 変更
