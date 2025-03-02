@@ -65,8 +65,14 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <returns>Generated image.</returns>
         internal virtual TextureReadbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
+            var maxTextureSize = (int)settings.MaxTextureSize;
             var width = Material.mainTexture?.width ?? 4;
             var height = Material.mainTexture?.height ?? 4;
+            if (maxTextureSize > 0)
+            {
+                width = System.Math.Min(maxTextureSize, width);
+                height = System.Math.Min(maxTextureSize, height);
+            }
 
             using (var disposables = new CompositeDisposable())
             using (var baker = DisposableObject.New(Object.Instantiate(Material)))

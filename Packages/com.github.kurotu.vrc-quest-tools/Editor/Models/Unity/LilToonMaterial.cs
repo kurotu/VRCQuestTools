@@ -318,6 +318,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <param name="material">Material to bake.</param>
         private TextureReadbackRequest EmissionBake(RenderTexture main, Material material, IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
+            var maxTextureSize = (int)settings.MaxTextureSize;
+            var width = main.width;
+            var height = main.height;
+            if (maxTextureSize > 0)
+            {
+                width = System.Math.Min(maxTextureSize, width);
+                height = System.Math.Min(maxTextureSize, height);
+            }
+
             var shaderSetting = LoadShaderSetting();
 
             if (!shaderSetting.LIL_FEATURE_EMISSION_1ST && !shaderSetting.LIL_FEATURE_EMISSION_2ND)
@@ -369,7 +378,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
-                return AssetUtility.BakeTexture(main, baker.Object, main.width, main.height, true, completion);
+                return AssetUtility.BakeTexture(main, baker.Object, width, height, true, completion);
             }
         }
 

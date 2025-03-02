@@ -53,18 +53,8 @@ namespace KRT.VRCQuestTools.Models
         private TextureReadbackRequest GenerateToonLitTexture(MaterialBase material, IToonLitConvertSettings settings, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material.Material, out string guid, out long localId);
-            var maxTextureSize = (int)settings.MaxTextureSize;
             return material.GenerateToonLitImage(settings, (tex) => {
                 var texToWrite = tex;
-                if (maxTextureSize > 0 && Math.Max(tex.width, tex.height) > maxTextureSize)
-                {
-                    var request = AssetUtility.ResizeTexture(tex, maxTextureSize, maxTextureSize, resized =>
-                    {
-                        texToWrite = resized;
-                    });
-                    request.WaitForCompletion();
-                }
-
                 var texture = tex;
                 if (saveAsPng)
                 {
