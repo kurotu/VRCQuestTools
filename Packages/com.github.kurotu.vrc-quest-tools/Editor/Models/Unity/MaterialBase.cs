@@ -63,7 +63,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </summary>
         /// <param name="settings">Setting object.</param>
         /// <returns>Generated image.</returns>
-        internal virtual Texture2D GenerateToonLitImage(IToonLitConvertSettings settings)
+        internal virtual TextureReadbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
             var width = Material.mainTexture?.width ?? 4;
             var height = Material.mainTexture?.height ?? 4;
@@ -93,7 +93,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     baker.Object.SetTexture(name, tex);
                 }
 
-                return AssetUtility.BakeTexture(baker.Object.mainTexture, baker.Object, width, height, true);
+                return AssetUtility.BakeTexture(baker.Object.mainTexture, baker.Object, width, height, true, completion);
             }
         }
     }

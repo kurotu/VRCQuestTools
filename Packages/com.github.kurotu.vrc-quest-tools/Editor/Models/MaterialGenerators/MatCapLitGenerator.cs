@@ -1,4 +1,6 @@
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
+using System;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
@@ -28,12 +30,13 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="saveTextureAsPng">Whether to save textures as png.</param>
         /// <param name="texturesPath">Path to save textures.</param>
         /// <returns>Generated material.</returns>
-        public Material GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath)
+        public TextureReadbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
         {
-            var newMaterial = toonLitGenerator.GenerateMaterial(material, saveTextureAsPng, texturesPath);
-            newMaterial.shader = Shader.Find("VRChat/Mobile/MatCap Lit");
-            newMaterial.SetTexture("_MatCap", matCapLitConvertSettings.matCapTexture);
-            return newMaterial;
+            return toonLitGenerator.GenerateMaterial(material, saveTextureAsPng, texturesPath, newMaterial =>
+            {
+                newMaterial.shader = Shader.Find("VRChat/Mobile/MatCap Lit");
+                newMaterial.SetTexture("_MatCap", matCapLitConvertSettings.matCapTexture);
+            });
         }
 
         /// <summary>
@@ -42,9 +45,9 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="material">Material to convert.</param>
         /// <param name="saveAsPng">Whether to save textures as png.</param>
         /// <param name="texturesPath">Path to save textures.</param>
-        public void GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath)
+        public TextureReadbackRequest GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath, Action completion)
         {
-            toonLitGenerator.GenerateTextures(material, saveAsPng, texturesPath);
+            return toonLitGenerator.GenerateTextures(material, saveAsPng, texturesPath, completion);
         }
     }
 }

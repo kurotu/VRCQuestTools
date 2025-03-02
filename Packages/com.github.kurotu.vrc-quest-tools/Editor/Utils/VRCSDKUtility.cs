@@ -807,11 +807,14 @@ namespace KRT.VRCQuestTools.Utils
                         {
                             var newWidth = Math.Min(maxSize, icon.width);
                             var newHeight = Math.Min(maxSize, icon.height);
-                            var newIcon = AssetUtility.ResizeTexture(icon, newWidth, newHeight);
-                            newIcon.name = icon.name + " (VQT Resize)";
-                            control.icon = newIcon;
-                            resizedTextures.Add(icon, newIcon);
-                            progressCallback?.Invoke(icon, newIcon);
+                            var request = AssetUtility.ResizeTexture(icon, newWidth, newHeight, (newIcon) =>
+                            {
+                                newIcon.name = icon.name + " (VQT Resize)";
+                                control.icon = newIcon;
+                                resizedTextures.Add(icon, newIcon);
+                                progressCallback?.Invoke(icon, newIcon);
+                            });
+                            request.WaitForCompletion();
                         }
                     }
 

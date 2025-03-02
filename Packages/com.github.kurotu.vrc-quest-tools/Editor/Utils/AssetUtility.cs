@@ -364,9 +364,9 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="height">Desired height.</param>
         /// <param name="useMipmap">Use mip map.</param>
         /// <returns>New texture.</returns>
-        internal static Texture2D BakeTexture(Texture input, int width, int height, bool useMipmap)
+        internal static TextureReadbackRequest BakeTexture(Texture input, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
-            return BakeTexture(input, null, width, height, useMipmap);
+            return BakeTexture(input, null, width, height, useMipmap, completion);
         }
 
         /// <summary>
@@ -378,7 +378,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="height">Desired height.</param>
         /// <param name="useMipmap">Use mip map.</param>
         /// <returns>New texture.</returns>
-        internal static Texture2D BakeTexture(Texture input, Material material, int width, int height, bool useMipmap)
+        internal static TextureReadbackRequest BakeTexture(Texture input, Material material, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
             var activeRT = RenderTexture.active;
@@ -393,12 +393,15 @@ namespace KRT.VRCQuestTools.Utils
                     Graphics.Blit(input, rt);
                 }
 
-                return ReadbackRenderTexture(rt, width, height, useMipmap);
+                return RequestReadbackRenderTexture(rt, width, height, useMipmap, (result) =>
+                {
+                    RenderTexture.ReleaseTemporary(rt);
+                    completion?.Invoke(result);
+                });
             }
             finally
             {
                 RenderTexture.active = activeRT;
-                RenderTexture.ReleaseTemporary(rt);
             }
         }
 
@@ -436,6 +439,18 @@ namespace KRT.VRCQuestTools.Utils
             return result;
         }
 
+        internal static TextureReadbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        {
+            if (ShouldUseAsyncGPUReadback())
+            {
+                return new TextureGPUReadbackRequest(renderTexture, width, height, useMipmap, completion);
+            }
+            else
+            {
+                return new TextureCPUReadbackRequest(renderTexture, width, height, useMipmap, completion);
+            }
+        }
+
         /// <summary>
         /// Resizes a texture to desired size.
         /// </summary>
@@ -443,9 +458,9 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
         /// <returns>Resized texture.</returns>
-        internal static Texture2D ResizeTexture(Texture2D texture, int width, int height)
+        internal static TextureReadbackRequest ResizeTexture(Texture2D texture, int width, int height, Action<Texture2D> completion)
         {
-            return BakeTexture(texture, width, height, texture.mipmapCount > 1);
+            return BakeTexture(texture, width, height, texture.mipmapCount > 1, completion);
         }
 
         /// <summary>
