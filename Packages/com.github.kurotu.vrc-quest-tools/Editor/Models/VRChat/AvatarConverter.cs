@@ -239,10 +239,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedTextures = new Dictionary<Material, Texture2D>();
+
+            var readbackRequests = new List<AsyncCallbackRequest>();
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
                 var m = materialsToConvert[i];
-                progressCallback(materialsToConvert.Length, i, m, null);
+                var currentIndex = i;
+                void Completion()
+                {
+                    progressCallback(materialsToConvert.Length, currentIndex, m, null);
+                }
                 try
                 {
                     var materialSetting = settings.GetMaterialConvertSettings(m);
@@ -252,18 +258,26 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             if (toonLitConvertSettings.generateQuestTextures)
                             {
                                 var m2 = MaterialWrapperBuilder.Build(m);
-                                new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory);
+                                readbackRequests.Add(new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory, Completion));
+                            }
+                            else
+                            {
+                                Completion();
                             }
                             break;
                         case MatCapLitConvertSettings matCapLitConvertSettings:
                             if (matCapLitConvertSettings.generateQuestTextures)
                             {
                                 var m2 = MaterialWrapperBuilder.Build(m);
-                                new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory);
+                                readbackRequests.Add(new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory, Completion));
+                            }
+                            else
+                            {
+                                Completion();
                             }
                             break;
                         case MaterialReplaceSettings materialReplaceSettings:
-                            // don't have to generate textures
+                            Completion();
                             break;
                         default:
                             throw new InvalidProgramException($"Unhandled material convert setting: {materialSetting.GetType().Name}");
@@ -273,6 +287,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     throw new MaterialConversionException("Failed to generate texture", m, e);
                 }
+            }
+            foreach (var request in readbackRequests)
+            {
+                request.WaitForCompletion();
             }
         }
 
@@ -305,21 +323,29 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 .Distinct()
                 .ToArray();
 
+            var readbackRequests = new List<AsyncCallbackRequest>();
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
+                var currentIndex = i;
                 var material = materialsToConvert[i];
                 progressCallback(materialsToConvert.Length, i, material, null);
 
                 try
                 {
-                    Material output = ConvertSingleMaterial(material, avatarConverterSettings, saveAsFile, assetsDirectory);
-                    convertedMaterials[material] = output;
-                    progressCallback(materialsToConvert.Length, i, material, output);
+                    readbackRequests.Add(ConvertSingleMaterial(material, avatarConverterSettings, saveAsFile, assetsDirectory, (output) =>
+                    {
+                        convertedMaterials[material] = output;
+                        progressCallback(materialsToConvert.Length, currentIndex, material, output);
+                    }));
                 }
                 catch (Exception e)
                 {
                     throw new MaterialConversionException("Failed to convert material", material, e);
                 }
+            }
+            foreach (var request in readbackRequests)
+            {
+                request.WaitForCompletion();
             }
 
             return convertedMaterials;
@@ -368,48 +394,50 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
         }
 
-        private Material ConvertSingleMaterial(
+        private AsyncCallbackRequest ConvertSingleMaterial(
             Material material,
             AvatarConverterSettings settings,
             bool saveAsFile,
-            string assetsDirectory)
+            string assetsDirectory,
+            Action<Material> completion)
         {
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localId);
             var materialWrapper = MaterialWrapperBuilder.Build(material);
             var convertSettings = settings.GetMaterialConvertSettings(material);
 
             // Generate converted material based on settings
-            var convertedMaterial = GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory);
-
-            // Save as asset if required
-            if (saveAsFile && !(convertSettings is MaterialReplaceSettings))
+            return GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory, convertedMaterial =>
             {
-                convertedMaterial = SaveMaterialAsset(
-                    convertedMaterial,
-                    material.name,
-                    guid,
-                    assetsDirectory);
-            }
-
-            return convertedMaterial;
+                // Save as asset if required
+                if (saveAsFile && !(convertSettings is MaterialReplaceSettings))
+                {
+                    convertedMaterial = SaveMaterialAsset(
+                        convertedMaterial,
+                        material.name,
+                        guid,
+                        assetsDirectory);
+                }
+                completion(convertedMaterial);
+            });
         }
 
-        private Material GenerateConvertedMaterial(
+        private AsyncCallbackRequest GenerateConvertedMaterial(
             MaterialBase material,
             IMaterialConvertSettings settings,
             bool saveAsFile,
-            string assetsDirectory)
+            string assetsDirectory,
+            Action<Material> completion)
         {
             var texturesPath = $"{assetsDirectory}/Textures";
 
             switch (settings)
             {
                 case ToonLitConvertSettings toonLitSettings:
-                    return new ToonLitGenerator(toonLitSettings).GenerateMaterial(material, saveAsFile, texturesPath);
+                    return new ToonLitGenerator(toonLitSettings).GenerateMaterial(material, saveAsFile, texturesPath, completion);
                 case MatCapLitConvertSettings matCapSettings:
-                    return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, saveAsFile, texturesPath);
+                    return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, saveAsFile, texturesPath, completion);
                 case MaterialReplaceSettings replaceSettings:
-                    return replaceSettings.material;
+                    return new ResultRequest<Material>(replaceSettings.material, completion);
                 default:
                     throw new InvalidProgramException($"Unhandled material convert setting: {settings.GetType().Name}");
             }
