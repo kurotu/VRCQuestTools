@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support to convert Animator Override Controllers.
 
+### Fixed
+- Fixed an issue where the original Blend Tree was deleted when converting a Blend Tree embedded in an Animator Controller.
+- Fixed an issue where a converted Blend Tree embedded in an Animator Controller was not saved properly afterward.
+
 ## [2.7.1] - 2025-02-26
 
 ### Changed
