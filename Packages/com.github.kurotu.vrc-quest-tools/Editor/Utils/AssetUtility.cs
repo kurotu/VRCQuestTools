@@ -364,7 +364,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="height">Desired height.</param>
         /// <param name="useMipmap">Use mip map.</param>
         /// <returns>New texture.</returns>
-        internal static TextureReadbackRequest BakeTexture(Texture input, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest BakeTexture(Texture input, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
             return BakeTexture(input, null, width, height, useMipmap, completion);
         }
@@ -378,7 +378,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="height">Desired height.</param>
         /// <param name="useMipmap">Use mip map.</param>
         /// <returns>New texture.</returns>
-        internal static TextureReadbackRequest BakeTexture(Texture input, Material material, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest BakeTexture(Texture input, Material material, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
             var activeRT = RenderTexture.active;
@@ -439,7 +439,7 @@ namespace KRT.VRCQuestTools.Utils
             return result;
         }
 
-        internal static TextureReadbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
             if (ShouldUseAsyncGPUReadback())
             {
@@ -458,7 +458,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
         /// <returns>Resized texture.</returns>
-        internal static TextureReadbackRequest ResizeTexture(Texture2D texture, int width, int height, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest ResizeTexture(Texture2D texture, int width, int height, Action<Texture2D> completion)
         {
             return BakeTexture(texture, width, height, texture.mipmapCount > 1, completion);
         }

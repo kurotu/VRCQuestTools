@@ -63,7 +63,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </summary>
         /// <param name="settings">Setting object.</param>
         /// <returns>Generated image.</returns>
-        internal virtual TextureReadbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
+        internal virtual AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
             var maxTextureSize = (int)settings.MaxTextureSize;
             var width = Material.mainTexture?.width ?? 4;

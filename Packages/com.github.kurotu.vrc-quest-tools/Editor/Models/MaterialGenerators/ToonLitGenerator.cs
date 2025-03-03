@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        public TextureReadbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
+        public AsyncCallbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
         {
             var newMaterial = material.ConvertToToonLit();
             if (settings.GenerateQuestTextures)
@@ -35,14 +35,14 @@ namespace KRT.VRCQuestTools.Models
                     completion?.Invoke(newMaterial);
                 });
             }
-            return new TextureResultReadbackRequest(null, (_) =>
+            return new ResultRequest<UnityEngine.Object>(null, (_) =>
             {
                 completion?.Invoke(newMaterial);
             });
         }
 
         /// <inheritdoc/>
-        public TextureReadbackRequest GenerateTextures(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action completion)
+        public AsyncCallbackRequest GenerateTextures(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action completion)
         {
             return GenerateToonLitTexture(material, settings, saveTextureAsPng, texturesPath, (_) =>
             {
@@ -50,7 +50,7 @@ namespace KRT.VRCQuestTools.Models
             });
         }
 
-        private TextureReadbackRequest GenerateToonLitTexture(MaterialBase material, IToonLitConvertSettings settings, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
+        private AsyncCallbackRequest GenerateToonLitTexture(MaterialBase material, IToonLitConvertSettings settings, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material.Material, out string guid, out long localId);
             return material.GenerateToonLitImage(settings, (tex) => {

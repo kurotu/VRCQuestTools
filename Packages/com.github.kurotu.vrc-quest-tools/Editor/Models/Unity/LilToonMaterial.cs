@@ -28,7 +28,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal override Shader BakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
 
         /// <inheritdoc/>
-        internal override TextureReadbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
+        internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
             var main = DisposableObject.New(MainBake(Material, 0));
             return EmissionBake(main.Object, Material, settings, (texture) =>
@@ -316,7 +316,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </summary>
         /// <param name="main">Baked main texture.</param>
         /// <param name="material">Material to bake.</param>
-        private TextureReadbackRequest EmissionBake(RenderTexture main, Material material, IToonLitConvertSettings settings, System.Action<Texture2D> completion)
+        private AsyncCallbackRequest EmissionBake(RenderTexture main, Material material, IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
             var maxTextureSize = (int)settings.MaxTextureSize;
             var width = main.width;

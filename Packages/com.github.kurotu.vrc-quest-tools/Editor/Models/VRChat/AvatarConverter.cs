@@ -240,7 +240,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedTextures = new Dictionary<Material, Texture2D>();
 
-            var readbackRequests = new List<TextureReadbackRequest>();
+            var readbackRequests = new List<AsyncCallbackRequest>();
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
                 var m = materialsToConvert[i];
@@ -323,7 +323,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 .Distinct()
                 .ToArray();
 
-            var readbackRequests = new List<TextureReadbackRequest>();
+            var readbackRequests = new List<AsyncCallbackRequest>();
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
                 var material = materialsToConvert[i];
@@ -393,7 +393,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
         }
 
-        private TextureReadbackRequest ConvertSingleMaterial(
+        private AsyncCallbackRequest ConvertSingleMaterial(
             Material material,
             AvatarConverterSettings settings,
             bool saveAsFile,
@@ -420,7 +420,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             });
         }
 
-        private TextureReadbackRequest GenerateConvertedMaterial(
+        private AsyncCallbackRequest GenerateConvertedMaterial(
             MaterialBase material,
             IMaterialConvertSettings settings,
             bool saveAsFile,

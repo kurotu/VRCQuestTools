@@ -30,7 +30,7 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="saveTextureAsPng">Whether to save textures as png.</param>
         /// <param name="texturesPath">Path to save textures.</param>
         /// <returns>Generated material.</returns>
-        public TextureReadbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
+        public AsyncCallbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
         {
             return toonLitGenerator.GenerateMaterial(material, saveTextureAsPng, texturesPath, newMaterial =>
             {
@@ -45,7 +45,7 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="material">Material to convert.</param>
         /// <param name="saveAsPng">Whether to save textures as png.</param>
         /// <param name="texturesPath">Path to save textures.</param>
-        public TextureReadbackRequest GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath, Action completion)
+        public AsyncCallbackRequest GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath, Action completion)
         {
             return toonLitGenerator.GenerateTextures(material, saveAsPng, texturesPath, completion);
         }

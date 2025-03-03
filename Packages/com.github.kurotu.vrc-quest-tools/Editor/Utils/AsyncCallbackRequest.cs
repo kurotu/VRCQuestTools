@@ -5,37 +5,29 @@ using static UnityEngine.Networking.UnityWebRequest;
 
 namespace KRT.VRCQuestTools.Utils
 {
-    internal abstract class TextureReadbackRequest
+    internal abstract class AsyncCallbackRequest
     {
         abstract internal void WaitForCompletion();
     }
 
-    internal class ResultRequest<T> : TextureReadbackRequest
+    internal class ResultRequest<T> : AsyncCallbackRequest
     {
+        private T result;
+        private Action<T> completion;
+
         internal ResultRequest(T result, Action<T> completion)
+        {
+            this.result = result;
+            this.completion = completion;
+        }
+
+        internal override void WaitForCompletion()
         {
             completion?.Invoke(result);
         }
-
-        internal override void WaitForCompletion()
-        {
-            // Do nothing
-        }
     }
 
-    internal class TextureResultReadbackRequest : TextureReadbackRequest
-    {
-        internal TextureResultReadbackRequest(Texture2D texture, Action<Texture2D> completion)
-        {
-            completion?.Invoke(texture);
-        }
-        internal override void WaitForCompletion()
-        {
-            // Do nothing
-        }
-    }
-
-    internal class TextureGPUReadbackRequest : TextureReadbackRequest
+    internal class TextureGPUReadbackRequest : AsyncCallbackRequest
     {
         private AsyncGPUReadbackRequest request;
 
@@ -77,7 +69,7 @@ namespace KRT.VRCQuestTools.Utils
         }
     }
 
-    internal class TextureCPUReadbackRequest : TextureReadbackRequest
+    internal class TextureCPUReadbackRequest : AsyncCallbackRequest
     {
         internal TextureCPUReadbackRequest(RenderTexture renderTexture, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {

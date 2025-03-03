@@ -27,15 +27,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal override Shader BakeShader => null;
 
         /// <inheritdoc/>
-        internal override TextureReadbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, Action<Texture2D> completion)
+        internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, Action<Texture2D> completion)
         {
             if (Material.shader.name.ToLower().Contains("/UnlitPreview".ToLower()))
             {
-                return new TextureResultReadbackRequest(Texture2D.blackTexture, completion);
+                return new ResultRequest<Texture2D>(Texture2D.blackTexture, completion);
             }
             else
             {
-                return new TextureResultReadbackRequest(null, completion);
+                return new ResultRequest<Texture2D>(null, completion);
             }
         }
     }
