@@ -58,6 +58,7 @@ namespace KRT.VRCQuestTools.Utils
                         result.LoadRawTextureData(data);
                     }
                 }
+                result.Apply();
                 completion?.Invoke(result);
             });
         }
