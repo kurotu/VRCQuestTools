@@ -38,7 +38,9 @@ namespace KRT.VRCQuestTools
             {
                 mainTextureBrightness = 1.0f,
             };
-            using (var tex = DisposableObject.New(wrapper.GenerateToonLitImage(setting)))
+            Texture2D texObj = null;
+            wrapper.GenerateToonLitImage(setting, (t) => { texObj = t; }).WaitForCompletion();
+            using (var tex = DisposableObject.New(texObj))
             using (var main = DisposableObject.New(TestUtils.LoadUncompressedTexture("albedo_1024px_png.png")))
             using (var emission = DisposableObject.New(TestUtils.LoadUncompressedTexture("emission_1024px.png")))
             using (var computed = DisposableObject.New(new Texture2D(main.Object.width, main.Object.height)))
