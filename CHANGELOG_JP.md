@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 追加
+- `VQT Avatar Converter Settings` でメニューアイコンを圧縮する設定の場合、手動変換時に `VQT Menu Icon Resizer` を設定する機能を追加。
+
 ### 変更
 - テクスチャの生成処理を高速化。
 - lilToon マテリアルからのテクスチャの生成処理を高速化。

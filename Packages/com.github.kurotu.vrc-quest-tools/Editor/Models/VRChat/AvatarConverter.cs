@@ -681,6 +681,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 vcr.enabled = true;
             }
 #endif
+
+            if (setting.compressExpressionsMenuIcons)
+            {
+                var resizer = questAvatarObject.GetComponentInChildren<MenuIconResizer>(true);
+                if (resizer == null)
+                {
+                    resizer = questAvatarObject.AddComponent<MenuIconResizer>();
+                }
+                resizer.compressTextures = true;
+            }
+
             var platformSettings = questAvatarObject.GetComponent<PlatformTargetSettings>();
             if (platformSettings != null)
             {
