@@ -56,8 +56,11 @@ namespace KRT.VRCQuestTools.ViewModels
                 baker.Object.SetTexture("_SmoothnessMap", smoothness.Object);
                 baker.Object.SetInt("_InvertSmoothness", invertSmoothness ? 1 : 0);
 
-                var outTexture = AssetUtility.BakeTexture(metallic.Object, baker.Object, width, height, false);
-                AssetUtility.SaveUncompressedTexture(destPath, outTexture, false);
+                var request = AssetUtility.BakeTexture(metallic.Object, baker.Object, width, height, false, (outTexture) =>
+                {
+                    AssetUtility.SaveUncompressedTexture(destPath, outTexture, false);
+                });
+                request.WaitForCompletion();
             }
         }
     }

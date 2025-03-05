@@ -3,6 +3,8 @@
 // See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
+using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models.Unity
@@ -25,15 +27,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal override Shader BakeShader => null;
 
         /// <inheritdoc/>
-        internal override Texture2D GenerateToonLitImage(IToonLitConvertSettings settings)
+        internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, Action<Texture2D> completion)
         {
             if (Material.shader.name.ToLower().Contains("/UnlitPreview".ToLower()))
             {
-                return Texture2D.blackTexture;
+                return new ResultRequest<Texture2D>(Texture2D.blackTexture, completion);
             }
             else
             {
-                return null;
+                return new ResultRequest<Texture2D>(null, completion);
             }
         }
     }

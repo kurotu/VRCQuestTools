@@ -363,10 +363,11 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="width">Desired width.</param>
         /// <param name="height">Desired height.</param>
         /// <param name="useMipmap">Use mip map.</param>
-        /// <returns>New texture.</returns>
-        internal static Texture2D BakeTexture(Texture input, int width, int height, bool useMipmap)
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Request to wait.</returns>
+        internal static AsyncCallbackRequest BakeTexture(Texture input, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
-            return BakeTexture(input, null, width, height, useMipmap);
+            return BakeTexture(input, null, width, height, useMipmap, completion);
         }
 
         /// <summary>
@@ -377,8 +378,9 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="width">Desired width.</param>
         /// <param name="height">Desired height.</param>
         /// <param name="useMipmap">Use mip map.</param>
-        /// <returns>New texture.</returns>
-        internal static Texture2D BakeTexture(Texture input, Material material, int width, int height, bool useMipmap)
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Request to wait.</returns>
+        internal static AsyncCallbackRequest BakeTexture(Texture input, Material material, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
             var activeRT = RenderTexture.active;
@@ -393,41 +395,36 @@ namespace KRT.VRCQuestTools.Utils
                     Graphics.Blit(input, rt);
                 }
 
-                var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap);
-                if (ShouldUseAsyncGPUReadback())
+                return RequestReadbackRenderTexture(rt, width, height, useMipmap, (result) =>
                 {
-                    var request = AsyncGPUReadback.Request(rt, 0, TextureFormat.RGBA32);
-                    request.WaitForCompletion();
-                    if (useMipmap)
-                    {
-                        var mipmapCount = rt.mipmapCount;
-                        for (int i = 0; i < mipmapCount; i++)
-                        {
-                            using (var data = request.GetData<Color32>(i))
-                            {
-                                result.SetPixelData(data, i);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        using (var data = request.GetData<Color32>())
-                        {
-                            result.LoadRawTextureData(data);
-                        }
-                    }
-                }
-                else
-                {
-                    result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                }
-                result.Apply();
-                return result;
+                    RenderTexture.ReleaseTemporary(rt);
+                    completion?.Invoke(result);
+                });
             }
             finally
             {
                 RenderTexture.active = activeRT;
-                RenderTexture.ReleaseTemporary(rt);
+            }
+        }
+
+        /// <summary>
+        /// Request readback of a render texture.
+        /// </summary>
+        /// <param name="renderTexture">Render texture to readback.</param>
+        /// <param name="width">Width for the result texture.</param>
+        /// <param name="height">Height for the result texture.</param>
+        /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="completion">Completion callback.</param>
+        /// <returns>Readback request to wait.</returns>
+        internal static AsyncCallbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        {
+            if (ShouldUseAsyncGPUReadback())
+            {
+                return new TextureGPUReadbackRequest(renderTexture, width, height, useMipmap, completion);
+            }
+            else
+            {
+                return new TextureCPUReadbackRequest(renderTexture, width, height, useMipmap, completion);
             }
         }
 
@@ -437,10 +434,11 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="texture">Texture to resize.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
-        /// <returns>Resized texture.</returns>
-        internal static Texture2D ResizeTexture(Texture2D texture, int width, int height)
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Request to wait.</returns>
+        internal static AsyncCallbackRequest ResizeTexture(Texture2D texture, int width, int height, Action<Texture2D> completion)
         {
-            return BakeTexture(texture, width, height, texture.mipmapCount > 1);
+            return BakeTexture(texture, width, height, texture.mipmapCount > 1, completion);
         }
 
         /// <summary>

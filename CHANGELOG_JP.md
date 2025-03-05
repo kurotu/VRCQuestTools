@@ -4,6 +4,12 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 変更
+- テクスチャの生成処理を高速化。
+- lilToon マテリアルからのテクスチャの生成処理を高速化。
+
 ## [2.7.2] - 2025-03-02
 
 ### 追加

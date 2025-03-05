@@ -28,13 +28,14 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal override Shader BakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
 
         /// <inheritdoc/>
-        internal override Texture2D GenerateToonLitImage(IToonLitConvertSettings settings)
+        internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
-            using (var main = DisposableObject.New(TextureBake(Material, 0)))
+            var main = DisposableObject.New(MainBake(Material, 0));
+            return EmissionBake(main.Object, Material, settings, (texture) =>
             {
-                var baked = EmissionBake(main.Object, Material, settings);
-                return baked;
-            }
+                main.Dispose();
+                completion?.Invoke(texture);
+            });
         }
 
         private static LilToonSetting LoadShaderSetting()
@@ -98,7 +99,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </remarks>
         /// <param name="material">Material to bake main textures.</param>
         /// <param name="bakeType">Bake type: 0: All.</param>
-        private Texture2D TextureBake(Material material, int bakeType)
+        private RenderTexture MainBake(Material material, int bakeType)
         {
             var shaderSetting = LoadShaderSetting();
             var ltsbaker = Shader.Find("Hidden/ltsother_baker");
@@ -296,7 +297,17 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                 }
 
-                return AssetUtility.BakeTexture(srcTexture, hsvgMaterial, srcTexture.width, srcTexture.height, false);
+                var rt = new RenderTexture(srcTexture.width, srcTexture.height, 0, RenderTextureFormat.ARGB32);
+                var activeRT = RenderTexture.active;
+                try
+                {
+                    Graphics.Blit(srcTexture, rt, hsvgMaterial);
+                    return rt;
+                }
+                finally
+                {
+                    RenderTexture.active = activeRT;
+                }
             }
         }
 
@@ -305,16 +316,25 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </summary>
         /// <param name="main">Baked main texture.</param>
         /// <param name="material">Material to bake.</param>
-        private Texture2D EmissionBake(Texture2D main, Material material, IToonLitConvertSettings settings)
+        private AsyncCallbackRequest EmissionBake(RenderTexture main, Material material, IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
+            var maxTextureSize = (int)settings.MaxTextureSize;
+            var width = main.width;
+            var height = main.height;
+            if (maxTextureSize > 0)
+            {
+                width = System.Math.Min(maxTextureSize, width);
+                height = System.Math.Min(maxTextureSize, height);
+            }
+
             var shaderSetting = LoadShaderSetting();
 
             if (!shaderSetting.LIL_FEATURE_EMISSION_1ST && !shaderSetting.LIL_FEATURE_EMISSION_2ND)
             {
-                var baked = AssetUtility.CreateMinimumEmptyTexture();
-                baked.LoadImage(main.EncodeToPNG());
-                baked.filterMode = FilterMode.Bilinear;
-                return baked;
+                return AssetUtility.RequestReadbackRenderTexture(main, main.width, main.height, true, (baked) =>
+                {
+                    baked.filterMode = FilterMode.Bilinear;
+                });
             }
 
             var mats = new[] { material };
@@ -358,7 +378,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
-                return AssetUtility.BakeTexture(main, baker.Object, main.width, main.height, true);
+                return AssetUtility.BakeTexture(main, baker.Object, width, height, true, completion);
             }
         }
 

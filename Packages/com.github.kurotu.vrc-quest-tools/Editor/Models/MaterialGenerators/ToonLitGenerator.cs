@@ -24,66 +24,61 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        public Material GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath)
+        public AsyncCallbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
         {
             var newMaterial = material.ConvertToToonLit();
             if (settings.GenerateQuestTextures)
             {
-                var texture = GenerateToonLitTexture(material, settings, saveTextureAsPng, texturesPath);
-                newMaterial.mainTexture = texture;
+                return GenerateToonLitTexture(material, settings, saveTextureAsPng, texturesPath, (texture) =>
+                {
+                    newMaterial.mainTexture = texture;
+                    completion?.Invoke(newMaterial);
+                });
             }
-            return newMaterial;
+            return new ResultRequest<UnityEngine.Object>(null, (_) =>
+            {
+                completion?.Invoke(newMaterial);
+            });
         }
 
         /// <inheritdoc/>
-        public void GenerateTextures(MaterialBase material, bool saveTextureAsPng, string texturesPath)
+        public AsyncCallbackRequest GenerateTextures(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action completion)
         {
-            GenerateToonLitTexture(material, settings, saveTextureAsPng, texturesPath);
+            return GenerateToonLitTexture(material, settings, saveTextureAsPng, texturesPath, (_) =>
+            {
+                completion?.Invoke();
+            });
         }
 
-        private Texture2D GenerateToonLitTexture(MaterialBase material, IToonLitConvertSettings settings, bool saveAsPng, string texturesPath)
+        private AsyncCallbackRequest GenerateToonLitTexture(MaterialBase material, IToonLitConvertSettings settings, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material.Material, out string guid, out long localId);
-            using (var tex = DisposableObject.New(material.GenerateToonLitImage(settings)))
+            return material.GenerateToonLitImage(settings, (tex) =>
             {
-                Texture2D texture = null;
-                if (tex.Object != null)
+                var texToWrite = tex;
+                var texture = tex;
+                if (saveAsPng)
                 {
-                    using (var disposables = new CompositeDisposable())
+                    Directory.CreateDirectory(texturesPath);
+                    var outFile = $"{texturesPath}/{material.Material.name}_from_{guid}.png";
+
+                    // When the texture is added into another asset, "/" is acceptable as name.
+                    if (material.Material.name.Contains("/"))
                     {
-                        var texToWrite = tex.Object;
-                        var maxTextureSize = (int)settings.MaxTextureSize;
-                        if (maxTextureSize > 0 && Math.Max(tex.Object.width, tex.Object.height) > maxTextureSize)
-                        {
-                            var resized = AssetUtility.ResizeTexture(tex.Object, maxTextureSize, maxTextureSize);
-                            disposables.Add(DisposableObject.New(resized));
-                            texToWrite = resized;
-                        }
-
-                        if (saveAsPng)
-                        {
-                            Directory.CreateDirectory(texturesPath);
-                            var outFile = $"{texturesPath}/{material.Material.name}_from_{guid}.png";
-
-                            // When the texture is added into another asset, "/" is acceptable as name.
-                            if (material.Material.name.Contains("/"))
-                            {
-                                var dir = Path.GetDirectoryName(outFile);
-                                Directory.CreateDirectory(dir);
-                            }
-                            texture = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
-                        }
-                        else
-                        {
-                            AssetUtility.SetStreamingMipMaps(texToWrite, true);
-                            AssetUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
-                            texture = UnityEngine.Object.Instantiate(texToWrite);
-                            texture.name = material.Material.name;
-                        }
+                        var dir = Path.GetDirectoryName(outFile);
+                        Directory.CreateDirectory(dir);
                     }
+                    texture = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
                 }
-                return texture;
-            }
+                else
+                {
+                    AssetUtility.SetStreamingMipMaps(texToWrite, true);
+                    AssetUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
+                    texture = UnityEngine.Object.Instantiate(texToWrite);
+                    texture.name = material.Material.name;
+                }
+                completion?.Invoke(texture);
+            });
         }
     }
 }

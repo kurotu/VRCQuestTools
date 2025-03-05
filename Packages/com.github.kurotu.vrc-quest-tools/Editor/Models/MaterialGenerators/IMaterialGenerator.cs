@@ -1,4 +1,6 @@
+using System;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
@@ -14,8 +16,9 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="material">Material to convert.</param>
         /// <param name="saveTextureAsPng">Whether to save textures as png.</param>
         /// <param name="texturesPath">Path to save textures.</param>
-        /// <returns>Generated material.</returns>
-        Material GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath);
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Callback request to wait.</returns>
+        AsyncCallbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion);
 
         /// <summary>
         /// Generates textures.
@@ -23,6 +26,8 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="material">Material to convert.</param>
         /// <param name="saveAsPng">Whether to save textures as png.</param>
         /// <param name="texturesPath">Path to save textures.</param>
-        void GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath);
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Callback request to wait.</returns>
+        AsyncCallbackRequest GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath, Action completion);
     }
 }
