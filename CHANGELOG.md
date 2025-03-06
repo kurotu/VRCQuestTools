@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Accelerated the texture generation process for lilToon materials.
 - [NDMF] Disabled "Read/Write Enabled" for generated textures.
 
+### Fixed
+- [NDMF] Fixed an issue where an exception would occur when building an avatar for a build target not supported by VRCSDK.
+
 ## [2.7.2] - 2025-03-02
 
 ### Added
