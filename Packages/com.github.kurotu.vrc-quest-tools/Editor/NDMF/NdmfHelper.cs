@@ -45,7 +45,9 @@ namespace KRT.VRCQuestTools.Ndmf
                     target = Models.BuildTarget.Android;
                     break;
                 default:
-                    throw new System.InvalidOperationException("Unsupported unity build target: " + EditorUserBuildSettings.activeBuildTarget);
+                    target = Models.BuildTarget.PC;
+                    Debug.LogWarning($"[{VRCQuestTools.Name}] Unsupported unity build target: {EditorUserBuildSettings.activeBuildTarget}. Fallback to PC configuration.");
+                    break;
             }
             Assert.IsTrue(target != Models.BuildTarget.Auto);
             return target;
