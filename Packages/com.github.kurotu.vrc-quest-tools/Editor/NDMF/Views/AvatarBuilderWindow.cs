@@ -70,7 +70,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
         private bool CanSelectAvatar => !IsBuilding;
 
-        private bool CanStartLocalBuild
+        private bool CanStartBuild
         {
             get
             {
@@ -86,18 +86,27 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     return false;
                 }
-
                 if (sdkBuilder == null)
                 {
                     return false;
                 }
-
                 if (IsBuilding)
                 {
                     return false;
                 }
-
                 return true;
+            }
+        }
+
+        private bool CanStartLocalBuild
+        {
+            get
+            {
+                if (!CanStartBuild)
+                {
+                    return false;
+                }
+                return EditorUserBuildSettings.activeBuildTarget != UnityEditor.BuildTarget.iOS;
             }
         }
 
@@ -105,11 +114,7 @@ namespace KRT.VRCQuestTools.Ndmf
         {
             get
             {
-                if (IsPlayMode)
-                {
-                    return false;
-                }
-                if (!CanStartLocalBuild)
+                if (!CanStartBuild)
                 {
                     return false;
                 }
@@ -126,7 +131,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     }
                 }
 
-                return true;
+                return EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS;
             }
         }
 
@@ -396,19 +401,19 @@ namespace KRT.VRCQuestTools.Ndmf
 
                 EditorGUILayout.Space();
 
-                var isAndroidEditor = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS;
-                using (new EditorGUI.DisabledScope(!CanStartLocalBuild || isAndroidEditor))
+                using (new EditorGUI.DisabledScope(!CanStartLocalBuild))
                 {
-                    EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOfflineTestingLabel, EditorStyles.largeLabel);
+                    var targetName = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android ? "Android" : "PC";
+                    EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOfflineTestingLabel(targetName), EditorStyles.largeLabel);
                     EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOfflineTestingDescription(targetAvatar.name), EditorStyles.wordWrappedMiniLabel);
-                    if (GUILayout.Button("Build & Test on PC"))
+                    if (GUILayout.Button($"Build & Test on {targetName}"))
                     {
-                        OnClickBuildAndTestOnPC();
+                        OnClickBuildAndTest();
                     }
                     EditorGUILayout.Space();
                 }
 
-                using (new EditorGUI.DisabledScope(!CanStartUpload || !isAndroidEditor))
+                using (new EditorGUI.DisabledScope(!CanStartUpload))
                 {
                     var targetName = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS ? "iOS" : "Android";
                     EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingLabel(targetName), EditorStyles.largeLabel);
@@ -507,7 +512,7 @@ namespace KRT.VRCQuestTools.Ndmf
             mainContext?.Post(_ => Repaint(), null);
         }
 
-        private void OnClickBuildAndTestOnPC()
+        private void OnClickBuildAndTest()
         {
             SetBuildTarget(Models.BuildTarget.Android);
 

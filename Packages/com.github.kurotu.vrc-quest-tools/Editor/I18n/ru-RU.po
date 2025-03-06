@@ -558,10 +558,10 @@ msgid "AvatarBuilderWindowRequiresControlPanel"
 msgstr "Необходимо открыть панель управления VRChat SDK для сборки аватара."
 
 msgid "AvatarBuilderWindowOfflineTestingLabel"
-msgstr "Офлайн-тестирование (ПК)"
+msgstr "Офлайн-тестирование ({0})"
 
 msgid "AvatarBuilderWindowOfflineTestingDescription"
-msgstr "Соберите этот аватар с настройками сборки для Android, чтобы протестировать его на ПК."
+msgstr "Создайте этот аватар с настройкой сборки Android, чтобы протестировать его. Аватар будет отображаться как \"SDK {0}\" в категории Other меню аватаров."
 
 msgid "AvatarBuilderWindowOnlinePublishingLabel"
 msgstr "Онлайн-публикация ({0})"

@@ -282,7 +282,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarBuilderWindowSucceededUpload => GetText("AvatarBuilderWindowSucceededUpload");
         internal string AvatarBuilderWindowFailedBuild => GetText("AvatarBuilderWindowFailedBuild");
         internal string AvatarBuilderWindowRequiresControlPanel => GetText("AvatarBuilderWindowRequiresControlPanel");
-        internal string AvatarBuilderWindowOfflineTestingLabel => GetText("AvatarBuilderWindowOfflineTestingLabel");
+        internal string AvatarBuilderWindowOfflineTestingLabel(string platformName) => GetText("AvatarBuilderWindowOfflineTestingLabel", platformName);
         internal string AvatarBuilderWindowOfflineTestingDescription(string name) => GetText("AvatarBuilderWindowOfflineTestingDescription", name);
         internal string AvatarBuilderWindowOnlinePublishingLabel(string platformName) => GetText("AvatarBuilderWindowOnlinePublishingLabel", platformName);
         internal string AvatarBuilderWindowOnlinePublishingDescription => GetText("AvatarBuilderWindowOnlinePublishingDescription");

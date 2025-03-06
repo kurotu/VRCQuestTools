@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Feature to configure `VQT Menu Icon Resizer` during manual conversion when `VQT Avatar Converter Settings` is set to compress menu icons.
 - Cache to accelerate the texture generation process.
+- Support offline testing on Android in VQT Avatar Builder.
 
 ### Changed
 - Accelerated the texture generation process.

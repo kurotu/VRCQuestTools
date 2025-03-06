@@ -561,10 +561,10 @@ msgid "AvatarBuilderWindowRequiresControlPanel"
 msgstr "Need to open VRChat SDK Control Panel to build the avatar."
 
 msgid "AvatarBuilderWindowOfflineTestingLabel"
-msgstr "Offline Testing (PC)"
+msgstr "Offline Testing ({0})"
 
 msgid "AvatarBuilderWindowOfflineTestingDescription"
-msgstr "Build this avatar with Android build setting to test it on PC. The avatar will appear as \"SDK {0}\" in the Other category of the avatars menu."
+msgstr "Build this avatar with Android build setting to test it. The avatar will appear as \"SDK {0}\" in the Other category of the avatars menu."
 
 msgid "AvatarBuilderWindowOnlinePublishingLabel"
 msgstr "Online Publishing ({0})"
