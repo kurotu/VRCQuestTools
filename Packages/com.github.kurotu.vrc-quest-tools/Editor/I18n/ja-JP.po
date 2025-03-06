@@ -561,10 +561,10 @@ msgid "AvatarBuilderWindowRequiresControlPanel"
 msgstr "アバターをビルドするには VRChat SDK コントロールパネルを開く必要があります。"
 
 msgid "AvatarBuilderWindowOfflineTestingLabel"
-msgstr "オフラインテスト (PC)"
+msgstr "オフラインテスト ({0})"
 
 msgid "AvatarBuilderWindowOfflineTestingDescription"
-msgstr "Android 用のビルド設定でアバターをビルドして PC でテストします。アバターはアバターメニューの「その他」カテゴリに「SDK: {0}」として表示されます。"
+msgstr "Android 用のビルド設定でアバターをビルドしてテストします。アバターはアバターメニューの「その他」カテゴリに「SDK: {0}」として表示されます。"
 
 msgid "AvatarBuilderWindowOnlinePublishingLabel"
 msgstr "アップロード ({0})"
