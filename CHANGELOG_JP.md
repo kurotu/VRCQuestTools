@@ -4,6 +4,9 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+- VQT Avatar Builder で Android 用のオフラインテストに対応。
+
 ## [2.7.2] - 2025-03-02
 
 ### 追加
