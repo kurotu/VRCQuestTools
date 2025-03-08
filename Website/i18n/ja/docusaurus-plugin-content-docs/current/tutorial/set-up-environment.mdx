@@ -19,6 +19,10 @@ PCとAndroidの最大の違いは、性能ではなくプラットフォーム(O
 たとえPCでパフォーマンスランクがExcellentかつポリゴン数が少ないアバターを作成しても、Android向けにアップロードしない限りAndroidには対応していません。
 :::
 
+:::warning
+Android Build Supportがインストールされていない場合、プラットフォームを切り替えようとしても `Android Player is Disabled` とエラーメッセージが表示され、Androidビルドができません。
+:::
+
 | Android Build Supportがインストールされている | Android Build Supportがインストールされていない |
 |---|---|
 | ![Android Module](/img/unity_android_ok.png) | ![No Android Module](/img/unity_android_ng.png) |
@@ -32,7 +36,7 @@ PCとAndroidの最大の違いは、性能ではなくプラットフォーム(O
     ![Installs](/img/unity-hub_installs.png)
 5. **Android Build Support**を選択します。
     :::note
-    **OpenJDK**を選択する必要はありません。**Android SDK & NDK Tools**も必須ではありませんが「Build & Test」に必要です。
+    **OpenJDK**を選択する必要はありません。**Android SDK & NDK Tools**も必須ではありませんがAndroid端末での「Build & Test」に必要です。
     :::
     ![Add Modules](/img/unity-hub_add-modules.png)
 6. **インストール**をクリックします。
