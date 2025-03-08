@@ -110,6 +110,12 @@ Androidアバターの10MB制限のため、テクスチャとメッシュのサ
 
 ![EditorOnly_Tag](/img/EditorOnly_Tag.png)
 
+### 不要なシェイプキーの削除
+
+メッシュにシェイプキー(ブレンドシェイプ)があるとメッシュのデータサイズが大きくなり、その分だけ非圧縮サイズが大きくなります。
+
+Avatar Optimizerの [`Trace and Optimize`](https://vpm.anatawa12.com/avatar-optimizer/ja/docs/reference/trace-and-optimize/) コンポーネントを使用することで、不要なシェイプキーを削除できます。
+
 ### テクスチャ圧縮設定の調整
 
 多くの場合、テクスチャがビルドサイズの主な要因です。

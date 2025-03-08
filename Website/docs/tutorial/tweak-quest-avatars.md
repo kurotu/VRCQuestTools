@@ -110,6 +110,12 @@ So you may be able to reduce the build size by tagging unnecessary GameObjects w
 
 ![EditorOnly_Tag](/img/EditorOnly_Tag.png)
 
+### Omit Unnecessary Shapekeys
+
+Shapekeys (blend shapes) increase the size of meshes. It leads to increase the uncompressed size of the avatar.
+
+You can remove unnecessary shapekeys by using the [`Trace and Optimize`](https://vpm.anatawa12.com/avatar-optimizer/en/docs/reference/trace-and-optimize/) component of Avatar Optimizer.
+
 ### Tweak Texture Compression Settings
 
 In many cases, textures are the main factor of build size.
