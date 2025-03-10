@@ -24,6 +24,16 @@ namespace KRT.VRCQuestTools.Utils
             return File.ReadAllText(Path.Combine(cachePath, fileName));
         }
 
+        internal void CopyFromCache(string fileName, string destPath)
+        {
+            File.Copy(Path.Combine(cachePath, fileName), destPath, true);
+        }
+
+        internal void CopyToCache(string srcPath, string fileName)
+        {
+            File.Copy(srcPath, Path.Combine(cachePath, fileName), true);
+        }
+
         internal bool Exists(string fileName)
         {
             return File.Exists(Path.Combine(cachePath, fileName));

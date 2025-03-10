@@ -202,7 +202,13 @@ namespace KRT.VRCQuestTools.Utils
         {
             var png = texture.EncodeToPNG();
             File.WriteAllBytes(path, png);
-            AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(path);
+            ConfigureTextureImporter(path, isSRGB);
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
+        internal static void ConfigureTextureImporter(string path, bool isSRGB = true)
+        {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.alphaSource = TextureImporterAlphaSource.FromInput;
             importer.alphaIsTransparency = isSRGB;
@@ -212,7 +218,6 @@ namespace KRT.VRCQuestTools.Utils
                 importer.streamingMipmaps = true;
             }
             importer.SaveAndReimport();
-            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
         /// <summary>
