@@ -50,5 +50,10 @@ namespace KRT.VRCQuestTools.Models
 
         /// <inheritdoc/>
         public bool GenerateShadowFromNormalMap => generateShadowFromNormalMap;
+
+        public string GetCacheKey()
+        {
+            return $"{generateQuestTextures}_{maxTextureSize}_{mainTextureBrightness}_{generateShadowFromNormalMap}_{matCapTexture.imageContentsHash}";
+        }
     }
 }

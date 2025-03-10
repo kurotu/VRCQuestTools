@@ -12,5 +12,10 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         [SerializeField]
         public Material material;
+
+        public string GetCacheKey()
+        {
+            throw new System.InvalidProgramException("MaterialReplaceSettings doesn't generate textures.");
+        }
     }
 }
