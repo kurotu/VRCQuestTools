@@ -50,21 +50,47 @@ This will remove the Remove Mesh By BlendShape component for PC builds, and the 
 
 ## Testing the Avatar
 
-Before uploading the avatar, test it on PC.
+Before uploading the avatar, test it on your devices.
 
-1. Change the Unity build settings to PC.
-2. Open the VRChat SDK control panel and select the avatar to test in the **Builder** tab.
-3. Select **Tools** > **VRCQuestTools** > **Show Avatar Builder** from the menu bar.
-4. The **VQT Avatar Builder** window will appear.
-5. Click the **Build & Test on PC** button.
-6. The avatar will be built with Android settings.
+:::note
+To test on Android, connect your Android device with a USB cable and enable debugging.
 
-The built avatar will appear in the **Others** category of the VRChat avatar list.
+Reference:
+- [Build and Test for Android Mobile](https://creators.vrchat.com/platforms/android/build-test-mobile/)
+:::
+
+1. Open the VRChat SDK control panel and select the avatar to test in the **Builder** tab.
+2. Select **Tools** > **VRCQuestTools** > **Show Avatar Builder** from the menu bar.
+3. The **VQT Avatar Builder** window will appear.
+4. Click the **Build & Test on PC/Android** button.
+5. The avatar will be built with Android settings.
+
+The built avatar will appear in the **Others** section of the VRChat avatar list.
 Launch VRChat and test the avatar.
 
 ## Uploading the Avatar
 
 After testing the avatar on PC, upload it to VRChat.
+There are following ways to upload the avatar with non-destructive conversion:
+
+- [Multi-Platform Build](#multi-platform-build) (VRChat SDK)
+- [VQT Avatar Builder](#vqt-avatar-builder) (VRCQuestTools)
+- [ContinuousAvatarUploader](https://github.com/anatawa12/ContinuousAvatarUploader)
+
+### Multi-Platform Build
+
+You can upload the avatar for both of PC and Android by using the **Multi-Platform Build** of VRChat SDK 3.7.6 or later.
+
+1. Change the Unity build settings to Windows.
+2. Open the VRChat SDK control panel and select the avatar to upload in the **Builder** tab.
+3. Select **Windows** and **Android** in the Platform(s) settings.
+    ![Multi-Platform Build](/img/multi_platform_build.png)
+4. Click the **Milti-Platform Build** button.
+5. The avatar will be uploaded for both of PC and Android.
+
+### VQT Avatar Builder
+
+You can upload the avatar without pre-build validation by using the [VQT Avatar Builder].
 
 1. Change the Unity build settings to Android.
 2. Open the VRChat SDK control panel and select the avatar to upload in the **Builder** tab.
@@ -75,3 +101,4 @@ After testing the avatar on PC, upload it to VRChat.
 
 [Modular Avatar]: https://modular-avatar.nadena.dev/
 [Anatawa12's AvatarOptimizer]: https://vpm.anatawa12.com/avatar-optimizer/en/
+[VQT Avatar Builder]: ../references/main-menu/show-avatar-builder.md
