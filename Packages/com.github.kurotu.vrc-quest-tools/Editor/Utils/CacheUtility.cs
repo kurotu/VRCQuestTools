@@ -5,8 +5,16 @@ using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Utils
 {
+    /// <summary>
+    /// Utility class for cache.
+    /// </summary>
     internal static class CacheUtility
     {
+        /// <summary>
+        /// Get content cache key for material.
+        /// </summary>
+        /// <param name="material">Target material.</param>
+        /// <returns>Cache key.</returns>
         internal static string GetContentCacheKey(Material material)
         {
             var sb = new StringBuilder(material.shader.name);
@@ -48,15 +56,31 @@ namespace KRT.VRCQuestTools.Utils
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Content cache for texture.
+        /// </summary>
         [Serializable]
         internal class TextureCache
         {
-            public int width;
-            public int height;
-            public TextureFormat format;
-            public bool mipmap;
-            public string base64Data;
+            [SerializeField]
+            private int width;
 
+            [SerializeField]
+            private int height;
+
+            [SerializeField]
+            private TextureFormat format;
+
+            [SerializeField]
+            private bool mipmap;
+
+            [SerializeField]
+            private string base64Data;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TextureCache"/> class.
+            /// </summary>
+            /// <param name="texture">Texture to cache.</param>
             internal TextureCache(Texture2D texture)
             {
                 width = texture.width;
@@ -66,6 +90,10 @@ namespace KRT.VRCQuestTools.Utils
                 base64Data = Convert.ToBase64String(texture.GetRawTextureData());
             }
 
+            /// <summary>
+            /// Convert to Texture2D.
+            /// </summary>
+            /// <returns>Restored texture.</returns>
             internal Texture2D ToTexture2D()
             {
                 var tex = new Texture2D(width, height, format, mipmap);
@@ -74,6 +102,5 @@ namespace KRT.VRCQuestTools.Utils
                 return tex;
             }
         }
-
     }
 }

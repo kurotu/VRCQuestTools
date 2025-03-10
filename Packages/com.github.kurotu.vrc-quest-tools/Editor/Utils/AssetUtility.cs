@@ -207,6 +207,11 @@ namespace KRT.VRCQuestTools.Utils
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
+        /// <summary>
+        /// Configures TextureImporter for the texture.
+        /// </summary>
+        /// <param name="path">Texture path.</param>
+        /// <param name="isSRGB">Texture is sRGB.</param>
         internal static void ConfigureTextureImporter(string path, bool isSRGB = true)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);

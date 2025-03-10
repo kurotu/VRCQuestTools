@@ -52,7 +52,6 @@ namespace KRT.VRCQuestTools.Models
 
         private AsyncCallbackRequest GenerateToonLitTexture(MaterialBase material, IToonLitConvertSettings settings, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
-
             var cacheKey = Hash128.Compute(VRCQuestTools.Version + EditorUserBuildSettings.activeBuildTarget + CacheUtility.GetContentCacheKey(material.Material) + settings.GetCacheKey());
             var cacheFile = saveAsPng ? $"texture_{cacheKey}.png" : $"texture_{cacheKey}.json";
             string outFile = null;
