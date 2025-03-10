@@ -45,6 +45,17 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Copy file to cache.
+        /// </summary>
+        /// <param name="srcPath">Source path.</param>
+        /// <param name="fileName">File name to copy.</param>
+        internal void CopyToCache(string srcPath, string fileName)
+        {
+            Directory.CreateDirectory(cachePath);
+            File.Copy(srcPath, Path.Combine(cachePath, fileName), true);
+        }
+
+        /// <summary>
         /// Copy file from cache.
         /// </summary>
         /// <param name="fileName">File name to copy.</param>
@@ -52,16 +63,6 @@ namespace KRT.VRCQuestTools.Utils
         internal void CopyFromCache(string fileName, string destPath)
         {
             File.Copy(Path.Combine(cachePath, fileName), destPath, true);
-        }
-
-        /// <summary>
-        /// Copy file to cache.
-        /// </summary>
-        /// <param name="srcPath">Source path.</param>
-        /// <param name="fileName">File name to copy.</param>
-        internal void CopyToCache(string srcPath, string fileName)
-        {
-            File.Copy(srcPath, Path.Combine(cachePath, fileName), true);
         }
 
         /// <summary>
