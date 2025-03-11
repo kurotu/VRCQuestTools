@@ -85,6 +85,9 @@ jobs:
           rm -r Website/i18n/ja/docusaurus-plugin-content-docs/current
           cp -r current/Website/i18n/ja/docusaurus-plugin-content-docs/current Website/i18n/ja/docusaurus-plugin-content-docs/
 
+      - name: Copy current static assets
+        run: rsync -av --ignore-existing current/Website/static/ Website/static/
+
       - name: Generate current changelog
         run: |
           ./scripts/generate-changelog-links.sh | cat current/CHANGELOG.md - > Website/docs/changelog.md
