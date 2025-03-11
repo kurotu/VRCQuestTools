@@ -111,8 +111,8 @@ namespace KRT.VRCQuestTools
         /// <returns>Average of pixel difference.</returns>
         internal static float Difference(Texture2D tex1, Texture2D tex2)
         {
-            var pixels1 = tex1.GetPixels32();
-            var pixels2 = tex2.GetPixels32();
+            var pixels1 = CopyTextureAsReadable(tex1).GetPixels32();
+            var pixels2 = CopyTextureAsReadable(tex2).GetPixels32();
 
             Assert.AreEqual(pixels1.Length, pixels2.Length);
 
@@ -144,8 +144,8 @@ namespace KRT.VRCQuestTools
         /// <returns>Max difference.</returns>
         internal static float MaxDifference(Texture2D tex1, Texture2D tex2)
         {
-            var pixels1 = tex1.GetPixels32();
-            var pixels2 = tex2.GetPixels32();
+            var pixels1 = CopyTextureAsReadable(tex1).GetPixels32();
+            var pixels2 = CopyTextureAsReadable(tex2).GetPixels32();
 
             Assert.AreEqual(pixels1.Length, pixels2.Length);
 
@@ -166,6 +166,24 @@ namespace KRT.VRCQuestTools
             }
 
             return max / (float)(255L * 255L * 4L);
+        }
+
+        /// <summary>
+        /// Copy texture as readable.
+        /// </summary>
+        /// <param name="tex">Texture to copy.</param>
+        /// <returns>Copied texture.</returns>
+        internal static Texture2D CopyTextureAsReadable(Texture2D tex)
+        {
+#if UNITY_2022_1_OR_NEWER
+            var copy = new Texture2D(tex.width, tex.height, tex.format, tex.mipmapCount > 1, !tex.isDataSRGB);
+#else
+            var copy = new Texture2D(tex.width, tex.height, tex.format, tex.mipmapCount > 1);
+#endif
+            var data = tex.GetRawTextureData();
+            copy.LoadRawTextureData(data);
+            copy.Apply();
+            return copy;
         }
 
         /// <summary>

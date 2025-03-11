@@ -100,7 +100,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 var tex = new Texture2D(width, height, format, mipmap);
                 tex.LoadRawTextureData(Convert.FromBase64String(base64Data));
-                tex.Apply();
+                tex.Apply(true, true);
                 return tex;
             }
         }

@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Accelerated the texture generation process.
 - Accelerated the texture generation process for lilToon materials.
+- Disabled "Read/Write Enabled" for generated textures.
 
 ## [2.7.2] - 2025-03-02
 
