@@ -122,6 +122,11 @@ namespace KRT.VRCQuestTools.Models
             }
         }
 
+        /// <summary>
+        /// Gets the total size of texture cache.
+        /// </summary>
+        internal static ulong TextureCacheSize => 1024 * 1024 * 1024; // 1GB
+
         private static DateTime UnixEpoch => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
         private static void SetBooleanConfigValue(string name, bool value)

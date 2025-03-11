@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 
 namespace KRT.VRCQuestTools.Utils
 {
@@ -73,6 +74,36 @@ namespace KRT.VRCQuestTools.Utils
         internal bool Exists(string fileName)
         {
             return File.Exists(Path.Combine(cachePath, fileName));
+        }
+
+        /// <summary>
+        /// Clear cache.
+        /// </summary>
+        internal void Clear()
+        {
+            Directory.Delete(cachePath, true);
+        }
+
+        /// <summary>
+        /// Clear cache to fit the total size.
+        /// Files are deleted in order of last access time.
+        /// </summary>
+        /// <param name="totalSize">Total size to fit.</param>
+        internal void Clear(ulong totalSize)
+        {
+            var files = new DirectoryInfo(cachePath).GetFiles()
+                .OrderBy(f => f.LastAccessTime)
+                .Reverse()
+                .ToArray();
+            ulong size = 0;
+            foreach (var file in files)
+            {
+                size += (ulong)file.Length;
+                if (size > totalSize)
+                {
+                    file.Delete();
+                }
+            }
         }
     }
 }
