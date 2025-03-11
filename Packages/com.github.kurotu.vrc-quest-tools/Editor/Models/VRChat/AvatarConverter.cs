@@ -108,6 +108,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             // Convert materials and generate textures.
             var convertedMaterials = ConvertMaterialsForAndroid(avatar.Materials, setting, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
+            CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
 
             // Convert animator controllers and their animation clips.
             if (avatar.HasAnimatedMaterials || setting.animatorOverrideControllers.Count(oc => oc != null) > 0)
@@ -292,6 +293,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 request.WaitForCompletion();
             }
+            CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
         }
 
         /// <summary>

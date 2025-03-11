@@ -52,7 +52,43 @@ namespace KRT.VRCQuestTools.Models
 
         private AsyncCallbackRequest GenerateToonLitTexture(MaterialBase material, IToonLitConvertSettings settings, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
-            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material.Material, out string guid, out long localId);
+            var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material.Material) + settings.GetCacheKey());
+            var cacheFile = $"texture_{VRCQuestTools.Version}_toonlit_main_{EditorUserBuildSettings.activeBuildTarget}_{assetHash}" + (saveAsPng ? ".png" : ".json");
+            string outFile = null;
+            if (saveAsPng)
+            {
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material.Material, out string guid, out long localId);
+                outFile = $"{texturesPath}/{material.Material.name}_from_{guid}.png";
+            }
+
+            if (CacheManager.Texture.Exists(cacheFile))
+            {
+                try
+                {
+                    if (saveAsPng)
+                    {
+                        CacheManager.Texture.CopyFromCache(cacheFile, outFile);
+                        AssetDatabase.ImportAsset(outFile);
+                        AssetUtility.ConfigureTextureImporter(outFile);
+                        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
+                        return new ResultRequest<Texture2D>(tex, completion);
+                    }
+                    else
+                    {
+                        var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
+                        var tex = cache.ToTexture2D();
+                        AssetUtility.SetStreamingMipMaps(tex, true);
+                        tex.name = material.Material.name;
+                        return new ResultRequest<Texture2D>(tex, completion);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                    Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to load cache file {cacheFile} for {material.Material.name}");
+                }
+            }
+
             return material.GenerateToonLitImage(settings, (tex) =>
             {
                 var texToWrite = tex;
@@ -60,7 +96,6 @@ namespace KRT.VRCQuestTools.Models
                 if (saveAsPng)
                 {
                     Directory.CreateDirectory(texturesPath);
-                    var outFile = $"{texturesPath}/{material.Material.name}_from_{guid}.png";
 
                     // When the texture is added into another asset, "/" is acceptable as name.
                     if (material.Material.name.Contains("/"))
@@ -69,6 +104,7 @@ namespace KRT.VRCQuestTools.Models
                         Directory.CreateDirectory(dir);
                     }
                     texture = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
+                    CacheManager.Texture.CopyToCache(outFile, cacheFile);
                 }
                 else
                 {
@@ -76,6 +112,7 @@ namespace KRT.VRCQuestTools.Models
                     AssetUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
                     texture = UnityEngine.Object.Instantiate(texToWrite);
                     texture.name = material.Material.name;
+                    CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite)));
                 }
                 completion?.Invoke(texture);
             });
