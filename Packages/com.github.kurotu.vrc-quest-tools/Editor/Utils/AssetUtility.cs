@@ -200,7 +200,8 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Saved texture asset.</returns>
         internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, bool isSRGB = true)
         {
-            var png = texture.EncodeToPNG();
+            var src = texture.isReadable ? texture : CopyAsReadable(texture);
+            var png = src.EncodeToPNG();
             File.WriteAllBytes(path, png);
             AssetDatabase.ImportAsset(path);
             ConfigureTextureImporter(path, isSRGB);
@@ -364,6 +365,24 @@ namespace KRT.VRCQuestTools.Utils
             }
             tex.SetPixels32(pixels);
             return tex;
+        }
+
+        /// <summary>
+        /// Copy a texture as readable.
+        /// </summary>
+        /// <param name="texture">Texture to copy.</param>
+        /// <returns>Readable texture.</returns>
+        internal static Texture2D CopyAsReadable(Texture2D texture)
+        {
+#if UNITY_2022_1_OR_NEWER
+            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, !texture.isDataSRGB);
+#else
+            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1);
+#endif
+            var data = texture.GetRawTextureData();
+            copy.LoadRawTextureData(data);
+            copy.Apply();
+            return copy;
         }
 
         /// <summary>
