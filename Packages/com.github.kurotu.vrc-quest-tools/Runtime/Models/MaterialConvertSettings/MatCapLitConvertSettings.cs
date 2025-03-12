@@ -54,7 +54,11 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public string GetCacheKey()
         {
+#if UNITY_EDITOR
             return $"{generateQuestTextures}_{maxTextureSize}_{mainTextureBrightness}_{generateShadowFromNormalMap}_{matCapTexture.imageContentsHash}";
+#else
+            throw new System.NotSupportedException("GetCacheKey is only available for UnityEditor.");
+#endif
         }
     }
 }
