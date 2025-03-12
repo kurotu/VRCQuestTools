@@ -381,7 +381,7 @@ namespace KRT.VRCQuestTools.Utils
 #endif
             var data = texture.GetRawTextureData();
             copy.LoadRawTextureData(data);
-            copy.Apply();
+            copy.Apply(); // Do not use arguments to keep readable.
             return copy;
         }
 
