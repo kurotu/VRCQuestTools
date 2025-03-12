@@ -331,7 +331,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             if (!shaderSetting.LIL_FEATURE_EMISSION_1ST && !shaderSetting.LIL_FEATURE_EMISSION_2ND)
             {
-                return AssetUtility.RequestReadbackRenderTexture(main, main.width, main.height, true, (baked) =>
+                return AssetUtility.RequestReadbackRenderTexture(main, true, (baked) =>
                 {
                     baked.filterMode = FilterMode.Bilinear;
                 });

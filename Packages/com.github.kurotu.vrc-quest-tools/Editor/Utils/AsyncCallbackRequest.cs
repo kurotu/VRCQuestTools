@@ -51,12 +51,12 @@ namespace KRT.VRCQuestTools.Utils
         /// Initializes a new instance of the <see cref="TextureGPUReadbackRequest"/> class.
         /// </summary>
         /// <param name="renderTexture">Render texture to readback.</param>
-        /// <param name="width">Width for the result texture.</param>
-        /// <param name="height">Height for the result texture.</param>
         /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
         /// <param name="completion">Completion callback.</param>
-        internal TextureGPUReadbackRequest(RenderTexture renderTexture, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        internal TextureGPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, Action<Texture2D> completion)
         {
+            var width = renderTexture.width;
+            var height = renderTexture.height;
             request = AsyncGPUReadback.Request(renderTexture, 0, TextureFormat.RGBA32, (req) =>
             {
                 if (req.hasError)
@@ -103,12 +103,12 @@ namespace KRT.VRCQuestTools.Utils
         /// Initializes a new instance of the <see cref="TextureCPUReadbackRequest"/> class.
         /// </summary>
         /// <param name="renderTexture">Render texture to readback.</param>
-        /// <param name="width">Width for the result texture.</param>
-        /// <param name="height">Height for the result texture.</param>
         /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
         /// <param name="completion">Completion callback.</param>
-        internal TextureCPUReadbackRequest(RenderTexture renderTexture, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        internal TextureCPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, Action<Texture2D> completion)
         {
+            int width = renderTexture.width;
+            int height = renderTexture.height;
             var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap);
             result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             result.Apply();

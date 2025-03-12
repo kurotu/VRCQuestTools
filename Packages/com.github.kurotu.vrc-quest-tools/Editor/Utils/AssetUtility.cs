@@ -424,7 +424,7 @@ namespace KRT.VRCQuestTools.Utils
                     Graphics.Blit(input, rt);
                 }
 
-                return RequestReadbackRenderTexture(rt, width, height, useMipmap, (result) =>
+                return RequestReadbackRenderTexture(rt, useMipmap, (result) =>
                 {
                     RenderTexture.ReleaseTemporary(rt);
                     completion?.Invoke(result);
@@ -440,20 +440,18 @@ namespace KRT.VRCQuestTools.Utils
         /// Request readback of a render texture.
         /// </summary>
         /// <param name="renderTexture">Render texture to readback.</param>
-        /// <param name="width">Width for the result texture.</param>
-        /// <param name="height">Height for the result texture.</param>
         /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Readback request to wait.</returns>
-        internal static AsyncCallbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, bool useMipmap, Action<Texture2D> completion)
         {
             if (ShouldUseAsyncGPUReadback())
             {
-                return new TextureGPUReadbackRequest(renderTexture, width, height, useMipmap, completion);
+                return new TextureGPUReadbackRequest(renderTexture, useMipmap, completion);
             }
             else
             {
-                return new TextureCPUReadbackRequest(renderTexture, width, height, useMipmap, completion);
+                return new TextureCPUReadbackRequest(renderTexture, useMipmap, completion);
             }
         }
 
