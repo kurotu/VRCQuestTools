@@ -92,7 +92,6 @@ namespace KRT.VRCQuestTools.Models
             return material.GenerateToonLitImage(settings, (tex) =>
             {
                 var texToWrite = tex;
-                var texture = tex;
                 if (saveAsPng)
                 {
                     Directory.CreateDirectory(texturesPath);
@@ -103,18 +102,17 @@ namespace KRT.VRCQuestTools.Models
                         var dir = Path.GetDirectoryName(outFile);
                         Directory.CreateDirectory(dir);
                     }
-                    texture = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
+                    texToWrite = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
                     CacheManager.Texture.CopyToCache(outFile, cacheFile);
                 }
                 else
                 {
                     AssetUtility.SetStreamingMipMaps(texToWrite, true);
                     AssetUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
-                    texture = UnityEngine.Object.Instantiate(texToWrite);
-                    texture.name = material.Material.name;
+                    texToWrite.name = material.Material.name;
                     CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite)));
                 }
-                completion?.Invoke(texture);
+                completion?.Invoke(texToWrite);
             });
         }
     }
