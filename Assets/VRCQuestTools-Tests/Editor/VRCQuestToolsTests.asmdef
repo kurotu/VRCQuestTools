@@ -34,6 +34,11 @@
             "name": "com.vrchat.base",
             "expression": "3.3.0",
             "define": "VQT_HAS_VRCSDK"
+        },
+        {
+            "name": "com.vrchat.base",
+            "expression": "3.7.6",
+            "define": "VQT_HAS_VRCSDK_LOCAL_CONTACTS"
         }
     ],
     "noEngineReferences": false
