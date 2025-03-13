@@ -411,10 +411,20 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Request to wait.</returns>
         internal static AsyncCallbackRequest BakeTexture(Texture input, Material material, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
-            var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+            var desc = new RenderTextureDescriptor(input.width, input.height, RenderTextureFormat.ARGB32, 0, useMipmap ? input.mipmapCount : 1);
+#if UNITY_2022_1_OR_NEWER
+            desc.sRGB = input.isDataSRGB;
+#else
+            desc.sRGB = true;
+#endif
+
+            var rt = RenderTexture.GetTemporary(desc);
+            var renderTextures = new List<RenderTexture> { rt };
+
             var activeRT = RenderTexture.active;
             try
             {
+                RenderTexture.active = rt;
                 if (material)
                 {
                     Graphics.Blit(input, rt, material);
@@ -424,9 +434,28 @@ namespace KRT.VRCQuestTools.Utils
                     Graphics.Blit(input, rt);
                 }
 
-                return RequestReadbackRenderTexture(rt, useMipmap, (result) =>
+                // Iterative downscaling
+                while (desc.width > width || desc.height > height)
                 {
-                    RenderTexture.ReleaseTemporary(rt);
+                    desc.width /= 2;
+                    desc.height /= 2;
+                    if (desc.width < width || desc.height < height)
+                    {
+                        desc.width = width;
+                        desc.height = height;
+                    }
+                    var rt2 = RenderTexture.GetTemporary(desc);
+                    RenderTexture.active = rt2;
+                    Graphics.Blit(renderTextures.Last(), rt2);
+                    renderTextures.Add(rt2);
+                }
+
+                return RequestReadbackRenderTexture(renderTextures.Last(), useMipmap, (result) =>
+                {
+                    foreach (var r in renderTextures)
+                    {
+                        RenderTexture.ReleaseTemporary(r);
+                    }
                     completion?.Invoke(result);
                 });
             }
