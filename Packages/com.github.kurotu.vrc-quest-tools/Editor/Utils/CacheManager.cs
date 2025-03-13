@@ -81,7 +81,10 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         internal void Clear()
         {
-            Directory.Delete(cachePath, true);
+            if (Directory.Exists(cachePath))
+            {
+                Directory.Delete(cachePath, true);
+            }
         }
 
         /// <summary>

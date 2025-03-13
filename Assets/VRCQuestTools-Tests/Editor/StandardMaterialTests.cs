@@ -23,6 +23,11 @@ namespace KRT.VRCQuestTools
         private const float Threshold = 0.2f;
 #endif
 
+        public StandardMaterialTests()
+        {
+            CacheManager.Texture.Clear();
+        }
+
         /// <summary>
         /// Test standard without emission.
         /// </summary>
