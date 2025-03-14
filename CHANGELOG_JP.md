@@ -10,6 +10,7 @@
 - `VQT Avatar Converter Settings` でメニューアイコンを圧縮する設定の場合、手動変換時に `VQT Menu Icon Resizer` を設定する機能を追加。
 - テクスチャ生成処理を高速化するためのキャッシュ機能を追加。
 - VQT Avatar Builder で Android 用のオフラインテストに対応。
+- Unity のプロジェクト設定に VRCQuestTools の設定を追加。
 
 ### 変更
 - テクスチャの生成処理を高速化。

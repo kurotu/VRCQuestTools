@@ -19,6 +19,7 @@ namespace KRT.VRCQuestTools.Models
         private const string FALSE = "FALSE";
         private const string TRUE = "TRUE";
         private const string ProjectSettingsFile = "ProjectSettings/VRCQuestToolsSettings.json";
+        private const ulong DefaultTextureCacheSize = 1024 * 1024 * 1024; // 1GB
 
         private static I18nBase i18n = null;
 
@@ -123,9 +124,27 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
-        /// Gets the total size of texture cache.
+        /// Gets or sets the total size of texture cache.
         /// </summary>
-        internal static ulong TextureCacheSize => 1024 * 1024 * 1024; // 1GB
+        internal static ulong TextureCacheSize
+        {
+            get
+            {
+                var value = EditorUserSettings.GetConfigValue(Keys.TextureCacheSize);
+                if (ulong.TryParse(value, out ulong size))
+                {
+                    return size;
+                }
+
+                TextureCacheSize = DefaultTextureCacheSize;
+                return DefaultTextureCacheSize;
+            }
+
+            set
+            {
+                EditorUserSettings.SetConfigValue(Keys.TextureCacheSize, value.ToString());
+            }
+        }
 
         private static DateTime UnixEpoch => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
@@ -173,6 +192,7 @@ namespace KRT.VRCQuestTools.Models
             internal const string SkippedVersion = PREFIX + "SkippedVersion";
             internal const string LastVersionCheckData = PREFIX + "LastVersionCheckDate";
             internal const string DisplayLanguage = PREFIX + "DisplayLanguage";
+            internal const string TextureCacheSize = PREFIX + "TextureCacheSize";
             private const string PREFIX = "dev.kurotu.VRCQuestTools.";
         }
     }
