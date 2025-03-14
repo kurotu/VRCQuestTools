@@ -555,9 +555,13 @@ namespace KRT.VRCQuestTools.Inspector
             };
 
             VRChatAvatar questAvatar;
+            var sw = new System.Diagnostics.Stopwatch();
             try
             {
+                sw.Start();
                 questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, VRCQuestTools.ComponentRemover, true, GetOutputPath(avatar), progressCallback);
+                sw.Stop();
+                Debug.Log($"[{VRCQuestTools.Name}] Converted avatar for Android in {sw.ElapsedMilliseconds}ms");
             }
             catch (System.Exception exception)
             {
@@ -566,6 +570,7 @@ namespace KRT.VRCQuestTools.Inspector
             }
             finally
             {
+                sw.Stop();
                 EditorUtility.ClearProgressBar();
             }
             if (questAvatar != null)
