@@ -61,31 +61,42 @@ namespace KRT.VRCQuestTools.Models
                 outFile = $"{texturesPath}/{material.Material.name}_from_{guid}.png";
             }
 
-            if (CacheManager.Texture.Exists(cacheFile))
+            using (var mutex = CacheManager.Texture.CreateMutex())
             {
+                mutex.WaitOne();
                 try
                 {
-                    if (saveAsPng)
+                    if (CacheManager.Texture.Exists(cacheFile))
                     {
-                        CacheManager.Texture.CopyFromCache(cacheFile, outFile);
-                        AssetDatabase.ImportAsset(outFile);
-                        AssetUtility.ConfigureTextureImporter(outFile);
-                        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
-                        return new ResultRequest<Texture2D>(tex, completion);
-                    }
-                    else
-                    {
-                        var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
-                        var tex = cache.ToTexture2D();
-                        AssetUtility.SetStreamingMipMaps(tex, true);
-                        tex.name = material.Material.name;
-                        return new ResultRequest<Texture2D>(tex, completion);
+                        try
+                        {
+                            if (saveAsPng)
+                            {
+                                CacheManager.Texture.CopyFromCache(cacheFile, outFile);
+                                AssetDatabase.ImportAsset(outFile);
+                                AssetUtility.ConfigureTextureImporter(outFile);
+                                var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
+                                return new ResultRequest<Texture2D>(tex, completion);
+                            }
+                            else
+                            {
+                                var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
+                                var tex = cache.ToTexture2D();
+                                AssetUtility.SetStreamingMipMaps(tex, true);
+                                tex.name = material.Material.name;
+                                return new ResultRequest<Texture2D>(tex, completion);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogException(e);
+                            Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to load cache file {cacheFile} for {material.Material.name}");
+                        }
                     }
                 }
-                catch (Exception e)
+                finally
                 {
-                    Debug.LogException(e);
-                    Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to load cache file {cacheFile} for {material.Material.name}");
+                    mutex.ReleaseMutex();
                 }
             }
 
