@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using KRT.VRCQuestTools.I18n;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ namespace KRT.VRCQuestTools.Models
         private const string TRUE = "TRUE";
         private const string ProjectSettingsFile = "ProjectSettings/VRCQuestToolsSettings.json";
         private const ulong DefaultTextureCacheSize = 1024 * 1024 * 1024; // 1GB
+        private static readonly string DefaultTextureCacheDirectory = Path.Combine(SystemUtility.GetAppLocalCachePath(VRCQuestTools.Name), "TextureCache");
 
         private static I18nBase i18n = null;
 
@@ -130,7 +132,7 @@ namespace KRT.VRCQuestTools.Models
         {
             get
             {
-                var value = EditorUserSettings.GetConfigValue(Keys.TextureCacheSize);
+                var value = EditorPrefs.GetString(Keys.TextureCacheSize);
                 if (ulong.TryParse(value, out ulong size))
                 {
                     return size;
@@ -142,7 +144,28 @@ namespace KRT.VRCQuestTools.Models
 
             set
             {
-                EditorUserSettings.SetConfigValue(Keys.TextureCacheSize, value.ToString());
+                EditorPrefs.SetString(Keys.TextureCacheSize, value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the directory path of texture cache.
+        /// </summary>
+        internal static string TextureCacheFolder
+        {
+            get
+            {
+                var path = EditorPrefs.GetString(Keys.TextureCacheDirectory).Trim();
+                if (string.IsNullOrEmpty(path))
+                {
+                    return DefaultTextureCacheDirectory;
+                }
+                return path;
+            }
+
+            set
+            {
+                EditorPrefs.SetString(Keys.TextureCacheDirectory, value.Trim());
             }
         }
 
@@ -193,6 +216,7 @@ namespace KRT.VRCQuestTools.Models
             internal const string LastVersionCheckData = PREFIX + "LastVersionCheckDate";
             internal const string DisplayLanguage = PREFIX + "DisplayLanguage";
             internal const string TextureCacheSize = PREFIX + "TextureCacheSize";
+            internal const string TextureCacheDirectory = PREFIX + "TextureCacheDirectory";
             private const string PREFIX = "dev.kurotu.VRCQuestTools.";
         }
     }
