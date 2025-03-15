@@ -42,7 +42,10 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Loaded string.</returns>
         internal string LoadString(string fileName)
         {
-            return File.ReadAllText(Path.Combine(cachePath, fileName));
+            var file = Path.Combine(cachePath, fileName);
+            var data = File.ReadAllText(file);
+            File.SetLastAccessTimeUtc(file, System.DateTime.UtcNow);
+            return data;
         }
 
         /// <summary>
@@ -63,7 +66,9 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="destPath">Destination path.</param>
         internal void CopyFromCache(string fileName, string destPath)
         {
-            File.Copy(Path.Combine(cachePath, fileName), destPath, true);
+            var file = Path.Combine(cachePath, fileName);
+            File.Copy(file, destPath, true);
+            File.SetLastAccessTimeUtc(file, System.DateTime.UtcNow);
         }
 
         /// <summary>
