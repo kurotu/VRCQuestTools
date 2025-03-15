@@ -22,12 +22,10 @@ namespace KRT.VRCQuestTools.Utils
         {
             foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (var type in asm.GetTypes())
+                var type = asm.GetType(fullName);
+                if (type != null)
                 {
-                    if (type.FullName == fullName)
-                    {
-                        return type;
-                    }
+                    return type;
                 }
             }
             return null;
