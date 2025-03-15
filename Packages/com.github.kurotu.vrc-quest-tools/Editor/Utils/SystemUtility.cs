@@ -56,5 +56,29 @@ namespace KRT.VRCQuestTools.Utils
             throw new InvalidProgramException("Unsupported editor platform");
 #endif
         }
+
+        /// <summary>
+        /// Open folder in file explorer.
+        /// </summary>
+        /// <param name="path">Path to open.</param>
+        internal static void OpenFolder(string path)
+        {
+            if (Directory.Exists(path))
+            {
+#if UNITY_EDITOR_WIN
+                System.Diagnostics.Process.Start(path);
+#elif UNITY_EDITOR_OSX
+                System.Diagnostics.Process.Start("open", path);
+#elif UNITY_EDITOR_LINUX
+                System.Diagnostics.Process.Start("xdg-open", path);
+#else
+                throw new InvalidProgramException("Unsupported editor platform");
+#endif
+            }
+            else
+            {
+                throw new DirectoryNotFoundException($"Directory not found: {path}");
+            }
+        }
     }
 }
