@@ -37,7 +37,8 @@ namespace KRT.VRCQuestTools.Utils
 #elif UNITY_EDITOR_OSX
             Assert.AreEqual($"/Users/{userName}/Library/Caches/VRCQuestTools", SystemUtility.GetAppLocalCachePath("VRCQuestTools"));
 #elif UNITY_EDITOR_LINUX
-            Assert.AreEqual($"/home/{userName}/.cache/VRCQuestTools", SystemUtility.GetAppLocalCachePath("VRCQuestTools"));
+            var home = System.Environment.GetEnvironmentVariable("HOME");
+            Assert.AreEqual($"{home}/.cache/VRCQuestTools", SystemUtility.GetAppLocalCachePath("VRCQuestTools"));
 #else
             Assert.Fail("Unsupported editor platform");
 #endif
