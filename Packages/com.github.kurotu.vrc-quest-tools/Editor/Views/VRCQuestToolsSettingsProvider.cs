@@ -61,6 +61,17 @@ namespace KRT.VRCQuestTools.Views
                                 CacheManager.Texture.Clear();
                             }
                         }
+
+                        EditorGUILayout.Space();
+
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        {
+                            GUILayout.Space(UnityEditor.EditorGUIUtility.labelWidth);
+                            if (GUILayout.Button("Reset to Default", GUILayout.Width(150)))
+                            {
+                                VRCQuestToolsSettings.ResetPreferences();
+                            }
+                        }
                     }
                     finally
                     {

@@ -171,6 +171,15 @@ namespace KRT.VRCQuestTools.Models
 
         private static DateTime UnixEpoch => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
+        /// <summary>
+        /// Resets all preferences to default.
+        /// </summary>
+        internal static void ResetPreferences()
+        {
+            TextureCacheSize = DefaultTextureCacheSize;
+            TextureCacheFolder = DefaultTextureCacheDirectory;
+        }
+
         private static void SetBooleanConfigValue(string name, bool value)
         {
             var v = value ? TRUE : FALSE;
