@@ -18,6 +18,13 @@ namespace KRT.VRCQuestTools.Utils
         internal static string GetContentCacheKey(Material material)
         {
             var sb = new StringBuilder(material.shader.name);
+
+            sb.Append("LocalKeywords_");
+            foreach (var keyword in material.shaderKeywords)
+            {
+                sb.Append(keyword);
+            }
+
             var propertyCount = material.shader.GetPropertyCount();
             for (int i = 0; i < propertyCount; i++)
             {
