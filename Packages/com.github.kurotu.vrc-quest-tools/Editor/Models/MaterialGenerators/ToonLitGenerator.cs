@@ -72,6 +72,7 @@ namespace KRT.VRCQuestTools.Models
                         {
                             if (saveAsPng)
                             {
+                                Directory.CreateDirectory(texturesPath);
                                 CacheManager.Texture.CopyFromCache(cacheFile, outFile);
                                 AssetDatabase.ImportAsset(outFile);
                                 AssetUtility.ConfigureTextureImporter(outFile);
