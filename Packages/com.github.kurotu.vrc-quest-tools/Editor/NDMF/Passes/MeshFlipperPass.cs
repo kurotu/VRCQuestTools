@@ -34,6 +34,11 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
 
                 var originalMesh = meshFlipper.GetSharedMesh();
+                if (originalMesh == null)
+                {
+                    continue;
+                }
+
                 var key = originalMesh;
 
                 if (flippedMeshes.TryGetValue(key, out var flippedMesh))

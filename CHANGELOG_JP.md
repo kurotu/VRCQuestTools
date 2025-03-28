@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- [NDMF] `VQT Mesh Flipper` の対象となるメッシュが存在しない場合にエラーが発生する問題を修正。
+
 ## [2.8.0] - 2025-03-16
 
 ### 追加
