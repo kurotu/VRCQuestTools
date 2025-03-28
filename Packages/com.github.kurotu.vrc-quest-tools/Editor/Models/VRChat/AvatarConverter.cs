@@ -684,6 +684,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 #endif
 
+#if VQT_HAS_NDMF
             if (setting.compressExpressionsMenuIcons)
             {
                 var resizer = questAvatarObject.GetComponentInChildren<MenuIconResizer>(true);
@@ -693,6 +694,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
                 resizer.compressTextures = true;
             }
+#endif
 
             var platformSettings = questAvatarObject.GetComponent<PlatformTargetSettings>();
             if (platformSettings != null)

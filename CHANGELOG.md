@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- `VQT Menu Icon Resizer` was added in manual conversion when NDMF was not installed.
 - [NDMF] Error when there was no mesh for `VQT Mesh Flipper` to target.
 
 ## [2.8.0] - 2025-03-16
