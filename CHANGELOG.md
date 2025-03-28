@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Allow to directly set target materials in the additional material conversion settings of `VQT Avatar Converter Settings`.
+- Stopped multiplexed texture generation process and changed it to be processed sequentially as in version 2.7.2.
 
 ### Fixed
 - `VQT Menu Icon Resizer` was added in manual conversion when NDMF was not installed.
