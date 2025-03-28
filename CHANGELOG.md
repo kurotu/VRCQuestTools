@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Stopped multiplexed texture generation process and changed it to be processed sequentially as in version 2.7.2.
+
 ### Fixed
 - `VQT Menu Icon Resizer` was added in manual conversion when NDMF was not installed.
 - [NDMF] Error when there was no mesh for `VQT Mesh Flipper` to target.
