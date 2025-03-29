@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 変更
+- `VQT Avatar Converter Settings` の追加のマテリアル変換設定で対象マテリアルを直接指定できるように変更。
+
 ### 修正
 - 手動変換時に NDMF のインストールされていないプロジェクトで `VQT Menu Icon Resizer` が付与される問題を修正。
 - [NDMF] `VQT Mesh Flipper` の対象となるメッシュが存在しない場合にエラーが発生する問題を修正。

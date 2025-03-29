@@ -56,7 +56,6 @@ namespace KRT.VRCQuestTools.Inspector
                 rightRect.width = fieldRect.width * 0.25f;
                 rightRect.x = leftRect.x + leftRect.width;
                 var targetMaterial = property.FindPropertyRelative("targetMaterial");
-                using (new EditorGUI.DisabledGroupScope(true))
                 {
                     EditorGUI.PropertyField(leftRect, targetMaterial, new GUIContent(i18n.AdditionalMaterialConvertSettingsTargetMaterialLabel));
                 }

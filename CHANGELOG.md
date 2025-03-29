@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Allow to directly set target materials in the additional material conversion settings of `VQT Avatar Converter Settings`.
+
 ### Fixed
 - `VQT Menu Icon Resizer` was added in manual conversion when NDMF was not installed.
 - [NDMF] Error when there was no mesh for `VQT Mesh Flipper` to target.
