@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using nadena.dev.ndmf;
 using UnityEngine;
 #if !VQT_HAS_NDMF_ERROR_REPORT
@@ -9,8 +10,10 @@ namespace KRT.VRCQuestTools.Ndmf
     /// <summary>
     /// Proxy class for NDMF ObjectRestry.
     /// </summary>
-    internal static class NdmfObjectRegistry
+    internal class NdmfObjectRegistry
     {
+        private List<Object> registeredObjects = new List<Object>();
+
         /// <summary>
         /// Get reference of the object.
         /// </summary>
@@ -26,9 +29,15 @@ namespace KRT.VRCQuestTools.Ndmf
         /// </summary>
         /// <param name="original">Original object.</param>
         /// <param name="replaced">Replaced object.</param>
-        internal static void RegisterReplacedObject(Object original, Object replaced)
+        internal void RegisterReplacedObject(Object original, Object replaced)
         {
+            if (registeredObjects.Contains(replaced))
+            {
+                Debug.LogWarning($"{VRCQuestTools.Name} Replaced object {replaced} is already registered.");
+                return;
+            }
             ObjectRegistry.RegisterReplacedObject(original, replaced);
+            registeredObjects.Add(replaced);
         }
     }
 }

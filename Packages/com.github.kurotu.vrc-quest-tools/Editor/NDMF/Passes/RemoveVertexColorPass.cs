@@ -33,6 +33,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
+            var objectRegistry = context.GetState<NdmfObjectRegistry>();
             var smrs = context.AvatarRootObject.GetComponentsInChildren<SkinnedMeshRenderer>(true);
             for (var i = 0; i < smrs.Length; i++)
             {
@@ -43,7 +44,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 var newMesh = Object.Instantiate(smr.sharedMesh);
                 newMesh.colors32 = null;
-                NdmfObjectRegistry.RegisterReplacedObject(smr.sharedMesh, newMesh);
+                objectRegistry.RegisterReplacedObject(smr.sharedMesh, newMesh);
                 smr.sharedMesh = newMesh;
             }
 
@@ -57,7 +58,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 var newMesh = Object.Instantiate(mf.sharedMesh);
                 newMesh.colors32 = null;
-                NdmfObjectRegistry.RegisterReplacedObject(mf.sharedMesh, newMesh);
+                objectRegistry.RegisterReplacedObject(mf.sharedMesh, newMesh);
                 mf.sharedMesh = newMesh;
             }
         }

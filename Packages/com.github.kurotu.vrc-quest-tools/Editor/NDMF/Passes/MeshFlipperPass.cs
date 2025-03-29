@@ -17,6 +17,7 @@ namespace KRT.VRCQuestTools.Ndmf
         protected override void Execute(BuildContext context)
         {
             var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
+            var objectRegistry = context.GetState<NdmfObjectRegistry>();
 
             Dictionary<Mesh, Mesh> flippedMeshes = new Dictionary<Mesh, Mesh>();
             foreach (var meshFlipper in context.AvatarRootObject.GetComponentsInChildren<Components.MeshFlipper>(true))
@@ -49,7 +50,7 @@ namespace KRT.VRCQuestTools.Ndmf
                         var mesh = meshFlipper.CreateMesh();
                         flippedMeshes[key] = mesh;
                         meshFlipper.SetSharedMesh(mesh);
-                        NdmfObjectRegistry.RegisterReplacedObject(originalMesh, mesh);
+                        objectRegistry.RegisterReplacedObject(originalMesh, mesh);
                     }
                     catch (MeshFlipperMaskMissingException)
                     {

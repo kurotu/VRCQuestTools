@@ -50,10 +50,11 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             context.GetState<NdmfState>().compressExpressionsMenuIcons = settings.compressExpressionsMenuIcons;
+            var objectRegistry = context.GetState<NdmfObjectRegistry>();
 
             try
             {
-                TrackObjectRegistryForMaterialSwaps(context.AvatarRootObject);
+                TrackObjectRegistryForMaterialSwaps(objectRegistry, context.AvatarRootObject);
                 TrackObjectRegistryForConverterSettings(context, settings);
 
                 VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
@@ -63,21 +64,21 @@ namespace KRT.VRCQuestTools.Ndmf
                         // Register converted material to ObjectRegistry when it is not an asset..
                         if (converted != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(converted)))
                         {
-                            NdmfObjectRegistry.RegisterReplacedObject(original, converted);
+                            objectRegistry.RegisterReplacedObject(original, converted);
                         }
                     },
                     onAnimationClipProgress = (_, __, original, converted) =>
                     {
                         if (converted != null)
                         {
-                            NdmfObjectRegistry.RegisterReplacedObject(original, converted);
+                            objectRegistry.RegisterReplacedObject(original, converted);
                         }
                     },
                     onRuntimeAnimatorProgress = (_, __, original, converted) =>
                     {
                         if (converted != null)
                         {
-                            NdmfObjectRegistry.RegisterReplacedObject(original, converted);
+                            objectRegistry.RegisterReplacedObject(original, converted);
                         }
                     },
                 });
@@ -122,7 +123,7 @@ namespace KRT.VRCQuestTools.Ndmf
             settings.additionalMaterialConvertSettings = settings.additionalMaterialConvertSettings.Concat(newAdditionalMappings).ToArray();
         }
 
-        private static void TrackObjectRegistryForMaterialSwaps(GameObject avatarRoot)
+        private static void TrackObjectRegistryForMaterialSwaps(NdmfObjectRegistry objectRegistry, GameObject avatarRoot)
         {
             var swaps = avatarRoot.GetComponentsInChildren<MaterialSwap>();
             var mappings = swaps.SelectMany(s => s.materialMappings);
@@ -150,7 +151,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 var original = (Material)NdmfObjectRegistry.GetReference(material).Object;
                 if (map.ContainsKey(original))
                 {
-                    NdmfObjectRegistry.RegisterReplacedObject(material, map[original]);
+                    objectRegistry.RegisterReplacedObject(material, map[original]);
                     rootSwap.materialMappings.Add(new MaterialSwap.MaterialMapping
                     {
                         originalMaterial = material,

@@ -76,14 +76,16 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
+            var objectRegistry = context.GetState<NdmfObjectRegistry>();
+
             var newMenu = VRCSDKUtility.DuplicateExpressionsMenu(menu);
             context.AvatarDescriptor.expressionsMenu = newMenu;
-            NdmfObjectRegistry.RegisterReplacedObject(menu, newMenu);
+            objectRegistry.RegisterReplacedObject(menu, newMenu);
 
             VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, maxSize, compressTextures, (oldTex, newTex) =>
             {
                 AssetUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget);
-                NdmfObjectRegistry.RegisterReplacedObject(oldTex, newTex);
+                objectRegistry.RegisterReplacedObject(oldTex, newTex);
             });
         }
     }
