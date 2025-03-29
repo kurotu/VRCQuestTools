@@ -63,21 +63,21 @@ namespace KRT.VRCQuestTools.Ndmf
                         // Register converted material to ObjectRegistry when it is not an asset..
                         if (converted != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(converted)))
                         {
-                            ObjectRegistry.RegisterReplacedObject(original, converted);
+                            NdmfObjectRegistry.RegisterReplacedObject(original, converted);
                         }
                     },
                     onAnimationClipProgress = (_, __, original, converted) =>
                     {
                         if (converted != null)
                         {
-                            ObjectRegistry.RegisterReplacedObject(original, converted);
+                            NdmfObjectRegistry.RegisterReplacedObject(original, converted);
                         }
                     },
                     onRuntimeAnimatorProgress = (_, __, original, converted) =>
                     {
                         if (converted != null)
                         {
-                            ObjectRegistry.RegisterReplacedObject(original, converted);
+                            NdmfObjectRegistry.RegisterReplacedObject(original, converted);
                         }
                     },
                 });
@@ -105,7 +105,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var newAdditionalMappings = new List<AdditionalMaterialConvertSettings>();
             foreach (var material in currentMaterials)
             {
-                var original = (Material)ObjectRegistry.GetReference(material).Object;
+                var original = (Material)NdmfObjectRegistry.GetReference(material).Object;
                 var setting = settings.additionalMaterialConvertSettings.FirstOrDefault(s => s.targetMaterial == original);
                 if (setting == null)
                 {
@@ -147,10 +147,10 @@ namespace KRT.VRCQuestTools.Ndmf
             var rootSwap = VRC.Core.ExtensionMethods.GetOrAddComponent<MaterialSwap>(avatarRoot);
             foreach (var material in materials)
             {
-                var original = (Material)ObjectRegistry.GetReference(material).Object;
+                var original = (Material)NdmfObjectRegistry.GetReference(material).Object;
                 if (map.ContainsKey(original))
                 {
-                    ObjectRegistry.RegisterReplacedObject(material, map[original]);
+                    NdmfObjectRegistry.RegisterReplacedObject(material, map[original]);
                     rootSwap.materialMappings.Add(new MaterialSwap.MaterialMapping
                     {
                         originalMaterial = material,
@@ -168,20 +168,20 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 case MaterialConversionException e:
                     {
-                        var matRef = ObjectRegistry.GetReference(e.source);
+                        var matRef = NdmfObjectRegistry.GetReference(e.source);
                         var error = new MaterialConversionError(matRef, e);
                         ErrorReport.ReportError(error);
                     }
                     break;
                 case AnimationClipConversionException e:
                     {
-                        var animRef = ObjectRegistry.GetReference(e.source);
+                        var animRef = NdmfObjectRegistry.GetReference(e.source);
                         var error = new ObjectConversionError(animRef, e);
                     }
                     break;
                 case AnimatorControllerConversionException e:
                     {
-                        var animRef = ObjectRegistry.GetReference(e.source);
+                        var animRef = NdmfObjectRegistry.GetReference(e.source);
                         var error = new ObjectConversionError(animRef, e);
                     }
                     break;

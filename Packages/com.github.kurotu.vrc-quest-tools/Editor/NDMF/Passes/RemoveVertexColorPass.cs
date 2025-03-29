@@ -2,9 +2,6 @@ using System.Linq;
 using KRT.VRCQuestTools.Components;
 using nadena.dev.ndmf;
 using UnityEngine;
-#if !VQT_HAS_NDMF_ERROR_REPORT
-using KRT.VRCQuestTools.Ndmf.Dummy;
-#endif
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -46,7 +43,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 var newMesh = Object.Instantiate(smr.sharedMesh);
                 newMesh.colors32 = null;
-                ObjectRegistry.RegisterReplacedObject(smr.sharedMesh, newMesh);
+                NdmfObjectRegistry.RegisterReplacedObject(smr.sharedMesh, newMesh);
                 smr.sharedMesh = newMesh;
             }
 
@@ -60,7 +57,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 var newMesh = Object.Instantiate(mf.sharedMesh);
                 newMesh.colors32 = null;
-                ObjectRegistry.RegisterReplacedObject(mf.sharedMesh, newMesh);
+                NdmfObjectRegistry.RegisterReplacedObject(mf.sharedMesh, newMesh);
                 mf.sharedMesh = newMesh;
             }
         }

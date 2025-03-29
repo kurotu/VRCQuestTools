@@ -26,8 +26,8 @@ namespace KRT.VRCQuestTools.Ndmf
             this.replacementMaterial = replacementMaterial;
             _references = new List<ObjectReference>
             {
-                ObjectRegistry.GetReference(component),
-                ObjectRegistry.GetReference(replacementMaterial),
+                NdmfObjectRegistry.GetReference(component),
+                NdmfObjectRegistry.GetReference(replacementMaterial),
             };
         }
 

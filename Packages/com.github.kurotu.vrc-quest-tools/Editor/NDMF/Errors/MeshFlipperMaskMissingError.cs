@@ -23,7 +23,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <param name="meshFlipper">Mesh Flipper component.</param>
         public MeshFlipperMaskMissingError(MeshFlipper meshFlipper)
         {
-            _references = new List<ObjectReference> { ObjectRegistry.GetReference(meshFlipper) };
+            _references = new List<ObjectReference> { NdmfObjectRegistry.GetReference(meshFlipper) };
         }
 
         /// <inheritdoc/>

@@ -78,16 +78,12 @@ namespace KRT.VRCQuestTools.Ndmf
 
             var newMenu = VRCSDKUtility.DuplicateExpressionsMenu(menu);
             context.AvatarDescriptor.expressionsMenu = newMenu;
-#if VQT_HAS_NDMF_ERROR_REPORT
-            ObjectRegistry.RegisterReplacedObject(menu, newMenu);
-#endif
+            NdmfObjectRegistry.RegisterReplacedObject(menu, newMenu);
 
             VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, maxSize, compressTextures, (oldTex, newTex) =>
             {
                 AssetUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget);
-#if VQT_HAS_NDMF_ERROR_REPORT
-                ObjectRegistry.RegisterReplacedObject(oldTex, newTex);
-#endif
+                NdmfObjectRegistry.RegisterReplacedObject(oldTex, newTex);
             });
         }
     }
