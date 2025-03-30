@@ -31,7 +31,9 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             if (Material.shader.name.ToLower().Contains("/UnlitPreview".ToLower()))
             {
-                return new ResultRequest<Texture2D>(Texture2D.blackTexture, completion);
+                var newTex = new Texture2D(Texture2D.blackTexture.width, Texture2D.blackTexture.height);
+                newTex.SetPixels32(Texture2D.blackTexture.GetPixels32());
+                return new ResultRequest<Texture2D>(newTex, completion);
             }
             else
             {

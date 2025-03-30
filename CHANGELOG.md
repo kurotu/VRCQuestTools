@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `VQT Menu Icon Resizer` was added in manual conversion when NDMF was not installed.
+- Error when converting VirtualLens2 materials.
 - [NDMF] Error when there was no mesh for `VQT Mesh Flipper` to target.
 - [NDMF] Error when the same replacement material was set multiple times in `VQT Material Swap`.
 
