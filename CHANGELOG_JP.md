@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.8.1] - 2025-03-31
 
 ### 変更
 - `VQT Avatar Converter Settings` の追加のマテリアル変換設定で対象マテリアルを直接指定できるように変更。
