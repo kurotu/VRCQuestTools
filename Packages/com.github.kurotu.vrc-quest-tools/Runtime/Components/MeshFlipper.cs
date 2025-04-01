@@ -140,12 +140,22 @@ namespace KRT.VRCQuestTools.Components
         public Mesh CreateMesh()
         {
             var sharedMesh = GetSharedMesh();
-            switch (direction)
+            return CreateFlippedMesh(this, sharedMesh);
+        }
+
+        /// <summary>
+        /// Create a new mesh basd on the component settings.
+        /// </summary>
+        /// <param name="meshFlipper">Mesh Flipper component.</param>
+        /// <param name="mesh">Mesh to flip.</param>
+        /// <returns>New mesh.</returns>
+        public static Mesh CreateFlippedMesh(MeshFlipper meshFlipper, Mesh mesh) {
+            switch (meshFlipper.direction)
             {
                 case MeshFlipperMeshDirection.Flip:
-                    return CreateFlippedMesh(sharedMesh, useMask, maskTexture, maskMode);
+                    return CreateFlippedMesh(mesh, meshFlipper.useMask, meshFlipper.maskTexture, meshFlipper.maskMode);
                 case MeshFlipperMeshDirection.BothSides:
-                    return CreateBothSidesMesh(sharedMesh, useMask, maskTexture, maskMode);
+                    return CreateBothSidesMesh(mesh, meshFlipper.useMask, meshFlipper.maskTexture, meshFlipper.maskMode);
                 default:
                     throw new System.InvalidProgramException("Mask texture must be readable.");
             }
