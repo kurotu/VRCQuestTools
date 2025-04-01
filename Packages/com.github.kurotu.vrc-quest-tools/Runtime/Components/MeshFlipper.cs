@@ -37,6 +37,22 @@ namespace KRT.VRCQuestTools.Components
     }
 
     /// <summary>
+    /// Enum for phase to process the mesh.
+    /// </summary>
+    public enum MeshFlipperProcessingPhase
+    {
+        /// <summary>
+        /// Before other decimation tools..
+        /// </summary>
+        BeforeDecimation,
+
+        /// <summary>
+        /// After other decimation tools.
+        /// </summary>
+        AfterDecimation,
+    }
+
+    /// <summary>
     /// Component to flip the mesh of its game object's renderer.
     /// </summary>
     [AddComponentMenu("VRCQuestTools/VQT Mesh Flipper")]
@@ -73,6 +89,11 @@ namespace KRT.VRCQuestTools.Components
         /// Mask texture mode to flip the mesh.
         /// </summary>
         public MeshFlipperMaskMode maskMode = MeshFlipperMaskMode.FlipWhite;
+
+        /// <summary>
+        /// Processing phase of the mesh.
+        /// </summary>
+        public MeshFlipperProcessingPhase processingPhase = MeshFlipperProcessingPhase.BeforeDecimation;
 
         /// <summary>
         /// Get shared mesh of the component.

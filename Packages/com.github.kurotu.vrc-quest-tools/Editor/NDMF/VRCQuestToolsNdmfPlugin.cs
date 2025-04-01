@@ -68,8 +68,11 @@ namespace KRT.VRCQuestTools.Ndmf
             InPhase(BuildPhase.Optimizing)
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
                 .AfterPlugin("jp.unisakistudio.posingsystemeditor.posingsystemconverter") // needs created menus
+                .AfterPlugin("jp.lilxyzw.ndmfmeshsimplifier.NDMF.NDMFPlugin") // decimation
+                .AfterPlugin("Meshia.MeshSimplification.Ndmf.Editor.NdmfPlugin ") // decimation
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
                 .Run(AvatarConverterOptimizingPass.Instance)
+                .Then.Run(MeshFlipperAfterDecimationPass.Instance)
                 .Then.Run(RemoveUnsupportedComponentsPass.Instance)
                 .Then.Run(MenuIconResizerPass.Instance)
                 .Then.Run(RemoveVRCQuestToolsComponentsPass.Instance);
