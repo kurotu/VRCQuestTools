@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
@@ -26,10 +27,14 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public AsyncCallbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
         {
+            var originalName = material.Material.name;
             return toonLitGenerator.GenerateMaterial(material, saveTextureAsPng, texturesPath, newMaterial =>
             {
-                newMaterial.shader = Shader.Find("VRChat/Mobile/MatCap Lit");
+                var shader = Shader.Find("VRChat/Mobile/MatCap Lit");
+                newMaterial.name = $"{originalName}_{shader.name.Split('/').Last()}";
+                newMaterial.shader = shader;
                 newMaterial.SetTexture("_MatCap", matCapLitConvertSettings.matCapTexture);
+                completion?.Invoke(newMaterial);
             });
         }
 
