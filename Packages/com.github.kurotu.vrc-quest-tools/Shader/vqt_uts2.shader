@@ -36,6 +36,7 @@
         [HDR]_Emissive_Color("Emissive_Color", Color) = (1,1,1,1)
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
+        _VQT_MainTexBrightnessMode("VQT Main Texture Brightness Mode", Int) = 0 // 0: Linear, 1: LAB
         _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
     }
     SubShader
@@ -107,6 +108,7 @@
             fixed4 _Emissive_Color;
 
             float _VQT_MainTexBrightness;
+            uint _VQT_MainTexBrightnessMode;
             uint _VQT_GenerateShadow;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
@@ -165,7 +167,7 @@
                     col.rgb = Set_FinalBaseColor.rgb;
                 }
 
-                col.rgb *= _VQT_MainTexBrightness;
+                col.rgb = vqt_AdjustBrightness(_VQT_MainTexBrightnessMode, col.rgb, _VQT_MainTexBrightness);
                 float4 emi = sampleTex2D(_Emissive_Tex, i.uv_Emissive_Tex, 0.0f);
                 col = clamp(col + emi * _Emissive_Color, 0, 1);
                 return col;

@@ -24,10 +24,15 @@ namespace KRT.VRCQuestTools.Models
         public TextureSizeLimit maxTextureSize = TextureSizeLimit.Max1024x1024;
 
         /// <summary>
+        /// Texture brightness mode for quest.
+        /// </summary>
+        public BrightnessMode mainTextureBrightnessMode = MaterialConvertSettingsDefaults.DefaultBrightnessMode;
+
+        /// <summary>
         /// Texture brightness for quest. [0-1].
         /// </summary>
         [Range(0.0f, 1.0f)]
-        public float mainTextureBrightness = 0.83f;
+        public float mainTextureBrightness = MaterialConvertSettingsDefaults.DefaultBrightness[MaterialConvertSettingsDefaults.DefaultBrightnessMode];
 
         /// <summary>
         /// Whether to generate shadow from normal map.
@@ -46,6 +51,9 @@ namespace KRT.VRCQuestTools.Models
         public TextureSizeLimit MaxTextureSize => maxTextureSize;
 
         /// <inheritdoc/>
+        public BrightnessMode MainTextureBrightnessMode => mainTextureBrightnessMode;
+
+        /// <inheritdoc/>
         public float MainTextureBrightness => mainTextureBrightness;
 
         /// <inheritdoc/>
@@ -55,7 +63,7 @@ namespace KRT.VRCQuestTools.Models
         public string GetCacheKey()
         {
 #if UNITY_EDITOR
-            return $"{generateQuestTextures}_{maxTextureSize}_{mainTextureBrightness}_{generateShadowFromNormalMap}_{matCapTexture.imageContentsHash}";
+            return $"{generateQuestTextures}_{maxTextureSize}_{mainTextureBrightnessMode}_{mainTextureBrightness}_{generateShadowFromNormalMap}_{matCapTexture.imageContentsHash}";
 #else
             throw new System.NotSupportedException("GetCacheKey is only available for UnityEditor.");
 #endif

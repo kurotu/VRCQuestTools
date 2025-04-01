@@ -130,6 +130,8 @@ namespace KRT.VRCQuestTools.I18n
 
         // IMaterialConvertSettings
         internal string IMaterialConvertSettingsTexturesSizeLimitLabel => GetText("IMaterialConvertSettingsTexturesSizeLimitLabel");
+        internal string IMaterialConvertSettingsMainTextureBrightnessModeLabel => GetText("IMaterialConvertSettingsMainTextureBrightnessModeLabel");
+        internal string IMaterialConvertSettingsMainTextureBrightnessModeTooltip => GetText("IMaterialConvertSettingsMainTextureBrightnessModeTooltip");
         internal string IMaterialConvertSettingsMainTextureBrightnessLabel => GetText("IMaterialConvertSettingsMainTextureBrightnessLabel");
         internal string IMaterialConvertSettingsMainTextureBrightnessTooltip => GetText("IMaterialConvertSettingsMainTextureBrightnessTooltip");
         internal string ToonLitConvertSettingsGenerateShadowFromNormalMapLabel => GetText("ToonLitConvertSettingsGenerateShadowFromNormalMapLabel");

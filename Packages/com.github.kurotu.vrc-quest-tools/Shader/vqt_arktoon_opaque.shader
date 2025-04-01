@@ -17,6 +17,7 @@
         _ShadowStrengthMask ("[Shadow] Strength Mask", 2D) = "white" {}
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
+        _VQT_MainTexBrightnessMode("VQT Main Texture Brightness Mode", Int) = 0 // 0: Linear, 1: LAB
         _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
     }
     SubShader
@@ -66,6 +67,7 @@
             fixed4 _ShadowStrengthMask_ST;
 
             float _VQT_MainTexBrightness;
+            uint _VQT_MainTexBrightnessMode;
             uint _VQT_GenerateShadow;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
@@ -99,7 +101,7 @@
                     col.rgb *= shadow.rgb;
                 }
 
-                col.rgb *= _VQT_MainTexBrightness;
+                col.rgb = vqt_AdjustBrightness(_VQT_MainTexBrightnessMode, col.rgb, _VQT_MainTexBrightness);
                 float4 emi = sampleTex2D(_EmissionMap, i.uv_EmissionMap, 0.0f);
                 col = clamp(col + emi * _EmissionColor, 0, 1);
                 return col;

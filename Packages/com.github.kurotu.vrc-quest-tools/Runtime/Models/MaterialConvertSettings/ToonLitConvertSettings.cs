@@ -20,6 +20,11 @@ namespace KRT.VRCQuestTools.Models
         public TextureSizeLimit maxTextureSize = TextureSizeLimit.Max1024x1024;
 
         /// <summary>
+        /// Texture brightness mode for quest.
+        /// </summary>
+        public BrightnessMode mainTextureBrightnessMode = MaterialConvertSettingsDefaults.DefaultBrightnessMode;
+
+        /// <summary>
         /// Texture brightness for quest. [0-1].
         /// </summary>
         /// <remarks>
@@ -27,7 +32,7 @@ namespace KRT.VRCQuestTools.Models
         /// So 1.0 is too bright for light colors. (1 / 1.5 => 0.67 is a little dark.)
         /// </remarks>
         [Range(0.0f, 1.0f)]
-        public float mainTextureBrightness = 0.83f;
+        public float mainTextureBrightness = MaterialConvertSettingsDefaults.DefaultBrightness[MaterialConvertSettingsDefaults.DefaultBrightnessMode];
 
         /// <summary>
         /// Whether to generate shadow from normal map.
@@ -41,6 +46,9 @@ namespace KRT.VRCQuestTools.Models
         public TextureSizeLimit MaxTextureSize => maxTextureSize;
 
         /// <inheritdoc/>
+        public BrightnessMode MainTextureBrightnessMode => mainTextureBrightnessMode;
+
+        /// <inheritdoc/>
         public float MainTextureBrightness => mainTextureBrightness;
 
         /// <inheritdoc/>
@@ -49,7 +57,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public string GetCacheKey()
         {
-            return $"{generateQuestTextures}_{maxTextureSize}_{mainTextureBrightness}_{generateShadowFromNormalMap}";
+            return $"{generateQuestTextures}_{maxTextureSize}_{mainTextureBrightnessMode}_{mainTextureBrightness}_{generateShadowFromNormalMap}";
         }
     }
 }

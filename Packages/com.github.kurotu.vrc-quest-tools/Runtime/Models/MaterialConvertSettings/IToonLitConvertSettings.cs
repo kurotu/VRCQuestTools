@@ -16,6 +16,11 @@ namespace KRT.VRCQuestTools.Models
         TextureSizeLimit MaxTextureSize { get; }
 
         /// <summary>
+        /// Gets a value indicating whether to use texture brightness mode.
+        /// </summary>
+        BrightnessMode MainTextureBrightnessMode { get; }
+
+        /// <summary>
         /// Gets texture brightness for quest. [0-1].
         /// </summary>
         float MainTextureBrightness { get; }

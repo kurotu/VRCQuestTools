@@ -100,6 +100,7 @@
         _EmissionStrength3 ("Emission Strength 3", Range(0, 20)) = 0
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
+        _VQT_MainTexBrightnessMode("VQT Main Texture Brightness Mode", Int) = 0 // 0: Linear, 1: LAB
         _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
     }
     SubShader
@@ -213,6 +214,7 @@
             float _EmissionStrength3;
 
             float _VQT_MainTexBrightness;
+            uint _VQT_MainTexBrightnessMode;
             uint _VQT_GenerateShadow;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
@@ -370,7 +372,7 @@
                     col = poiApplyShadow(col, i.uv);
                 }
 
-                col.rgb *= _VQT_MainTexBrightness;
+                col.rgb = vqt_AdjustBrightness(_VQT_MainTexBrightnessMode, col.rgb, _VQT_MainTexBrightness);
 
                 if (_EnableEmission) {
                     float4 emi = sampleTex2D(_EmissionMap, i.uv, 0.0f);

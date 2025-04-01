@@ -12,6 +12,7 @@
         [HDR]_EmissionColor("EmissionColor", Color) = (1,1,1,1)
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
+        _VQT_MainTexBrightnessMode("VQT Main Texture Brightness Mode", Int) = 0 // 0: Linear, 1: LAB
         _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
     }
     SubShader
@@ -56,6 +57,7 @@
             fixed4 _EmissionColor;
 
             float _VQT_MainTexBrightness;
+            uint _VQT_MainTexBrightnessMode;
             uint _VQT_GenerateShadow;
 
             v2f vert (appdata v)
@@ -79,7 +81,7 @@
                     col.rgb *= normalCol.rgb / 0.83; // In standard shading, normalCol multiplies 0.83 to most of the main texture. So we need to undo that.
                 }
 
-                col.rgb *= _VQT_MainTexBrightness;
+                col.rgb = vqt_AdjustBrightness(_VQT_MainTexBrightnessMode, col.rgb, _VQT_MainTexBrightness);
 #ifdef _EMISSION
                 fixed4 emi = tex2D(_EmissionMap, i.uv);
                 col = clamp(col + emi * _EmissionColor, 0, 1);

@@ -69,6 +69,7 @@
         _Emission2ndMainStrength("Emission2ndMainStrength", Range(0,1)) = 0
 
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
+        _VQT_MainTexBrightnessMode("VQT Main Texture Brightness Mode", Int) = 0 // 0: Linear, 1: LAB
         _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
     }
     SubShader
@@ -168,6 +169,7 @@
             float _Emission2ndMainStrength;
 
             float _VQT_MainTexBrightness;
+            uint _VQT_MainTexBrightnessMode;
             uint _VQT_GenerateShadow;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
@@ -267,7 +269,7 @@
                     albedo.rgb *= shadow.rgb;
                 }
 
-                albedo.rgb *= _VQT_MainTexBrightness;
+                albedo.rgb = vqt_AdjustBrightness(_VQT_MainTexBrightnessMode, albedo.rgb, _VQT_MainTexBrightness);
                 fixed4 col = albedo;
 
                 if (_LIL_FEATURE_EMISSION_1ST && _UseEmission) {

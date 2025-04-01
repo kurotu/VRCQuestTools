@@ -1,3 +1,5 @@
+#include "vqt_lab.cginc"
+
 #define VQT_DUMMY_LIGHT_DIRECTION float3(-0.5, 0.5, 1.05)
 //#define VQT_DUMMY_LIGHT_DIRECTION float3(-0.5, 0.5, 0.5)
 
@@ -55,4 +57,21 @@ float4 arktoonShadow(float4 light, float border, float borderBlur, float shadowS
         return shadow;
     }
     return darkColor;
+}
+
+float3 vqt_AdjustBrightness(uint mode, float3 rgb, float brightness)
+{
+    if (mode == 0)
+    {
+        return rgb * brightness;
+    }
+    else if (mode == 1)
+    {
+        float3 xyz = vqt_RGBtoXYZ(rgb);
+        float3 lab = vqt_XYZtoLAB(xyz);
+        lab = vqt_AdjustBrightnessLAB(lab, brightness);
+        xyz = vqt_LABtoXYZ(lab);
+        return vqt_XYZtoRGB(xyz);
+    }
+    return rgb;
 }
