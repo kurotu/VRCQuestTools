@@ -485,6 +485,9 @@ msgstr "Mask Texture"
 msgid "MeshFlipperEditorMaskModeLabel"
 msgstr "Mask Mode"
 
+msgid "MeshFlipperEditorProcessingPhaseLabel"
+msgstr "Phase to Flip Mesh"
+
 msgid "MeshFlipperEditorEnabledOnPCWarning"
 msgstr "It may be possible to achieve this with shader settings without using this component."
 

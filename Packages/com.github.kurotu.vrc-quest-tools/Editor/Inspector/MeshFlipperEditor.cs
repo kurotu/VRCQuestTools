@@ -62,6 +62,9 @@ namespace KRT.VRCQuestTools.Inspector
                 }
             }
 
+            var processingPhase = so.FindProperty("processingPhase");
+            EditorGUILayout.PropertyField(processingPhase, new GUIContent(i18n.MeshFlipperEditorProcessingPhaseLabel));
+
             var enabledOnPC = so.FindProperty("enabledOnPC");
             EditorGUILayout.PropertyField(enabledOnPC, new GUIContent(i18n.MeshFlipperEditorEnabledOnPCLabel));
 

@@ -23,7 +23,7 @@ namespace KRT.VRCQuestTools.Components
     /// <summary>
     /// Enum for mask mode to flip the mesh.
     /// </summary>
-    public enum FlipFlipperMaskMode
+    public enum MeshFlipperMaskMode
     {
         /// <summary>
         /// Flip triangles when their all vertices are on white pixels.
@@ -34,6 +34,22 @@ namespace KRT.VRCQuestTools.Components
         /// Flip triangles when their all vertices are on black pixels.
         /// </summary>
         FlipBlack,
+    }
+
+    /// <summary>
+    /// Enum for phase to process the mesh.
+    /// </summary>
+    public enum MeshFlipperProcessingPhase
+    {
+        /// <summary>
+        /// Before other decimation tools..
+        /// </summary>
+        BeforeDecimation,
+
+        /// <summary>
+        /// After other decimation tools.
+        /// </summary>
+        AfterDecimation,
     }
 
     /// <summary>
@@ -72,7 +88,12 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// Mask texture mode to flip the mesh.
         /// </summary>
-        public FlipFlipperMaskMode maskMode = FlipFlipperMaskMode.FlipWhite;
+        public MeshFlipperMaskMode maskMode = MeshFlipperMaskMode.FlipWhite;
+
+        /// <summary>
+        /// Processing phase of the mesh.
+        /// </summary>
+        public MeshFlipperProcessingPhase processingPhase = MeshFlipperProcessingPhase.BeforeDecimation;
 
         /// <summary>
         /// Get shared mesh of the component.
@@ -119,18 +140,28 @@ namespace KRT.VRCQuestTools.Components
         public Mesh CreateMesh()
         {
             var sharedMesh = GetSharedMesh();
-            switch (direction)
+            return CreateFlippedMesh(this, sharedMesh);
+        }
+
+        /// <summary>
+        /// Create a new mesh basd on the component settings.
+        /// </summary>
+        /// <param name="meshFlipper">Mesh Flipper component.</param>
+        /// <param name="mesh">Mesh to flip.</param>
+        /// <returns>New mesh.</returns>
+        public static Mesh CreateFlippedMesh(MeshFlipper meshFlipper, Mesh mesh) {
+            switch (meshFlipper.direction)
             {
                 case MeshFlipperMeshDirection.Flip:
-                    return CreateFlippedMesh(sharedMesh, useMask, maskTexture, maskMode);
+                    return CreateFlippedMesh(mesh, meshFlipper.useMask, meshFlipper.maskTexture, meshFlipper.maskMode);
                 case MeshFlipperMeshDirection.BothSides:
-                    return CreateBothSidesMesh(sharedMesh, useMask, maskTexture, maskMode);
+                    return CreateBothSidesMesh(mesh, meshFlipper.useMask, meshFlipper.maskTexture, meshFlipper.maskMode);
                 default:
                     throw new System.InvalidProgramException("Mask texture must be readable.");
             }
         }
 
-        private static Mesh CreateFlippedMesh(Mesh mesh, bool useMask, Texture2D mask, FlipFlipperMaskMode maskMode)
+        private static Mesh CreateFlippedMesh(Mesh mesh, bool useMask, Texture2D mask, MeshFlipperMaskMode maskMode)
         {
             Mesh newMesh = Instantiate(mesh);
             newMesh.name = mesh.name + "_flipped";
@@ -155,7 +186,7 @@ namespace KRT.VRCQuestTools.Components
                             mesh.uv[triangles[j + 2]],
                         };
                         var colors = uvs.Select(uv => mask.GetPixelBilinear(uv.x, uv.y));
-                        var shouldFlip = colors.All(color => maskMode == FlipFlipperMaskMode.FlipWhite ? color.r > 0.5f : color.r < 0.5f);
+                        var shouldFlip = colors.All(color => maskMode == MeshFlipperMaskMode.FlipWhite ? color.r > 0.5f : color.r < 0.5f);
                         if (shouldFlip)
                         {
                             var tmp = triangles[j];
@@ -173,7 +204,7 @@ namespace KRT.VRCQuestTools.Components
             return newMesh;
         }
 
-        private static Mesh CreateBothSidesMesh(Mesh mesh, bool useMask, Texture2D mask, FlipFlipperMaskMode maskMode)
+        private static Mesh CreateBothSidesMesh(Mesh mesh, bool useMask, Texture2D mask, MeshFlipperMaskMode maskMode)
         {
             Mesh newMesh = Instantiate(mesh);
             newMesh.name = mesh.name + "_bothSides";
@@ -198,7 +229,7 @@ namespace KRT.VRCQuestTools.Components
                             mesh.uv[triangles[j + 2]],
                         };
                         var colors = uvs.Select(uv => mask.GetPixelBilinear(uv.x, uv.y));
-                        var shouldFlip = colors.All(color => maskMode == FlipFlipperMaskMode.FlipWhite ? color.r > 0.5f : color.r < 0.5f);
+                        var shouldFlip = colors.All(color => maskMode == MeshFlipperMaskMode.FlipWhite ? color.r > 0.5f : color.r < 0.5f);
                         if (shouldFlip)
                         {
                             trianglesList.Add(triangles[j + 2]);

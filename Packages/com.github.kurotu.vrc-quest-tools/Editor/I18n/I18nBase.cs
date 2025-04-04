@@ -249,6 +249,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string MeshFlipperEditorUseMaskLabel => GetText("MeshFlipperEditorUseMaskLabel");
         internal string MeshFlipperEditorMaskTextureLabel => GetText("MeshFlipperEditorMaskTextureLabel");
         internal string MeshFlipperEditorMaskModeLabel => GetText("MeshFlipperEditorMaskModeLabel");
+        internal string MeshFlipperEditorProcessingPhaseLabel => GetText("MeshFlipperEditorProcessingPhaseLabel");
         internal string MeshFlipperEditorEnabledOnPCLabel => GetText("MeshFlipperEditorEnabledOnPCLabel");
         internal string MeshFlipperEditorEnabledOnAndroidLabel => GetText("MeshFlipperEditorEnabledOnAndroidLabel");
         internal string MeshFlipperEditorEnabledOnPCWarning => GetText("MeshFlipperEditorEnabledOnPCWarning");
