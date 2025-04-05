@@ -7,13 +7,40 @@
 ## [Unreleased]
 
 ### 追加
+- [NDMF] `VQT Mesh Flipper` に `NDMFフェーズ` 設定を追加。
+    - Before Decimation
+    - After Decimation
+- [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応。
+
+## [2.8.2] - 2025-04-01
+
+### 修正
+- MatCap Lit への変換が行われない問題を修正。
+
+## [2.8.1] - 2025-03-31
+
+### 変更
+- `VQT Avatar Converter Settings` の追加のマテリアル変換設定で対象マテリアルを直接指定できるように変更。
+- テクスチャ生成処理の多重化をやめ2.7.2と同様に順次処理するように変更。
+
+### 修正
+- 手動変換時に NDMF のインストールされていないプロジェクトで `VQT Menu Icon Resizer` が付与される問題を修正。
+- VirtualLens2 のマテリアルを変換するときにエラーが発生する問題を修正。
+- [NDMF] `VQT Mesh Flipper` の対象となるメッシュが存在しない場合にエラーが発生する問題を修正。
+- [NDMF] `VQT Material Swap` で複数のマテリアルに対して同じ置換先マテリアルを設定するとエラーが発生する問題を修正。
+
+## [2.8.0] - 2025-03-16
+
+### 追加
 - `VQT Avatar Converter Settings` でメニューアイコンを圧縮する設定の場合、手動変換時に `VQT Menu Icon Resizer` を設定する機能を追加。
 - テクスチャ生成処理を高速化するためのキャッシュ機能を追加。
-- VQT Avatar Builder で Android 用のオフラインテストに対応。
+- Unity の Preferences (環境設定) に VRCQuestTools の設定画面を追加。
+- [NDMF] VQT Avatar Builder で Android 用のオフラインテストに対応。
 
 ### 変更
 - テクスチャの生成処理を高速化。
 - lilToon マテリアルからのテクスチャの生成処理を高速化。
+- オプションの依存関係に対する型の解決を高速化。
 - [NDMF] 生成されたテクスチャのRead/Write Enabledを無効にするように変更。
 
 ### 修正

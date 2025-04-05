@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <param name="textureReference">Reference for mask texture.</param>
         public MeshFlipperMaskNotReadableError(MeshFlipper meshFlipper, ObjectReference textureReference)
         {
-            _references = new List<ObjectReference> { ObjectRegistry.GetReference(meshFlipper), textureReference };
+            _references = new List<ObjectReference> { NdmfObjectRegistry.GetReference(meshFlipper), textureReference };
         }
 
         /// <inheritdoc/>

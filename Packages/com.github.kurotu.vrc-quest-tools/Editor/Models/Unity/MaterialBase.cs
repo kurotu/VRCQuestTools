@@ -41,21 +41,25 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Material ConvertToToonLit()
         {
             var newShader = Shader.Find("VRChat/Mobile/Toon Lit");
-            return new Material(newShader)
+            var hasMainTexProp = Material.GetTexturePropertyNames().Contains("_MainTex");
+            var newMat = new Material(newShader)
             {
-                color = Material.color,
                 doubleSidedGI = Material.doubleSidedGI,
                 enableInstancing = true, // https://docs.vrchat.com/docs/quest-content-optimization#avatars-and-worlds
                 globalIlluminationFlags = Material.globalIlluminationFlags,
                 hideFlags = Material.hideFlags,
-                mainTexture = Material.mainTexture ?? Material.GetTexture("_MainTex"), // mainTexture may return null in some cases (e.g. After upgrading lilToon).
-                mainTextureOffset = Material.mainTextureOffset,
-                mainTextureScale = Material.mainTextureScale,
                 name = $"{Material.name}_{newShader.name.Split('/').Last()}",
                 renderQueue = Material.renderQueue,
                 shader = newShader,
                 shaderKeywords = null,
             };
+            if (hasMainTexProp)
+            {
+                newMat.mainTexture = Material.mainTexture;
+                newMat.mainTextureOffset = Material.mainTextureOffset;
+                newMat.mainTextureScale = Material.mainTextureScale;
+            }
+            return newMat;
         }
 
         /// <summary>

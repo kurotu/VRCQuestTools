@@ -3,9 +3,6 @@ using System.Threading;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using nadena.dev.ndmf;
-#if !VQT_HAS_NDMF_ERROR_REPORT
-using KRT.VRCQuestTools.Ndmf.Dummy;
-#endif
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -32,9 +29,9 @@ namespace KRT.VRCQuestTools.Ndmf
 
                 foreach (var component in components)
                 {
-                    var obj = ObjectRegistry.GetReference(component);
+                    var obj = NdmfObjectRegistry.GetReference(component);
                     var e = new NdmfComponentRemoverWarning(component.GetType(), obj);
-                    ErrorReport.ReportError(e);
+                    NdmfErrorReport.ReportError(e);
                 }
 
                 remover.RemoveUnsupportedComponentsInChildren(context.AvatarRootObject, true, false);

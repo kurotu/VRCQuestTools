@@ -18,6 +18,27 @@ namespace KRT.VRCQuestTools.Utils
     }
 
     /// <summary>
+    /// Request with void result.
+    /// </summary>
+    internal class ResultRequest : AsyncCallbackRequest
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResultRequest"/> class.
+        /// </summary>
+        /// <param name="completion">Completion callback.</param>
+        internal ResultRequest(Action completion)
+        {
+            completion?.Invoke();
+        }
+
+        /// <inheritdoc/>
+        internal override void WaitForCompletion()
+        {
+            // Do nothing
+        }
+    }
+
+    /// <summary>
     /// Request with result.
     /// </summary>
     /// <typeparam name="T">Result type.</typeparam>

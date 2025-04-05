@@ -61,56 +61,70 @@ namespace KRT.VRCQuestTools.Models
                 outFile = $"{texturesPath}/{material.Material.name}_from_{guid}.png";
             }
 
-            if (CacheManager.Texture.Exists(cacheFile))
+            using (var mutex = CacheManager.Texture.CreateMutex())
             {
+                mutex.WaitOne();
                 try
                 {
-                    if (saveAsPng)
+                    if (CacheManager.Texture.Exists(cacheFile))
                     {
-                        CacheManager.Texture.CopyFromCache(cacheFile, outFile);
-                        AssetDatabase.ImportAsset(outFile);
-                        AssetUtility.ConfigureTextureImporter(outFile);
-                        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
-                        return new ResultRequest<Texture2D>(tex, completion);
-                    }
-                    else
-                    {
-                        var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
-                        var tex = cache.ToTexture2D();
-                        AssetUtility.SetStreamingMipMaps(tex, true);
-                        tex.name = material.Material.name;
-                        return new ResultRequest<Texture2D>(tex, completion);
+                        try
+                        {
+                            if (saveAsPng)
+                            {
+                                Directory.CreateDirectory(texturesPath);
+                                CacheManager.Texture.CopyFromCache(cacheFile, outFile);
+                                AssetDatabase.ImportAsset(outFile);
+                                AssetUtility.ConfigureTextureImporter(outFile);
+                                var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
+                                return new ResultRequest<Texture2D>(tex, completion);
+                            }
+                            else
+                            {
+                                var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
+                                var tex = cache.ToTexture2D();
+                                AssetUtility.SetStreamingMipMaps(tex, true);
+                                tex.name = material.Material.name;
+                                return new ResultRequest<Texture2D>(tex, completion);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogException(e);
+                            Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to load cache file {cacheFile} for {material.Material.name}");
+                        }
                     }
                 }
-                catch (Exception e)
+                finally
                 {
-                    Debug.LogException(e);
-                    Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to load cache file {cacheFile} for {material.Material.name}");
+                    mutex.ReleaseMutex();
                 }
             }
 
-            return material.GenerateToonLitImage(settings, (tex) =>
+            return material.GenerateToonLitImage(settings, (texToWrite) =>
             {
-                var texToWrite = tex;
-                if (saveAsPng)
+                if (texToWrite)
                 {
-                    Directory.CreateDirectory(texturesPath);
-
-                    // When the texture is added into another asset, "/" is acceptable as name.
-                    if (material.Material.name.Contains("/"))
+                    if (saveAsPng)
                     {
-                        var dir = Path.GetDirectoryName(outFile);
-                        Directory.CreateDirectory(dir);
+                        Directory.CreateDirectory(texturesPath);
+
+                        // When the texture is added into another asset, "/" is acceptable as name.
+                        if (material.Material.name.Contains("/"))
+                        {
+                            var dir = Path.GetDirectoryName(outFile);
+                            Directory.CreateDirectory(dir);
+                        }
+                        texToWrite = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
+                        CacheManager.Texture.CopyToCache(outFile, cacheFile);
                     }
-                    texToWrite = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
-                    CacheManager.Texture.CopyToCache(outFile, cacheFile);
-                }
-                else
-                {
-                    AssetUtility.SetStreamingMipMaps(texToWrite, true);
-                    AssetUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
-                    texToWrite.name = material.Material.name;
-                    CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite)));
+                    else
+                    {
+                        AssetUtility.SetStreamingMipMaps(texToWrite, true);
+                        AssetUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
+                        texToWrite.name = material.Material.name;
+                        CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite)));
+                    }
                 }
                 completion?.Invoke(texToWrite);
             });

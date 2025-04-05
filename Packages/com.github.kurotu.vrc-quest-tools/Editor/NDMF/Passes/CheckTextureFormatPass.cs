@@ -7,9 +7,6 @@ using nadena.dev.ndmf.util;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.ScriptableObjects;
-#if !VQT_HAS_NDMF_ERROR_REPORT
-using KRT.VRCQuestTools.Ndmf.Dummy;
-#endif
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -69,7 +66,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 foreach (var format in formats)
                 {
                     var textures = unsupportedTextures.Where(t => t.format == format).OrderBy(t => t.name).ToArray();
-                    ErrorReport.ReportError(new UnsupportedTextureFormatError(format, EditorUserBuildSettings.activeBuildTarget, textures));
+                    NdmfErrorReport.ReportError(new UnsupportedTextureFormatError(format, EditorUserBuildSettings.activeBuildTarget, textures));
                 }
             }
 
@@ -79,7 +76,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 foreach (var format in formats)
                 {
                     var textures = unknownTextures.Where(t => t.format == format).OrderBy(t => t.name).ToArray();
-                    ErrorReport.ReportError(new UnknownTextureFormatError(format, EditorUserBuildSettings.activeBuildTarget, textures));
+                    NdmfErrorReport.ReportError(new UnknownTextureFormatError(format, EditorUserBuildSettings.activeBuildTarget, textures));
                 }
             }
         }

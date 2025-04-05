@@ -8,13 +8,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- [NDMF] Add `NDMF Phase` option to `VQT Mesh Flipper` component.
+    - Before Decimation
+    - After Decimation
+- [NDMF] NDMF Preview for `VQT Mesh Flipper`.
+
+## [2.8.2] - 2025-04-01
+
+### Fixed
+- MatCap Lit conversion not working.
+
+## [2.8.1] - 2025-03-31
+
+### Changed
+- Allow to directly set target materials in the additional material conversion settings of `VQT Avatar Converter Settings`.
+- Stopped multiplexed texture generation process and changed it to be processed sequentially as in version 2.7.2.
+
+### Fixed
+- `VQT Menu Icon Resizer` was added in manual conversion when NDMF was not installed.
+- Error when converting VirtualLens2 materials.
+- [NDMF] Error when there was no mesh for `VQT Mesh Flipper` to target.
+- [NDMF] Error when the same replacement material was set multiple times in `VQT Material Swap`.
+
+## [2.8.0] - 2025-03-16
+
+### Added
 - Feature to configure `VQT Menu Icon Resizer` during manual conversion when `VQT Avatar Converter Settings` is set to compress menu icons.
 - Cache to accelerate the texture generation process.
-- Support offline testing on Android in VQT Avatar Builder.
+- VRCQuestTools Settings screen to Unity preferences.
+- [NDMF] Support offline testing on Android in VQT Avatar Builder.
 
 ### Changed
 - Accelerated the texture generation process.
 - Accelerated the texture generation process for lilToon materials.
+- Accelerated the type resolution for optional dependencies.
 - [NDMF] Disabled "Read/Write Enabled" for generated textures.
 
 ### Fixed
