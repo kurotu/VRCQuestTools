@@ -66,10 +66,21 @@ namespace KRT.VRCQuestTools.Inspector
                 EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
                 fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("mainTextureBrightnessMode"), new GUIContent(i18n.IMaterialConvertSettingsMainTextureBrightnessModeLabel, i18n.IMaterialConvertSettingsMainTextureBrightnessModeTooltip));
+                var mainTextureBrightness = property.FindPropertyRelative("mainTextureBrightness");
+                using (var ccs = new EditorGUI.ChangeCheckScope())
+                {
+                    var mainTextureBrightnessMode = property.FindPropertyRelative("mainTextureBrightnessMode");
+                    EditorGUI.PropertyField(fieldRect, mainTextureBrightnessMode, new GUIContent(i18n.IMaterialConvertSettingsMainTextureBrightnessModeLabel, i18n.IMaterialConvertSettingsMainTextureBrightnessModeTooltip));
+                    if (ccs.changed)
+                    {
+                        var index = mainTextureBrightnessMode.enumValueIndex;
+                        var mode = (BrightnessMode)System.Enum.GetValues(typeof(BrightnessMode)).GetValue(index);
+                        mainTextureBrightness.floatValue = MaterialConvertSettingsDefaults.DefaultBrightness[mode];
+                    }
+                }
                 fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("mainTextureBrightness"), new GUIContent(i18n.IMaterialConvertSettingsMainTextureBrightnessLabel, i18n.IMaterialConvertSettingsMainTextureBrightnessTooltip));
+                EditorGUI.PropertyField(fieldRect, mainTextureBrightness, new GUIContent(i18n.IMaterialConvertSettingsMainTextureBrightnessLabel, i18n.IMaterialConvertSettingsMainTextureBrightnessTooltip));
                 fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
                 EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("generateShadowFromNormalMap"), new GUIContent(i18n.ToonLitConvertSettingsGenerateShadowFromNormalMapLabel));
