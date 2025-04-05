@@ -91,7 +91,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     result = MeshFlipper.CreateFlippedMesh(meshFlipper, mesh);
                 }
-                catch (MeshFlipperMaskMissingException e)
+                catch (MeshFlipperMaskMissingException)
                 {
                     // do not report missing mask.
                 }
