@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - [NDMF] Animation conversion error not reported to the NDMF Console.
+- [NDMF] Material conversion error detail was wrongly reported in the NDMF Console.
 
 ## [2.8.2] - 2025-04-01
 
