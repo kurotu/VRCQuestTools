@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using KRT.VRCQuestTools.Models;
 using nadena.dev.ndmf;
 #if VQT_HAS_NDMF_ERROR_REPORT
 using nadena.dev.ndmf.localization;
@@ -28,7 +29,14 @@ namespace KRT.VRCQuestTools.Ndmf
         {
             materialName = materialReference.Object.name;
             shaderName = ((Material)materialReference.Object).shader.name;
-            this.exception = exception;
+            if (exception is MaterialConversionException)
+            {
+                this.exception = exception.InnerException ?? exception;
+            }
+            else
+            {
+                this.exception = exception;
+            }
             _references = new List<ObjectReference> { materialReference };
         }
 
