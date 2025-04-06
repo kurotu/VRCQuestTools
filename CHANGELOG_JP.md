@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 追加
+- `VQT Material Swap` にマテリアルが設定されていないときのエラーを追加。
+
 ### 修正
 - `VQT Avatar Converter Settings` で置換先マテリアルが設定されていないときに発生する例外を修正。
 - [NDMF] アニメーションの変換に関するエラーがNDMFコンソールに報告されない問題を修正。

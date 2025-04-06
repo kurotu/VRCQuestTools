@@ -188,6 +188,9 @@ namespace KRT.VRCQuestTools.Ndmf
                             ndmfError = new ObjectConversionError(animRef, e);
                         }
                         break;
+                    case InvalidMaterialSwapNullException e:
+                        ndmfError = new MaterialSwapNullError(e.component, e.MaterialMapping);
+                        break;
                     case InvalidReplacementMaterialException e:
                         ndmfError = new ReplacementMaterialError(e.component, e.replacementMaterial);
                         break;

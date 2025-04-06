@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Error case for missing materials in `VQT Material Swap` component.
+
 ### Fixed
 - Unhandled exception when replaced material is not set in `VQT Avatar Converter Settings`.
 - [NDMF] Animation conversion error not reported to the NDMF Console.
