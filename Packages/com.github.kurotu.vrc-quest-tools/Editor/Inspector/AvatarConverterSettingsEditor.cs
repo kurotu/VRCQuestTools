@@ -660,6 +660,7 @@ namespace KRT.VRCQuestTools.Inspector
             var m = $"{message}\n" +
                 "\n" +
                 $"{exception.GetType().Name}: {exception.Message}\n" +
+                "\n" +
                 exception.StackTrace.Replace(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar, string.Empty);
             return EditorUtility.DisplayDialog(VRCQuestTools.Name, m, "OK");
         }
