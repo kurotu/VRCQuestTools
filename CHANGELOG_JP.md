@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- [NDMF] アニメーションの変換に関するエラーがNDMFコンソールに報告されない問題を修正。
+
 ## [2.8.2] - 2025-04-01
 
 ### 修正

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
@@ -163,41 +164,62 @@ namespace KRT.VRCQuestTools.Ndmf
 
         private static void HandleConversionException(System.Exception exception)
         {
-            var message = exception.Message;
-            var dialogException = exception;
-            switch (exception)
+            SimpleError ndmfError;
+            bool shouldRethrow = false;
+            if (exception is IVRCQuestToolsException vqte)
             {
-                case MaterialConversionException e:
-                    {
-                        var matRef = NdmfObjectRegistry.GetReference(e.source);
-                        var error = new MaterialConversionError(matRef, e);
-                        ErrorReport.ReportError(error);
-                    }
-                    break;
-                case AnimationClipConversionException e:
-                    {
-                        var animRef = NdmfObjectRegistry.GetReference(e.source);
-                        var error = new ObjectConversionError(animRef, e);
-                    }
-                    break;
-                case AnimatorControllerConversionException e:
-                    {
-                        var animRef = NdmfObjectRegistry.GetReference(e.source);
-                        var error = new ObjectConversionError(animRef, e);
-                    }
-                    break;
-                case InvalidReplacementMaterialException e:
-                    {
-                        var error = new ReplacementMaterialError(e.component, e.replacementMaterial);
-                        ErrorReport.ReportError(error);
-                    }
-                    break;
+                switch (vqte)
+                {
+                    case MaterialConversionException e:
+                        {
+                            var matRef = NdmfObjectRegistry.GetReference(e.source);
+                            ndmfError = new MaterialConversionError(matRef, e);
+                        }
+                        break;
+                    case AnimationClipConversionException e:
+                        {
+                            var animRef = NdmfObjectRegistry.GetReference(e.source);
+                            ndmfError = new ObjectConversionError(animRef, e);
+                        }
+                        break;
+                    case AnimatorControllerConversionException e:
+                        {
+                            var animRef = NdmfObjectRegistry.GetReference(e.source);
+                            ndmfError = new ObjectConversionError(animRef, e);
+                        }
+                        break;
+                    case InvalidReplacementMaterialException e:
+                        ndmfError = new ReplacementMaterialError(e.component, e.replacementMaterial);
+                        break;
+                    default:
+                        ndmfError = new SimpleStringError(
+                            $"Unhandled {exception.GetType().Name}",
+                            exception.Message,
+                            "Report to the developer to show detailed error report.",
+                            ErrorSeverity.NonFatal);
+                        shouldRethrow = true;
+                        Debug.LogError($"Unhandled exception type: {exception.GetType()}");
+                        break;
+                }
             }
+            else
+            {
+                ndmfError = null;
+                shouldRethrow = true;
+            }
+            if (ndmfError != null)
+            {
+                ErrorReport.ReportError(ndmfError);
+            }
+
             if (exception.InnerException != null)
             {
                 Debug.LogException(exception.InnerException);
             }
-            Debug.LogException(exception);
+            if (shouldRethrow)
+            {
+                ExceptionDispatchInfo.Capture(exception).Throw();
+            }
         }
     }
 }
