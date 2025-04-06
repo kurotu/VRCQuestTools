@@ -6,10 +6,17 @@ using UnityEngine;
 namespace KRT.VRCQuestTools.Models
 {
     /// <summary>
+    /// Interface for VRCQuestTools exceptions.
+    /// </summary>
+    internal interface IVRCQuestToolsException
+    {
+    }
+
+    /// <summary>
     /// Exception for conversion error.
     /// </summary>
     /// <typeparam name="T">Source object type.</typeparam>
-    internal abstract class ConversionException<T> : System.Exception
+    internal abstract class ConversionException<T> : System.Exception, IVRCQuestToolsException
     {
         /// <summary>
         /// Source object.
@@ -83,7 +90,7 @@ namespace KRT.VRCQuestTools.Models
     /// <summary>
     /// Exception for replacement material is not allowed for mobile.
     /// </summary>
-    internal class InvalidReplacementMaterialException : System.Exception
+    internal class InvalidReplacementMaterialException : System.Exception, IVRCQuestToolsException
     {
         /// <summary>
         /// Component which has the error.

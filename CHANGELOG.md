@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - After Decimation
 - [NDMF] NDMF Preview for `VQT Mesh Flipper`.
 
+### Fixed
+- [NDMF] Animation conversion error not reported to the NDMF Console.
+
 ## [2.8.2] - 2025-04-01
 
 ### Fixed
