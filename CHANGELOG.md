@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Error case for missing materials in `VQT Material Swap` component.
 - [NDMF] Add `NDMF Phase` option to `VQT Mesh Flipper` component.
     - Before Decimation
     - After Decimation

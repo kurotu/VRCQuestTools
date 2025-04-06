@@ -7,6 +7,7 @@
 ## [Unreleased]
 
 ### 追加
+- `VQT Material Swap` にマテリアルが設定されていないときのエラーを追加。
 - [NDMF] `VQT Mesh Flipper` に `NDMFフェーズ` 設定を追加。
     - Before Decimation
     - After Decimation
