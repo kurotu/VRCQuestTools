@@ -432,6 +432,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 case MatCapLitConvertSettings matCapSettings:
                     return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, saveAsFile, texturesPath, completion);
                 case MaterialReplaceSettings replaceSettings:
+                    if (replaceSettings.material == null)
+                    {
+                        throw new InvalidOperationException($"Replaced material is not set for {material.Material.name} in the VQT component.");
+                    }
                     return new ResultRequest<Material>(replaceSettings.material, completion);
                 default:
                     throw new InvalidProgramException($"Unhandled material convert setting: {settings.GetType().Name}");

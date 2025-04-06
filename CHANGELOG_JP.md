@@ -13,6 +13,7 @@
 - [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応。
 
 ### 修正
+- `VQT Avatar Converter Settings` で置換先マテリアルが設定されていないときに発生する例外を修正。
 - [NDMF] アニメーションの変換に関するエラーがNDMFコンソールに報告されない問題を修正。
 - [NDMF] マテリアル変換エラーの内容がNDMFコンソールに正しく表示されない問題を修正。
 
