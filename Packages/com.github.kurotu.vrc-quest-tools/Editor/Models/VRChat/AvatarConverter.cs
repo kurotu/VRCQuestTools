@@ -374,17 +374,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             foreach (var swap in materialSwaps)
             {
-                foreach (var mapping in swap.materialMappings)
+                foreach (var (mapping, index) in swap.materialMappings.Select((value, index) => (value, index)))
                 {
-                    if (mapping.originalMaterial != null && mapping.replacementMaterial != null)
+                    if (mapping.originalMaterial == null)
                     {
-                        if (!VRCSDKUtility.IsMaterialAllowedForQuestAvatar(mapping.replacementMaterial))
-                        {
-                            throw new InvalidReplacementMaterialException("Replacement material is not allowed for mobile avatars", swap, mapping.replacementMaterial);
-                        }
-                        convertedMaterials[mapping.originalMaterial] = mapping.replacementMaterial;
-                        processedMaterials.Add(mapping.originalMaterial);
+                        throw new InvalidMaterialSwapNullException("Original material is not set in the VQT Material Swap", swap, index);
                     }
+
+                    if (mapping.replacementMaterial == null)
+                    {
+                        throw new InvalidMaterialSwapNullException("Replacement material is not set in the VQT Material Swap", swap, index);
+                    }
+
+                    if (!VRCSDKUtility.IsMaterialAllowedForQuestAvatar(mapping.replacementMaterial))
+                    {
+                        throw new InvalidReplacementMaterialException("Replacement material is not allowed for mobile avatars", swap, mapping.replacementMaterial);
+                    }
+                    convertedMaterials[mapping.originalMaterial] = mapping.replacementMaterial;
+                    processedMaterials.Add(mapping.originalMaterial);
                 }
             }
         }
@@ -432,6 +439,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 case MatCapLitConvertSettings matCapSettings:
                     return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, saveAsFile, texturesPath, completion);
                 case MaterialReplaceSettings replaceSettings:
+                    if (replaceSettings.material == null)
+                    {
+                        throw new InvalidOperationException($"Replaced material is not set for {material.Material.name} in the VQT component.");
+                    }
                     return new ResultRequest<Material>(replaceSettings.material, completion);
                 default:
                     throw new InvalidProgramException($"Unhandled material convert setting: {settings.GetType().Name}");
