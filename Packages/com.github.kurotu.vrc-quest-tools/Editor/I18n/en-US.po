@@ -362,6 +362,12 @@ msgstr "Generate Metallic Smoothness"
 msgid "RecommendedUnitySettingsForAndroid"
 msgstr "Recommended Settings for Android"
 
+msgid "AndroidBuildSupportHelp"
+msgstr "Android Build Support is required to upload avatars for Android platform."
+
+msgid "AndroidBuildSupportButtonLabel"
+msgstr "How to Install"
+
 msgid "TextureCompressionLabel"
 msgstr "Android Texture Compression"
 

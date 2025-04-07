@@ -7,6 +7,7 @@
 ## [Unreleased]
 
 ### 追加
+- Android Build Support のインストールを確認する機能を追加。
 - [NDMF] `VQT Mesh Flipper` に `NDMFフェーズ` 設定を追加。
     - Before Decimation
     - After Decimation

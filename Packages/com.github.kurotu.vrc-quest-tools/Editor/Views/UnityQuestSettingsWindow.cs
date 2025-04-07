@@ -44,6 +44,18 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.LabelField("Build Settings", EditorStyles.boldLabel);
 
+            EditorGUILayout.LabelField($"Android Build Support: {GetYesNoString(model.HasAndroidBuildSupport)}");
+            if (!model.HasAndroidBuildSupport)
+            {
+                EditorGUILayout.HelpBox(i18n.AndroidBuildSupportHelp, MessageType.Error);
+                if (GUILayout.Button(i18n.AndroidBuildSupportButtonLabel))
+                {
+                    OnClickAndroidBuildSupportButton();
+                }
+            }
+
+            EditorGUILayout.Space();
+
             EditorGUILayout.LabelField($"{i18n.TextureCompressionLabel}: {model.DefaultAndroidTextureCompression}");
             if (!model.HasValidAndroidTextureCompression)
             {
@@ -67,7 +79,7 @@ namespace KRT.VRCQuestTools.Views
                     }
                 }
             }
-            else if (allActions.Count == 0)
+            else if (model.AllSettingsValid)
             {
                 EditorGUILayout.HelpBox(i18n.AllAppliedHelp, MessageType.Info);
             }
@@ -78,9 +90,20 @@ namespace KRT.VRCQuestTools.Views
             model.ShowWindowOnLoad = EditorGUILayout.Toggle(i18n.ShowOnStartupLabel, model.ShowWindowOnLoad);
         }
 
+        private void OnClickAndroidBuildSupportButton()
+        {
+            var url = "https://kurotu.github.io/VRCQuestTools/docs/tutorial/set-up-environment/?lang=auto";
+            Application.OpenURL(url);
+        }
+
         private void OnClickTextureCompressionButton()
         {
             model.ApplyRecommendedAndroidTextureCompression();
+        }
+
+        private string GetYesNoString(bool value)
+        {
+            return value ? "Yes" : "No";
         }
     }
 }
