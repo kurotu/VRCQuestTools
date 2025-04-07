@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-04-04 18:52\n"
+"PO-Revision-Date: 2025-04-07 14:43\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -617,6 +617,14 @@ msgstr "An error occurred when conversion a material.\n\n"
 "Shader: {1}\n\n"
 "{2}: {3}\n"
 "{4}"
+
+msgid "NDMF:MaterialSwapNullErrorTitle"
+msgstr "Material Not Set"
+
+msgid "NDMF:MaterialSwapNullErrorDescription"
+msgstr "Material is not set to the VQT Material Swap component.\n\n"
+"Original: {0}\n"
+"Replacement: {0}"
 
 msgid "NDMF:ObjectConversionErrorTitle"
 msgstr "{0} Conversion Error"
