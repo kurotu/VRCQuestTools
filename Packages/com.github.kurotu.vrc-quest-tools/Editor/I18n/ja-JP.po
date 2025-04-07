@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-04-04 18:52\n"
+"PO-Revision-Date: 2025-04-07 14:43\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -617,6 +617,12 @@ msgstr "マテリアルの変換中にエラーが発生しました。\n\n"
 "Shader: {1}\n\n"
 "{2}: {3}\n"
 "{4}"
+
+msgid "NDMF:MaterialSwapNullErrorTitle"
+msgstr ""
+
+msgid "NDMF:MaterialSwapNullErrorDescription"
+msgstr ""
 
 msgid "NDMF:ObjectConversionErrorTitle"
 msgstr "オブジェクト変換エラー"
