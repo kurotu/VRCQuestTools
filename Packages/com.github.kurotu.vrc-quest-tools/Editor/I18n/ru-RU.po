@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-04-04 17:32\n"
+"PO-Revision-Date: 2025-04-07 14:43\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -614,6 +614,12 @@ msgstr "Произошла ошибка при конвертации матер
 "Шейдер: {1}\n\n"
 "{2}: {3}\n"
 "{4}"
+
+msgid "NDMF:MaterialSwapNullErrorTitle"
+msgstr ""
+
+msgid "NDMF:MaterialSwapNullErrorDescription"
+msgstr ""
 
 msgid "NDMF:ObjectConversionErrorTitle"
 msgstr "Ошибка конвертации {0}"
