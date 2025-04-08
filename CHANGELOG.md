@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Error case for missing materials in `VQT Material Swap` component.
+- [NDMF] Message to confirm "Copyright ownership agreement" when uploading with `VQT Avatar Builder`.
 
 ### Fixed
 - Unhandled exception when replaced material is not set in `VQT Avatar Converter Settings`.

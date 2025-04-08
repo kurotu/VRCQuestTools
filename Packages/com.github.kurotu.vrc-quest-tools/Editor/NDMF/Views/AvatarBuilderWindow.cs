@@ -449,9 +449,9 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 return;
             }
+            var i18n = VRCQuestToolsSettings.I18nResource;
             if (sdkBuilder.BuildState != SdkBuildState.Idle)
             {
-                EditorGUILayout.Space();
                 var progress = 0.0f;
                 switch (sdkBuilder.BuildState)
                 {
@@ -459,22 +459,31 @@ namespace KRT.VRCQuestTools.Ndmf
                         progress = 0.0f;
                         break;
                     case SdkBuildState.Building:
-                        progress = 0.0f;
+                        progress = 0.5f;
                         break;
                     case SdkBuildState.Success:
                         progress = 1.0f;
                         break;
                     case SdkBuildState.Failure:
-                        progress = 0.0f;
+                        progress = 1.0f;
                         break;
                 }
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField(i18n.AvatarBuilderWindowBuildingProgressLabel, EditorStyles.largeLabel);
                 EditorGUI.ProgressBar(EditorGUILayout.GetControlRect(), progress, sdkBuildProgress);
             }
 
             if (sdkBuilder.UploadState != SdkUploadState.Idle)
             {
                 EditorGUILayout.Space();
+                EditorGUILayout.LabelField(i18n.AvatarBuilderWindowUploadingProgressLabel, EditorStyles.largeLabel);
                 EditorGUI.ProgressBar(EditorGUILayout.GetControlRect(), sdkUploadProgress.Percentage, sdkUploadProgress.Status);
+#if VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT
+                // awaiting copyright ownership agreement
+                if (sdkUploadProgress.Percentage == 0.0f && sdkUploadProgress.Status == "") {
+                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowCopyrightAgreementHelp, MessageType.Info);
+                }
+#endif
             }
         }
 

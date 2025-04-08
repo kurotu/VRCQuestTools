@@ -560,6 +560,15 @@ msgstr "ビルドに失敗しました。コンソールログを確認してく
 msgid "AvatarBuilderWindowRequiresControlPanel"
 msgstr "アバターをビルドするには VRChat SDK コントロールパネルを開く必要があります。"
 
+msgid "AvatarBuilderWindowBuildingProgressLabel"
+msgstr "アバターをビルド中"
+
+msgid "AvatarBuilderWindowUploadingProgressLabel"
+msgstr "アバターをアップロード中"
+
+msgid "AvatarBuilderWindowCopyrightAgreementHelp"
+msgstr "VRChat SDK コントロールパネルの \"Copyright ownership agreement\" を確認してください。"
+
 msgid "AvatarBuilderWindowOfflineTestingLabel"
 msgstr "オフラインテスト ({0})"
 
