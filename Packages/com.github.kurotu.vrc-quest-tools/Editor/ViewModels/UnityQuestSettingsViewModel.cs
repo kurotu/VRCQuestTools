@@ -43,7 +43,7 @@ namespace KRT.VRCQuestTools.ViewModels
             get
             {
                 // Do not check cache server on Unity 2019 (Asset Pipeline v2)
-                return HasValidAndroidTextureCompression;
+                return HasValidAndroidTextureCompression && HasAndroidBuildSupport;
             }
         }
 
@@ -51,6 +51,11 @@ namespace KRT.VRCQuestTools.ViewModels
         /// Gets a value indicating whether texture compression is valid.
         /// </summary>
         internal bool HasValidAndroidTextureCompression => DefaultAndroidTextureCompression == RecommendedAndroidTextureCompression;
+
+        /// <summary>
+        /// Gets a value indicating whether Android build support is installed.
+        /// </summary>
+        internal bool HasAndroidBuildSupport => UnitySettings.HasAndroidBuildSupport;
 
         /// <summary>
         /// Apply recommended texture compression for Android.

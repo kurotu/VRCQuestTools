@@ -23,11 +23,18 @@ PCとAndroidの最大の違いは、性能ではなくプラットフォーム(O
 Android Build Supportがインストールされていない場合、プラットフォームを切り替えようとしても `Android Player is Disabled` とエラーメッセージが表示され、Androidビルドができません。
 :::
 
+### Android Build Supportの確認
+
+1. メニューバーから **File** > **Build Settings** を選択します。
+2. Platformのリストから**Android**を選択し、内容を確認します。
+
 | Android Build Supportがインストールされている | Android Build Supportがインストールされていない |
 |---|---|
 | ![Android Module](/img/unity_android_ok.png) | ![No Android Module](/img/unity_android_ng.png) |
 
 もしAndroid Build Supportがインストールされていない場合は、Unity Hubからインストールできます。
+
+### Android Build Supportのインストール
 
 1. Unity Hubを起動します。
 2. 横のメニューから**インストール**を選択します。
@@ -36,7 +43,8 @@ Android Build Supportがインストールされていない場合、プラッ�
     ![Installs](/img/unity-hub_installs.png)
 5. **Android Build Support**を選択します。
     :::note
-    **OpenJDK**を選択する必要はありません。**Android SDK & NDK Tools**も必須ではありませんがAndroid端末での「Build & Test」に必要です。
+    **OpenJDK**を選択する必要はありません。
+    **Android SDK & NDK Tools**も必須ではありませんが、アップロードせずにAndroid端末で「Build & Test」(ローカルテスト)をするために必要です。
     :::
     ![Add Modules](/img/unity-hub_add-modules.png)
 6. **インストール**をクリックします。
