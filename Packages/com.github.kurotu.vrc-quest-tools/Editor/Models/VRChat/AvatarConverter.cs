@@ -110,13 +110,49 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var convertedMaterials = ConvertMaterialsForAndroid(avatar.Materials, setting, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
             CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
 
+            ApplyConvertedMaterials(questAvatarObject, convertedMaterials, saveAssetsAsFile, assetsDirectory, progressCallback);
+
+            remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
+            ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
+
+            ApplyVRCQuestToolsComponents(setting, questAvatarObject);
+            questAvatarObject.SetActive(true);
+
+            var converterSetttigs = questAvatarObject.GetComponent<Components.AvatarConverterSettings>();
+            var contactsToKeep = converterSetttigs.contactsToKeep
+                .Concat(avatar.GetLocalContactReceivers())
+                .Concat(avatar.GetLocalContactSenders())
+                .Distinct()
+                .ToArray();
+
+            VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSetttigs.physBonesToKeep, converterSetttigs.physBoneCollidersToKeep, contactsToKeep);
+
+            UnityEngine.Object.DestroyImmediate(converterSetttigs);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(questAvatarObject);
+        }
+
+        /// <summary>
+        /// Applies converted materials to the avatar.
+        /// </summary>
+        /// <param name="questAvatarObject">Target avatar.</param>
+        /// <param name="convertedMaterials">Converted materials map.</param>
+        /// <param name="saveAssetsAsFile">Whether to save assets as file.</param>
+        /// <param name="assetsDirectory">Root directory to save.</param>
+        /// <param name="progressCallback">Callback to show progress.</param>
+        internal void ApplyConvertedMaterials(GameObject questAvatarObject, Dictionary<Material, Material> convertedMaterials, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
+        {
+            var avatar = new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
+
+            var setting = questAvatarObject.GetComponent<AvatarConverterSettings>();
+            var overrideControllers = setting != null ? setting.animatorOverrideControllers.Where(oc => oc != null).ToArray() : new AnimatorOverrideController[0];
+
             // Convert animator controllers and their animation clips.
-            if (avatar.HasAnimatedMaterials || setting.animatorOverrideControllers.Count(oc => oc != null) > 0)
+            if (avatar.HasAnimatedMaterials || overrideControllers.Length > 0)
             {
                 var convertedAnimationClips = ConvertAnimationClipsForQuest(avatar.GetRuntimeAnimatorControllers(), saveAssetsAsFile, assetsDirectory, convertedMaterials, progressCallback.onAnimationClipProgress);
 
                 // Inject animation override.
-                foreach (var oc in setting.animatorOverrideControllers)
+                foreach (var oc in overrideControllers)
                 {
                     if (oc == null)
                     {
@@ -201,24 +237,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     return m;
                 }).ToArray();
             }
-
-            remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
-            ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
-
-            ApplyVRCQuestToolsComponents(setting, questAvatarObject);
-            questAvatarObject.SetActive(true);
-
-            var converterSetttigs = questAvatarObject.GetComponent<Components.AvatarConverterSettings>();
-            var contactsToKeep = converterSetttigs.contactsToKeep
-                .Concat(avatar.GetLocalContactReceivers())
-                .Concat(avatar.GetLocalContactSenders())
-                .Distinct()
-                .ToArray();
-
-            VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSetttigs.physBonesToKeep, converterSetttigs.physBoneCollidersToKeep, contactsToKeep);
-
-            UnityEngine.Object.DestroyImmediate(converterSetttigs);
-            PrefabUtility.RecordPrefabInstancePropertyModifications(questAvatarObject);
         }
 
         /// <summary>
