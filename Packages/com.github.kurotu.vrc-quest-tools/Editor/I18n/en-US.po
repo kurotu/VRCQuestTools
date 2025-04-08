@@ -563,6 +563,15 @@ msgstr "Failed to build the avatar. See console logs."
 msgid "AvatarBuilderWindowRequiresControlPanel"
 msgstr "Need to open VRChat SDK Control Panel to build the avatar."
 
+msgid "AvatarBuilderWindowBuildingProgressLabel"
+msgstr "Building the Avatar"
+
+msgid "AvatarBuilderWindowUploadingProgressLabel"
+msgstr "Uploading the Avatar"
+
+msgid "AvatarBuilderWindowCopyrightAgreementHelp"
+msgstr "Confirm \"Copyright ownership agreement\" in VRChat SDK Control Panel."
+
 msgid "AvatarBuilderWindowOfflineTestingLabel"
 msgstr "Offline Testing ({0})"
 

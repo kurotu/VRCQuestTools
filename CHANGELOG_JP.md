@@ -7,11 +7,16 @@
 ## [Unreleased]
 
 ### 追加
-- `VQT Material Swap` にマテリアルが設定されていないときのエラーを追加。
 - [NDMF] `VQT Mesh Flipper` に `NDMFフェーズ` 設定を追加。
     - Before Decimation
     - After Decimation
 - [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応。
+
+## [2.8.3] - 2025-04-08
+
+### 追加
+- `VQT Material Swap` にマテリアルが設定されていないときのエラーを追加。
+- [NDMF] `VQT Avatar Builder` でのアップロード時に Copyright ownership agreement を確認するメッセージを追加。
 
 ### 修正
 - `VQT Avatar Converter Settings` で置換先マテリアルが設定されていないときに発生する例外を修正。

@@ -8,11 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Error case for missing materials in `VQT Material Swap` component.
 - [NDMF] Add `NDMF Phase` option to `VQT Mesh Flipper` component.
     - Before Decimation
     - After Decimation
 - [NDMF] NDMF Preview for `VQT Mesh Flipper`.
+
+## [2.8.3] - 2025-04-08
+
+### Added
+- Error case for missing materials in `VQT Material Swap` component.
+- [NDMF] Message to confirm "Copyright ownership agreement" when uploading with `VQT Avatar Builder`.
 
 ### Fixed
 - Unhandled exception when replaced material is not set in `VQT Avatar Converter Settings`.
