@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-04-07 14:43\n"
+"PO-Revision-Date: 2025-04-08 12:46\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -359,6 +359,12 @@ msgstr "Создать металлическую гладкость"
 msgid "RecommendedUnitySettingsForAndroid"
 msgstr "Рекомендуемые настройки для Android"
 
+msgid "AndroidBuildSupportHelp"
+msgstr ""
+
+msgid "AndroidBuildSupportButtonLabel"
+msgstr ""
+
 msgid "TextureCompressionLabel"
 msgstr "Сжатие текстур для Android"
 
@@ -559,6 +565,15 @@ msgstr "Не удалось собрать аватар. Посмотрите ж
 
 msgid "AvatarBuilderWindowRequiresControlPanel"
 msgstr "Необходимо открыть панель управления VRChat SDK для сборки аватара."
+
+msgid "AvatarBuilderWindowBuildingProgressLabel"
+msgstr ""
+
+msgid "AvatarBuilderWindowUploadingProgressLabel"
+msgstr ""
+
+msgid "AvatarBuilderWindowCopyrightAgreementHelp"
+msgstr ""
 
 msgid "AvatarBuilderWindowOfflineTestingLabel"
 msgstr "Офлайн-тестирование ({0})"
