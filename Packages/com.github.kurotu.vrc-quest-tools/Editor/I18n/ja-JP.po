@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-04-07 15:08\n"
+"PO-Revision-Date: 2025-04-08 14:47\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -361,6 +361,12 @@ msgstr "Metallic Smoothness を生成"
 
 msgid "RecommendedUnitySettingsForAndroid"
 msgstr "Android 用の推奨設定"
+
+msgid "AndroidBuildSupportHelp"
+msgstr "Android 向けにアバターをアップロードするには Android Build Support が必要です。"
+
+msgid "AndroidBuildSupportButtonLabel"
+msgstr "インストール方法"
 
 msgid "TextureCompressionLabel"
 msgstr "Android テクスチャ圧縮"
