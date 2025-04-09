@@ -109,32 +109,7 @@ namespace KRT.VRCQuestTools.Inspector
 
         private Material[] GetChildrenMaterials(MaterialSwap materialSwap)
         {
-            var avatarDescriptor = materialSwap.GetComponent<VRCAvatarDescriptor>();
-            if (avatarDescriptor)
-            {
-                var avatar = new VRChatAvatar(avatarDescriptor);
-                return avatar.Materials;
-            }
-
-            var rendererMaterials = materialSwap.GetComponentsInChildren<Renderer>(true)
-                .SelectMany(r => r.sharedMaterials)
-                .Where(m => m != null)
-                .Distinct()
-                .ToArray();
-
-            var animatorControllers = materialSwap.GetComponentsInChildren<Animator>(true)
-                .Select(a => a.runtimeAnimatorController).ToList();
-#if VQT_HAS_MODULAR_AVATAR
-            animatorControllers.AddRange(materialSwap.GetComponentsInChildren<nadena.dev.modular_avatar.core.ModularAvatarMergeAnimator>().Select(ma => ma.animator));
-#endif
-
-            var animatorMaterials = animatorControllers.Where(c => c != null)
-                .Distinct()
-                .SelectMany(c => UnityAnimationUtility.GetMaterials(c))
-                .Where(m => m != null)
-                .Distinct()
-                .ToArray();
-            return rendererMaterials.Concat(animatorMaterials).Distinct().ToArray();
+            return VRChatAvatar.GetRelatedMaterials(materialSwap.gameObject);
         }
     }
 }
