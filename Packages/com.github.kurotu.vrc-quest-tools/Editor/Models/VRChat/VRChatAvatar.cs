@@ -137,7 +137,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             // Animator Controller
             RuntimeAnimatorController[] avatercontrollers = AvatarDescriptor.gameObject
-                .GetComponentsInChildren<Animator>()
+                .GetComponentsInChildren<Animator>(true)
                 .Select(obj => obj.runtimeAnimatorController)
                 .ToArray();
 

@@ -13,6 +13,9 @@
     - After Decimation
 - [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応。
 
+### 修正
+- 非アクティブな Animator の Animator Controller が変換されない問題を修正。
+
 ## [2.8.3] - 2025-04-08
 
 ### 追加
