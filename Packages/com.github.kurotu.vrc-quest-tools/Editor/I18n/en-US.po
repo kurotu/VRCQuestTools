@@ -530,6 +530,12 @@ msgstr "Select from children"
 msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr "This material's shader is not allowed for mobile avatars."
 
+msgid "MaterialConversionSettingsEditorDescription"
+msgstr "Configure material conversion settings for each material."
+
+msgid "MaterialConversionSettingsEditorConversionSettingsLabel"
+msgstr "Material Conversion Settings"
+
 msgid "MenuIconResizerEditorDescription"
 msgstr "Resize menu icons in the avatar's expressions menu."
 
