@@ -1,4 +1,3 @@
-using KRT.VRCQuestTools.Components;
 using nadena.dev.ndmf;
 
 namespace KRT.VRCQuestTools.Ndmf
@@ -14,15 +13,14 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
-            var settings = context.AvatarRootObject.GetComponent<AvatarConverterSettings>();
-            if (settings == null)
+            if (!NdmfPluginUtility.HasMaterialConversionComponents(context.AvatarRootObject))
             {
                 return;
             }
 
-            if (settings.ndmfPhase == Models.AvatarConverterNdmfPhase.Transforming)
+            if (NdmfPluginUtility.ResolveAvatarConverterNdmfPhase(context.AvatarRootObject) == Models.AvatarConverterNdmfPhase.Transforming)
             {
-                NdmfPluginUtility.ConvertAvatarInPass(context, settings);
+                NdmfPluginUtility.ConvertAvatarInPass(context);
             }
         }
     }

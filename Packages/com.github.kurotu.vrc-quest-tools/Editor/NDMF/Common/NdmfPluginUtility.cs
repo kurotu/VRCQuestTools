@@ -41,8 +41,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// Convert the avatar with AvatarConverterSettings component in NDMF.
         /// </summary>
         /// <param name="context">BuildContext.</param>
-        /// <param name="settings">settings component.</param>
-        internal static void ConvertAvatarInPass(BuildContext context, AvatarConverterSettings settings)
+        internal static void ConvertAvatarInPass(BuildContext context)
         {
             var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
             if (buildTarget != Models.BuildTarget.Android)
@@ -50,15 +49,24 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
-            context.GetState<NdmfState>().compressExpressionsMenuIcons = settings.compressExpressionsMenuIcons;
+            var settings = context.AvatarRootObject.GetComponent<AvatarConverterSettings>();
+            if (settings != null)
+            {
+                context.GetState<NdmfState>().compressExpressionsMenuIcons = settings.compressExpressionsMenuIcons;
+            }
+
             var objectRegistry = context.GetState<NdmfObjectRegistry>();
 
             try
             {
                 TrackObjectRegistryForMaterialSwaps(objectRegistry, context.AvatarRootObject);
-                TrackObjectRegistryForConverterSettings(context, settings);
+                if (settings != null)
+                {
+                    TrackObjectRegistryForConverterSettings(context, settings);
+                }
 
-                VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
+                var avatar = new VRChatAvatar(context.AvatarDescriptor);
+                VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(avatar, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
                 {
                     onTextureProgress = (_, __, original, converted) =>
                     {

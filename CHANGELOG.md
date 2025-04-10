@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - After Decimation
 - [NDMF] NDMF Preview for `VQT Mesh Flipper`.
 
+### Changed
+- [NDMF] `VQT Material Swap` works without `VQT Avatar Converter Settings`.
+
+### Fixed
+- Inactive animator's animator controllers not converted.
+
 ## [2.8.3] - 2025-04-08
 
 ### Added
