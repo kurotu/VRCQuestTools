@@ -89,6 +89,28 @@ namespace KRT.VRCQuestTools.Models
     }
 
     /// <summary>
+    /// Exception for target material is null in material conversion.
+    /// </summary>
+    internal class TargetMaterialNullException : System.Exception, IVRCQuestToolsException
+    {
+        /// <summary>
+        /// Component which has the error.
+        /// </summary>
+        public readonly Component component;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TargetMaterialNullException"/> class.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="component">Component which has the error.</param>
+        public TargetMaterialNullException(string message, Component component)
+            : base(message)
+        {
+            this.component = component;
+        }
+    }
+
+    /// <summary>
     /// Exception for invalid material swap which contains null references.
     /// </summary>
     internal class InvalidMaterialSwapNullException : System.Exception, IVRCQuestToolsException

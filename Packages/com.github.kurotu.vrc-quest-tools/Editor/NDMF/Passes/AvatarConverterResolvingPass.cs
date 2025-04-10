@@ -1,4 +1,5 @@
 using KRT.VRCQuestTools.Components;
+using KRT.VRCQuestTools.Models.VRChat;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEngine;
@@ -23,13 +24,14 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
+            var avatar = new VRChatAvatar(context.AvatarDescriptor);
             switch (buildTarget)
             {
                 case Models.BuildTarget.PC:
                     // do nothing
                     break;
                 case Models.BuildTarget.Android:
-                    VRCQuestTools.AvatarConverter.PrepareConvertForQuestInPlace(converterSettings);
+                    VRCQuestTools.AvatarConverter.PrepareConvertForQuestInPlace(avatar);
                     break;
                 default:
                     throw new System.InvalidProgramException($"Unsupported build target: {buildTarget}");

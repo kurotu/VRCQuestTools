@@ -12,7 +12,7 @@ namespace KRT.VRCQuestTools.Components
     /// </summary>
     [AddComponentMenu("VRCQuestTools/VQT Avatar Converter Settings")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/avatar-converter-settings?lang=auto")]
-    public class AvatarConverterSettings : VRCQuestToolsEditorOnly
+    public class AvatarConverterSettings : VRCQuestToolsEditorOnly, IMaterialConversionComponent
     {
         /// <summary>
         /// Default material convert setting. The default value is <see cref="ToonLitConvertSettings"/>.
