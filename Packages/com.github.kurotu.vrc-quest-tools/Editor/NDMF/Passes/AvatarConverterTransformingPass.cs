@@ -13,14 +13,14 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
-            if (!NdmfPluginUtility.HasMaterialConversionComponents(context.AvatarRootObject))
+            if (!AvatarConverterPassUtility.HasMaterialConversionComponents(context.AvatarRootObject))
             {
                 return;
             }
 
-            if (NdmfPluginUtility.ResolveAvatarConverterNdmfPhase(context.AvatarRootObject) == Models.AvatarConverterNdmfPhase.Transforming)
+            if (AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(context.AvatarRootObject) == Models.AvatarConverterNdmfPhase.Transforming)
             {
-                NdmfPluginUtility.ConvertAvatarInPass(context);
+                AvatarConverterPassUtility.ConvertAvatarInPass(context);
             }
         }
     }

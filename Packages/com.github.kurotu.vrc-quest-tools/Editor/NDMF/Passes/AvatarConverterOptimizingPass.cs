@@ -20,7 +20,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
             if (AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(context.AvatarRootObject) == Models.AvatarConverterNdmfPhase.Optimizing)
             {
-                NdmfPluginUtility.ConvertAvatarInPass(context);
+                AvatarConverterPassUtility.ConvertAvatarInPass(context);
             }
         }
     }
