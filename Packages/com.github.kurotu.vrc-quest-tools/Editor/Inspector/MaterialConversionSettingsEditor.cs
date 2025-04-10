@@ -14,7 +14,7 @@ namespace KRT.VRCQuestTools.Inspector
     internal class MaterialConversionSettingsEditor : VRCQuestToolsEditorOnlyEditorBase<MaterialConversionSettings>
     {
         private I18nBase i18n = VRCQuestToolsSettings.I18nResource;
-        private ReorderableList materialConvertSettingsReorderableList;
+        private ReorderableList additionalMaterialConvertSettingsReorderableList;
 
         /// <inheritdoc/>
         protected override string Description
@@ -33,47 +33,21 @@ namespace KRT.VRCQuestTools.Inspector
             var editorState = EditorState.instance;
 
             serializedObject.Update();
-            var materialConvertSettings = serializedObject.FindProperty("materialConvertSettings");
 
-            var headerRect = new Rect(EditorGUILayout.GetControlRect());
-            using (var property = new EditorGUI.PropertyScope(headerRect, new GUIContent(i18n.MaterialConversionSettingsEditorConversionSettingsLabel), materialConvertSettings))
+            editorState.foldOutAdditionalMaterialSettings = MaterialConversionGUI.Draw(serializedObject, editorState.foldOutAdditionalMaterialSettings, additionalMaterialConvertSettingsReorderableList);
+
+            editorState.foldOutAdvancedSettings = Views.EditorGUIUtility.Foldout(i18n.AdvancedConverterSettingsLabel, editorState.foldOutAdvancedSettings);
+            if (editorState.foldOutAdvancedSettings)
             {
-                editorState.foldOutmaterialSettings = EditorGUI.Foldout(headerRect, editorState.foldOutmaterialSettings, property.content, true);
-                if (editorState.foldOutmaterialSettings)
+                var useDefaultConversion = TargetComponent.IsPrimaryRoot;
+                if (!useDefaultConversion)
                 {
-                    if (materialConvertSettingsReorderableList == null)
-                    {
-                        materialConvertSettingsReorderableList = new ReorderableList(serializedObject, materialConvertSettings, true, false, true, true);
-                        materialConvertSettingsReorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
-                        {
-                            EditorGUI.PropertyField(rect, materialConvertSettings.GetArrayElementAtIndex(index));
-                            serializedObject.ApplyModifiedProperties();
-                        };
-                        materialConvertSettingsReorderableList.elementHeightCallback = (index) =>
-                        {
-                            var element = materialConvertSettings.GetArrayElementAtIndex(index);
-                            return EditorGUI.GetPropertyHeight(element);
-                        };
-                        materialConvertSettingsReorderableList.onAddCallback = (list) =>
-                        {
-                            var index = list.serializedProperty.arraySize;
-                            list.serializedProperty.arraySize++;
-                            list.index = index;
-                            var element = list.serializedProperty.GetArrayElementAtIndex(index);
-                            element.managedReferenceValue = new AdditionalMaterialConvertSettings();
-                            serializedObject.ApplyModifiedProperties();
-                        };
-                        materialConvertSettingsReorderableList.onRemoveCallback = (list) =>
-                        {
-                            if (list.index < 0 || list.index >= list.serializedProperty.arraySize)
-                            {
-                                return;
-                            }
-                            list.serializedProperty.DeleteArrayElementAtIndex(list.index);
-                            serializedObject.ApplyModifiedProperties();
-                        };
-                    }
-                    materialConvertSettingsReorderableList.DoLayoutList();
+                    EditorGUILayout.HelpBox("i18n.MaterialConversionSettingsEditorAdvancedSettingsWarning", MessageType.Info);
+                }
+                using (var disabled = new EditorGUI.DisabledScope(!useDefaultConversion))
+                {
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("removeExtraMaterialSlots"), new GUIContent(i18n.RemoveExtraMaterialSlotsLabel, i18n.RemoveExtraMaterialSlotsTooltip));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("ndmfPhase"), new GUIContent(i18n.NdmfPhaseLabel, i18n.NdmfPhaseTooltip));
                 }
             }
 
@@ -82,7 +56,8 @@ namespace KRT.VRCQuestTools.Inspector
 
         private class EditorState : ScriptableSingleton<EditorState>
         {
-            public bool foldOutmaterialSettings;
+            public bool foldOutAdditionalMaterialSettings;
+            public bool foldOutAdvancedSettings;
         }
     }
 }

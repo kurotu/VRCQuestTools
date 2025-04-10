@@ -1,4 +1,5 @@
 using System.Linq;
+using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
@@ -24,8 +25,18 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
 
-            var defaultMaterialConvertSettings = so.FindProperty("defaultMaterialConvertSettings");
-            EditorGUILayout.PropertyField(defaultMaterialConvertSettings, new GUIContent(i18n.AvatarConverterDefaultMaterialConvertSettingLabel));
+            var targetComponent = (Component)so.targetObject;
+
+            var useDefaultConversion = ((IMaterialConversionComponent)targetComponent).IsPrimaryRoot;
+            if (!useDefaultConversion)
+            {
+                EditorGUILayout.HelpBox("i18n.MaterialConversionSettingsEditorAdvancedSettingsWarning", MessageType.Info);
+            }
+            using (var disabled = new EditorGUI.DisabledScope(!useDefaultConversion))
+            {
+                var defaultMaterialConvertSettings = so.FindProperty("defaultMaterialConvertSettings");
+                EditorGUILayout.PropertyField(defaultMaterialConvertSettings, new GUIContent(i18n.AvatarConverterDefaultMaterialConvertSettingLabel));
+            }
 
             var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
 
@@ -71,7 +82,7 @@ namespace KRT.VRCQuestTools.Inspector
                 }
             }
 
-            var targetGameObject = ((Component)so.targetObject).gameObject;
+            var targetGameObject = targetComponent.gameObject;
             var unverifiedMaterials = VRChatAvatar.GetRelatedMaterials(targetGameObject)
                 .Where(m => VRCQuestTools.AvatarConverter.MaterialWrapperBuilder.DetectShaderCategory(m) == MaterialWrapperBuilder.ShaderCategory.Unverified)
                 .ToArray();
