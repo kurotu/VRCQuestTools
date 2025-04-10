@@ -13,9 +13,9 @@ namespace KRT.VRCQuestTools.Components
         public IMaterialConvertSettings DefaultMaterialConvertSettings { get; }
 
         /// <summary>
-        /// Gets additional material convert settings.
+        /// Gets or sets additional material convert settings.
         /// </summary>
-        public AdditionalMaterialConvertSettings[] AdditionalMaterialConvertSettings { get; }
+        public AdditionalMaterialConvertSettings[] AdditionalMaterialConvertSettings { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether to remove redundant material slots that are greater than the number of submeshes.

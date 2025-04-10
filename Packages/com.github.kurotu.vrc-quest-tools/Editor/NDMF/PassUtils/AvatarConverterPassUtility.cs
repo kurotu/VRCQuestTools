@@ -20,9 +20,9 @@ namespace KRT.VRCQuestTools.Ndmf
         /// </summary>
         /// <param name="avatarRoot">Root game object.</param>
         /// <returns>True if the avatar has material conversion components.</returns></returns>
-        internal static bool HasMaterialConversionComponents(GameObject avatarRoot)
+        internal static bool HasMaterialOperatorComponents(GameObject avatarRoot)
         {
-            return avatarRoot.GetComponentsInChildren<IMaterialConversionComponent>(true).Length > 0;
+            return avatarRoot.GetComponentsInChildren<IMaterialOperatorComponent>(true).Length > 0;
         }
 
         /// <summary>
@@ -32,10 +32,10 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <returns>NDMF Phase.</returns>
         internal static AvatarConverterNdmfPhase ResolveAvatarConverterNdmfPhase(GameObject avatarRoot)
         {
-            var avatarConverterSettings = avatarRoot.GetComponent<AvatarConverterSettings>();
-            if (avatarConverterSettings != null)
+            var primaryRoot = avatarRoot.GetComponents<IMaterialConversionComponent>().FirstOrDefault(c => c.IsPrimaryRoot);
+            if (primaryRoot != null)
             {
-                return avatarConverterSettings.ndmfPhase;
+                return primaryRoot.NdmfPhase;
             }
 
             return AvatarConverterNdmfPhase.Transforming;
@@ -59,17 +59,13 @@ namespace KRT.VRCQuestTools.Ndmf
                 context.GetState<NdmfState>().compressExpressionsMenuIcons = settings.compressExpressionsMenuIcons;
             }
 
-            var objectRegistry = context.GetState<NdmfObjectRegistry>();
-
             try
             {
-                TrackObjectRegistryForMaterialSwaps(objectRegistry, context.AvatarRootObject);
-                if (settings != null)
-                {
-                    TrackObjectRegistryForConverterSettings(context, settings);
-                }
+                TrackObjectRegistryForMaterialSwaps(context);
+                TrackObjectRegistryForMaterialConversion(context);
 
                 var avatar = new VRChatAvatar(context.AvatarDescriptor);
+                var objectRegistry = context.GetState<NdmfObjectRegistry>();
                 VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(avatar, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
                 {
                     onTextureProgress = (_, __, original, converted) =>
@@ -105,67 +101,70 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <summary>
         /// Track object registry then add as new settings.
         /// </summary>
-        private static void TrackObjectRegistryForConverterSettings(BuildContext context, AvatarConverterSettings settings)
+        private static void TrackObjectRegistryForMaterialConversion(BuildContext context)
         {
             var avatar = new VRChatAvatar(context.AvatarDescriptor);
             var currentMaterials = avatar.Materials;
 
-            // Create new additional material settings by tracking object registry.
-            var newAdditionalMappings = new List<AdditionalMaterialConvertSettings>();
-            foreach (var material in currentMaterials)
+            var conversions = context.AvatarRootObject.GetComponentsInChildren<IMaterialConversionComponent>(true);
+            foreach (var conversion in conversions)
             {
-                var original = (Material)NdmfObjectRegistry.GetReference(material).Object;
-                var setting = settings.additionalMaterialConvertSettings.FirstOrDefault(s => s.targetMaterial == original);
-                if (setting == null)
+                // Create new additional material settings by tracking object registry.
+                var newAdditionalMappings = new List<AdditionalMaterialConvertSettings>();
+                foreach (var material in currentMaterials)
                 {
-                    continue;
-                }
-                var newSetting = new AdditionalMaterialConvertSettings
-                {
-                    targetMaterial = material,
-                    materialConvertSettings = setting.materialConvertSettings,
-                };
-                newAdditionalMappings.Add(newSetting);
-            }
+                    var original = (Material)NdmfObjectRegistry.GetReference(material).Object;
+                    if (material == original)
+                    {
+                        continue;
+                    }
 
-            settings.additionalMaterialConvertSettings = settings.additionalMaterialConvertSettings.Concat(newAdditionalMappings).ToArray();
+                    var setting = conversion.AdditionalMaterialConvertSettings.FirstOrDefault(s => s.targetMaterial == original);
+                    if (setting == null)
+                    {
+                        continue;
+                    }
+                    var newSetting = new AdditionalMaterialConvertSettings
+                    {
+                        targetMaterial = material,
+                        materialConvertSettings = setting.materialConvertSettings,
+                    };
+                    newAdditionalMappings.Add(newSetting);
+                }
+                conversion.AdditionalMaterialConvertSettings = conversion.AdditionalMaterialConvertSettings.Concat(newAdditionalMappings).ToArray();
+            }
         }
 
-        private static void TrackObjectRegistryForMaterialSwaps(NdmfObjectRegistry objectRegistry, GameObject avatarRoot)
+        private static void TrackObjectRegistryForMaterialSwaps(BuildContext context)
         {
-            var swaps = avatarRoot.GetComponentsInChildren<MaterialSwap>();
-            var mappings = swaps.SelectMany(s => s.materialMappings);
-            var map = new Dictionary<Material, Material>();
+            var avatar = new VRChatAvatar(context.AvatarDescriptor);
+            var currentMaterials = avatar.Materials;
 
-            // Create global material mapping.
-            foreach (var mapping in mappings)
+            var swaps = context.AvatarRootObject.GetComponentsInChildren<MaterialSwap>(true);
+            foreach (var swap in swaps)
             {
-                if (mapping.originalMaterial == null)
+                var newMappings = new List<MaterialSwap.MaterialMapping>();
+                foreach (var material in currentMaterials)
                 {
-                    continue;
-                }
-                if (map.ContainsKey(mapping.originalMaterial))
-                {
-                    continue;
-                }
-                map[mapping.originalMaterial] = mapping.replacementMaterial;
-            }
+                    var original = (Material)NdmfObjectRegistry.GetReference(material).Object;
+                    if (material == original)
+                    {
+                        continue;
+                    }
 
-            // Register material mapping to root swap and ObjectRegistry.
-            var materials = new VRChatAvatar(avatarRoot.GetComponent<VRC_AvatarDescriptor>()).Materials;
-            var rootSwap = VRC.Core.ExtensionMethods.GetOrAddComponent<MaterialSwap>(avatarRoot);
-            foreach (var material in materials)
-            {
-                var original = (Material)NdmfObjectRegistry.GetReference(material).Object;
-                if (map.ContainsKey(original))
-                {
-                    objectRegistry.RegisterReplacedObject(material, map[original]);
-                    rootSwap.materialMappings.Add(new MaterialSwap.MaterialMapping
+                    var mapping = swap.materialMappings.FirstOrDefault(m => m.originalMaterial == original);
+                    if (mapping == null)
+                    {
+                        continue;
+                    }
+                    var newMapping = new MaterialSwap.MaterialMapping
                     {
                         originalMaterial = material,
-                        replacementMaterial = map[original],
-                    });
+                        replacementMaterial = mapping.replacementMaterial,
+                    };
+                    newMappings.Add(newMapping);
                 }
+                swap.materialMappings = swap.materialMappings.Concat(newMappings).ToList();
             }
         }
     }

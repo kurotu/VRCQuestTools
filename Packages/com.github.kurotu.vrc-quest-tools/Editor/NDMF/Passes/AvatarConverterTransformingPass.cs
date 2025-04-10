@@ -13,7 +13,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
-            if (!AvatarConverterPassUtility.HasMaterialConversionComponents(context.AvatarRootObject))
+            if (!AvatarConverterPassUtility.HasMaterialOperatorComponents(context.AvatarRootObject))
             {
                 return;
             }

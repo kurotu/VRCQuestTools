@@ -40,7 +40,11 @@ namespace KRT.VRCQuestTools.Components
         public IMaterialConvertSettings DefaultMaterialConvertSettings => defaultMaterialConvertSettings;
 
         /// <inheritdoc/>
-        public AdditionalMaterialConvertSettings[] AdditionalMaterialConvertSettings => additionalMaterialConvertSettings;
+        public AdditionalMaterialConvertSettings[] AdditionalMaterialConvertSettings
+        {
+            get => additionalMaterialConvertSettings;
+            set => additionalMaterialConvertSettings = value;
+        }
 
         /// <inheritdoc/>
         public bool RemoveExtraMaterialSlots => removeExtraMaterialSlots;
