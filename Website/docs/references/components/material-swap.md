@@ -29,6 +29,4 @@ List of original -> replacement material pairs.
 
 ## Future Development
 
-This is a proof-of-concept implementation. Future versions may:
-
-- Independent from Avatar Converter Settings component.
+This is a proof-of-concept implementation. Future versions may break behavior.

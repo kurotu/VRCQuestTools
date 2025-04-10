@@ -13,6 +13,9 @@
     - After Decimation
 - [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応。
 
+### 変更
+- [NDMF] `VQT Material Swap` が `VQT Avatar Converter Settings` なしでも動作するように変更。
+
 ### 修正
 - 非アクティブな Animator の Animator Controller が変換されない問題を修正。
 
