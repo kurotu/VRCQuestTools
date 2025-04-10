@@ -10,26 +10,26 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// Gets default material convert setting.
         /// </summary>
-        public IMaterialConvertSettings DefaultMaterialConvertSettings { get; }
+        IMaterialConvertSettings DefaultMaterialConvertSettings { get; }
 
         /// <summary>
         /// Gets or sets additional material convert settings.
         /// </summary>
-        public AdditionalMaterialConvertSettings[] AdditionalMaterialConvertSettings { get; set; }
+        AdditionalMaterialConvertSettings[] AdditionalMaterialConvertSettings { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether to remove redundant material slots that are greater than the number of submeshes.
         /// </summary>
-        public bool RemoveExtraMaterialSlots { get; }
+        bool RemoveExtraMaterialSlots { get; }
 
         /// <summary>
         /// Gets NDMF phase to convert the avatar.
         /// </summary>
-        public AvatarConverterNdmfPhase NdmfPhase { get; }
+        AvatarConverterNdmfPhase NdmfPhase { get; }
 
         /// <summary>
         /// Gets a value indicating whether to use default material convert settings.
         /// </summary>
-        public bool IsPrimaryRoot { get; }
+        bool IsPrimaryRoot { get; }
     }
 }
