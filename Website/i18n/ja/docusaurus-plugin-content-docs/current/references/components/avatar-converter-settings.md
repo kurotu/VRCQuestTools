@@ -65,6 +65,10 @@ VRChatアバターをAndroid向けにアップロード可能に変換するた�
 Avatar Dynamics (PhysBone, Collider, Contact) を設定します。
 AndroidアバターではAvatar Dynamicsの上限がPoorであるため、変換後に残しておくコンポーネントを指定し、残りは変換時に削除します。
 
+### Avatar Dynamics を削除
+
+**Avatar Dynamics 設定**で選択したコンポーネント以外のAvatar Dynamicsコンポーネントを削除します。
+
 ### Avatar Dynamics 設定
 
 開いたウィンドウで、変換後に残しておくコンポーネントのチェックボックスを有効にします。

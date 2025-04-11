@@ -120,6 +120,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarConverterAdditionalMaterialConvertSettingsLabel => GetText("AvatarConverterAdditionalMaterialConvertSettingsLabel");
 
         internal string AvatarConverterAvatarDynamicsSettingsLabel => GetText("AvatarConverterAvatarDynamicsSettingsLabel");
+        internal string AvatarConverterRemoveAvatarDynamicsLabel => GetText("AvatarConverterRemoveAvatarDynamicsLabel");
+        internal string AvatarConverterRemoveAvatarDynamicsTooltip => GetText("AvatarConverterRemoveAvatarDynamicsTooltip");
         internal string AvatarConverterPhysBonesTooltip => GetText("AvatarConverterPhysBonesTooltip");
         internal string AvatarConverterPhysBoneCollidersTooltip => GetText("AvatarConverterPhysBoneCollidersTooltip");
         internal string AvatarConverterContactsTooltip => GetText("AvatarConverterContactsTooltip");

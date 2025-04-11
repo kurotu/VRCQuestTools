@@ -8,6 +8,7 @@
 
 ### 追加
 - Android Build Support のインストールを確認する機能を追加。
+- `Avatar Dynamics を削除` 設定を `VQT Avatar Converter Settings` に追加。
 - [NDMF] マテリアルの変換設定を保持する `VQT Material Conversion Settings` コンポーネントを追加。
 - [NDMF] `VQT Mesh Flipper` に `NDMFフェーズ` 設定を追加。
     - Before Decimation

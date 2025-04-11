@@ -130,7 +130,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     .Distinct()
                     .ToArray();
 
-                VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSettings.physBonesToKeep, converterSettings.physBoneCollidersToKeep, contactsToKeep);
+                if (converterSettings.removeAvatarDynamics)
+                {
+                    VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSettings.physBonesToKeep, converterSettings.physBoneCollidersToKeep, contactsToKeep);
+                }
             }
 
             foreach (var component in questAvatarObject.GetComponentsInChildren<IMaterialOperatorComponent>(true))

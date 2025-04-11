@@ -200,6 +200,12 @@ msgstr "Additional Material Conversion Settings"
 msgid "AvatarConverterAvatarDynamicsSettingsLabel"
 msgstr "Avatar Dynamics Settings"
 
+msgid "AvatarConverterRemoveAvatarDynamicsLabel"
+msgstr "Remove Avatar Dynamics"
+
+msgid "AvatarConverterRemoveAvatarDynamicsTooltip"
+msgstr "Keep avatar dynamics components which are selected in \"Avatar Dynamics Settings\". Unselected components will be removed during conversion."
+
 msgid "AvatarConverterPhysBonesTooltip"
 msgstr "Set PhysBones to keep while conversion."
 
