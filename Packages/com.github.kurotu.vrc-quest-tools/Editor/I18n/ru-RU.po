@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-04-11 08:28\n"
+"PO-Revision-Date: 2025-04-11 10:28\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -196,6 +196,12 @@ msgstr "Дополнительные настройки конвертации �
 
 msgid "AvatarConverterAvatarDynamicsSettingsLabel"
 msgstr "Настройки динамики аватара"
+
+msgid "AvatarConverterRemoveAvatarDynamicsLabel"
+msgstr ""
+
+msgid "AvatarConverterRemoveAvatarDynamicsTooltip"
+msgstr ""
 
 msgid "AvatarConverterPhysBonesTooltip"
 msgstr "Установите физические кости, которые нужно сохранить во время конвертации."
