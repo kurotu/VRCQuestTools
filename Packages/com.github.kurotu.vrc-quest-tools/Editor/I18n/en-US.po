@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-04-11 08:28\n"
+"PO-Revision-Date: 2025-04-11 10:28\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -199,6 +199,12 @@ msgstr "Additional Material Conversion Settings"
 
 msgid "AvatarConverterAvatarDynamicsSettingsLabel"
 msgstr "Avatar Dynamics Settings"
+
+msgid "AvatarConverterRemoveAvatarDynamicsLabel"
+msgstr "Remove Avatar Dynamics"
+
+msgid "AvatarConverterRemoveAvatarDynamicsTooltip"
+msgstr "Keep avatar dynamics components which are selected in \"Avatar Dynamics Settings\". Unselected components will be removed during conversion."
 
 msgid "AvatarConverterPhysBonesTooltip"
 msgstr "Set PhysBones to keep while conversion."
