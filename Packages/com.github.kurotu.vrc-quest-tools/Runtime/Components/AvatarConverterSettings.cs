@@ -27,6 +27,12 @@ namespace KRT.VRCQuestTools.Components
         public AdditionalMaterialConvertSettings[] additionalMaterialConvertSettings = { };
 
         /// <summary>
+        /// Whether to remove avatar dynamics components.
+        /// </summary>
+        [SerializeField]
+        public bool removeAvatarDynamics = true;
+
+        /// <summary>
         /// PhysBones to keep while conversion.
         /// </summary>
         [SerializeField]

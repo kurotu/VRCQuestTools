@@ -188,18 +188,24 @@ namespace KRT.VRCQuestTools.Inspector
                 editorState.foldOutAvatarDynamics = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterAvatarDynamicsSettingsLabel, editorState.foldOutAvatarDynamics);
                 if (editorState.foldOutAvatarDynamics)
                 {
-                    if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingsLabel))
+                    EditorGUILayout.PropertyField(so.FindProperty("removeAvatarDynamics"), new GUIContent(i18n.AvatarConverterRemoveAvatarDynamicsLabel, i18n.AvatarConverterRemoveAvatarDynamicsTooltip));
+
+                    if (converterSettings.removeAvatarDynamics)
                     {
-                        OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+                        if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingsLabel))
+                        {
+                            OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+                        }
+
+                        var m_physBones = so.FindProperty("physBonesToKeep");
+                        EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones to Keep", i18n.AvatarConverterPhysBonesTooltip));
+                        var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
+                        EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders to Keep", i18n.AvatarConverterPhysBoneCollidersTooltip));
+                        var m_contacts = so.FindProperty("contactsToKeep");
+                        EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers to Keep", i18n.AvatarConverterContactsTooltip));
+                        AvatarDynamicsPerformanceGUI(stats);
                     }
 
-                    var m_physBones = so.FindProperty("physBonesToKeep");
-                    EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones to Keep", i18n.AvatarConverterPhysBonesTooltip));
-                    var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
-                    EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders to Keep", i18n.AvatarConverterPhysBoneCollidersTooltip));
-                    var m_contacts = so.FindProperty("contactsToKeep");
-                    EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers to Keep", i18n.AvatarConverterContactsTooltip));
-                    AvatarDynamicsPerformanceGUI(stats);
                     EditorGUILayout.Space(12);
                 }
 
@@ -505,21 +511,24 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 Selection.activeGameObject = questAvatar.GameObject;
 
-                var converted = questAvatar;
-                var stats = VRCSDKUtility.CalculatePerformanceStats(converted.GameObject, true);
-                var ratings = new PerformanceRating[]
+                if (TargetComponent.removeAvatarDynamics)
                 {
-                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneComponentCount),
-                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneTransformCount),
-                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneColliderCount),
-                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneCollisionCheckCount),
-                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.ContactCount),
-                };
+                    var converted = questAvatar;
+                    var stats = VRCSDKUtility.CalculatePerformanceStats(converted.GameObject, true);
+                    var ratings = new PerformanceRating[]
+                    {
+                        stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneComponentCount),
+                        stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneTransformCount),
+                        stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneColliderCount),
+                        stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneCollisionCheckCount),
+                        stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.ContactCount),
+                    };
 
-                if (ratings.Contains(PerformanceRating.VeryPoor))
-                {
-                    EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.AlertForAvatarDynamicsPerformance, "OK");
-                    PhysBonesRemoveWindow.ShowWindow(converted.AvatarDescriptor);
+                    if (ratings.Contains(PerformanceRating.VeryPoor))
+                    {
+                        EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.AlertForAvatarDynamicsPerformance, "OK");
+                        PhysBonesRemoveWindow.ShowWindow(converted.AvatarDescriptor);
+                    }
                 }
 
                 converterSettings.AvatarDescriptor.gameObject.SetActive(false);
