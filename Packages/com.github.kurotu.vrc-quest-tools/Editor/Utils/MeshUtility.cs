@@ -81,119 +81,47 @@ namespace KRT.VRCQuestTools.Utils
         private static Mesh RemoveVertices(Mesh mesh, HashSet<int> indicesToRemove)
         {
             Vector3[] oldVertices = mesh.vertices;
-            Vector3[] oldNormals = mesh.normals;
-            Vector4[] oldTangents = mesh.tangents;
-            Color[] oldColors = mesh.colors;
-            Vector2[] oldUV = mesh.uv;
-            Vector2[] oldUV2 = mesh.uv2;
-            Vector2[] oldUV3 = mesh.uv3;
-            Vector2[] oldUV4 = mesh.uv4;
-            BoneWeight[] oldBoneWeights = mesh.boneWeights;
-            Matrix4x4[] bindposes = mesh.bindposes;
 
-            var newVertices = new List<Vector3>();
-            var newNormals = new List<Vector3>();
-            var newTangents = new List<Vector4>();
-            var newColors = new List<Color>();
-            var newUV = new List<Vector2>();
-            var newUV2 = new List<Vector2>();
-            var newUV3 = new List<Vector2>();
-            var newUV4 = new List<Vector2>();
-            var newBoneWeights = new List<BoneWeight>();
-
-            var oldToNewMap = new Dictionary<int, int>();
-            for (int i = 0; i < oldVertices.Length; i++)
+            bool IsKeptForNew<T>(T item, int index)
             {
-                if (!indicesToRemove.Contains(i))
-                {
-                    int newIndex = newVertices.Count;
-                    oldToNewMap[i] = newIndex;
-
-                    newVertices.Add(oldVertices[i]);
-                    if (oldNormals.Length == oldVertices.Length)
-                    {
-                        newNormals.Add(oldNormals[i]);
-                    }
-
-                    if (oldTangents.Length == oldVertices.Length)
-                    {
-                        newTangents.Add(oldTangents[i]);
-                    }
-
-                    if (oldColors.Length == oldVertices.Length)
-                    {
-                        newColors.Add(oldColors[i]);
-                    }
-
-                    if (oldUV.Length == oldVertices.Length)
-                    {
-                        newUV.Add(oldUV[i]);
-                    }
-
-                    if (oldUV2.Length == oldVertices.Length)
-                    {
-                        newUV2.Add(oldUV2[i]);
-                    }
-
-                    if (oldUV3.Length == oldVertices.Length)
-                    {
-                        newUV3.Add(oldUV3[i]);
-                    }
-
-                    if (oldUV4.Length == oldVertices.Length)
-                    {
-                        newUV4.Add(oldUV4[i]);
-                    }
-
-                    if (oldBoneWeights.Length == oldVertices.Length)
-                    {
-                        newBoneWeights.Add(oldBoneWeights[i]);
-                    }
-                }
+                return !indicesToRemove.Contains(index);
             }
+
+            T[] ShrinkArray<T>(T[] array)
+            {
+                if (array == null)
+                {
+                    return new T[0];
+                }
+                if (array.Length != oldVertices.Length)
+                {
+                    return new T[0];
+                }
+                return array.Where(IsKeptForNew).ToArray();
+            }
+
+            var oldToNewMap = oldVertices
+                .Select((vertex, oldIndex) => (vertex, oldIndex))
+                .Where(item => !indicesToRemove.Contains(item.oldIndex))
+                .Select((item, newIndex) => (item.oldIndex, newIndex))
+                .ToDictionary(item => item.oldIndex, item => item.newIndex);
 
             var newMesh = new Mesh();
-            newMesh.vertices = newVertices.ToArray();
-            if (newNormals.Count == newVertices.Count)
-            {
-                newMesh.normals = newNormals.ToArray();
-            }
+            newMesh.vertices = ShrinkArray(oldVertices);
+            newMesh.normals = ShrinkArray(mesh.normals);
+            newMesh.tangents = ShrinkArray(mesh.tangents);
+            newMesh.colors = ShrinkArray(mesh.colors);
+            newMesh.uv = ShrinkArray(mesh.uv);
+            newMesh.uv2 = ShrinkArray(mesh.uv2);
+            newMesh.uv3 = ShrinkArray(mesh.uv3);
+            newMesh.uv4 = ShrinkArray(mesh.uv4);
+            newMesh.uv5 = ShrinkArray(mesh.uv5);
+            newMesh.uv6 = ShrinkArray(mesh.uv6);
+            newMesh.uv7 = ShrinkArray(mesh.uv7);
+            newMesh.uv8 = ShrinkArray(mesh.uv8);
+            newMesh.boneWeights = ShrinkArray(mesh.boneWeights);
 
-            if (newTangents.Count == newVertices.Count)
-            {
-                newMesh.tangents = newTangents.ToArray();
-            }
-
-            if (newColors.Count == newVertices.Count)
-            {
-                newMesh.colors = newColors.ToArray();
-            }
-
-            if (newUV.Count == newVertices.Count)
-            {
-                newMesh.uv = newUV.ToArray();
-            }
-
-            if (newUV2.Count == newVertices.Count)
-            {
-                newMesh.uv2 = newUV2.ToArray();
-            }
-
-            if (newUV3.Count == newVertices.Count)
-            {
-                newMesh.uv3 = newUV3.ToArray();
-            }
-
-            if (newUV4.Count == newVertices.Count)
-            {
-                newMesh.uv4 = newUV4.ToArray();
-            }
-
-            if (newBoneWeights.Count == newVertices.Count)
-            {
-                newMesh.boneWeights = newBoneWeights.ToArray();
-            }
-
+            var bindposes = mesh.bindposes;
             if (bindposes != null && bindposes.Length > 0)
             {
                 newMesh.bindposes = bindposes;
@@ -201,15 +129,15 @@ namespace KRT.VRCQuestTools.Utils
 
             // Sub meshes
             newMesh.subMeshCount = mesh.subMeshCount;
-            for (int sub = 0; sub < mesh.subMeshCount; sub++)
+            for (var sub = 0; sub < mesh.subMeshCount; sub++)
             {
                 var oldTris = mesh.GetTriangles(sub);
                 var newTris = new List<int>();
-                for (int i = 0; i < oldTris.Length; i += 3)
+                for (var i = 0; i < oldTris.Length; i += 3)
                 {
-                    int i0 = oldTris[i];
-                    int i1 = oldTris[i + 1];
-                    int i2 = oldTris[i + 2];
+                    var i0 = oldTris[i];
+                    var i1 = oldTris[i + 1];
+                    var i2 = oldTris[i + 2];
 
                     if (indicesToRemove.Contains(i0) || indicesToRemove.Contains(i1) || indicesToRemove.Contains(i2))
                     {
@@ -224,61 +152,41 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             // BlendShapes
-            int blendShapeCount = mesh.blendShapeCount;
-            for (int shapeIndex = 0; shapeIndex < blendShapeCount; shapeIndex++)
+            var blendShapeCount = mesh.blendShapeCount;
+            for (var shapeIndex = 0; shapeIndex < blendShapeCount; shapeIndex++)
             {
                 string shapeName = mesh.GetBlendShapeName(shapeIndex);
-                int frameCount = mesh.GetBlendShapeFrameCount(shapeIndex);
+                var frameCount = mesh.GetBlendShapeFrameCount(shapeIndex);
 
-                for (int frameIndex = 0; frameIndex < frameCount; frameIndex++)
+                for (var frameIndex = 0; frameIndex < frameCount; frameIndex++)
                 {
                     float weight = mesh.GetBlendShapeFrameWeight(shapeIndex, frameIndex);
-                    Vector3[] deltaVertices = new Vector3[oldVertices.Length];
-                    Vector3[] deltaNormals = new Vector3[oldVertices.Length];
-                    Vector3[] deltaTangents = new Vector3[oldVertices.Length];
+                    var deltaVertices = new Vector3[oldVertices.Length];
+                    var deltaNormals = new Vector3[oldVertices.Length];
+                    var deltaTangents = new Vector3[oldVertices.Length];
 
                     mesh.GetBlendShapeFrameVertices(shapeIndex, frameIndex, deltaVertices, deltaNormals, deltaTangents);
 
-                    var newDeltaVertices = new List<Vector3>();
-                    var newDeltaNormals = new List<Vector3>();
-                    var newDeltaTangents = new List<Vector3>();
-
-                    for (int i = 0; i < oldVertices.Length; i++)
-                    {
-                        if (!indicesToRemove.Contains(i))
-                        {
-                            newDeltaVertices.Add(deltaVertices[i]);
-                            newDeltaNormals.Add(deltaNormals[i]);
-                            newDeltaTangents.Add(deltaTangents[i]);
-                        }
-                    }
+                    var newDeltaVertices = deltaVertices.Where(IsKeptForNew).ToArray();
+                    var newDeltaNormals = deltaNormals.Where(IsKeptForNew).ToArray();
+                    var newDeltaTangents = deltaTangents.Where(IsKeptForNew).ToArray();
 
                     newMesh.AddBlendShapeFrame(
                         shapeName,
                         weight,
-                        newDeltaVertices.ToArray(),
-                        newDeltaNormals.ToArray(),
-                        newDeltaTangents.ToArray());
+                        newDeltaVertices,
+                        newDeltaNormals,
+                        newDeltaTangents);
                 }
             }
 
             newMesh.RecalculateBounds();
-            if (newNormals.Count != newVertices.Count)
+            if (newMesh.normals.Length != newMesh.vertices.Length)
             {
                 newMesh.RecalculateNormals();
             }
 
             return newMesh;
-        }
-
-        private class Vector3Object
-        {
-            public readonly Vector3 vector3;
-
-            public Vector3Object(Vector3 vector3)
-            {
-                this.vector3 = vector3;
-            }
         }
     }
 }
