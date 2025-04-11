@@ -65,6 +65,10 @@ Update the converted Android textures with the current settings.
 Set the Avatar Dynamics (PhysBone, Collider, Contact) for the avatar.
 Android avatars have a maximum of Poor for Avatar Dynamics, so specify the components to keep after conversion and delete the rest during conversion.
 
+### Remove Avatar Dynamics
+
+Remove avatar dynamics components which are not selected in the **Avatar Dynamics Settings**.
+
 ### Avatar Dynamics Settings
 
 Select checkboxes for the components to keep after conversion in the window that opens when you click the **Avatar Dynamics Settings** button.
