@@ -16,6 +16,8 @@
 - [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応。
 
 ### 変更
+- アバターの変換時に `VQT Vertex Color Remover` を付与しないように変更。
+- アバターの変換時に頂点カラーを削除したメッシュを Assets/VRCQuestToolsOutput フォルダに保存するように変更。
 - [NDMF] `VQT Material Swap` が `VQT Avatar Converter Settings` なしでも動作するように変更。
 
 ### 修正

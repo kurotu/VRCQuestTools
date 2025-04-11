@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] NDMF Preview for `VQT Mesh Flipper`.
 
 ### Changed
+- `VQT Vertex Color Remover` component is no longer added when converting an avatar.
+- Meshes whose vertex color is removed are saved to Assets/VRCQuestToolsOutput folder when converting an avatar.
 - [NDMF] `VQT Material Swap` works without `VQT Avatar Converter Settings`.
 
 ### Fixed

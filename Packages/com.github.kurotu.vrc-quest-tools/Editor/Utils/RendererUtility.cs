@@ -56,6 +56,23 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Sets sharedMesh to a renderer.
+        /// </summary>
+        /// <param name="renderer">MeshRenderer or SkinnedMeshRenderer.</param>
+        /// <param name="mesh">New mesh.</param>
+        internal static void SetSharedMesh(Renderer renderer, Mesh mesh)
+        {
+            if (renderer is SkinnedMeshRenderer smr)
+            {
+                smr.sharedMesh = mesh;
+            }
+            else if (renderer is MeshRenderer)
+            {
+                renderer.GetComponent<MeshFilter>().sharedMesh = mesh;
+            }
+        }
+
+        /// <summary>
         /// Remove vertex color from renderer's sharedMesh.
         /// </summary>
         /// <param name="renderer">MeshRenderer or SkinnedMeshRenderer.</param>

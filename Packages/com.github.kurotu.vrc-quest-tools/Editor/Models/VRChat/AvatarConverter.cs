@@ -73,7 +73,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             var questAvatar = new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
             PrepareConvertForQuestInPlace(questAvatar);
-            ConvertForQuestInPlace(questAvatar, remover, saveAssetsAsFile, assetsDirectory, progressCallback);
+            ConvertForQuestInPlace(questAvatar, remover, AvatarConverterOption.Default, saveAssetsAsFile, assetsDirectory, progressCallback);
 
             return questAvatar;
         }
@@ -92,10 +92,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// </summary>
         /// <param name="avatar">Avatar object to convert.</param>
         /// <param name="remover">ComponentRemover object.</param>
+        /// <param name="option">Converter option.</param>
         /// <param name="saveAssetsAsFile">Whether to save assets as file.</param>
         /// <param name="assetsDirectory">Root directory to save.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
-        internal void ConvertForQuestInPlace(VRChatAvatar avatar, ComponentRemover remover, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
+        internal void ConvertForQuestInPlace(VRChatAvatar avatar, ComponentRemover remover, AvatarConverterOption option, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
         {
             var questAvatarObject = avatar.GameObject;
             questAvatarObject.SetActive(true);
@@ -121,6 +122,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
                 ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
+
+                if (option.convertMeshes)
+                {
+                    var meshMap = ConvertMeshesForQuest(questAvatarObject, saveAssetsAsFile, assetsDirectory);
+                    ApplyConvertedMeshes(questAvatarObject, meshMap);
+                }
 
                 AddVRCQuestToolsComponents(converterSettings, questAvatarObject);
 
@@ -772,24 +779,95 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return convertedAnimationClips;
         }
 
+        private Dictionary<Mesh, Mesh> ConvertMeshesForQuest(GameObject avatarRoot, bool saveAsAsset, string assetsDirectory)
+        {
+            var converterSettings = avatarRoot.GetComponent<AvatarConverterSettings>();
+            if (converterSettings == null)
+            {
+                return new Dictionary<Mesh, Mesh>();
+            }
+
+            var meshMap = new Dictionary<Mesh, Mesh>();
+
+            var renderers = avatarRoot.GetComponentsInChildren<Renderer>(true)
+                .Where(r => r is SkinnedMeshRenderer || r is MeshRenderer);
+            foreach (var renderer in renderers)
+            {
+                var originalMesh = RendererUtility.GetSharedMesh(renderer);
+                var newMesh = originalMesh;
+                if (newMesh == null)
+                {
+                    continue;
+                }
+
+                if (converterSettings.removeVertexColor)
+                {
+                    var hasVertexColor = newMesh.colors != null && newMesh.colors.Length > 0
+                        && newMesh.colors.FirstOrDefault(c => c != Color.white) != null;
+                    if (hasVertexColor)
+                    {
+                        var originalName = newMesh.name;
+                        newMesh = UnityEngine.Object.Instantiate(newMesh);
+                        newMesh.name = originalName;
+                        newMesh.colors = null;
+                    }
+                }
+
+                var isModified = newMesh != originalMesh;
+
+                if (isModified && saveAsAsset)
+                {
+                    var saveDirectory = $"{assetsDirectory}/Meshes";
+                    Directory.CreateDirectory(saveDirectory);
+                    AssetDatabase.Refresh();
+
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(originalMesh, out string guid, out long localId);
+                    var outFile = $"{saveDirectory}/{newMesh.name}_from_{guid}.asset";
+
+                    // When the mesh is added into another asset, "/" is acceptable as name.
+                    if (newMesh.name.Contains("/"))
+                    {
+                        var dir = Path.GetDirectoryName(outFile);
+                        Directory.CreateDirectory(dir);
+                    }
+                    newMesh = AssetUtility.CreateAsset(newMesh, outFile);
+                }
+                if (isModified)
+                {
+                    if (!meshMap.ContainsKey(originalMesh))
+                    {
+                        meshMap.Add(originalMesh, newMesh);
+                    }
+                }
+            }
+
+            return meshMap;
+        }
+
+        private void ApplyConvertedMeshes(GameObject avatarRoot, Dictionary<Mesh, Mesh> meshMap)
+        {
+            var renderers = avatarRoot.GetComponentsInChildren<Renderer>(true)
+                .Where(r => r is SkinnedMeshRenderer || r is MeshRenderer);
+            foreach (var renderer in renderers)
+            {
+                var mesh = RendererUtility.GetSharedMesh(renderer);
+                if (mesh == null)
+                {
+                    continue;
+                }
+                if (meshMap.ContainsKey(mesh))
+                {
+                    RendererUtility.SetSharedMesh(renderer, meshMap[mesh]);
+                }
+            }
+        }
+
         private void AddVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
         {
             if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
             {
                 questAvatarObject.AddComponent<ConvertedAvatar>();
             }
-#if VQT_HAS_VRCSDK_BASE
-            if (setting.removeVertexColor)
-            {
-                var vcr = questAvatarObject.GetComponent<VertexColorRemover>();
-                if (vcr == null)
-                {
-                    vcr = questAvatarObject.AddComponent<VertexColorRemover>();
-                }
-                vcr.includeChildren = true;
-                vcr.enabled = true;
-            }
-#endif
 
 #if VQT_HAS_NDMF
             if (setting.compressExpressionsMenuIcons)
@@ -866,6 +944,23 @@ namespace KRT.VRCQuestTools.Models.VRChat
             internal TextureProgressCallback onTextureProgress;
             internal AnimationClipProgressCallback onAnimationClipProgress;
             internal RuntimeAnimatorProgressCallback onRuntimeAnimatorProgress;
+        }
+
+        internal class AvatarConverterOption
+        {
+            internal bool convertMeshes = true;
+
+            private AvatarConverterOption()
+            {
+            }
+
+            internal static AvatarConverterOption Default => new AvatarConverterOption();
+#if VQT_HAS_NDMF
+            internal static AvatarConverterOption Ndmf = new AvatarConverterOption
+            {
+                convertMeshes = false,
+            };
+#endif
         }
 #pragma warning restore SA1600 // Elements should be documented
     }
