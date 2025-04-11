@@ -84,6 +84,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string AttachButtonLabel => GetText("AttachButtonLabel");
         internal string UpdateTexturesLabel => GetText("UpdateTexturesLabel");
         internal string AdvancedConverterSettingsLabel => GetText("AdvancedConverterSettingsLabel");
+        internal string RemoveTransparentFromFaceLabel => GetText("RemoveTransparentFromFaceLabel");
+        internal string RemoveTransparentFromFaceTooltip => GetText("RemoveTransparentFromFaceTooltip");
         internal string RemoveVertexColorLabel => GetText("RemoveVertexColorLabel");
         internal string RemoveVertexColorTooltip => GetText("RemoveVertexColorTooltip");
         internal string RemoveExtraMaterialSlotsLabel => GetText("RemoveExtraMaterialSlotsLabel");

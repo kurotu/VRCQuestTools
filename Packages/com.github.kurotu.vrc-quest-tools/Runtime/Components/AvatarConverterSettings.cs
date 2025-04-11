@@ -60,6 +60,12 @@ namespace KRT.VRCQuestTools.Components
         public AnimatorOverrideController[] animatorOverrideControllers = { };
 
         /// <summary>
+        /// Whether to remove transparent meshes from the face.
+        /// </summary>
+        [SerializeField]
+        public bool removeTransparentFromFace = true;
+
+        /// <summary>
         /// Whether to remove vertex color.
         /// </summary>
         [SerializeField]
