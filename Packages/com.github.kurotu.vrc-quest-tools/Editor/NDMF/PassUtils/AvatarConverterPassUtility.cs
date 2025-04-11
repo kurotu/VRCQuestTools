@@ -66,7 +66,8 @@ namespace KRT.VRCQuestTools.Ndmf
 
                 var avatar = new VRChatAvatar(context.AvatarDescriptor);
                 var objectRegistry = context.GetState<NdmfObjectRegistry>();
-                VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(avatar, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
+                var converterOption = AvatarConverter.AvatarConverterOption.Ndmf;
+                VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(avatar, VRCQuestTools.ComponentRemover, converterOption, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
                 {
                     onTextureProgress = (_, __, original, converted) =>
                     {

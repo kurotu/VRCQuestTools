@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Changed default compression format of `VQT Menu Icon Resizer` to ASTC 8x8.
+- `VQT Vertex Color Remover` component is no longer added when converting an avatar.
+- Meshes whose vertex color is removed are saved to Assets/VRCQuestToolsOutput folder when converting an avatar.
 
 ## [2.9.1] - 2025-05-06
 

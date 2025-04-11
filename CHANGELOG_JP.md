@@ -11,6 +11,8 @@
 
 ### 変更
 - `VQT Menu Icon Resizer` のデフォルトの圧縮形式を `ASTC 8x8` に変更。
+- アバターの変換時に `VQT Vertex Color Remover` を付与しないように変更。
+- アバターの変換時に頂点カラーを削除したメッシュを Assets/VRCQuestToolsOutput フォルダに保存するように変更。
 
 ## [2.9.1] - 2025-05-06
 
