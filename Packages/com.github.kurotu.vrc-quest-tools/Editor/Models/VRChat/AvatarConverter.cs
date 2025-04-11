@@ -17,6 +17,7 @@ using nadena.dev.modular_avatar.core;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 
 #if VQT_HAS_VRCSDK_BASE
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
@@ -102,6 +103,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
             questAvatarObject.SetActive(true);
             var converterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();
 
+            // Edit meshes.
+            if (converterSettings != null && option.convertMeshes)
+            {
+                var meshMap = ConvertMeshesForQuest(questAvatarObject, saveAssetsAsFile, assetsDirectory);
+                ApplyConvertedMeshes(questAvatarObject, meshMap);
+            }
+
             // Remove extra material slots such as lilToon FakeShadow.
             var primaryRootConversion = questAvatarObject
                 .GetComponents<IMaterialConversionComponent>()
@@ -122,12 +130,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
                 ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
-
-                if (option.convertMeshes)
-                {
-                    var meshMap = ConvertMeshesForQuest(questAvatarObject, saveAssetsAsFile, assetsDirectory);
-                    ApplyConvertedMeshes(questAvatarObject, meshMap);
-                }
 
                 AddVRCQuestToolsComponents(converterSettings, questAvatarObject);
 
@@ -810,6 +812,20 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         newMesh = UnityEngine.Object.Instantiate(newMesh);
                         newMesh.name = originalName;
                         newMesh.colors = null;
+                    }
+                }
+
+                if (converterSettings.removeTransparentFromFace)
+                {
+                    var descriptor = converterSettings.GetComponent<VRCAvatarDescriptor>();
+                    if (VRCSDKUtility.IsFaceSkinnedMeshRenderer(descriptor, renderer))
+                    {
+                        var sharedMesh = RendererUtility.GetSharedMesh(renderer);
+                        var m = Utils.MeshUtility.RemoveTransparentPart(sharedMesh, renderer.sharedMaterials);
+                        if (m != null)
+                        {
+                            newMesh = m;
+                        }
                     }
                 }
 

@@ -11,7 +11,6 @@ using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Utils
 {
@@ -462,6 +461,60 @@ namespace KRT.VRCQuestTools.Utils
             finally
             {
                 RenderTexture.active = activeRT;
+            }
+        }
+
+        /// <summary>
+        /// Renders a material to a texture.
+        /// </summary>
+        /// <param name="material">Material.</param>
+        /// <param name="width">Output width.</param>
+        /// <param name="height">Output height.</param>
+        /// <param name="makeNoLongerReadable">Make texture not readable.</param>
+        /// <returns>Rendered texture.</returns>
+        internal static Texture2D RenderMaterialToTexture2D(Material material, int width, int height, bool makeNoLongerReadable)
+        {
+            RenderTexture rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+
+            var layer = 31;
+
+            GameObject camObj = new GameObject("TempRenderCamera");
+            Camera cam = camObj.AddComponent<Camera>();
+            cam.orthographic = true;
+            cam.orthographicSize = 0.5f;
+            cam.clearFlags = CameraClearFlags.Depth;
+            cam.backgroundColor = Color.clear;
+            cam.cullingMask = 1 << layer;
+            cam.targetTexture = rt;
+            cam.transform.position = new Vector3(0, 0, -10);
+
+            GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.transform.position = Vector3.zero;
+            quad.transform.localScale = Vector3.one;
+            quad.GetComponent<MeshRenderer>().material = material;
+            quad.layer = layer;
+
+            try
+            {
+                var result = new Texture2D(width, height, TextureFormat.RGBA32, false, false);
+
+                cam.Render();
+
+                RenderTexture prev = RenderTexture.active;
+                RenderTexture.active = rt;
+
+                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                result.Apply(true, makeNoLongerReadable);
+
+                RenderTexture.active = prev;
+
+                return result;
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(camObj);
+                UnityEngine.Object.DestroyImmediate(quad);
+                RenderTexture.ReleaseTemporary(rt);
             }
         }
 
