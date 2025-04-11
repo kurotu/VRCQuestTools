@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Feature to check the installation of Android Build Support.
+- [NDMF] `VQT Material Conversion Settings` component to set material conversion settings.
 - [NDMF] Add `NDMF Phase` option to `VQT Mesh Flipper` component.
     - Before Decimation
     - After Decimation
