@@ -17,6 +17,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.Core;
 using VRC.Dynamics;
+using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDK3A.Editor;
@@ -825,6 +826,38 @@ namespace KRT.VRCQuestTools.Utils
                 }
             }
             ResizeExpressionMenuIconsImpl(rootMenu);
+        }
+
+        /// <summary>
+        /// Checks whether the renderer is a face skinned mesh renderer.
+        /// </summary>
+        /// <param name="avatarDescriptor">Avatar descriptor.</param>
+        /// <param name="renderer">Renderer.</param>
+        /// <returns>true when the renderer is used for face.</returns>
+        internal static bool IsFaceSkinnedMeshRenderer(VRCAvatarDescriptor avatarDescriptor, Renderer renderer)
+        {
+            if (renderer == null)
+            {
+                return false;
+            }
+
+            var useBlendShapeLipSync =
+                avatarDescriptor.lipSync == VRC_AvatarDescriptor.LipSyncStyle.JawFlapBlendShape ||
+                avatarDescriptor.lipSync == VRC_AvatarDescriptor.LipSyncStyle.VisemeBlendShape;
+            if (useBlendShapeLipSync && avatarDescriptor.VisemeSkinnedMesh == renderer)
+            {
+                return true;
+            }
+
+            var useBlendShapeEyelid =
+                avatarDescriptor.enableEyeLook &&
+                avatarDescriptor.customEyeLookSettings.eyelidType == VRCAvatarDescriptor.EyelidType.Blendshapes;
+            if (useBlendShapeEyelid && avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh == renderer)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static void GetMenuTexturesFromMenuImpl(VRCExpressionsMenu menu, HashSet<Texture2D> textures, HashSet<VRCExpressionsMenu> knownMenus)

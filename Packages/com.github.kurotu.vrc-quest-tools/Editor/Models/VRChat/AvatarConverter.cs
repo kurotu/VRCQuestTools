@@ -818,12 +818,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 if (converterSettings.removeTransparentFromFace)
                 {
                     var descriptor = converterSettings.GetComponent<VRCAvatarDescriptor>();
-                    var useFaceMesh = descriptor.lipSync == VRC_AvatarDescriptor.LipSyncStyle.JawFlapBlendShape
-                        || descriptor.lipSync == VRC_AvatarDescriptor.LipSyncStyle.VisemeBlendShape;
-
-                    if (useFaceMesh && renderer == descriptor.VisemeSkinnedMesh)
+                    if (VRCSDKUtility.IsFaceSkinnedMeshRenderer(descriptor, renderer))
                     {
-                        var m = RendererUtility.RemoveTransparentPart(renderer);
+                        var sharedMesh = RendererUtility.GetSharedMesh(renderer);
+                        var m = Utils.MeshUtility.RemoveTransparentPart(sharedMesh, renderer.sharedMaterials);
                         if (m != null)
                         {
                             newMesh = m;

@@ -464,7 +464,14 @@ namespace KRT.VRCQuestTools.Utils
             }
         }
 
-
+        /// <summary>
+        /// Renders a material to a texture.
+        /// </summary>
+        /// <param name="material">Material.</param>
+        /// <param name="width">Output width.</param>
+        /// <param name="height">Output height.</param>
+        /// <param name="makeNoLongerReadable">Make texture not readable.</param>
+        /// <returns>Rendered texture.</returns>
         internal static Texture2D RenderMaterialToTexture2D(Material material, int width, int height, bool makeNoLongerReadable)
         {
             RenderTexture rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
