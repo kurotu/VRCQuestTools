@@ -67,6 +67,9 @@ namespace KRT.VRCQuestTools.Ndmf
                     case InvalidReplacementMaterialException e:
                         ndmfError = new ReplacementMaterialError(e.component, e.replacementMaterial);
                         break;
+                    case TargetMaterialNullException e:
+                        ndmfError = new TargetMaterialNullError(e.component);
+                        break;
                     default:
                         ndmfError = new SimpleStringError(
                             $"Unhandled {exception.GetType().Name}",

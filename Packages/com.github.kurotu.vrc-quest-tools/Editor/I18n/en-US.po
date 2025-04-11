@@ -656,6 +656,12 @@ msgstr "An error occurred when converting {0}.\n\n"
 "{2}: {3}\n"
 "{4}"
 
+msgid "NDMF:TargetMaterialNullErrorTitle"
+msgstr "Target Material Not Set"
+
+msgid "NDMF:TargetMaterialNullErrorTitle:description"
+msgstr "Target material is not set to the {0} component."
+
 msgid "NDMF:UnsupportedTextureFormatTitle"
 msgstr "Unsupported Texture Format"
 
