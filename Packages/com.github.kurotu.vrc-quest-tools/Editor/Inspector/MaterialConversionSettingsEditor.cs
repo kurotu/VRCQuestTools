@@ -34,16 +34,17 @@ namespace KRT.VRCQuestTools.Inspector
 
             serializedObject.Update();
 
+            var useDefaultConversion = TargetComponent.IsPrimaryRoot;
+            if (!useDefaultConversion)
+            {
+                EditorGUILayout.HelpBox(i18n.MaterialConversionSettingsEditorDefaultConversionWarning, MessageType.Info);
+            }
+
             editorState.foldOutAdditionalMaterialSettings = MaterialConversionGUI.Draw(serializedObject, editorState.foldOutAdditionalMaterialSettings, additionalMaterialConvertSettingsReorderableList);
 
             editorState.foldOutAdvancedSettings = Views.EditorGUIUtility.Foldout(i18n.AdvancedConverterSettingsLabel, editorState.foldOutAdvancedSettings);
             if (editorState.foldOutAdvancedSettings)
             {
-                var useDefaultConversion = TargetComponent.IsPrimaryRoot;
-                if (!useDefaultConversion)
-                {
-                    EditorGUILayout.HelpBox("i18n.MaterialConversionSettingsEditorAdvancedSettingsWarning", MessageType.Info);
-                }
                 using (var disabled = new EditorGUI.DisabledScope(!useDefaultConversion))
                 {
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("removeExtraMaterialSlots"), new GUIContent(i18n.RemoveExtraMaterialSlotsLabel, i18n.RemoveExtraMaterialSlotsTooltip));
@@ -56,7 +57,7 @@ namespace KRT.VRCQuestTools.Inspector
 
         private class EditorState : ScriptableSingleton<EditorState>
         {
-            public bool foldOutAdditionalMaterialSettings;
+            public bool foldOutAdditionalMaterialSettings = true;
             public bool foldOutAdvancedSettings;
         }
     }

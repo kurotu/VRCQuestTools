@@ -28,10 +28,6 @@ namespace KRT.VRCQuestTools.Inspector
             var targetComponent = (Component)so.targetObject;
 
             var useDefaultConversion = ((IMaterialConversionComponent)targetComponent).IsPrimaryRoot;
-            if (!useDefaultConversion)
-            {
-                EditorGUILayout.HelpBox("i18n.MaterialConversionSettingsEditorAdvancedSettingsWarning", MessageType.Info);
-            }
             using (var disabled = new EditorGUI.DisabledScope(!useDefaultConversion))
             {
                 var defaultMaterialConvertSettings = so.FindProperty("defaultMaterialConvertSettings");

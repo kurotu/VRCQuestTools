@@ -531,7 +531,10 @@ msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr "This material's shader is not allowed for mobile avatars."
 
 msgid "MaterialConversionSettingsEditorDescription"
-msgstr "Configure material conversion settings for each material."
+msgstr "Convert materials for mobile platform."
+
+msgid "MaterialConversionSettingsEditorDefaultConversionWarning"
+msgstr "Place this component to the avatar's root object in order to use disabled settings. But VQT Avatar Converter Settings takes priority."
 
 msgid "MaterialConversionSettingsEditorConversionSettingsLabel"
 msgstr "Material Conversion Settings"

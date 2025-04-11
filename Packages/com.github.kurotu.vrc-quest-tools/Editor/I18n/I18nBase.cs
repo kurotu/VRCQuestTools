@@ -271,7 +271,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // Material Conversion Settings
         internal string MaterialConversionSettingsEditorDescription => GetText("MaterialConversionSettingsEditorDescription");
-        internal string MaterialConversionSettingsEditorConversionSettingsLabel => GetText("MaterialConversionSettingsEditorConversionSettingsLabel");
+        internal string MaterialConversionSettingsEditorDefaultConversionWarning => GetText("MaterialConversionSettingsEditorDefaultConversionWarning");
 
         // Menu Icons Resizer
         internal string MenuIconResizerEditorDescription => GetText("MenuIconResizerEditorDescription");
