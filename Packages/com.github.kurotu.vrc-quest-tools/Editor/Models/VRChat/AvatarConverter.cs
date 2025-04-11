@@ -102,18 +102,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var converterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();
 
             // Remove extra material slots such as lilToon FakeShadow.
-            if (converterSettings != null && converterSettings.removeExtraMaterialSlots)
+            var primaryRootConversion = questAvatarObject
+                .GetComponents<IMaterialConversionComponent>()
+                .FirstOrDefault(c => c.IsPrimaryRoot);
+            if (primaryRootConversion != null && primaryRootConversion.RemoveExtraMaterialSlots)
             {
                 RemoveExtraMaterialSlots(questAvatarObject);
             }
 
-            var convertSettingsMap = CreateMaterialConvertSettingsMap(avatar);
-            foreach (var swap in avatar.GameObject.GetComponentsInChildren<MaterialSwap>(true))
-            {
-                UnityEngine.Object.DestroyImmediate(swap);
-            }
-
             // Convert materials and generate textures.
+            var convertSettingsMap = CreateMaterialConvertSettingsMap(avatar);
             var convertedMaterials = ConvertMaterialsForAndroid(convertSettingsMap, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
             CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
 
@@ -135,9 +133,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSettings.physBonesToKeep, converterSettings.physBoneCollidersToKeep, contactsToKeep);
             }
 
-            if (converterSettings != null)
+            foreach (var component in questAvatarObject.GetComponentsInChildren<IMaterialOperatorComponent>(true))
             {
-                UnityEngine.Object.DestroyImmediate(converterSettings);
+                if (component is Component c)
+                {
+                    UnityEngine.Object.DestroyImmediate(c);
+                }
             }
 
             PrefabUtility.RecordPrefabInstancePropertyModifications(questAvatarObject);
@@ -392,6 +393,31 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             var convertSettingsMap = new Dictionary<Material, IMaterialConvertSettings>();
 
+            // Apply MaterialConversionSettings
+            var materialConversionSettings = avatar.GameObject.GetComponentsInChildren<MaterialConversionSettings>(true);
+            foreach (var setting in materialConversionSettings)
+            {
+                foreach (var s in setting.additionalMaterialConvertSettings)
+                {
+                    if (s.targetMaterial == null)
+                    {
+                        throw new TargetMaterialNullException($"Target material is not set in the additionalMaterialConvertSettings of {setting.GetType().Name}", setting);
+                    }
+                    if (s.materialConvertSettings is MaterialReplaceSettings replaceSettings)
+                    {
+                        if (!VRCSDKUtility.IsMaterialAllowedForQuestAvatar(replaceSettings.material))
+                        {
+                            throw new InvalidReplacementMaterialException("Replacement material is not allowed for mobile avatars", setting, replaceSettings.material);
+                        }
+                    }
+                    if (!convertSettingsMap.ContainsKey(s.targetMaterial))
+                    {
+                        convertSettingsMap.Add(s.targetMaterial, s.materialConvertSettings);
+                    }
+                }
+            }
+
+            // Apply MaterialSwap
             var materialSwaps = avatar.GameObject.GetComponentsInChildren<MaterialSwap>(true);
             foreach (var swap in materialSwaps)
             {
@@ -422,8 +448,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
             }
 
+            // Apply AvatarConverterSettings
             var converterSettings = avatar.GameObject.GetComponent<AvatarConverterSettings>();
-            var avatarMaterials = avatar.Materials;
             if (converterSettings != null)
             {
                 foreach (var setting in converterSettings.additionalMaterialConvertSettings)
@@ -439,10 +465,23 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             throw new InvalidReplacementMaterialException("Replacement material is not allowed for mobile avatars", converterSettings, replaceSettings.material);
                         }
                     }
+                    if (!convertSettingsMap.ContainsKey(setting.targetMaterial))
+                    {
+                        convertSettingsMap.Add(setting.targetMaterial, setting.materialConvertSettings);
+                    }
                 }
+            }
+
+            // Apply default material convert settings
+            var avatarMaterials = avatar.Materials;
+            var primaryConversion = avatar.GameObject
+                .GetComponents<IMaterialConversionComponent>()
+                .FirstOrDefault(c => c.IsPrimaryRoot);
+            if (primaryConversion != null)
+            {
                 foreach (var material in avatarMaterials)
                 {
-                    var setting = converterSettings.GetMaterialConvertSettings(material);
+                    var setting = primaryConversion.DefaultMaterialConvertSettings;
                     if (!convertSettingsMap.ContainsKey(material))
                     {
                         convertSettingsMap.Add(material, setting);
@@ -450,6 +489,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
             }
 
+            // Omit materials that are not used in the avatar.
             convertSettingsMap = convertSettingsMap
                 .Where(pair => avatarMaterials.Contains(pair.Key))
                 .ToDictionary(pair => pair.Key, pair => pair.Value);

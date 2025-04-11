@@ -25,6 +25,7 @@ namespace KRT.VRCQuestTools.Ndmf
         internal const string MaterialSwapNullErrorDescription = "NDMF:MaterialSwapNullErrorDescription";
         internal const string ObjectConversionErrorTitle = "NDMF:ObjectConversionErrorTitle";
         internal const string ObjectConversionErrorDescription = "NDMF:ObjectConversionErrorDescription";
+        internal const string TargetMaterialNullErrorTitle = "NDMF:TargetMaterialNullErrorTitle";
         internal const string UnsupportedTextureFormatTitle = "NDMF:UnsupportedTextureFormatTitle";
         internal const string UnsupportedTextureFormatDescription = "NDMF:UnsupportedTextureFormatDescription";
         internal const string UnknownTextureFormatTitle = "NDMF:UnknownTextureFormatTitle";

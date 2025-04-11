@@ -38,7 +38,7 @@ namespace KRT.VRCQuestTools.Ndmf.Dummy
         /// <summary>
         /// Gets DetailsKey.
         /// </summary>
-        public abstract string DetailsKey { get; }
+        public virtual string DetailsKey => TitleKey + ":description";
 
         /// <summary>
         /// Gets DetailsSubst.

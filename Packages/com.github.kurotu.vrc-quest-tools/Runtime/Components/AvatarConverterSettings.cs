@@ -82,6 +82,25 @@ namespace KRT.VRCQuestTools.Components
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
 
+        /// <inheritdoc/>
+        public IMaterialConvertSettings DefaultMaterialConvertSettings => defaultMaterialConvertSettings;
+
+        /// <inheritdoc/>
+        public AdditionalMaterialConvertSettings[] AdditionalMaterialConvertSettings
+        {
+            get => additionalMaterialConvertSettings;
+            set => additionalMaterialConvertSettings = value;
+        }
+
+        /// <inheritdoc/>
+        public bool RemoveExtraMaterialSlots => removeExtraMaterialSlots;
+
+        /// <inheritdoc/>
+        public AvatarConverterNdmfPhase NdmfPhase => ndmfPhase;
+
+        /// <inheritdoc/>
+        public bool IsPrimaryRoot => true;
+
         /// <summary>
         /// Gets the material convert settings for the specified material.
         /// </summary>
