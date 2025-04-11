@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-04-11 08:28\n"
+"PO-Revision-Date: 2025-04-11 10:28\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -199,6 +199,12 @@ msgstr "追加のマテリアル変換設定"
 
 msgid "AvatarConverterAvatarDynamicsSettingsLabel"
 msgstr "Avatar Dynamics 設定"
+
+msgid "AvatarConverterRemoveAvatarDynamicsLabel"
+msgstr ""
+
+msgid "AvatarConverterRemoveAvatarDynamicsTooltip"
+msgstr ""
 
 msgid "AvatarConverterPhysBonesTooltip"
 msgstr "変換時に残しておく PhysBone を選択します。"
