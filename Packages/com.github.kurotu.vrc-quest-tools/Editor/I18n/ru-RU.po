@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-04-08 12:46\n"
+"PO-Revision-Date: 2025-04-11 08:28\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -527,6 +527,15 @@ msgstr ""
 msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr ""
 
+msgid "MaterialConversionSettingsEditorDescription"
+msgstr ""
+
+msgid "MaterialConversionSettingsEditorDefaultConversionWarning"
+msgstr ""
+
+msgid "MaterialConversionSettingsEditorConversionSettingsLabel"
+msgstr ""
+
 msgid "MenuIconResizerEditorDescription"
 msgstr ""
 
@@ -644,6 +653,12 @@ msgstr "Произошла ошибка при конвертации {0}.\n\n"
 "{0}: {1}\n\n"
 "{2}: {3}\n"
 "{4}"
+
+msgid "NDMF:TargetMaterialNullErrorTitle"
+msgstr ""
+
+msgid "NDMF:TargetMaterialNullErrorTitle:description"
+msgstr ""
 
 msgid "NDMF:UnsupportedTextureFormatTitle"
 msgstr "Неподдерживаемый формат текстуры"
