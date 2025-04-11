@@ -122,7 +122,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
                 ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
 
-                ApplyVRCQuestToolsComponents(converterSettings, questAvatarObject);
+                AddVRCQuestToolsComponents(converterSettings, questAvatarObject);
 
                 var contactsToKeep = converterSettings.contactsToKeep
                     .Concat(avatar.GetLocalContactReceivers())
@@ -772,7 +772,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return convertedAnimationClips;
         }
 
-        private void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
+        private void AddVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
         {
             if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
             {
