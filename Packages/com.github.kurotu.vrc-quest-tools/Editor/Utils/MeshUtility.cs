@@ -82,12 +82,12 @@ namespace KRT.VRCQuestTools.Utils
         {
             Vector3[] oldVertices = mesh.vertices;
 
-            bool isKeptForNew<T>(T item, int index)
+            bool IsKeptForNew<T>(T item, int index)
             {
                 return !indicesToRemove.Contains(index);
             }
 
-            T[] shrinkArray<T>(T[] array)
+            T[] ShrinkArray<T>(T[] array)
             {
                 if (array == null)
                 {
@@ -97,7 +97,7 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     return new T[0];
                 }
-                return array.Where(isKeptForNew).ToArray();
+                return array.Where(IsKeptForNew).ToArray();
             }
 
             var oldToNewMap = oldVertices
@@ -107,19 +107,19 @@ namespace KRT.VRCQuestTools.Utils
                 .ToDictionary(item => item.oldIndex, item => item.newIndex);
 
             var newMesh = new Mesh();
-            newMesh.vertices = shrinkArray(oldVertices);
-            newMesh.normals = shrinkArray(mesh.normals);
-            newMesh.tangents = shrinkArray(mesh.tangents);
-            newMesh.colors = shrinkArray(mesh.colors);
-            newMesh.uv = shrinkArray(mesh.uv);
-            newMesh.uv2 = shrinkArray(mesh.uv2);
-            newMesh.uv3 = shrinkArray(mesh.uv3);
-            newMesh.uv4 = shrinkArray(mesh.uv4);
-            newMesh.uv5 = shrinkArray(mesh.uv5);
-            newMesh.uv6 = shrinkArray(mesh.uv6);
-            newMesh.uv7 = shrinkArray(mesh.uv7);
-            newMesh.uv8 = shrinkArray(mesh.uv8);
-            newMesh.boneWeights = shrinkArray(mesh.boneWeights);
+            newMesh.vertices = ShrinkArray(oldVertices);
+            newMesh.normals = ShrinkArray(mesh.normals);
+            newMesh.tangents = ShrinkArray(mesh.tangents);
+            newMesh.colors = ShrinkArray(mesh.colors);
+            newMesh.uv = ShrinkArray(mesh.uv);
+            newMesh.uv2 = ShrinkArray(mesh.uv2);
+            newMesh.uv3 = ShrinkArray(mesh.uv3);
+            newMesh.uv4 = ShrinkArray(mesh.uv4);
+            newMesh.uv5 = ShrinkArray(mesh.uv5);
+            newMesh.uv6 = ShrinkArray(mesh.uv6);
+            newMesh.uv7 = ShrinkArray(mesh.uv7);
+            newMesh.uv8 = ShrinkArray(mesh.uv8);
+            newMesh.boneWeights = ShrinkArray(mesh.boneWeights);
 
             var bindposes = mesh.bindposes;
             if (bindposes != null && bindposes.Length > 0)
@@ -167,9 +167,9 @@ namespace KRT.VRCQuestTools.Utils
 
                     mesh.GetBlendShapeFrameVertices(shapeIndex, frameIndex, deltaVertices, deltaNormals, deltaTangents);
 
-                    var newDeltaVertices = deltaVertices.Where(isKeptForNew).ToArray();
-                    var newDeltaNormals = deltaNormals.Where(isKeptForNew).ToArray();
-                    var newDeltaTangents = deltaTangents.Where(isKeptForNew).ToArray();
+                    var newDeltaVertices = deltaVertices.Where(IsKeptForNew).ToArray();
+                    var newDeltaNormals = deltaNormals.Where(IsKeptForNew).ToArray();
+                    var newDeltaTangents = deltaTangents.Where(IsKeptForNew).ToArray();
 
                     newMesh.AddBlendShapeFrame(
                         shapeName,
