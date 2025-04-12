@@ -73,8 +73,9 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="renderTexture">Render texture to readback.</param>
         /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="makeNoLongerReadable">Make texture not readable.</param>
         /// <param name="completion">Completion callback.</param>
-        internal TextureGPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, Action<Texture2D> completion)
+        internal TextureGPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, bool makeNoLongerReadable, Action<Texture2D> completion)
         {
             var width = renderTexture.width;
             var height = renderTexture.height;
@@ -103,7 +104,7 @@ namespace KRT.VRCQuestTools.Utils
                         result.LoadRawTextureData(data);
                     }
                 }
-                result.Apply(true, true);
+                result.Apply(true, makeNoLongerReadable);
                 completion?.Invoke(result);
             });
         }
@@ -125,14 +126,15 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="renderTexture">Render texture to readback.</param>
         /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="makeNoLongerReadable">Make texture not readable.</param>
         /// <param name="completion">Completion callback.</param>
-        internal TextureCPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, Action<Texture2D> completion)
+        internal TextureCPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, bool makeNoLongerReadable, Action<Texture2D> completion)
         {
             int width = renderTexture.width;
             int height = renderTexture.height;
             var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap);
             result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-            result.Apply(true, true);
+            result.Apply(true, makeNoLongerReadable);
             completion?.Invoke(result);
         }
 

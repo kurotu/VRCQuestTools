@@ -496,19 +496,19 @@ namespace KRT.VRCQuestTools.Utils
             quad.GetComponent<MeshRenderer>().material = material;
             quad.layer = layer;
 
+            RenderTexture prev = RenderTexture.active;
             try
             {
-                var result = new Texture2D(width, height, TextureFormat.RGBA32, false, false);
-
                 cam.Render();
 
-                RenderTexture prev = RenderTexture.active;
                 RenderTexture.active = rt;
 
-                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                result.Apply(true, makeNoLongerReadable);
-
-                RenderTexture.active = prev;
+                Texture2D result = null;
+                var request = RequestReadbackRenderTexture(rt, false, false, (tex) =>
+                {
+                    result = tex;
+                });
+                request.WaitForCompletion();
 
                 return result;
             }
@@ -516,6 +516,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 UnityEngine.Object.DestroyImmediate(camObj);
                 UnityEngine.Object.DestroyImmediate(quad);
+                RenderTexture.active = prev;
                 RenderTexture.ReleaseTemporary(rt);
             }
         }
@@ -529,13 +530,26 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Readback request to wait.</returns>
         internal static AsyncCallbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, bool useMipmap, Action<Texture2D> completion)
         {
+            return RequestReadbackRenderTexture(renderTexture, useMipmap, true, completion);
+        }
+
+        /// <summary>
+        /// Request readback of a render texture.
+        /// </summary>
+        /// <param name="renderTexture">Render texture to readback.</param>
+        /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="makeNoLongerReadable">Make texture not readable.</param>
+        /// <param name="completion">Completion callback.</param>
+        /// <returns>Readback request to wait.</returns>
+        internal static AsyncCallbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, bool useMipmap, bool makeNoLongerReadable, Action<Texture2D> completion)
+        {
             if (ShouldUseAsyncGPUReadback())
             {
-                return new TextureGPUReadbackRequest(renderTexture, useMipmap, completion);
+                return new TextureGPUReadbackRequest(renderTexture, useMipmap, makeNoLongerReadable, completion);
             }
             else
             {
-                return new TextureCPUReadbackRequest(renderTexture, useMipmap, completion);
+                return new TextureCPUReadbackRequest(renderTexture, useMipmap, makeNoLongerReadable, completion);
             }
         }
 
