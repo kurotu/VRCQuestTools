@@ -63,7 +63,7 @@ namespace KRT.VRCQuestTools.Components
         /// Whether to remove transparent meshes from the face.
         /// </summary>
         [SerializeField]
-        public bool removeTransparentFromFace = true;
+        public bool removeTransparentFaceParts = true;
 
         /// <summary>
         /// Whether to remove vertex color.

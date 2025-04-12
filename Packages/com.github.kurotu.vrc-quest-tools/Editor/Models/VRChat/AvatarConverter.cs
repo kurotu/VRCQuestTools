@@ -815,7 +815,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                 }
 
-                if (converterSettings.removeTransparentFromFace)
+                if (converterSettings.removeTransparentFaceParts)
                 {
                     var descriptor = converterSettings.GetComponent<VRCAvatarDescriptor>();
                     if (VRCSDKUtility.IsFaceSkinnedMeshRenderer(descriptor, renderer))

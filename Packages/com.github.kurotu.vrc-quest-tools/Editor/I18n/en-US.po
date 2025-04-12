@@ -97,10 +97,10 @@ msgstr "Update Converted Android Textures"
 msgid "AdvancedConverterSettingsLabel"
 msgstr "Advanced Converter Settings"
 
-msgid "RemoveTransparentFromFaceLabel"
-msgstr "Remove Transparent Face Meshes"
+msgid "RemoveTransparentFacePartsLabel"
+msgstr "Remove Transparent Face Parts"
 
-msgid "RemoveTransparentFromFaceTooltip"
+msgid "RemoveTransparentFacePartsTooltip"
 msgstr "Remove transparent parts of the face mesh which is referenced from VRC Avatar Descriptor."
 
 msgid "RemoveVertexColorLabel"
