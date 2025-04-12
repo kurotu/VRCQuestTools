@@ -53,22 +53,17 @@ namespace KRT.VRCQuestTools.Utils
             for (var sub = 0; sub < mesh.subMeshCount; sub++)
             {
                 var triangles = mesh.GetTriangles(sub);
-                var triangleGroups = triangles.Select((value, index) => (value, index))
-                    .GroupBy(x => x.index / 3)
-                    .Select(g => (g.ElementAt(0).value, g.ElementAt(1).value, g.ElementAt(2).value))
-                    .ToArray();
+                var groupedTriangles = GroupConnectedTriangles(triangles);
+
                 var texture = renderedTextures[sub];
-                var newTriangles = triangleGroups
-                    .Where(t =>
+                var groupsToKeep = groupedTriangles
+                    .Where(group =>
                     {
-                        var isTransparent =
-                            texture.GetPixelBilinear(mesh.uv[t.Item1].x, mesh.uv[t.Item1].y).a < 1f
-                            && texture.GetPixelBilinear(mesh.uv[t.Item2].x, mesh.uv[t.Item2].y).a < 1f
-                            && texture.GetPixelBilinear(mesh.uv[t.Item3].x, mesh.uv[t.Item3].y).a < 1f;
-                        return !isTransparent;
+                        return !group.All(t => texture.GetPixelBilinear(mesh.uv[t].x, mesh.uv[t].y).a < 1f);
                     })
-                    .SelectMany(t => new[] { t.Item1, t.Item2, t.Item3 })
                     .ToArray();
+
+                var newTriangles = groupsToKeep.SelectMany(group => group);
                 vertexIndexToKeep.AddRange(newTriangles);
             }
             vertexIndexToKeep = vertexIndexToKeep.Distinct().ToList();
@@ -76,6 +71,82 @@ namespace KRT.VRCQuestTools.Utils
             var indices = Enumerable.Range(0, mesh.vertexCount - 1).
                 Where(i => !vertexIndexToKeep.Contains(i));
             return new HashSet<int>(indices);
+        }
+
+        /// <summary>
+        /// Group triangles by vertices connection.
+        /// Each group has triangle indices as well as submesh.
+        /// </summary>
+        private static List<int[]> GroupConnectedTriangles(int[] triangles)
+        {
+            int triangleCount = triangles.Length / 3;
+
+            // 三角形 → 使っている頂点
+            List<int>[] triangleToVertices = new List<int>[triangleCount];
+
+            // 頂点 → 含まれている三角形
+            Dictionary<int, List<int>> vertexToTriangles = new Dictionary<int, List<int>>();
+
+            for (int i = 0; i < triangleCount; i++)
+            {
+                int a = triangles[i * 3];
+                int b = triangles[i * 3 + 1];
+                int c = triangles[i * 3 + 2];
+                triangleToVertices[i] = new List<int> { a, b, c };
+
+                foreach (var v in triangleToVertices[i])
+                {
+                    if (!vertexToTriangles.ContainsKey(v))
+                    {
+                        vertexToTriangles[v] = new List<int>();
+                    }
+
+                    vertexToTriangles[v].Add(i);
+                }
+            }
+
+            // 隣接三角形をBFSでグループ化
+            List<int[]> triangleGroups = new List<int[]>();
+            bool[] visited = new bool[triangleCount];
+
+            for (int i = 0; i < triangleCount; i++)
+            {
+                if (visited[i])
+                {
+                    continue;
+                }
+
+                List<int> groupTriangleIndices = new List<int>();
+                Queue<int> queue = new Queue<int>();
+                queue.Enqueue(i);
+                visited[i] = true;
+
+                while (queue.Count > 0)
+                {
+                    int current = queue.Dequeue();
+
+                    // triangles 配列から current 番目の三角形のインデックス3つを追加
+                    groupTriangleIndices.Add(triangles[current * 3]);
+                    groupTriangleIndices.Add(triangles[current * 3 + 1]);
+                    groupTriangleIndices.Add(triangles[current * 3 + 2]);
+
+                    foreach (var v in triangleToVertices[current])
+                    {
+                        foreach (var neighbor in vertexToTriangles[v])
+                        {
+                            if (!visited[neighbor])
+                            {
+                                visited[neighbor] = true;
+                                queue.Enqueue(neighbor);
+                            }
+                        }
+                    }
+                }
+
+                triangleGroups.Add(groupTriangleIndices.ToArray());
+            }
+
+            return triangleGroups;
         }
 
         private static Mesh RemoveVertices(Mesh mesh, HashSet<int> indicesToRemove)
