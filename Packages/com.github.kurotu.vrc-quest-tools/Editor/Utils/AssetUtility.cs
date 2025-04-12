@@ -480,6 +480,7 @@ namespace KRT.VRCQuestTools.Utils
 
             GameObject camObj = new GameObject("TempRenderCamera");
             Camera cam = camObj.AddComponent<Camera>();
+            camObj.hideFlags = HideFlags.HideAndDontSave;
             cam.orthographic = true;
             cam.orthographicSize = 0.5f;
             cam.clearFlags = CameraClearFlags.Depth;
@@ -489,6 +490,7 @@ namespace KRT.VRCQuestTools.Utils
             cam.transform.position = new Vector3(0, 0, -10);
 
             GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.hideFlags = HideFlags.HideAndDontSave;
             quad.transform.position = Vector3.zero;
             quad.transform.localScale = Vector3.one;
             quad.GetComponent<MeshRenderer>().material = material;
