@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-04-11 10:28\n"
+"PO-Revision-Date: 2025-04-12 11:29\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -201,10 +201,10 @@ msgid "AvatarConverterAvatarDynamicsSettingsLabel"
 msgstr "Avatar Dynamics 設定"
 
 msgid "AvatarConverterRemoveAvatarDynamicsLabel"
-msgstr ""
+msgstr "Avatar Dynamics を削除"
 
 msgid "AvatarConverterRemoveAvatarDynamicsTooltip"
-msgstr ""
+msgstr "\"Avatar Dynamics 設定\" で選択した Avatar Dynamics コンポーネントを残し、選択されていないコンポーネントを変換中に削除します。"
 
 msgid "AvatarConverterPhysBonesTooltip"
 msgstr "変換時に残しておく PhysBone を選択します。"
@@ -537,13 +537,13 @@ msgid "MaterialSwapEditorReplacementMaterialError"
 msgstr "このマテリアルのシェーダーはモバイルアバターでは許可されていません。"
 
 msgid "MaterialConversionSettingsEditorDescription"
-msgstr ""
+msgstr "Mobile プラットフォーム向けにマテリアルを変換します。"
 
 msgid "MaterialConversionSettingsEditorDefaultConversionWarning"
-msgstr ""
+msgstr "無効になっている設定を使用するにはこのコンポーネントをアバターのルートオブジェクトに配置してください。ただし VQT Avatar Converter Settings の設定が優先されます。"
 
 msgid "MaterialConversionSettingsEditorConversionSettingsLabel"
-msgstr ""
+msgstr "マテリアル変換設定"
 
 msgid "MenuIconResizerEditorDescription"
 msgstr "Expressions Menuのアイコンをリサイズします。"
@@ -666,10 +666,10 @@ msgstr "{0} の変換中にエラーが発生しました。\n\n"
 "{4}"
 
 msgid "NDMF:TargetMaterialNullErrorTitle"
-msgstr ""
+msgstr "対象マテリアル未設定"
 
 msgid "NDMF:TargetMaterialNullErrorTitle:description"
-msgstr ""
+msgstr "{0} コンポーネントで対象マテリアルが設定されていません。"
 
 msgid "NDMF:UnsupportedTextureFormatTitle"
 msgstr "非対応テクスチャフォーマット"
