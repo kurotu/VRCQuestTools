@@ -1,5 +1,8 @@
+using System;
+
 namespace KRT.VRCQuestTools.Models
 {
+    [Serializable]
     public class StandardLiteConvertSettings : IMaterialConvertSettings
     {
         /// <summary>
@@ -11,5 +14,11 @@ namespace KRT.VRCQuestTools.Models
         /// Max texture size for quest.
         /// </summary>
         public TextureSizeLimit maxTextureSize = TextureSizeLimit.Max1024x1024;
+
+        /// <inheritdoc/>
+        public string GetCacheKey()
+        {
+            return $"{generateQuestTextures}_{maxTextureSize}";
+        }
     }
 }

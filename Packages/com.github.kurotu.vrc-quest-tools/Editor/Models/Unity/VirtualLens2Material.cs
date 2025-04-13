@@ -35,17 +35,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <inheritdoc/>
         internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, Action<Texture2D> completion)
         {
-            return GenerateTexture();
-        }
-
-        /// <inheritdoc/>
-        internal override Texture2D GenerateStandardLiteMainImage(StandardLiteConvertSettings settings)
-        {
-            return GenerateTexture();
-        }
-
-        private Texture2D GenerateTexture()
-        {
             if (Material.shader.name.ToLower().Contains("/UnlitPreview".ToLower()))
             {
                 var newTex = new Texture2D(Texture2D.blackTexture.width, Texture2D.blackTexture.height);

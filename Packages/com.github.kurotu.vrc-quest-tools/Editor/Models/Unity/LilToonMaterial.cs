@@ -14,7 +14,7 @@ namespace KRT.VRCQuestTools.Models.Unity
     /// <summary>
     /// lilToon material.
     /// </summary>
-    internal class LilToonMaterial : MaterialBase
+    internal class LilToonMaterial : MaterialBase, IStandardLiteConvertable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LilToonMaterial"/> class.
@@ -32,7 +32,16 @@ namespace KRT.VRCQuestTools.Models.Unity
 
         internal override Shader StandardLiteMetallicSmoothnessBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_metallic_smoothness");
 
-        internal override Material ConvertToStandardLite()
+        public bool UseStandardLiteEmission => Material.GetTexture("_EmissionMap") != null; // TODO: Fix this later.
+
+        public bool UseStandardLiteNormalMap => Material.GetTexture("_BumpMap") != null;
+
+        public bool UseStandardLiteMetallicSmoothness => Material.GetFloat("_UseReflection") > 0.0f;
+
+        #region IStandardLiteConvertable
+
+        /// <inheritdoc/>
+        public Material ConvertToStandardLite()
         {
             var newShader = Shader.Find("VRChat/Mobile/Standard Lite");
             var newMaterial = new Material(newShader)
@@ -53,7 +62,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             var mats = new[] { Material };
 
-            var useReflection = Material.GetFloat("_UseReflection") > 0.0;
+            var useReflection = UseStandardLiteMetallicSmoothness;
             var applyReflection = Material.GetFloat("_ApplyReflection") > 0.0;
             if (useReflection && applyReflection)
             {
@@ -67,9 +76,9 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
             newMaterial.SetFloat("_Metallic", useReflection ? Material.GetFloat("_Metallic") : 0.0f);
             newMaterial.SetFloat("_Glossiness", useReflection ? Material.GetFloat("_Smoothness") : 0.0f);
-            newMaterial.SetTexture("_BumpMap", Material.GetFloat("_UseBumpMap") > 0.0 ? Material.GetTexture("_BumpMap") : null);
+            newMaterial.SetTexture("_BumpMap", UseStandardLiteNormalMap ? Material.GetTexture("_BumpMap") : null);
 
-            var useEmission = Material.GetFloat("_UseEmission") > 0.0;
+            var useEmission = UseStandardLiteEmission;
             if (useEmission)
             {
                 newMaterial.EnableKeyword("_EMISSION");
@@ -88,6 +97,52 @@ namespace KRT.VRCQuestTools.Models.Unity
             return newMaterial;
         }
 
+        public AsyncCallbackRequest GenerateStandardLiteMain(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
+        {
+            var rt = MainBake(Material, 0);
+            return AssetUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
+            {
+                Object.DestroyImmediate(rt);
+                completion?.Invoke(tex);
+            });
+        }
+
+        public AsyncCallbackRequest GenerateStandardLiteMetallicSmoothness(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
+        {
+            var rt = RenderTexture.GetTemporary((int)settings.maxTextureSize, (int)settings.maxTextureSize, 0, RenderTextureFormat.ARGB32);
+            var bakeMat = new Material(Material);
+            bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_metallic_smoothness");
+            Graphics.Blit(Texture2D.whiteTexture, rt, bakeMat);
+            return AssetUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
+            {
+                RenderTexture.ReleaseTemporary(rt);
+                Object.DestroyImmediate(bakeMat);
+                completion?.Invoke(tex);
+            });
+        }
+
+        public AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
+        {
+            // TODO: Rewrite down sampling.
+            var normal = Material.GetTexture("_BumpMap") as Texture2D;
+            return AssetUtility.BakeTexture(normal, (int)settings.maxTextureSize, (int)settings.maxTextureSize, true, (texture) =>
+            {
+                completion?.Invoke(texture);
+            });
+        }
+
+        public AsyncCallbackRequest GenerateStandardLiteEmission(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
+        {
+            // TODO: Rewrite bake emission.
+            var emission = Material.GetTexture("_EmissionMap") as Texture2D;
+            return AssetUtility.BakeTexture(emission, (int)settings.maxTextureSize, (int)settings.maxTextureSize, true, (texture) =>
+            {
+                completion?.Invoke(texture);
+            });
+        }
+
+        #endregion
+
         /// <inheritdoc/>
         internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
@@ -97,11 +152,6 @@ namespace KRT.VRCQuestTools.Models.Unity
                 main.Dispose();
                 completion?.Invoke(texture);
             });
-        }
-
-        internal override Texture2D GenerateStandardLiteMainImage(StandardLiteConvertSettings settings)
-        {
-            return TextureBake(Material, 0);
         }
 
         private static LilToonSetting LoadShaderSetting()
