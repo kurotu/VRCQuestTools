@@ -109,10 +109,18 @@ namespace KRT.VRCQuestTools.Models.Unity
 
         public AsyncCallbackRequest GenerateStandardLiteMetallicSmoothness(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
         {
-            var rt = RenderTexture.GetTemporary((int)settings.maxTextureSize, (int)settings.maxTextureSize, 0, RenderTextureFormat.ARGB32);
+            var hasMainTex = Material.mainTexture != null;
+            var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
+            var textureSize = System.Math.Min(mainTexSize, (int)settings.maxTextureSize);
+
             var bakeMat = new Material(Material);
+#if UNITY_2022_1_OR_NEWER
+            bakeMat.parent = null;
+#endif
             bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_metallic_smoothness");
-            Graphics.Blit(Texture2D.whiteTexture, rt, bakeMat);
+
+            var rt = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
+            Graphics.Blit(null, rt, bakeMat);
             return AssetUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
             {
                 RenderTexture.ReleaseTemporary(rt);
