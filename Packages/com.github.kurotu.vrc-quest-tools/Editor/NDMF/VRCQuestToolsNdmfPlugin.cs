@@ -58,25 +58,30 @@ namespace KRT.VRCQuestTools.Ndmf
                 .Run(AvatarConverterTransformingPass.Instance);
 
             InPhase(BuildPhase.Transforming)
-                .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control decimation
-                .Run(RemoveVertexColorPass.Instance)
-#if !VQT_LIL_NDMF_MESH_SIMPLIFIER
-                .Then.Run(MeshFlipperPass.Instance)
+                .BeforePlugin("MantisLODEditor.ndmf") // needs unmodified UVs for mask textures
+                .Run(MeshFlipperPass.Instance)
+#if VQT_HAS_NDMF_PREVIEW
+                .PreviewingWith(new MeshFlipperFilter(Components.MeshFlipperProcessingPhase.BeforeDecimation))
 #endif
                 ;
 
-#if VQT_LIL_NDMF_MESH_SIMPLIFIER
-            InPhase(BuildPhase.Optimizing)
-                .AfterPlugin("jp.lilxyzw.ndmfmeshsimplifier.NDMF.NDMFPlugin")
-                .BeforePlugin("com.anatawa12.avatar-optimizer")
-                .Run(MeshFlipperPass.Instance);
-#endif
+            InPhase(BuildPhase.Transforming)
+                .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control decimation
+                .Run(RemoveVertexColorPass.Instance);
 
             InPhase(BuildPhase.Optimizing)
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
+                .AfterPlugin("jp.unisakistudio.posingsystemeditor.posingsystemconverter") // needs created menus
+                .AfterPlugin("jp.lilxyzw.ndmfmeshsimplifier.NDMF.NDMFPlugin") // decimation
+                .AfterPlugin("Meshia.MeshSimplification.Ndmf.Editor.NdmfPlugin ") // decimation
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
                 .Run(AvatarConverterOptimizingPass.Instance)
+                .Then.Run(MeshFlipperAfterDecimationPass.Instance)
+#if VQT_HAS_NDMF_PREVIEW
+                .PreviewingWith(new MeshFlipperFilter(Components.MeshFlipperProcessingPhase.AfterDecimation))
+#endif
                 .Then.Run(RemoveUnsupportedComponentsPass.Instance)
+                .Then.Run(MenuIconResizerPass.Instance)
                 .Then.Run(RemoveVRCQuestToolsComponentsPass.Instance);
 
             InPhase(BuildPhase.Optimizing)

@@ -62,6 +62,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string AbortLabel => GetText("AbortLabel");
         internal string AddLabel => GetText("AddLabel");
         internal string RemoveLabel => GetText("RemoveLabel");
+        internal string FixLabel => GetText("FixLabel");
 
         internal string Maximum => GetText("Maximum");
 
@@ -85,14 +86,20 @@ namespace KRT.VRCQuestTools.I18n
         internal string AdvancedConverterSettingsLabel => GetText("AdvancedConverterSettingsLabel");
         internal string RemoveVertexColorLabel => GetText("RemoveVertexColorLabel");
         internal string RemoveVertexColorTooltip => GetText("RemoveVertexColorTooltip");
+        internal string RemoveExtraMaterialSlotsLabel => GetText("RemoveExtraMaterialSlotsLabel");
+        internal string RemoveExtraMaterialSlotsTooltip => GetText("RemoveExtraMaterialSlotsTooltip");
+        internal string CompressExpressionsMenuIconsLabel => GetText("CompressExpressionsMenuIconsLabel");
+        internal string CompressExpressionsMenuIconsTooltip => GetText("CompressExpressionsMenuIconsTooltip");
         internal string AnimationOverrideLabel => GetText("AnimationOverrideLabel");
         internal string AnimationOverrideTooltip => GetText("AnimationOverrideTooltip");
         internal string NdmfPhaseLabel => GetText("NdmfPhaseLabel");
         internal string NdmfPhaseTooltip => GetText("NdmfPhaseTooltip");
         internal string GeneratingTexturesDialogMessage => GetText("GeneratingTexturesDialogMessage");
+        internal string AvatarConverterFailedDialogMessage => GetText("AvatarConverterFailedDialogMessage");
         internal string MaterialExceptionDialogMessage => GetText("MaterialExceptionDialogMessage");
         internal string AnimationClipExceptionDialogMessage => GetText("AnimationClipExceptionDialogMessage");
         internal string AnimatorControllerExceptionDialogMessage => GetText("AnimatorControllerExceptionDialogMessage");
+        internal string InvalidReplacementMaterialExceptionDialogMessage => GetText("InvalidReplacementMaterialExceptionDialogMessage");
         internal string InfoForNdmfConversion => GetText("InfoForNdmfConversion");
         internal string InfoForNetworkIdAssigner => GetText("InfoForNetworkIdAssigner");
         internal string NetworkIdAssignerAttached => GetText("NetworkIdAssignerAttached");
@@ -113,11 +120,12 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarConverterAdditionalMaterialConvertSettingsLabel => GetText("AvatarConverterAdditionalMaterialConvertSettingsLabel");
 
         internal string AvatarConverterAvatarDynamicsSettingsLabel => GetText("AvatarConverterAvatarDynamicsSettingsLabel");
+        internal string AvatarConverterRemoveAvatarDynamicsLabel => GetText("AvatarConverterRemoveAvatarDynamicsLabel");
+        internal string AvatarConverterRemoveAvatarDynamicsTooltip => GetText("AvatarConverterRemoveAvatarDynamicsTooltip");
         internal string AvatarConverterPhysBonesTooltip => GetText("AvatarConverterPhysBonesTooltip");
         internal string AvatarConverterPhysBoneCollidersTooltip => GetText("AvatarConverterPhysBoneCollidersTooltip");
         internal string AvatarConverterContactsTooltip => GetText("AvatarConverterContactsTooltip");
         internal string OpenAvatarBuilder => GetText("OpenAvatarBuilder");
-        internal string ManualConversionLabel => GetText("ManualConversionLabel");
         internal string ManualConversionWarning => GetText("ManualConversionWarning");
         internal string ManualConvertButtonLabel => GetText("ManualConvertButtonLabel");
         internal string ConfirmationForUnityConstraints => GetText("ConfirmationForUnityConstraints");
@@ -136,6 +144,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string MaterialConvertTypePopupLabelMaterialReplace => GetText("MaterialConvertTypePopupLabelMaterialReplace");
         internal string MaterialReplaceSettingsMaterialLabel => GetText("MaterialReplaceSettingsMaterialLabel");
         internal string MaterialReplaceSettingsMaterialTooltip => GetText("MaterialReplaceSettingsMaterialTooltip");
+        internal string MaterialReplaceSettingsMaterialWarning => GetText("MaterialReplaceSettingsMaterialWarning");
 
         // Remove Missing Components
         internal string NoMissingComponentsMessage(string objectName) => GetText("NoMissingComponentsMessage", objectName);
@@ -183,6 +192,8 @@ namespace KRT.VRCQuestTools.I18n
 
         // Unity Settings
         internal string RecommendedUnitySettingsForAndroid => GetText("RecommendedUnitySettingsForAndroid");
+        internal string AndroidBuildSupportButtonLabel => GetText("AndroidBuildSupportButtonLabel");
+        internal string AndroidBuildSupportHelp => GetText("AndroidBuildSupportHelp");
         internal string TextureCompressionLabel => GetText("TextureCompressionLabel");
         internal string TextureCompressionHelp => GetText("TextureCompressionHelp");
         internal string TextureCompressionButtonLabel => GetText("TextureCompressionButtonLabel");
@@ -239,12 +250,36 @@ namespace KRT.VRCQuestTools.I18n
         // Mesh Flipper
         internal string MeshFlipperEditorDescription => GetText("MeshFlipperEditorDescription");
         internal string MeshFlipperEditorDirectionLabel => GetText("MeshFlipperEditorDirectionLabel");
+        internal string MeshFlipperEditorUseMaskLabel => GetText("MeshFlipperEditorUseMaskLabel");
+        internal string MeshFlipperEditorMaskTextureLabel => GetText("MeshFlipperEditorMaskTextureLabel");
+        internal string MeshFlipperEditorMaskModeLabel => GetText("MeshFlipperEditorMaskModeLabel");
+        internal string MeshFlipperEditorProcessingPhaseLabel => GetText("MeshFlipperEditorProcessingPhaseLabel");
         internal string MeshFlipperEditorEnabledOnPCLabel => GetText("MeshFlipperEditorEnabledOnPCLabel");
         internal string MeshFlipperEditorEnabledOnAndroidLabel => GetText("MeshFlipperEditorEnabledOnAndroidLabel");
         internal string MeshFlipperEditorEnabledOnPCWarning => GetText("MeshFlipperEditorEnabledOnPCWarning");
         internal string MeshFlipperEditorEnabledOnAndroidWarning => GetText("MeshFlipperEditorEnabledOnAndroidWarning");
+        internal string MeshFlipperEditorMaskTextureMissingError => GetText("MeshFlipperEditorMaskTextureMissingError");
+        internal string MeshFlipperEditorMaskTextureNotReadableError => GetText("MeshFlipperEditorMaskTextureNotReadableError");
         internal string MeshFlipperMeshDirectionFlip => GetText("MeshFlipperMeshDirectionFlip");
         internal string MeshFlipperMeshDirectionDoubleSide => GetText("MeshFlipperMeshDirectionDoubleSide");
+
+        // Material Swap
+        internal string MaterialSwapEditorDescription => GetText("MaterialSwapEditorDescription");
+        internal string MaterialSwapEditorMaterialMappingsLabel => GetText("MaterialSwapEditorMaterialMappingsLabel");
+        internal string MaterialSwapEditorOriginalMaterialLabel => GetText("MaterialSwapEditorOriginalMaterialLabel");
+        internal string MaterialSwapEditorReplacementMaterialLabel => GetText("MaterialSwapEditorReplacementMaterialLabel");
+        internal string MaterialSwapEditorSelectMaterialLabel => GetText("MaterialSwapEditorSelectMaterialLabel");
+        internal string MaterialSwapEditorReplacementMaterialError => GetText("MaterialSwapEditorReplacementMaterialError");
+
+        // Material Conversion Settings
+        internal string MaterialConversionSettingsEditorDescription => GetText("MaterialConversionSettingsEditorDescription");
+        internal string MaterialConversionSettingsEditorDefaultConversionWarning => GetText("MaterialConversionSettingsEditorDefaultConversionWarning");
+
+        // Menu Icons Resizer
+        internal string MenuIconResizerEditorDescription => GetText("MenuIconResizerEditorDescription");
+        internal string MenuIconResizerEditorResizeModePCLabel => GetText("MenuIconResizerEditorResizeModePCLabel");
+        internal string MenuIconResizerEditorResizeModeAndroidLabel => GetText("MenuIconResizerEditorResizeModeAndroidLabel");
+        internal string MenuIconResizerEditorCompressTexturesLabel => GetText("MenuIconResizerEditorCompressTexturesLabel");
 
         // Avatar Builder
         internal string AvatarBuilderWindowExitPlayMode => GetText("AvatarBuilderWindowExitPlayMode");
@@ -256,7 +291,10 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarBuilderWindowSucceededUpload => GetText("AvatarBuilderWindowSucceededUpload");
         internal string AvatarBuilderWindowFailedBuild => GetText("AvatarBuilderWindowFailedBuild");
         internal string AvatarBuilderWindowRequiresControlPanel => GetText("AvatarBuilderWindowRequiresControlPanel");
-        internal string AvatarBuilderWindowOfflineTestingLabel => GetText("AvatarBuilderWindowOfflineTestingLabel");
+        internal string AvatarBuilderWindowBuildingProgressLabel => GetText("AvatarBuilderWindowBuildingProgressLabel");
+        internal string AvatarBuilderWindowUploadingProgressLabel => GetText("AvatarBuilderWindowUploadingProgressLabel");
+        internal string AvatarBuilderWindowCopyrightAgreementHelp => GetText("AvatarBuilderWindowCopyrightAgreementHelp");
+        internal string AvatarBuilderWindowOfflineTestingLabel(string platformName) => GetText("AvatarBuilderWindowOfflineTestingLabel", platformName);
         internal string AvatarBuilderWindowOfflineTestingDescription(string name) => GetText("AvatarBuilderWindowOfflineTestingDescription", name);
         internal string AvatarBuilderWindowOnlinePublishingLabel(string platformName) => GetText("AvatarBuilderWindowOnlinePublishingLabel", platformName);
         internal string AvatarBuilderWindowOnlinePublishingDescription => GetText("AvatarBuilderWindowOnlinePublishingDescription");

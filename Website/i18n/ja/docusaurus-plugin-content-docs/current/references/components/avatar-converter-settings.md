@@ -65,6 +65,10 @@ VRChatアバターをAndroid向けにアップロード可能に変換するた�
 Avatar Dynamics (PhysBone, Collider, Contact) を設定します。
 AndroidアバターではAvatar Dynamicsの上限がPoorであるため、変換後に残しておくコンポーネントを指定し、残りは変換時に削除します。
 
+### Avatar Dynamics を削除
+
+**Avatar Dynamics 設定**で選択したコンポーネント以外のAvatar Dynamicsコンポーネントを削除します。
+
 ### Avatar Dynamics 設定
 
 開いたウィンドウで、変換後に残しておくコンポーネントのチェックボックスを有効にします。
@@ -89,6 +93,18 @@ Animator Override Controller で指定したアニメーションクリップを
 変換されたアバターに[Vertex Color Remover](vertex-color-remover.md)コンポーネントを追加することで頂点カラーを削除します。
 
 通常、このオプションをオフにする必要はありません。PC版アバターで頂点カラーを使用する特殊なシェーダーを使用している場合に、意図しない動作を防ぐためにオフにします。
+
+### 余分なマテリアルスロットを削除
+
+各Rendererのサブメッシュ数より多いマテリアルスロットを削除します。
+
+このオプションは元のアバターに追加のマテリアルスロットが存在する場合に使用します。(例: lilToonのFakeShadow)
+
+### メニューアイコンを圧縮
+
+Expressions Menuの圧縮されていないアイコンを圧縮します。
+
+このオプションは他のツールが大量のメニューアイコンを生成するときにアバターのビルドサイズを削減するために使用します。
 
 ### NDMF変換フェーズ
 
@@ -139,3 +155,5 @@ NDMF変換フェーズがTransformingであるときアバターの変換を実�
 
 NDMF変換フェーズがOptimizingであるときアバターの変換を実行します。
 この処理はTexTransToolの後、AAO: Avatar Optimizerの前に実行されます。
+
+圧縮されていないメニューアイコンを圧縮します。

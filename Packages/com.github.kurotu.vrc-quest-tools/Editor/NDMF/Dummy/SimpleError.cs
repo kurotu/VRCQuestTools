@@ -31,14 +31,29 @@ namespace KRT.VRCQuestTools.Ndmf.Dummy
         public abstract string TitleKey { get; }
 
         /// <summary>
+        /// Gets TitleSubst.
+        /// </summary>
+        public virtual string[] TitleSubst => new string[] { };
+
+        /// <summary>
         /// Gets DetailsKey.
         /// </summary>
-        public abstract string DetailsKey { get; }
+        public virtual string DetailsKey => TitleKey + ":description";
 
         /// <summary>
         /// Gets DetailsSubst.
         /// </summary>
         public virtual string[] DetailsSubst => new string[] { };
+
+        /// <summary>
+        /// Gets HintKey.
+        /// </summary>
+        public virtual string HintKey => TitleKey + ":hint";
+
+        /// <summary>
+        /// Gets HintSubst.
+        /// </summary>
+        public virtual string[] HintSubst => new string[] { };
 
         /// <inheritdoc/>
         public override string ToString()

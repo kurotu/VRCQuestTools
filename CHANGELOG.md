@@ -8,10 +8,119 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- [NDMF] `VQT Mesh Flipper` component to flip the mesh of the avatar.
+- Feature to check the installation of Android Build Support.
+- `Remove Avatar Dynamics` option to `VQT Avatar Converter Settings` component.
+- [NDMF] `VQT Material Conversion Settings` component to set material conversion settings.
+- [NDMF] Add `NDMF Phase` option to `VQT Mesh Flipper` component.
+    - Before Decimation
+    - After Decimation
+- [NDMF] NDMF Preview for `VQT Mesh Flipper`.
+
+### Changed
+- [NDMF] `VQT Material Swap` works without `VQT Avatar Converter Settings`.
+
+### Fixed
+- Inactive animator's animator controllers not converted.
+
+## [2.8.3] - 2025-04-08
+
+### Added
+- Error case for missing materials in `VQT Material Swap` component.
+- [NDMF] Message to confirm "Copyright ownership agreement" when uploading with `VQT Avatar Builder`.
+
+### Fixed
+- Unhandled exception when replaced material is not set in `VQT Avatar Converter Settings`.
+- [NDMF] Animation conversion error not reported to the NDMF Console.
+- [NDMF] Material conversion error detail was wrongly reported in the NDMF Console.
+
+## [2.8.2] - 2025-04-01
+
+### Fixed
+- MatCap Lit conversion not working.
+
+## [2.8.1] - 2025-03-31
+
+### Changed
+- Allow to directly set target materials in the additional material conversion settings of `VQT Avatar Converter Settings`.
+- Stopped multiplexed texture generation process and changed it to be processed sequentially as in version 2.7.2.
+
+### Fixed
+- `VQT Menu Icon Resizer` was added in manual conversion when NDMF was not installed.
+- Error when converting VirtualLens2 materials.
+- [NDMF] Error when there was no mesh for `VQT Mesh Flipper` to target.
+- [NDMF] Error when the same replacement material was set multiple times in `VQT Material Swap`.
+
+## [2.8.0] - 2025-03-16
+
+### Added
+- Feature to configure `VQT Menu Icon Resizer` during manual conversion when `VQT Avatar Converter Settings` is set to compress menu icons.
+- Cache to accelerate the texture generation process.
+- VRCQuestTools Settings screen to Unity preferences.
+- [NDMF] Support offline testing on Android in VQT Avatar Builder.
+
+### Changed
+- Accelerated the texture generation process.
+- Accelerated the texture generation process for lilToon materials.
+- Accelerated the type resolution for optional dependencies.
+- [NDMF] Disabled "Read/Write Enabled" for generated textures.
+
+### Fixed
+- [NDMF] Fixed an issue where an exception would occur when building an avatar for a build target not supported by VRCSDK.
+
+## [2.7.2] - 2025-03-02
+
+### Added
+- Support to convert Animator Override Controllers.
+
+### Fixed
+- Fixed an issue where the original Blend Tree was deleted when converting a Blend Tree embedded in an Animator Controller.
+- Fixed an issue where a converted Blend Tree embedded in an Animator Controller was not saved properly afterward.
+
+## [2.7.1] - 2025-02-26
+
+### Changed
+- Reverted the texture generation process in Unity 2019 to be the same as in versions prior to 2.6.2.
+
+## [2.7.0] - 2025-02-25
+
+### Added
+- [NDMF] Feature to control operational area of `VQT Mesh Flipper` by mask textures.
+- [NDMF] (Experimental) `VQT Material Swap` component to swap materials on Android build. (by @Amoenus)
+- [NDMF] `VQT Menu Icon Resizer` component to resize menu icons for Android build.
+- [NDMF] Ability to track when materials subject to Additional Material Conversion Settings have been modified by other plugins.
+- Error for unsupported materials in Material Replacement settings.
+- Feature to remove extra material slots in the `VQT Avatar Converter Settings` component.
+- Feature to compress menu icons in the `VQT Avatar Converter Settings` component.
+- Feature to convert materials which use lilToon custom shaders. (as well as regular lilToon materials)
+- Support for local-only contact senders.
+
+### Changed
+- Accelerated the texture generation process.
+- [NDMF] `VQT Mesh Flipper` works before `NDMF Mantis LOD Editor` in the transforming phase.
+
+## [2.6.2] - 2025-01-21
+
+### Fixed
+- Failed to convert lilToon FakeShadow materials.
+
+## [2.6.1] - 2025-01-19
+
+### Added
+- Additional information to logs when incorrect material property type is detected in lilToon baking.
+
+### Fixed
+- Fixed an issue where an error would occur when right-clicking on the hierarchy without selecting a GameObject.
+- Fixed an issue where nested Blend Trees were not converted properly.
+- Invalid localization files. (by @Amoenus)
+
+## [2.6.0] - 2024-12-14
+
+### Added
+- Support for local-only contact receivers.
+- Buttons to back to the scene in warning about prefab stage.
+- [NDMF] (Experimental) `VQT Mesh Flipper` component to flip the mesh of the avatar.
 - [NDMF] `[NDMF] Manual Bake with Android Settings` menu to the right-click menu of the avatar.
 - [NDMF] Feature to select an avatar to upload in the `VQT Avatar Builder`.
-- Buttons to back to the scene in warning about prefab stage.
 - [NDMF] Messages and a dialog to suggest to use `MA Convert Constraints` component and non-destructive conversion.
 
 ### Changed
@@ -21,6 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fallback for untranslated phrases not working.
+- Fixed an issue where inactive Avatar Dynamics components were not selected by default in `VQT Avatar Converter Settings`.
 - [NDMF] Fixed an issue where unsupported components were removed when using Android build target even if the avatar was not converted.
 
 ## [2.5.5] - 2024-11-16

@@ -80,7 +80,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBone>(true).Length);
             Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Length);
             Assert.AreEqual(0, root.GetComponentsInChildren<ContactBase>(true).Length);
+#if VQT_HAS_VRCSDK_LOCAL_CONTACTS
+            Assert.True(stats.physBone.HasValue);
+            Assert.AreEqual(0, stats.physBone.Value.componentCount);
+            Assert.AreEqual(0, stats.physBone.Value.colliderCount);
+#else
             Assert.IsNull(stats.physBone); // Children components of EditorOnly are ignored.
+#endif
         }
 
         /// <summary>

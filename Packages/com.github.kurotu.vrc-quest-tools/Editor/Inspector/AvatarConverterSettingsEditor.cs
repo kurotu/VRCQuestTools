@@ -172,79 +172,7 @@ namespace KRT.VRCQuestTools.Inspector
                 editorState.foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingsLabel, editorState.foldOutMaterialSettings);
                 if (editorState.foldOutMaterialSettings)
                 {
-                    var defaultMaterialConvertSettings = so.FindProperty("defaultMaterialConvertSettings");
-                    EditorGUILayout.PropertyField(defaultMaterialConvertSettings, new GUIContent(i18n.AvatarConverterDefaultMaterialConvertSettingLabel));
-
-                    var additionalMaterialConvertSettings = so.FindProperty("additionalMaterialConvertSettings");
-
-                    var headerRect = new Rect(EditorGUILayout.GetControlRect());
-                    using (var property = new EditorGUI.PropertyScope(headerRect, new GUIContent(i18n.AvatarConverterAdditionalMaterialConvertSettingsLabel), additionalMaterialConvertSettings))
-                    {
-                        editorState.foldOutAdditionalMaterialSettings = EditorGUI.Foldout(headerRect, editorState.foldOutAdditionalMaterialSettings, property.content, true);
-                        if (editorState.foldOutAdditionalMaterialSettings)
-                        {
-                            if (additionalMaterialConvertSettingsReorderableList == null)
-                            {
-                                additionalMaterialConvertSettingsReorderableList = new ReorderableList(so, additionalMaterialConvertSettings, true, false, true, true);
-                                additionalMaterialConvertSettingsReorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
-                                {
-                                    EditorGUI.PropertyField(rect, additionalMaterialConvertSettings.GetArrayElementAtIndex(index));
-                                    so.ApplyModifiedProperties();
-                                };
-                                additionalMaterialConvertSettingsReorderableList.elementHeightCallback = (index) =>
-                                {
-                                    var element = additionalMaterialConvertSettings.GetArrayElementAtIndex(index);
-                                    return EditorGUI.GetPropertyHeight(element);
-                                };
-                                additionalMaterialConvertSettingsReorderableList.onAddCallback = (list) =>
-                                {
-                                    var index = list.serializedProperty.arraySize;
-                                    list.serializedProperty.arraySize++;
-                                    list.index = index;
-                                    var element = list.serializedProperty.GetArrayElementAtIndex(index);
-                                    element.managedReferenceValue = new AdditionalMaterialConvertSettings();
-                                    so.ApplyModifiedProperties();
-                                };
-                                additionalMaterialConvertSettingsReorderableList.onRemoveCallback = (list) =>
-                                {
-                                    if (list.index < 0 || list.index >= list.serializedProperty.arraySize)
-                                    {
-                                        return;
-                                    }
-                                    list.serializedProperty.DeleteArrayElementAtIndex(list.index);
-                                    so.ApplyModifiedProperties();
-                                };
-                            }
-                            additionalMaterialConvertSettingsReorderableList.DoLayoutList();
-                        }
-                    }
-
-                    if (descriptor)
-                    {
-                        var targetAvatar = new VRChatAvatar(descriptor);
-                        var unverifiedMaterials = targetAvatar.Materials
-                            .Where(m => VRCQuestTools.AvatarConverter.MaterialWrapperBuilder.DetectShaderCategory(m) == MaterialWrapperBuilder.ShaderCategory.Unverified)
-                            .ToArray();
-
-                        if (unverifiedMaterials.Length > 0)
-                        {
-                            Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
-                            {
-                                EditorGUILayout.LabelField(i18n.WarningForUnsupportedShaders, EditorStyles.wordWrappedMiniLabel);
-                                EditorGUILayout.Space(1);
-                                EditorGUILayout.LabelField($"{i18n.SupportedShadersLabel}: Standard, UTS2, arktoon, AXCS, Sunao, lilToon, Poiyomi", EditorStyles.wordWrappedMiniLabel);
-                                EditorGUI.BeginDisabledGroup(true);
-                                foreach (var m in unverifiedMaterials)
-                                {
-                                    EditorGUILayout.BeginHorizontal();
-                                    EditorGUILayout.ObjectField(m, typeof(Material), false);
-                                    EditorGUILayout.ObjectField(m.shader, typeof(Shader), false);
-                                    EditorGUILayout.EndHorizontal();
-                                }
-                                EditorGUI.EndDisabledGroup();
-                            });
-                        }
-                    }
+                    editorState.foldOutAdditionalMaterialSettings = MaterialConversionGUI.Draw(so, editorState.foldOutAdditionalMaterialSettings, additionalMaterialConvertSettingsReorderableList);
 
                     EditorGUILayout.Space();
 
@@ -260,18 +188,24 @@ namespace KRT.VRCQuestTools.Inspector
                 editorState.foldOutAvatarDynamics = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterAvatarDynamicsSettingsLabel, editorState.foldOutAvatarDynamics);
                 if (editorState.foldOutAvatarDynamics)
                 {
-                    if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingsLabel))
+                    EditorGUILayout.PropertyField(so.FindProperty("removeAvatarDynamics"), new GUIContent(i18n.AvatarConverterRemoveAvatarDynamicsLabel, i18n.AvatarConverterRemoveAvatarDynamicsTooltip));
+
+                    if (converterSettings.removeAvatarDynamics)
                     {
-                        OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+                        if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingsLabel))
+                        {
+                            OnClickSelectAvatarDynamicsComponentsButton(descriptor);
+                        }
+
+                        var m_physBones = so.FindProperty("physBonesToKeep");
+                        EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones to Keep", i18n.AvatarConverterPhysBonesTooltip));
+                        var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
+                        EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders to Keep", i18n.AvatarConverterPhysBoneCollidersTooltip));
+                        var m_contacts = so.FindProperty("contactsToKeep");
+                        EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers to Keep", i18n.AvatarConverterContactsTooltip));
+                        AvatarDynamicsPerformanceGUI(stats);
                     }
 
-                    var m_physBones = so.FindProperty("physBonesToKeep");
-                    EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones to Keep", i18n.AvatarConverterPhysBonesTooltip));
-                    var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
-                    EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders to Keep", i18n.AvatarConverterPhysBoneCollidersTooltip));
-                    var m_contacts = so.FindProperty("contactsToKeep");
-                    EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers to Keep", i18n.AvatarConverterContactsTooltip));
-                    AvatarDynamicsPerformanceGUI(stats);
                     EditorGUILayout.Space(12);
                 }
 
@@ -280,7 +214,9 @@ namespace KRT.VRCQuestTools.Inspector
                 {
                     EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent(i18n.AnimationOverrideLabel, i18n.AnimationOverrideTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
-                    EditorGUILayout.PropertyField(so.FindProperty("ndmfPhase"), new GUIContent(i18n.NdmfPhaseLabel, i18n.NdmfPhaseTooltip));
+                    EditorGUILayout.PropertyField(so.FindProperty("removeExtraMaterialSlots"), new GUIContent(i18n.RemoveExtraMaterialSlotsLabel, i18n.RemoveExtraMaterialSlotsTooltip));
+                    EditorGUILayout.PropertyField(so.FindProperty("compressExpressionsMenuIcons"), new GUIContent("[NDMF] " + i18n.CompressExpressionsMenuIconsLabel, i18n.CompressExpressionsMenuIconsTooltip));
+                    EditorGUILayout.PropertyField(so.FindProperty("ndmfPhase"), new GUIContent("[NDMF] " + i18n.NdmfPhaseLabel, i18n.NdmfPhaseTooltip));
                 }
 
                 Views.EditorGUIUtility.HorizontalDivider(2);
@@ -380,16 +316,12 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.Space();
 
 #if VQT_HAS_NDMF
-                    editorState.foldOutManualConversion = EditorGUILayout.Foldout(editorState.foldOutManualConversion, i18n.ManualConversionLabel, true);
-                    if (editorState.foldOutManualConversion)
+                    EditorGUILayout.HelpBox(i18n.ManualConversionWarning, MessageType.Warning);
+                    using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
                     {
-                        EditorGUILayout.HelpBox(i18n.ManualConversionWarning, MessageType.Warning);
-                        using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
+                        if (GUILayout.Button(i18n.ManualConvertButtonLabel))
                         {
-                            if (GUILayout.Button(i18n.ManualConvertButtonLabel))
-                            {
-                                OnClickConvertButton(descriptor);
-                            }
+                            OnClickConvertButton(descriptor);
                         }
                     }
 #else
@@ -481,23 +413,11 @@ namespace KRT.VRCQuestTools.Inspector
             var toonLitSetting = convertSetting is ToonLitConvertSettings ? convertSetting as ToonLitConvertSettings : null;
             var targetAvatar = new Models.VRChat.VRChatAvatar(avatar);
 
-            TextureProgressCallback progressCallback = (int total, int index, System.Exception exception, Material material, Material _) =>
+            TextureProgressCallback progressCallback = (int total, int index, Material material, Material _) =>
             {
                 var i18n = VRCQuestToolsSettings.I18nResource;
-                if (exception != null)
-                {
-                    var message = $"{i18n.MaterialExceptionDialogMessage}\n" +
-                        "\n" +
-                        $"Material: {AssetDatabase.GetAssetPath(material)}\n" +
-                        $"Shader: {material.shader.name}";
-                    DisplayErrorDialog(message, exception);
-                    EditorUtility.ClearProgressBar();
-                }
-                else
-                {
-                    var progress = (float)index / total;
-                    EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
-                }
+                var progress = (float)index / total;
+                EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
             };
             var outputPath = GetOutputPath(avatar);
             Directory.CreateDirectory(outputPath);
@@ -505,8 +425,18 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 onTextureProgress = progressCallback,
             };
-            VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, true, outputPath, converterSettings, progressCallback);
-            EditorUtility.ClearProgressBar();
+            try
+            {
+                VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, true, outputPath, converterSettings, progressCallback);
+            }
+            catch (System.Exception exception)
+            {
+                HandleConversionException(exception);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
         }
 
         private void OnClickSelectAvatarDynamicsComponentsButton(VRC_AvatarDescriptor avatar)
@@ -538,85 +468,117 @@ namespace KRT.VRCQuestTools.Inspector
 
             var progressCallback = new ProgressCallback
             {
-                onTextureProgress = (total, index, exception, material, _) =>
+                onTextureProgress = (total, index, material, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
-                    if (exception != null)
-                    {
-                        var message = $"{i18n.MaterialExceptionDialogMessage}\n" +
-                            "\n" +
-                            $"Material: {AssetDatabase.GetAssetPath(material)}\n" +
-                            $"Shader: {material.shader.name}";
-                        DisplayErrorDialog(message, exception);
-                        EditorUtility.ClearProgressBar();
-                    }
-                    else
-                    {
-                        var progress = (float)index / total;
-                        EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
-                    }
+                    var progress = (float)index / total;
+                    EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
                 },
-                onAnimationClipProgress = (total, index, exception, clip, _) =>
+                onAnimationClipProgress = (total, index, clip, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
-                    if (exception != null)
-                    {
-                        var message = $"{i18n.AnimationClipExceptionDialogMessage}\n" +
-                            $"\n" +
-                            $"AnimationClip: {clip.name}";
-                        DisplayErrorDialog(message, exception);
-                        EditorUtility.ClearProgressBar();
-                    }
-                    else
-                    {
-                        var progress = (float)index / total;
-                        EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimationCilps : {index}/{total}", progress);
-                    }
+                    var progress = (float)index / total;
+                    EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimationCilps : {index}/{total}", progress);
                 },
-                onRuntimeAnimatorProgress = (total, index, exception, controller, _) =>
+                onRuntimeAnimatorProgress = (total, index, controller, _) =>
                 {
                     var i18n = VRCQuestToolsSettings.I18nResource;
-                    if (exception != null)
-                    {
-                        var message = $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
-                            $"\n" +
-                            $"AnimatorController: {controller.name}";
-                        DisplayErrorDialog(message, exception);
-                        EditorUtility.ClearProgressBar();
-                    }
-                    else
-                    {
-                        var progress = (float)index / total;
-                        EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimatorControllers : {index + 1}/{total}", progress);
-                    }
+                    var progress = (float)index / total;
+                    EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimatorControllers : {index + 1}/{total}", progress);
                 },
             };
 
-            var questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, VRCQuestTools.ComponentRemover, true, GetOutputPath(avatar), progressCallback);
-            EditorUtility.ClearProgressBar();
+            VRChatAvatar questAvatar;
+            var sw = new System.Diagnostics.Stopwatch();
+            try
+            {
+                sw.Start();
+                questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, VRCQuestTools.ComponentRemover, true, GetOutputPath(avatar), progressCallback);
+                sw.Stop();
+                Debug.Log($"[{VRCQuestTools.Name}] Converted avatar for Android in {sw.ElapsedMilliseconds}ms");
+            }
+            catch (System.Exception exception)
+            {
+                HandleConversionException(exception);
+                return;
+            }
+            finally
+            {
+                sw.Stop();
+                EditorUtility.ClearProgressBar();
+            }
             if (questAvatar != null)
             {
                 Selection.activeGameObject = questAvatar.GameObject;
 
-                var converted = questAvatar;
-                var stats = VRCSDKUtility.CalculatePerformanceStats(converted.GameObject, true);
-                var ratings = new PerformanceRating[]
+                if (TargetComponent.removeAvatarDynamics)
                 {
-                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneComponentCount),
-                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneTransformCount),
-                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneColliderCount),
-                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneCollisionCheckCount),
-                    stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.ContactCount),
-                };
+                    var converted = questAvatar;
+                    var stats = VRCSDKUtility.CalculatePerformanceStats(converted.GameObject, true);
+                    var ratings = new PerformanceRating[]
+                    {
+                        stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneComponentCount),
+                        stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneTransformCount),
+                        stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneColliderCount),
+                        stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.PhysBoneCollisionCheckCount),
+                        stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.ContactCount),
+                    };
 
-                if (ratings.Contains(PerformanceRating.VeryPoor))
-                {
-                    EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.AlertForAvatarDynamicsPerformance, "OK");
-                    PhysBonesRemoveWindow.ShowWindow(converted.AvatarDescriptor);
+                    if (ratings.Contains(PerformanceRating.VeryPoor))
+                    {
+                        EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.AlertForAvatarDynamicsPerformance, "OK");
+                        PhysBonesRemoveWindow.ShowWindow(converted.AvatarDescriptor);
+                    }
                 }
 
                 converterSettings.AvatarDescriptor.gameObject.SetActive(false);
             }
+        }
+
+        private void HandleConversionException(System.Exception exception)
+        {
+            var message = i18n.AvatarConverterFailedDialogMessage;
+            var dialogException = exception;
+            Object context = null;
+            switch (exception)
+            {
+                case MaterialConversionException e:
+                    message = $"{i18n.MaterialExceptionDialogMessage}\n" +
+                        "\n" +
+                        $"Material: {AssetDatabase.GetAssetPath(e.source)}\n" +
+                        $"Shader: {e.source.shader.name}";
+                    dialogException = e.InnerException;
+                    context = e.source;
+                    break;
+                case AnimationClipConversionException e:
+                    message = $"{i18n.AnimationClipExceptionDialogMessage}\n" +
+                        $"\n" +
+                        $"AnimationClip: {e.source.name}";
+                    dialogException = e.InnerException;
+                    context = e.source;
+                    break;
+                case AnimatorControllerConversionException e:
+                    message = $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
+                        $"\n" +
+                        $"AnimatorController: {e.source.name}";
+                    dialogException = e.InnerException;
+                    context = e.source;
+                    break;
+                case InvalidReplacementMaterialException e:
+                    message = $"{i18n.InvalidReplacementMaterialExceptionDialogMessage}\n" +
+                        $"\n" +
+                        $"Material: {e.replacementMaterial.name}\n" +
+                        $"Shader: {e.replacementMaterial.shader.name}";
+                    dialogException = e;
+                    context = e.component;
+                    break;
+            }
+            if (exception.InnerException != null)
+            {
+                Debug.LogException(exception.InnerException, context);
+            }
+            Debug.LogException(exception, context);
+            DisplayErrorDialog(message, dialogException);
         }
 
         private string GetOutputPath(VRC_AvatarDescriptor avatar)
@@ -635,6 +597,7 @@ namespace KRT.VRCQuestTools.Inspector
             var m = $"{message}\n" +
                 "\n" +
                 $"{exception.GetType().Name}: {exception.Message}\n" +
+                "\n" +
                 exception.StackTrace.Replace(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar, string.Empty);
             return EditorUtility.DisplayDialog(VRCQuestTools.Name, m, "OK");
         }

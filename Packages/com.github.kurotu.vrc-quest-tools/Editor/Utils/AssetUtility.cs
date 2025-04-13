@@ -11,6 +11,7 @@ using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Utils
 {
@@ -199,9 +200,21 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Saved texture asset.</returns>
         internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, bool isSRGB = true)
         {
-            var png = texture.EncodeToPNG();
+            var src = texture.isReadable ? texture : CopyAsReadable(texture);
+            var png = src.EncodeToPNG();
             File.WriteAllBytes(path, png);
-            AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(path);
+            ConfigureTextureImporter(path, isSRGB);
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
+        /// <summary>
+        /// Configures TextureImporter for the texture.
+        /// </summary>
+        /// <param name="path">Texture path.</param>
+        /// <param name="isSRGB">Texture is sRGB.</param>
+        internal static void ConfigureTextureImporter(string path, bool isSRGB = true)
+        {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.alphaSource = TextureImporterAlphaSource.FromInput;
             importer.alphaIsTransparency = isSRGB;
@@ -211,7 +224,6 @@ namespace KRT.VRCQuestTools.Utils
                 importer.streamingMipmaps = true;
             }
             importer.SaveAndReimport();
-            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
         /// <summary>
@@ -356,27 +368,145 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Copy a texture as readable.
+        /// </summary>
+        /// <param name="texture">Texture to copy.</param>
+        /// <returns>Readable texture.</returns>
+        internal static Texture2D CopyAsReadable(Texture2D texture)
+        {
+#if UNITY_2022_1_OR_NEWER
+            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, !texture.isDataSRGB);
+#else
+            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1);
+#endif
+            var data = texture.GetRawTextureData();
+            copy.LoadRawTextureData(data);
+            copy.Apply(); // Do not use arguments to keep readable.
+            return copy;
+        }
+
+        /// <summary>
+        /// Bake a texture to a new one.
+        /// </summary>
+        /// <param name="input">Input texture.</param>
+        /// <param name="width">Desired width.</param>
+        /// <param name="height">Desired height.</param>
+        /// <param name="useMipmap">Use mip map.</param>
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Request to wait.</returns>
+        internal static AsyncCallbackRequest BakeTexture(Texture input, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        {
+            return BakeTexture(input, null, width, height, useMipmap, completion);
+        }
+
+        /// <summary>
+        /// Bake a texture to a new one.
+        /// </summary>
+        /// <param name="input">Input texture.</param>
+        /// <param name="material">Material to bake.</param>
+        /// <param name="width">Desired width.</param>
+        /// <param name="height">Desired height.</param>
+        /// <param name="useMipmap">Use mip map.</param>
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Request to wait.</returns>
+        internal static AsyncCallbackRequest BakeTexture(Texture input, Material material, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        {
+            var desc = new RenderTextureDescriptor(input.width, input.height, RenderTextureFormat.ARGB32, 0, useMipmap ? input.mipmapCount : 1);
+#if UNITY_2022_1_OR_NEWER
+            desc.sRGB = input.isDataSRGB;
+#else
+            desc.sRGB = true;
+#endif
+
+            var rt = RenderTexture.GetTemporary(desc);
+            var renderTextures = new List<RenderTexture> { rt };
+
+            var activeRT = RenderTexture.active;
+            try
+            {
+                RenderTexture.active = rt;
+                if (material)
+                {
+                    Graphics.Blit(input, rt, material);
+                }
+                else
+                {
+                    Graphics.Blit(input, rt);
+                }
+
+                // Iterative downscaling
+                while (desc.width > width || desc.height > height)
+                {
+                    desc.width /= 2;
+                    desc.height /= 2;
+                    if (desc.width < width || desc.height < height)
+                    {
+                        desc.width = width;
+                        desc.height = height;
+                    }
+                    var rt2 = RenderTexture.GetTemporary(desc);
+                    RenderTexture.active = rt2;
+                    Graphics.Blit(renderTextures.Last(), rt2);
+                    renderTextures.Add(rt2);
+                }
+
+                return RequestReadbackRenderTexture(renderTextures.Last(), useMipmap, (result) =>
+                {
+                    foreach (var r in renderTextures)
+                    {
+                        RenderTexture.ReleaseTemporary(r);
+                    }
+                    completion?.Invoke(result);
+                });
+            }
+            finally
+            {
+                RenderTexture.active = activeRT;
+            }
+        }
+
+        /// <summary>
+        /// Request readback of a render texture.
+        /// </summary>
+        /// <param name="renderTexture">Render texture to readback.</param>
+        /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="completion">Completion callback.</param>
+        /// <returns>Readback request to wait.</returns>
+        internal static AsyncCallbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, bool useMipmap, Action<Texture2D> completion)
+        {
+            if (ShouldUseAsyncGPUReadback())
+            {
+                return new TextureGPUReadbackRequest(renderTexture, useMipmap, completion);
+            }
+            else
+            {
+                return new TextureCPUReadbackRequest(renderTexture, useMipmap, completion);
+            }
+        }
+
+        /// <summary>
         /// Resizes a texture to desired size.
         /// </summary>
         /// <param name="texture">Texture to resize.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
-        /// <returns>Resized texture.</returns>
-        internal static Texture2D ResizeTexture(Texture2D texture, int width, int height)
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Request to wait.</returns>
+        internal static AsyncCallbackRequest ResizeTexture(Texture2D texture, int width, int height, Action<Texture2D> completion)
         {
-            using (var rt = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
-            {
-                var activeRT = RenderTexture.active;
+            return BakeTexture(texture, width, height, texture.mipmapCount > 1, completion);
+        }
 
-                RenderTexture.active = rt.Object;
-                Graphics.Blit(texture, rt.Object);
-                var result = new Texture2D(width, height);
-                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                result.Apply();
-
-                RenderTexture.active = activeRT;
-                return result;
-            }
+        /// <summary>
+        /// Compresses a texture for the build target.
+        /// </summary>
+        /// <param name="texture">Texture to compress.</param>
+        /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
+        internal static void CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget)
+        {
+            var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
+            var format = isMobile ? TextureFormat.ASTC_6x6 : TextureFormat.DXT5;
+            EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);
         }
 
         /// <summary>
@@ -419,6 +549,16 @@ namespace KRT.VRCQuestTools.Utils
                 default:
                     throw new NotSupportedException($"Unsupported build target: {buildTarget}");
             }
+        }
+
+        /// <summary>
+        /// Returns whether the texture format is uncompressed.
+        /// </summary>
+        /// <param name="format">Texture format.</param>
+        /// <returns>true when the format is for uncompressed.</returns>
+        internal static bool IsUncompressedFormat(TextureFormat format)
+        {
+            return UncompressedFormats.Contains(format);
         }
 
         /// <summary>
@@ -573,6 +713,15 @@ namespace KRT.VRCQuestTools.Utils
                     }
                 }
             }
+        }
+
+        private static bool ShouldUseAsyncGPUReadback()
+        {
+#if UNITY_2022_1_OR_NEWER
+            return SystemInfo.supportsAsyncGPUReadback;
+#else
+            return false;
+#endif
         }
 
         [Serializable]

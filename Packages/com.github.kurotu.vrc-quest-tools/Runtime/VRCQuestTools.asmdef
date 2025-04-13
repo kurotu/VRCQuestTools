@@ -18,6 +18,16 @@
             "name": "com.vrchat.base",
             "expression": "3.3.0",
             "define": "VQT_HAS_VRCSDK_BASE"
+        },
+        {
+            "name": "com.vrchat.avatars",
+            "expression": "3.7.5",
+            "define": "VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER"
+        },
+        {
+            "name": "com.vrchat.avatars",
+            "expression": "3.7.6-beta.1",
+            "define": "VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER"
         }
     ],
     "noEngineReferences": false

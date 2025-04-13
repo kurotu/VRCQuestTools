@@ -64,11 +64,31 @@ jobs:
           # VRC Constraints
           - unityVersion: 2022.3.22f1
             vrcsdkVersion: 3.6.2-constraints.3
+          # Local-only Contact Receiver
+          - unityVersion: 2022.3.22f1
+            vrcsdkVersion: 3.7.5
         ndmfVersion:
           - ''
-          - 1.2.5
-          - 1.3.0
+          - 1.2.5 # Befor Error report
+          - 1.3.0 # Error report
+          - 1.5.0 # Preview
           - latest
+        exclude:
+          - sdk:
+              unityVersion: 2019.4.31f1
+            ndmfVersion: 1.5.0 # Unity 2019 not supported
+          - sdk:
+              unityVersion: 2022.3.6f1
+            ndmfVersion: 1.2.5 # Tested with Unity 2019
+          - sdk:
+              unityVersion: 2022.3.6f1
+            ndmfVersion: 1.3.0 # Tested with Unity 2019
+          - sdk:
+              unityVersion: 2022.3.22f1
+            ndmfVersion: 1.2.5 # Tested with Unity 2019
+          - sdk:
+              unityVersion: 2022.3.22f1
+            ndmfVersion: 1.3.0 # Tested with Unity 2019
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -99,7 +119,7 @@ jobs:
           checkName: "Test Results: ${{ matrix.sdk.unityVersion }}, vrcsdk-${{ matrix.sdk.vrcsdkVersion }}, ndmf-${{ matrix.ndmfVersion }}"
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET

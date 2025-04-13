@@ -6,6 +6,7 @@
 using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models.Unity
 {
@@ -50,21 +51,25 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Material ConvertToToonLit()
         {
             var newShader = Shader.Find("VRChat/Mobile/Toon Lit");
-            return new Material(newShader)
+            var hasMainTexProp = Material.GetTexturePropertyNames().Contains("_MainTex");
+            var newMat = new Material(newShader)
             {
-                color = Material.color,
                 doubleSidedGI = Material.doubleSidedGI,
                 enableInstancing = true, // https://docs.vrchat.com/docs/quest-content-optimization#avatars-and-worlds
                 globalIlluminationFlags = Material.globalIlluminationFlags,
                 hideFlags = Material.hideFlags,
-                mainTexture = Material.mainTexture ?? Material.GetTexture("_MainTex"), // mainTexture may return null in some cases (e.g. After upgrading lilToon).
-                mainTextureOffset = Material.mainTextureOffset,
-                mainTextureScale = Material.mainTextureScale,
                 name = $"{Material.name}_{newShader.name.Split('/').Last()}",
                 renderQueue = Material.renderQueue,
                 shader = newShader,
                 shaderKeywords = null,
             };
+            if (hasMainTexProp)
+            {
+                newMat.mainTexture = Material.mainTexture;
+                newMat.mainTextureOffset = Material.mainTextureOffset;
+                newMat.mainTextureScale = Material.mainTextureScale;
+            }
+            return newMat;
         }
 
         /// <summary>
@@ -80,15 +85,22 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Generates an image for Toon Lit main texture.
         /// </summary>
         /// <param name="settings">Setting object.</param>
-        /// <returns>Generated image.</returns>
-        internal virtual Texture2D GenerateToonLitImage(IToonLitConvertSettings settings)
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Request to wait.</returns>
+        internal virtual AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
-            var width = Material.mainTexture?.width ?? 4;
-            var height = Material.mainTexture?.height ?? 4;
+            var maxTextureSize = (int)settings.MaxTextureSize;
+            var mainTexture = Material.mainTexture ?? Texture2D.whiteTexture;
+            var width = mainTexture.width;
+            var height = mainTexture.height;
+            if (maxTextureSize > 0)
+            {
+                width = System.Math.Min(maxTextureSize, width);
+                height = System.Math.Min(maxTextureSize, height);
+            }
 
             using (var disposables = new CompositeDisposable())
             using (var baker = DisposableObject.New(Object.Instantiate(Material)))
-            using (var dstTexture = DisposableObject.New(new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)))
             {
 #if UNITY_2022_1_OR_NEWER
                 baker.Object.parent = null;
@@ -112,19 +124,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     baker.Object.SetTexture(name, tex);
                 }
 
-                var main = baker.Object.mainTexture;
-
-                // Remember active render texture
-                var activeRenderTexture = RenderTexture.active;
-                Graphics.Blit(main, dstTexture.Object, baker.Object);
-
-                Texture2D outTexture = new Texture2D(width, height);
-                outTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                outTexture.Apply();
-
-                // Restore active render texture
-                RenderTexture.active = activeRenderTexture;
-                return outTexture;
+                return AssetUtility.BakeTexture(mainTexture, baker.Object, width, height, true, completion);
             }
         }
 

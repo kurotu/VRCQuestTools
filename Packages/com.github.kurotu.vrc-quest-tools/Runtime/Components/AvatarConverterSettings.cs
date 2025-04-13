@@ -1,3 +1,4 @@
+using System.Linq;
 using KRT.VRCQuestTools.Models;
 using UnityEngine;
 using VRC.Dynamics;
@@ -11,7 +12,7 @@ namespace KRT.VRCQuestTools.Components
     /// </summary>
     [AddComponentMenu("VRCQuestTools/VQT Avatar Converter Settings")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/avatar-converter-settings?lang=auto")]
-    public class AvatarConverterSettings : VRCQuestToolsEditorOnly
+    public class AvatarConverterSettings : VRCQuestToolsEditorOnly, IMaterialConversionComponent
     {
         /// <summary>
         /// Default material convert setting. The default value is <see cref="ToonLitConvertSettings"/>.
@@ -24,6 +25,12 @@ namespace KRT.VRCQuestTools.Components
         /// </summary>
         [SerializeReference]
         public AdditionalMaterialConvertSettings[] additionalMaterialConvertSettings = { };
+
+        /// <summary>
+        /// Whether to remove avatar dynamics components.
+        /// </summary>
+        [SerializeField]
+        public bool removeAvatarDynamics = true;
 
         /// <summary>
         /// PhysBones to keep while conversion.
@@ -59,6 +66,18 @@ namespace KRT.VRCQuestTools.Components
         public bool removeVertexColor = true;
 
         /// <summary>
+        /// Whether to remove redundant material slots that are greater than the number of submeshes.
+        /// </summary>
+        [SerializeField]
+        public bool removeExtraMaterialSlots = true;
+
+        /// <summary>
+        /// Whether to compress existing expressions menu icons if they'are uncompressed.
+        /// </summary>
+        [SerializeField]
+        public bool compressExpressionsMenuIcons = true;
+
+        /// <summary>
         /// NDMF phase to convert the avatar.
         /// </summary>
         [SerializeField]
@@ -68,6 +87,25 @@ namespace KRT.VRCQuestTools.Components
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
+
+        /// <inheritdoc/>
+        public IMaterialConvertSettings DefaultMaterialConvertSettings => defaultMaterialConvertSettings;
+
+        /// <inheritdoc/>
+        public AdditionalMaterialConvertSettings[] AdditionalMaterialConvertSettings
+        {
+            get => additionalMaterialConvertSettings;
+            set => additionalMaterialConvertSettings = value;
+        }
+
+        /// <inheritdoc/>
+        public bool RemoveExtraMaterialSlots => removeExtraMaterialSlots;
+
+        /// <inheritdoc/>
+        public AvatarConverterNdmfPhase NdmfPhase => ndmfPhase;
+
+        /// <inheritdoc/>
+        public bool IsPrimaryRoot => true;
 
         /// <summary>
         /// Gets the material convert settings for the specified material.
@@ -89,9 +127,27 @@ namespace KRT.VRCQuestTools.Components
         private void Reset()
         {
             var descriptor = AvatarDescriptor;
-            physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>() : new VRCPhysBone[] { };
-            physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>() : new VRCPhysBoneCollider[] { };
-            contactsToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<ContactBase>() : new ContactBase[] { };
+            physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>(true) : new VRCPhysBone[] { };
+            physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>(true) : new VRCPhysBoneCollider[] { };
+            contactsToKeep = descriptor ? descriptor.GetComponentsInChildren<ContactBase>(true)
+                .Where(c =>
+                {
+                    switch (c)
+                    {
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
+                        case ContactReceiver receiver:
+                            return !receiver.IsLocalOnly;
+#endif
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
+                        case ContactSender sender:
+                            return !sender.IsLocalOnly;
+#endif
+                        default:
+                            return true;
+                    }
+                })
+                .ToArray()
+                : new ContactBase[] { };
         }
     }
 }

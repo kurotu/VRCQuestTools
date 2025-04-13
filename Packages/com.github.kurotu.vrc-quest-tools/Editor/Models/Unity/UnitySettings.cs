@@ -13,6 +13,17 @@ namespace KRT.VRCQuestTools.Models.Unity
     internal static partial class UnitySettings
     {
         /// <summary>
+        /// Gets a value indicating whether the Android build support is installed.
+        /// </summary>
+        internal static bool HasAndroidBuildSupport
+        {
+            get
+            {
+                return BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Android, UnityEditor.BuildTarget.Android);
+            }
+        }
+
+        /// <summary>
         /// Gets or sets default texture compression method for Android.
         /// </summary>
         internal static MobileTextureSubtarget DefaultAndroidTextureCompression

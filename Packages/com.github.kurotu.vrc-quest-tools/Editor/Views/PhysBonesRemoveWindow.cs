@@ -169,11 +169,18 @@ namespace KRT.VRCQuestTools.Views
                 }
                 EditorGUILayout.EndFoldoutHeaderGroup();
 
-                if (showContacts = EditorGUILayout.BeginFoldoutHeaderGroup(showContacts, new GUIContent("Contact Senders & Contact Receivers", i18n.PhysBonesListTooltip)))
+#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
+                var contactsHeader = "Non-Local Contact Senders & Non-Local Contact Receivers";
+#elif VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
+                var contactsHeader = "Contact Senders & Non-Local Contact Receivers";
+#else
+                var contactsHeader = "Contact Senders & Contact Receivers";
+#endif
+                if (showContacts = EditorGUILayout.BeginFoldoutHeaderGroup(showContacts, new GUIContent(contactsHeader, i18n.PhysBonesListTooltip)))
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
-                        var contacts = model.Avatar.GetContacts();
+                        var contacts = model.Avatar.GetNonLocalContacts();
                         if (contacts.Length > 0)
                         {
                             using (var horizontal = new EditorGUILayout.HorizontalScope())
@@ -188,12 +195,12 @@ namespace KRT.VRCQuestTools.Views
                                 }
                             }
                             var selected = model.ContactsToKeep.ToArray();
-                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(model.Avatar.GetContacts(), selected);
+                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(contacts, selected);
                             model.SetSelectedContacts(selected);
                         }
                         else
                         {
-                            EditorGUILayout.LabelField("No Contact Senders & Contact Receivers found.");
+                            EditorGUILayout.LabelField($"No {contactsHeader} found.");
                         }
                         EditorGUILayout.Space();
                     }

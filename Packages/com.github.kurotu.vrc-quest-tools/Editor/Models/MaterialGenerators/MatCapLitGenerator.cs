@@ -1,4 +1,7 @@
+using System;
+using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
@@ -21,30 +24,24 @@ namespace KRT.VRCQuestTools.Models
             toonLitGenerator = new ToonLitGenerator(matCapLitConvertSettings);
         }
 
-        /// <summary>
-        /// Generate material for MatCap Lit shader.
-        /// </summary>
-        /// <param name="material">Material to convert.</param>
-        /// <param name="saveTextureAsPng">Whether to save textures as png.</param>
-        /// <param name="texturesPath">Path to save textures.</param>
-        /// <returns>Generated material.</returns>
-        public Material GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath)
+        /// <inheritdoc/>
+        public AsyncCallbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
         {
-            var newMaterial = toonLitGenerator.GenerateMaterial(material, saveTextureAsPng, texturesPath);
-            newMaterial.shader = Shader.Find("VRChat/Mobile/MatCap Lit");
-            newMaterial.SetTexture("_MatCap", matCapLitConvertSettings.matCapTexture);
-            return newMaterial;
+            var originalName = material.Material.name;
+            return toonLitGenerator.GenerateMaterial(material, saveTextureAsPng, texturesPath, newMaterial =>
+            {
+                var shader = Shader.Find("VRChat/Mobile/MatCap Lit");
+                newMaterial.name = $"{originalName}_{shader.name.Split('/').Last()}";
+                newMaterial.shader = shader;
+                newMaterial.SetTexture("_MatCap", matCapLitConvertSettings.matCapTexture);
+                completion?.Invoke(newMaterial);
+            });
         }
 
-        /// <summary>
-        /// Generate textures for MatCap Lit shader.
-        /// </summary>
-        /// <param name="material">Material to convert.</param>
-        /// <param name="saveAsPng">Whether to save textures as png.</param>
-        /// <param name="texturesPath">Path to save textures.</param>
-        public void GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath)
+        /// <inheritdoc/>
+        public AsyncCallbackRequest GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath, Action completion)
         {
-            toonLitGenerator.GenerateTextures(material, saveAsPng, texturesPath);
+            return toonLitGenerator.GenerateTextures(material, saveAsPng, texturesPath, completion);
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using KRT.VRCQuestTools.Components;
+﻿using System.Runtime.ExceptionServices;
+using KRT.VRCQuestTools.Models;
 using nadena.dev.ndmf;
-using UnityEditor;
 using UnityEngine;
 #if !VQT_HAS_NDMF_ERROR_REPORT
 using KRT.VRCQuestTools.Ndmf.Dummy;
@@ -32,71 +32,73 @@ namespace KRT.VRCQuestTools.Ndmf
         }
 
         /// <summary>
-        /// Convert the avatar with AvatarConverterSettings component in NDMF.
+        /// Handle conversion exception.
         /// </summary>
-        /// <param name="context">BuildContext.</param>
-        /// <param name="settings">settings component.</param>
-        internal static void ConvertAvatarInPass(BuildContext context, AvatarConverterSettings settings)
+        /// <param name="exception">Exception thrown in a pass.</param>
+        internal static void HandleConversionException(System.Exception exception)
         {
-            var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
-            if (buildTarget != Models.BuildTarget.Android)
+            SimpleError ndmfError;
+            bool shouldRethrow = false;
+            if (exception is IVRCQuestToolsException vqte)
             {
-                return;
+                switch (vqte)
+                {
+                    case MaterialConversionException e:
+                        {
+                            var matRef = NdmfObjectRegistry.GetReference(e.source);
+                            ndmfError = new MaterialConversionError(matRef, e);
+                        }
+                        break;
+                    case AnimationClipConversionException e:
+                        {
+                            var animRef = NdmfObjectRegistry.GetReference(e.source);
+                            ndmfError = new ObjectConversionError(animRef, e);
+                        }
+                        break;
+                    case AnimatorControllerConversionException e:
+                        {
+                            var animRef = NdmfObjectRegistry.GetReference(e.source);
+                            ndmfError = new ObjectConversionError(animRef, e);
+                        }
+                        break;
+                    case InvalidMaterialSwapNullException e:
+                        ndmfError = new MaterialSwapNullError(e.component, e.MaterialMapping);
+                        break;
+                    case InvalidReplacementMaterialException e:
+                        ndmfError = new ReplacementMaterialError(e.component, e.replacementMaterial);
+                        break;
+                    case TargetMaterialNullException e:
+                        ndmfError = new TargetMaterialNullError(e.component);
+                        break;
+                    default:
+                        ndmfError = new SimpleStringError(
+                            $"Unhandled {exception.GetType().Name}",
+                            exception.Message,
+                            "Report to the developer to show detailed error report.",
+                            ErrorSeverity.NonFatal);
+                        shouldRethrow = true;
+                        Debug.LogError($"Unhandled exception type: {exception.GetType()}");
+                        break;
+                }
+            }
+            else
+            {
+                ndmfError = null;
+                shouldRethrow = true;
+            }
+            if (ndmfError != null)
+            {
+                ErrorReport.ReportError(ndmfError);
             }
 
-            VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(settings, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
+            if (exception.InnerException != null)
             {
-                onTextureProgress = (_, __, e, original, converted) =>
-                {
-                    if (e != null)
-                    {
-                        Debug.LogError("Failed to convert material: " + original.name, original);
-                        Debug.LogException(e, original);
-                        var matRef = ObjectRegistry.GetReference(original);
-                        var error = new MaterialConversionError(matRef, e);
-                        ErrorReport.ReportError(error);
-                        return;
-                    }
-
-                    // Register converted material to ObjectRegistry when it is not an asset..
-                    if (converted != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(converted)))
-                    {
-                        ObjectRegistry.RegisterReplacedObject(original, converted);
-                    }
-                },
-                onAnimationClipProgress = (_, __, e, original, converted) =>
-                {
-                    if (e != null)
-                    {
-                        Debug.LogError("Failed to convert animation clip: " + original.name, original);
-                        Debug.LogException(e, original);
-                        var animRef = ObjectRegistry.GetReference(original);
-                        var error = new ObjectConversionError(animRef, e);
-                        ErrorReport.ReportError(error);
-                        return;
-                    }
-                    if (converted != null)
-                    {
-                        ObjectRegistry.RegisterReplacedObject(original, converted);
-                    }
-                },
-                onRuntimeAnimatorProgress = (_, __, e, original, converted) =>
-                {
-                    if (e != null)
-                    {
-                        Debug.LogError("Failed to convert runtime animator controller: " + original.name, original);
-                        Debug.LogException(e, original);
-                        var animRef = ObjectRegistry.GetReference(original);
-                        var error = new ObjectConversionError(animRef, e);
-                        ErrorReport.ReportError(error);
-                        return;
-                    }
-                    if (converted != null)
-                    {
-                        ObjectRegistry.RegisterReplacedObject(original, converted);
-                    }
-                },
-            });
+                Debug.LogException(exception.InnerException);
+            }
+            if (shouldRethrow)
+            {
+                ExceptionDispatchInfo.Capture(exception).Throw();
+            }
         }
 
         private static void SetBuildTarget(Models.BuildTarget target)

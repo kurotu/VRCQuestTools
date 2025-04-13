@@ -98,8 +98,6 @@ So in most cases, converted avatars would have "Very Poor" performance rank in A
 
 In Android platform, minimum displayed performance rank of safety can be "Good" or "Poor". This means "Very Poor" avatars are always blocked and replaced with your fallback avatar or imposter unless other people individually change Avatar Display setting (as known as "Show Avatar" functionality).
 
-And smartphone users can't see Very Poor avatars.
-
 References:
 - [Quest Limits - Performance Ranks](https://creators.vrchat.com/avatars/avatar-performance-ranking-system/#quest-limits)
 - [Avatar Fallback System](https://docs.vrchat.com/docs/avatar-fallback-system)

@@ -7,6 +7,7 @@ using KRT.VRCQuestTools.Utils;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models.Unity
 {
@@ -88,13 +89,14 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Texture2D GenerateToonLitImage(IToonLitConvertSettings settings)
+        internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
-            using (var main = DisposableObject.New(TextureBake(Material, 0)))
+            var main = DisposableObject.New(MainBake(Material, 0));
+            return EmissionBake(main.Object, Material, settings, (texture) =>
             {
-                var baked = EmissionBake(main.Object, Material, settings);
-                return baked;
-            }
+                main.Dispose();
+                completion?.Invoke(texture);
+            });
         }
 
         internal override Texture2D GenerateStandardLiteMainImage(StandardLiteConvertSettings settings)
@@ -110,6 +112,51 @@ namespace KRT.VRCQuestTools.Models.Unity
             return new LilToonSetting(lilToonSetting);
         }
 
+        private static void CopyMaterialProperty(Material target, Material source, MaterialProperty property)
+        {
+            if (property.name == null)
+            {
+                // The property is missing in the source material.
+                return;
+            }
+            var targetProp = MaterialEditor.GetMaterialProperty(new[] { target }, property.name);
+            if (targetProp.name == null)
+            {
+                Debug.LogWarning(
+                    $"[{VRCQuestTools.Name}] Property {property.name} not found in target material.\n" +
+                    $"Material: {source}, Shader: {source.shader.name}");
+            }
+            else if (targetProp.type != property.type)
+            {
+                Debug.LogWarning(
+                    $"[{VRCQuestTools.Name}] Property {property.name} type mismatch: target: {targetProp.type}, source: {property.type}.\n" +
+                    $"Material: {source}, Shader: {source.shader.name}");
+            }
+            switch (property.type)
+            {
+                case MaterialProperty.PropType.Color:
+                    target.SetColor(property.name, property.colorValue);
+                    break;
+                case MaterialProperty.PropType.Float:
+                    target.SetFloat(property.name, property.floatValue);
+                    break;
+                case MaterialProperty.PropType.Range:
+                    target.SetFloat(property.name, property.floatValue);
+                    break;
+                case MaterialProperty.PropType.Texture:
+                    target.SetTexture(property.name, property.textureValue);
+                    break;
+                case MaterialProperty.PropType.Vector:
+                    target.SetVector(property.name, property.vectorValue);
+                    break;
+#if UNITY_2021_1_OR_NEWER
+                case MaterialProperty.PropType.Int:
+                    target.SetInt(property.name, property.intValue);
+                    break;
+#endif
+            }
+        }
+
         /// <summary>
         /// Reused codes from lilInspector.cs v1.2.12 with some modification.
         /// </summary>
@@ -118,7 +165,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </remarks>
         /// <param name="material">Material to bake main textures.</param>
         /// <param name="bakeType">Bake type: 0: All.</param>
-        private Texture2D TextureBake(Material material, int bakeType)
+        private RenderTexture MainBake(Material material, int bakeType)
         {
             var shaderSetting = LoadShaderSetting();
             var ltsbaker = Shader.Find("Hidden/ltsother_baker");
@@ -208,15 +255,15 @@ namespace KRT.VRCQuestTools.Models.Unity
                 Texture srcMask2 = AssetUtility.CreateMinimumEmptyTexture();
                 Texture srcMask3 = AssetUtility.CreateMinimumEmptyTexture();
 
-                hsvgMaterial.SetColor(mainColor.name, mainColor.colorValue);
-                hsvgMaterial.SetVector(mainTexHSVG.name, mainTexHSVG.vectorValue);
-                hsvgMaterial.SetTexture(mainColorAdjustMask.name, mainColorAdjustMask.textureValue);
+                CopyMaterialProperty(hsvgMaterial, material, mainColor);
+                CopyMaterialProperty(hsvgMaterial, material, mainTexHSVG);
+                CopyMaterialProperty(hsvgMaterial, material, mainColorAdjustMask);
                 hsvgMaterial.SetFloat(mainGradationStrength.name, 0.0f);
 
                 if (CheckFeature(shaderSetting.LIL_FEATURE_MAIN_GRADATION_MAP))
                 {
-                    hsvgMaterial.SetFloat(mainGradationStrength.name, mainGradationStrength.floatValue);
-                    hsvgMaterial.SetTexture(mainGradationTex.name, mainGradationTex.textureValue);
+                    CopyMaterialProperty(hsvgMaterial, material, mainGradationStrength);
+                    CopyMaterialProperty(hsvgMaterial, material, mainGradationTex);
                 }
 
                 srcTexture = AssetUtility.LoadUncompressedTexture(material.GetTexture(mainTex.name));
@@ -232,17 +279,17 @@ namespace KRT.VRCQuestTools.Models.Unity
 
                 if (bake2nd)
                 {
-                    hsvgMaterial.SetFloat(useMain2ndTex.name, useMain2ndTex.floatValue);
-                    hsvgMaterial.SetColor(mainColor2nd.name, mainColor2nd.colorValue);
-                    hsvgMaterial.SetFloat(main2ndTexAngle.name, main2ndTexAngle.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexIsDecal.name, main2ndTexIsDecal.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexIsLeftOnly.name, main2ndTexIsLeftOnly.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexIsRightOnly.name, main2ndTexIsRightOnly.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexShouldCopy.name, main2ndTexShouldCopy.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexShouldFlipMirror.name, main2ndTexShouldFlipMirror.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexShouldFlipCopy.name, main2ndTexShouldFlipCopy.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexIsMSDF.name, main2ndTexIsMSDF.floatValue);
-                    hsvgMaterial.SetFloat(main2ndTexBlendMode.name, main2ndTexBlendMode.floatValue);
+                    CopyMaterialProperty(hsvgMaterial, material, useMain2ndTex);
+                    CopyMaterialProperty(hsvgMaterial, material, mainColor2nd);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexAngle);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsDecal);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsLeftOnly);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsRightOnly);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexShouldCopy);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexShouldFlipMirror);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexShouldFlipCopy);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsMSDF);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexBlendMode);
                     hsvgMaterial.SetTextureOffset(main2ndTex.name, material.GetTextureOffset(main2ndTex.name));
                     hsvgMaterial.SetTextureScale(main2ndTex.name, material.GetTextureScale(main2ndTex.name));
                     hsvgMaterial.SetTextureOffset(main2ndBlendMask.name, material.GetTextureOffset(main2ndBlendMask.name));
@@ -275,17 +322,17 @@ namespace KRT.VRCQuestTools.Models.Unity
 
                 if (bake3rd)
                 {
-                    hsvgMaterial.SetFloat(useMain3rdTex.name, useMain3rdTex.floatValue);
-                    hsvgMaterial.SetColor(mainColor3rd.name, mainColor3rd.colorValue);
-                    hsvgMaterial.SetFloat(main3rdTexAngle.name, main3rdTexAngle.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexIsDecal.name, main3rdTexIsDecal.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexIsLeftOnly.name, main3rdTexIsLeftOnly.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexIsRightOnly.name, main3rdTexIsRightOnly.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexShouldCopy.name, main3rdTexShouldCopy.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexShouldFlipMirror.name, main3rdTexShouldFlipMirror.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexShouldFlipCopy.name, main3rdTexShouldFlipCopy.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexIsMSDF.name, main3rdTexIsMSDF.floatValue);
-                    hsvgMaterial.SetFloat(main3rdTexBlendMode.name, main3rdTexBlendMode.floatValue);
+                    CopyMaterialProperty(hsvgMaterial, material, useMain3rdTex);
+                    CopyMaterialProperty(hsvgMaterial, material, mainColor3rd);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexAngle);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsDecal);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsLeftOnly);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsRightOnly);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexShouldCopy);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexShouldFlipMirror);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexShouldFlipCopy);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsMSDF);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexBlendMode);
                     hsvgMaterial.SetTextureOffset(main3rdTex.name, material.GetTextureOffset(main3rdTex.name));
                     hsvgMaterial.SetTextureScale(main3rdTex.name, material.GetTextureScale(main3rdTex.name));
                     hsvgMaterial.SetTextureOffset(main3rdBlendMask.name, material.GetTextureOffset(main3rdBlendMask.name));
@@ -316,27 +363,17 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                 }
 
-                RenderTexture dstTexture = new RenderTexture(srcTexture.width, srcTexture.height, 0, RenderTextureFormat.ARGB32);
-
-                // Remember active render texture
-                var activeRenderTexture = RenderTexture.active;
-                Graphics.Blit(srcTexture, dstTexture, hsvgMaterial);
-
-                Texture2D outTexture = new Texture2D(srcTexture.width, srcTexture.height);
-                outTexture.ReadPixels(new Rect(0, 0, srcTexture.width, srcTexture.height), 0, 0);
-                outTexture.Apply();
-
-                // Restore active render texture
-                RenderTexture.active = activeRenderTexture;
-                Object.DestroyImmediate(hsvgMaterial);
-                AssetUtility.DestroyTexture(srcTexture);
-                AssetUtility.DestroyTexture(srcMain2);
-                AssetUtility.DestroyTexture(srcMain3);
-                AssetUtility.DestroyTexture(srcMask2);
-                AssetUtility.DestroyTexture(srcMask3);
-                AssetUtility.DestroyTexture(dstTexture);
-
-                return outTexture;
+                var rt = new RenderTexture(srcTexture.width, srcTexture.height, 0, RenderTextureFormat.ARGB32);
+                var activeRT = RenderTexture.active;
+                try
+                {
+                    Graphics.Blit(srcTexture, rt, hsvgMaterial);
+                    return rt;
+                }
+                finally
+                {
+                    RenderTexture.active = activeRT;
+                }
             }
         }
 
@@ -345,16 +382,25 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </summary>
         /// <param name="main">Baked main texture.</param>
         /// <param name="material">Material to bake.</param>
-        private Texture2D EmissionBake(Texture2D main, Material material, IToonLitConvertSettings settings)
+        private AsyncCallbackRequest EmissionBake(RenderTexture main, Material material, IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
+            var maxTextureSize = (int)settings.MaxTextureSize;
+            var width = main.width;
+            var height = main.height;
+            if (maxTextureSize > 0)
+            {
+                width = System.Math.Min(maxTextureSize, width);
+                height = System.Math.Min(maxTextureSize, height);
+            }
+
             var shaderSetting = LoadShaderSetting();
 
             if (!shaderSetting.LIL_FEATURE_EMISSION_1ST && !shaderSetting.LIL_FEATURE_EMISSION_2ND)
             {
-                var baked = AssetUtility.CreateMinimumEmptyTexture();
-                baked.LoadImage(main.EncodeToPNG());
-                baked.filterMode = FilterMode.Bilinear;
-                return baked;
+                return AssetUtility.RequestReadbackRenderTexture(main, true, (baked) =>
+                {
+                    baked.filterMode = FilterMode.Bilinear;
+                });
             }
 
             var mats = new[] { material };
@@ -372,7 +418,6 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var srcEmission2ndMap = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndMap.textureValue)))
             using (var srcEmission2ndBlendMask = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndBlendMask.textureValue)))
             using (var srcEmission2ndGradTex = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndGradTex.textureValue)))
-            using (var dstTexture = DisposableObject.New(new RenderTexture(main.width, main.height, 0, RenderTextureFormat.ARGB32)))
             {
                 var lilBaker = Shader.Find("Hidden/VRCQuestTools/lilToon");
 #if UNITY_2022_1_OR_NEWER
@@ -399,17 +444,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
-                // Remember active render texture
-                var activeRenderTexture = RenderTexture.active;
-                Graphics.Blit(main, dstTexture.Object, baker.Object);
-
-                Texture2D outTexture = new Texture2D(main.width, main.height);
-                outTexture.ReadPixels(new Rect(0, 0, main.width, main.height), 0, 0);
-                outTexture.Apply();
-
-                // Restore active render texture
-                RenderTexture.active = activeRenderTexture;
-                return outTexture;
+                return AssetUtility.BakeTexture(main, baker.Object, width, height, true, completion);
             }
         }
 

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
-using KRT.VRCQuestTools.Components;
+﻿using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
-using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -56,7 +53,6 @@ namespace KRT.VRCQuestTools.Inspector
                 rightRect.width = fieldRect.width * 0.25f;
                 rightRect.x = leftRect.x + leftRect.width;
                 var targetMaterial = property.FindPropertyRelative("targetMaterial");
-                using (new EditorGUI.DisabledGroupScope(true))
                 {
                     EditorGUI.PropertyField(leftRect, targetMaterial, new GUIContent(i18n.AdditionalMaterialConvertSettingsTargetMaterialLabel));
                 }
@@ -75,9 +71,9 @@ namespace KRT.VRCQuestTools.Inspector
 
         private void OnClickMaterialSelectButton(SerializedProperty materialProperty)
         {
-            var settings = (AvatarConverterSettings)materialProperty.serializedObject.targetObject;
-            var avatar = new VRChatAvatar(settings.AvatarDescriptor);
-            var materials = avatar.Materials.ToList();
+            var component = (Component)materialProperty.serializedObject.targetObject;
+
+            var materials = VRChatAvatar.GetRelatedMaterials(component.gameObject).ToList();
             materials.Sort((a, b) => a.name.CompareTo(b.name));
 
             Views.AvatarMaterialSelectorWindow.Open((Material)materialProperty.objectReferenceValue, materials.ToArray(), m =>

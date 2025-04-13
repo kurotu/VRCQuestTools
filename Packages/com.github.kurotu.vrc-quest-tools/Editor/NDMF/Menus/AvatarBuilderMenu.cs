@@ -24,7 +24,12 @@ namespace KRT.VRCQuestTools.Ndmf
         [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithAndroidSettings, true)]
         private static bool ManualBakeValidate()
         {
-            return Selection.activeGameObject.GetComponent<VRCAvatarDescriptor>() != null;
+            var target = Selection.activeGameObject;
+            if (target == null)
+            {
+                return false;
+            }
+            return target.GetComponent<VRCAvatarDescriptor>() != null;
         }
     }
 }

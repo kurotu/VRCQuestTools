@@ -5,5 +5,10 @@ namespace KRT.VRCQuestTools.Models
     /// </summary>
     public interface IMaterialConvertSettings
     {
+        /// <summary>
+        /// Get cache key for this setting.
+        /// </summary>
+        /// <returns>Cache key.</returns>
+        string GetCacheKey();
     }
 }

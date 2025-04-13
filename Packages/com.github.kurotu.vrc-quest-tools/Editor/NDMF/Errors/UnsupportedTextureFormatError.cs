@@ -29,7 +29,7 @@ namespace KRT.VRCQuestTools.Ndmf
         {
             this.format = format;
             this.buildTarget = buildTarget;
-            _references = textures.Select(ObjectRegistry.GetReference).ToList();
+            _references = textures.Select(NdmfObjectRegistry.GetReference).ToList();
         }
 
         /// <inheritdoc/>

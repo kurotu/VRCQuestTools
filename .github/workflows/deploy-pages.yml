@@ -85,6 +85,9 @@ jobs:
           rm -r Website/i18n/ja/docusaurus-plugin-content-docs/current
           cp -r current/Website/i18n/ja/docusaurus-plugin-content-docs/current Website/i18n/ja/docusaurus-plugin-content-docs/
 
+      - name: Copy current static assets
+        run: rsync -av --ignore-existing current/Website/static/ Website/static/
+
       - name: Generate current changelog
         run: |
           ./scripts/generate-changelog-links.sh | cat current/CHANGELOG.md - > Website/docs/changelog.md
@@ -117,10 +120,10 @@ jobs:
         uses: actions/configure-pages@v2
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ${{env.listPublishDirectory}}
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4

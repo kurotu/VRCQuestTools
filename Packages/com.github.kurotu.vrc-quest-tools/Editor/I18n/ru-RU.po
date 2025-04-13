@@ -2,7 +2,16 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru-RU\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: vrc-quest-tools\n"
+"X-Crowdin-Project-ID: 712497\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po\n"
+"X-Crowdin-File-ID: 58\n"
+"Project-Id-Version: vrc-quest-tools\n"
+"Language-Team: Russian\n"
+"PO-Revision-Date: 2025-04-08 12:46\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -33,6 +42,9 @@ msgstr "Добавить"
 
 msgid "RemoveLabel"
 msgstr "Удалить"
+
+msgid "FixLabel"
+msgstr ""
 
 msgid "Maximum"
 msgstr "Максимум"
@@ -91,6 +103,18 @@ msgstr "Удалить цвет вершин из сеток"
 msgid "RemoveVertexColorTooltip"
 msgstr "Обычно вам не нужно отключать эту опцию. Вы можете отключить эту опцию, чтобы предотвратить неожиданное поведение при использовании специальных шейдеров, которые требуют цвет вершин в аватарах ПК."
 
+msgid "RemoveExtraMaterialSlotsLabel"
+msgstr ""
+
+msgid "RemoveExtraMaterialSlotsTooltip"
+msgstr ""
+
+msgid "CompressExpressionsMenuIconsLabel"
+msgstr ""
+
+msgid "CompressExpressionsMenuIconsTooltip"
+msgstr ""
+
 msgid "AnimationOverrideLabel"
 msgstr "Переопределение анимации"
 
@@ -106,6 +130,9 @@ msgstr "Конвертировать аватар на выбранном эта
 msgid "GeneratingTexturesDialogMessage"
 msgstr "Создание текстур..."
 
+msgid "AvatarConverterFailedDialogMessage"
+msgstr ""
+
 msgid "MaterialExceptionDialogMessage"
 msgstr "Произошла ошибка при конвертации материалов. Прервано."
 
@@ -114,6 +141,9 @@ msgstr "Произошла ошибка при конвертации клипо
 
 msgid "AnimatorControllerExceptionDialogMessage"
 msgstr "Произошла ошибка при конвертации контроллеров анимации. Прервано."
+
+msgid "InvalidReplacementMaterialExceptionDialogMessage"
+msgstr ""
 
 msgid "InfoForNdmfConversion"
 msgstr "Вы можете неразрушающе конвертировать аватар во время сборки, когда проект имеет пакет Неразрушаемая Модульная Структура (NDMF). Пожалуйста, используйте Конструктор Аватаров, чтобы избежать ограничений VRChat SDK."
@@ -125,7 +155,8 @@ msgid "NetworkIdAssignerAttached"
 msgstr "Network ID Assigner был прикреплен к аватару. Пожалуйста, загрузите неконвертированный аватар на платформу ПК для синхронизации PhysBones между ПК и Android."
 
 msgid "WarningForPerformance"
-msgstr "Оценка производительности составляет Очень Плохо. Вы можете загрузить конвертированный аватар для Android, но есть следующие ограничения."
+msgstr "Оценочная оценка производительности — «Очень плохо», но вы можете загрузить преобразованный аватар для платформы Android.\n"
+"Мобильные пользователи по умолчанию увидят его импостер или резервный аватар. Однако они могут увидеть аватар, изменив настройку «Отображение аватара» (также известную как «Показать аватар»)."
 
 msgid "WarningForAppearance"
 msgstr "Прозрачность текстуры не оказывает никакого эффекта, поэтому это будет проблемой для выражения лица."
@@ -152,7 +183,7 @@ msgid "ErrorForPrefabStage"
 msgstr "Невозможно конвертировать аватар в режиме префаба. Пожалуйста, вернитесь к сцене из режима префаба."
 
 msgid "ExitPrefabStageButtonLabel"
-msgstr "Назад к Scene""
+msgstr "Назад к Scene"
 
 msgid "AvatarConverterMaterialConvertSettingsLabel"
 msgstr "Настройки конвертации материалов"
@@ -176,16 +207,13 @@ msgid "AvatarConverterContactsTooltip"
 msgstr "Установите отправители и получатели контактов, которые нужно сохранить во время конвертации."
 
 msgid "OpenAvatarBuilder"
-msgstr "Открыть Avatar Builder"
-
-msgid "ManualConversionLabel"
-msgstr "Ручное Преобразование"
+msgstr "Неразрушающее преобразование"
 
 msgid "ManualConversionWarning"
 msgstr "При ручном преобразовании не учитываются неразрушающие компоненты, кроме MA Merge Animator. Могут возникнуть неожиданные проблемы с работой после комбинирования."
 
 msgid "ManualConvertButtonLabel"
-msgstr "Преобразовать Вручную"
+msgstr "Преобразовать"
 
 msgid "ConfirmationForUnityConstraints"
 msgstr "Ручное преобразование удалит Unity Constraints. Вы можете без разрушения преобразовать их в VRChat Constraints, добавив компонент MA Convert Constraints к аватару и используя Avatar Builder для загрузки. Вы действительно хотите продолжить преобразование?"
@@ -228,6 +256,9 @@ msgstr "Заменяемый материал"
 
 msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "Целевой материал будет заменен этим материалом."
+
+msgid "MaterialReplaceSettingsMaterialWarning"
+msgstr ""
 
 msgid "NoMissingComponentsMessage"
 msgstr "В {0} нет \"недостающих\" компонентов."
@@ -327,6 +358,12 @@ msgstr "Создать металлическую гладкость"
 
 msgid "RecommendedUnitySettingsForAndroid"
 msgstr "Рекомендуемые настройки для Android"
+
+msgid "AndroidBuildSupportHelp"
+msgstr ""
+
+msgid "AndroidBuildSupportButtonLabel"
+msgstr ""
 
 msgid "TextureCompressionLabel"
 msgstr "Сжатие текстур для Android"
@@ -442,17 +479,65 @@ msgstr "Включить на ПК"
 msgid "MeshFlipperEditorEnabledOnAndroidLabel"
 msgstr "Включить на Android"
 
+msgid "MeshFlipperEditorUseMaskLabel"
+msgstr ""
+
+msgid "MeshFlipperEditorMaskTextureLabel"
+msgstr ""
+
+msgid "MeshFlipperEditorMaskModeLabel"
+msgstr ""
+
+msgid "MeshFlipperEditorProcessingPhaseLabel"
+msgstr ""
+
 msgid "MeshFlipperEditorEnabledOnPCWarning"
 msgstr "Возможно, это можно сделать с помощью настроек шейдера без использования этого компонента."
 
 msgid "MeshFlipperEditorEnabledOnAndroidWarning"
-msgstr "Количество полигонов для этой сетки удваивается."
+msgstr "Количество полигонов для этой сетки увеличится."
+
+msgid "MeshFlipperEditorMaskTextureMissingError"
+msgstr ""
+
+msgid "MeshFlipperEditorMaskTextureNotReadableError"
+msgstr ""
 
 msgid "MeshFlipperMeshDirectionFlip"
 msgstr "Перевернуто"
 
-msgid "MeshFlipperMeshDirectionBothSides"
+msgid "MeshFlipperMeshDirectionDoubleSide"
 msgstr "Двусторонний"
+
+msgid "MaterialSwapEditorDescription"
+msgstr ""
+
+msgid "MaterialSwapEditorMaterialMappingsLabel"
+msgstr ""
+
+msgid "MaterialSwapEditorOriginalMaterialLabel"
+msgstr ""
+
+msgid "MaterialSwapEditorReplacementMaterialLabel"
+msgstr ""
+
+msgid "MaterialSwapEditorSelectMaterialLabel"
+msgstr ""
+
+msgid "MaterialSwapEditorReplacementMaterialError"
+msgstr ""
+
+msgid "MenuIconResizerEditorDescription"
+msgstr ""
+
+msgid "MenuIconResizerEditorResizeModePCLabel"
+msgstr ""
+
+msgid "MenuIconResizerEditorResizeModeAndroidLabel"
+msgstr ""
+
+msgid "MenuIconResizerEditorCompressTexturesLabel"
+msgstr ""
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Выйдите из игрового режима, чтобы собрать аватар."
@@ -481,11 +566,20 @@ msgstr "Не удалось собрать аватар. Посмотрите ж
 msgid "AvatarBuilderWindowRequiresControlPanel"
 msgstr "Необходимо открыть панель управления VRChat SDK для сборки аватара."
 
+msgid "AvatarBuilderWindowBuildingProgressLabel"
+msgstr ""
+
+msgid "AvatarBuilderWindowUploadingProgressLabel"
+msgstr ""
+
+msgid "AvatarBuilderWindowCopyrightAgreementHelp"
+msgstr ""
+
 msgid "AvatarBuilderWindowOfflineTestingLabel"
-msgstr "Офлайн-тестирование (ПК)"
+msgstr "Офлайн-тестирование ({0})"
 
 msgid "AvatarBuilderWindowOfflineTestingDescription"
-msgstr "Соберите этот аватар с настройками сборки для Android, чтобы протестировать его на ПК."
+msgstr "Создайте этот аватар с настройкой сборки Android, чтобы протестировать его. Аватар будет отображаться как \"SDK {0}\" в категории Other меню аватаров."
 
 msgid "AvatarBuilderWindowOnlinePublishingLabel"
 msgstr "Онлайн-публикация ({0})"
@@ -530,13 +624,26 @@ msgid "NDMF:MaterialConversionErrorTitle"
 msgstr "Ошибка конвертации материала"
 
 msgid "NDMF:MaterialConversionErrorDescription"
-msgstr "Произошла ошибка при конвертации материала.\n\nМатериал: {0}\nШейдер: {1}\n\n{2}: {3}\n{4}"
+msgstr "Произошла ошибка при конвертации материала.\n\n"
+"Материал: {0}\n"
+"Шейдер: {1}\n\n"
+"{2}: {3}\n"
+"{4}"
+
+msgid "NDMF:MaterialSwapNullErrorTitle"
+msgstr ""
+
+msgid "NDMF:MaterialSwapNullErrorDescription"
+msgstr ""
 
 msgid "NDMF:ObjectConversionErrorTitle"
 msgstr "Ошибка конвертации {0}"
 
 msgid "NDMF:ObjectConversionErrorDescription"
-msgstr "Произошла ошибка при конвертации {0}.\n\n{0}: {1}\n\n{2}: {3}\n{4}"
+msgstr "Произошла ошибка при конвертации {0}.\n\n"
+"{0}: {1}\n\n"
+"{2}: {3}\n"
+"{4}"
 
 msgid "NDMF:UnsupportedTextureFormatTitle"
 msgstr "Неподдерживаемый формат текстуры"
@@ -554,4 +661,24 @@ msgid "NDMF:MissingNetworkIDAssignerTitle"
 msgstr "Назначение идентификатора сети"
 
 msgid "NDMF:MissingNetworkIDAssignerDescription"
-msgstr "Чтобы правильно синхронизировать физические кости, физические кости должны иметь одинаковый сетевой ID между ПК и Android.\nВы можете неразрушающе назначить сетевые ID, прикрепив компонент назначателя сетевых ID к корневому объекту аватара. Пожалуйста, загрузите снова, чтобы применить ID после прикрепления компонента."
+msgstr "Чтобы правильно синхронизировать физические кости, физические кости должны иметь одинаковый сетевой ID между ПК и Android.\n"
+"Вы можете неразрушающе назначить сетевые ID, прикрепив компонент назначателя сетевых ID к корневому объекту аватара. Пожалуйста, загрузите снова, чтобы применить ID после прикрепления компонента."
+
+msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
+msgstr ""
+
+msgid "NDMF:MeshFlipperMaskMissingErrorDescription"
+msgstr ""
+
+msgid "NDMF:MeshFlipperMaskNotReadableErrorTitle"
+msgstr ""
+
+msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
+msgstr ""
+
+msgid "NDMF:ReplacementMaterialErrorTitle"
+msgstr ""
+
+msgid "NDMF:ReplacementMaterialErrorDescription"
+msgstr ""
+

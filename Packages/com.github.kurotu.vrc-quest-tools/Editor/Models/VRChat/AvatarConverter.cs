@@ -46,11 +46,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
 #pragma warning disable SA1600 // Elements should be documented
-        internal delegate void TextureProgressCallback(int total, int index, Exception e, Material original, Material converted);
+        internal delegate void TextureProgressCallback(int total, int index, Material original, Material converted);
 
-        internal delegate void AnimationClipProgressCallback(int total, int index, Exception e, AnimationClip original, AnimationClip converted);
+        internal delegate void AnimationClipProgressCallback(int total, int index, AnimationClip original, AnimationClip converted);
 
-        internal delegate void RuntimeAnimatorProgressCallback(int total, int index, Exception e, RuntimeAnimatorController original, RuntimeAnimatorController converted);
+        internal delegate void RuntimeAnimatorProgressCallback(int total, int index, RuntimeAnimatorController original, RuntimeAnimatorController converted);
 #pragma warning restore SA1600 // Elements should be documented
 
         /// <summary>
@@ -71,45 +71,104 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var questAvatarObject = Selection.activeGameObject;
             questAvatarObject.name = avatarConverterSettings.gameObject.name + " (Android)";
 
-            var convertedAvatarConverterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();
-            PrepareConvertForQuestInPlace(convertedAvatarConverterSettings);
-            ConvertForQuestInPlace(convertedAvatarConverterSettings, remover, saveAssetsAsFile, assetsDirectory, progressCallback);
+            var questAvatar = new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
+            PrepareConvertForQuestInPlace(questAvatar);
+            ConvertForQuestInPlace(questAvatar, remover, saveAssetsAsFile, assetsDirectory, progressCallback);
 
-            return new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
+            return questAvatar;
         }
 
         /// <summary>
         /// Prepare to convert the avatar for Quest in place.
         /// </summary>
-        /// <param name="setting">Avatar converter settings component.</param>
-        internal void PrepareConvertForQuestInPlace(AvatarConverterSettings setting)
+        /// <param name="avatar">Avatar object to convert.</param>
+        internal void PrepareConvertForQuestInPlace(VRChatAvatar avatar)
         {
-            ApplyVirtualLens2Support(setting.gameObject);
+            ApplyVirtualLens2Support(avatar.GameObject);
         }
 
         /// <summary>
         /// Convert the avatar for Quest in place.
         /// </summary>
-        /// <param name="setting">Converter setting object.</param>
+        /// <param name="avatar">Avatar object to convert.</param>
         /// <param name="remover">ComponentRemover object.</param>
         /// <param name="saveAssetsAsFile">Whether to save assets as file.</param>
         /// <param name="assetsDirectory">Root directory to save.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
-        internal void ConvertForQuestInPlace(AvatarConverterSettings setting, ComponentRemover remover, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
+        internal void ConvertForQuestInPlace(VRChatAvatar avatar, ComponentRemover remover, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
         {
-            var questAvatarObject = setting.AvatarDescriptor.gameObject;
-            var avatar = new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
+            var questAvatarObject = avatar.GameObject;
+            questAvatarObject.SetActive(true);
+            var converterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();
+
+            // Remove extra material slots such as lilToon FakeShadow.
+            var primaryRootConversion = questAvatarObject
+                .GetComponents<IMaterialConversionComponent>()
+                .FirstOrDefault(c => c.IsPrimaryRoot);
+            if (primaryRootConversion != null && primaryRootConversion.RemoveExtraMaterialSlots)
+            {
+                RemoveExtraMaterialSlots(questAvatarObject);
+            }
 
             // Convert materials and generate textures.
-            var convertedMaterials = ConvertMaterialsForAndroid(avatar.Materials, setting, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
+            var convertSettingsMap = CreateMaterialConvertSettingsMap(avatar);
+            var convertedMaterials = ConvertMaterialsForAndroid(convertSettingsMap, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
+            CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
+
+            ApplyConvertedMaterials(questAvatarObject, convertedMaterials, saveAssetsAsFile, assetsDirectory, progressCallback);
+
+            if (converterSettings != null)
+            {
+                remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
+                ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
+
+                ApplyVRCQuestToolsComponents(converterSettings, questAvatarObject);
+
+                var contactsToKeep = converterSettings.contactsToKeep
+                    .Concat(avatar.GetLocalContactReceivers())
+                    .Concat(avatar.GetLocalContactSenders())
+                    .Distinct()
+                    .ToArray();
+
+                if (converterSettings.removeAvatarDynamics)
+                {
+                    VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSettings.physBonesToKeep, converterSettings.physBoneCollidersToKeep, contactsToKeep);
+                }
+            }
+
+            foreach (var component in questAvatarObject.GetComponentsInChildren<IMaterialOperatorComponent>(true))
+            {
+                if (component is Component c)
+                {
+                    UnityEngine.Object.DestroyImmediate(c);
+                }
+            }
+
+            PrefabUtility.RecordPrefabInstancePropertyModifications(questAvatarObject);
+        }
+
+        /// <summary>
+        /// Applies converted materials to the avatar.
+        /// </summary>
+        /// <param name="questAvatarObject">Target avatar.</param>
+        /// <param name="convertedMaterials">Converted materials map.</param>
+        /// <param name="saveAssetsAsFile">Whether to save assets as file.</param>
+        /// <param name="assetsDirectory">Root directory to save.</param>
+        /// <param name="progressCallback">Callback to show progress.</param>
+        internal void ApplyConvertedMaterials(GameObject questAvatarObject, Dictionary<Material, Material> convertedMaterials, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
+        {
+            var avatar = new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
+
+            var setting = questAvatarObject.GetComponent<AvatarConverterSettings>();
+            var overrideControllers = setting != null ? setting.animatorOverrideControllers.Where(oc => oc != null).ToArray() : new AnimatorOverrideController[0];
 
             // Convert animator controllers and their animation clips.
-            if (avatar.HasAnimatedMaterials || setting.animatorOverrideControllers.Count(oc => oc != null) > 0)
+            if (avatar.HasAnimatedMaterials || overrideControllers.Length > 0)
             {
                 var convertedAnimationClips = ConvertAnimationClipsForQuest(avatar.GetRuntimeAnimatorControllers(), saveAssetsAsFile, assetsDirectory, convertedMaterials, progressCallback.onAnimationClipProgress);
 
                 // Inject animation override.
-                foreach (var oc in setting.animatorOverrideControllers)
+                foreach (var oc in overrideControllers)
                 {
                     if (oc == null)
                     {
@@ -127,7 +186,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                 }
 
-                var convertedBlendTrees = ConvertBlendTreesForQuest(avatar.GetRuntimeAnimatorControllers().Select(c => (AnimatorController)c).ToArray(), saveAssetsAsFile, assetsDirectory, convertedAnimationClips);
+                var convertedBlendTrees = ConvertBlendTreesForQuest(
+                    avatar.GetRuntimeAnimatorControllers().Where(c => c is AnimatorController).Cast<AnimatorController>().ToArray(),
+                    saveAssetsAsFile,
+                    assetsDirectory,
+                    convertedAnimationClips);
                 var convertedAnimMotions = convertedAnimationClips.ToDictionary(c => (Motion)c.Key, c => (Motion)c.Value);
                 var convertedTreeMotions = convertedBlendTrees.ToDictionary(c => (Motion)c.Key, c => (Motion)c.Value);
                 var convertedMotions = convertedAnimMotions.Concat(convertedTreeMotions).ToDictionary(c => c.Key, c => c.Value);
@@ -190,18 +253,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     return m;
                 }).ToArray();
             }
-
-            remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
-            ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
-
-            ApplyVRCQuestToolsComponents(setting, questAvatarObject);
-            questAvatarObject.SetActive(true);
-
-            var converterSetttigs = questAvatarObject.GetComponent<Components.AvatarConverterSettings>();
-            VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSetttigs.physBonesToKeep, converterSetttigs.physBoneCollidersToKeep, converterSetttigs.contactsToKeep);
-
-            UnityEngine.Object.DestroyImmediate(converterSetttigs);
-            PrefabUtility.RecordPrefabInstancePropertyModifications(questAvatarObject);
         }
 
         /// <summary>
@@ -223,12 +274,18 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedTextures = new Dictionary<Material, Texture2D>();
+
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
                 var m = materialsToConvert[i];
-                progressCallback(materialsToConvert.Length, i, null, m, null);
+                var currentIndex = i;
+                void Completion()
+                {
+                    progressCallback(materialsToConvert.Length, currentIndex, m, null);
+                }
                 try
                 {
+                    AsyncCallbackRequest request;
                     var materialSetting = settings.GetMaterialConvertSettings(m);
                     switch (materialSetting)
                     {
@@ -236,14 +293,22 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             if (toonLitConvertSettings.generateQuestTextures)
                             {
                                 var m2 = MaterialWrapperBuilder.Build(m);
-                                new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory);
+                                request = new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory, Completion);
+                            }
+                            else
+                            {
+                                request = new ResultRequest(Completion);
                             }
                             break;
                         case MatCapLitConvertSettings matCapLitConvertSettings:
                             if (matCapLitConvertSettings.generateQuestTextures)
                             {
                                 var m2 = MaterialWrapperBuilder.Build(m);
-                                new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory);
+                                request = new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory, Completion);
+                            }
+                            else
+                            {
+                                request = new ResultRequest(Completion);
                             }
                             break;
                         case StandardLiteConvertSettings standardLiteConvertSettings:
@@ -254,90 +319,262 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             }
                             break;
                         case MaterialReplaceSettings materialReplaceSettings:
-                            // don't have to generate textures
+                            request = new ResultRequest(Completion);
                             break;
                         default:
                             throw new InvalidProgramException($"Unhandled material convert setting: {materialSetting.GetType().Name}");
                     }
+                    request.WaitForCompletion();
                 }
                 catch (Exception e)
                 {
-                    progressCallback(materialsToConvert.Length, i, e, m, null);
-                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw new MaterialConversionException("Failed to generate texture", m, e);
                 }
             }
+            CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
         }
 
         /// <summary>
         /// Converts materials and generate textures for Android.
         /// </summary>
-        /// <param name="materials">Materials to convert.</param>
-        /// <param name="avatarConverterSettings">Avatar converter settings component.</param>
+        /// <param name="convertSettingsMap">Materials convert settings map.</param>
         /// <param name="saveAsFile">Whether to save materials as file.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted materials (key: original material).</returns>
-        internal Dictionary<Material, Material> ConvertMaterialsForAndroid(Material[] materials, AvatarConverterSettings avatarConverterSettings, bool saveAsFile, string assetsDirectory, TextureProgressCallback progressCallback)
+        private Dictionary<Material, Material> ConvertMaterialsForAndroid(
+            Dictionary<Material, IMaterialConvertSettings> convertSettingsMap,
+            bool saveAsFile,
+            string assetsDirectory,
+            TextureProgressCallback progressCallback)
         {
-            var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedMaterials = new Dictionary<Material, Material>();
+
+            // Get unique materials that need conversion
+            var materialsToConvert = convertSettingsMap.Keys
+                .Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m))
+                .Distinct()
+                .ToArray();
+
             for (int i = 0; i < materialsToConvert.Length; i++)
             {
-                progressCallback(materialsToConvert.Length, i, null, materialsToConvert[i], null);
+                var currentIndex = i;
+                var material = materialsToConvert[i];
+                progressCallback(materialsToConvert.Length, i, material, null);
+
                 try
                 {
-                    var m = materialsToConvert[i];
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m, out string guid, out long localId);
-                    var material = new MaterialWrapperBuilder().Build(m);
-                    var setting = avatarConverterSettings.GetMaterialConvertSettings(m);
-                    Material output;
-                    var texturesPath = $"{assetsDirectory}/Textures";
-                    switch (setting)
+                    var request = ConvertSingleMaterial(material, convertSettingsMap[material], saveAsFile, assetsDirectory, (output) =>
                     {
-                        case ToonLitConvertSettings toonLitConvertSettings:
-                            output = new ToonLitGenerator(toonLitConvertSettings).GenerateMaterial(material, saveAsFile, texturesPath);
-                            break;
-                        case MatCapLitConvertSettings matCapLitConvertSettings:
-                            output = new MatCapLitGenerator(matCapLitConvertSettings).GenerateMaterial(material, saveAsFile, texturesPath);
-                            break;
-                        case StandardLiteConvertSettings standardLiteConvertSettings:
-                            output = new StandardLiteGenerator(standardLiteConvertSettings).GenerateMaterial(material, saveAsFile, texturesPath);
-                            break;
-                        case MaterialReplaceSettings materialReplaceSettings:
-                            output = materialReplaceSettings.material;
-                            break;
-                        default:
-                            throw new InvalidProgramException($"Unhandled material convert setting: {setting.GetType().Name}");
-                    }
-                    if (saveAsFile)
-                    {
-                        var saveDirectory = $"{assetsDirectory}/Materials";
-                        Directory.CreateDirectory(saveDirectory);
-                        AssetDatabase.Refresh();
-                        var outFile = $"{saveDirectory}/{m.name}_from_{guid}.mat";
-
-                        if (!(setting is MaterialReplaceSettings))
-                        {
-                            // When the material is added into another asset, "/" is acceptable as name.
-                            if (m.name.Contains("/"))
-                            {
-                                var dir = Path.GetDirectoryName(outFile);
-                                Directory.CreateDirectory(dir);
-                            }
-                            output = AssetUtility.CreateAsset(output, outFile);
-                        }
-                    }
-
-                    convertedMaterials.Add(m, output);
-                    progressCallback(materialsToConvert.Length, i, null, m, output);
+                        convertedMaterials[material] = output;
+                        progressCallback(materialsToConvert.Length, currentIndex, material, output);
+                    });
+                    request.WaitForCompletion();
                 }
                 catch (Exception e)
                 {
-                    progressCallback(materialsToConvert.Length, i, e, materialsToConvert[i], null);
-                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw new MaterialConversionException("Failed to convert material", material, e);
                 }
             }
+
             return convertedMaterials;
+        }
+
+        private void RemoveExtraMaterialSlots(GameObject questAvatarObject)
+        {
+            var renderers = questAvatarObject.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                .Cast<Renderer>()
+                .Concat(questAvatarObject.GetComponentsInChildren<MeshRenderer>(true));
+            foreach (var renderer in renderers)
+            {
+                var mesh = RendererUtility.GetSharedMesh(renderer);
+                if (mesh == null)
+                {
+                    continue;
+                }
+                if (renderer.sharedMaterials.Length > mesh.subMeshCount)
+                {
+                    renderer.sharedMaterials = renderer.sharedMaterials.Take(mesh.subMeshCount).ToArray();
+                }
+            }
+        }
+
+        private Dictionary<Material, IMaterialConvertSettings> CreateMaterialConvertSettingsMap(VRChatAvatar avatar)
+        {
+            var convertSettingsMap = new Dictionary<Material, IMaterialConvertSettings>();
+
+            // Apply MaterialConversionSettings
+            var materialConversionSettings = avatar.GameObject.GetComponentsInChildren<MaterialConversionSettings>(true);
+            foreach (var setting in materialConversionSettings)
+            {
+                foreach (var s in setting.additionalMaterialConvertSettings)
+                {
+                    if (s.targetMaterial == null)
+                    {
+                        throw new TargetMaterialNullException($"Target material is not set in the additionalMaterialConvertSettings of {setting.GetType().Name}", setting);
+                    }
+                    if (s.materialConvertSettings is MaterialReplaceSettings replaceSettings)
+                    {
+                        if (!VRCSDKUtility.IsMaterialAllowedForQuestAvatar(replaceSettings.material))
+                        {
+                            throw new InvalidReplacementMaterialException("Replacement material is not allowed for mobile avatars", setting, replaceSettings.material);
+                        }
+                    }
+                    if (!convertSettingsMap.ContainsKey(s.targetMaterial))
+                    {
+                        convertSettingsMap.Add(s.targetMaterial, s.materialConvertSettings);
+                    }
+                }
+            }
+
+            // Apply MaterialSwap
+            var materialSwaps = avatar.GameObject.GetComponentsInChildren<MaterialSwap>(true);
+            foreach (var swap in materialSwaps)
+            {
+                foreach (var (mapping, index) in swap.materialMappings.Select((value, index) => (value, index)))
+                {
+                    if (mapping.originalMaterial == null)
+                    {
+                        throw new InvalidMaterialSwapNullException("Original material is not set in the VQT Material Swap", swap, index);
+                    }
+
+                    if (mapping.replacementMaterial == null)
+                    {
+                        throw new InvalidMaterialSwapNullException("Replacement material is not set in the VQT Material Swap", swap, index);
+                    }
+
+                    if (!VRCSDKUtility.IsMaterialAllowedForQuestAvatar(mapping.replacementMaterial))
+                    {
+                        throw new InvalidReplacementMaterialException("Replacement material is not allowed for mobile avatars", swap, mapping.replacementMaterial);
+                    }
+
+                    if (!convertSettingsMap.ContainsKey(mapping.originalMaterial))
+                    {
+                        convertSettingsMap.Add(mapping.originalMaterial, new MaterialReplaceSettings
+                        {
+                            material = mapping.replacementMaterial,
+                        });
+                    }
+                }
+            }
+
+            // Apply AvatarConverterSettings
+            var converterSettings = avatar.GameObject.GetComponent<AvatarConverterSettings>();
+            if (converterSettings != null)
+            {
+                foreach (var setting in converterSettings.additionalMaterialConvertSettings)
+                {
+                    if (setting.targetMaterial == null)
+                    {
+                        throw new TargetMaterialNullException($"Target material is not set in the additionalMaterialConvertSettings of {converterSettings.GetType().Name}", converterSettings);
+                    }
+                    if (setting.materialConvertSettings is MaterialReplaceSettings replaceSettings)
+                    {
+                        if (!VRCSDKUtility.IsMaterialAllowedForQuestAvatar(replaceSettings.material))
+                        {
+                            throw new InvalidReplacementMaterialException("Replacement material is not allowed for mobile avatars", converterSettings, replaceSettings.material);
+                        }
+                    }
+                    if (!convertSettingsMap.ContainsKey(setting.targetMaterial))
+                    {
+                        convertSettingsMap.Add(setting.targetMaterial, setting.materialConvertSettings);
+                    }
+                }
+            }
+
+            // Apply default material convert settings
+            var avatarMaterials = avatar.Materials;
+            var primaryConversion = avatar.GameObject
+                .GetComponents<IMaterialConversionComponent>()
+                .FirstOrDefault(c => c.IsPrimaryRoot);
+            if (primaryConversion != null)
+            {
+                foreach (var material in avatarMaterials)
+                {
+                    var setting = primaryConversion.DefaultMaterialConvertSettings;
+                    if (!convertSettingsMap.ContainsKey(material))
+                    {
+                        convertSettingsMap.Add(material, setting);
+                    }
+                }
+            }
+
+            // Omit materials that are not used in the avatar.
+            convertSettingsMap = convertSettingsMap
+                .Where(pair => avatarMaterials.Contains(pair.Key))
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            return convertSettingsMap;
+        }
+
+        private AsyncCallbackRequest ConvertSingleMaterial(
+            Material material,
+            IMaterialConvertSettings convertSettings,
+            bool saveAsFile,
+            string assetsDirectory,
+            Action<Material> completion)
+        {
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localId);
+            var materialWrapper = MaterialWrapperBuilder.Build(material);
+
+            // Generate converted material based on settings
+            return GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory, convertedMaterial =>
+            {
+                // Save as asset if required
+                if (saveAsFile && !(convertSettings is MaterialReplaceSettings))
+                {
+                    convertedMaterial = SaveMaterialAsset(
+                        convertedMaterial,
+                        material.name,
+                        guid,
+                        assetsDirectory);
+                }
+                completion(convertedMaterial);
+            });
+        }
+
+        private AsyncCallbackRequest GenerateConvertedMaterial(
+            MaterialBase material,
+            IMaterialConvertSettings settings,
+            bool saveAsFile,
+            string assetsDirectory,
+            Action<Material> completion)
+        {
+            var texturesPath = $"{assetsDirectory}/Textures";
+
+            switch (settings)
+            {
+                case ToonLitConvertSettings toonLitSettings:
+                    return new ToonLitGenerator(toonLitSettings).GenerateMaterial(material, saveAsFile, texturesPath, completion);
+                case MatCapLitConvertSettings matCapSettings:
+                    return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, saveAsFile, texturesPath, completion);
+                case MaterialReplaceSettings replaceSettings:
+                    if (replaceSettings.material == null)
+                    {
+                        throw new InvalidOperationException($"Replaced material is not set for {material.Material.name} in the VQT component.");
+                    }
+                    return new ResultRequest<Material>(replaceSettings.material, completion);
+                default:
+                    throw new InvalidProgramException($"Unhandled material convert setting: {settings.GetType().Name}");
+            }
+        }
+
+        private Material SaveMaterialAsset(Material material, string originalName, string guid, string assetsDirectory)
+        {
+            var saveDirectory = $"{assetsDirectory}/Materials";
+            Directory.CreateDirectory(saveDirectory);
+            AssetDatabase.Refresh();
+
+            var outFile = $"{saveDirectory}/{originalName}_from_{guid}.mat";
+
+            // Handle nested paths in material names
+            if (originalName.Contains("/"))
+            {
+                var dir = Path.GetDirectoryName(outFile);
+                Directory.CreateDirectory(dir);
+            }
+
+            return AssetUtility.CreateAsset(material, outFile);
         }
 
         /// <summary>
@@ -349,7 +586,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="convertedMotions">Converted motions.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted controllers (key: original controller).</returns>
-        internal Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Motion, Motion> convertedMotions, RuntimeAnimatorProgressCallback progressCallback)
+        private Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Motion, Motion> convertedMotions, RuntimeAnimatorProgressCallback progressCallback)
         {
             var convertedControllers = new Dictionary<RuntimeAnimatorController, RuntimeAnimatorController>();
             for (var index = 0; index < controllers.Length; index++)
@@ -360,17 +597,35 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     continue;
                 }
 
-                progressCallback(controllers.Length, index, null, controller, null);
+                progressCallback(controllers.Length, index, controller, null);
                 try
                 {
-                    AnimatorController cloneController = UnityAnimationUtility.ReplaceAnimationClips(controller, saveAsAsset, assetsDirectory, convertedMotions);
-                    convertedControllers.Add(controller, cloneController);
-                    progressCallback(controllers.Length, index, null, controller, cloneController);
+                    RuntimeAnimatorController cloneController = null;
+                    switch (controller)
+                    {
+                        case AnimatorController animatorController:
+                            cloneController = UnityAnimationUtility.ReplaceAnimationClips(animatorController, saveAsAsset, assetsDirectory, convertedMotions);
+                            break;
+                        case AnimatorOverrideController overrideController:
+                            cloneController = UnityAnimationUtility.ReplaceAnimationClips(overrideController, saveAsAsset, assetsDirectory, convertedMotions);
+                            if (overrideController.runtimeAnimatorController)
+                            {
+                                ((AnimatorOverrideController)cloneController).runtimeAnimatorController = convertedControllers[overrideController.runtimeAnimatorController];
+                            }
+                            break;
+                        default:
+                            Debug.LogWarning($"Unsupported controller type: {controller.name}: {controller.GetType().Name}");
+                            break;
+                    }
+                    if (cloneController)
+                    {
+                        convertedControllers.Add(controller, cloneController);
+                        progressCallback(controllers.Length, index, controller, cloneController);
+                    }
                 }
                 catch (Exception e)
                 {
-                    progressCallback(controllers.Length, index, e, controller, null);
-                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw new AnimatorControllerConversionException("Failed to convert animator controller", controller, e);
                 }
             }
             return convertedControllers;
@@ -384,7 +639,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="assetsDirectory">Root directory for converted blend trees.</param>
         /// <param name="convertedAnimationClips">Converted animation clips.</param>
         /// <returns>Converted blend trees (key: original blend tree).</returns>
-        internal Dictionary<BlendTree, BlendTree> ConvertBlendTreesForQuest(AnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<AnimationClip, AnimationClip> convertedAnimationClips)
+        private Dictionary<BlendTree, BlendTree> ConvertBlendTreesForQuest(AnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<AnimationClip, AnimationClip> convertedAnimationClips)
         {
             var trees = controllers
                 .SelectMany(c => UnityAnimationUtility.GetBlendTrees(c))
@@ -469,7 +724,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="convertedMaterials">Converted materials.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted controllers (key: original controller).</returns>
-        internal Dictionary<AnimationClip, AnimationClip> ConvertAnimationClipsForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Material, Material> convertedMaterials, AnimationClipProgressCallback progressCallback)
+        private Dictionary<AnimationClip, AnimationClip> ConvertAnimationClipsForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Material, Material> convertedMaterials, AnimationClipProgressCallback progressCallback)
         {
             var saveDirectory = $"{assetsDirectory}/Animations";
             if (saveAsAsset)
@@ -493,7 +748,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     continue;
                 }
-                progressCallback(animationClips.Length, i, null, clip, null);
+                progressCallback(animationClips.Length, i, clip, null);
                 try
                 {
                     var anim = UnityAnimationUtility.ReplaceAnimationClipMaterials(animationClips[i], convertedMaterials);
@@ -514,18 +769,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         Debug.Log("create asset: " + outFile);
                     }
                     convertedAnimationClips.Add(clip, anim);
-                    progressCallback(animationClips.Length, i, null, clip, anim);
+                    progressCallback(animationClips.Length, i, clip, anim);
                 }
                 catch (System.Exception e)
                 {
-                    progressCallback(animationClips.Length, i, e, clip, null);
-                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw new AnimationClipConversionException("Failed to convert animation clip", clip, e);
                 }
             }
             return convertedAnimationClips;
         }
 
-        private static void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
+        private void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
         {
             if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
             {
@@ -543,6 +797,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 vcr.enabled = true;
             }
 #endif
+
+#if VQT_HAS_NDMF
+            if (setting.compressExpressionsMenuIcons)
+            {
+                var resizer = questAvatarObject.GetComponentInChildren<MenuIconResizer>(true);
+                if (resizer == null)
+                {
+                    resizer = questAvatarObject.AddComponent<MenuIconResizer>();
+                }
+                resizer.compressTextures = true;
+            }
+#endif
+
             var platformSettings = questAvatarObject.GetComponent<PlatformTargetSettings>();
             if (platformSettings != null)
             {

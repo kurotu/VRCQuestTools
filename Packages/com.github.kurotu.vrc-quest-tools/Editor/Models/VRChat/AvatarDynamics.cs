@@ -97,7 +97,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
         private static int CalculateContactsCount(VRCSDKUtility.Reflection.ContactBase[] contacts)
         {
-            return contacts.Length;
+            return contacts.Count(c => !c.IsLocalOnly);
         }
 
         private static VRCSDKUtility.Reflection.PhysBone[] GetActualPhysBones(GameObject root, VRCSDKUtility.Reflection.PhysBone[] physbones)

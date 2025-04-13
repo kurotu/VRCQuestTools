@@ -65,6 +65,10 @@ Update the converted Android textures with the current settings.
 Set the Avatar Dynamics (PhysBone, Collider, Contact) for the avatar.
 Android avatars have a maximum of Poor for Avatar Dynamics, so specify the components to keep after conversion and delete the rest during conversion.
 
+### Remove Avatar Dynamics
+
+Remove avatar dynamics components which are not selected in the **Avatar Dynamics Settings**.
+
 ### Avatar Dynamics Settings
 
 Select checkboxes for the components to keep after conversion in the window that opens when you click the **Avatar Dynamics Settings** button.
@@ -90,6 +94,18 @@ Use the animation clips specified in Animator Override Controller to create a ne
 Add the [Vertex Color Remover](vertex-color-remover.md) component to the converted avatar to remove vertex colors.
 
 You don't usually need to turn this option off. Turn it off if you are using a special shader for PC avatars that uses vertex colors in order to prevent unintended behavior.
+
+### Remove Extra Material Slots
+
+Remove material slots that are greater than the number of submeshes for each renderer.
+
+This option is useful when the original avatar uses additional material slot for some reason (for example, lilToon's Fake Shadow).
+
+### Compress Menu Icons
+
+Compress expressions menu icons which are not compressed.
+
+This options is useful to reduce avatar's build size when other tools generate a bunch of icons.
 
 ### NDMF Phase to Convert
 
@@ -140,3 +156,5 @@ This process is performed after TexTransTool and Modular Avatar.
 
 Convert the avatar for Android when the NDMF conversion phase is Optimizing.
 This process is performed after TexTransTool and before AAO: Avatar Optimizer.
+
+Compress menu icons which are not compressed.

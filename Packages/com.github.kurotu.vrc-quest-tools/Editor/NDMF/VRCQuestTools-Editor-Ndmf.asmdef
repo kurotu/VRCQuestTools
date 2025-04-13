@@ -20,6 +20,11 @@
     ],
     "versionDefines": [
         {
+            "name": "com.vrchat.avatars",
+            "expression": "3.8.0",
+            "define": "VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT"
+        },
+        {
             "name": "nadena.dev.ndmf",
             "expression": "",
             "define": "VQT_HAS_NDMF"
@@ -28,6 +33,11 @@
             "name": "nadena.dev.ndmf",
             "expression": "1.3.0",
             "define": "VQT_HAS_NDMF_ERROR_REPORT"
+        },
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "1.5.0",
+            "define": "VQT_HAS_NDMF_PREVIEW"
         },
         {
             "name": "jp.lilxyzw.ndmfmeshsimplifier",

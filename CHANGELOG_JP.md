@@ -7,10 +7,119 @@
 ## [Unreleased]
 
 ### 追加
-- [NDMF] `VQT Mesh Flipper` コンポーネントによるメッシュの向きを反転する機能を追加。
+- Android Build Support のインストールを確認する機能を追加。
+- `Avatar Dynamics を削除` 設定を `VQT Avatar Converter Settings` に追加。
+- [NDMF] マテリアルの変換設定を保持する `VQT Material Conversion Settings` コンポーネントを追加。
+- [NDMF] `VQT Mesh Flipper` に `NDMFフェーズ` 設定を追加。
+    - Before Decimation
+    - After Decimation
+- [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応。
+
+### 変更
+- [NDMF] `VQT Material Swap` が `VQT Avatar Converter Settings` なしでも動作するように変更。
+
+### 修正
+- 非アクティブな Animator の Animator Controller が変換されない問題を修正。
+
+## [2.8.3] - 2025-04-08
+
+### 追加
+- `VQT Material Swap` にマテリアルが設定されていないときのエラーを追加。
+- [NDMF] `VQT Avatar Builder` でのアップロード時に Copyright ownership agreement を確認するメッセージを追加。
+
+### 修正
+- `VQT Avatar Converter Settings` で置換先マテリアルが設定されていないときに発生する例外を修正。
+- [NDMF] アニメーションの変換に関するエラーがNDMFコンソールに報告されない問題を修正。
+- [NDMF] マテリアル変換エラーの内容がNDMFコンソールに正しく表示されない問題を修正。
+
+## [2.8.2] - 2025-04-01
+
+### 修正
+- MatCap Lit への変換が行われない問題を修正。
+
+## [2.8.1] - 2025-03-31
+
+### 変更
+- `VQT Avatar Converter Settings` の追加のマテリアル変換設定で対象マテリアルを直接指定できるように変更。
+- テクスチャ生成処理の多重化をやめ2.7.2と同様に順次処理するように変更。
+
+### 修正
+- 手動変換時に NDMF のインストールされていないプロジェクトで `VQT Menu Icon Resizer` が付与される問題を修正。
+- VirtualLens2 のマテリアルを変換するときにエラーが発生する問題を修正。
+- [NDMF] `VQT Mesh Flipper` の対象となるメッシュが存在しない場合にエラーが発生する問題を修正。
+- [NDMF] `VQT Material Swap` で複数のマテリアルに対して同じ置換先マテリアルを設定するとエラーが発生する問題を修正。
+
+## [2.8.0] - 2025-03-16
+
+### 追加
+- `VQT Avatar Converter Settings` でメニューアイコンを圧縮する設定の場合、手動変換時に `VQT Menu Icon Resizer` を設定する機能を追加。
+- テクスチャ生成処理を高速化するためのキャッシュ機能を追加。
+- Unity の Preferences (環境設定) に VRCQuestTools の設定画面を追加。
+- [NDMF] VQT Avatar Builder で Android 用のオフラインテストに対応。
+
+### 変更
+- テクスチャの生成処理を高速化。
+- lilToon マテリアルからのテクスチャの生成処理を高速化。
+- オプションの依存関係に対する型の解決を高速化。
+- [NDMF] 生成されたテクスチャのRead/Write Enabledを無効にするように変更。
+
+### 修正
+- [NDMF] VRCSDK がサポートしていないビルドターゲットでアバターをビルドすると例外が発生する問題を修正。
+
+## [2.7.2] - 2025-03-02
+
+### 追加
+- Animator Override Controller の変換に対応。
+
+### 修正
+- Animator Controller に埋め込まれた Blend Tree を変換すると元々の Blend Tree が削除される問題を修正。
+- Animator Controller に埋め込まれた Blend Tree が変換された後に正しく保存されない問題を修正。
+
+## [2.7.1] - 2025-02-26
+
+### 変更
+- Unity 2019でのテクスチャの生成処理を2.6.2以前のバージョンと同じに変更。
+
+## [2.7.0] - 2025-02-25
+
+### 追加
+- [NDMF] `VQT Mesh Flipper` にマスクテクスチャによって動作範囲を制御する機能を追加。
+- [NDMF] (実験的機能) `VQT Material Swap` コンポーネントによる Android ビルド時のマテリアル置換設定を追加。 (by @Amoenus)
+- [NDMF] `VQT Menu Icon Resizer` によるメニューアイコンのサイズ変更機能を追加。
+- [NDMF] 追加のマテリアル変換設定の対象となるマテリアルが他のプラグインによって変更された場合に追跡する機能を追加。
+- マテリアル置換設定で非対応マテリアルを指定したときのエラーを追加。
+- `VQT Avatar Converter Settings` に余分なマテリアルスロットを削除する機能を追加。
+- `VQT Avatar Converter Settings` にメニューアイコンを圧縮する機能を追加。
+- lilToon のカスタムシェーダーを使用するマテリアルの変換に対応。(通常の lilToon と同様の処理)
+- Local-Only Contact Sender に対応。
+
+### 変更
+- テクスチャの生成処理を高速化。
+- [NDMF] Transforming Phase で `VQT Mesh Flipper` が `NDMF Mantis LOD Editor` より先に動作するように変更。
+
+## [2.6.2] - 2025-01-21
+
+### 修正
+- lilToon FakeShadowのマテリアルの変換に失敗する問題を修正。
+
+## [2.6.1] - 2025-01-19
+
+### 追加
+- lilToon のベイク処理でマテリアルのプロパティの型に不整合がある場合に追加情報を表示する機能を追加。
+
+### 修正
+- GameObject を選択していない状態でヒエラルキーを右クリックするとエラーが発生する問題を修正。
+- 入れ子になった Blend Tree が正しく変換されない問題を修正。
+- 翻訳ファイルの誤りを修正。 (by @Amoenus)
+
+## [2.6.0] - 2024-12-14
+
+### 追加
+- Local-Only Contact Receiver に対応。
+- Prefab ステージに関する警告にシーンに戻るためのボタンを追加
+- [NDMF] (実験的機能) `VQT Mesh Flipper` コンポーネントによるメッシュの向きを反転する機能を追加。
 - [NDMF] アバターの右クリックメニューに `[NDMF] Manual Bake with Android Settings` メニューを追加。
 - [NDMF] `VQT Avatar Builder` にアップロード対象のアバターを選択する機能を追加。
-- Prefab ステージに関する警告にシーンに戻るためのボタンを追加
 - [NDMF] `MA Convert Constraints` コンポーネントと非破壊変換を提案するメッセージとダイアログを追加。
 
 ### 変更
@@ -20,6 +129,7 @@
 
 ### 修正
 - 未翻訳の文言に対するフォールバックが動作していない問題を修正。
+- `VQT Avatar Converter Settings` の初期状態で非アクティブの Avatar Dynamics コンポーネントが選択されていない問題を修正。
 - [NDMF] ビルドターゲットがAndroidの場合、変換していないアバターであっても非対応コンポーネントを削除する問題を修正。
 
 ## [2.5.5] - 2024-11-16
