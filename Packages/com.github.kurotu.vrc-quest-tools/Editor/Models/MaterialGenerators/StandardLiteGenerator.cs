@@ -45,6 +45,7 @@ namespace KRT.VRCQuestTools.Models
                     request = GenerateEmissionTexture(material, settings, saveTextureAsPng, texturesPath, (t) =>
                     {
                         newMaterial.SetTexture("_EmissionMap", t);
+                        newMaterial.SetColor("_EmissionColor", new Color(1, 1, 1, 1));
                     });
                     request.WaitForCompletion();
                 }

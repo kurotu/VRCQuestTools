@@ -141,11 +141,32 @@ namespace KRT.VRCQuestTools.Models.Unity
 
         public AsyncCallbackRequest GenerateStandardLiteEmission(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
         {
-            // TODO: Rewrite bake emission.
-            var emission = Material.GetTexture("_EmissionMap") as Texture2D;
-            return AssetUtility.BakeTexture(emission, (int)settings.maxTextureSize, (int)settings.maxTextureSize, true, (texture) =>
+            var shaderSetting = LoadShaderSetting();
+
+            var hasMainTex = Material.mainTexture != null;
+            var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
+            var textureSize = System.Math.Min(mainTexSize, Material.mainTexture.width);
+
+            var bakeMat = new Material(Material);
+#if UNITY_2022_1_OR_NEWER
+            bakeMat.parent = null;
+#endif
+            bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_emission");
+
+            bakeMat.SetFloat("_LIL_FEATURE_NORMAL_1ST", shaderSetting.LIL_FEATURE_NORMAL_1ST ? 1.0f : 0.0f);
+            bakeMat.SetFloat("_LIL_FEATURE_EMISSION_1ST", shaderSetting.LIL_FEATURE_EMISSION_1ST ? 1.0f : 0.0f);
+            bakeMat.SetFloat("_LIL_FEATURE_EMISSION_2ND", shaderSetting.LIL_FEATURE_EMISSION_2ND ? 1.0f : 0.0f);
+            bakeMat.SetFloat("_LIL_FEATURE_ANIMATE_EMISSION_UV", shaderSetting.LIL_FEATURE_ANIMATE_EMISSION_UV ? 1.0f : 0.0f);
+            bakeMat.SetFloat("_LIL_FEATURE_ANIMATE_EMISSION_MASK_UV", shaderSetting.LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? 1.0f : 0.0f);
+            bakeMat.SetFloat("_LIL_FEATURE_EMISSION_GRADATION", shaderSetting.LIL_FEATURE_EMISSION_GRADATION ? 1.0f : 0.0f);
+
+            var rt = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
+            Graphics.Blit(null, rt, bakeMat);
+            return AssetUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
             {
-                completion?.Invoke(texture);
+                RenderTexture.ReleaseTemporary(rt);
+                Object.DestroyImmediate(bakeMat);
+                completion?.Invoke(tex);
             });
         }
 
