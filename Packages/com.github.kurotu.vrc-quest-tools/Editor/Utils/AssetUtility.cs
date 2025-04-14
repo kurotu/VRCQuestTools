@@ -433,7 +433,11 @@ namespace KRT.VRCQuestTools.Utils
 #endif
 
             var rt = RenderTexture.GetTemporary(desc);
-            var renderTextures = new List<RenderTexture> { rt };
+
+            desc.width = width;
+            desc.height = height;
+            var rt2 = RenderTexture.GetTemporary(desc);
+            var renderTextures = new List<RenderTexture> { rt, rt2 };
 
             var activeRT = RenderTexture.active;
             try
@@ -448,7 +452,40 @@ namespace KRT.VRCQuestTools.Utils
                     Graphics.Blit(input, rt);
                 }
 
-                // Iterative downscaling
+                DownscaleBlit(rt, rt2);
+
+                return RequestReadbackRenderTexture(rt2, useMipmap, (result) =>
+                {
+                    foreach (var r in renderTextures)
+                    {
+                        RenderTexture.ReleaseTemporary(r);
+                    }
+                    completion?.Invoke(result);
+                });
+            }
+            finally
+            {
+                RenderTexture.active = activeRT;
+            }
+        }
+
+        internal static void DownscaleBlit(Texture input, RenderTexture output)
+        {
+            var width = output.width;
+            var height = output.height;
+            var desc = new RenderTextureDescriptor(input.width, input.height, RenderTextureFormat.ARGB32, 0);
+#if UNITY_2022_1_OR_NEWER
+            desc.sRGB = input.isDataSRGB;
+#else
+            desc.sRGB = true;
+#endif
+            var rt = RenderTexture.GetTemporary(desc);
+            var renderTextures = new List<RenderTexture> { rt };
+
+            var prev = RenderTexture.active;
+            try
+            {
+                Graphics.Blit(input, rt);
                 while (desc.width > width || desc.height > height)
                 {
                     desc.width /= 2;
@@ -463,19 +500,15 @@ namespace KRT.VRCQuestTools.Utils
                     Graphics.Blit(renderTextures.Last(), rt2);
                     renderTextures.Add(rt2);
                 }
-
-                return RequestReadbackRenderTexture(renderTextures.Last(), useMipmap, (result) =>
-                {
-                    foreach (var r in renderTextures)
-                    {
-                        RenderTexture.ReleaseTemporary(r);
-                    }
-                    completion?.Invoke(result);
-                });
+                Graphics.Blit(renderTextures.Last(), output);
             }
             finally
             {
-                RenderTexture.active = activeRT;
+                foreach (var r in renderTextures)
+                {
+                    RenderTexture.ReleaseTemporary(r);
+                }
+                RenderTexture.active = prev;
             }
         }
 

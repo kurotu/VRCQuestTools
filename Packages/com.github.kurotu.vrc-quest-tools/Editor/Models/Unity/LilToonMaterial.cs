@@ -100,9 +100,14 @@ namespace KRT.VRCQuestTools.Models.Unity
         public AsyncCallbackRequest GenerateStandardLiteMain(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
         {
             var rt = MainBake(Material, 0);
-            return AssetUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
+
+            var textureSize = System.Math.Min(rt.width, (int)settings.maxTextureSize);
+            var rt2 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
+            AssetUtility.DownscaleBlit(rt, rt2);
+            return AssetUtility.RequestReadbackRenderTexture(rt2, true, (tex) =>
             {
                 Object.DestroyImmediate(rt);
+                RenderTexture.ReleaseTemporary(rt2);
                 completion?.Invoke(tex);
             });
         }
@@ -214,7 +219,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             var hasMainTex = Material.mainTexture != null;
             var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
-            var textureSize = System.Math.Min(mainTexSize, Material.mainTexture.width);
+            var textureSize = System.Math.Min(mainTexSize, (int)settings.maxTextureSize);
 
             var bakeMat = new Material(Material);
 #if UNITY_2022_1_OR_NEWER

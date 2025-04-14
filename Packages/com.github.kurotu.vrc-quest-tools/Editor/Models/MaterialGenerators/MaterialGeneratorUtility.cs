@@ -10,28 +10,35 @@ namespace KRT.VRCQuestTools.Models
     {
         internal static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
-            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, false, requestGenerateImageFunc, completion);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.SRGB, requestGenerateImageFunc, completion);
+        }
+
+        internal static AsyncCallbackRequest GenerateParameterTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
+        {
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.Parameter, requestGenerateImageFunc, completion);
         }
 
         internal static AsyncCallbackRequest GenerateNormalMap(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
-            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, true, requestGenerateImageFunc, completion);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.NormalMap, requestGenerateImageFunc, completion);
         }
 
-        private static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, bool isNormalMap, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
+        private static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
             var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material) + settings.GetCacheKey());
             var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}_{assetHash}" + (saveAsPng ? ".png" : ".json");
+            var texName = $"{material.name}_{textureType}";
             string outFile = null;
             if (saveAsPng)
             {
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localId);
-                outFile = $"{texturesPath}/{material.name}_{textureType}_from_{guid}.png";
+                outFile = $"{texturesPath}/{texName}_from_{guid}.png";
             }
 
-            var cacheTexture = TryLoadCacheTexture(material, saveAsPng, texturesPath, isNormalMap, cacheFile, outFile);
+            var cacheTexture = TryLoadCacheTexture(material, saveAsPng, texturesPath, config, cacheFile, outFile);
             if (cacheTexture)
             {
+                cacheTexture.name = texName;
                 return new ResultRequest<Texture2D>(cacheTexture, completion);
             }
 
@@ -39,14 +46,15 @@ namespace KRT.VRCQuestTools.Models
             {
                 if (texToWrite)
                 {
-                    texToWrite = SaveTexture(material, saveAsPng, texturesPath, isNormalMap, texToWrite, cacheFile, outFile);
+                    texToWrite.name = texName;
+                    texToWrite = SaveTexture(saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile);
                 }
                 completion?.Invoke(texToWrite);
             });
             return request;
         }
 
-        private static Texture2D TryLoadCacheTexture(Material material, bool saveAsPng, string texturesPath, bool isNormalMap, string cacheFile, string outFile)
+        private static Texture2D TryLoadCacheTexture(Material material, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile)
         {
             using (var mutex = CacheManager.Texture.CreateMutex())
             {
@@ -62,13 +70,13 @@ namespace KRT.VRCQuestTools.Models
                                 Directory.CreateDirectory(texturesPath);
                                 CacheManager.Texture.CopyFromCache(cacheFile, outFile);
                                 AssetDatabase.ImportAsset(outFile);
-                                if (isNormalMap)
+                                if (config.isNormalMap)
                                 {
                                     AssetUtility.CongigureNormalMapImporter(outFile);
                                 }
                                 else
                                 {
-                                    AssetUtility.ConfigureTextureImporter(outFile);
+                                    AssetUtility.ConfigureTextureImporter(outFile, config.isSRGB);
                                 }
                                 var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
                                 return tex;
@@ -78,7 +86,6 @@ namespace KRT.VRCQuestTools.Models
                                 var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
                                 var tex = cache.ToTexture2D();
                                 AssetUtility.SetStreamingMipMaps(tex, true);
-                                tex.name = material.name;
                                 return tex;
                             }
                         }
@@ -98,20 +105,20 @@ namespace KRT.VRCQuestTools.Models
             return null;
         }
 
-        private static Texture2D SaveTexture(Material material, bool saveAsPng, string texturesPath, bool isNormalMap, Texture2D texToWrite, string cacheFile, string outFile)
+        private static Texture2D SaveTexture(bool saveAsPng, string texturesPath, TextureConfig config, Texture2D texToWrite, string cacheFile, string outFile)
         {
             if (saveAsPng)
             {
                 Directory.CreateDirectory(texturesPath);
 
                 // When the texture is added into another asset, "/" is acceptable as name.
-                if (material.name.Contains("/"))
+                if (texToWrite.name.Contains("/"))
                 {
                     var dir = Path.GetDirectoryName(outFile);
                     Directory.CreateDirectory(dir);
                 }
-                texToWrite = AssetUtility.SaveUncompressedTexture(outFile, texToWrite);
-                if (isNormalMap)
+                texToWrite = AssetUtility.SaveUncompressedTexture(outFile, texToWrite, config.isSRGB);
+                if (config.isNormalMap)
                 {
                     AssetUtility.CongigureNormalMapImporter(outFile);
                 }
@@ -121,11 +128,38 @@ namespace KRT.VRCQuestTools.Models
             {
                 AssetUtility.SetStreamingMipMaps(texToWrite, true);
                 AssetUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
-                texToWrite.name = material.name;
                 CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite)));
             }
 
             return texToWrite;
+        }
+
+        private struct TextureConfig
+        {
+            public bool isSRGB;
+            public bool isNormalMap;
+            public bool alphaIsTransparency;
+
+            public static TextureConfig SRGB => new TextureConfig()
+            {
+                isSRGB = true,
+                isNormalMap = false,
+                alphaIsTransparency = true
+            };
+
+            public static TextureConfig Parameter => new TextureConfig()
+            {
+                isSRGB = false,
+                isNormalMap = false,
+                alphaIsTransparency = false
+            };
+
+            public static TextureConfig NormalMap => new TextureConfig()
+            {
+                isSRGB = false,
+                isNormalMap = true,
+                alphaIsTransparency = false
+            };
         }
     }
 }

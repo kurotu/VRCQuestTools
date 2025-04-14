@@ -93,7 +93,7 @@ namespace KRT.VRCQuestTools.Models
 
         private AsyncCallbackRequest GenerateMetallicSmoothnessTexture(MaterialBase material, StandardLiteConvertSettings settings, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
-            return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "metallicSmoothness", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteMetallicSmoothness(settings, compl), completion);
+            return MaterialGeneratorUtility.GenerateParameterTexture(material.Material, settings, "metallicSmoothness", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteMetallicSmoothness(settings, compl), completion);
         }
 
         private AsyncCallbackRequest GenerateEmissionTexture(MaterialBase material, StandardLiteConvertSettings settings, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
