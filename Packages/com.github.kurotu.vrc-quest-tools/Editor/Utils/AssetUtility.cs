@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
+using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -573,6 +574,33 @@ namespace KRT.VRCQuestTools.Utils
             var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
             var format = isMobile ? TextureFormat.ASTC_6x6 : TextureFormat.DXT5;
             EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);
+        }
+
+        /// <summary>
+        /// Compresses a normal map texture.
+        /// </summary>
+        /// <param name="texture">Normal map texture (RGB).</param>
+        /// <returns>Compressed normal map.</returns>
+        internal static Texture2D CompressNormalMap(Texture2D texture)
+        {
+            using (var colors = texture.GetPixelData<Color32>(0))
+            {
+                var settings = new TextureGenerationSettings(TextureImporterType.NormalMap);
+                settings.textureImporterSettings.mipmapEnabled = true;
+                settings.textureImporterSettings.streamingMipmaps = true;
+                settings.textureImporterSettings.wrapMode = texture.wrapMode;
+                settings.textureImporterSettings.filterMode = texture.filterMode;
+                settings.textureImporterSettings.aniso = texture.anisoLevel;
+                settings.platformSettings.maxTextureSize = Math.Max(texture.width, texture.height);
+                settings.sourceTextureInformation.width = texture.width;
+                settings.sourceTextureInformation.height = texture.height;
+                settings.sourceTextureInformation.containsAlpha = true;
+                settings.sourceTextureInformation.hdr = false;
+
+                var output = TextureGenerator.GenerateTexture(settings, colors);
+                output.texture.name = texture.name;
+                return output.texture;
+            }
         }
 
         /// <summary>

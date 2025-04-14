@@ -127,7 +127,14 @@ namespace KRT.VRCQuestTools.Models
             else
             {
                 AssetUtility.SetStreamingMipMaps(texToWrite, true);
-                AssetUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
+                if (config.isNormalMap)
+                {
+                    texToWrite = AssetUtility.CompressNormalMap(texToWrite);
+                }
+                else
+                {
+                    AssetUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
+                }
                 CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite)));
             }
 

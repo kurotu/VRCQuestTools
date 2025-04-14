@@ -7,7 +7,6 @@ using KRT.VRCQuestTools.Utils;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models.Unity
 {

@@ -2,7 +2,6 @@
 #pragma kernel CSMain
 
 #pragma multi_compile __ INPUT_RGB
-#pragma multi_compile __ OUTPUT_RGB
 
 Texture2D<float4> _Input;
 RWTexture2D<float4> _Result;
@@ -52,7 +51,8 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         #ifdef INPUT_RGB
             n = normalize(texel.rgb * 2.0 - 1.0);
         #else
-            n.xy = texel.rg * 2.0 - 1.0;
+            // DXTnm
+            n.xy = texel.ag * 2.0 - 1.0;
             n.z = sqrt(saturate(1.0 - dot(n.xy, n.xy)));
         #endif
 
@@ -64,11 +64,7 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 
     float3 finalNormal = normalize(normalSum / weightSum);
 
-#ifdef OUTPUT_RGB
+    // Linear RGB
     finalNormal = finalNormal * 0.5 + 0.5;
     _Result[outCoord] = float4(finalNormal, 1.0);
-#else
-    float2 encodedXY = finalNormal.xy * 0.5 + 0.5;
-    _Result[outCoord] = float4(encodedXY, 0.0, 1.0);
-#endif
 }
