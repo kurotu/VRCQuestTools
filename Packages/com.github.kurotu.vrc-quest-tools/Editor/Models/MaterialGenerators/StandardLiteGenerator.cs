@@ -103,7 +103,7 @@ namespace KRT.VRCQuestTools.Models
 
         private AsyncCallbackRequest GenerateNormalTexture(MaterialBase material, StandardLiteConvertSettings settings, bool inputRGB, bool outputRGB, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
-            return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "normal", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteNormalMap(settings, inputRGB, outputRGB, compl), completion);
+            return MaterialGeneratorUtility.GenerateNormalMap(material.Material, settings, "normal", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteNormalMap(settings, inputRGB, outputRGB, compl), completion);
         }
     }
 }

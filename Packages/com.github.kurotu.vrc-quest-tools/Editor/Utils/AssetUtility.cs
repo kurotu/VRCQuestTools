@@ -227,6 +227,20 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Configure TextureImporter for normal map.
+        /// </summary>
+        /// <param name="path">Texture path.</param>
+        internal static void CongigureNormalMapImporter(string path)
+        {
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            importer.textureType = TextureImporterType.NormalMap;
+            importer.alphaIsTransparency = false;
+            importer.sRGBTexture = false;
+            importer.mipmapEnabled = false;
+            importer.SaveAndReimport();
+        }
+
+        /// <summary>
         /// Loads uncompressed image as Texture2D.
         /// </summary>
         /// <param name="texture">original texture.</param>
