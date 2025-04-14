@@ -129,14 +129,83 @@ namespace KRT.VRCQuestTools.Models.Unity
             });
         }
 
-        public AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
+        public AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, bool inputRGB, bool outputRGB, System.Action<Texture2D> completion)
         {
-            // TODO: Rewrite down sampling.
             var normal = Material.GetTexture("_BumpMap") as Texture2D;
-            return AssetUtility.BakeTexture(normal, (int)settings.maxTextureSize, (int)settings.maxTextureSize, true, (texture) =>
+
+            var hasMainTex = Material.mainTexture != null;
+            var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
+            var textureSize = System.Math.Min(mainTexSize, (int)settings.maxTextureSize);
+
+            var newNormal = DownscaleNormalMapGPU(normal, inputRGB, outputRGB, textureSize, textureSize);
+
+            return new ResultRequest<Texture2D>(newNormal, completion);
+        }
+
+        static Texture2D DownscaleNormalMapGPU(Texture2D source, bool inputRGB, bool outputRGB, int targetWidth, int targetHeight)
+        {
+            // ì¸óÕÇ∆èoóÕÇÃRenderTexture
+            var d = new RenderTextureDescriptor(source.width, source.height, RenderTextureFormat.ARGB32)
             {
-                completion?.Invoke(texture);
-            });
+                useMipMap = false,
+                sRGB = false,
+                depthBufferBits = 0,
+                enableRandomWrite = true,
+            };
+            RenderTexture srcRT = RenderTexture.GetTemporary(d);
+            srcRT.Create();
+            Graphics.Blit(source, srcRT);
+
+            d.width = targetWidth;
+            d.height = targetHeight;
+            RenderTexture dstRT = RenderTexture.GetTemporary(d);
+            dstRT.Create();
+
+            // ComputeShader
+            var shaderGUID = "dfdb9399f59780a47b40e0be254b49af";
+            var path = AssetDatabase.GUIDToAssetPath(shaderGUID);
+            var computeShader = AssetDatabase.LoadAssetAtPath<ComputeShader>(path);
+
+            if (inputRGB)
+            {
+                computeShader.EnableKeyword("INPUT_RGB");
+            }
+            else
+            {
+                computeShader.DisableKeyword("INPUT_RGB");
+            }
+
+            if (outputRGB)
+            {
+                computeShader.EnableKeyword("OUTPUT_RGB");
+            }
+            else
+            {
+                computeShader.DisableKeyword("OUTPUT_RGB");
+            }
+
+            int kernel = computeShader.FindKernel("CSMain");
+            computeShader.SetTexture(kernel, "_Input", srcRT);
+            computeShader.SetTexture(kernel, "_Result", dstRT);
+            computeShader.SetInts("_InputSize", source.width, source.height);
+            computeShader.SetInts("_OutputSize", targetWidth, targetHeight);
+
+            int threadGroupsX = Mathf.CeilToInt(targetWidth / 8.0f);
+            int threadGroupsY = Mathf.CeilToInt(targetHeight / 8.0f);
+            computeShader.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
+
+            // åãâ ÇTexture2DÇ…ïœä∑
+            var prevActive = RenderTexture.active;
+            RenderTexture.active = dstRT;
+            Texture2D result = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false, true);
+            result.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
+            result.Apply();
+            RenderTexture.active = prevActive;
+
+            RenderTexture.ReleaseTemporary(srcRT);
+            RenderTexture.ReleaseTemporary(dstRT);
+
+            return result;
         }
 
         public AsyncCallbackRequest GenerateStandardLiteEmission(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)

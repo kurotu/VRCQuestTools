@@ -1,6 +1,7 @@
 using System;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
+using UnityEditor;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
@@ -52,7 +53,9 @@ namespace KRT.VRCQuestTools.Models
 
                 if (standardLiteConvertable.UseStandardLiteNormalMap)
                 {
-                    request = GenerateNormalTexture(material, settings, saveTextureAsPng, texturesPath, (t) =>
+                    var inputRGB = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS;
+                    var outputRGB = saveTextureAsPng || inputRGB;
+                    request = GenerateNormalTexture(material, settings, inputRGB, outputRGB, saveTextureAsPng, texturesPath, (t) =>
                     {
                         newMaterial.SetTexture("_BumpMap", t);
                     });
@@ -98,9 +101,9 @@ namespace KRT.VRCQuestTools.Models
             return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "emission", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteEmission(settings, compl), completion);
         }
 
-        private AsyncCallbackRequest GenerateNormalTexture(MaterialBase material, StandardLiteConvertSettings settings, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
+        private AsyncCallbackRequest GenerateNormalTexture(MaterialBase material, StandardLiteConvertSettings settings, bool inputRGB, bool outputRGB, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
-            return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "normal", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteNormalMap(settings, compl), completion);
+            return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "normal", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteNormalMap(settings, inputRGB, outputRGB, compl), completion);
         }
     }
 }

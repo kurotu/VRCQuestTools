@@ -37,7 +37,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <param name="settings">Convert settings.</param>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Callback request.</returns>
-        AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, Action<Texture2D> completion);
+        AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, bool inputRGB, bool outputRGB, Action<Texture2D> completion);
 
         /// <summary>
         /// Generate Standard Lite emission texture.

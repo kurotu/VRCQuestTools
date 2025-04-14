@@ -485,6 +485,25 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Request readback of a render texture.
+        /// </summary>
+        /// <param name="renderTexture">Render texture to readback.</param>
+        /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="completion">Completion callback.</param>
+        /// <returns>Readback request to wait.</returns>
+        internal static AsyncCallbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, bool useMipmap, bool linear, Action<Texture2D> completion)
+        {
+            if (ShouldUseAsyncGPUReadback())
+            {
+                return new TextureGPUReadbackRequest(renderTexture, useMipmap, linear, completion);
+            }
+            else
+            {
+                return new TextureCPUReadbackRequest(renderTexture, useMipmap, linear, completion);
+            }
+        }
+
+        /// <summary>
         /// Resizes a texture to desired size.
         /// </summary>
         /// <param name="texture">Texture to resize.</param>
