@@ -115,7 +115,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     baker.Object.SetTexture(name, tex);
                 }
 
-                return AssetUtility.BakeTexture(mainTexture, baker.Object, width, height, true, completion);
+                return AssetUtility.BakeTexture(mainTexture, true, baker.Object, width, height, true, completion);
             }
         }
     }

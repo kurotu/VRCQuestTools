@@ -102,7 +102,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             var textureSize = System.Math.Min(rt.width, (int)settings.maxTextureSize);
             var rt2 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
-            AssetUtility.DownscaleBlit(rt, rt2);
+            AssetUtility.DownscaleBlit(rt, true, rt2);
             return AssetUtility.RequestReadbackRenderTexture(rt2, true, (tex) =>
             {
                 Object.DestroyImmediate(rt);
@@ -170,27 +170,10 @@ namespace KRT.VRCQuestTools.Models.Unity
             var path = AssetDatabase.GUIDToAssetPath(shaderGUID);
             var computeShader = AssetDatabase.LoadAssetAtPath<ComputeShader>(path);
 
-            if (inputRGB)
-            {
-                computeShader.EnableKeyword("INPUT_RGB");
-            }
-            else
-            {
-                computeShader.DisableKeyword("INPUT_RGB");
-            }
-
-            if (outputRGB)
-            {
-                computeShader.EnableKeyword("OUTPUT_RGB");
-            }
-            else
-            {
-                computeShader.DisableKeyword("OUTPUT_RGB");
-            }
-
             int kernel = computeShader.FindKernel("CSMain");
             computeShader.SetTexture(kernel, "_Input", srcRT);
             computeShader.SetTexture(kernel, "_Result", dstRT);
+            computeShader.SetBool("_InputRGB", inputRGB);
             computeShader.SetInts("_InputSize", source.width, source.height);
             computeShader.SetInts("_OutputSize", targetWidth, targetHeight);
 

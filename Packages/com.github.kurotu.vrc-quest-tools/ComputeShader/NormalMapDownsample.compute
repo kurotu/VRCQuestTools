@@ -1,10 +1,9 @@
 // GaussianNormalDownsample.compute
 #pragma kernel CSMain
 
-#pragma multi_compile __ INPUT_RGB
-
 Texture2D<float4> _Input;
 RWTexture2D<float4> _Result;
+bool _InputRGB;
 int2 _InputSize;
 int2 _OutputSize;
 
@@ -48,13 +47,16 @@ void CSMain(uint3 id : SV_DispatchThreadID)
             float4 texel = _Input.Load(int3(intCoord, 0));
             float3 n;
 
-        #ifdef INPUT_RGB
+        if (_InputRGB)
+        {
             n = normalize(texel.rgb * 2.0 - 1.0);
-        #else
+        }
+        else
+        {
             // DXTnm
             n.xy = texel.ag * 2.0 - 1.0;
             n.z = sqrt(saturate(1.0 - dot(n.xy, n.xy)));
-        #endif
+        }
 
             float w = weights[dy][dx];
             normalSum += n * w;

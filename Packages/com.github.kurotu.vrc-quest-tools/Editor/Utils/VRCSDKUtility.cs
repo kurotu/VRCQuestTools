@@ -807,7 +807,7 @@ namespace KRT.VRCQuestTools.Utils
                         {
                             var newWidth = Math.Min(maxSize, icon.width);
                             var newHeight = Math.Min(maxSize, icon.height);
-                            var request = AssetUtility.ResizeTexture(icon, newWidth, newHeight, (newIcon) =>
+                            var request = AssetUtility.ResizeTexture(icon, true, newWidth, newHeight, (newIcon) =>
                             {
                                 newIcon.name = icon.name + " (VQT Resize)";
                                 control.icon = newIcon;

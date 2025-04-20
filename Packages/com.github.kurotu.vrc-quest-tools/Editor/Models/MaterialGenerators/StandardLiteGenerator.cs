@@ -25,7 +25,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public AsyncCallbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
         {
-            if (material is not IStandardLiteConvertable)
+            if (!(material is IStandardLiteConvertable))
             {
                 Debug.LogWarning("StandardLiteGenerator only supports LilToonMaterial.");
                 return new ToonLitGenerator(new ToonLitConvertSettings()).GenerateMaterial(material, saveTextureAsPng, texturesPath, completion);
@@ -77,7 +77,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public AsyncCallbackRequest GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath, Action completion)
         {
-            if (material is not IStandardLiteConvertable)
+            if (!(material is IStandardLiteConvertable))
             {
                 Debug.LogWarning("StandardLiteGenerator only supports LilToonMaterial.");
                 return new ToonLitGenerator(new ToonLitConvertSettings()).GenerateTextures(material, saveAsPng, texturesPath, completion);

@@ -9,10 +9,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
+using Unity.Collections;
 using UnityEditor;
+#if UNITY_2020_2_OR_NEWER
 using UnityEditor.AssetImporters;
+#else
+using UnityEditor.Experimental.AssetImporters;
+#endif
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Utils
 {
@@ -201,7 +205,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Saved texture asset.</returns>
         internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, bool isSRGB = true)
         {
-            var src = texture.isReadable ? texture : CopyAsReadable(texture);
+            var src = texture.isReadable ? texture : CopyAsReadable(texture, isSRGB);
             var png = src.EncodeToPNG();
             File.WriteAllBytes(path, png);
             AssetDatabase.ImportAsset(path);
@@ -387,13 +391,9 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="texture">Texture to copy.</param>
         /// <returns>Readable texture.</returns>
-        internal static Texture2D CopyAsReadable(Texture2D texture)
+        internal static Texture2D CopyAsReadable(Texture2D texture, bool isDataSRGB)
         {
-#if UNITY_2022_1_OR_NEWER
-            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, !texture.isDataSRGB);
-#else
-            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1);
-#endif
+            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, isDataSRGB);
             var data = texture.GetRawTextureData();
             copy.LoadRawTextureData(data);
             copy.Apply(); // Do not use arguments to keep readable.
@@ -409,9 +409,9 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="useMipmap">Use mip map.</param>
         /// <param name="completion">Completion action.</param>
         /// <returns>Request to wait.</returns>
-        internal static AsyncCallbackRequest BakeTexture(Texture input, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
-            return BakeTexture(input, null, width, height, useMipmap, completion);
+            return BakeTexture(input, isDataSRGB, null, width, height, useMipmap, completion);
         }
 
         /// <summary>
@@ -424,14 +424,10 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="useMipmap">Use mip map.</param>
         /// <param name="completion">Completion action.</param>
         /// <returns>Request to wait.</returns>
-        internal static AsyncCallbackRequest BakeTexture(Texture input, Material material, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, Material material, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
             var desc = new RenderTextureDescriptor(input.width, input.height, RenderTextureFormat.ARGB32, 0, useMipmap ? input.mipmapCount : 1);
-#if UNITY_2022_1_OR_NEWER
-            desc.sRGB = input.isDataSRGB;
-#else
-            desc.sRGB = true;
-#endif
+            desc.sRGB = isDataSRGB;
 
             var rt = RenderTexture.GetTemporary(desc);
 
@@ -453,7 +449,7 @@ namespace KRT.VRCQuestTools.Utils
                     Graphics.Blit(input, rt);
                 }
 
-                DownscaleBlit(rt, rt2);
+                DownscaleBlit(rt, isDataSRGB, rt2);
 
                 return RequestReadbackRenderTexture(rt2, useMipmap, (result) =>
                 {
@@ -470,16 +466,13 @@ namespace KRT.VRCQuestTools.Utils
             }
         }
 
-        internal static void DownscaleBlit(Texture input, RenderTexture output)
+        internal static void DownscaleBlit(Texture input, bool isDataSRGB, RenderTexture output)
         {
             var width = output.width;
             var height = output.height;
             var desc = new RenderTextureDescriptor(input.width, input.height, RenderTextureFormat.ARGB32, 0);
-#if UNITY_2022_1_OR_NEWER
-            desc.sRGB = input.isDataSRGB;
-#else
-            desc.sRGB = true;
-#endif
+            desc.sRGB = isDataSRGB;
+
             var rt = RenderTexture.GetTemporary(desc);
             var renderTextures = new List<RenderTexture> { rt };
 
@@ -559,9 +552,9 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="height">Height.</param>
         /// <param name="completion">Completion action.</param>
         /// <returns>Request to wait.</returns>
-        internal static AsyncCallbackRequest ResizeTexture(Texture2D texture, int width, int height, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest ResizeTexture(Texture2D texture, bool isDataSRGB, int width, int height, Action<Texture2D> completion)
         {
-            return BakeTexture(texture, width, height, texture.mipmapCount > 1, completion);
+            return BakeTexture(texture, isDataSRGB, width, height, texture.mipmapCount > 1, completion);
         }
 
         /// <summary>
@@ -583,7 +576,8 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Compressed normal map.</returns>
         internal static Texture2D CompressNormalMap(Texture2D texture)
         {
-            using (var colors = texture.GetPixelData<Color32>(0))
+            var pixels = texture.GetPixels32(0);
+            using (var colors = new NativeArray<Color32>(pixels, Allocator.Temp))
             {
                 var settings = new TextureGenerationSettings(TextureImporterType.NormalMap);
                 settings.textureImporterSettings.mipmapEnabled = true;
