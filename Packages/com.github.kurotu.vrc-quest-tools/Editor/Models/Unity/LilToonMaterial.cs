@@ -123,7 +123,12 @@ namespace KRT.VRCQuestTools.Models.Unity
 #endif
             bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_metallic_smoothness");
 
-            var rt = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
+            var desc = new RenderTextureDescriptor(textureSize, textureSize, RenderTextureFormat.ARGB32)
+            {
+                sRGB = false,
+                depthBufferBits = 0,
+            };
+            var rt = RenderTexture.GetTemporary(desc);
             Graphics.Blit(null, rt, bakeMat);
             return AssetUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
             {
