@@ -16,7 +16,7 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="StandardLiteGenerator"/> class.
         /// </summary>
-        /// <param name="settings"></param>
+        /// <param name="settings">Convert settings.</param>
         internal StandardLiteGenerator(StandardLiteConvertSettings settings)
         {
             this.settings = settings;
@@ -82,6 +82,7 @@ namespace KRT.VRCQuestTools.Models
                 Debug.LogWarning("StandardLiteGenerator only supports LilToonMaterial.");
                 return new ToonLitGenerator(new ToonLitConvertSettings()).GenerateTextures(material, saveAsPng, texturesPath, completion);
             }
+
             // TODO: Generate all textures
             throw new System.NotImplementedException("StandardLiteGenerator.GenerateTextures not implemented");
         }

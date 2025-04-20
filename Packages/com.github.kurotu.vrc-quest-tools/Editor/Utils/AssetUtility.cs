@@ -390,6 +390,7 @@ namespace KRT.VRCQuestTools.Utils
         /// Copy a texture as readable.
         /// </summary>
         /// <param name="texture">Texture to copy.</param>
+        /// <param name="isDataSRGB">Texture is sRGB.</param>
         /// <returns>Readable texture.</returns>
         internal static Texture2D CopyAsReadable(Texture2D texture, bool isDataSRGB)
         {
@@ -404,6 +405,7 @@ namespace KRT.VRCQuestTools.Utils
         /// Bake a texture to a new one.
         /// </summary>
         /// <param name="input">Input texture.</param>
+        /// <param name="isDataSRGB">Texture is sRGB.</param>
         /// <param name="width">Desired width.</param>
         /// <param name="height">Desired height.</param>
         /// <param name="useMipmap">Use mip map.</param>
@@ -418,6 +420,7 @@ namespace KRT.VRCQuestTools.Utils
         /// Bake a texture to a new one.
         /// </summary>
         /// <param name="input">Input texture.</param>
+        /// <param name="isDataSRGB">Texture is sRGB.</param>
         /// <param name="material">Material to bake.</param>
         /// <param name="width">Desired width.</param>
         /// <param name="height">Desired height.</param>
@@ -466,6 +469,12 @@ namespace KRT.VRCQuestTools.Utils
             }
         }
 
+        /// <summary>
+        /// Downscale a texture to a smaller one.
+        /// </summary>
+        /// <param name="input">Input texture.</param>
+        /// <param name="isDataSRGB">Texture is sRGB.</param>
+        /// <param name="output">RenderTexture to write output.</param>
         internal static void DownscaleBlit(Texture input, bool isDataSRGB, RenderTexture output)
         {
             var width = output.width;
@@ -530,6 +539,7 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="renderTexture">Render texture to readback.</param>
         /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="linear">Whether to use linear color space for the result texture.</param>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Readback request to wait.</returns>
         internal static AsyncCallbackRequest RequestReadbackRenderTexture(RenderTexture renderTexture, bool useMipmap, bool linear, Action<Texture2D> completion)
@@ -548,6 +558,7 @@ namespace KRT.VRCQuestTools.Utils
         /// Resizes a texture to desired size.
         /// </summary>
         /// <param name="texture">Texture to resize.</param>
+        /// <param name="isDataSRGB">Texture is sRGB.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
         /// <param name="completion">Completion action.</param>

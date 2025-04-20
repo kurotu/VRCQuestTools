@@ -75,7 +75,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
         /// <param name="completion">Completion callback.</param>
         internal TextureGPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, Action<Texture2D> completion)
-            :this(renderTexture, useMipmap, false, completion)
+            : this(renderTexture, useMipmap, false, completion)
         {
         }
 
@@ -84,6 +84,7 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="renderTexture">Render texture to readback.</param>
         /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="linear">Whether to use linear color space.</param>
         /// <param name="completion">Completion callback.</param>
         internal TextureGPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, bool linear, Action<Texture2D> completion)
         {
@@ -142,6 +143,13 @@ namespace KRT.VRCQuestTools.Utils
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextureCPUReadbackRequest"/> class.
+        /// </summary>
+        /// <param name="renderTexture">Render texture to readback.</param>
+        /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="linear">Whether to use linear color space.</param>
+        /// <param name="completion">Completion callback.</param>
         internal TextureCPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, bool linear, Action<Texture2D> completion)
         {
             int width = renderTexture.width;

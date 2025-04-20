@@ -3,8 +3,8 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using KRT.VRCQuestTools.Utils;
 using System.Linq;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -25,19 +25,22 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
-
-        internal override Shader StandardLiteMainBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_main");
-
-        internal override Shader StandardLiteMetallicSmoothnessBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_metallic_smoothness");
-
         public bool UseStandardLiteEmission => Material.GetTexture("_EmissionMap") != null; // TODO: Fix this later.
 
+        /// <inheritdoc/>
         public bool UseStandardLiteNormalMap => Material.GetTexture("_BumpMap") != null;
 
+        /// <inheritdoc/>
         public bool UseStandardLiteMetallicSmoothness => Material.GetFloat("_UseReflection") > 0.0f;
 
-        #region IStandardLiteConvertable
+        /// <inheritdoc/>
+        internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
+
+        /// <inheritdoc/>
+        internal override Shader StandardLiteMainBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_main");
+
+        /// <inheritdoc/>
+        internal override Shader StandardLiteMetallicSmoothnessBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_metallic_smoothness");
 
         /// <inheritdoc/>
         public Material ConvertToStandardLite()
@@ -96,6 +99,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             return newMaterial;
         }
 
+        /// <inheritdoc/>
         public AsyncCallbackRequest GenerateStandardLiteMain(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
         {
             var rt = MainBake(Material, 0);
@@ -111,6 +115,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             });
         }
 
+        /// <inheritdoc/>
         public AsyncCallbackRequest GenerateStandardLiteMetallicSmoothness(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
         {
             var hasMainTex = Material.mainTexture != null;
@@ -138,6 +143,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             });
         }
 
+        /// <inheritdoc/>
         public AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, bool inputRGB, bool outputRGB, System.Action<Texture2D> completion)
         {
             var normal = Material.GetTexture("_BumpMap") as Texture2D;
@@ -151,7 +157,16 @@ namespace KRT.VRCQuestTools.Models.Unity
             return new ResultRequest<Texture2D>(newNormal, completion);
         }
 
-        static Texture2D DownscaleNormalMapGPU(Texture2D source, bool inputRGB, bool outputRGB, int targetWidth, int targetHeight)
+        /// <summary>
+        /// Downscale normal map using compute shader.
+        /// </summary>
+        /// <param name="source">Source texture.</param>
+        /// <param name="inputRGB">Input is RGB format.</param>
+        /// <param name="outputRGB">Output is RGB format.</param>
+        /// <param name="targetWidth">Target width.</param>
+        /// <param name="targetHeight">Target height.</param>
+        /// <returns>Generated normal map.</returns>
+        public static Texture2D DownscaleNormalMapGPU(Texture2D source, bool inputRGB, bool outputRGB, int targetWidth, int targetHeight)
         {
             // ì¸óÕÇ∆èoóÕÇÃRenderTexture
             var d = new RenderTextureDescriptor(source.width, source.height, RenderTextureFormat.ARGB32)
@@ -200,6 +215,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             return result;
         }
 
+        /// <inheritdoc/>
         public AsyncCallbackRequest GenerateStandardLiteEmission(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
         {
             var shaderSetting = LoadShaderSetting();
@@ -230,8 +246,6 @@ namespace KRT.VRCQuestTools.Models.Unity
                 completion?.Invoke(tex);
             });
         }
-
-        #endregion
 
         /// <inheritdoc/>
         internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)

@@ -10,6 +10,21 @@ namespace KRT.VRCQuestTools.Models.Unity
     internal interface IStandardLiteConvertable
     {
         /// <summary>
+        /// Gets a value indicating whether to use standard lite metallic smoothness.
+        /// </summary>
+        bool UseStandardLiteMetallicSmoothness { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether to use standard lite emission.
+        /// </summary>
+        bool UseStandardLiteEmission { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether to use standard lite normal map.
+        /// </summary>
+        bool UseStandardLiteNormalMap { get; }
+
+        /// <summary>
         /// Convert internal material to Standard Lite.
         /// </summary>
         /// <returns>Converted material.</returns>
@@ -35,6 +50,8 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Generate Standard Lite normal map.
         /// </summary>
         /// <param name="settings">Convert settings.</param>
+        /// <param name="inputRGB">Whether to use RGB input.</param>
+        /// <param name="outputRGB">Whether to use RGB output.</param>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Callback request.</returns>
         AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, bool inputRGB, bool outputRGB, Action<Texture2D> completion);
@@ -46,20 +63,5 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <param name="completion">Completion callback.</param>
         /// <returns>Callback request.</returns>
         AsyncCallbackRequest GenerateStandardLiteEmission(StandardLiteConvertSettings settings, Action<Texture2D> completion);
-
-        /// <summary>
-        /// Gets a value indicating whether to use standard lite metallic smoothness.
-        /// </summary>
-        bool UseStandardLiteMetallicSmoothness { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether to use standard lite emission.
-        /// </summary>
-        bool UseStandardLiteEmission { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether to use standard lite normal map.
-        /// </summary>
-        bool UseStandardLiteNormalMap { get; }
     }
 }

@@ -6,18 +6,54 @@ using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
 {
+    /// <summary>
+    /// Utility class for material generator.
+    /// </summary>
     internal static class MaterialGeneratorUtility
     {
+        /// <summary>
+        /// Generate a texture for material.
+        /// </summary>
+        /// <param name="material">Original material.</param>
+        /// <param name="settings">Convert settings.</param>
+        /// <param name="textureType">Texture type name.</param>
+        /// <param name="saveAsPng">Whether to save as PNG.</param>
+        /// <param name="texturesPath">Textures directory to save PNG.</param>
+        /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
+        /// <param name="completion">Completion callback.</param>
+        /// <returns>Async callback request.</returns>
         internal static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
             return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.SRGB, requestGenerateImageFunc, completion);
         }
 
+        /// <summary>
+        /// Generate a parameter texture for material.
+        /// </summary>
+        /// <param name="material">Original material.</param>
+        /// <param name="settings">Convert settings.</param>
+        /// <param name="textureType">Texture type name.</param>
+        /// <param name="saveAsPng">Whether to save as PNG.</param>
+        /// <param name="texturesPath">Textures directory to save PNG.</param>
+        /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
+        /// <param name="completion">Completion callback.</param>
+        /// <returns>Async callback request.</returns>
         internal static AsyncCallbackRequest GenerateParameterTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
             return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.Parameter, requestGenerateImageFunc, completion);
         }
 
+        /// <summary>
+        /// Generate a normal map texture for material.
+        /// </summary>
+        /// <param name="material">Original material.</param>
+        /// <param name="settings">Convert settings.</param>
+        /// <param name="textureType">Texture type name.</param>
+        /// <param name="saveAsPng">Whether to save as PNG.</param>
+        /// <param name="texturesPath">Textures directory to save PNG.</param>
+        /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
+        /// <param name="completion">Completion callback.</param>
+        /// <returns>Async callback request.</returns>
         internal static AsyncCallbackRequest GenerateNormalMap(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
             return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.NormalMap, requestGenerateImageFunc, completion);
@@ -151,21 +187,21 @@ namespace KRT.VRCQuestTools.Models
             {
                 isSRGB = true,
                 isNormalMap = false,
-                alphaIsTransparency = true
+                alphaIsTransparency = true,
             };
 
             public static TextureConfig Parameter => new TextureConfig()
             {
                 isSRGB = false,
                 isNormalMap = false,
-                alphaIsTransparency = false
+                alphaIsTransparency = false,
             };
 
             public static TextureConfig NormalMap => new TextureConfig()
             {
                 isSRGB = false,
                 isNormalMap = true,
-                alphaIsTransparency = false
+                alphaIsTransparency = false,
             };
         }
     }
