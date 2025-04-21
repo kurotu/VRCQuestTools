@@ -102,13 +102,21 @@ namespace KRT.VRCQuestTools.Models.Unity
             var applyReflection = Material.GetFloat("_ApplyReflection") > 0.0;
             if (useReflection && applyReflection)
             {
+                // Glossy Reflections
                 newMaterial.DisableKeyword("_GLOSSYREFLECTIONS_OFF");
                 newMaterial.SetFloat("_GlossyReflections", 1);
+
+                // Specular Lightprobe Hack
+                newMaterial.DisableKeyword("_SPECULARHIGHLIGHTS_OFF");
+                newMaterial.SetFloat("_SpecularHighlights", 1);
             }
             else
             {
                 newMaterial.EnableKeyword("_GLOSSYREFLECTIONS_OFF");
                 newMaterial.SetFloat("_GlossyReflections", 0);
+
+                newMaterial.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
+                newMaterial.SetFloat("_SpecularHighlights", 0);
             }
             newMaterial.SetFloat("_Metallic", useReflection ? Material.GetFloat("_Metallic") : 0.0f);
             newMaterial.SetFloat("_Glossiness", useReflection ? Material.GetFloat("_Smoothness") : 0.0f);
