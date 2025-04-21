@@ -25,13 +25,47 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        public bool UseStandardLiteEmission => Material.GetTexture("_EmissionMap") != null; // TODO: Fix this later.
+        public bool UseStandardLiteEmission
+        {
+            get
+            {
+                var shaderSetting = LoadShaderSetting();
+                var shaderUsesEmission = shaderSetting.LIL_FEATURE_EMISSION_1ST || shaderSetting.LIL_FEATURE_EMISSION_2ND;
+
+                if (!shaderUsesEmission)
+                {
+                    return false;
+                }
+
+                var useEmission = Material.GetFloat("_UseEmission") > 0.0f;
+                var useEmission2nd = Material.GetFloat("_UseEmission2nd") > 0.0f;
+                return useEmission || useEmission2nd;
+            }
+        }
 
         /// <inheritdoc/>
-        public bool UseStandardLiteNormalMap => Material.GetTexture("_BumpMap") != null;
+        public bool UseStandardLiteNormalMap
+        {
+            get
+            {
+                var useBumpMap = Material.GetFloat("_UseBumpMap") > 0.0f;
+                var bumpMap = Material.GetTexture("_BumpMap");
+                return useBumpMap && (bumpMap != null);
+            }
+        }
 
         /// <inheritdoc/>
-        public bool UseStandardLiteMetallicSmoothness => Material.GetFloat("_UseReflection") > 0.0f;
+        public bool UseStandardLiteMetallicSmoothness
+        {
+            get
+            {
+                var metallicGlossMap = Material.GetTexture("_MetallicGlossMap");
+                var reflectionColor = Material.GetColor("_ReflectionColor");
+                var reflectionColorTex = Material.GetTexture("_ReflectionColorTex");
+                var smoothnessTex = Material.GetTexture("_SmoothnessTex");
+                return metallicGlossMap != null || reflectionColor != Color.white || reflectionColorTex != null || smoothnessTex != null;
+            }
+        }
 
         /// <inheritdoc/>
         internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
@@ -64,7 +98,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             var mats = new[] { Material };
 
-            var useReflection = UseStandardLiteMetallicSmoothness;
+            var useReflection = Material.GetFloat("_UseReflection") > 0.0f;
             var applyReflection = Material.GetFloat("_ApplyReflection") > 0.0;
             if (useReflection && applyReflection)
             {
@@ -78,9 +112,11 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
             newMaterial.SetFloat("_Metallic", useReflection ? Material.GetFloat("_Metallic") : 0.0f);
             newMaterial.SetFloat("_Glossiness", useReflection ? Material.GetFloat("_Smoothness") : 0.0f);
-            newMaterial.SetTexture("_BumpMap", UseStandardLiteNormalMap ? Material.GetTexture("_BumpMap") : null);
 
-            var useEmission = UseStandardLiteEmission;
+            var useBumpMap = Material.GetFloat("_UseBumpMap") > 0.0f;
+            newMaterial.SetTexture("_BumpMap", useBumpMap ? Material.GetTexture("_BumpMap") : null);
+
+            var useEmission = Material.GetFloat("_UseEmission") > 0.0f;
             if (useEmission)
             {
                 newMaterial.EnableKeyword("_EMISSION");
