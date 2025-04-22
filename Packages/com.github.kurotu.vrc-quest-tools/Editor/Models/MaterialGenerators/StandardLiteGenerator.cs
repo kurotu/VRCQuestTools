@@ -75,16 +75,42 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        public AsyncCallbackRequest GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath, Action completion)
+        public AsyncCallbackRequest GenerateTextures(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action completion)
         {
             if (!(material is IStandardLiteConvertable))
             {
                 Debug.LogWarning("StandardLiteGenerator only supports LilToonMaterial.");
-                return new ToonLitGenerator(new ToonLitConvertSettings()).GenerateTextures(material, saveAsPng, texturesPath, completion);
+                return new ToonLitGenerator(new ToonLitConvertSettings()).GenerateTextures(material, saveTextureAsPng, texturesPath, completion);
             }
 
-            // TODO: Generate all textures
-            throw new System.NotImplementedException("StandardLiteGenerator.GenerateTextures not implemented");
+            var standardLiteConvertable = material as IStandardLiteConvertable;
+            var request = GenerateMainTexture(material, settings, saveTextureAsPng, texturesPath, null);
+            request.WaitForCompletion();
+
+            if (standardLiteConvertable.UseStandardLiteEmission)
+            {
+                request = GenerateEmissionTexture(material, settings, saveTextureAsPng, texturesPath, null);
+                request.WaitForCompletion();
+            }
+
+            if (standardLiteConvertable.UseStandardLiteNormalMap)
+            {
+                var inputRGB = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS;
+                var outputRGB = saveTextureAsPng || inputRGB;
+                request = GenerateNormalTexture(material, settings, inputRGB, outputRGB, saveTextureAsPng, texturesPath, null);
+                request.WaitForCompletion();
+            }
+
+            if (standardLiteConvertable.UseStandardLiteMetallicSmoothness)
+            {
+                request = GenerateMetallicSmoothnessTexture(material, settings, saveTextureAsPng, texturesPath, null);
+                request.WaitForCompletion();
+            }
+
+            return new ResultRequest(() =>
+            {
+                completion?.Invoke();
+            });
         }
 
         private AsyncCallbackRequest GenerateMainTexture(MaterialBase material, StandardLiteConvertSettings settings, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
