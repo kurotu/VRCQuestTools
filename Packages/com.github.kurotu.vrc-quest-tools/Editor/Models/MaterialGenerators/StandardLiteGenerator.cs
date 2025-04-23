@@ -32,12 +32,12 @@ namespace KRT.VRCQuestTools.Models
             }
 
             var standardLiteConvertable = material as IStandardLiteConvertable;
-            var newMaterial = standardLiteConvertable.ConvertToStandardLite();
+            var newMaterial = new StandardLiteMaterialWrapper(standardLiteConvertable.ConvertToStandardLite());
             if (settings.generateQuestTextures)
             {
                 var request = GenerateMainTexture(material, settings, saveTextureAsPng, texturesPath, (t) =>
                 {
-                    newMaterial.mainTexture = t;
+                    newMaterial.Albedo = t;
                 });
                 request.WaitForCompletion();
 
@@ -45,8 +45,9 @@ namespace KRT.VRCQuestTools.Models
                 {
                     request = GenerateEmissionTexture(material, settings, saveTextureAsPng, texturesPath, (t) =>
                     {
-                        newMaterial.SetTexture("_EmissionMap", t);
-                        newMaterial.SetColor("_EmissionColor", new Color(1, 1, 1, 1));
+                        newMaterial.Emission = true;
+                        newMaterial.EmissionMap = t;
+                        newMaterial.EmissionColor = new Color(1, 1, 1, 1);
                     });
                     request.WaitForCompletion();
                 }
@@ -57,7 +58,7 @@ namespace KRT.VRCQuestTools.Models
                     var outputRGB = saveTextureAsPng || inputRGB;
                     request = GenerateNormalTexture(material, settings, inputRGB, outputRGB, saveTextureAsPng, texturesPath, (t) =>
                     {
-                        newMaterial.SetTexture("_BumpMap", t);
+                        newMaterial.NormalMap = t;
                     });
                     request.WaitForCompletion();
                 }
@@ -66,7 +67,7 @@ namespace KRT.VRCQuestTools.Models
                 {
                     request = GenerateMetallicSmoothnessTexture(material, settings, saveTextureAsPng, texturesPath, (t) =>
                     {
-                        newMaterial.SetTexture("_MetallicGlossMap", t);
+                        newMaterial.MetallicSmoothnessMap = t;
                     });
                     request.WaitForCompletion();
                 }

@@ -80,7 +80,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         public Material ConvertToStandardLite()
         {
             var newShader = Shader.Find("VRChat/Mobile/Standard Lite");
-            var newMaterial = new Material(newShader)
+            var newMaterial = new StandardLiteMaterialWrapper(new Material(newShader)
             {
                 color = Material.color,
                 doubleSidedGI = Material.doubleSidedGI,
@@ -94,7 +94,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 renderQueue = Material.renderQueue,
                 shader = newShader,
                 shaderKeywords = null,
-            };
+            });
 
             var mats = new[] { Material };
 
@@ -102,43 +102,24 @@ namespace KRT.VRCQuestTools.Models.Unity
             var applyReflection = Material.GetFloat("_ApplyReflection") > 0.0;
             if (useReflection && applyReflection)
             {
-                // Glossy Reflections
-                newMaterial.DisableKeyword("_GLOSSYREFLECTIONS_OFF");
-                newMaterial.SetFloat("_GlossyReflections", 1);
-
-                // Specular Lightprobe Hack
-                newMaterial.DisableKeyword("_SPECULARHIGHLIGHTS_OFF");
-                newMaterial.SetFloat("_SpecularHighlights", 1);
+                newMaterial.Reflections = true;
+                newMaterial.SpecularLightprobeHack = true;
             }
             else
             {
-                newMaterial.EnableKeyword("_GLOSSYREFLECTIONS_OFF");
-                newMaterial.SetFloat("_GlossyReflections", 0);
-
-                newMaterial.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
-                newMaterial.SetFloat("_SpecularHighlights", 0);
+                newMaterial.Reflections = false;
+                newMaterial.SpecularLightprobeHack = false;
             }
-            newMaterial.SetFloat("_Metallic", useReflection ? Material.GetFloat("_Metallic") : 0.0f);
-            newMaterial.SetFloat("_Glossiness", useReflection ? Material.GetFloat("_Smoothness") : 0.0f);
+            newMaterial.Metallic = useReflection ? Material.GetFloat("_Metallic") : 0.0f;
+            newMaterial.Smoothness = useReflection ? Material.GetFloat("_Smoothness") : 0.0f;
 
             var useBumpMap = Material.GetFloat("_UseBumpMap") > 0.0f;
-            newMaterial.SetTexture("_BumpMap", useBumpMap ? Material.GetTexture("_BumpMap") : null);
+            newMaterial.NormalMap = useBumpMap ? Material.GetTexture("_BumpMap") : null;
 
             var useEmission = Material.GetFloat("_UseEmission") > 0.0f;
-            if (useEmission)
-            {
-                newMaterial.EnableKeyword("_EMISSION");
-                var so = new SerializedObject(newMaterial);
-                so.Update();
-                so.FindProperty("m_LightmapFlags").intValue = 6;
-                so.ApplyModifiedProperties();
-            }
-            else
-            {
-                newMaterial.DisableKeyword("_EMISSION");
-            }
-            newMaterial.SetTexture("_EmissionMap", useEmission ? Material.GetTexture("_EmissionMap") : null);
-            newMaterial.SetColor("_EmissionColor", useEmission ? Material.GetColor("_EmissionColor") : Color.white);
+            newMaterial.Emission = useEmission;
+            newMaterial.EmissionMap = useEmission ? Material.GetTexture("_EmissionMap") : null;
+            newMaterial.EmissionColor = useEmission ? Material.GetColor("_EmissionColor") : Color.white;
 
             return newMaterial;
         }
