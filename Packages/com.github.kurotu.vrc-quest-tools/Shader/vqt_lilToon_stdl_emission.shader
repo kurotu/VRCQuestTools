@@ -2,6 +2,9 @@ Shader "Hidden/VRCQuestTools/StandardLite/lilToon_emission"
 {
     Properties
     {
+        _VQT_AlbedoTex("Albedo Texture", 2D) = "black" {}
+        _VQT_AlbedoBrightness("Albedo Brightness", Range(0, 1)) = 1
+
         _LIL_FEATURE_EMISSION_1ST("LIL_FEATURE_EMISSION_1ST", Int) = 1
         _LIL_FEATURE_EMISSION_2ND("LIL_FEATURE_EMISSION_2ND", Int) = 1
         _LIL_FEATURE_ANIMATE_EMISSION_UV("LIL_FEATURE_ANIMATE_EMISSION_UV", Int) = 1
@@ -56,6 +59,10 @@ Shader "Hidden/VRCQuestTools/StandardLite/lilToon_emission"
 
             #include "UnityCG.cginc"
             #include "UnityStandardUtils.cginc"
+
+            sampler2D _VQT_AlbedoTex;
+            float4 _VQT_AlbedoTex_ST;
+            float _VQT_AlbedoBrightness;
 
             uint _LIL_FEATURE_EMISSION_1ST;
             uint _LIL_FEATURE_EMISSION_2ND;
@@ -156,8 +163,9 @@ Shader "Hidden/VRCQuestTools/StandardLite/lilToon_emission"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                float4 albedo = float4(0, 0, 0, 1);
+                float4 albedo = sampleTex2D(_VQT_AlbedoTex, i.uv, 0);
                 fixed4 col = albedo;
+                col.rgb *= _VQT_AlbedoBrightness;
 
                 if (_LIL_FEATURE_EMISSION_1ST && _UseEmission) {
                     float angle;

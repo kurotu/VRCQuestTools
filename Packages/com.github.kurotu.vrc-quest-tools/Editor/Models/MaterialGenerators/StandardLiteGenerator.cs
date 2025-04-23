@@ -41,7 +41,10 @@ namespace KRT.VRCQuestTools.Models
                 });
                 request.WaitForCompletion();
 
-                if (standardLiteConvertable.UseStandardLiteEmission)
+                var useAutoMinimumBrightness = settings.autoMinimumBrightness
+                    ? material.Material.GetFloat("_LightMinLimit") > 0.0f
+                    : settings.minimumBrightness > 0.0f;
+                if (standardLiteConvertable.UseStandardLiteEmission || useAutoMinimumBrightness)
                 {
                     request = GenerateEmissionTexture(material, settings, saveTextureAsPng, texturesPath, (t) =>
                     {

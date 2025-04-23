@@ -65,6 +65,16 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
                 fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+                var autoMinimumBrightness = property.FindPropertyRelative("autoMinimumBrightness");
+                EditorGUI.PropertyField(fieldRect, autoMinimumBrightness, new GUIContent(i18n.StandardLiteConvertSettingsAutoMinimumBrightnessLabel, i18n.StandardLiteConvertSettingsAutoMinimumBrightnessTooltip));
+                fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+                if (!autoMinimumBrightness.boolValue)
+                {
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("minimumBrightness"), new GUIContent(i18n.StandardLiteConvertSettingsMinimumBrightnessLabel, i18n.StandardLiteConvertSettingsMinimumBrightnessTooltip));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                }
             }
 
             EditorGUI.indentLevel--;
@@ -82,6 +92,15 @@ namespace KRT.VRCQuestTools.Inspector
             height += EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maxTextureSize"));
             height += EditorGUIUtility.standardVerticalSpacing;
+
+            var autoMinimumBrightness = property.FindPropertyRelative("autoMinimumBrightness");
+            height += EditorGUI.GetPropertyHeight(autoMinimumBrightness);
+            height += EditorGUIUtility.standardVerticalSpacing;
+            if (!autoMinimumBrightness.boolValue)
+            {
+                height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("minimumBrightness"));
+                height += EditorGUIUtility.standardVerticalSpacing;
+            }
             return height;
         }
     }

@@ -132,10 +132,22 @@ namespace KRT.VRCQuestTools.Models.Unity
             var textureSize = System.Math.Min(rt.width, (int)settings.maxTextureSize);
             var rt2 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
             AssetUtility.DownscaleBlit(rt, true, rt2);
-            return AssetUtility.RequestReadbackRenderTexture(rt2, true, (tex) =>
+
+            var rt3 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
+            var scaler = new Material(Shader.Find("Hidden/VRCQuestTools/ValueScaler"));
+            var minimumBrightness = settings.autoMinimumBrightness ? Material.GetFloat("_LightMinLimit") : settings.minimumBrightness;
+            var brightness = 1.0f - minimumBrightness;
+            scaler.SetFloat("_ScaleR", brightness);
+            scaler.SetFloat("_ScaleG", brightness);
+            scaler.SetFloat("_ScaleB", brightness);
+            Graphics.Blit(rt2, rt3, scaler);
+
+            return AssetUtility.RequestReadbackRenderTexture(rt3, true, (tex) =>
             {
                 Object.DestroyImmediate(rt);
+                Object.DestroyImmediate(scaler);
                 RenderTexture.ReleaseTemporary(rt2);
+                RenderTexture.ReleaseTemporary(rt3);
                 completion?.Invoke(tex);
             });
         }
@@ -243,11 +255,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <inheritdoc/>
         public AsyncCallbackRequest GenerateStandardLiteEmission(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
         {
+            var albedoRT = MainBake(Material, 0);
+
             var shaderSetting = LoadShaderSetting();
 
             var hasMainTex = Material.mainTexture != null;
             var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
             var textureSize = System.Math.Min(mainTexSize, (int)settings.maxTextureSize);
+
+            var minimumBrightness = settings.autoMinimumBrightness ? Material.GetFloat("_LightMinLimit") : settings.minimumBrightness;
 
             var bakeMat = new Material(Material);
 #if UNITY_2022_1_OR_NEWER
@@ -255,6 +271,8 @@ namespace KRT.VRCQuestTools.Models.Unity
 #endif
             bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_emission");
 
+            bakeMat.SetTexture("_VQT_AlbedoTex", albedoRT);
+            bakeMat.SetFloat("_VQT_AlbedoBrightness", minimumBrightness);
             bakeMat.SetFloat("_LIL_FEATURE_NORMAL_1ST", shaderSetting.LIL_FEATURE_NORMAL_1ST ? 1.0f : 0.0f);
             bakeMat.SetFloat("_LIL_FEATURE_EMISSION_1ST", shaderSetting.LIL_FEATURE_EMISSION_1ST ? 1.0f : 0.0f);
             bakeMat.SetFloat("_LIL_FEATURE_EMISSION_2ND", shaderSetting.LIL_FEATURE_EMISSION_2ND ? 1.0f : 0.0f);
