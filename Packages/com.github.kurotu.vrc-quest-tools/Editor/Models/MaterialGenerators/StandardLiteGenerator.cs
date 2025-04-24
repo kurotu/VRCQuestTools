@@ -81,6 +81,7 @@ namespace KRT.VRCQuestTools.Models
                 {
                     request = GenerateMetallicSmoothnessTexture(material, settings, saveTextureAsPng, texturesPath, (t) =>
                     {
+                        newMaterial.Metallic = standardLiteConvertable.Metallic;
                         newMaterial.MetallicSmoothnessMap = t;
                     });
                     request.WaitForCompletion();
@@ -167,6 +168,11 @@ namespace KRT.VRCQuestTools.Models
         private bool ShouldBakeEmission(IStandardLiteConvertable material)
         {
             return material.UseStandardLiteEmission;
+        }
+
+        private bool ShouldBakeMetallicSmoothness(IStandardLiteConvertable material)
+        {
+            return material.UseStandardLiteMetallicSmoothness;
         }
     }
 }

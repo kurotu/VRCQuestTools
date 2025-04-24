@@ -25,6 +25,11 @@ namespace KRT.VRCQuestTools.Models.Unity
         bool UseStandardLiteNormalMap { get; }
 
         /// <summary>
+        /// Gets a value for metallic parameter.
+        /// </summary>
+        float Metallic { get; }
+
+        /// <summary>
         /// Gets a value for minimum brightness.
         /// </summary>
         float MinimumBrightness { get; }

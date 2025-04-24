@@ -60,12 +60,14 @@ namespace KRT.VRCQuestTools.Models.Unity
             get
             {
                 var metallicGlossMap = Material.GetTexture("_MetallicGlossMap");
-                var reflectionColor = Material.GetColor("_ReflectionColor");
                 var reflectionColorTex = Material.GetTexture("_ReflectionColorTex");
                 var smoothnessTex = Material.GetTexture("_SmoothnessTex");
-                return metallicGlossMap != null || reflectionColor != Color.white || reflectionColorTex != null || smoothnessTex != null;
+                return metallicGlossMap != null || reflectionColorTex != null || smoothnessTex != null;
             }
         }
+
+        /// <inheritdoc/>
+        public float Metallic => Material.GetFloat("_Metallic");
 
         /// <inheritdoc/>
         public float MinimumBrightness => Material.GetFloat("_LightMinLimit");
@@ -113,7 +115,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                 newMaterial.Reflections = false;
                 newMaterial.SpecularLightprobeHack = false;
             }
-            newMaterial.Metallic = useReflection ? Material.GetFloat("_Metallic") : 0.0f;
+            var reflectionColor = Material.GetColor("_ReflectionColor");
+            newMaterial.Metallic = useReflection ? Metallic * reflectionColor.grayscale : 0.0f;
             newMaterial.Smoothness = useReflection ? Material.GetFloat("_Smoothness") : 0.0f;
 
             var useBumpMap = Material.GetFloat("_UseBumpMap") > 0.0f;
