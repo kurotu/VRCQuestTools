@@ -68,6 +68,9 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
+        public float MinimumBrightness => Material.GetFloat("_LightMinLimit");
+
+        /// <inheritdoc/>
         internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
 
         /// <inheritdoc/>
@@ -135,8 +138,24 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             var rt3 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
             var scaler = new Material(Shader.Find("Hidden/VRCQuestTools/ValueScaler"));
-            var minimumBrightness = settings.autoMinimumBrightness ? Material.GetFloat("_LightMinLimit") : settings.minimumBrightness;
-            var brightness = 1.0f - minimumBrightness;
+
+            float brightness;
+            if (settings.useMinimumBrightness)
+            {
+                var minimumBrightness = settings.autoMinimumBrightness ? MinimumBrightness : settings.minimumBrightness;
+                brightness = 1.0f - minimumBrightness;
+            }
+            else
+            {
+                brightness = 1.0f;
+            }
+
+            // if emission is not needed, share the same main texture.
+            if (!UseStandardLiteEmission)
+            {
+                brightness = 1.0f;
+            }
+
             scaler.SetFloat("_ScaleR", brightness);
             scaler.SetFloat("_ScaleG", brightness);
             scaler.SetFloat("_ScaleB", brightness);
@@ -263,7 +282,15 @@ namespace KRT.VRCQuestTools.Models.Unity
             var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
             var textureSize = System.Math.Min(mainTexSize, (int)settings.maxTextureSize);
 
-            var minimumBrightness = settings.autoMinimumBrightness ? Material.GetFloat("_LightMinLimit") : settings.minimumBrightness;
+            float minimumBrightness;
+            if (settings.useMinimumBrightness)
+            {
+                minimumBrightness = settings.autoMinimumBrightness ? Material.GetFloat("_LightMinLimit") : settings.minimumBrightness;
+            }
+            else
+            {
+                minimumBrightness = 0.0f;
+            }
 
             var bakeMat = new Material(Material);
 #if UNITY_2022_1_OR_NEWER

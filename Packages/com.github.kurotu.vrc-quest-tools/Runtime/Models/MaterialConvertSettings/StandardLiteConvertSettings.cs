@@ -20,6 +20,11 @@ namespace KRT.VRCQuestTools.Models
         public TextureSizeLimit maxTextureSize = TextureSizeLimit.Max1024x1024;
 
         /// <summary>
+        /// Whether to use minimum brightness for albedo color.
+        /// </summary>
+        public bool useMinimumBrightness = true;
+
+        /// <summary>
         /// Whether to use auto minimum brightness.
         /// </summary>
         public bool autoMinimumBrightness = true;
@@ -33,7 +38,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public string GetCacheKey()
         {
-            return $"{generateQuestTextures}_{maxTextureSize}_{autoMinimumBrightness}_{minimumBrightness}";
+            return JsonUtility.ToJson(this);
         }
     }
 }

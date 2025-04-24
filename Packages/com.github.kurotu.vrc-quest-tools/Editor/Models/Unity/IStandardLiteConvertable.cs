@@ -25,6 +25,11 @@ namespace KRT.VRCQuestTools.Models.Unity
         bool UseStandardLiteNormalMap { get; }
 
         /// <summary>
+        /// Gets a value for minimum brightness.
+        /// </summary>
+        float MinimumBrightness { get; }
+
+        /// <summary>
         /// Convert internal material to Standard Lite.
         /// </summary>
         /// <returns>Converted material.</returns>

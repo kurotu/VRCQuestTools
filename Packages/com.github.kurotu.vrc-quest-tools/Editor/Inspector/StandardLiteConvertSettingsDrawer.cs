@@ -66,14 +66,23 @@ namespace KRT.VRCQuestTools.Inspector
                 EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
                 fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                var autoMinimumBrightness = property.FindPropertyRelative("autoMinimumBrightness");
-                EditorGUI.PropertyField(fieldRect, autoMinimumBrightness, new GUIContent(i18n.StandardLiteConvertSettingsAutoMinimumBrightnessLabel, i18n.StandardLiteConvertSettingsAutoMinimumBrightnessTooltip));
+                var useMinimumBrightness = property.FindPropertyRelative("useMinimumBrightness");
+                EditorGUI.PropertyField(fieldRect, useMinimumBrightness, new GUIContent(i18n.StandardLiteConvertSettingsUseMinimumBrightnessLabel, i18n.StandardLiteConvertSettingsUseMinimumBrightnessTooltip));
                 fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                if (!autoMinimumBrightness.boolValue)
+                if (useMinimumBrightness.boolValue)
                 {
-                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("minimumBrightness"), new GUIContent(i18n.StandardLiteConvertSettingsMinimumBrightnessLabel, i18n.StandardLiteConvertSettingsMinimumBrightnessTooltip));
+                    EditorGUI.indentLevel++;
+                    var autoMinimumBrightness = property.FindPropertyRelative("autoMinimumBrightness");
+                    EditorGUI.PropertyField(fieldRect, autoMinimumBrightness, new GUIContent(i18n.StandardLiteConvertSettingsAutoMinimumBrightnessLabel, i18n.StandardLiteConvertSettingsAutoMinimumBrightnessTooltip));
                     fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+                    if (!autoMinimumBrightness.boolValue)
+                    {
+                        EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("minimumBrightness"), new GUIContent(i18n.StandardLiteConvertSettingsMinimumBrightnessLabel, i18n.StandardLiteConvertSettingsMinimumBrightnessTooltip));
+                        fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                    }
+                    EditorGUI.indentLevel--;
                 }
             }
 
@@ -93,13 +102,20 @@ namespace KRT.VRCQuestTools.Inspector
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maxTextureSize"));
             height += EditorGUIUtility.standardVerticalSpacing;
 
-            var autoMinimumBrightness = property.FindPropertyRelative("autoMinimumBrightness");
-            height += EditorGUI.GetPropertyHeight(autoMinimumBrightness);
+            var useMinimumBrightness = property.FindPropertyRelative("useMinimumBrightness");
+            height += EditorGUI.GetPropertyHeight(useMinimumBrightness);
             height += EditorGUIUtility.standardVerticalSpacing;
-            if (!autoMinimumBrightness.boolValue)
+
+            if (useMinimumBrightness.boolValue)
             {
-                height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("minimumBrightness"));
+                var autoMinimumBrightness = property.FindPropertyRelative("autoMinimumBrightness");
+                height += EditorGUI.GetPropertyHeight(autoMinimumBrightness);
                 height += EditorGUIUtility.standardVerticalSpacing;
+                if (!autoMinimumBrightness.boolValue)
+                {
+                    height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("minimumBrightness"));
+                    height += EditorGUIUtility.standardVerticalSpacing;
+                }
             }
             return height;
         }

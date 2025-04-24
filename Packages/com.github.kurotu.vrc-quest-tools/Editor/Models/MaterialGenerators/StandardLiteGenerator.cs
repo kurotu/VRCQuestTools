@@ -35,16 +35,27 @@ namespace KRT.VRCQuestTools.Models
             var newMaterial = new StandardLiteMaterialWrapper(standardLiteConvertable.ConvertToStandardLite());
             if (settings.generateQuestTextures)
             {
+                var minimumBrightness = GetMinimumBrightness(standardLiteConvertable);
+                var shouldBakeEmission = ShouldBakeEmission(standardLiteConvertable);
+
                 var request = GenerateMainTexture(material, settings, saveTextureAsPng, texturesPath, (t) =>
                 {
+                    newMaterial.AlbedoColor = new Color(1, 1, 1, 1);
                     newMaterial.Albedo = t;
+
+                    // Use main texture as emission if the material is not using standard lite emission
+                    if (!shouldBakeEmission && minimumBrightness > 0.0f)
+                    {
+                        var albedoBrightness = 1.0f - minimumBrightness;
+                        newMaterial.AlbedoColor = new Color(albedoBrightness, albedoBrightness, albedoBrightness, 1);
+                        newMaterial.Emission = true;
+                        newMaterial.EmissionMap = t;
+                        newMaterial.EmissionColor = new Color(minimumBrightness, minimumBrightness, minimumBrightness, 1);
+                    }
                 });
                 request.WaitForCompletion();
 
-                var useAutoMinimumBrightness = settings.autoMinimumBrightness
-                    ? material.Material.GetFloat("_LightMinLimit") > 0.0f
-                    : settings.minimumBrightness > 0.0f;
-                if (standardLiteConvertable.UseStandardLiteEmission || useAutoMinimumBrightness)
+                if (shouldBakeEmission)
                 {
                     request = GenerateEmissionTexture(material, settings, saveTextureAsPng, texturesPath, (t) =>
                     {
@@ -91,7 +102,7 @@ namespace KRT.VRCQuestTools.Models
             var request = GenerateMainTexture(material, settings, saveTextureAsPng, texturesPath, null);
             request.WaitForCompletion();
 
-            if (standardLiteConvertable.UseStandardLiteEmission)
+            if (ShouldBakeEmission(standardLiteConvertable))
             {
                 request = GenerateEmissionTexture(material, settings, saveTextureAsPng, texturesPath, null);
                 request.WaitForCompletion();
@@ -135,6 +146,27 @@ namespace KRT.VRCQuestTools.Models
         private AsyncCallbackRequest GenerateNormalTexture(MaterialBase material, StandardLiteConvertSettings settings, bool inputRGB, bool outputRGB, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
             return MaterialGeneratorUtility.GenerateNormalMap(material.Material, settings, "normal", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteNormalMap(settings, inputRGB, outputRGB, compl), completion);
+        }
+
+        private float GetMinimumBrightness(IStandardLiteConvertable material)
+        {
+            float minimumBrightness;
+            if (settings.useMinimumBrightness)
+            {
+                minimumBrightness = settings.autoMinimumBrightness
+                    ? material.MinimumBrightness
+                    : settings.minimumBrightness;
+            }
+            else
+            {
+                minimumBrightness = 0.0f;
+            }
+            return minimumBrightness;
+        }
+
+        private bool ShouldBakeEmission(IStandardLiteConvertable material)
+        {
+            return material.UseStandardLiteEmission;
         }
     }
 }
