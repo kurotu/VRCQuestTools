@@ -585,12 +585,13 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="texture">Normal map texture (RGB).</param>
         /// <returns>Compressed normal map.</returns>
-        internal static Texture2D CompressNormalMap(Texture2D texture)
+        internal static Texture2D CompressNormalMap(Texture2D texture, bool readable = false)
         {
             var pixels = texture.GetPixels32(0);
             using (var colors = new NativeArray<Color32>(pixels, Allocator.Temp))
             {
                 var settings = new TextureGenerationSettings(TextureImporterType.NormalMap);
+                settings.textureImporterSettings.readable = readable;
                 settings.textureImporterSettings.mipmapEnabled = true;
                 settings.textureImporterSettings.streamingMipmaps = true;
                 settings.textureImporterSettings.wrapMode = texture.wrapMode;
