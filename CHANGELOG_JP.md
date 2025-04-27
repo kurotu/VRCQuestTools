@@ -13,7 +13,7 @@
 - [NDMF] `VQT Mesh Flipper` に `NDMFフェーズ` 設定を追加。
     - Before Decimation
     - After Decimation
-- [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応。
+- [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応 (デフォルトで無効)。
 
 ### 変更
 - [NDMF] `VQT Material Swap` が `VQT Avatar Converter Settings` なしでも動作するように変更。

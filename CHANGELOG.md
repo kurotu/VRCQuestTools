@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] Add `NDMF Phase` option to `VQT Mesh Flipper` component.
     - Before Decimation
     - After Decimation
-- [NDMF] NDMF Preview for `VQT Mesh Flipper`.
+- [NDMF] NDMF Preview for `VQT Mesh Flipper` (disabled by default).
 
 ### Changed
 - [NDMF] `VQT Material Swap` works without `VQT Avatar Converter Settings`.
