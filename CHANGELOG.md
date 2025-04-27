@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Inactive animator's animator controllers not converted.
+- Unexpected error messages in `VQT Avatar Converter Settings` inspector.
 
 ## [2.8.3] - 2025-04-08
 

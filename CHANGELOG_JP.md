@@ -21,6 +21,7 @@
 
 ### 修正
 - 非アクティブな Animator の Animator Controller が変換されない問題を修正。
+- `VQT Avatar Converter Settings` のインスペクターでエラーが表示されることがある問題を修正。
 
 ## [2.8.3] - 2025-04-08
 
