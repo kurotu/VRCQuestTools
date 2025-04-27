@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - [NDMF] `VQT Material Swap` works without `VQT Avatar Converter Settings`.
+- [NDMF] `VQT Mesh Flipper` works in the optimizing phase by default.
 
 ### Fixed
 - Inactive animator's animator controllers not converted.

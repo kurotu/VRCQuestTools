@@ -93,7 +93,7 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// Processing phase of the mesh.
         /// </summary>
-        public MeshFlipperProcessingPhase processingPhase = MeshFlipperProcessingPhase.BeforeDecimation;
+        public MeshFlipperProcessingPhase processingPhase = MeshFlipperProcessingPhase.AfterDecimation;
 
         /// <summary>
         /// Get shared mesh of the component.

@@ -17,6 +17,7 @@
 
 ### 変更
 - [NDMF] `VQT Material Swap` が `VQT Avatar Converter Settings` なしでも動作するように変更。
+- [NDMF] `VQT Mesh Flipper` がデフォルトで Optimizing Phase で動作するように変更。
 
 ### 修正
 - 非アクティブな Animator の Animator Controller が変換されない問題を修正。
