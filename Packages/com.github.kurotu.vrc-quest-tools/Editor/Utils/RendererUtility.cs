@@ -51,7 +51,6 @@ namespace KRT.VRCQuestTools.Utils
                 return meshFilter.sharedMesh;
             }
 
-            Debug.LogErrorFormat("{0} is not either SkinnedMeshRenderer or MeshRenderer", renderer);
             return null;
         }
 
