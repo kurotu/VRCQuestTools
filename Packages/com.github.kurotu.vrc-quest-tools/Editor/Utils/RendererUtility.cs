@@ -46,9 +46,9 @@ namespace KRT.VRCQuestTools.Utils
                 return ((SkinnedMeshRenderer)renderer).sharedMesh;
             }
 
-            if (type == typeof(MeshRenderer))
+            if (type == typeof(MeshRenderer) && renderer.TryGetComponent<MeshFilter>(out var meshFilter))
             {
-                return renderer.GetComponent<MeshFilter>().sharedMesh;
+                return meshFilter.sharedMesh;
             }
 
             Debug.LogErrorFormat("{0} is not either SkinnedMeshRenderer or MeshRenderer", renderer);
