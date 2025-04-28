@@ -39,8 +39,8 @@ Select whether to generate the mesh in the white or black area of the mask textu
 
 Select when to generate the mesh during the NDMF build process.
 
-- `After Decimation`: Before other polygon reduction tools
-- `Before Decimation`: After other polygon reduction tools
+- `After Polygon Reduction`: Before other polygon reduction tools
+- `Before Polygon Reduction`: After other polygon reduction tools
 
 Following polygon reduction tools are considered for the order of processing.
 
@@ -62,8 +62,8 @@ The VRCQuestTools plugin performs the following processes.
 
 ### Transforming Phase
 
-Geneates a new mesh for attached object's MeshFilter or SkinnedMeshRenderer when `NDMF Phase` is `Before Decimation`.
+Geneates a new mesh for attached object's MeshFilter or SkinnedMeshRenderer when `NDMF Phase` is `Before Polygon Reduction`.
 
 ### Optimizing Phase
 
-Generates a new mesh for attached object's MeshFilter or SkinnedMeshRenderer when `NDMF Phase` is `After Decimation`.
+Generates a new mesh for attached object's MeshFilter or SkinnedMeshRenderer when `NDMF Phase` is `After Polygon Reduction`.

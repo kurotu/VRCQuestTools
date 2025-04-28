@@ -61,24 +61,24 @@ namespace KRT.VRCQuestTools.Ndmf
                 .BeforePlugin("MantisLODEditor.ndmf") // needs unmodified UVs for mask textures
                 .Run(MeshFlipperPass.Instance)
 #if VQT_HAS_NDMF_PREVIEW
-                .PreviewingWith(new MeshFlipperFilter(Components.MeshFlipperProcessingPhase.BeforeDecimation))
+                .PreviewingWith(new MeshFlipperFilter(Components.MeshFlipperProcessingPhase.BeforePolygonReduction))
 #endif
                 ;
 
             InPhase(BuildPhase.Transforming)
-                .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control decimation
+                .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control polygon reduction
                 .Run(RemoveVertexColorPass.Instance);
 
             InPhase(BuildPhase.Optimizing)
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
                 .AfterPlugin("jp.unisakistudio.posingsystemeditor.posingsystemconverter") // needs created menus
-                .AfterPlugin("jp.lilxyzw.ndmfmeshsimplifier.NDMF.NDMFPlugin") // decimation
-                .AfterPlugin("Meshia.MeshSimplification.Ndmf.Editor.NdmfPlugin ") // decimation
+                .AfterPlugin("jp.lilxyzw.ndmfmeshsimplifier.NDMF.NDMFPlugin") // polygon reduction
+                .AfterPlugin("Meshia.MeshSimplification.Ndmf.Editor.NdmfPlugin ") // polygon reduction
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
                 .Run(AvatarConverterOptimizingPass.Instance)
-                .Then.Run(MeshFlipperAfterDecimationPass.Instance)
+                .Then.Run(MeshFlipperAfterPolygonReductionPass.Instance)
 #if VQT_HAS_NDMF_PREVIEW
-                .PreviewingWith(new MeshFlipperFilter(Components.MeshFlipperProcessingPhase.AfterDecimation))
+                .PreviewingWith(new MeshFlipperFilter(Components.MeshFlipperProcessingPhase.AfterPolygonReduction))
 #endif
                 .Then.Run(RemoveUnsupportedComponentsPass.Instance)
                 .Then.Run(MenuIconResizerPass.Instance)

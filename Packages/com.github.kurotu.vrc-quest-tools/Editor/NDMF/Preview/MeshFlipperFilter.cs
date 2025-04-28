@@ -36,7 +36,7 @@ namespace KRT.VRCQuestTools.Ndmf
         public IEnumerable<TogglablePreviewNode> GetPreviewControlNodes()
         {
             // Show the single preview node for all phases.
-            if (phase == MeshFlipperProcessingPhase.BeforeDecimation)
+            if (phase == MeshFlipperProcessingPhase.BeforePolygonReduction)
             {
                 yield return PreviewNode;
             }

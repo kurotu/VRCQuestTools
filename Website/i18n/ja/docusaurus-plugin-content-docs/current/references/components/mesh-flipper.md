@@ -37,8 +37,8 @@ VRChatのモバイルシェーダーは裏面を描画できないため、こ�
 
 NDMFのビルド処理中にどのタイミングでメッシュを生成するか選択します。
 
-- `After Decimation`: 他のポリゴン数削減ツールの前
-- `Before Decimation`: 他のポリゴン数削減ツールの後
+- `After Polygon Reduction`: 他のポリゴン数削減ツールの前
+- `Before Polygon Reduction`: 他のポリゴン数削減ツールの後
 
 以下のポリゴン数削減ツールに対して処理順序を考慮します。
 
@@ -60,8 +60,8 @@ VRCQuestToolsプラグインによって以下の処理を実行します。
 
 ### Transforming Phase
 
-`NDMFフェーズ` が `Before Decimation` であるとき、アタッチされたオブジェクトのMeshFilterまたはSkinnedMeshRendererに対して新しいメッシュを生成します。
+`NDMFフェーズ` が `Before Polygon Reduction` であるとき、アタッチされたオブジェクトのMeshFilterまたはSkinnedMeshRendererに対して新しいメッシュを生成します。
 
 ### Optimizing Phase
 
-``NDMFフェーズ` が `After Decimation` であるとき、アタッチされたオブジェクトのMeshFilterまたはSkinnedMeshRendererに対して新しいメッシュを生成します。
+``NDMFフェーズ` が `After Polygon Reduction` であるとき、アタッチされたオブジェクトのMeshFilterまたはSkinnedMeshRendererに対して新しいメッシュを生成します。
