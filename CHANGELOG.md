@@ -12,8 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Remove Avatar Dynamics` option to `VQT Avatar Converter Settings` component.
 - [NDMF] `VQT Material Conversion Settings` component to set material conversion settings.
 - [NDMF] Add `NDMF Phase` option to `VQT Mesh Flipper` component.
-    - Before Decimation
-    - After Decimation
+    - Before Polygon Reduction
+    - After Polygon Reduction
 - [NDMF] NDMF Preview for `VQT Mesh Flipper` (disabled by default).
 
 ### Changed
@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Inactive animator's animator controllers not converted.
 - Unexpected error logs in `VQT Avatar Converter Settings` inspector.
+- Avatar conversion error when a Mesh Filter is not attached to a Mesh Renderer game object.
 
 ## [2.8.3] - 2025-04-08
 

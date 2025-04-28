@@ -11,8 +11,8 @@
 - `Avatar Dynamics を削除` 設定を `VQT Avatar Converter Settings` に追加。
 - [NDMF] マテリアルの変換設定を保持する `VQT Material Conversion Settings` コンポーネントを追加。
 - [NDMF] `VQT Mesh Flipper` に `NDMFフェーズ` 設定を追加。
-    - Before Decimation
-    - After Decimation
+    - Before Polygon Reduction
+    - After Polygon Reduction
 - [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応 (デフォルトで無効)。
 
 ### 変更
@@ -22,6 +22,7 @@
 ### 修正
 - 非アクティブな Animator の Animator Controller が変換されない問題を修正。
 - `VQT Avatar Converter Settings` のインスペクターでエラーログが表示されることがある問題を修正。
+- Mesh Filter がアタッチされていない Mesh Renderer があるとアバターの変換時にエラーが発生する問題を修正。
 
 ## [2.8.3] - 2025-04-08
 
