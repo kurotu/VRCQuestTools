@@ -613,6 +613,7 @@ namespace KRT.VRCQuestTools.Ndmf
             buildSecceeded = false;
             uploadSecceeded = false;
             sdkBuildProgress = "Building Avatar";
+            sdkUploadProgress = (string.Empty, 0.0f);
         }
 
         private async Task BuildAndTest(GameObject avatar)
