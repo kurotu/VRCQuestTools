@@ -1,3 +1,4 @@
+using System.Linq;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
@@ -32,13 +33,15 @@ namespace KRT.VRCQuestTools.Inspector
                 var fieldRect = position;
                 fieldRect.height = EditorGUIUtility.singleLineHeight;
 
-                var selectedIndex = MaterialConvertSettingsTypes.Types.IndexOf(MaterialConvertSettingsType);
+                var isForDefault = !IsArrayElement(property);
+                var popups = MaterialConvertSettingsTypes.GetDefaultConvertTypePopups(isForDefault);
+                var selectedIndex = popups.FindIndex(t => t.Type == MaterialConvertSettingsType);
                 using (var ccs = new EditorGUI.ChangeCheckScope())
                 {
-                    selectedIndex = EditorGUI.Popup(fieldRect, label.text, selectedIndex, MaterialConvertSettingsTypes.GetConvertTypePopupLabels());
+                    selectedIndex = EditorGUI.Popup(fieldRect, label.text, selectedIndex, popups.Select(p => p.Label).ToArray());
                     if (ccs.changed)
                     {
-                        var type = MaterialConvertSettingsTypes.Types[selectedIndex];
+                        var type = popups[selectedIndex].Type;
                         property.managedReferenceValue = System.Activator.CreateInstance(type);
                         return;
                     }
@@ -63,5 +66,22 @@ namespace KRT.VRCQuestTools.Inspector
         /// <param name="property">Serialized property of IMaterialConvertSettings.</param>
         /// <returns>Updated fieldRect.</returns>
         protected abstract Rect DrawPropertyFields(Rect fieldRect, SerializedProperty property);
+
+        private bool IsArrayElement(SerializedProperty property)
+        {
+            var path = property.propertyPath;
+            var index = path.LastIndexOf(".Array.data[");
+            if (index < 0)
+            {
+                return false;
+            }
+            var parentPath = path.Substring(0, index);
+            var parentProperty = property.serializedObject.FindProperty(parentPath);
+            if (parentProperty == null)
+            {
+                return false;
+            }
+            return parentProperty.isArray && parentProperty.propertyType != SerializedPropertyType.String;
+        }
     }
 }
