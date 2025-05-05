@@ -10,18 +10,9 @@ namespace KRT.VRCQuestTools.Models
     internal static class MaterialConvertSettingsTypes
     {
         /// <summary>
-        /// List of default convert types.
-        /// </summary>
-        internal static readonly List<Type> DefaultTypes = new List<Type>
-        {
-            typeof(ToonLitConvertSettings),
-            typeof(MatCapLitConvertSettings),
-        };
-
-        /// <summary>
         /// List of possible convert types.
         /// </summary>
-        internal static readonly List<Type> Types = new List<Type>
+        private static readonly List<Type> Types = new List<Type>
         {
             typeof(ToonLitConvertSettings),
             typeof(MatCapLitConvertSettings),
@@ -29,21 +20,18 @@ namespace KRT.VRCQuestTools.Models
         };
 
         /// <summary>
-        /// Get localized labels for default convert types.
+        /// Get convert types and localized labels.
         /// </summary>
+        /// <param name="isForDefaultConvertSettings">True if the popup is for the default convert settings.</param>
         /// <returns>Lcalized labels.</returns>
-        internal static string[] GetDefaultConvertTypePopupLabels()
+        internal static List<PopupItem> GetDefaultConvertTypePopups(bool isForDefaultConvertSettings)
         {
-            return DefaultTypes.Select(GetConvertTypePopupLabel).ToArray();
-        }
-
-        /// <summary>
-        /// Get localized labels for possible convert types.
-        /// </summary>
-        /// <returns>Localized labels.</returns>
-        internal static string[] GetConvertTypePopupLabels()
-        {
-            return Types.Select(GetConvertTypePopupLabel).ToArray();
+            var types = new List<Type>(Types);
+            if (isForDefaultConvertSettings)
+            {
+                types.Remove(typeof(MaterialReplaceSettings));
+            }
+            return types.Select(t => new PopupItem(t, GetConvertTypePopupLabel(t))).ToList();
         }
 
         private static string GetConvertTypePopupLabel(Type type)
@@ -65,6 +53,33 @@ namespace KRT.VRCQuestTools.Models
             {
                 return type.Name;
             }
+        }
+
+        /// <summary>
+        /// Represents a popup entry for material convert settings.
+        /// </summary>
+        internal class PopupItem
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="PopupItem"/> class.
+            /// </summary>
+            /// <param name="type">IMaterialConvertSettings type.</param>
+            /// <param name="label">Popup label.</param>
+            public PopupItem(Type type, string label)
+            {
+                Type = type;
+                Label = label;
+            }
+
+            /// <summary>
+            /// Gets type of the material convert settings.
+            /// </summary>
+            public Type Type { get; }
+
+            /// <summary>
+            /// Gets label for the popup entry.
+            /// </summary>
+            public string Label { get; }
         }
     }
 }
