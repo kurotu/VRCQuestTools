@@ -25,10 +25,10 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        public AsyncCallbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
+        public AsyncCallbackRequest GenerateMaterial(MaterialBase material, UnityEditor.BuildTarget buildTarget, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
         {
             var originalName = material.Material.name;
-            return toonLitGenerator.GenerateMaterial(material, saveTextureAsPng, texturesPath, newMaterial =>
+            return toonLitGenerator.GenerateMaterial(material, buildTarget, saveTextureAsPng, texturesPath, newMaterial =>
             {
                 var shader = Shader.Find("VRChat/Mobile/MatCap Lit");
                 newMaterial.name = $"{originalName}_{shader.name.Split('/').Last()}";
@@ -39,9 +39,9 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        public AsyncCallbackRequest GenerateTextures(MaterialBase material, bool saveAsPng, string texturesPath, Action completion)
+        public AsyncCallbackRequest GenerateTextures(MaterialBase material, UnityEditor.BuildTarget buildTarget, bool saveAsPng, string texturesPath, Action completion)
         {
-            return toonLitGenerator.GenerateTextures(material, saveAsPng, texturesPath, completion);
+            return toonLitGenerator.GenerateTextures(material, buildTarget, saveAsPng, texturesPath, completion);
         }
     }
 }

@@ -23,12 +23,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        public AsyncCallbackRequest GenerateMaterial(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
+        public AsyncCallbackRequest GenerateMaterial(MaterialBase material, UnityEditor.BuildTarget buildTarget, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
         {
             if (!(material is IStandardLiteConvertable))
             {
                 Debug.LogWarning("StandardLiteGenerator only supports LilToonMaterial.");
-                return new ToonLitGenerator(new ToonLitConvertSettings()).GenerateMaterial(material, saveTextureAsPng, texturesPath, completion);
+                return new ToonLitGenerator(new ToonLitConvertSettings()).GenerateMaterial(material, buildTarget, saveTextureAsPng, texturesPath, completion);
             }
 
             var standardLiteConvertable = material as IStandardLiteConvertable;
@@ -68,9 +68,9 @@ namespace KRT.VRCQuestTools.Models
 
                 if (standardLiteConvertable.UseStandardLiteNormalMap)
                 {
-                    var inputRGB = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS;
-                    var outputRGB = saveTextureAsPng || inputRGB;
-                    request = GenerateNormalTexture(material, settings, inputRGB, outputRGB, saveTextureAsPng, texturesPath, (t) =>
+                    var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
+                    var outputRGB = saveTextureAsPng || isMobile;
+                    request = GenerateNormalTexture(material, settings, outputRGB, saveTextureAsPng, texturesPath, (t) =>
                     {
                         newMaterial.NormalMap = t;
                     });
@@ -91,12 +91,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        public AsyncCallbackRequest GenerateTextures(MaterialBase material, bool saveTextureAsPng, string texturesPath, Action completion)
+        public AsyncCallbackRequest GenerateTextures(MaterialBase material, UnityEditor.BuildTarget buildTarget, bool saveTextureAsPng, string texturesPath, Action completion)
         {
             if (!(material is IStandardLiteConvertable))
             {
                 Debug.LogWarning("StandardLiteGenerator only supports LilToonMaterial.");
-                return new ToonLitGenerator(new ToonLitConvertSettings()).GenerateTextures(material, saveTextureAsPng, texturesPath, completion);
+                return new ToonLitGenerator(new ToonLitConvertSettings()).GenerateTextures(material, buildTarget, saveTextureAsPng, texturesPath, completion);
             }
 
             var standardLiteConvertable = material as IStandardLiteConvertable;
@@ -111,9 +111,9 @@ namespace KRT.VRCQuestTools.Models
 
             if (standardLiteConvertable.UseStandardLiteNormalMap)
             {
-                var inputRGB = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS;
-                var outputRGB = saveTextureAsPng || inputRGB;
-                request = GenerateNormalTexture(material, settings, inputRGB, outputRGB, saveTextureAsPng, texturesPath, null);
+                var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
+                var outputRGB = saveTextureAsPng || isMobile;
+                request = GenerateNormalTexture(material, settings, outputRGB, saveTextureAsPng, texturesPath, null);
                 request.WaitForCompletion();
             }
 
@@ -144,9 +144,9 @@ namespace KRT.VRCQuestTools.Models
             return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "emission", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteEmission(settings, compl), completion);
         }
 
-        private AsyncCallbackRequest GenerateNormalTexture(MaterialBase material, StandardLiteConvertSettings settings, bool inputRGB, bool outputRGB, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
+        private AsyncCallbackRequest GenerateNormalTexture(MaterialBase material, StandardLiteConvertSettings settings, bool outputRGB, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
-            return MaterialGeneratorUtility.GenerateNormalMap(material.Material, settings, "normal", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteNormalMap(settings, inputRGB, outputRGB, compl), completion);
+            return MaterialGeneratorUtility.GenerateNormalMap(material.Material, settings, "normal", saveAsPng, texturesPath, (compl) => (material as IStandardLiteConvertable).GenerateStandardLiteNormalMap(settings, outputRGB, compl), completion);
         }
 
         private float GetMinimumBrightness(IStandardLiteConvertable material)

@@ -60,11 +60,10 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Generate Standard Lite normal map.
         /// </summary>
         /// <param name="settings">Convert settings.</param>
-        /// <param name="inputRGB">Whether to use RGB input.</param>
         /// <param name="outputRGB">Whether to use RGB output.</param>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Callback request.</returns>
-        AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, bool inputRGB, bool outputRGB, Action<Texture2D> completion);
+        AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, bool outputRGB, Action<Texture2D> completion);
 
         /// <summary>
         /// Generate Standard Lite emission texture.

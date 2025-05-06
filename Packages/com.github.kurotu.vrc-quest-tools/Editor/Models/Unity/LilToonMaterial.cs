@@ -203,7 +203,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        public AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, bool inputRGB, bool outputRGB, System.Action<Texture2D> completion)
+        public AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, bool outputRGB, System.Action<Texture2D> completion)
         {
             var normal = Material.GetTexture("_BumpMap") as Texture2D;
 
@@ -211,7 +211,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
             var textureSize = System.Math.Min(mainTexSize, (int)settings.maxTextureSize);
 
-            var newNormal = DownscaleNormalMapGPU(normal, inputRGB, outputRGB, textureSize, textureSize);
+            var newNormal = DownscaleNormalMapGPU(normal, outputRGB, textureSize, textureSize);
 
             return new ResultRequest<Texture2D>(newNormal, completion);
         }
@@ -220,13 +220,20 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Downscale normal map using compute shader.
         /// </summary>
         /// <param name="source">Source texture.</param>
-        /// <param name="inputRGB">Input is RGB format.</param>
         /// <param name="outputRGB">Output is RGB format.</param>
         /// <param name="targetWidth">Target width.</param>
         /// <param name="targetHeight">Target height.</param>
         /// <returns>Generated normal map.</returns>
-        public static Texture2D DownscaleNormalMapGPU(Texture2D source, bool inputRGB, bool outputRGB, int targetWidth, int targetHeight)
+        public static Texture2D DownscaleNormalMapGPU(Texture2D source, bool outputRGB, int targetWidth, int targetHeight)
         {
+            var raFomrats = new TextureFormat[]
+            {
+                TextureFormat.DXT5,
+                TextureFormat.DXT5Crunched,
+                TextureFormat.BC7,
+            };
+            var inputRGB = !raFomrats.Contains(source.format);
+
             // ì¸óÕÇ∆èoóÕÇÃRenderTexture
             var d = new RenderTextureDescriptor(source.width, source.height, RenderTextureFormat.ARGB32)
             {
