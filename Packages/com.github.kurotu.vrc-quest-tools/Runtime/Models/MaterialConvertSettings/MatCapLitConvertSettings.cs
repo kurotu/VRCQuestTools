@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
@@ -24,6 +24,11 @@ namespace KRT.VRCQuestTools.Models
         public TextureSizeLimit maxTextureSize = TextureSizeLimit.Max1024x1024;
 
         /// <summary>
+        /// Texture format for android.
+        /// </summary>
+        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_6x6;
+
+        /// <summary>
         /// Texture brightness for quest. [0-1].
         /// </summary>
         [Range(0.0f, 1.0f)]
@@ -39,11 +44,16 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         public Texture matCapTexture;
 
+        private static Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() => GetUnitySerializableFields(typeof(MatCapLitConvertSettings)));
+
         /// <inheritdoc/>
         public bool GenerateQuestTextures => generateQuestTextures;
 
         /// <inheritdoc/>
         public TextureSizeLimit MaxTextureSize => maxTextureSize;
+
+        /// <inheritdoc/>
+        public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
 
         /// <inheritdoc/>
         public float MainTextureBrightness => mainTextureBrightness;
@@ -54,11 +64,39 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public string GetCacheKey()
         {
-#if UNITY_EDITOR
-            return $"{generateQuestTextures}_{maxTextureSize}_{mainTextureBrightness}_{generateShadowFromNormalMap}_{matCapTexture.imageContentsHash}";
-#else
-            throw new System.NotSupportedException("GetCacheKey is only available for UnityEditor.");
-#endif
+            var container = new Dictionary<string, object>();
+            var sb = new StringBuilder("{");
+            foreach (var (field, i) in unitySerializableFields.Value.Select((f, i) => (f, i)))
+            {
+                var value = field.GetValue(this);
+                sb.Append("\"" + field.Name + "\"");
+                sb.Append(":");
+
+                object valueObject;
+                if (value is Texture texture)
+                {
+                    valueObject = texture.imageContentsHash;
+                }
+                else
+                {
+                    valueObject = value;
+                }
+                sb.Append("\"" + valueObject + "\"");
+                sb.Append(",");
+            }
+            sb.Append("}");
+            var str = sb.ToString();
+            return str;
+        }
+
+        private static FieldInfo[] GetUnitySerializableFields(Type type)
+        {
+            return type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(field =>
+                    !field.IsStatic &&
+                    !field.IsDefined(typeof(NonSerializedAttribute), inherit: true) &&
+                    (field.IsPublic || field.IsDefined(typeof(SerializeField), inherit: true)))
+                .ToArray();
         }
     }
 }

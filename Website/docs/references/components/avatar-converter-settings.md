@@ -43,6 +43,7 @@ The following shaders are supported for material conversion. For unsupported sha
 | Generate Textures for Android | Generate Android textures when converting avatar. If off, the original main texture is used. | Toon Lit, MatCap Lit |
 | Textures Size Limit | Select the maximum size of the generated texture. | Toon Lit, MatCap Lit |
 | Main Texture Brightness | Select the brightness of the generated main texture. | Toon Lit, MatCap Lit |
+| Compression Format | Select the compression format of the generated textures. DXT5 is used for PC platform. | Toon Lit, MatCap Lit |
 | Generate shadows from normal map | Generate pseudo shadows from normal maps and reflect them in textures. | Toon Lit, MatCap Lit |
 | MatCap Texture | Set the MatCap texture used by the MatCap Lit shader. | MatCap Lit |
 | Replaced Material | Set the material used in Material Replacement mode. | Material Replacement |

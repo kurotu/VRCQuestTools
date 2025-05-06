@@ -14,6 +14,9 @@ namespace KRT.VRCQuestTools.Models
         public Material material;
 
         /// <inheritdoc/>
+        public MobileTextureFormat MobileTextureFormat => throw new System.InvalidProgramException("MaterialReplaceSettings doesn't generate textures.");
+
+        /// <inheritdoc/>
         public string GetCacheKey()
         {
             throw new System.InvalidProgramException("MaterialReplaceSettings doesn't generate textures.");

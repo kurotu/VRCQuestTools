@@ -58,7 +58,7 @@ namespace KRT.VRCQuestTools.ViewModels
 
                 var request = TextureUtility.BakeTexture(metallic.Object, baker.Object, width, height, false, (outTexture) =>
                 {
-                    TextureUtility.SaveUncompressedTexture(destPath, outTexture, false);
+                    TextureUtility.SaveUncompressedTexture(destPath, outTexture, null, false);
                 });
                 request.WaitForCompletion();
             }

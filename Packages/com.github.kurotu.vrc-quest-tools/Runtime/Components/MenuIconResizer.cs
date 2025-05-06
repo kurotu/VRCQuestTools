@@ -1,3 +1,4 @@
+using KRT.VRCQuestTools.Models;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Components
@@ -24,6 +25,11 @@ namespace KRT.VRCQuestTools.Components
         /// Compress existing textures if needed.
         /// </summary>
         public bool compressTextures = true;
+
+        /// <summary>
+        /// Texture format for android.
+        /// </summary>
+        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_8x8;
 
         /// <summary>
         /// Texture size limit for quest.

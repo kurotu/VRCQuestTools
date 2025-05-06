@@ -4,6 +4,14 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 追加
+- 変換後のテクスチャの圧縮形式を指定する機能を追加。
+
+### 変更
+- `VQT Menu Icon Resizer` のデフォルトの圧縮形式を `ASTC 8x8` に変更。
+
 ## [2.9.1] - 2025-05-06
 
 ### 修正

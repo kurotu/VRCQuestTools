@@ -30,6 +30,9 @@ namespace KRT.VRCQuestTools.Inspector
                 EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
                 fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
+                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("mobileTextureFormat"), new GUIContent(i18n.IMaterialConvertSettingsMobileTextureFormatLabel));
+                fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
                 var useMinimumBrightness = property.FindPropertyRelative("useMinimumBrightness");
                 EditorGUI.PropertyField(fieldRect, useMinimumBrightness, new GUIContent(i18n.StandardLiteConvertSettingsUseMinimumBrightnessLabel, i18n.StandardLiteConvertSettingsUseMinimumBrightnessTooltip));
                 fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
@@ -62,6 +65,8 @@ namespace KRT.VRCQuestTools.Inspector
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("generateQuestTextures"));
             height += EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maxTextureSize"));
+            height += EditorGUIUtility.standardVerticalSpacing;
+            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("mobileTextureFormat"));
             height += EditorGUIUtility.standardVerticalSpacing;
 
             var useMinimumBrightness = property.FindPropertyRelative("useMinimumBrightness");

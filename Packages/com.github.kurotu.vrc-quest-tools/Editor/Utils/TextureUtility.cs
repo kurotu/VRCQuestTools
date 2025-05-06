@@ -134,15 +134,16 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="path">Path to save.</param>
         /// <param name="texture">Texture to save.</param>
+        /// <param name="mobileFormat">Texture format for mobile build target.</param>
         /// <param name="isSRGB">Texture is sRGB.</param>
         /// <returns>Saved texture asset.</returns>
-        internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, bool isSRGB = true)
+        internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, TextureFormat? mobileFormat, bool isSRGB = true)
         {
             var src = texture.isReadable ? texture : CopyAsReadable(texture, isSRGB);
             var png = src.EncodeToPNG();
             File.WriteAllBytes(path, png);
             AssetDatabase.ImportAsset(path);
-            ConfigureTextureImporter(path, isSRGB);
+            ConfigureTextureImporter(path, mobileFormat, isSRGB);
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
@@ -150,8 +151,9 @@ namespace KRT.VRCQuestTools.Utils
         /// Configures TextureImporter for the texture.
         /// </summary>
         /// <param name="path">Texture path.</param>
+        /// <param name="mobileFormat">Texture format for mobile build target.</param>
         /// <param name="isSRGB">Texture is sRGB.</param>
-        internal static void ConfigureTextureImporter(string path, bool isSRGB = true)
+        internal static void ConfigureTextureImporter(string path, TextureFormat? mobileFormat, bool isSRGB = true)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.alphaSource = TextureImporterAlphaSource.FromInput;
@@ -161,6 +163,25 @@ namespace KRT.VRCQuestTools.Utils
             {
                 importer.streamingMipmaps = true;
             }
+            if (mobileFormat.HasValue)
+            {
+                var androidSettings = new TextureImporterPlatformSettings
+                {
+                    name = "Android",
+                    overridden = true,
+                    maxTextureSize = importer.maxTextureSize,
+                    format = (TextureImporterFormat)mobileFormat.Value,
+                };
+                var iosSettings = new TextureImporterPlatformSettings
+                {
+                    name = "iPhone",
+                    overridden = androidSettings.overridden,
+                    maxTextureSize = androidSettings.maxTextureSize,
+                    format = androidSettings.format,
+                };
+                importer.SetPlatformTextureSettings(androidSettings);
+                importer.SetPlatformTextureSettings(iosSettings);
+            }
             importer.SaveAndReimport();
         }
 
@@ -168,13 +189,33 @@ namespace KRT.VRCQuestTools.Utils
         /// Configure TextureImporter for normal map.
         /// </summary>
         /// <param name="path">Texture path.</param>
-        internal static void CongigureNormalMapImporter(string path)
+        /// <param name="mobileFormat">Texture format for mobile build target.</param>
+        internal static void ConfigureNormalMapImporter(string path, TextureFormat? mobileFormat)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.textureType = TextureImporterType.NormalMap;
             importer.alphaIsTransparency = false;
             importer.sRGBTexture = false;
             importer.mipmapEnabled = false;
+            if (mobileFormat.HasValue)
+            {
+                var androidSettings = new TextureImporterPlatformSettings
+                {
+                    name = "Android",
+                    overridden = true,
+                    maxTextureSize = importer.maxTextureSize,
+                    format = (TextureImporterFormat)mobileFormat.Value,
+                };
+                var iosSettings = new TextureImporterPlatformSettings
+                {
+                    name = "iPhone",
+                    overridden = androidSettings.overridden,
+                    maxTextureSize = androidSettings.maxTextureSize,
+                    format = androidSettings.format,
+                };
+                importer.SetPlatformTextureSettings(androidSettings);
+                importer.SetPlatformTextureSettings(iosSettings);
+            }
             importer.SaveAndReimport();
         }
 
@@ -506,10 +547,11 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="texture">Texture to compress.</param>
         /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
-        internal static void CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget)
+        /// <param name="mobileFormat">Format for mobile build target.</param>
+        internal static void CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat)
         {
             var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
-            var format = isMobile ? TextureFormat.ASTC_6x6 : TextureFormat.DXT5;
+            var format = isMobile ? mobileFormat : TextureFormat.DXT5;
             EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);
         }
 
@@ -517,11 +559,14 @@ namespace KRT.VRCQuestTools.Utils
         /// Compresses a normal map texture.
         /// </summary>
         /// <param name="texture">Normal map texture (RGB).</param>
+        /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
+        /// <param name="mobileFormat">Format for mobile build target.</param>
         /// <param name="readable">Whether to make output texture readable.</param>
         /// <returns>Compressed normal map.</returns>
-        internal static Texture2D CompressNormalMap(Texture2D texture, bool readable = false)
+        internal static Texture2D CompressNormalMap(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool readable = false)
         {
             var pixels = texture.GetPixels32(0);
+            var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
             using (var colors = new NativeArray<Color32>(pixels, Allocator.Temp))
             {
                 var settings = new TextureGenerationSettings(TextureImporterType.NormalMap);
@@ -536,6 +581,10 @@ namespace KRT.VRCQuestTools.Utils
                 settings.sourceTextureInformation.height = texture.height;
                 settings.sourceTextureInformation.containsAlpha = true;
                 settings.sourceTextureInformation.hdr = false;
+                if (isMobile)
+                {
+                    settings.platformSettings.format = (TextureImporterFormat)mobileFormat;
+                }
 
                 var output = TextureGenerator.GenerateTexture(settings, colors);
                 output.texture.name = texture.name;

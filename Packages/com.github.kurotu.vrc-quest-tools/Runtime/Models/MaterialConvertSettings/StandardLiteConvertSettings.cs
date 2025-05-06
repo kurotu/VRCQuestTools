@@ -20,6 +20,11 @@ namespace KRT.VRCQuestTools.Models
         public TextureSizeLimit maxTextureSize = TextureSizeLimit.Max1024x1024;
 
         /// <summary>
+        /// Texture format for android.
+        /// </summary>
+        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_6x6;
+
+        /// <summary>
         /// Whether to use minimum brightness for albedo color.
         /// </summary>
         public bool useMinimumBrightness = true;
@@ -34,6 +39,9 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         [Range(0.0f, 1.0f)]
         public float minimumBrightness = 0.05f;
+
+        /// <inheritdoc/>
+        public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
 
         /// <inheritdoc/>
         public string GetCacheKey()

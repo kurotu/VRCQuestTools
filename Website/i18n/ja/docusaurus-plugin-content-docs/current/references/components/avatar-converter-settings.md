@@ -42,6 +42,7 @@ VRChatアバターをAndroid向けにアップロード可能に変換するた�
 |---|---|---|
 | Android用のテクスチャを生成する | アバターを変換する際にAndroid用のテクスチャを生成します。オフの場合、元のメインテクスチャを使用します。 | Toon Lit, MatCap Lit |
 | 最大テクスチャサイズ | 生成されるテクスチャの最大サイズを選択します。 | Toon Lit, MatCap Lit |
+| 圧縮形式 | 生成されるテクスチャの圧縮形式を選択します。PC向けにはDXT5を使用します。 | Toon Lit, MatCap Lit |
 | メインテクスチャの明るさ | 生成されるメインテクスチャの明るさを選択します。 | Toon Lit, MatCap Lit |
 | ノーマルマップから影を生成する | ノーマルマップから疑似的な影を生成しテクスチャに反映します。 | Toon Lit, MatCap Lit |
 | MatCapテクスチャ | MatCap Litシェーダーで使用するMatCapテクスチャを設定します。 | MatCap Lit |
