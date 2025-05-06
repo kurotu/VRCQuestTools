@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-04-11 10:28\n"
+"PO-Revision-Date: 2025-05-06 18:43\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -51,6 +51,12 @@ msgstr "Максимум"
 
 msgid "IncompatibleSDK"
 msgstr "Несовместимый VRChat SDK. Пожалуйста, сообщите об этом."
+
+msgid "TextureFormatHighQuality"
+msgstr ""
+
+msgid "TextureFormatHighCompression"
+msgstr ""
 
 msgid "AvatarConverterSettingsEditorDescription"
 msgstr "Конвертировать этот аватар для загрузки на платформу Android."
@@ -226,6 +232,9 @@ msgstr "Ручное преобразование удалит Unity Constraints
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "Ограничение размера текстур"
+
+msgid "IMaterialConvertSettingsMobileTextureFormatLabel"
+msgstr ""
 
 msgid "IMaterialConvertSettingsMainTextureBrightnessLabel"
 msgstr "Яркость основной текстуры"
@@ -552,6 +561,9 @@ msgid "MenuIconResizerEditorResizeModeAndroidLabel"
 msgstr ""
 
 msgid "MenuIconResizerEditorCompressTexturesLabel"
+msgstr ""
+
+msgid "MenuIconResizerEditorMobileTextureFormatLabel"
 msgstr ""
 
 msgid "AvatarBuilderWindowExitPlayMode"
