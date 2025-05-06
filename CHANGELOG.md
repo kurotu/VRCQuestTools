@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Material Replacement accidentally shown in the default material conversion settings.
-- [NDMF] Upload progress not properly reset when starting a new upload.
+- [NDMF] Upload progress not properly reset when starting a new upload in `VQT Avatar Builder`.
 
 ## [2.9.0] - 2025-04-28
 
