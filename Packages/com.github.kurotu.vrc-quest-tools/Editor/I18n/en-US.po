@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-04-11 10:28\n"
+"PO-Revision-Date: 2025-05-06 18:43\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -51,6 +51,12 @@ msgstr "Maximum"
 
 msgid "IncompatibleSDK"
 msgstr "Incompatible VRChat SDK. Please report."
+
+msgid "TextureFormatHighQuality"
+msgstr "High Quality"
+
+msgid "TextureFormatHighCompression"
+msgstr "High Compression"
 
 msgid "AvatarConverterSettingsEditorDescription"
 msgstr "Convert this avatar uploadable for Android platform."
@@ -229,6 +235,9 @@ msgstr "Manual conversion will remove Unity Constraints. You can non-destructive
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "Textures Size Limit"
+
+msgid "IMaterialConvertSettingsMobileTextureFormatLabel"
+msgstr "Compression Format"
 
 msgid "IMaterialConvertSettingsMainTextureBrightnessLabel"
 msgstr "Main Texture Brightness"
@@ -556,6 +565,9 @@ msgstr "Resize Mode (Android)"
 
 msgid "MenuIconResizerEditorCompressTexturesLabel"
 msgstr "Compress Uncompressed Textures"
+
+msgid "MenuIconResizerEditorMobileTextureFormatLabel"
+msgstr "Compression Format"
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "Exit play mode to build the avatar."
