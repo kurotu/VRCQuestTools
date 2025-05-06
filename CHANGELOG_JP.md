@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.9.1] - 2025-05-06
 
 ### 修正
 - デフォルトのマテリアル変換設定にマテリアル置換が誤って表示される問題を修正。
