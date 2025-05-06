@@ -1,0 +1,72 @@
+// GaussianNormalDownsample.compute
+#pragma kernel CSMain
+
+Texture2D<float4> _Input;
+RWTexture2D<float4> _Result;
+bool _InputRGB;
+int2 _InputSize;
+int2 _OutputSize;
+
+// 4x4 Gaussian weights (normalized)
+static const float weights[4][4] = {
+    { 0.0352, 0.0858, 0.0858, 0.0352 },
+    { 0.0858, 0.2096, 0.2096, 0.0858 },
+    { 0.0858, 0.2096, 0.2096, 0.0858 },
+    { 0.0352, 0.0858, 0.0858, 0.0352 }
+};
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= _OutputSize.x || id.y >= _OutputSize.y) return;
+
+    int2 outCoord = int2(id.xy);
+
+    // 出力ピクセルの中心に対応する入力画像上の位置（UVではなくピクセル座標）
+    float2 uvScale = _InputSize / (float2)_OutputSize;
+    float2 centerCoord = (outCoord + 0.5) * uvScale;
+
+    float3 normalSum = float3(0, 0, 0);
+    float weightSum = 0.0;
+
+    for (int dy = 0; dy < 4; dy++)
+    {
+        for (int dx = 0; dx < 4; dx++)
+        {
+            // オフセット（-1.5〜+1.5）を入力座標スケールに変換して中心に加算
+            float2 offset = float2(dx - 1.5, dy - 1.5);
+            float2 sampleCoord = centerCoord + offset;
+
+            // 最近傍ピクセルに変換
+            int2 intCoord = int2(sampleCoord + 0.5);
+
+            // 範囲チェック
+            if (intCoord.x < 0 || intCoord.y < 0 || intCoord.x >= _InputSize.x || intCoord.y >= _InputSize.y)
+                continue;
+
+            float4 texel = _Input.Load(int3(intCoord, 0));
+            float3 n;
+
+        if (_InputRGB)
+        {
+            n = normalize(texel.rgb * 2.0 - 1.0);
+        }
+        else
+        {
+            // DXTnm
+            n.xy = texel.ag * 2.0 - 1.0;
+            n.z = sqrt(saturate(1.0 - dot(n.xy, n.xy)));
+        }
+
+            float w = weights[dy][dx];
+            normalSum += n * w;
+            weightSum += w;
+        }
+    }
+
+    float3 finalNormal = normalize(normalSum / weightSum);
+
+    // Linear RGB
+    finalNormal = finalNormal * 0.5 + 0.5;
+    _Result[outCoord] = float4(finalNormal, 1.0);
+}

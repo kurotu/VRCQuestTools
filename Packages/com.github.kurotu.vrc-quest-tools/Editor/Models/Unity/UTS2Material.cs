@@ -22,6 +22,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader BakeShader => Shader.Find("Hidden/VRCQuestTools/UTS2");
+        internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/UTS2");
     }
 }

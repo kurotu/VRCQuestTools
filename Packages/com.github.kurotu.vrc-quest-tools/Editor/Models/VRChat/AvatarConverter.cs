@@ -287,13 +287,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     AsyncCallbackRequest request;
                     var materialSetting = settings.GetMaterialConvertSettings(m);
+                    var buildTarget = EditorUserBuildSettings.activeBuildTarget;
                     switch (materialSetting)
                     {
                         case ToonLitConvertSettings toonLitConvertSettings:
                             if (toonLitConvertSettings.generateQuestTextures)
                             {
                                 var m2 = MaterialWrapperBuilder.Build(m);
-                                request = new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory, Completion);
+                                request = new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
                             }
                             else
                             {
@@ -304,7 +305,18 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             if (matCapLitConvertSettings.generateQuestTextures)
                             {
                                 var m2 = MaterialWrapperBuilder.Build(m);
-                                request = new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, saveAsPng, saveDirectory, Completion);
+                                request = new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                            }
+                            else
+                            {
+                                request = new ResultRequest(Completion);
+                            }
+                            break;
+                        case StandardLiteConvertSettings standardLiteConvertSettings:
+                            if (standardLiteConvertSettings.generateQuestTextures)
+                            {
+                                var m2 = MaterialWrapperBuilder.Build(m);
+                                request = new StandardLiteGenerator(standardLiteConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
                             }
                             else
                             {
@@ -533,14 +545,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
             string assetsDirectory,
             Action<Material> completion)
         {
+            var buildTarget = EditorUserBuildSettings.activeBuildTarget;
             var texturesPath = $"{assetsDirectory}/Textures";
 
             switch (settings)
             {
                 case ToonLitConvertSettings toonLitSettings:
-                    return new ToonLitGenerator(toonLitSettings).GenerateMaterial(material, saveAsFile, texturesPath, completion);
+                    return new ToonLitGenerator(toonLitSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case MatCapLitConvertSettings matCapSettings:
-                    return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, saveAsFile, texturesPath, completion);
+                    return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                case StandardLiteConvertSettings standardLiteSettings:
+                    return new StandardLiteGenerator(standardLiteSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case MaterialReplaceSettings replaceSettings:
                     if (replaceSettings.material == null)
                     {

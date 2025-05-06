@@ -3,17 +3,17 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models.Unity
 {
     /// <summary>
     /// lilToon material.
     /// </summary>
-    internal class LilToonMaterial : MaterialBase
+    internal class LilToonMaterial : MaterialBase, IStandardLiteConvertable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LilToonMaterial"/> class.
@@ -25,7 +25,244 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader BakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
+        public bool UseStandardLiteEmission
+        {
+            get
+            {
+                var shaderSetting = LoadShaderSetting();
+                var shaderUsesEmission = shaderSetting.LIL_FEATURE_EMISSION_1ST || shaderSetting.LIL_FEATURE_EMISSION_2ND;
+
+                if (!shaderUsesEmission)
+                {
+                    return false;
+                }
+
+                var useEmission = Material.GetFloat("_UseEmission") > 0.0f;
+                var useEmission2nd = Material.GetFloat("_UseEmission2nd") > 0.0f;
+                return useEmission || useEmission2nd;
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool UseStandardLiteNormalMap
+        {
+            get
+            {
+                var useBumpMap = Material.GetFloat("_UseBumpMap") > 0.0f;
+                var bumpMap = Material.GetTexture("_BumpMap");
+                return useBumpMap && (bumpMap != null);
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool UseStandardLiteMetallicSmoothness
+        {
+            get
+            {
+                var metallicGlossMap = Material.GetTexture("_MetallicGlossMap");
+                var reflectionColorTex = Material.GetTexture("_ReflectionColorTex");
+                var smoothnessTex = Material.GetTexture("_SmoothnessTex");
+                return metallicGlossMap != null || reflectionColorTex != null || smoothnessTex != null;
+            }
+        }
+
+        /// <inheritdoc/>
+        public float Metallic => Material.GetFloat("_Metallic");
+
+        /// <inheritdoc/>
+        public float MinimumBrightness => Material.GetFloat("_LightMinLimit");
+
+        /// <inheritdoc/>
+        internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
+
+        /// <inheritdoc/>
+        internal override Shader StandardLiteMainBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_main");
+
+        /// <inheritdoc/>
+        internal override Shader StandardLiteMetallicSmoothnessBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_metallic_smoothness");
+
+        /// <inheritdoc/>
+        public Material ConvertToStandardLite()
+        {
+            var newShader = Shader.Find("VRChat/Mobile/Standard Lite");
+            var newMaterial = new StandardLiteMaterialWrapper(new Material(newShader)
+            {
+                color = Material.color,
+                doubleSidedGI = Material.doubleSidedGI,
+                enableInstancing = true,
+                globalIlluminationFlags = Material.globalIlluminationFlags,
+                hideFlags = Material.hideFlags,
+                mainTexture = Material.mainTexture ?? Material.GetTexture("_MainTex"),
+                mainTextureOffset = Material.mainTextureOffset,
+                mainTextureScale = Material.mainTextureScale,
+                name = $"{Material.name}_{newShader.name.Split('/').Last()}",
+                renderQueue = Material.renderQueue,
+                shader = newShader,
+                shaderKeywords = null,
+            });
+
+            var mats = new[] { Material };
+
+            var useReflection = Material.GetFloat("_UseReflection") > 0.0f;
+            var applyReflection = Material.GetFloat("_ApplyReflection") > 0.0;
+            if (useReflection && applyReflection)
+            {
+                newMaterial.Reflections = true;
+                newMaterial.SpecularLightprobeHack = true;
+            }
+            else
+            {
+                newMaterial.Reflections = false;
+                newMaterial.SpecularLightprobeHack = false;
+            }
+            var reflectionColor = Material.GetColor("_ReflectionColor");
+            newMaterial.Metallic = useReflection ? Metallic * reflectionColor.grayscale : 0.0f;
+            newMaterial.Smoothness = useReflection ? Material.GetFloat("_Smoothness") : 0.0f;
+
+            var useBumpMap = Material.GetFloat("_UseBumpMap") > 0.0f;
+            newMaterial.NormalMap = useBumpMap ? Material.GetTexture("_BumpMap") : null;
+
+            var useEmission = Material.GetFloat("_UseEmission") > 0.0f;
+            newMaterial.Emission = useEmission;
+            newMaterial.EmissionMap = useEmission ? Material.GetTexture("_EmissionMap") : null;
+            newMaterial.EmissionColor = useEmission ? Material.GetColor("_EmissionColor") : Color.white;
+
+            return newMaterial;
+        }
+
+#pragma warning disable SA1648 // inheritdoc for interface methods
+        /// <inheritdoc/>
+        public AsyncCallbackRequest GenerateStandardLiteMain(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
+        {
+            var rt = MainBake(Material, 0);
+
+            var textureSize = System.Math.Min(rt.width, (int)settings.maxTextureSize);
+            var rt2 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
+            TextureUtility.DownscaleBlit(rt, true, rt2);
+
+            var rt3 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
+            var scaler = new Material(Shader.Find("Hidden/VRCQuestTools/ValueScaler"));
+
+            float brightness;
+            if (settings.useMinimumBrightness)
+            {
+                var minimumBrightness = settings.autoMinimumBrightness ? MinimumBrightness : settings.minimumBrightness;
+                brightness = 1.0f - minimumBrightness;
+            }
+            else
+            {
+                brightness = 1.0f;
+            }
+
+            // if emission is not needed, share the same main texture.
+            if (!UseStandardLiteEmission)
+            {
+                brightness = 1.0f;
+            }
+
+            scaler.SetFloat("_ScaleR", brightness);
+            scaler.SetFloat("_ScaleG", brightness);
+            scaler.SetFloat("_ScaleB", brightness);
+            Graphics.Blit(rt2, rt3, scaler);
+
+            return TextureUtility.RequestReadbackRenderTexture(rt3, true, (tex) =>
+            {
+                Object.DestroyImmediate(rt);
+                Object.DestroyImmediate(scaler);
+                RenderTexture.ReleaseTemporary(rt2);
+                RenderTexture.ReleaseTemporary(rt3);
+                completion?.Invoke(tex);
+            });
+        }
+
+        /// <inheritdoc/>
+        public AsyncCallbackRequest GenerateStandardLiteMetallicSmoothness(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
+        {
+            var hasMainTex = Material.mainTexture != null;
+            var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
+            var textureSize = System.Math.Min(mainTexSize, (int)settings.maxTextureSize);
+
+            var bakeMat = new Material(Material);
+#if UNITY_2022_1_OR_NEWER
+            bakeMat.parent = null;
+#endif
+            bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_metallic_smoothness");
+
+            var desc = new RenderTextureDescriptor(textureSize, textureSize, RenderTextureFormat.ARGB32)
+            {
+                sRGB = false,
+                depthBufferBits = 0,
+            };
+            var rt = RenderTexture.GetTemporary(desc);
+            Graphics.Blit(null, rt, bakeMat);
+            return TextureUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
+            {
+                RenderTexture.ReleaseTemporary(rt);
+                Object.DestroyImmediate(bakeMat);
+                completion?.Invoke(tex);
+            });
+        }
+
+        /// <inheritdoc/>
+        public AsyncCallbackRequest GenerateStandardLiteNormalMap(StandardLiteConvertSettings settings, bool outputRGB, System.Action<Texture2D> completion)
+        {
+            var normal = Material.GetTexture("_BumpMap") as Texture2D;
+
+            var hasMainTex = Material.mainTexture != null;
+            var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
+            var textureSize = System.Math.Min(mainTexSize, (int)settings.maxTextureSize);
+
+            var newNormal = TextureUtility.DownscaleNormalMap(normal, outputRGB, textureSize, textureSize);
+
+            return new ResultRequest<Texture2D>(newNormal, completion);
+        }
+
+        /// <inheritdoc/>
+        public AsyncCallbackRequest GenerateStandardLiteEmission(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
+        {
+            var albedoRT = MainBake(Material, 0);
+
+            var shaderSetting = LoadShaderSetting();
+
+            var hasMainTex = Material.mainTexture != null;
+            var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
+            var textureSize = System.Math.Min(mainTexSize, (int)settings.maxTextureSize);
+
+            float minimumBrightness;
+            if (settings.useMinimumBrightness)
+            {
+                minimumBrightness = settings.autoMinimumBrightness ? Material.GetFloat("_LightMinLimit") : settings.minimumBrightness;
+            }
+            else
+            {
+                minimumBrightness = 0.0f;
+            }
+
+            var bakeMat = new Material(Material);
+#if UNITY_2022_1_OR_NEWER
+            bakeMat.parent = null;
+#endif
+            bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_emission");
+
+            bakeMat.SetTexture("_VQT_AlbedoTex", albedoRT);
+            bakeMat.SetFloat("_VQT_AlbedoBrightness", minimumBrightness);
+            bakeMat.SetFloat("_LIL_FEATURE_NORMAL_1ST", shaderSetting.LIL_FEATURE_NORMAL_1ST ? 1.0f : 0.0f);
+            bakeMat.SetFloat("_LIL_FEATURE_EMISSION_1ST", shaderSetting.LIL_FEATURE_EMISSION_1ST ? 1.0f : 0.0f);
+            bakeMat.SetFloat("_LIL_FEATURE_EMISSION_2ND", shaderSetting.LIL_FEATURE_EMISSION_2ND ? 1.0f : 0.0f);
+            bakeMat.SetFloat("_LIL_FEATURE_ANIMATE_EMISSION_UV", shaderSetting.LIL_FEATURE_ANIMATE_EMISSION_UV ? 1.0f : 0.0f);
+            bakeMat.SetFloat("_LIL_FEATURE_ANIMATE_EMISSION_MASK_UV", shaderSetting.LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? 1.0f : 0.0f);
+            bakeMat.SetFloat("_LIL_FEATURE_EMISSION_GRADATION", shaderSetting.LIL_FEATURE_EMISSION_GRADATION ? 1.0f : 0.0f);
+
+            var rt = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
+            Graphics.Blit(null, rt, bakeMat);
+            return TextureUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
+            {
+                RenderTexture.ReleaseTemporary(rt);
+                Object.DestroyImmediate(bakeMat);
+                completion?.Invoke(tex);
+            });
+        }
+#pragma warning restore SA1648 // inheritdoc for interface methods
 
         /// <inheritdoc/>
         internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
@@ -183,11 +420,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                 // Texture bufMainTexture = mainTex.textureValue;
                 Material hsvgMaterial = new Material(ltsbaker);
 
-                Texture srcTexture = AssetUtility.CreateMinimumEmptyTexture();
-                Texture srcMain2 = AssetUtility.CreateMinimumEmptyTexture();
-                Texture srcMain3 = AssetUtility.CreateMinimumEmptyTexture();
-                Texture srcMask2 = AssetUtility.CreateMinimumEmptyTexture();
-                Texture srcMask3 = AssetUtility.CreateMinimumEmptyTexture();
+                Texture srcTexture = TextureUtility.CreateMinimumEmptyTexture();
+                Texture srcMain2 = TextureUtility.CreateMinimumEmptyTexture();
+                Texture srcMain3 = TextureUtility.CreateMinimumEmptyTexture();
+                Texture srcMask2 = TextureUtility.CreateMinimumEmptyTexture();
+                Texture srcMask3 = TextureUtility.CreateMinimumEmptyTexture();
 
                 CopyMaterialProperty(hsvgMaterial, material, mainColor);
                 CopyMaterialProperty(hsvgMaterial, material, mainTexHSVG);
@@ -200,14 +437,14 @@ namespace KRT.VRCQuestTools.Models.Unity
                     CopyMaterialProperty(hsvgMaterial, material, mainGradationTex);
                 }
 
-                srcTexture = AssetUtility.LoadUncompressedTexture(material.GetTexture(mainTex.name));
+                srcTexture = TextureUtility.LoadUncompressedTexture(material.GetTexture(mainTex.name));
                 if (srcTexture != null)
                 {
                     hsvgMaterial.SetTexture(mainTex.name, srcTexture);
                 }
                 else
                 {
-                    srcTexture = AssetUtility.CreateMinimumEmptyTexture();
+                    srcTexture = TextureUtility.CreateMinimumEmptyTexture();
                     hsvgMaterial.SetTexture(mainTex.name, Texture2D.whiteTexture);
                 }
 
@@ -230,26 +467,26 @@ namespace KRT.VRCQuestTools.Models.Unity
                     hsvgMaterial.SetTextureScale(main2ndBlendMask.name, material.GetTextureScale(main2ndBlendMask.name));
 
                     Object.DestroyImmediate(srcMain2);
-                    srcMain2 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main2ndTex.name));
+                    srcMain2 = TextureUtility.LoadUncompressedTexture(material.GetTexture(main2ndTex.name));
                     if (srcMain2 != null)
                     {
                         hsvgMaterial.SetTexture(main2ndTex.name, srcMain2);
                     }
                     else
                     {
-                        srcMain2 = AssetUtility.CreateMinimumEmptyTexture();
+                        srcMain2 = TextureUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main2ndTex.name, Texture2D.whiteTexture);
                     }
 
                     Object.DestroyImmediate(srcMask2);
-                    srcMask2 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main2ndBlendMask.name));
+                    srcMask2 = TextureUtility.LoadUncompressedTexture(material.GetTexture(main2ndBlendMask.name));
                     if (srcMask2 != null)
                     {
                         hsvgMaterial.SetTexture(main2ndBlendMask.name, srcMask2);
                     }
                     else
                     {
-                        srcMask2 = AssetUtility.CreateMinimumEmptyTexture();
+                        srcMask2 = TextureUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main2ndBlendMask.name, Texture2D.whiteTexture);
                     }
                 }
@@ -273,26 +510,26 @@ namespace KRT.VRCQuestTools.Models.Unity
                     hsvgMaterial.SetTextureScale(main3rdBlendMask.name, material.GetTextureScale(main3rdBlendMask.name));
 
                     Object.DestroyImmediate(srcMain3);
-                    srcMain3 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main3rdTex.name));
+                    srcMain3 = TextureUtility.LoadUncompressedTexture(material.GetTexture(main3rdTex.name));
                     if (srcMain3 != null)
                     {
                         hsvgMaterial.SetTexture(main3rdTex.name, srcMain3);
                     }
                     else
                     {
-                        srcMain3 = AssetUtility.CreateMinimumEmptyTexture();
+                        srcMain3 = TextureUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main3rdTex.name, Texture2D.whiteTexture);
                     }
 
                     Object.DestroyImmediate(srcMask3);
-                    srcMask3 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main3rdBlendMask.name));
+                    srcMask3 = TextureUtility.LoadUncompressedTexture(material.GetTexture(main3rdBlendMask.name));
                     if (srcMask3 != null)
                     {
                         hsvgMaterial.SetTexture(main3rdBlendMask.name, srcMask3);
                     }
                     else
                     {
-                        srcMask3 = AssetUtility.CreateMinimumEmptyTexture();
+                        srcMask3 = TextureUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main3rdBlendMask.name, Texture2D.whiteTexture);
                     }
                 }
@@ -331,7 +568,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             if (!shaderSetting.LIL_FEATURE_EMISSION_1ST && !shaderSetting.LIL_FEATURE_EMISSION_2ND)
             {
-                return AssetUtility.RequestReadbackRenderTexture(main, true, (baked) =>
+                return TextureUtility.RequestReadbackRenderTexture(main, true, (baked) =>
                 {
                     baked.filterMode = FilterMode.Bilinear;
                 });
@@ -346,12 +583,12 @@ namespace KRT.VRCQuestTools.Models.Unity
             var emission2ndGradTex = MaterialEditor.GetMaterialProperty(mats, "_Emission2ndGradTex");
 
             using (var baker = DisposableObject.New(Object.Instantiate(material)))
-            using (var srcEmissionMap = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emissionMap.textureValue)))
-            using (var srcEmissionBlendMask = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emissionBlendMask.textureValue)))
-            using (var srcEmissionGradTex = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emissionGradTex.textureValue)))
-            using (var srcEmission2ndMap = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndMap.textureValue)))
-            using (var srcEmission2ndBlendMask = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndBlendMask.textureValue)))
-            using (var srcEmission2ndGradTex = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndGradTex.textureValue)))
+            using (var srcEmissionMap = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emissionMap.textureValue)))
+            using (var srcEmissionBlendMask = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emissionBlendMask.textureValue)))
+            using (var srcEmissionGradTex = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emissionGradTex.textureValue)))
+            using (var srcEmission2ndMap = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emission2ndMap.textureValue)))
+            using (var srcEmission2ndBlendMask = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emission2ndBlendMask.textureValue)))
+            using (var srcEmission2ndGradTex = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emission2ndGradTex.textureValue)))
             {
                 var lilBaker = Shader.Find("Hidden/VRCQuestTools/lilToon");
 #if UNITY_2022_1_OR_NEWER
@@ -378,7 +615,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
-                return AssetUtility.BakeTexture(main, baker.Object, width, height, true, completion);
+                return TextureUtility.BakeTexture(main, baker.Object, width, height, true, completion);
             }
         }
 

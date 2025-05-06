@@ -75,6 +75,18 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
         /// <param name="completion">Completion callback.</param>
         internal TextureGPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, Action<Texture2D> completion)
+            : this(renderTexture, useMipmap, false, completion)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextureGPUReadbackRequest"/> class.
+        /// </summary>
+        /// <param name="renderTexture">Render texture to readback.</param>
+        /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="linear">Whether to use linear color space.</param>
+        /// <param name="completion">Completion callback.</param>
+        internal TextureGPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, bool linear, Action<Texture2D> completion)
         {
             var width = renderTexture.width;
             var height = renderTexture.height;
@@ -84,7 +96,7 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     throw new InvalidOperationException("AsyncGPUReadback error");
                 }
-                var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap);
+                var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap, linear);
                 if (useMipmap)
                 {
                     var mipmapCount = renderTexture.mipmapCount;
@@ -127,10 +139,22 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
         /// <param name="completion">Completion callback.</param>
         internal TextureCPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, Action<Texture2D> completion)
+            : this(renderTexture, useMipmap, false, completion)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextureCPUReadbackRequest"/> class.
+        /// </summary>
+        /// <param name="renderTexture">Render texture to readback.</param>
+        /// <param name="useMipmap">Whether to use mip map for the result texture.</param>
+        /// <param name="linear">Whether to use linear color space.</param>
+        /// <param name="completion">Completion callback.</param>
+        internal TextureCPUReadbackRequest(RenderTexture renderTexture, bool useMipmap, bool linear, Action<Texture2D> completion)
         {
             int width = renderTexture.width;
             int height = renderTexture.height;
-            var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap);
+            var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap, linear);
             result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             result.Apply(true, true);
             completion?.Invoke(result);

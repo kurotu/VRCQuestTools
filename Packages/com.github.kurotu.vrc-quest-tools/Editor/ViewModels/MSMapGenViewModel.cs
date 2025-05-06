@@ -44,8 +44,8 @@ namespace KRT.VRCQuestTools.ViewModels
         internal void GenerateMetallicSmoothness(string destPath)
         {
             using (var baker = DisposableObject.New(new Material(Shader.Find("Hidden/VRCQuestTools/MetallicSmoothnes"))))
-            using (var metallic = DisposableObject.New(AssetUtility.LoadUncompressedTexture(metallicMap)))
-            using (var smoothness = DisposableObject.New(AssetUtility.LoadUncompressedTexture(smoothnessMap)))
+            using (var metallic = DisposableObject.New(TextureUtility.LoadUncompressedTexture(metallicMap)))
+            using (var smoothness = DisposableObject.New(TextureUtility.LoadUncompressedTexture(smoothnessMap)))
             {
                 var width = Math.Max(metallic.Object?.width ?? 4, smoothness.Object?.width ?? 4);
                 var height = Math.Max(metallic.Object?.height ?? 4, smoothness.Object?.height ?? 4);
@@ -56,9 +56,9 @@ namespace KRT.VRCQuestTools.ViewModels
                 baker.Object.SetTexture("_SmoothnessMap", smoothness.Object);
                 baker.Object.SetInt("_InvertSmoothness", invertSmoothness ? 1 : 0);
 
-                var request = AssetUtility.BakeTexture(metallic.Object, baker.Object, width, height, false, (outTexture) =>
+                var request = TextureUtility.BakeTexture(metallic.Object, baker.Object, width, height, false, (outTexture) =>
                 {
-                    AssetUtility.SaveUncompressedTexture(destPath, outTexture, false);
+                    TextureUtility.SaveUncompressedTexture(destPath, outTexture, false);
                 });
                 request.WaitForCompletion();
             }

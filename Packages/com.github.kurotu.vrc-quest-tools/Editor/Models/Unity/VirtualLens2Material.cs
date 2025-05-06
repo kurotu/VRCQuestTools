@@ -24,7 +24,13 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader BakeShader => null;
+        internal override Shader ToonLitBakeShader => null;
+
+        /// <inheritdoc/>
+        internal override Shader StandardLiteMainBakeShader => null;
+
+        /// <inheritdoc/>
+        internal override Shader StandardLiteMetallicSmoothnessBakeShader => null;
 
         /// <inheritdoc/>
         internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, Action<Texture2D> completion)

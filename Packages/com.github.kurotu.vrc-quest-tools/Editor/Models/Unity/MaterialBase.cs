@@ -30,9 +30,19 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
-        /// Gets shader to bake texture.
+        /// Gets shader to bake Toon Lit texture.
         /// </summary>
-        internal abstract Shader BakeShader { get; }
+        internal abstract Shader ToonLitBakeShader { get; }
+
+        /// <summary>
+        /// Gets shader to bake Standard Lite main texture.
+        /// </summary>
+        internal abstract Shader StandardLiteMainBakeShader { get; }
+
+        /// <summary>
+        /// Gets shader to bake Standard Lite metallic smoothness texture.
+        /// </summary>
+        internal abstract Shader StandardLiteMetallicSmoothnessBakeShader { get; }
 
         /// <summary>
         /// Convert internal material to Toon Lit.
@@ -86,7 +96,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 #if UNITY_2022_1_OR_NEWER
                 baker.Object.parent = null;
 #endif
-                baker.Object.shader = BakeShader;
+                baker.Object.shader = ToonLitBakeShader;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
                 baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);
                 foreach (var name in Material.GetTexturePropertyNames())
@@ -96,16 +106,16 @@ namespace KRT.VRCQuestTools.Models.Unity
                     {
                         continue;
                     }
-                    if (AssetUtility.IsNormalMapAsset(t))
+                    if (TextureUtility.IsNormalMapAsset(t))
                     {
                         continue;
                     }
-                    var tex = AssetUtility.LoadUncompressedTexture(t);
+                    var tex = TextureUtility.LoadUncompressedTexture(t);
                     disposables.Add(DisposableObject.New(tex));
                     baker.Object.SetTexture(name, tex);
                 }
 
-                return AssetUtility.BakeTexture(mainTexture, baker.Object, width, height, true, completion);
+                return TextureUtility.BakeTexture(mainTexture, true, baker.Object, width, height, true, completion);
             }
         }
     }

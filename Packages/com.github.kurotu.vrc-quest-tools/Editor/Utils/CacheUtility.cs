@@ -81,6 +81,12 @@ namespace KRT.VRCQuestTools.Utils
             private TextureFormat format;
 
             [SerializeField]
+            private bool linear;
+
+            [SerializeField]
+            private bool normalMap;
+
+            [SerializeField]
             private bool mipmap;
 
             [SerializeField]
@@ -90,11 +96,15 @@ namespace KRT.VRCQuestTools.Utils
             /// Initializes a new instance of the <see cref="TextureCache"/> class.
             /// </summary>
             /// <param name="texture">Texture to cache.</param>
-            internal TextureCache(Texture2D texture)
+            /// <param name="linear"="linear">Texture is linear.</param>
+            /// <param name="normalMap"="normalMap">Texture is normal map.</param>
+            internal TextureCache(Texture2D texture, bool linear, bool normalMap = false)
             {
                 width = texture.width;
                 height = texture.height;
                 format = texture.format;
+                this.linear = linear;
+                this.normalMap = normalMap;
                 mipmap = texture.mipmapCount > 1;
                 base64Data = Convert.ToBase64String(texture.GetRawTextureData());
             }
@@ -105,10 +115,18 @@ namespace KRT.VRCQuestTools.Utils
             /// <returns>Restored texture.</returns>
             internal Texture2D ToTexture2D()
             {
-                var tex = new Texture2D(width, height, format, mipmap);
+                var tex = normalMap ?
+                    CreateCompressedNormalMap(width, height) :
+                    new Texture2D(width, height, format, mipmap, linear);
                 tex.LoadRawTextureData(Convert.FromBase64String(base64Data));
                 tex.Apply(true, true);
                 return tex;
+            }
+
+            private Texture2D CreateCompressedNormalMap(int width, int height)
+            {
+                var tex = new Texture2D(width, height, format, mipmap, linear);
+                return TextureUtility.CompressNormalMap(tex, true);
             }
         }
     }
