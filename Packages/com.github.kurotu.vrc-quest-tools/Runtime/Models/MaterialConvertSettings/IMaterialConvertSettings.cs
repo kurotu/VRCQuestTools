@@ -6,6 +6,11 @@ namespace KRT.VRCQuestTools.Models
     public interface IMaterialConvertSettings
     {
         /// <summary>
+        /// Gets a texture format for android.
+        /// </summary>
+        MobileTextureFormat MobileTextureFormat { get; }
+
+        /// <summary>
         /// Get cache key for this setting.
         /// </summary>
         /// <returns>Cache key.</returns>

@@ -20,6 +20,11 @@ namespace KRT.VRCQuestTools.Models
         public TextureSizeLimit maxTextureSize = TextureSizeLimit.Max1024x1024;
 
         /// <summary>
+        /// Texture format for android.
+        /// </summary>
+        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_6x6;
+
+        /// <summary>
         /// Texture brightness for quest. [0-1].
         /// </summary>
         /// <remarks>
@@ -41,6 +46,9 @@ namespace KRT.VRCQuestTools.Models
         public TextureSizeLimit MaxTextureSize => maxTextureSize;
 
         /// <inheritdoc/>
+        public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
+
+        /// <inheritdoc/>
         public float MainTextureBrightness => mainTextureBrightness;
 
         /// <inheritdoc/>
@@ -49,7 +57,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public string GetCacheKey()
         {
-            return $"{generateQuestTextures}_{maxTextureSize}_{mainTextureBrightness}_{generateShadowFromNormalMap}";
+            return JsonUtility.ToJson(this);
         }
     }
 }
