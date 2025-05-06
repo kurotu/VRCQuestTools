@@ -8,53 +8,17 @@ namespace KRT.VRCQuestTools.Inspector
     /// PrpertyDrawer for StandardLiteConvertSetting.
     /// </summary>
     [CustomPropertyDrawer(typeof(StandardLiteConvertSettings))]
-    internal class StandardLiteConvertSettingsDrawer : PropertyDrawer
+    internal class StandardLiteConvertSettingsDrawer : MaterialConvertSettingsDrawerBase
     {
         /// <inheritdoc />
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            var height = 0.0f;
-            height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-            height += GetPropertyFieldsHeight(property);
-            return height;
-        }
+        protected override System.Type MaterialConvertSettingsType => typeof(StandardLiteConvertSettings);
 
         /// <inheritdoc />
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            using (new EditorGUI.PropertyScope(position, label, property))
-            {
-                var fieldRect = position;
-                fieldRect.height = EditorGUIUtility.singleLineHeight;
-
-                var selectedIndex = MaterialConvertSettingsTypes.Types.IndexOf(typeof(StandardLiteConvertSettings));
-                using (var ccs = new EditorGUI.ChangeCheckScope())
-                {
-                    selectedIndex = EditorGUI.Popup(fieldRect, label.text, selectedIndex, MaterialConvertSettingsTypes.GetConvertTypePopupLabels());
-                    if (ccs.changed)
-                    {
-                        var type = MaterialConvertSettingsTypes.Types[selectedIndex];
-                        property.managedReferenceValue = System.Activator.CreateInstance(type);
-                        return;
-                    }
-                }
-                fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-
-                DrawPorpertyFields(fieldRect, property);
-            }
-        }
-
-        /// <summary>
-        /// Draw property fields for StandardLiteConvertSettings.
-        /// </summary>
-        /// <param name="position">Position of property fields.</param>
-        /// <param name="property">Serialized property of StandardLiteConvertSettings.</param>
-        internal static void DrawPorpertyFields(Rect position, SerializedProperty property)
+        protected override Rect DrawPropertyFields(Rect position, SerializedProperty property)
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
 
             var fieldRect = position;
-            fieldRect.height = EditorGUIUtility.singleLineHeight;
 
             EditorGUI.indentLevel++;
 
@@ -87,14 +51,12 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
             EditorGUI.indentLevel--;
+
+            return fieldRect;
         }
 
-        /// <summary>
-        /// Get height of property fields for StandardLiteConvertSettings.
-        /// </summary>
-        /// <param name="property">Serialized property of StandardLiteConvertSettings.</param>
-        /// <returns>Height.</returns>
-        internal static float GetPropertyFieldsHeight(SerializedProperty property)
+        /// <inheritdoc />
+        protected override float GetPropertyFieldsHeight(SerializedProperty property)
         {
             var height = 0.0f;
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("generateQuestTextures"));
