@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-04-12 11:29\n"
+"PO-Revision-Date: 2025-05-06 18:42\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -51,6 +51,12 @@ msgstr "最大"
 
 msgid "IncompatibleSDK"
 msgstr "非対応の VRChat SDK です。報告をお願いします。"
+
+msgid "TextureFormatHighQuality"
+msgstr ""
+
+msgid "TextureFormatHighCompression"
+msgstr ""
 
 msgid "AvatarConverterSettingsEditorDescription"
 msgstr "このアバターを Android プラットフォームにアップロードできるように変換します。"
@@ -229,6 +235,9 @@ msgstr "手動変換では Unity Constraints が削除されます。アバタ�
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "最大テクスチャサイズ"
+
+msgid "IMaterialConvertSettingsMobileTextureFormatLabel"
+msgstr ""
 
 msgid "IMaterialConvertSettingsMainTextureBrightnessLabel"
 msgstr "メインテクスチャの明るさ"
@@ -556,6 +565,9 @@ msgstr "サイズ変更モード (Android)"
 
 msgid "MenuIconResizerEditorCompressTexturesLabel"
 msgstr "未圧縮のテクスチャを圧縮"
+
+msgid "MenuIconResizerEditorMobileTextureFormatLabel"
+msgstr ""
 
 msgid "AvatarBuilderWindowExitPlayMode"
 msgstr "アバターをビルドするには Play モードを終了してください。"
