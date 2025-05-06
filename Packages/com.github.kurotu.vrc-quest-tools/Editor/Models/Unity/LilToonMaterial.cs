@@ -130,6 +130,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             return newMaterial;
         }
 
+#pragma warning disable SA1648 // inheritdoc for interface methods
         /// <inheritdoc/>
         public AsyncCallbackRequest GenerateStandardLiteMain(StandardLiteConvertSettings settings, System.Action<Texture2D> completion)
         {
@@ -261,6 +262,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 completion?.Invoke(tex);
             });
         }
+#pragma warning restore SA1648 // inheritdoc for interface methods
 
         /// <inheritdoc/>
         internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
