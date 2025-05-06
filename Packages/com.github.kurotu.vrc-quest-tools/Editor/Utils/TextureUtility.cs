@@ -134,15 +134,16 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="path">Path to save.</param>
         /// <param name="texture">Texture to save.</param>
+        /// <param name="mobileFormat">Texture format for mobile build target.</param>
         /// <param name="isSRGB">Texture is sRGB.</param>
         /// <returns>Saved texture asset.</returns>
-        internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, bool isSRGB = true)
+        internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, TextureFormat? mobileFormat, bool isSRGB = true)
         {
             var src = texture.isReadable ? texture : CopyAsReadable(texture, isSRGB);
             var png = src.EncodeToPNG();
             File.WriteAllBytes(path, png);
             AssetDatabase.ImportAsset(path);
-            ConfigureTextureImporter(path, isSRGB);
+            ConfigureTextureImporter(path, mobileFormat, isSRGB);
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
@@ -150,8 +151,9 @@ namespace KRT.VRCQuestTools.Utils
         /// Configures TextureImporter for the texture.
         /// </summary>
         /// <param name="path">Texture path.</param>
+        /// <param name="mobileFormat">Texture format for mobile build target.</param>
         /// <param name="isSRGB">Texture is sRGB.</param>
-        internal static void ConfigureTextureImporter(string path, bool isSRGB = true)
+        internal static void ConfigureTextureImporter(string path, TextureFormat? mobileFormat, bool isSRGB = true)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.alphaSource = TextureImporterAlphaSource.FromInput;
@@ -161,6 +163,25 @@ namespace KRT.VRCQuestTools.Utils
             {
                 importer.streamingMipmaps = true;
             }
+            if (mobileFormat.HasValue)
+            {
+                var androidSettings = new TextureImporterPlatformSettings
+                {
+                    name = "Android",
+                    overridden = true,
+                    maxTextureSize = importer.maxTextureSize,
+                    format = (TextureImporterFormat)mobileFormat.Value,
+                };
+                var iosSettings = new TextureImporterPlatformSettings
+                {
+                    name = "iPhone",
+                    overridden = androidSettings.overridden,
+                    maxTextureSize = androidSettings.maxTextureSize,
+                    format = androidSettings.format,
+                };
+                importer.SetPlatformTextureSettings(androidSettings);
+                importer.SetPlatformTextureSettings(iosSettings);
+            }
             importer.SaveAndReimport();
         }
 
@@ -168,13 +189,33 @@ namespace KRT.VRCQuestTools.Utils
         /// Configure TextureImporter for normal map.
         /// </summary>
         /// <param name="path">Texture path.</param>
-        internal static void CongigureNormalMapImporter(string path)
+        /// <param name="mobileFormat">Texture format for mobile build target.</param>
+        internal static void ConfigureNormalMapImporter(string path, TextureFormat? mobileFormat)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.textureType = TextureImporterType.NormalMap;
             importer.alphaIsTransparency = false;
             importer.sRGBTexture = false;
             importer.mipmapEnabled = false;
+            if (mobileFormat.HasValue)
+            {
+                var androidSettings = new TextureImporterPlatformSettings
+                {
+                    name = "Android",
+                    overridden = true,
+                    maxTextureSize = importer.maxTextureSize,
+                    format = (TextureImporterFormat)mobileFormat.Value,
+                };
+                var iosSettings = new TextureImporterPlatformSettings
+                {
+                    name = "iPhone",
+                    overridden = androidSettings.overridden,
+                    maxTextureSize = androidSettings.maxTextureSize,
+                    format = androidSettings.format,
+                };
+                importer.SetPlatformTextureSettings(androidSettings);
+                importer.SetPlatformTextureSettings(iosSettings);
+            }
             importer.SaveAndReimport();
         }
 

@@ -71,7 +71,7 @@ namespace KRT.VRCQuestTools.Models
                 outFile = $"{texturesPath}/{texName}_from_{guid}.png";
             }
 
-            var cacheTexture = TryLoadCacheTexture(material, saveAsPng, texturesPath, config, cacheFile, outFile);
+            var cacheTexture = TryLoadCacheTexture(material, settings, saveAsPng, texturesPath, config, cacheFile, outFile);
             if (cacheTexture)
             {
                 cacheTexture.name = texName;
@@ -90,7 +90,7 @@ namespace KRT.VRCQuestTools.Models
             return request;
         }
 
-        private static Texture2D TryLoadCacheTexture(Material material, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile)
+        private static Texture2D TryLoadCacheTexture(Material material, IMaterialConvertSettings settings, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile)
         {
             using (var mutex = CacheManager.Texture.CreateMutex())
             {
@@ -108,11 +108,11 @@ namespace KRT.VRCQuestTools.Models
                                 AssetDatabase.ImportAsset(outFile);
                                 if (config.isNormalMap)
                                 {
-                                    TextureUtility.CongigureNormalMapImporter(outFile);
+                                    TextureUtility.ConfigureNormalMapImporter(outFile, (TextureFormat)settings.MobileTextureFormat);
                                 }
                                 else
                                 {
-                                    TextureUtility.ConfigureTextureImporter(outFile, config.isSRGB);
+                                    TextureUtility.ConfigureTextureImporter(outFile, (TextureFormat)settings.MobileTextureFormat, config.isSRGB);
                                 }
                                 var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
                                 return tex;
@@ -153,10 +153,10 @@ namespace KRT.VRCQuestTools.Models
                     var dir = Path.GetDirectoryName(outFile);
                     Directory.CreateDirectory(dir);
                 }
-                texToWrite = TextureUtility.SaveUncompressedTexture(outFile, texToWrite, config.isSRGB);
+                texToWrite = TextureUtility.SaveUncompressedTexture(outFile, texToWrite, (TextureFormat)mobileTextureFormat, config.isSRGB);
                 if (config.isNormalMap)
                 {
-                    TextureUtility.CongigureNormalMapImporter(outFile);
+                    TextureUtility.ConfigureNormalMapImporter(outFile, (TextureFormat)mobileTextureFormat);
                 }
                 CacheManager.Texture.CopyToCache(outFile, cacheFile);
             }
