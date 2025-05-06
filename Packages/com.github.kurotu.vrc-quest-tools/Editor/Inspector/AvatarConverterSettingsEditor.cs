@@ -30,7 +30,6 @@ namespace KRT.VRCQuestTools.Inspector
     {
         private AvatarConverterSettings converterSettings;
 
-        private I18nBase i18n;
         private AvatarConverterSettingsEditorState editorState;
 
         private ReorderableList additionalMaterialConvertSettingsReorderableList;
@@ -54,7 +53,7 @@ namespace KRT.VRCQuestTools.Inspector
         /// <inheritdoc/>
         public override void OnInspectorGUIInternal()
         {
-            i18n = VRCQuestToolsSettings.I18nResource;
+            var i18n = VRCQuestToolsSettings.I18nResource;
             if (editorState == null)
             {
                 editorState = AvatarConverterSettingsEditorState.instance;
@@ -361,6 +360,7 @@ namespace KRT.VRCQuestTools.Inspector
 
         private void AvatarDynamicsPerformanceGUI(AvatarPerformanceStats stats)
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             editorState.foldOutEstimatedPerf = EditorGUILayout.Foldout(editorState.foldOutEstimatedPerf, i18n.EstimatedPerformanceStats, true);
             var ratings = VRCSDKUtility.AvatarDynamicsPerformanceCategories.ToDictionary(x => x, stats.GetPerformanceRatingForCategory);
             var worst = ratings.Values.Max();
@@ -403,6 +403,7 @@ namespace KRT.VRCQuestTools.Inspector
 
         private void OnClickAttachNetworkIDAssignerButton(VRC_AvatarDescriptor descriptor)
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             descriptor.gameObject.AddComponent<NetworkIDAssigner>();
             PrefabUtility.RecordPrefabInstancePropertyModifications(descriptor.gameObject);
             EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NetworkIdAssignerAttached, "OK");
@@ -456,6 +457,7 @@ namespace KRT.VRCQuestTools.Inspector
 
         private void OnClickConvertButton(VRC_AvatarDescriptor avatar)
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
 #if VQT_HAS_MA_CONVERT_CONSTRAINTS
             if (new VRChatAvatar(avatar).HasUnityConstraints)
             {
@@ -470,19 +472,16 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 onTextureProgress = (total, index, material, _) =>
                 {
-                    var i18n = VRCQuestToolsSettings.I18nResource;
                     var progress = (float)index / total;
                     EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"{i18n.GeneratingTexturesDialogMessage} : {index + 1}/{total}", progress);
                 },
                 onAnimationClipProgress = (total, index, clip, _) =>
                 {
-                    var i18n = VRCQuestToolsSettings.I18nResource;
                     var progress = (float)index / total;
                     EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimationCilps : {index}/{total}", progress);
                 },
                 onRuntimeAnimatorProgress = (total, index, controller, _) =>
                 {
-                    var i18n = VRCQuestToolsSettings.I18nResource;
                     var progress = (float)index / total;
                     EditorUtility.DisplayProgressBar(VRCQuestTools.Name, $"Converting AnimatorControllers : {index + 1}/{total}", progress);
                 },
@@ -537,6 +536,7 @@ namespace KRT.VRCQuestTools.Inspector
 
         private void HandleConversionException(System.Exception exception)
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var message = i18n.AvatarConverterFailedDialogMessage;
             var dialogException = exception;
             Object context = null;

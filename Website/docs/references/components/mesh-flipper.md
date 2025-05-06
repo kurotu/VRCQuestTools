@@ -24,6 +24,30 @@ Select the mesh direction to generate.
 Selecting `Double Sided` will double the polygon count because the mesh's polygons are duplicated.
 :::
 
+### Use Mask
+
+#### Mask Texture
+
+Select a texture to specify the area to generate the mesh.
+Polygons that their three vertices are all specified by the mask texture are processed.
+
+#### Mask Mode
+
+Select whether to generate the mesh in the white or black area of the mask texture.
+
+### NDMF Phase
+
+Select when to generate the mesh during the NDMF build process.
+
+- `After Polygon Reduction`: Before other polygon reduction tools
+- `Before Polygon Reduction`: After other polygon reduction tools
+
+Following polygon reduction tools are considered for the order of processing.
+
+- [NDMF Mantis LOD Editor](https://hitsub.booth.pm/items/5409262)
+- [lilNDMFMeshSimplifier](https://github.com/lilxyzw/lilNDMFMeshSimplifier)
+- [Meshia Mesh Simplification](https://github.com/RamType0/Meshia.MeshSimplification)
+
 ### Enable on PC
 
 Enable this component when the build target is PC.
@@ -38,6 +62,8 @@ The VRCQuestTools plugin performs the following processes.
 
 ### Transforming Phase
 
-Geneates a new mesh for attached component's MeshFilter or SkinnedMeshRenderer.
+Geneates a new mesh for attached object's MeshFilter or SkinnedMeshRenderer when `NDMF Phase` is `Before Polygon Reduction`.
 
-This process is performed before NDMF Mantis LOD Editor.
+### Optimizing Phase
+
+Generates a new mesh for attached object's MeshFilter or SkinnedMeshRenderer when `NDMF Phase` is `After Polygon Reduction`.

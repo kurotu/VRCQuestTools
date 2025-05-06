@@ -13,7 +13,6 @@ namespace KRT.VRCQuestTools.Inspector
     [CustomEditor(typeof(MaterialConversionSettings))]
     internal class MaterialConversionSettingsEditor : VRCQuestToolsEditorOnlyEditorBase<MaterialConversionSettings>
     {
-        private I18nBase i18n = VRCQuestToolsSettings.I18nResource;
         private ReorderableList additionalMaterialConvertSettingsReorderableList;
 
         /// <inheritdoc/>
@@ -29,6 +28,7 @@ namespace KRT.VRCQuestTools.Inspector
         /// <inheritdoc />
         public override void OnInspectorGUIInternal()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             i18n = VRCQuestToolsSettings.I18nResource;
             var editorState = EditorState.instance;
 

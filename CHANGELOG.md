@@ -5,22 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.9.1] - 2025-05-06
+
+### Fixed
+- Material Replacement accidentally shown in the default material conversion settings.
+- [NDMF] Upload progress not properly reset when starting a new upload in `VQT Avatar Builder`.
+
+## [2.9.0] - 2025-04-28
 
 ### Added
 - Feature to check the installation of Android Build Support.
 - `Remove Avatar Dynamics` option to `VQT Avatar Converter Settings` component.
 - [NDMF] `VQT Material Conversion Settings` component to set material conversion settings.
 - [NDMF] Add `NDMF Phase` option to `VQT Mesh Flipper` component.
-    - Before Decimation
-    - After Decimation
-- [NDMF] NDMF Preview for `VQT Mesh Flipper`.
+    - Before Polygon Reduction
+    - After Polygon Reduction
+- [NDMF] NDMF Preview for `VQT Mesh Flipper` (disabled by default).
 
 ### Changed
 - [NDMF] `VQT Material Swap` works without `VQT Avatar Converter Settings`.
+- [NDMF] `VQT Mesh Flipper` works in the optimizing phase by default.
 
 ### Fixed
 - Inactive animator's animator controllers not converted.
+- Unexpected error logs in `VQT Avatar Converter Settings` inspector.
+- Avatar conversion error when a Mesh Filter is not attached to a Mesh Renderer game object.
 
 ## [2.8.3] - 2025-04-08
 

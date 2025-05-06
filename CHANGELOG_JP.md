@@ -4,22 +4,31 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.9.1] - 2025-05-06
+
+### 修正
+- デフォルトのマテリアル変換設定にマテリアル置換が誤って表示される問題を修正。
+- [NDMF] `VQT Avatar Builder` でアップロード開始時にアップロード進捗が初期化されない問題を修正。
+
+## [2.9.0] - 2025-04-28
 
 ### 追加
 - Android Build Support のインストールを確認する機能を追加。
 - `Avatar Dynamics を削除` 設定を `VQT Avatar Converter Settings` に追加。
 - [NDMF] マテリアルの変換設定を保持する `VQT Material Conversion Settings` コンポーネントを追加。
 - [NDMF] `VQT Mesh Flipper` に `NDMFフェーズ` 設定を追加。
-    - Before Decimation
-    - After Decimation
-- [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応。
+    - Before Polygon Reduction
+    - After Polygon Reduction
+- [NDMF] `VQT Mesh Flipper` を NDMF Preview に対応 (デフォルトで無効)。
 
 ### 変更
 - [NDMF] `VQT Material Swap` が `VQT Avatar Converter Settings` なしでも動作するように変更。
+- [NDMF] `VQT Mesh Flipper` がデフォルトで Optimizing Phase で動作するように変更。
 
 ### 修正
 - 非アクティブな Animator の Animator Controller が変換されない問題を修正。
+- `VQT Avatar Converter Settings` のインスペクターでエラーログが表示されることがある問題を修正。
+- Mesh Filter がアタッチされていない Mesh Renderer があるとアバターの変換時にエラーが発生する問題を修正。
 
 ## [2.8.3] - 2025-04-08
 

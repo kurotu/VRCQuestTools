@@ -42,14 +42,14 @@ namespace KRT.VRCQuestTools.Components
     public enum MeshFlipperProcessingPhase
     {
         /// <summary>
-        /// Before other decimation tools..
+        /// Before other polygon reduction tools.
         /// </summary>
-        BeforeDecimation,
+        BeforePolygonReduction,
 
         /// <summary>
-        /// After other decimation tools.
+        /// After other polygon reduction tools.
         /// </summary>
-        AfterDecimation,
+        AfterPolygonReduction,
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// Processing phase of the mesh.
         /// </summary>
-        public MeshFlipperProcessingPhase processingPhase = MeshFlipperProcessingPhase.BeforeDecimation;
+        public MeshFlipperProcessingPhase processingPhase = MeshFlipperProcessingPhase.AfterPolygonReduction;
 
         /// <summary>
         /// Get shared mesh of the component.

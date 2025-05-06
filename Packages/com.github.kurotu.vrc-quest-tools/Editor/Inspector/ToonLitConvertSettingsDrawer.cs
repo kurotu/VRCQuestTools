@@ -8,48 +8,13 @@ namespace KRT.VRCQuestTools.Inspector
     /// PrpertyDrawer for ToonLitConvertSetting.
     /// </summary>
     [CustomPropertyDrawer(typeof(ToonLitConvertSettings))]
-    internal class ToonLitConvertSettingsDrawer : PropertyDrawer
+    internal class ToonLitConvertSettingsDrawer : MaterialConvertSettingsDrawerBase
     {
-        /// <inheritdoc />
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            var height = 0.0f;
-            height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-            height += GetPropertyFieldsHeight(property);
-            return height;
-        }
+        /// <inheritdoc/>
+        protected override System.Type MaterialConvertSettingsType => typeof(ToonLitConvertSettings);
 
-        /// <inheritdoc />
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            using (new EditorGUI.PropertyScope(position, label, property))
-            {
-                var fieldRect = position;
-                fieldRect.height = EditorGUIUtility.singleLineHeight;
-
-                var selectedIndex = MaterialConvertSettingsTypes.Types.IndexOf(typeof(ToonLitConvertSettings));
-                using (var ccs = new EditorGUI.ChangeCheckScope())
-                {
-                    selectedIndex = EditorGUI.Popup(fieldRect, label.text, selectedIndex, MaterialConvertSettingsTypes.GetConvertTypePopupLabels());
-                    if (ccs.changed)
-                    {
-                        var type = MaterialConvertSettingsTypes.Types[selectedIndex];
-                        property.managedReferenceValue = System.Activator.CreateInstance(type);
-                        return;
-                    }
-                }
-                fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-
-                DrawPorpertyFields(fieldRect, property);
-            }
-        }
-
-        /// <summary>
-        /// Draw property fields for ToonLitConvertSettings.
-        /// </summary>
-        /// <param name="position">Position of property fields.</param>
-        /// <param name="property">Serialized property of ToonLitConvertSettings.</param>
-        internal static void DrawPorpertyFields(Rect position, SerializedProperty property)
+        /// <inheritdoc/>
+        protected override Rect DrawPropertyFields(Rect position, SerializedProperty property)
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
 
@@ -74,14 +39,12 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
             EditorGUI.indentLevel--;
+
+            return fieldRect;
         }
 
-        /// <summary>
-        /// Get height of property fields for ToonLitConvertSettings.
-        /// </summary>
-        /// <param name="property">Serialized property of ToonLitConvertSettings.</param>
-        /// <returns>Height.</returns>
-        internal static float GetPropertyFieldsHeight(SerializedProperty property)
+        /// <inheritdoc/>
+        protected override float GetPropertyFieldsHeight(SerializedProperty property)
         {
             var height = 0.0f;
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("generateQuestTextures"));
