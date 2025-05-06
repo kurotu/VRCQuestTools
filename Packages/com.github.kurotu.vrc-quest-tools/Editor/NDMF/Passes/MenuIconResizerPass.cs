@@ -65,7 +65,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     return true;
                 }
-                if (compressTextures && AssetUtility.IsUncompressedFormat(texture.format))
+                if (compressTextures && TextureUtility.IsUncompressedFormat(texture.format))
                 {
                     return true;
                 }
@@ -84,7 +84,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
             VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, maxSize, compressTextures, (oldTex, newTex) =>
             {
-                AssetUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget);
+                TextureUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget);
                 objectRegistry.RegisterReplacedObject(oldTex, newTex);
             });
         }

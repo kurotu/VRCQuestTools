@@ -137,7 +137,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             var textureSize = System.Math.Min(rt.width, (int)settings.maxTextureSize);
             var rt2 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
-            AssetUtility.DownscaleBlit(rt, true, rt2);
+            TextureUtility.DownscaleBlit(rt, true, rt2);
 
             var rt3 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
             var scaler = new Material(Shader.Find("Hidden/VRCQuestTools/ValueScaler"));
@@ -164,7 +164,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             scaler.SetFloat("_ScaleB", brightness);
             Graphics.Blit(rt2, rt3, scaler);
 
-            return AssetUtility.RequestReadbackRenderTexture(rt3, true, (tex) =>
+            return TextureUtility.RequestReadbackRenderTexture(rt3, true, (tex) =>
             {
                 Object.DestroyImmediate(rt);
                 Object.DestroyImmediate(scaler);
@@ -194,7 +194,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             };
             var rt = RenderTexture.GetTemporary(desc);
             Graphics.Blit(null, rt, bakeMat);
-            return AssetUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
+            return TextureUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
             {
                 RenderTexture.ReleaseTemporary(rt);
                 Object.DestroyImmediate(bakeMat);
@@ -211,74 +211,9 @@ namespace KRT.VRCQuestTools.Models.Unity
             var mainTexSize = hasMainTex ? Material.mainTexture.width : (int)settings.maxTextureSize;
             var textureSize = System.Math.Min(mainTexSize, (int)settings.maxTextureSize);
 
-            var newNormal = DownscaleNormalMapGPU(normal, outputRGB, textureSize, textureSize);
+            var newNormal = TextureUtility.DownscaleNormalMap(normal, outputRGB, textureSize, textureSize);
 
             return new ResultRequest<Texture2D>(newNormal, completion);
-        }
-
-        /// <summary>
-        /// Downscale normal map using compute shader.
-        /// </summary>
-        /// <param name="source">Source texture.</param>
-        /// <param name="outputRGB">Output is RGB format.</param>
-        /// <param name="targetWidth">Target width.</param>
-        /// <param name="targetHeight">Target height.</param>
-        /// <returns>Generated normal map.</returns>
-        public static Texture2D DownscaleNormalMapGPU(Texture2D source, bool outputRGB, int targetWidth, int targetHeight)
-        {
-            var raFomrats = new TextureFormat[]
-            {
-                TextureFormat.DXT5,
-                TextureFormat.DXT5Crunched,
-                TextureFormat.BC7,
-            };
-            var inputRGB = !raFomrats.Contains(source.format);
-
-            // ì¸óÕÇ∆èoóÕÇÃRenderTexture
-            var d = new RenderTextureDescriptor(source.width, source.height, RenderTextureFormat.ARGB32)
-            {
-                useMipMap = false,
-                sRGB = false,
-                depthBufferBits = 0,
-                enableRandomWrite = true,
-            };
-            RenderTexture srcRT = RenderTexture.GetTemporary(d);
-            srcRT.Create();
-            Graphics.Blit(source, srcRT);
-
-            d.width = targetWidth;
-            d.height = targetHeight;
-            RenderTexture dstRT = RenderTexture.GetTemporary(d);
-            dstRT.Create();
-
-            // ComputeShader
-            var shaderGUID = "dfdb9399f59780a47b40e0be254b49af";
-            var path = AssetDatabase.GUIDToAssetPath(shaderGUID);
-            var computeShader = AssetDatabase.LoadAssetAtPath<ComputeShader>(path);
-
-            int kernel = computeShader.FindKernel("CSMain");
-            computeShader.SetTexture(kernel, "_Input", srcRT);
-            computeShader.SetTexture(kernel, "_Result", dstRT);
-            computeShader.SetBool("_InputRGB", inputRGB);
-            computeShader.SetInts("_InputSize", source.width, source.height);
-            computeShader.SetInts("_OutputSize", targetWidth, targetHeight);
-
-            int threadGroupsX = Mathf.CeilToInt(targetWidth / 8.0f);
-            int threadGroupsY = Mathf.CeilToInt(targetHeight / 8.0f);
-            computeShader.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
-
-            // åãâ ÇTexture2DÇ…ïœä∑
-            var prevActive = RenderTexture.active;
-            RenderTexture.active = dstRT;
-            Texture2D result = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false, true);
-            result.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
-            result.Apply();
-            RenderTexture.active = prevActive;
-
-            RenderTexture.ReleaseTemporary(srcRT);
-            RenderTexture.ReleaseTemporary(dstRT);
-
-            return result;
         }
 
         /// <inheritdoc/>
@@ -319,7 +254,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             var rt = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(null, rt, bakeMat);
-            return AssetUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
+            return TextureUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
             {
                 RenderTexture.ReleaseTemporary(rt);
                 Object.DestroyImmediate(bakeMat);
@@ -483,11 +418,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                 // Texture bufMainTexture = mainTex.textureValue;
                 Material hsvgMaterial = new Material(ltsbaker);
 
-                Texture srcTexture = AssetUtility.CreateMinimumEmptyTexture();
-                Texture srcMain2 = AssetUtility.CreateMinimumEmptyTexture();
-                Texture srcMain3 = AssetUtility.CreateMinimumEmptyTexture();
-                Texture srcMask2 = AssetUtility.CreateMinimumEmptyTexture();
-                Texture srcMask3 = AssetUtility.CreateMinimumEmptyTexture();
+                Texture srcTexture = TextureUtility.CreateMinimumEmptyTexture();
+                Texture srcMain2 = TextureUtility.CreateMinimumEmptyTexture();
+                Texture srcMain3 = TextureUtility.CreateMinimumEmptyTexture();
+                Texture srcMask2 = TextureUtility.CreateMinimumEmptyTexture();
+                Texture srcMask3 = TextureUtility.CreateMinimumEmptyTexture();
 
                 CopyMaterialProperty(hsvgMaterial, material, mainColor);
                 CopyMaterialProperty(hsvgMaterial, material, mainTexHSVG);
@@ -500,14 +435,14 @@ namespace KRT.VRCQuestTools.Models.Unity
                     CopyMaterialProperty(hsvgMaterial, material, mainGradationTex);
                 }
 
-                srcTexture = AssetUtility.LoadUncompressedTexture(material.GetTexture(mainTex.name));
+                srcTexture = TextureUtility.LoadUncompressedTexture(material.GetTexture(mainTex.name));
                 if (srcTexture != null)
                 {
                     hsvgMaterial.SetTexture(mainTex.name, srcTexture);
                 }
                 else
                 {
-                    srcTexture = AssetUtility.CreateMinimumEmptyTexture();
+                    srcTexture = TextureUtility.CreateMinimumEmptyTexture();
                     hsvgMaterial.SetTexture(mainTex.name, Texture2D.whiteTexture);
                 }
 
@@ -530,26 +465,26 @@ namespace KRT.VRCQuestTools.Models.Unity
                     hsvgMaterial.SetTextureScale(main2ndBlendMask.name, material.GetTextureScale(main2ndBlendMask.name));
 
                     Object.DestroyImmediate(srcMain2);
-                    srcMain2 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main2ndTex.name));
+                    srcMain2 = TextureUtility.LoadUncompressedTexture(material.GetTexture(main2ndTex.name));
                     if (srcMain2 != null)
                     {
                         hsvgMaterial.SetTexture(main2ndTex.name, srcMain2);
                     }
                     else
                     {
-                        srcMain2 = AssetUtility.CreateMinimumEmptyTexture();
+                        srcMain2 = TextureUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main2ndTex.name, Texture2D.whiteTexture);
                     }
 
                     Object.DestroyImmediate(srcMask2);
-                    srcMask2 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main2ndBlendMask.name));
+                    srcMask2 = TextureUtility.LoadUncompressedTexture(material.GetTexture(main2ndBlendMask.name));
                     if (srcMask2 != null)
                     {
                         hsvgMaterial.SetTexture(main2ndBlendMask.name, srcMask2);
                     }
                     else
                     {
-                        srcMask2 = AssetUtility.CreateMinimumEmptyTexture();
+                        srcMask2 = TextureUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main2ndBlendMask.name, Texture2D.whiteTexture);
                     }
                 }
@@ -573,26 +508,26 @@ namespace KRT.VRCQuestTools.Models.Unity
                     hsvgMaterial.SetTextureScale(main3rdBlendMask.name, material.GetTextureScale(main3rdBlendMask.name));
 
                     Object.DestroyImmediate(srcMain3);
-                    srcMain3 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main3rdTex.name));
+                    srcMain3 = TextureUtility.LoadUncompressedTexture(material.GetTexture(main3rdTex.name));
                     if (srcMain3 != null)
                     {
                         hsvgMaterial.SetTexture(main3rdTex.name, srcMain3);
                     }
                     else
                     {
-                        srcMain3 = AssetUtility.CreateMinimumEmptyTexture();
+                        srcMain3 = TextureUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main3rdTex.name, Texture2D.whiteTexture);
                     }
 
                     Object.DestroyImmediate(srcMask3);
-                    srcMask3 = AssetUtility.LoadUncompressedTexture(material.GetTexture(main3rdBlendMask.name));
+                    srcMask3 = TextureUtility.LoadUncompressedTexture(material.GetTexture(main3rdBlendMask.name));
                     if (srcMask3 != null)
                     {
                         hsvgMaterial.SetTexture(main3rdBlendMask.name, srcMask3);
                     }
                     else
                     {
-                        srcMask3 = AssetUtility.CreateMinimumEmptyTexture();
+                        srcMask3 = TextureUtility.CreateMinimumEmptyTexture();
                         hsvgMaterial.SetTexture(main3rdBlendMask.name, Texture2D.whiteTexture);
                     }
                 }
@@ -631,7 +566,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             if (!shaderSetting.LIL_FEATURE_EMISSION_1ST && !shaderSetting.LIL_FEATURE_EMISSION_2ND)
             {
-                return AssetUtility.RequestReadbackRenderTexture(main, true, (baked) =>
+                return TextureUtility.RequestReadbackRenderTexture(main, true, (baked) =>
                 {
                     baked.filterMode = FilterMode.Bilinear;
                 });
@@ -646,12 +581,12 @@ namespace KRT.VRCQuestTools.Models.Unity
             var emission2ndGradTex = MaterialEditor.GetMaterialProperty(mats, "_Emission2ndGradTex");
 
             using (var baker = DisposableObject.New(Object.Instantiate(material)))
-            using (var srcEmissionMap = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emissionMap.textureValue)))
-            using (var srcEmissionBlendMask = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emissionBlendMask.textureValue)))
-            using (var srcEmissionGradTex = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emissionGradTex.textureValue)))
-            using (var srcEmission2ndMap = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndMap.textureValue)))
-            using (var srcEmission2ndBlendMask = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndBlendMask.textureValue)))
-            using (var srcEmission2ndGradTex = DisposableObject.New(AssetUtility.LoadUncompressedTexture(emission2ndGradTex.textureValue)))
+            using (var srcEmissionMap = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emissionMap.textureValue)))
+            using (var srcEmissionBlendMask = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emissionBlendMask.textureValue)))
+            using (var srcEmissionGradTex = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emissionGradTex.textureValue)))
+            using (var srcEmission2ndMap = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emission2ndMap.textureValue)))
+            using (var srcEmission2ndBlendMask = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emission2ndBlendMask.textureValue)))
+            using (var srcEmission2ndGradTex = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emission2ndGradTex.textureValue)))
             {
                 var lilBaker = Shader.Find("Hidden/VRCQuestTools/lilToon");
 #if UNITY_2022_1_OR_NEWER
@@ -678,7 +613,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
-                return AssetUtility.BakeTexture(main, baker.Object, width, height, true, completion);
+                return TextureUtility.BakeTexture(main, baker.Object, width, height, true, completion);
             }
         }
 

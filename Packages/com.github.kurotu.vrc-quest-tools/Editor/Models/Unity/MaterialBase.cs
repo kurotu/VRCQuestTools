@@ -106,16 +106,16 @@ namespace KRT.VRCQuestTools.Models.Unity
                     {
                         continue;
                     }
-                    if (AssetUtility.IsNormalMapAsset(t))
+                    if (TextureUtility.IsNormalMapAsset(t))
                     {
                         continue;
                     }
-                    var tex = AssetUtility.LoadUncompressedTexture(t);
+                    var tex = TextureUtility.LoadUncompressedTexture(t);
                     disposables.Add(DisposableObject.New(tex));
                     baker.Object.SetTexture(name, tex);
                 }
 
-                return AssetUtility.BakeTexture(mainTexture, true, baker.Object, width, height, true, completion);
+                return TextureUtility.BakeTexture(mainTexture, true, baker.Object, width, height, true, completion);
             }
         }
     }

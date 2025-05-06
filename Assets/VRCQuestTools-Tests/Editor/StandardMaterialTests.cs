@@ -162,7 +162,7 @@ namespace KRT.VRCQuestTools
             Texture2D texObj = null;
             wrapper.GenerateToonLitImage(setting, (t) => { texObj = t; }).WaitForCompletion();
             using (var tex = DisposableObject.New(texObj))
-            using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(Color.red)))
+            using (var original = DisposableObject.New(TextureUtility.CreateColorTexture(Color.red)))
             {
                 Assert.Less(TestUtils.MaxDifference(tex.Object, original.Object), Threshold);
             }
@@ -187,7 +187,7 @@ namespace KRT.VRCQuestTools
             Texture2D texObj = null;
             wrapper.GenerateToonLitImage(setting, (t) => { texObj = t; }).WaitForCompletion();
             using (var tex = DisposableObject.New(texObj))
-            using (var original = DisposableObject.New(AssetUtility.CreateColorTexture(new Color32(0, 0, 0, 0), 256, 256)))
+            using (var original = DisposableObject.New(TextureUtility.CreateColorTexture(new Color32(0, 0, 0, 0), 256, 256)))
             {
                 Assert.Less(TestUtils.MaxDifference(tex.Object, original.Object), Threshold);
             }

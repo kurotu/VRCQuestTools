@@ -41,9 +41,9 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 try
                 {
-                    if (!AssetUtility.IsSupportedTextureFormat(texture.format, EditorUserBuildSettings.activeBuildTarget))
+                    if (!TextureUtility.IsSupportedTextureFormat(texture.format, EditorUserBuildSettings.activeBuildTarget))
                     {
-                        if (AssetUtility.IsKnownTextureFormat(texture.format))
+                        if (TextureUtility.IsKnownTextureFormat(texture.format))
                         {
                             unsupportedTextures.Add(texture);
                         }

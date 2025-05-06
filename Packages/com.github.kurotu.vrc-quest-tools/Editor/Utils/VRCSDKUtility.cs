@@ -798,7 +798,7 @@ namespace KRT.VRCQuestTools.Utils
                     else if (control.icon != null)
                     {
                         var icon = control.icon;
-                        var needToCompress = compressTextures && AssetUtility.IsUncompressedFormat(icon.format);
+                        var needToCompress = compressTextures && TextureUtility.IsUncompressedFormat(icon.format);
                         if (resizedTextures.ContainsKey(icon))
                         {
                             control.icon = resizedTextures[icon];
@@ -807,7 +807,7 @@ namespace KRT.VRCQuestTools.Utils
                         {
                             var newWidth = Math.Min(maxSize, icon.width);
                             var newHeight = Math.Min(maxSize, icon.height);
-                            var request = AssetUtility.ResizeTexture(icon, true, newWidth, newHeight, (newIcon) =>
+                            var request = TextureUtility.ResizeTexture(icon, true, newWidth, newHeight, (newIcon) =>
                             {
                                 newIcon.name = icon.name + " (VQT Resize)";
                                 control.icon = newIcon;

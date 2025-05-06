@@ -73,7 +73,7 @@ namespace KRT.VRCQuestTools.Utils
                 callbackCalled = true;
                 Assert.LessOrEqual(newTex.width, newSize);
                 Assert.LessOrEqual(newTex.height, newSize);
-                Assert.IsTrue(AssetUtility.IsUncompressedFormat(newTex.format));
+                Assert.IsTrue(TextureUtility.IsUncompressedFormat(newTex.format));
             });
             Assert.IsTrue(callbackCalled);
         }

@@ -108,11 +108,11 @@ namespace KRT.VRCQuestTools.Models
                                 AssetDatabase.ImportAsset(outFile);
                                 if (config.isNormalMap)
                                 {
-                                    AssetUtility.CongigureNormalMapImporter(outFile);
+                                    TextureUtility.CongigureNormalMapImporter(outFile);
                                 }
                                 else
                                 {
-                                    AssetUtility.ConfigureTextureImporter(outFile, config.isSRGB);
+                                    TextureUtility.ConfigureTextureImporter(outFile, config.isSRGB);
                                 }
                                 var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
                                 return tex;
@@ -121,7 +121,7 @@ namespace KRT.VRCQuestTools.Models
                             {
                                 var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
                                 var tex = cache.ToTexture2D();
-                                AssetUtility.SetStreamingMipMaps(tex, true);
+                                TextureUtility.SetStreamingMipMaps(tex, true);
                                 return tex;
                             }
                         }
@@ -153,23 +153,23 @@ namespace KRT.VRCQuestTools.Models
                     var dir = Path.GetDirectoryName(outFile);
                     Directory.CreateDirectory(dir);
                 }
-                texToWrite = AssetUtility.SaveUncompressedTexture(outFile, texToWrite, config.isSRGB);
+                texToWrite = TextureUtility.SaveUncompressedTexture(outFile, texToWrite, config.isSRGB);
                 if (config.isNormalMap)
                 {
-                    AssetUtility.CongigureNormalMapImporter(outFile);
+                    TextureUtility.CongigureNormalMapImporter(outFile);
                 }
                 CacheManager.Texture.CopyToCache(outFile, cacheFile);
             }
             else
             {
-                AssetUtility.SetStreamingMipMaps(texToWrite, true);
+                TextureUtility.SetStreamingMipMaps(texToWrite, true);
                 if (config.isNormalMap)
                 {
-                    texToWrite = AssetUtility.CompressNormalMap(texToWrite);
+                    texToWrite = TextureUtility.CompressNormalMap(texToWrite);
                 }
                 else
                 {
-                    AssetUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
+                    TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget);
                 }
                 CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap)));
             }

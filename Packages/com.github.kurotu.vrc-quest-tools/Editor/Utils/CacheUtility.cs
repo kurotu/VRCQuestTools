@@ -126,7 +126,7 @@ namespace KRT.VRCQuestTools.Utils
             private Texture2D CreateCompressedNormalMap(int width, int height)
             {
                 var tex = new Texture2D(width, height, format, mipmap, linear);
-                return AssetUtility.CompressNormalMap(tex, true);
+                return TextureUtility.CompressNormalMap(tex, true);
             }
         }
     }

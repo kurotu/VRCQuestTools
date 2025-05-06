@@ -25,7 +25,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void LoadUncompressedPng()
         {
-            using (var png = new DisposableObject<Texture2D>(AssetUtility.LoadUncompressedTexture(albedo1024pxPngPath, true)))
+            using (var png = new DisposableObject<Texture2D>(TextureUtility.LoadUncompressedTexture(albedo1024pxPngPath, true)))
             {
                 Assert.IsEmpty(AssetDatabase.GetAssetPath(png.Object));
                 Assert.AreEqual(1024, png.Object.width);
@@ -39,8 +39,8 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void LoadUncompressedPsd()
         {
-            using (var png = new DisposableObject<Texture2D>(AssetUtility.LoadUncompressedTexture(albedo1024pxPngPath, true)))
-            using (var psd = new DisposableObject<Texture2D>(AssetUtility.LoadUncompressedTexture(albedo1024pxPsdPath, true)))
+            using (var png = new DisposableObject<Texture2D>(TextureUtility.LoadUncompressedTexture(albedo1024pxPngPath, true)))
+            using (var psd = new DisposableObject<Texture2D>(TextureUtility.LoadUncompressedTexture(albedo1024pxPsdPath, true)))
             {
                 var pngPixels = png.Object.GetPixels32();
                 var psdPixels = psd.Object.GetPixels32();
@@ -55,8 +55,8 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void LoadUncompressedTgaOrigin()
         {
-            using (var originLeftBottom = new DisposableObject<Texture2D>(AssetUtility.LoadUncompressedTexture(originLeftBottomTgaPath, true)))
-            using (var originLeftTop = new DisposableObject<Texture2D>(AssetUtility.LoadUncompressedTexture(originLeftTopTgaPath, true)))
+            using (var originLeftBottom = new DisposableObject<Texture2D>(TextureUtility.LoadUncompressedTexture(originLeftBottomTgaPath, true)))
+            using (var originLeftTop = new DisposableObject<Texture2D>(TextureUtility.LoadUncompressedTexture(originLeftTopTgaPath, true)))
             {
                 Assert.AreEqual(originLeftBottom.Object.GetPixels32(), originLeftTop.Object.GetPixels32());
             }
@@ -68,8 +68,8 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void LoadUncompressedTga()
         {
-            using (var png = new DisposableObject<Texture2D>(AssetUtility.LoadUncompressedTexture(albedo1024pxPngPath, true)))
-            using (var tga = new DisposableObject<Texture2D>(AssetUtility.LoadUncompressedTexture(originLeftBottomTgaPath, true)))
+            using (var png = new DisposableObject<Texture2D>(TextureUtility.LoadUncompressedTexture(albedo1024pxPngPath, true)))
+            using (var tga = new DisposableObject<Texture2D>(TextureUtility.LoadUncompressedTexture(originLeftBottomTgaPath, true)))
             {
                 var pngPixels = png.Object.GetPixels32();
                 var tgaPixels = tga.Object.GetPixels32();
