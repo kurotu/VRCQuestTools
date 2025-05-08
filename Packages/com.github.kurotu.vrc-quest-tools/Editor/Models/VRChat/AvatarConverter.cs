@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.ScriptedAssets;
 using KRT.VRCQuestTools.Utils;
 #if VQT_HAS_MODULAR_AVATAR
 using nadena.dev.modular_avatar.core;
@@ -837,7 +838,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     AssetDatabase.Refresh();
 
                     AssetDatabase.TryGetGUIDAndLocalFileIdentifier(originalMesh, out string guid, out long localId);
-                    var outFile = $"{saveDirectory}/{newMesh.name}_from_{guid}.asset";
+                    var outFile = $"{saveDirectory}/{newMesh.name}_from_{guid}.mesh.vqt";
 
                     // When the mesh is added into another asset, "/" is acceptable as name.
                     if (newMesh.name.Contains("/"))
@@ -845,7 +846,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         var dir = Path.GetDirectoryName(outFile);
                         Directory.CreateDirectory(dir);
                     }
-                    newMesh = AssetUtility.CreateAsset(newMesh, outFile);
+                    //newMesh = AssetUtility.CreateAsset(newMesh, outFile);
+                    var unsavedMesh = newMesh;
+                    newMesh = CompressedMeshImporter.SaveAsAsset(unsavedMesh, outFile);
+                    UnityEngine.Object.DestroyImmediate(unsavedMesh);
                 }
                 if (isModified)
                 {
