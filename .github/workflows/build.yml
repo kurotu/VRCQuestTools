@@ -67,6 +67,9 @@ jobs:
           # Local-only Contact Receiver
           - unityVersion: 2022.3.22f1
             vrcsdkVersion: 3.7.5
+          # Toon Standard
+          - unityVersion: 2022.3.22f1
+            vrcsdkVersion: 3.8.1-beta.3
         ndmfVersion:
           - ''
           - 1.2.5 # Befor Error report
