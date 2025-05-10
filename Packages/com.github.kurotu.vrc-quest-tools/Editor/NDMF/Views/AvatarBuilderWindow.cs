@@ -207,6 +207,18 @@ namespace KRT.VRCQuestTools.Ndmf
 
             var i18n = VRCQuestToolsSettings.I18nResource;
 
+#if VQT_HAS_VRCSDK_NO_PRECHECK
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion2, MessageType.Info);
+                if (GUILayout.Button(i18n.CloseLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                {
+                    Close();
+                }
+            }
+            EditorGUILayout.Space();
+#endif
+
             if (IsPlayMode)
             {
                 EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowExitPlayMode, MessageType.Warning);

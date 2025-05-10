@@ -39,6 +39,11 @@
             "define": "VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER"
         },
         {
+            "name": "com.vrchat.avatars",
+            "expression": "3.8.1-beta.1",
+            "define": "VQT_HAS_VRCSDK_NO_PRECHECK"
+        },
+        {
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "VQT_HAS_NEWTONSOFT_JSON"

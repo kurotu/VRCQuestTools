@@ -149,6 +149,9 @@ msgstr "The replacement material is not allowed for mobile avatars. Aborted."
 msgid "InfoForNdmfConversion"
 msgstr "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Please use the Avatar Builder to avoid VRChat SDK limitation."
 
+msgid "InfoForNdmfConversion2"
+msgstr "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Now you can directly upload the avatar from VRChat SDK Control Panel."
+
 msgid "InfoForNetworkIdAssigner"
 msgstr "You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again to apply IDs after attaching the component."
 
