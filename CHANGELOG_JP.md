@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 変更
+- [NDMF] `VQT Avatar Builder` でのアップロード時に Copyright ownership agreement を確認するメッセージの表示タイミングを VRCSDK 3.8.1-beta.2 以降で調整。
+
 ## [2.9.1] - 2025-05-06
 
 ### 修正

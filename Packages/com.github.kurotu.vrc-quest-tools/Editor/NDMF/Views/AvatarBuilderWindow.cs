@@ -24,6 +24,8 @@ namespace KRT.VRCQuestTools.Ndmf
     /// </summary>
     internal class AvatarBuilderWindow : EditorWindow
     {
+        private const string SdkBuildProgressStartingBuild = "Building Avatar";
+
         private IVRCSdkAvatarBuilderApi sdkBuilder;
         private VRC_AvatarDescriptor targetAvatar;
         private string targetBlueprintId;
@@ -91,6 +93,10 @@ namespace KRT.VRCQuestTools.Ndmf
                     return false;
                 }
                 if (IsBuilding)
+                {
+                    return false;
+                }
+                if (sdkBuildProgress == SdkBuildProgressStartingBuild)
                 {
                     return false;
                 }
@@ -472,16 +478,26 @@ namespace KRT.VRCQuestTools.Ndmf
                 EditorGUILayout.LabelField(i18n.AvatarBuilderWindowBuildingProgressLabel, EditorStyles.largeLabel);
                 EditorGUI.ProgressBar(EditorGUILayout.GetControlRect(), progress, sdkBuildProgress);
             }
+#if VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT_2
+            else
+            {
+                if (sdkBuildProgress == SdkBuildProgressStartingBuild)
+                {
+                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowCopyrightAgreementHelp, MessageType.Warning);
+                }
+            }
+#endif
 
             if (sdkBuilder.UploadState != SdkUploadState.Idle)
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField(i18n.AvatarBuilderWindowUploadingProgressLabel, EditorStyles.largeLabel);
                 EditorGUI.ProgressBar(EditorGUILayout.GetControlRect(), sdkUploadProgress.Percentage, sdkUploadProgress.Status);
-#if VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT
+#if VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT && !VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT_2
                 // awaiting copyright ownership agreement
-                if (sdkUploadProgress.Percentage == 0.0f && sdkUploadProgress.Status == "") {
-                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowCopyrightAgreementHelp, MessageType.Info);
+                if (sdkUploadProgress.Percentage == 0.0f && sdkUploadProgress.Status == "")
+                {
+                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowCopyrightAgreementHelp, MessageType.Warning);
                 }
 #endif
             }
@@ -612,7 +628,7 @@ namespace KRT.VRCQuestTools.Ndmf
             lastException = null;
             buildSecceeded = false;
             uploadSecceeded = false;
-            sdkBuildProgress = "Building Avatar";
+            sdkBuildProgress = SdkBuildProgressStartingBuild;
             sdkUploadProgress = (string.Empty, 0.0f);
         }
 
