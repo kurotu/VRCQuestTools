@@ -2,6 +2,7 @@ using System;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models
 {
@@ -40,7 +41,8 @@ namespace KRT.VRCQuestTools.Models
                 };
                 return new ToonLitGenerator(toonLitConvertSettings).GenerateMaterial(material, buildTarget, saveTextureAsPng, texturesPath, (newMat) =>
                 {
-                    var newMaterial = new ToonStandardMaterialWrapper(new Material(Shader.Find("VRChat/Mobile/Toon Standard")));
+                    var newMaterial = new ToonStandardMaterialWrapper();
+                    newMaterial.Name = material.Material.name;
                     newMaterial.MainTexture = newMat.mainTexture;
                     completion?.Invoke(newMaterial);
                 });
@@ -49,7 +51,8 @@ namespace KRT.VRCQuestTools.Models
             ToonStandardMaterialWrapper newMaterial;
             if (settings.generateQuestTextures)
             {
-                newMaterial = new ToonStandardMaterialWrapper(new Material(Shader.Find("VRChat/Mobile/Toon Standard")));
+                newMaterial = new ToonStandardMaterialWrapper();
+                newMaterial.Name = material.Material.name;
                 if (GetUseMainTexture())
                 {
                     MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "main", saveTextureAsPng, texturesPath, (compl) => GenerateMainTexture(compl), (t) =>
@@ -219,7 +222,7 @@ namespace KRT.VRCQuestTools.Models
         /// Gets the culling mode of the material.
         /// </summary>
         /// <returns>Culling mode.</returns>
-        protected abstract ToonStandardMaterialWrapper.CullingMode GetCulling();
+        protected abstract CullMode GetCulling();
 
         /// <summary>
         /// Gets the material should use emission map.

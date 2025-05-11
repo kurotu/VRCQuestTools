@@ -1,4 +1,7 @@
+using System;
+using KRT.VRCQuestTools.Utils;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models.Unity
 {
@@ -19,24 +22,11 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
-        /// Culling mode.
+        /// Initializes a new instance of the <see cref="ToonStandardMaterialWrapper"/> class with a default material.
         /// </summary>
-        internal enum CullingMode
+        internal ToonStandardMaterialWrapper()
         {
-            /// <summary>
-            /// No culling.
-            /// </summary>
-            Off = 0,
-
-            /// <summary>
-            /// Culling front faces.
-            /// </summary>
-            Front = 1,
-
-            /// <summary>
-            /// Culling back faces.
-            /// </summary>
-            Back = 2,
+            material = new Material(Shader.Find("VRChat/Mobile/Toon Standard"));
         }
 
         /// <summary>
@@ -98,6 +88,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Gets or sets the material name.
+        /// </summary>
+        internal string Name
+        {
+            get => material.name;
+            set => material.name = value;
+        }
+
+        /// <summary>
         /// Gets or sets the albedo texture.
         /// </summary>
         internal Texture MainTexture
@@ -145,9 +144,9 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <summary>
         /// Gets or sets the culling mode.
         /// </summary>
-        internal CullingMode Culling
+        internal CullMode Culling
         {
-            get => (CullingMode)material.GetFloat("_Culling");
+            get => (CullMode)material.GetFloat("_Culling");
             set => material.SetFloat("_Culling", (float)value);
         }
 
@@ -491,6 +490,25 @@ namespace KRT.VRCQuestTools.Models.Unity
             {
                 material.DisableKeyword(keyword);
             }
+        }
+
+        /// <summary>
+        /// Ramp texture.
+        /// </summary>
+        internal static class RampTexture
+        {
+            private static Lazy<Texture2D> flat = new Lazy<Texture2D>(() => AssetUtility.LoadAssetByGUID<Texture2D>("8ed41581528c4fa4fa11970aca4edb8d"));
+            private static Lazy<Texture2D> realisticVerySoft = new Lazy<Texture2D>(() => AssetUtility.LoadAssetByGUID<Texture2D>("5f304bf7a07313d43b8562d9eabce646"));
+
+            /// <summary>
+            /// Gets the flat ramp texture.
+            /// </summary>
+            internal static Texture2D Flat => flat.Value;
+
+            /// <summary>
+            /// Gets the realistic very soft ramp texture.
+            /// </summary>
+            internal static Texture2D RealisticVerySoft => realisticVerySoft.Value;
         }
     }
 }

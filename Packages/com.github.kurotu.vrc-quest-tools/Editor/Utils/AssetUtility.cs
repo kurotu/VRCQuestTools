@@ -156,6 +156,30 @@ namespace KRT.VRCQuestTools.Utils
             return list.ToArray();
         }
 
+        /// <summary>
+        /// Load asset by GUID.
+        /// </summary>
+        /// <typeparam name="T">Asset type.</typeparam>
+        /// <param name="guid">Asset GUID.</param>
+        /// <returns>Loaded asset.</returns>
+        internal static T LoadAssetByGUID<T>(string guid)
+            where T : UnityEngine.Object
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            if (string.IsNullOrEmpty(path))
+            {
+                Debug.LogError($"Failed to get asset path by GUID: {guid}");
+                return null;
+            }
+            var asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            if (asset == null)
+            {
+                Debug.LogError($"Failed to load asset by GUID: {guid}");
+                return null;
+            }
+            return asset;
+        }
+
         private static void GetAllObjectReferencesImpl(UnityEngine.Object o, HashSet<UnityEngine.Object> list)
         {
             var so = new SerializedObject(o);

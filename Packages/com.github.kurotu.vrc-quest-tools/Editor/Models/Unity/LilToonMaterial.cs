@@ -7,13 +7,14 @@ using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace KRT.VRCQuestTools.Models.Unity
 {
     /// <summary>
     /// lilToon material.
     /// </summary>
-    internal class LilToonMaterial : MaterialBase, IStandardLiteConvertable
+    internal class LilToonMaterial : MaterialBase, IStandardLiteConvertable, IToonStandardConvertable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LilToonMaterial"/> class.
@@ -22,6 +23,32 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal LilToonMaterial(Material material)
             : base(material)
         {
+        }
+
+        /// <summary>
+        /// Blend mode for matcap texture.
+        /// </summary>
+        internal enum MatCapBlendMode
+        {
+            /// <summary>
+            /// Normal.
+            /// </summary>
+            Normal = 0,
+
+            /// <summary>
+            /// Additive matcap.
+            /// </summary>
+            Add = 1,
+
+            /// <summary>
+            /// Screen matcap.
+            /// </summary>
+            Screen = 2,
+
+            /// <summary>
+            /// Multiply matcap.
+            /// </summary>
+            Multiply = 3,
         }
 
         /// <inheritdoc/>
@@ -80,6 +107,126 @@ namespace KRT.VRCQuestTools.Models.Unity
 
         /// <inheritdoc/>
         internal override Shader StandardLiteMetallicSmoothnessBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_metallic_smoothness");
+
+        /// <summary>
+        /// Gets a value indicating whether to use shadow.
+        /// </summary>
+        internal bool UseShadow => Material.GetFloat("_UseShadow") > 0.5f;
+
+        /// <summary>
+        /// Gets cull mode.
+        /// </summary>
+        internal CullMode CullMode => (CullMode)Material.GetFloat("_Cull");
+
+        /// <summary>
+        /// Gets a value indicating whether to use normal map.
+        /// </summary>
+        internal bool UseNormalMap => Material.GetFloat("_UseBumpMap") > 0.5f;
+
+        /// <summary>
+        /// Gets the normal map.
+        /// </summary>
+        internal Texture NormalMap => Material.GetTexture("_BumpMap");
+
+        /// <summary>
+        /// Gets the normal map scale.
+        /// </summary>
+        internal float NormalMapScale => Material.GetFloat("_BumpScale");
+
+        /// <summary>
+        /// Gets the light minimum limit.
+        /// </summary>
+        internal float LightMinLimit => Material.GetFloat("_LightMinLimit");
+
+        /// <summary>
+        /// Gets a value indicating whether to use emission.
+        /// </summary>
+        internal bool UseEmission => Material.GetFloat("_UseEmission") > 0.5f;
+
+        /// <summary>
+        /// Gets the emission map.
+        /// </summary>
+        internal Texture EmissionMap => Material.GetTexture("_EmissionMap");
+
+        /// <summary>
+        /// Gets the emission color.
+        /// </summary>
+        internal Color EmissionColor => Material.GetColor("_EmissionColor");
+
+        /// <summary>
+        /// Gets a value indicating whether to use 2nd emission.
+        /// </summary>
+        internal bool UseEmission2nd => Material.GetFloat("_UseEmission2nd") > 0.5f;
+
+        /// <summary>
+        /// Gets a value indicating whether to use reflection.
+        /// </summary>
+        internal bool UseReflection => Material.GetFloat("_UseReflection") > 0.5f;
+
+        /// <summary>
+        /// Gets the metallic map.
+        /// </summary>
+        internal Texture MetallicMap => Material.GetTexture("_MetallicGlossMap");
+
+        /// <summary>
+        /// Gets the smoothness map.
+        /// </summary>
+        internal Texture SmoothnessTex => Material.GetTexture("_SmoothnessTex");
+
+        /// <summary>
+        /// Gets the specular blur.
+        /// </summary>
+        internal float SpecularBlur => Material.GetFloat("_SpecularBlur");
+
+        /// <summary>
+        /// Gets a value indicating whether to use matcap.
+        /// </summary>
+        internal bool UseMatCap => Material.GetFloat("_UseMatCap") > 0.5f;
+
+        /// <summary>
+        /// Gets the matcap texture.
+        /// </summary>
+        internal Texture MatCapTex => Material.GetTexture("_MatCapTex");
+
+        /// <summary>
+        /// Gets the matcap mask texture.
+        /// </summary>
+        internal Texture MatCapMask => Material.GetTexture("_MatCapBlendMask");
+
+        /// <summary>
+        /// Gets the matcap blend value.
+        /// </summary>
+        internal float MatCapBlend => Material.GetFloat("_MatCapBlend");
+
+        /// <summary>
+        /// Gets the matcap blending mode.
+        /// </summary>
+        internal MatCapBlendMode MatCapBlendingMode => (MatCapBlendMode)Material.GetFloat("_MatCapBlendMode");
+
+        /// <summary>
+        /// Gets a value indicating whether to use rim light.
+        /// </summary>
+        internal bool UseRimLight => Material.GetFloat("_UseRim") > 0.5f;
+
+        /// <summary>
+        /// Gets the rim light color.
+        /// </summary>
+        internal Color RimLightColor => Material.GetColor("_RimColor");
+
+        /// <summary>
+        /// Gets the rim light border.
+        /// </summary>
+        internal float RimLightBorder => Material.GetFloat("_RimBorder");
+
+        /// <summary>
+        /// Gets the rim light fresnel power.
+        /// </summary>
+        internal float RimFresnelPower => Material.GetFloat("_RimFresnelPower");
+
+        /// <summary>
+        /// Gets the rim light blur.
+        /// </summary>
+        internal float RimLightBlur => Material.GetFloat("_RimBlur");
 
         /// <inheritdoc/>
         public Material ConvertToStandardLite()
