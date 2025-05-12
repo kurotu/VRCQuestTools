@@ -159,6 +159,16 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal bool UseEmission2nd => Material.GetFloat("_UseEmission2nd") > 0.5f;
 
         /// <summary>
+        /// Gets the 2nd emission map.
+        /// </summary>
+        internal Texture Emission2ndMap => Material.GetTexture("_Emission2ndMap");
+
+        /// <summary>
+        /// Gets the 2nd emission color.
+        /// </summary>
+        internal Color Emission2ndColor => Material.GetColor("_Emission2ndColor");
+
+        /// <summary>
         /// Gets a value indicating whether to use reflection.
         /// </summary>
         internal bool UseReflection => Material.GetFloat("_UseReflection") > 0.5f;
@@ -172,6 +182,16 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Gets the smoothness map.
         /// </summary>
         internal Texture SmoothnessTex => Material.GetTexture("_SmoothnessTex");
+
+        /// <summary>
+        /// Gets the smoothness value.
+        /// </summary>
+        internal float Smoothness => Material.GetFloat("_Smoothness");
+
+        /// <summary>
+        /// Gets the reflectance value.
+        /// </summary>
+        internal float Reflectance => Material.GetFloat("_Reflectance");
 
         /// <summary>
         /// Gets the specular blur.

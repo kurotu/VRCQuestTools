@@ -67,6 +67,7 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.MetallicStrength = lilMaterial.Metallic;
 
                 newMaterial.GlossMap = lilMaterial.SmoothnessTex;
+                newMaterial.GlossStrength = lilMaterial.Smoothness;
                 newMaterial.Sharpness = 1.0f - lilMaterial.SpecularBlur;
             }
 
@@ -145,145 +146,175 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override float GetAnisotropy()
         {
-            throw new NotImplementedException();
+            return 0.0f;
         }
 
         /// <inheritdoc/>
         protected override CullMode GetCulling()
         {
-            throw new NotImplementedException();
+            return lilMaterial.CullMode;
         }
 
         /// <inheritdoc/>
         protected override Color GetEmissionColor()
         {
-            throw new NotImplementedException();
+            if (lilMaterial.UseEmission && lilMaterial.UseEmission2nd)
+            {
+                return Color.white;
+            }
+            if (lilMaterial.UseEmission)
+            {
+                return lilMaterial.EmissionColor;
+            }
+            if (lilMaterial.UseEmission2nd)
+            {
+                return lilMaterial.Emission2ndColor;
+            }
+            return Color.black;
         }
 
         /// <inheritdoc/>
         protected override float GetGlossStrength()
         {
-            throw new NotImplementedException();
+            return lilMaterial.Smoothness;
         }
 
         /// <inheritdoc/>
         protected override Color GetMainColor()
         {
-            throw new NotImplementedException();
+            return lilMaterial.Material.color;
         }
 
         /// <inheritdoc/>
         protected override ToonStandardMaterialWrapper.MatcapTypeMode GetMapcapType()
         {
-            throw new NotImplementedException();
+            switch (lilMaterial.MatCapBlendingMode)
+            {
+                case LilToonMaterial.MatCapBlendMode.Normal:
+                case LilToonMaterial.MatCapBlendMode.Add:
+                case LilToonMaterial.MatCapBlendMode.Screen:
+                    return ToonStandardMaterialWrapper.MatcapTypeMode.Additive;
+                case LilToonMaterial.MatCapBlendMode.Multiply:
+                    return ToonStandardMaterialWrapper.MatcapTypeMode.Multiplicative;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         /// <inheritdoc/>
         protected override Texture GetMatcap()
         {
-            throw new NotImplementedException();
+            return lilMaterial.MatCapTex;
         }
 
         /// <inheritdoc/>
         protected override float GetMatcapMaskStrength()
         {
-            throw new NotImplementedException();
+            return lilMaterial.MatCapBlend;
         }
 
         /// <inheritdoc/>
         protected override float GetMetallicStrength()
         {
-            throw new NotImplementedException();
+            return lilMaterial.Metallic;
         }
 
         /// <inheritdoc/>
         protected override float GetNormalMapScale()
         {
-            throw new NotImplementedException();
+            return lilMaterial.NormalMapScale;
         }
 
         /// <inheritdoc/>
         protected override float GetReflectance()
         {
-            throw new NotImplementedException();
+            return lilMaterial.Reflectance;
         }
 
         /// <inheritdoc/>
         protected override Color GetRimColor()
         {
-            throw new NotImplementedException();
+            return lilMaterial.RimLightColor;
         }
 
         /// <inheritdoc/>
         protected override float GetRimRange()
         {
-            throw new NotImplementedException();
+            return Mathf.Pow(1.0f - lilMaterial.RimLightBorder, lilMaterial.RimFresnelPower);
         }
 
         /// <inheritdoc/>
         protected override float GetRimSoftness()
         {
-            throw new NotImplementedException();
+            return lilMaterial.RimLightBlur;
         }
 
         /// <inheritdoc/>
         protected override float GetSharpness()
         {
-            throw new NotImplementedException();
+            return 1.0f - lilMaterial.SpecularBlur;
         }
 
         /// <inheritdoc/>
         protected override bool GetUseEmissionMap()
         {
-            throw new NotImplementedException();
+            if (lilMaterial.UseEmission && lilMaterial.EmissionMap != null)
+            {
+                return true;
+            }
+            if (lilMaterial.UseEmission2nd && lilMaterial.Emission2ndMap != null)
+            {
+                return true;
+            }
+            return lilMaterial.UseEmission && lilMaterial.UseEmission2nd;
         }
 
         /// <inheritdoc/>
         protected override bool GetUseGlossMap()
         {
-            throw new NotImplementedException();
+            return lilMaterial.UseReflection && lilMaterial.SmoothnessTex != null;
         }
 
         /// <inheritdoc/>
         protected override bool GetUseMainTexture()
         {
-            throw new NotImplementedException();
+            return lilMaterial.Material.mainTexture != null;
         }
 
         /// <inheritdoc/>
         protected override bool GetUseMatcap()
         {
-            throw new NotImplementedException();
+            return lilMaterial.UseMatCap;
         }
 
         /// <inheritdoc/>
         protected override bool GetUseMatcapMask()
         {
-            throw new NotImplementedException();
+            return lilMaterial.UseMatCap && lilMaterial.MatCapMask != null;
         }
 
         /// <inheritdoc/>
         protected override bool GetUseMetallicMap()
         {
-            throw new NotImplementedException();
+            return lilMaterial.UseReflection && lilMaterial.MetallicMap != null;
         }
 
         /// <inheritdoc/>
         protected override bool GetUseNormalMap()
         {
-            throw new NotImplementedException();
+            return lilMaterial.UseNormalMap && lilMaterial.NormalMap != null;
         }
 
         /// <inheritdoc/>
         protected override bool GetUseRimLighting()
         {
-            throw new NotImplementedException();
+            return lilMaterial.UseRimLight;
         }
 
         /// <inheritdoc/>
         protected override bool GetUseSpecular()
         {
-            throw new NotImplementedException();
+            return lilMaterial.UseReflection;
         }
     }
 }
