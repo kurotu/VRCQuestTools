@@ -62,6 +62,12 @@ namespace KRT.VRCQuestTools.Models
         public bool GenerateShadowFromNormalMap => generateShadowFromNormalMap;
 
         /// <inheritdoc/>
+        public void LoadDefaultAssets()
+        {
+            // nothing.
+        }
+
+        /// <inheritdoc/>
         public string GetCacheKey()
         {
             var container = new Dictionary<string, object>();

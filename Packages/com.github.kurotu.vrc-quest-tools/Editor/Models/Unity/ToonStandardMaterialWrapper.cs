@@ -498,7 +498,12 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal static class RampTexture
         {
             private static Lazy<Texture2D> flat = new Lazy<Texture2D>(() => AssetUtility.LoadAssetByGUID<Texture2D>("8ed41581528c4fa4fa11970aca4edb8d"));
+            private static Lazy<Texture2D> realistic = new Lazy<Texture2D>(() => AssetUtility.LoadAssetByGUID<Texture2D>("348500adef1d2da428abc7b720b8b699"));
+            private static Lazy<Texture2D> realisticSoft = new Lazy<Texture2D>(() => AssetUtility.LoadAssetByGUID<Texture2D>("636cf1b5dfca6f54b94ca3d2ff8216c9"));
             private static Lazy<Texture2D> realisticVerySoft = new Lazy<Texture2D>(() => AssetUtility.LoadAssetByGUID<Texture2D>("5f304bf7a07313d43b8562d9eabce646"));
+            private static Lazy<Texture2D> toon2band = new Lazy<Texture2D>(() => AssetUtility.LoadAssetByGUID<Texture2D>("dfafc89321615114fb6dbecdba0c8214"));
+            private static Lazy<Texture2D> toon3band = new Lazy<Texture2D>(() => AssetUtility.LoadAssetByGUID<Texture2D>("5d1b50be612cf1248b6e101f8d1c5b53"));
+            private static Lazy<Texture2D> toon4band = new Lazy<Texture2D>(() => AssetUtility.LoadAssetByGUID<Texture2D>("0d6a7a9ec31ab7448a777f0e2daef4af"));
 
             /// <summary>
             /// Gets the flat ramp texture.
@@ -506,9 +511,34 @@ namespace KRT.VRCQuestTools.Models.Unity
             internal static Texture2D Flat => flat.Value;
 
             /// <summary>
+            /// Gets the realistic ramp texture.
+            /// </summary>
+            internal static Texture2D Realistic => realistic.Value;
+
+            /// <summary>
+            /// Gets the realistic soft ramp texture.
+            /// </summary>
+            internal static Texture2D RealisticSoft => realisticSoft.Value;
+
+            /// <summary>
             /// Gets the realistic very soft ramp texture.
             /// </summary>
             internal static Texture2D RealisticVerySoft => realisticVerySoft.Value;
+
+            /// <summary>
+            /// Gets the 2 band toon ramp texture.
+            /// </summary>
+            internal static Texture2D Toon2Band => toon2band.Value;
+
+            /// <summary>
+            /// Gets the 3 band toon ramp texture.
+            /// </summary>
+            internal static Texture2D Toon3Band => toon3band.Value;
+
+            /// <summary>
+            /// Gets the 4 band toon ramp texture.
+            /// </summary>
+            internal static Texture2D Toon4Band => toon4band.Value;
         }
     }
 }

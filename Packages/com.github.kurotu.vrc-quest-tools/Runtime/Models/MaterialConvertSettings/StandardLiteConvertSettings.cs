@@ -44,6 +44,12 @@ namespace KRT.VRCQuestTools.Models
         public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
 
         /// <inheritdoc/>
+        public void LoadDefaultAssets()
+        {
+            // nothing.
+        }
+
+        /// <inheritdoc/>
         public string GetCacheKey()
         {
             return JsonUtility.ToJson(this);

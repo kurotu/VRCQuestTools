@@ -45,7 +45,7 @@ namespace KRT.VRCQuestTools.Models
 
             if (lilMaterial.UseShadow)
             {
-                newMaterial.ShadowRamp = ToonStandardMaterialWrapper.RampTexture.RealisticVerySoft;
+                newMaterial.ShadowRamp = settings.fallbackShadowRamp;
             }
             else
             {
