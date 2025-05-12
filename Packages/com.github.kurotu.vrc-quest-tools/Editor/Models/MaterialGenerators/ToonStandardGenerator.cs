@@ -30,7 +30,6 @@ namespace KRT.VRCQuestTools.Models
         {
             if (!(material is IToonStandardConvertable))
             {
-                Debug.LogWarning("ToonStandardGenerator only supports LilToonMaterial.");
                 var toonLitConvertSettings = new ToonLitConvertSettings
                 {
                     generateQuestTextures = settings.generateQuestTextures,

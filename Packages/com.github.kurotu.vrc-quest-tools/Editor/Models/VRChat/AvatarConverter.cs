@@ -323,6 +323,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
                                 request = new ResultRequest(Completion);
                             }
                             break;
+                        case ToonStandardConvertSettings toonStandardConvertSettings:
+                            if (toonStandardConvertSettings.generateQuestTextures)
+                            {
+                                var m2 = MaterialWrapperBuilder.Build(m);
+                                if (m2 is LilToonMaterial lil)
+                                {
+                                    request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                }
+                                else
+                                {
+                                    throw new NotImplementedException($"Material {m.name} is not a LilToon material.");
+                                }
+                            }
+                            else
+                            {
+                                request = new ResultRequest(Completion);
+                            }
+                            break;
                         case MaterialReplaceSettings materialReplaceSettings:
                             request = new ResultRequest(Completion);
                             break;
@@ -556,6 +574,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case StandardLiteConvertSettings standardLiteSettings:
                     return new StandardLiteGenerator(standardLiteSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                case ToonStandardConvertSettings toonStandardSettings:
+                    if (material is LilToonMaterial)
+                    {
+                        return new LilToonToonStandardGenerator((LilToonMaterial)material, toonStandardSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                    }
+                    return new GenericToonStandardGenerator(toonStandardSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case MaterialReplaceSettings replaceSettings:
                     if (replaceSettings.material == null)
                     {
