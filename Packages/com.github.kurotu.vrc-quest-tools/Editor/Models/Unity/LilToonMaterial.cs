@@ -239,6 +239,11 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal float RimLightBorder => Material.GetFloat("_RimBorder");
 
         /// <summary>
+        /// Gets the rim light enable lighting.
+        /// </summary>
+        internal float RimEnableLighting => Material.GetFloat("_RimEnableLighting");
+
+        /// <summary>
         /// Gets the rim light fresnel power.
         /// </summary>
         internal float RimFresnelPower => Material.GetFloat("_RimFresnelPower");

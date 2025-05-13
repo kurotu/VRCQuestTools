@@ -142,6 +142,18 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override bool GetRimEnvironmental()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        protected override float GetRimIntensity()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override float GetRimRange()
         {
             throw new NotImplementedException();

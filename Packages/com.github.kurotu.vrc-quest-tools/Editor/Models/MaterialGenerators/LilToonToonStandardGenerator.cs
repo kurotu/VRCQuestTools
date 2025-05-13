@@ -96,6 +96,11 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.RimColor = lilMaterial.RimLightColor;
                 newMaterial.RimRange = Mathf.Pow(1.0f - lilMaterial.RimLightBorder, lilMaterial.RimFresnelPower);
                 newMaterial.RimSoftness = lilMaterial.RimLightBlur;
+                newMaterial.RimEnvironmental = lilMaterial.RimEnableLighting > 0.0f;
+                if (newMaterial.RimEnvironmental)
+                {
+                    newMaterial.RimIntensity *= lilMaterial.RimEnableLighting;
+                }
             }
 
             return newMaterial;
@@ -268,6 +273,20 @@ namespace KRT.VRCQuestTools.Models
         protected override Color GetRimColor()
         {
             return lilMaterial.RimLightColor;
+        }
+
+        /// <inheritdoc/>
+        protected override bool GetRimEnvironmental()
+        {
+            return lilMaterial.RimEnableLighting > 0.0f;
+        }
+
+        /// <inheritdoc/>
+        protected override float GetRimIntensity()
+        {
+            return GetRimEnvironmental()
+                ? 0.5f * lilMaterial.RimEnableLighting
+                : 0.5f;
         }
 
         /// <inheritdoc/>

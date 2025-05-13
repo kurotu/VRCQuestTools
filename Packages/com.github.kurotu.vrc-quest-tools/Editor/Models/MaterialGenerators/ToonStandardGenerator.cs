@@ -158,8 +158,10 @@ namespace KRT.VRCQuestTools.Models
                 {
                     newMaterial.UseRimLighting = true;
                     newMaterial.RimColor = GetRimColor();
+                    newMaterial.RimIntensity = GetRimIntensity();
                     newMaterial.RimRange = GetRimRange();
                     newMaterial.RimSoftness = GetRimSoftness();
+                    newMaterial.RimEnvironmental = GetRimEnvironmental();
                 }
 
                 if (texturePack.NeedsPacking)
@@ -329,6 +331,12 @@ namespace KRT.VRCQuestTools.Models
         protected abstract Color GetRimColor();
 
         /// <summary>
+        /// Gets the rim intensity of the material.
+        /// </summary>
+        /// <returns>Rim Intensity.</returns>
+        protected abstract float GetRimIntensity();
+
+        /// <summary>
         /// Gets the rim range of the material.
         /// </summary>
         /// <returns>Rim range.</returns>
@@ -339,6 +347,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Rim softness.</returns>
         protected abstract float GetRimSoftness();
+
+        /// <summary>
+        /// Gets the rim environmental of the material.
+        /// </summary>
+        /// <returns>Rim environment.</returns>
+        protected abstract bool GetRimEnvironmental();
 
         /// <summary>
         /// Gets the matcap type of the material.
