@@ -104,43 +104,76 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateEmissionMap(Action<Texture2D> completion)
         {
-            throw new NotImplementedException();
+            var bakeMat = new Material(lilMaterial.Material);
+#if UNITY_2022_1_OR_NEWER
+            bakeMat.parent = null;
+#endif
+            bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_emission");
+
+            var targetSize = Math.Min(lilMaterial.EmissionMap.width, (int)settings.maxTextureSize);
+            var rt = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32);
+            Graphics.Blit(lilMaterial.EmissionMap, rt, bakeMat);
+            return TextureUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
+            {
+                RenderTexture.ReleaseTemporary(rt);
+                UnityEngine.Object.DestroyImmediate(bakeMat);
+                completion?.Invoke(tex);
+            });
         }
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateGlossMap(Action<Texture2D> completion)
         {
-            throw new NotImplementedException();
+            var gloss = (Texture2D)lilMaterial.SmoothnessTex;
+            var targetSize = Math.Min(gloss.width, (int)settings.maxTextureSize);
+            return TextureUtility.ResizeTexture(gloss, false, targetSize, targetSize, completion);
         }
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateMainTexture(Action<Texture2D> completion)
         {
-            throw new NotImplementedException();
+            var rt = lilMaterial.BakeMain();
+            var textureSize = Math.Min(rt.width, (int)settings.maxTextureSize);
+            var rt2 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
+            TextureUtility.DownscaleBlit(rt, true, rt2);
+            return TextureUtility.RequestReadbackRenderTexture(rt2, true, (tex) =>
+            {
+                UnityEngine.Object.DestroyImmediate(rt);
+                RenderTexture.ReleaseTemporary(rt2);
+                completion?.Invoke(tex);
+            });
         }
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateMatcapMask(Action<Texture2D> completion)
         {
-            throw new NotImplementedException();
+            var matcapMask = (Texture2D)lilMaterial.MatCapMask;
+            var targetSize = Math.Min(matcapMask.width, (int)settings.maxTextureSize);
+            return TextureUtility.ResizeTexture(matcapMask, false, targetSize, targetSize, completion);
         }
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateMetallicMap(Action<Texture2D> completion)
         {
-            throw new NotImplementedException();
+            var metallic = (Texture2D)lilMaterial.MetallicMap;
+            var targetSize = Math.Min(metallic.width, (int)settings.maxTextureSize);
+            return TextureUtility.ResizeTexture(metallic, false, targetSize, targetSize, completion);
         }
 
         /// <inheritdoc/>
-        protected override AsyncCallbackRequest GenerateNormalMap(Action<Texture2D> completion)
+        protected override AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion)
         {
-            throw new NotImplementedException();
+            var normal = (Texture2D)lilMaterial.NormalMap;
+            var targetSize = Math.Min(normal.width, (int)settings.maxTextureSize);
+            var newTex = TextureUtility.DownscaleNormalMap(normal, outputRGB, targetSize, targetSize);
+            return new ResultRequest<Texture2D>(newTex, completion);
         }
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateShadowRamp(Action<Texture2D> completion)
         {
-            throw new NotImplementedException();
+            // TODO: Generate ramp.
+            return new ResultRequest<Texture2D>(TextureUtility.CopyAsReadable(settings.fallbackShadowRamp, true), completion);
         }
 
         /// <inheritdoc/>

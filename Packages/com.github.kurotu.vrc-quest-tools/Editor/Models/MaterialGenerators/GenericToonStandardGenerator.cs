@@ -58,7 +58,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override AsyncCallbackRequest GenerateNormalMap(Action<Texture2D> completion)
+        protected override AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion)
         {
             throw new NotImplementedException();
         }

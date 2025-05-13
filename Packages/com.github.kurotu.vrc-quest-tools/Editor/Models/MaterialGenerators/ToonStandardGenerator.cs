@@ -69,7 +69,9 @@ namespace KRT.VRCQuestTools.Models
                 if (GetUseNormalMap())
                 {
                     newMaterial.UseNormalMap = true;
-                    MaterialGeneratorUtility.GenerateNormalMap(material.Material, settings, "normal", saveTextureAsPng, texturesPath, (compl) => GenerateNormalMap(compl), (t) =>
+                    var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
+                    var outputRGB = saveTextureAsPng || isMobile;
+                    MaterialGeneratorUtility.GenerateNormalMap(material.Material, settings, "normal", saveTextureAsPng, texturesPath, (compl) => GenerateNormalMap(outputRGB, compl), (t) =>
                     {
                         newMaterial.NormalMap = t;
                         newMaterial.NormalMapScale = GetNormalMapScale();
@@ -354,9 +356,10 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Generates the normal map of the material.
         /// </summary>
+        /// <param name="outputRGB">Whether to output normal map as RGB texture.</param>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Async callback request.</returns>
-        protected abstract AsyncCallbackRequest GenerateNormalMap(Action<Texture2D> completion);
+        protected abstract AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion);
 
         /// <summary>
         /// Generates the shadow ramp of the material.

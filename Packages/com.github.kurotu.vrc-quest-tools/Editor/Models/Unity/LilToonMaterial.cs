@@ -442,6 +442,15 @@ namespace KRT.VRCQuestTools.Models.Unity
             });
         }
 
+        /// <summary>
+        /// Bake main texture.
+        /// </summary>
+        /// <returns>Baked main texture.</returns>
+        internal RenderTexture BakeMain()
+        {
+            return MainBake(Material, 0);
+        }
+
         private static LilToonSetting LoadShaderSetting()
         {
             var path = LilToonInspector.GetShaderSettingPath();

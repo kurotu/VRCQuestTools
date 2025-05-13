@@ -34,7 +34,7 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         public Texture2D fallbackShadowRamp;
 
-        private static Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() => GetUnitySerializableFields(typeof(MatCapLitConvertSettings)));
+        private static Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() => GetUnitySerializableFields(typeof(ToonStandardConvertSettings)));
 
         /// <inheritdoc/>
         public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
