@@ -118,7 +118,7 @@ namespace KRT.VRCQuestTools.Models
             var targetSize = Math.Min(lilMaterial.EmissionMap.width, (int)settings.maxTextureSize);
             var rt = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(lilMaterial.EmissionMap, rt, bakeMat);
-            return TextureUtility.RequestReadbackRenderTexture(rt, true, (tex) =>
+            return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
             {
                 RenderTexture.ReleaseTemporary(rt);
                 UnityEngine.Object.DestroyImmediate(bakeMat);
@@ -131,7 +131,23 @@ namespace KRT.VRCQuestTools.Models
         {
             var gloss = (Texture2D)lilMaterial.SmoothnessTex;
             var targetSize = Math.Min(gloss.width, (int)settings.maxTextureSize);
-            return TextureUtility.ResizeTexture(gloss, false, targetSize, targetSize, completion);
+
+            var rt = RenderTexture.GetTemporary(gloss.width, gloss.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Grayscale"));
+            mat.mainTexture = gloss;
+            mat.SetFloat("_OutputToA", 1.0f);
+            Graphics.Blit(gloss, rt, mat);
+
+            var rt2 = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            TextureUtility.DownscaleBlit(rt, false, rt2);
+
+            return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
+            {
+                RenderTexture.ReleaseTemporary(rt);
+                RenderTexture.ReleaseTemporary(rt2);
+                UnityEngine.Object.DestroyImmediate(mat);
+                completion?.Invoke(tex);
+            });
         }
 
         /// <inheritdoc/>
@@ -154,7 +170,23 @@ namespace KRT.VRCQuestTools.Models
         {
             var matcapMask = (Texture2D)lilMaterial.MatCapMask;
             var targetSize = Math.Min(matcapMask.width, (int)settings.maxTextureSize);
-            return TextureUtility.ResizeTexture(matcapMask, false, targetSize, targetSize, completion);
+
+            var rt = RenderTexture.GetTemporary(matcapMask.width, matcapMask.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Grayscale"));
+            mat.mainTexture = matcapMask;
+            mat.SetFloat("_OutputToR", 1.0f);
+            Graphics.Blit(matcapMask, rt, mat);
+
+            var rt2 = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            TextureUtility.DownscaleBlit(rt, false, rt2);
+
+            return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
+            {
+                RenderTexture.ReleaseTemporary(rt);
+                RenderTexture.ReleaseTemporary(rt2);
+                UnityEngine.Object.DestroyImmediate(mat);
+                completion?.Invoke(tex);
+            });
         }
 
         /// <inheritdoc/>
@@ -162,7 +194,23 @@ namespace KRT.VRCQuestTools.Models
         {
             var metallic = (Texture2D)lilMaterial.MetallicMap;
             var targetSize = Math.Min(metallic.width, (int)settings.maxTextureSize);
-            return TextureUtility.ResizeTexture(metallic, false, targetSize, targetSize, completion);
+
+            var rt = RenderTexture.GetTemporary(metallic.width, metallic.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Grayscale"));
+            mat.mainTexture = metallic;
+            mat.SetFloat("_OutputToR", 1.0f);
+            Graphics.Blit(metallic, rt, mat);
+
+            var rt2 = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            TextureUtility.DownscaleBlit(rt, false, rt2);
+
+            return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
+            {
+                RenderTexture.ReleaseTemporary(rt);
+                RenderTexture.ReleaseTemporary(rt2);
+                UnityEngine.Object.DestroyImmediate(mat);
+                completion?.Invoke(tex);
+            });
         }
 
         /// <inheritdoc/>
