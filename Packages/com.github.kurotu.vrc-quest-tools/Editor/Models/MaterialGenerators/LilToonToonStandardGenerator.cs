@@ -225,8 +225,31 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateShadowRamp(Action<Texture2D> completion)
         {
-            // TODO: Generate ramp.
-            return new ResultRequest<Texture2D>(TextureUtility.CopyAsReadable(settings.fallbackShadowRamp, true), completion);
+            var material = new Material(lilMaterial.Material);
+#if UNITY_2022_1_OR_NEWER
+            material.parent = null;
+#endif
+            var lilToon2Ramp = Shader.Find("Hidden/_lil/lilToon2Ramp");
+            if (lilToon2Ramp)
+            {
+                material.shader = lilToon2Ramp;
+            }
+            else
+            {
+                throw new NotImplementedException("lilToon2Ramp shader not found. Please use the fallback ramp.");
+            }
+
+            var width = 128;
+            var height = 16;
+            var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+            Graphics.Blit(null, rt, material);
+
+            return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
+            {
+                RenderTexture.ReleaseTemporary(rt);
+                UnityEngine.Object.DestroyImmediate(material);
+                completion?.Invoke(tex);
+            });
         }
 
         /// <inheritdoc/>
@@ -303,6 +326,12 @@ namespace KRT.VRCQuestTools.Models
         protected override float GetMetallicStrength()
         {
             return lilMaterial.Metallic;
+        }
+
+        /// <inheritdoc/>
+        protected override float GetMinBrightness()
+        {
+            return lilMaterial.LightMinLimit;
         }
 
         /// <inheritdoc/>

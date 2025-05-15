@@ -85,7 +85,7 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.ShadowRamp = t;
                     newMaterial.ShadowBoost = 0.0f;
                     newMaterial.ShadowTint = 0.0f;
-                    newMaterial.MinBrightness = 0.0f;
+                    newMaterial.MinBrightness = GetMinBrightness();
                 }).WaitForCompletion();
 
                 if (GetUseEmissionMap())
@@ -227,6 +227,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Culling mode.</returns>
         protected abstract CullMode GetCulling();
+
+        /// <summary>
+        /// Gets the min brightness of the material.
+        /// </summary>
+        /// <returns>Minimum brightness.</returns>
+        protected abstract float GetMinBrightness();
 
         /// <summary>
         /// Gets the material should use emission map.

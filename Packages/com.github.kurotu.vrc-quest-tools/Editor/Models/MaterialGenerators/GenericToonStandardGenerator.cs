@@ -124,6 +124,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override float GetMinBrightness()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override float GetNormalMapScale()
         {
             throw new NotImplementedException();
