@@ -51,7 +51,7 @@ namespace KRT.VRCQuestTools.Models
                 sb.Append(":");
 
                 object valueObject;
-                if (value is Texture texture)
+                if (value is Texture texture && texture)
                 {
 #if UNITY_EDITOR
                     valueObject = texture.imageContentsHash;
