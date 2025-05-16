@@ -3,6 +3,7 @@
     "references": [
         "VRCQuestTools",
         "VRC.SDK3A.Editor",
+        "VRC.SDKBase",
         "nadena.dev.modular-avatar.core"
     ],
     "includePlatforms": [
