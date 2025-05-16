@@ -278,12 +278,13 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when the material is allowed.</returns>
         internal static bool IsMaterialAllowedForQuestAvatar(Material material)
         {
-            var usableShaders = new string[]
-            {
-                "Standard Lite", "Bumped Diffuse", "Bumped Mapped Specular", "Diffuse",
-                "MatCap Lit", "Toon Lit", "Particles/Additive", "Particles/Multiply",
-            }.Select(s => $"VRChat/Mobile/{s}");
-            return usableShaders.Contains(material.shader.name);
+            string[] whitelist = (string[])AppDomain.CurrentDomain.GetAssemblies()
+                .Select(assembly => assembly.GetType("VRC.SDKBase.Validation.AvatarValidation"))
+                .FirstOrDefault(t => t != null)
+                .GetField("ShaderWhiteList")
+                .GetValue(null);
+
+            return whitelist.Contains(material.shader.name);
         }
 
         /// <summary>
