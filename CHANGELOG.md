@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] Message to tell the user can use VRCSDK Control Panel to directly upload the avatar at VRCSDK 3.8.1-beta.1 or later.
 
 ### Changed
+- Use the Android shader whitelist of VRCSDK. (by @KaoruBoy)
+    - Toon Standard shader becomes an allowed shader for Android.
 - [NDMF] Timing for the message to confirm "Copyright ownership agreement" when uploading with `VQT Avatar Builder` at VRCSDK 3.8.1-beta.2 or later.
 
 ## [2.9.1] - 2025-05-06

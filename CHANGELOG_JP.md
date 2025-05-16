@@ -10,6 +10,8 @@
 - [NDMF] VRCSDK 3.8.1-beta.1 以降では VRCSDK コントロールパネルから直接アップロード可能なことを示すメッセージを追加。
 
 ### 変更
+- Android で使用可能なシェーダーのリストに VRCSDK のものを使用するように変更。 (by @KaoruBoy)
+    - Toon Standard シェーダーが Android で使用可能なシェーダーに追加。
 - [NDMF] `VQT Avatar Builder` でのアップロード時に Copyright ownership agreement を確認するメッセージの表示タイミングを VRCSDK 3.8.1-beta.2 以降で調整。
 
 ## [2.9.1] - 2025-05-06
