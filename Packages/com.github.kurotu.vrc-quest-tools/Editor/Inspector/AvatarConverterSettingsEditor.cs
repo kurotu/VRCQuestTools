@@ -306,6 +306,7 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion2, MessageType.Info);
 #else
                     EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion, MessageType.Info);
+#endif
 #if VQT_HAS_NDMF
                     if (GUILayout.Button(i18n.OpenAvatarBuilder, GUILayout.Height(38)))
                     {
@@ -313,7 +314,6 @@ namespace KRT.VRCQuestTools.Inspector
                         var type = SystemUtility.GetTypeByName(typeName) ?? throw new System.InvalidProgramException($"Type not found: {typeName}");
                         EditorWindow.GetWindow(type).Show();
                     }
-#endif
 #endif
 
                     EditorGUILayout.Space();

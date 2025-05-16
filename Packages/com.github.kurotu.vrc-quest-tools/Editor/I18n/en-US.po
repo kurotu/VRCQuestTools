@@ -150,7 +150,7 @@ msgid "InfoForNdmfConversion"
 msgstr "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Please use the Avatar Builder to avoid VRChat SDK limitation."
 
 msgid "InfoForNdmfConversion2"
-msgstr "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Now you can directly upload the avatar from VRChat SDK Control Panel."
+msgstr "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Now you can also upload the avatar directly from VRChat SDK Control Panel."
 
 msgid "InfoForNetworkIdAssigner"
 msgstr "You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again to apply IDs after attaching the component."
@@ -607,6 +607,9 @@ msgstr "Online Publishing ({0})"
 
 msgid "AvatarBuilderWindowOnlinePublishingDescription"
 msgstr "Upload this avatar to VRChat with Android build setting. The pre-build validation of VRChat SDK Control Panel will be skipped even if the avatar doesn't satisfy Android limitation."
+
+msgid "AvatarBuilderWindowSdkNoPrecheck"
+msgstr "Now you can also upload the avatar directly from VRChat SDK Control Panel."
 
 msgid "AvatarBuilderWindowSetAsFallbackIfPossible"
 msgstr "Set as a fallback avatar if possible"
