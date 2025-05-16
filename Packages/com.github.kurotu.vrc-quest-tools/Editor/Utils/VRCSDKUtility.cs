@@ -22,6 +22,7 @@ using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDK3A.Editor;
 using VRC.SDKBase;
 using VRC.SDKBase.Network;
+using VRC.SDKBase.Validation;
 
 #if VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
@@ -278,13 +279,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when the material is allowed.</returns>
         internal static bool IsMaterialAllowedForQuestAvatar(Material material)
         {
-            string[] whitelist = (string[])AppDomain.CurrentDomain.GetAssemblies()
-                .Select(assembly => assembly.GetType("VRC.SDKBase.Validation.AvatarValidation"))
-                .FirstOrDefault(t => t != null)
-                .GetField("ShaderWhiteList")
-                .GetValue(null);
-
-            return whitelist.Contains(material.shader.name);
+            return AvatarValidation.ShaderWhiteList.Contains(material.shader.name);
         }
 
         /// <summary>
