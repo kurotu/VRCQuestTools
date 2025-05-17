@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-05-06 18:43\n"
+"PO-Revision-Date: 2025-05-17 01:34\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -153,6 +153,9 @@ msgstr ""
 
 msgid "InfoForNdmfConversion"
 msgstr "Вы можете неразрушающе конвертировать аватар во время сборки, когда проект имеет пакет Неразрушаемая Модульная Структура (NDMF). Пожалуйста, используйте Конструктор Аватаров, чтобы избежать ограничений VRChat SDK."
+
+msgid "InfoForNdmfConversion2"
+msgstr ""
 
 msgid "InfoForNetworkIdAssigner"
 msgstr "Вы можете неразрушающе назначить сетевые ID, прикрепив компонент назначателя сетевых ID к корневому объекту аватара. Пожалуйста, загрузите снова, чтобы применить ID после прикрепления компонента."
@@ -613,6 +616,9 @@ msgstr "Онлайн-публикация ({0})"
 
 msgid "AvatarBuilderWindowOnlinePublishingDescription"
 msgstr "Загрузите этот аватар в VRChat с настройками сборки для Android."
+
+msgid "AvatarBuilderWindowSdkNoPrecheck"
+msgstr ""
 
 msgid "AvatarBuilderWindowSetAsFallbackIfPossible"
 msgstr "Установить как резервный аватар, если возможно"
