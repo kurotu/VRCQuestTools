@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.9.2] - 2025-05-17
 
 ### 追加
 - [NDMF] VRCSDK 3.8.1-beta.1 以降では VRCSDK コントロールパネルから直接アップロード可能なことを示すメッセージを追加。
