@@ -104,6 +104,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string AnimatorControllerExceptionDialogMessage => GetText("AnimatorControllerExceptionDialogMessage");
         internal string InvalidReplacementMaterialExceptionDialogMessage => GetText("InvalidReplacementMaterialExceptionDialogMessage");
         internal string InfoForNdmfConversion => GetText("InfoForNdmfConversion");
+        internal string InfoForNdmfConversion2 => GetText("InfoForNdmfConversion2");
+
         internal string InfoForNetworkIdAssigner => GetText("InfoForNetworkIdAssigner");
         internal string NetworkIdAssignerAttached => GetText("NetworkIdAssignerAttached");
         internal string WarningForPerformance => GetText("WarningForPerformance");
@@ -309,6 +311,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarBuilderWindowOfflineTestingDescription(string name) => GetText("AvatarBuilderWindowOfflineTestingDescription", name);
         internal string AvatarBuilderWindowOnlinePublishingLabel(string platformName) => GetText("AvatarBuilderWindowOnlinePublishingLabel", platformName);
         internal string AvatarBuilderWindowOnlinePublishingDescription => GetText("AvatarBuilderWindowOnlinePublishingDescription");
+        internal string AvatarBuilderWindowSdkNoPrecheck => GetText("AvatarBuilderWindowSdkNoPrecheck");
         internal string AvatarBuilderWindowSetAsFallbackIfPossible => GetText("AvatarBuilderWindowSetAsFallbackIfPossible");
         internal string AvatarBuilderWindowSetAsFallbackIfPossibleTooltip => GetText("AvatarBuilderWindowSetAsFallbackIfPossibleTooltip");
         internal string AvatarBuilderWindowFallbackNotAllowed(string rating) => GetText("AvatarBuilderWindowFallbackNotAllowed", rating);
