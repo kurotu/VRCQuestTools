@@ -88,7 +88,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true for lilToon 1.10.0 or later.</returns>
         internal static bool CanLilToonBakeShadowRamp()
         {
-            return LilToonVersion >= new SemVer(1, 10, 0);
+            return new SemVer(1, 10, 0) <= LilToonVersion;
         }
 
         /// <summary>

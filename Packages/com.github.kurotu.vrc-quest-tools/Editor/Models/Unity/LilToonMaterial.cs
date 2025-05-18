@@ -51,11 +51,15 @@ namespace KRT.VRCQuestTools.Models.Unity
             Multiply = 3,
         }
 
-        /// <inheritdoc/>
-        public float Metallic => Material.GetFloat("_Metallic");
+        /// <summary>
+        /// Gets metallic value.
+        /// </summary>
+        internal float Metallic => Material.GetFloat("_Metallic");
 
-        /// <inheritdoc/>
-        public float MinimumBrightness => Material.GetFloat("_LightMinLimit");
+        /// <summary>
+        /// Gets minimum brightness.
+        /// </summary>
+        internal float MinimumBrightness => Material.GetFloat("_LightMinLimit");
 
         /// <inheritdoc/>
         internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
