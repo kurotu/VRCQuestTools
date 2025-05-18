@@ -126,6 +126,8 @@ namespace KRT.VRCQuestTools.Components
 
         private void Reset()
         {
+            defaultMaterialConvertSettings.LoadDefaultAssets();
+
             var descriptor = AvatarDescriptor;
             physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>(true) : new VRCPhysBone[] { };
             physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>(true) : new VRCPhysBoneCollider[] { };

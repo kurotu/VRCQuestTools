@@ -17,6 +17,7 @@ namespace KRT.VRCQuestTools.Models
             typeof(ToonLitConvertSettings),
             typeof(MatCapLitConvertSettings),
             typeof(StandardLiteConvertSettings),
+            typeof(ToonStandardConvertSettings),
             typeof(MaterialReplaceSettings),
         };
 
@@ -45,6 +46,10 @@ namespace KRT.VRCQuestTools.Models
             else if (type == typeof(MatCapLitConvertSettings))
             {
                 return i18n.MaterialConvertTypePopupLabelMatCapLit;
+            }
+            else if (type == typeof(ToonStandardConvertSettings))
+            {
+                return i18n.MaterialConvertTypePopupLabelToonStandard;
             }
             else if (type == typeof(MaterialReplaceSettings))
             {

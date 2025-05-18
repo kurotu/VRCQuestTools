@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
 {
     /// <summary>
-    /// Material convert setting for MatCap Lit shader.
+    /// Settings for standard lite material conversion.
     /// </summary>
     [Serializable]
-    public class MatCapLitConvertSettings : IMaterialConvertSettings, IToonLitConvertSettings
+    public class ToonStandardConvertSettings : IMaterialConvertSettings
     {
         /// <summary>
         /// Whether to generate quest textures.
@@ -29,43 +30,14 @@ namespace KRT.VRCQuestTools.Models
         public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_6x6;
 
         /// <summary>
-        /// Texture brightness for quest. [0-1].
+        /// Shadow fallback type.
         /// </summary>
-        [Range(0.0f, 1.0f)]
-        public float mainTextureBrightness = 0.83f;
+        public Texture2D fallbackShadowRamp;
 
-        /// <summary>
-        /// Whether to generate shadow from normal map.
-        /// </summary>
-        public bool generateShadowFromNormalMap = true;
-
-        /// <summary>
-        /// MatCap texture.
-        /// </summary>
-        public Texture matCapTexture;
-
-        private static Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() => GetUnitySerializableFields(typeof(MatCapLitConvertSettings)));
-
-        /// <inheritdoc/>
-        public bool GenerateQuestTextures => generateQuestTextures;
-
-        /// <inheritdoc/>
-        public TextureSizeLimit MaxTextureSize => maxTextureSize;
+        private static Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() => GetUnitySerializableFields(typeof(ToonStandardConvertSettings)));
 
         /// <inheritdoc/>
         public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
-
-        /// <inheritdoc/>
-        public float MainTextureBrightness => mainTextureBrightness;
-
-        /// <inheritdoc/>
-        public bool GenerateShadowFromNormalMap => generateShadowFromNormalMap;
-
-        /// <inheritdoc/>
-        public void LoadDefaultAssets()
-        {
-            // nothing.
-        }
 
         /// <inheritdoc/>
         public string GetCacheKey()
@@ -79,7 +51,7 @@ namespace KRT.VRCQuestTools.Models
                 sb.Append(":");
 
                 object valueObject;
-                if (value is Texture texture)
+                if (value is Texture texture && texture)
                 {
 #if UNITY_EDITOR
                     valueObject = texture.imageContentsHash;
@@ -97,6 +69,16 @@ namespace KRT.VRCQuestTools.Models
             sb.Append("}");
             var str = sb.ToString();
             return str;
+        }
+
+        /// <inheritdoc/>
+        public void LoadDefaultAssets()
+        {
+#if UNITY_EDITOR
+            // RealisticVerySoft shadow
+            var path = AssetDatabase.GUIDToAssetPath("5f304bf7a07313d43b8562d9eabce646");
+            fallbackShadowRamp = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+#endif
         }
 
         private static FieldInfo[] GetUnitySerializableFields(Type type)

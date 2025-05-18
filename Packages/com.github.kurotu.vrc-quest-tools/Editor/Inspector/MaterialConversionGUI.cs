@@ -61,7 +61,9 @@ namespace KRT.VRCQuestTools.Inspector
                             list.serializedProperty.arraySize++;
                             list.index = index;
                             var element = list.serializedProperty.GetArrayElementAtIndex(index);
-                            element.managedReferenceValue = new AdditionalMaterialConvertSettings();
+                            var newValue = new AdditionalMaterialConvertSettings();
+                            newValue.LoadDefaultAssets();
+                            element.managedReferenceValue = newValue;
                             so.ApplyModifiedProperties();
                         };
                         additionalMaterialConvertSettingsReorderableList.onRemoveCallback = (list) =>

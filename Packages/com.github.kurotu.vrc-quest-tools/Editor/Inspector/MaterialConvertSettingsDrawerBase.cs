@@ -42,7 +42,13 @@ namespace KRT.VRCQuestTools.Inspector
                     if (ccs.changed)
                     {
                         var type = popups[selectedIndex].Type;
-                        property.managedReferenceValue = System.Activator.CreateInstance(type);
+                        var newValue = System.Activator.CreateInstance(type);
+                        if (newValue is IMaterialConvertSettings settings)
+                        {
+                            settings.LoadDefaultAssets();
+                        }
+                        property.managedReferenceValue = newValue;
+                        property.serializedObject.ApplyModifiedProperties();
                         return;
                     }
                 }

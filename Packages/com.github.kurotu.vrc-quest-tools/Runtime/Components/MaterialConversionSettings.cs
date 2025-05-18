@@ -62,5 +62,10 @@ namespace KRT.VRCQuestTools.Components
                 return isRoot && !hasAvatarConverterSettings;
             }
         }
+
+        private void Reset()
+        {
+            defaultMaterialConvertSettings.LoadDefaultAssets();
+        }
     }
 }

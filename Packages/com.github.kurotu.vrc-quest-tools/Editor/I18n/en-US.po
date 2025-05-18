@@ -257,6 +257,12 @@ msgstr "MatCap Texture"
 msgid "MatCapLitConvertSettingsMatCapTextureWarning"
 msgstr "Set MatCap texture."
 
+msgid "ToonStandardConvertSettingsFallbackShadowRampLabel"
+msgstr "Fallback Shading"
+
+msgid "ToonStandardConvertSettingsCustomFallbackShadowRampLabel"
+msgstr "Shadow Ramp"
+
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
 msgstr "Target Material"
 
@@ -268,6 +274,9 @@ msgstr "Toon Lit"
 
 msgid "MaterialConvertTypePopupLabelMatCapLit"
 msgstr "MatCap Lit"
+
+msgid "MaterialConvertTypePopupLabelToonStandard"
+msgstr "Toon Standard"
 
 msgid "MaterialConvertTypePopupLabelMaterialReplace"
 msgstr "Material Replacement"

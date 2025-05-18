@@ -11,6 +11,11 @@ namespace KRT.VRCQuestTools.Models
         MobileTextureFormat MobileTextureFormat { get; }
 
         /// <summary>
+        /// Load default assets from AssetDatabase.
+        /// </summary>
+        void LoadDefaultAssets();
+
+        /// <summary>
         /// Get cache key for this setting.
         /// </summary>
         /// <returns>Cache key.</returns>

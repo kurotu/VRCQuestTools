@@ -7,6 +7,11 @@
 ## [Unreleased]
 
 ### 追加
+- Toon Standard への変換設定を追加。 (VRCSDK 3.8.1-beta.4 以降)
+    - 現状では以下の制限があります。
+        - lilToon 1.10.0 以降のみをサポートします。非サポートのマテリアルでは Toon Lit 用のメインテクスチャのみ使用します。
+        - [リムライトマスクがありません](https://feedback.vrchat.com/open-beta/p/sdk-381-beta3-add-rim-lighting-mask-for-toon-standard)。リムライトが過剰に明るくなる可能性があります。
+        - マスクテクスチャが最適化されていません。ビルドサイズが大きくなる可能性があります。
 - 変換後のテクスチャの圧縮形式を指定する機能を追加。
 
 ### 変更

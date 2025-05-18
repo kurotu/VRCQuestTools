@@ -36,6 +36,8 @@ namespace KRT.VRCQuestTools.Utils
 
         private const string LilToonPackageJsonGUID = "397d2fa9e93fb5d44a9540d5f01437fc";
 
+        private static readonly Lazy<Shader> LilToon2Ramp = new Lazy<Shader>(() => Shader.Find("Hidden/ltsother_bakeramp"));
+
         static AssetUtility()
         {
             if (IsLilToonImported())
@@ -78,6 +80,24 @@ namespace KRT.VRCQuestTools.Utils
             var shader = Shader.Find("lilToon");
             var inspector = SystemUtility.GetTypeByName("lilToon.lilToonInspector");
             return (shader != null) && (inspector != null);
+        }
+
+        /// <summary>
+        /// Gets whether lilToon supports shadow ramp baking.
+        /// </summary>
+        /// <returns>true for lilToon 1.10.0 or later.</returns>
+        internal static bool CanLilToonBakeShadowRamp()
+        {
+            return LilToonVersion >= new SemVer(1, 10, 0);
+        }
+
+        /// <summary>
+        /// Gets lilToon2Ramp shader.
+        /// </summary>
+        /// <returns>Shader object or null.</returns>
+        internal static Shader GetLilToon2Ramp()
+        {
+            return LilToon2Ramp.Value;
         }
 
         /// <summary>
@@ -154,6 +174,30 @@ namespace KRT.VRCQuestTools.Utils
             var list = new HashSet<UnityEngine.Object>();
             GetAllObjectReferencesImpl(o, list);
             return list.ToArray();
+        }
+
+        /// <summary>
+        /// Load asset by GUID.
+        /// </summary>
+        /// <typeparam name="T">Asset type.</typeparam>
+        /// <param name="guid">Asset GUID.</param>
+        /// <returns>Loaded asset.</returns>
+        internal static T LoadAssetByGUID<T>(string guid)
+            where T : UnityEngine.Object
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            if (string.IsNullOrEmpty(path))
+            {
+                Debug.LogError($"Failed to get asset path by GUID: {guid}");
+                return null;
+            }
+            var asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            if (asset == null)
+            {
+                Debug.LogError($"Failed to load asset by GUID: {guid}");
+                return null;
+            }
+            return asset;
         }
 
         private static void GetAllObjectReferencesImpl(UnityEngine.Object o, HashSet<UnityEngine.Object> list)

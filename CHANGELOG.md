@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Toon Standard conversion settings. (VRCSDK 3.8.1-beta.4 or later)
+    - Currenly there are following limitations:
+        - Only supports lilToon 1.10.0 and later. For unsupported materials, Toon Lit main texture is only used.
+        - [Missing rim lighting mask](https://feedback.vrchat.com/open-beta/p/sdk-381-beta3-add-rim-lighting-mask-for-toon-standard). This might lead overbright rim lighting.
+        - Unoptimized mask textures. This may lead increased build size.
 - Texture compression format option for converted textures.
 
 ### Changed

@@ -24,5 +24,13 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         [SerializeReference]
         public IMaterialConvertSettings materialConvertSettings = new ToonLitConvertSettings();
+
+        /// <summary>
+        /// Load default assets for the material convert settings.
+        /// </summary>
+        public void LoadDefaultAssets()
+        {
+            materialConvertSettings.LoadDefaultAssets();
+        }
     }
 }
