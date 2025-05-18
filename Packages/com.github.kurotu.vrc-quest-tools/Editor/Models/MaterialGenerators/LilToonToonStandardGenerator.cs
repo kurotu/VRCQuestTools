@@ -172,6 +172,26 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override AsyncCallbackRequest GenerateMatcap(Action<Texture2D> completion)
+        {
+            var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
+            mat.SetTexture("_Texture0", lilMaterial.MatCapTex);
+            mat.SetColor("_Texture0Color", lilMaterial.MatCapColor);
+
+            var matcapSize = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.width : 4;
+            var targetSize = Math.Min(matcapSize, (int)settings.maxTextureSize);
+            var rt = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32);
+            Graphics.Blit(null, rt, mat);
+
+            return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
+            {
+                UnityEngine.Object.DestroyImmediate(mat);
+                RenderTexture.ReleaseTemporary(rt);
+                completion?.Invoke(tex);
+            });
+        }
+
+        /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateMatcapMask(Action<Texture2D> completion)
         {
             var matcapMask = (Texture2D)lilMaterial.MatCapMask;

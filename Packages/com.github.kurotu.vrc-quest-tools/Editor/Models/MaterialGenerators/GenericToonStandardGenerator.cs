@@ -46,6 +46,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override AsyncCallbackRequest GenerateMatcap(Action<Texture2D> completion)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateMatcapMask(Action<Texture2D> completion)
         {
             throw new NotImplementedException();

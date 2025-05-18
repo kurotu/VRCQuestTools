@@ -139,7 +139,11 @@ namespace KRT.VRCQuestTools.Models
                 if (GetUseMatcap())
                 {
                     newMaterial.UseMatcap = true;
-                    newMaterial.Matcap = GetMatcap();
+                    MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "matcap", saveTextureAsPng, texturesPath, (compl) => GenerateMatcap(compl), (t) =>
+                    {
+                        newMaterial.Matcap = t;
+                    }).WaitForCompletion();
+
                     if (GetUseMatcapMask())
                     {
                         MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "matcapMask", saveTextureAsPng, texturesPath, (compl) => GenerateMatcapMask(compl), (t) =>
@@ -441,7 +445,7 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Async callback request.</returns>
-        // protected abstract AsyncCallbackRequest GenerateMatcap(Action<Texture2D> completion);
+        protected abstract AsyncCallbackRequest GenerateMatcap(Action<Texture2D> completion);
 
         /// <summary>
         /// Generates the matcap mask of the material.

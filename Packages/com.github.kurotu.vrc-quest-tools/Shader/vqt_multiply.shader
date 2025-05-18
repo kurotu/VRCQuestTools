@@ -3,7 +3,9 @@ Shader "Hidden/VRCQuestTools/Multiply"
     Properties
     {
         _Texture0 ("Texture 0", 2D) = "white" {}
+        _Texture0Color ("Texture 0 Color", Color) = (1,1,1,1)
         _Texture1 ("Texture 1", 2D) = "white" {}
+        _Texture1Color ("Texture 1 Color", Color) = (1,1,1,1)
     }
     SubShader
     {
@@ -32,9 +34,11 @@ Shader "Hidden/VRCQuestTools/Multiply"
 
             sampler2D _Texture0;
             float4 _Texture0_ST;
+            fixed4 _Texture0Color;
 
             sampler2D _Texture1;
             float4 _Texture1_ST;
+            fixed4 _Texture1Color;
 
             v2f vert (appdata v)
             {
@@ -46,7 +50,7 @@ Shader "Hidden/VRCQuestTools/Multiply"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 output = tex2D(_Texture0, i.uv) * tex2D(_Texture1, i.uv);
+                fixed4 output = tex2D(_Texture0, i.uv) * _Texture0Color * tex2D(_Texture1, i.uv) * _Texture1Color;
 
                 return output;
             }
