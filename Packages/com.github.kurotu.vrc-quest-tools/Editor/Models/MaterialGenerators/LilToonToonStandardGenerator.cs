@@ -257,13 +257,13 @@ namespace KRT.VRCQuestTools.Models
             material.parent = null;
 #endif
 
-            if (AssetUtility.IsLilToon2RampImported())
+            if (AssetUtility.CanLilToonBakeShadowRamp())
             {
                 material.shader = AssetUtility.GetLilToon2Ramp();
             }
             else
             {
-                material.shader = Shader.Find("Hidden/VRCQuestTools/lilToon/Ramp");
+                throw new InvalidOperationException("lilToon 1.10.0 or later is required to bake shadow ramp.");
             }
 
             var width = 128;
@@ -273,6 +273,7 @@ namespace KRT.VRCQuestTools.Models
 
             return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
             {
+                tex.wrapMode = TextureWrapMode.Clamp;
                 RenderTexture.ReleaseTemporary(rt);
                 UnityEngine.Object.DestroyImmediate(material);
                 completion?.Invoke(tex);

@@ -36,7 +36,7 @@ namespace KRT.VRCQuestTools.Utils
 
         private const string LilToonPackageJsonGUID = "397d2fa9e93fb5d44a9540d5f01437fc";
 
-        private static readonly Lazy<Shader> LilToon2Ramp = new Lazy<Shader>(() => Shader.Find("Hidden/_lil/lilToon2Ramp"));
+        private static readonly Lazy<Shader> LilToon2Ramp = new Lazy<Shader>(() => Shader.Find("Hidden/ltsother_bakeramp"));
 
         static AssetUtility()
         {
@@ -83,12 +83,12 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Gets whether lilToon2Ramp is imported.
+        /// Gets whether lilToon supports shadow ramp baking.
         /// </summary>
-        /// <returns>true when lilToon2Ramp shader is found.</returns>
-        internal static bool IsLilToon2RampImported()
+        /// <returns>true for lilToon 1.10.0 or later.</returns>
+        internal static bool CanLilToonBakeShadowRamp()
         {
-            return GetLilToon2Ramp() != null;
+            return LilToonVersion >= new SemVer(1, 10, 0);
         }
 
         /// <summary>
