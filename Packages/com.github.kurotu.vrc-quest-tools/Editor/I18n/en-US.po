@@ -272,6 +272,9 @@ msgstr "Toon Lit"
 msgid "MaterialConvertTypePopupLabelMatCapLit"
 msgstr "MatCap Lit"
 
+msgid "MaterialConvertTypePopupLabelToonStandard"
+msgstr "Toon Standard"
+
 msgid "MaterialConvertTypePopupLabelMaterialReplace"
 msgstr "Material Replacement"
 

@@ -47,6 +47,10 @@ namespace KRT.VRCQuestTools.Models
             {
                 return i18n.MaterialConvertTypePopupLabelMatCapLit;
             }
+            else if (type == typeof(ToonStandardConvertSettings))
+            {
+                return i18n.MaterialConvertTypePopupLabelToonStandard;
+            }
             else if (type == typeof(MaterialReplaceSettings))
             {
                 return i18n.MaterialConvertTypePopupLabelMaterialReplace;

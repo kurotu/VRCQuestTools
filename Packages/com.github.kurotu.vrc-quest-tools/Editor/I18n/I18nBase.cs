@@ -153,6 +153,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string AdditionalMaterialConvertSettingsSelectMaterialLabel => GetText("AdditionalMaterialConvertSettingsSelectMaterialLabel");
         internal string MaterialConvertTypePopupLabelToonLit => GetText("MaterialConvertTypePopupLabelToonLit");
         internal string MaterialConvertTypePopupLabelMatCapLit => GetText("MaterialConvertTypePopupLabelMatCapLit");
+        internal string MaterialConvertTypePopupLabelToonStandard => GetText("MaterialConvertTypePopupLabelToonStandard");
         internal string MaterialConvertTypePopupLabelMaterialReplace => GetText("MaterialConvertTypePopupLabelMaterialReplace");
         internal string MaterialReplaceSettingsMaterialLabel => GetText("MaterialReplaceSettingsMaterialLabel");
         internal string MaterialReplaceSettingsMaterialTooltip => GetText("MaterialReplaceSettingsMaterialTooltip");
