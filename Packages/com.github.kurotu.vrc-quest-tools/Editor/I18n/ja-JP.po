@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-05-17 01:34\n"
+"PO-Revision-Date: 2025-05-18 15:52\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -257,6 +257,12 @@ msgstr "MatCap テクスチャ"
 msgid "MatCapLitConvertSettingsMatCapTextureWarning"
 msgstr "MatCap テクスチャを設定してください。"
 
+msgid "ToonStandardConvertSettingsFallbackShadowRampLabel"
+msgstr "影のフォールバック"
+
+msgid "ToonStandardConvertSettingsCustomFallbackShadowRampLabel"
+msgstr "Shadow Ramp"
+
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
 msgstr "対象マテリアル"
 
@@ -268,6 +274,9 @@ msgstr "Toon Lit"
 
 msgid "MaterialConvertTypePopupLabelMatCapLit"
 msgstr "MatCap Lit"
+
+msgid "MaterialConvertTypePopupLabelToonStandard"
+msgstr "Toon Standard"
 
 msgid "MaterialConvertTypePopupLabelMaterialReplace"
 msgstr "マテリアル置換"
