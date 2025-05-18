@@ -138,6 +138,7 @@ namespace KRT.VRCQuestTools.Models
 
                 if (GetUseMatcap())
                 {
+                    newMaterial.UseMatcap = true;
                     newMaterial.Matcap = GetMatcap();
                     if (GetUseMatcapMask())
                     {
