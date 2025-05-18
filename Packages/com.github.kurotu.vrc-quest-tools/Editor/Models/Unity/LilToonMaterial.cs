@@ -184,6 +184,11 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Texture SmoothnessTex => Material.GetTexture("_SmoothnessTex");
 
         /// <summary>
+        /// Gets the reflection color tex.
+        /// </summary>
+        internal Texture ReflectionColorTex => Material.GetTexture("_ReflectionColorTex");
+
+        /// <summary>
         /// Gets the smoothness value.
         /// </summary>
         internal float Smoothness => Material.GetFloat("_Smoothness");
