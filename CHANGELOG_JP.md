@@ -7,6 +7,14 @@
 ## [Unreleased]
 
 ### 追加
+- Toon Standard への変換設定を追加。
+    - 現状では以下の制限があります。
+        - lilToon のみをサポートします。非サポートのマテリアルでは Toon Lit 用のメインテクスチャのみ使用します。
+        - 影が不正確です。
+            - より正確な影を使用するには [lilToon2Ramp](https://lilxyzw.fanbox.cc/posts/9858399) をインポートします。
+            - lilToon の将来のアップデートにより改善される可能性があります。
+        - [リムライトマスクがありません](https://feedback.vrchat.com/open-beta/p/sdk-381-beta3-add-rim-lighting-mask-for-toon-standard)。リムライトが過剰に明るくなる可能性があります。
+        - マスクテクスチャが最適化されていません。ビルドサイズが大きくなる可能性があります。
 - 変換後のテクスチャの圧縮形式を指定する機能を追加。
 
 ### 変更
