@@ -70,12 +70,6 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override float GetAnisotropy()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
         protected override CullMode GetCulling()
         {
             throw new NotImplementedException();
@@ -137,6 +131,12 @@ namespace KRT.VRCQuestTools.Models
 
         /// <inheritdoc/>
         protected override float GetReflectance()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        protected override float GetRimAlbedoTint()
         {
             throw new NotImplementedException();
         }

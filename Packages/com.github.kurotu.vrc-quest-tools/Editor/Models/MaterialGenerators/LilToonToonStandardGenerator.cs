@@ -94,6 +94,7 @@ namespace KRT.VRCQuestTools.Models
             {
                 newMaterial.UseRimLighting = true;
                 newMaterial.RimColor = lilMaterial.RimLightColor;
+                newMaterial.RimAlbedoTint = lilMaterial.RimMainStrength;
                 newMaterial.RimRange = Mathf.Pow(1.0f - lilMaterial.RimLightBorder, lilMaterial.RimFresnelPower);
                 newMaterial.RimSoftness = lilMaterial.RimLightBlur;
                 newMaterial.RimEnvironmental = lilMaterial.RimEnableLighting > 0.0f;
@@ -253,12 +254,6 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override float GetAnisotropy()
-        {
-            return 0.0f;
-        }
-
-        /// <inheritdoc/>
         protected override CullMode GetCulling()
         {
             return lilMaterial.CullMode;
@@ -344,6 +339,12 @@ namespace KRT.VRCQuestTools.Models
         protected override float GetReflectance()
         {
             return lilMaterial.Reflectance;
+        }
+
+        /// <inheritdoc/>
+        protected override float GetRimAlbedoTint()
+        {
+            return lilMaterial.RimMainStrength;
         }
 
         /// <inheritdoc/>

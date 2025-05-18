@@ -133,7 +133,6 @@ namespace KRT.VRCQuestTools.Models
 
                     newMaterial.Sharpness = GetSharpness();
                     newMaterial.Reflectance = GetReflectance();
-                    newMaterial.Anisotropy = GetAnisotropy();
                 }
 
                 if (GetUseMatcap())
@@ -159,6 +158,7 @@ namespace KRT.VRCQuestTools.Models
                 {
                     newMaterial.UseRimLighting = true;
                     newMaterial.RimColor = GetRimColor();
+                    newMaterial.RimAlbedoTint = GetRimAlbedoTint();
                     newMaterial.RimIntensity = GetRimIntensity();
                     newMaterial.RimRange = GetRimRange();
                     newMaterial.RimSoftness = GetRimSoftness();
@@ -296,12 +296,6 @@ namespace KRT.VRCQuestTools.Models
         protected abstract float GetReflectance();
 
         /// <summary>
-        /// Gets the anisotropy of the material.
-        /// </summary>
-        /// <returns>Anisotropy.</returns>
-        protected abstract float GetAnisotropy();
-
-        /// <summary>
         /// Gets the material should use matcap.
         /// </summary>
         /// <returns>True if the material should use matcap.</returns>
@@ -336,6 +330,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Rim color.</returns>
         protected abstract Color GetRimColor();
+
+        /// <summary>
+        /// Gets the rim albedo tint of the material.
+        /// </summary>
+        /// <returns>Rim Albedo Tint.</returns>
+        protected abstract float GetRimAlbedoTint();
 
         /// <summary>
         /// Gets the rim intensity of the material.

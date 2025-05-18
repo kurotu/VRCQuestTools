@@ -234,6 +234,11 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Color RimLightColor => Material.GetColor("_RimColor");
 
         /// <summary>
+        /// Gets the rim light main color strength.
+        /// </summary>
+        internal float RimMainStrength => Material.GetFloat("_RimMainStrength");
+
+        /// <summary>
         /// Gets the rim light border.
         /// </summary>
         internal float RimLightBorder => Material.GetFloat("_RimBorder");

@@ -367,15 +367,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
-        /// Gets or sets the anisotropy.
-        /// </summary>
-        internal float Anisotropy
-        {
-            get => material.GetFloat("_Anisotropy");
-            set => material.SetFloat("_Anisotropy", value);
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether to use matcap.
         /// </summary>
         internal bool UseMatcap
@@ -436,6 +427,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             get => material.GetColor("_RimColor");
             set => material.SetColor("_RimColor", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the rim lighting albedo tint.
+        /// </summary>
+        internal float RimAlbedoTint
+        {
+            get => material.GetFloat("_RimAlbedoTint");
+            set => material.SetFloat("_RimAlbedoTint", value);
         }
 
         /// <summary>
