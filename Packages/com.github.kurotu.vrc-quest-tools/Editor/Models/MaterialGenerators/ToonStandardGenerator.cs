@@ -28,6 +28,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public AsyncCallbackRequest GenerateMaterial(MaterialBase material, UnityEditor.BuildTarget buildTarget, bool saveTextureAsPng, string texturesPath, Action<Material> completion)
         {
+#if VQT_HAS_VRCSDK_TOON_STANDARD
             if (!(material is IToonStandardConvertable))
             {
                 var toonLitConvertSettings = new ToonLitConvertSettings
@@ -176,6 +177,9 @@ namespace KRT.VRCQuestTools.Models
             }
 
             return new ResultRequest<Material>(newMaterial, completion);
+#else
+            throw new InvalidOperationException("VRCSDK 3.8.1-beta.4 or later is required for Toon Standard.");
+#endif
         }
 
         /// <inheritdoc/>
