@@ -181,12 +181,6 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public AsyncCallbackRequest GenerateTextures(MaterialBase material, UnityEditor.BuildTarget buildTarget, bool saveTextureAsPng, string texturesPath, Action completion)
         {
-            if (!(material is IToonStandardConvertable))
-            {
-                Debug.LogWarning("ToonStandardGenerator only supports LilToonMaterial.");
-                return new ToonLitGenerator(new ToonLitConvertSettings()).GenerateTextures(material, buildTarget, saveTextureAsPng, texturesPath, completion);
-            }
-
             return GenerateMaterial(material, buildTarget, saveTextureAsPng, texturesPath, (newMaterial) =>
             {
                 completion?.Invoke();
