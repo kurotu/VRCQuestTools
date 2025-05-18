@@ -36,6 +36,8 @@ namespace KRT.VRCQuestTools.Utils
 
         private const string LilToonPackageJsonGUID = "397d2fa9e93fb5d44a9540d5f01437fc";
 
+        private static readonly Lazy<Shader> LilToon2Ramp = new Lazy<Shader>(() => Shader.Find("Hidden/_lil/lilToon2Ramp"));
+
         static AssetUtility()
         {
             if (IsLilToonImported())
@@ -78,6 +80,24 @@ namespace KRT.VRCQuestTools.Utils
             var shader = Shader.Find("lilToon");
             var inspector = SystemUtility.GetTypeByName("lilToon.lilToonInspector");
             return (shader != null) && (inspector != null);
+        }
+
+        /// <summary>
+        /// Gets whether lilToon2Ramp is imported.
+        /// </summary>
+        /// <returns>true when lilToon2Ramp shader is found.</returns>
+        internal static bool IsLilToon2RampImported()
+        {
+            return GetLilToon2Ramp() != null;
+        }
+
+        /// <summary>
+        /// Gets lilToon2Ramp shader.
+        /// </summary>
+        /// <returns>Shader object or null.</returns>
+        internal static Shader GetLilToon2Ramp()
+        {
+            return LilToon2Ramp.Value;
         }
 
         /// <summary>

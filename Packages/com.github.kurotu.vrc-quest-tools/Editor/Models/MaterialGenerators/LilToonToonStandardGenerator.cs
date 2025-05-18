@@ -256,14 +256,14 @@ namespace KRT.VRCQuestTools.Models
 #if UNITY_2022_1_OR_NEWER
             material.parent = null;
 #endif
-            var lilToon2Ramp = Shader.Find("Hidden/_lil/lilToon2Ramp");
-            if (lilToon2Ramp)
+
+            if (AssetUtility.IsLilToon2RampImported())
             {
-                material.shader = lilToon2Ramp;
+                material.shader = AssetUtility.GetLilToon2Ramp();
             }
             else
             {
-                throw new NotImplementedException("lilToon2Ramp shader not found. Please use the fallback ramp.");
+                material.shader = Shader.Find("Hidden/VRCQuestTools/lilToon/Ramp");
             }
 
             var width = 128;

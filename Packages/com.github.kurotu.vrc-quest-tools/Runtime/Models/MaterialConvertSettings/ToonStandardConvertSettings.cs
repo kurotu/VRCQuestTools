@@ -66,6 +66,9 @@ namespace KRT.VRCQuestTools.Models
                 sb.Append("\"" + valueObject + "\"");
                 sb.Append(",");
             }
+            sb.Append("\"lilToon2Ramp\":");
+            sb.Append("\"" + IsLilToon2RampImported() + "\"");
+
             sb.Append("}");
             var str = sb.ToString();
             return str;
@@ -89,6 +92,12 @@ namespace KRT.VRCQuestTools.Models
                     !field.IsDefined(typeof(NonSerializedAttribute), inherit: true) &&
                     (field.IsPublic || field.IsDefined(typeof(SerializeField), inherit: true)))
                 .ToArray();
+        }
+
+        private static bool IsLilToon2RampImported()
+        {
+            var shader = Shader.Find("Hidden/_lil/lilToon2Ramp");
+            return shader != null;
         }
     }
 }
