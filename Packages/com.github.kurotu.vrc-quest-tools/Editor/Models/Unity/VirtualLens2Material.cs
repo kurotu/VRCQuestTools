@@ -27,12 +27,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal override Shader ToonLitBakeShader => null;
 
         /// <inheritdoc/>
-        internal override Shader StandardLiteMainBakeShader => null;
-
-        /// <inheritdoc/>
-        internal override Shader StandardLiteMetallicSmoothnessBakeShader => null;
-
-        /// <inheritdoc/>
         internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, Action<Texture2D> completion)
         {
             if (Material.shader.name.ToLower().Contains("/UnlitPreview".ToLower()))

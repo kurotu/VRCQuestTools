@@ -143,12 +143,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string ToonLitConvertSettingsGenerateShadowFromNormalMapLabel => GetText("ToonLitConvertSettingsGenerateShadowFromNormalMapLabel");
         internal string MatCapLitConvertSettingsMatCapTextureLabel => GetText("MatCapLitConvertSettingsMatCapTextureLabel");
         internal string MatCapLitConvertSettingsMatCapTextureWarning => GetText("MatCapLitConvertSettingsMatCapTextureWarning");
-        internal string StandardLiteConvertSettingsUseMinimumBrightnessLabel => GetText("StandardLiteConvertSettingsUseMinimumBrightnessLabel");
-        internal string StandardLiteConvertSettingsUseMinimumBrightnessTooltip => GetText("StandardLiteConvertSettingsUseMinimumBrightnessTooltip");
-        internal string StandardLiteConvertSettingsAutoMinimumBrightnessLabel => GetText("StandardLiteConvertSettingsAutoMinimumBrightnessLabel");
-        internal string StandardLiteConvertSettingsAutoMinimumBrightnessTooltip => GetText("StandardLiteConvertSettingsAutoMinimumBrightnessTooltip");
-        internal string StandardLiteConvertSettingsMinimumBrightnessLabel => GetText("StandardLiteConvertSettingsMinimumBrightnessLabel");
-        internal string StandardLiteConvertSettingsMinimumBrightnessTooltip => GetText("StandardLiteConvertSettingsMinimumBrightnessTooltip");
         internal string ToonStandardConvertSettingsFallbackShadowRampLabel => GetText("ToonStandardConvertSettingsFallbackShadowRampLabel");
         internal string ToonStandardConvertSettingsCustomFallbackShadowRampLabel => GetText("ToonStandardConvertSettingsCustomFallbackShadowRampLabel");
         internal string AdditionalMaterialConvertSettingsTargetMaterialLabel => GetText("AdditionalMaterialConvertSettingsTargetMaterialLabel");

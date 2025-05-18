@@ -23,11 +23,5 @@ namespace KRT.VRCQuestTools.Models.Unity
 
         /// <inheritdoc/>
         internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/Sunao");
-
-        /// <inheritdoc/>
-        internal override Shader StandardLiteMainBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/Sunao_main");
-
-        /// <inheritdoc/>
-        internal override Shader StandardLiteMetallicSmoothnessBakeShader => Shader.Find("Hidden/VRCQuestTools/StandardLite/Sunao_metallic_smoothness");
     }
 }

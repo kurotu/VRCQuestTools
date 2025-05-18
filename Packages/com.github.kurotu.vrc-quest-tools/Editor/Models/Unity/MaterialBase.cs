@@ -35,16 +35,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal abstract Shader ToonLitBakeShader { get; }
 
         /// <summary>
-        /// Gets shader to bake Standard Lite main texture.
-        /// </summary>
-        internal abstract Shader StandardLiteMainBakeShader { get; }
-
-        /// <summary>
-        /// Gets shader to bake Standard Lite metallic smoothness texture.
-        /// </summary>
-        internal abstract Shader StandardLiteMetallicSmoothnessBakeShader { get; }
-
-        /// <summary>
         /// Convert internal material to Toon Lit.
         /// </summary>
         /// <returns>Converted material.</returns>

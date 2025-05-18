@@ -16,7 +16,6 @@ namespace KRT.VRCQuestTools.Models
         {
             typeof(ToonLitConvertSettings),
             typeof(MatCapLitConvertSettings),
-            typeof(StandardLiteConvertSettings),
             typeof(ToonStandardConvertSettings),
             typeof(MaterialReplaceSettings),
         };

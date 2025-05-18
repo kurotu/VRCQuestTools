@@ -114,7 +114,7 @@ namespace KRT.VRCQuestTools.Models
 #if UNITY_2022_1_OR_NEWER
             bakeMat.parent = null;
 #endif
-            bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/StandardLite/lilToon_emission");
+            bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/lilToon/Emission");
 
             var targetSize = Math.Min(lilMaterial.EmissionMap.width, (int)settings.maxTextureSize);
             var rt = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32);

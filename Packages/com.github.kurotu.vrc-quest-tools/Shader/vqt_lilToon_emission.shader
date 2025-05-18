@@ -1,4 +1,4 @@
-Shader "Hidden/VRCQuestTools/StandardLite/lilToon_emission"
+Shader "Hidden/VRCQuestTools/lilToon/Emission"
 {
     Properties
     {
