@@ -322,7 +322,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                                 }
                                 else
                                 {
-                                    throw new NotImplementedException($"Material {m.name} is not a LilToon material.");
+                                    request = new GenericToonStandardGenerator(toonStandardConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
                                 }
                             }
                             else

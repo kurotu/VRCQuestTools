@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- lilToon 以外のマテリアルがあるとき `VQT Avatar Converter Settings` の「変換後のAndroid用テクスチャを更新」ボタンでエラーが発生する問題を修正。
+
 ## [2.10.0-beta.1] - 2025-05-19
 
 ### 追加
