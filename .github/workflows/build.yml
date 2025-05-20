@@ -196,6 +196,7 @@ jobs:
         with:
           body_path: ${{ github.workspace }}-release.txt
           draft: true
+          prerelease: ${{ contains(github.ref, '-') }}
           files: |
             Packages/com.github.kurotu.vrc-quest-tools/package.json
             *.zip

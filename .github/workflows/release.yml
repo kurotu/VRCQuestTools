@@ -25,6 +25,7 @@ jobs:
           git push
 
   update-docs:
+    if: ${{ !contains(github.event.inputs.version, '-') }}
     needs: bump
     runs-on: ubuntu-latest
     steps:
