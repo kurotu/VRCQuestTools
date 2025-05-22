@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Apply MatCap color alpha to converted Toon Standard materials.
+
 ### Fixed
 - Aspect ratio not kept when converting textures for Toon Standard.
 - Unexpected shadow ramp when converting materials which don't use shadow to Toon Standard.

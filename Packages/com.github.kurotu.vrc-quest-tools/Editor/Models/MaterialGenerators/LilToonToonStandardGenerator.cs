@@ -176,7 +176,9 @@ namespace KRT.VRCQuestTools.Models
         {
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
             mat.SetTexture("_Texture0", lilMaterial.MatCapTex);
-            mat.SetColor("_Texture0Color", lilMaterial.MatCapColor);
+            var color = lilMaterial.MatCapColor;
+            color.a = 1.0f;
+            mat.SetColor("_Texture0Color", color);
 
             var matcapWidth = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.width : 4;
             var matcapHeight = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.height : 4;
@@ -362,7 +364,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override float GetMatcapMaskStrength()
         {
-            return lilMaterial.MatCapBlend;
+            return lilMaterial.MatCapBlend * lilMaterial.MatCapColor.a;
         }
 
         /// <inheritdoc/>
