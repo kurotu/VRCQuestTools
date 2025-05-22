@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Apply MatCap color alpha to converted Toon Standard materials.
+- Apply rim lighting color alpha to converted Toon Standard materials.
 
 ### Fixed
 - Aspect ratio not kept when converting textures for Toon Standard.

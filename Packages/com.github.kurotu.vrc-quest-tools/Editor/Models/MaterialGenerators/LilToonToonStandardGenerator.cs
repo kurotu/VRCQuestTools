@@ -400,7 +400,9 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override Color GetRimColor()
         {
-            return lilMaterial.RimLightColor;
+            var color = lilMaterial.RimLightColor;
+            color.a = 1.0f;
+            return color;
         }
 
         /// <inheritdoc/>
@@ -412,9 +414,11 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override float GetRimIntensity()
         {
-            return GetRimEnvironmental()
+            var intensity = GetRimEnvironmental()
                 ? 0.5f * lilMaterial.RimEnableLighting
                 : 0.5f;
+            intensity *= lilMaterial.RimLightColor.a;
+            return intensity;
         }
 
         /// <inheritdoc/>
