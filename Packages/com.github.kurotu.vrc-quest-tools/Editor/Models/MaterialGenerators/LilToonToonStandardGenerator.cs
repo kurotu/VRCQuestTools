@@ -491,6 +491,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override bool GetUseShadowRamp()
+        {
+            return lilMaterial.UseShadow;
+        }
+
+        /// <inheritdoc/>
         protected override bool GetUseSpecular()
         {
             return lilMaterial.UseReflection;

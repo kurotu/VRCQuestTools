@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Aspect ratio not kept when converting textures for Toon Standard.
+- Unexpected shadow ramp when converting materials which don't use shadow to Toon Standard.
 
 ## [2.10.0-beta.2] - 2025-05-20
 
