@@ -364,7 +364,8 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override float GetMatcapMaskStrength()
         {
-            return lilMaterial.MatCapBlend * lilMaterial.MatCapColor.a;
+            var mainStrength = 0.9f * (1.0f - lilMaterial.MatCapMainStrength) + 0.1f;
+            return lilMaterial.MatCapBlend * lilMaterial.MatCapColor.a * mainStrength;
         }
 
         /// <inheritdoc/>

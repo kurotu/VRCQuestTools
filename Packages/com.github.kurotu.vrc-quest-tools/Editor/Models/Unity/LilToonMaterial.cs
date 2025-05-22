@@ -175,6 +175,11 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Color MatCapColor => Material.GetColor("_MatCapColor");
 
         /// <summary>
+        /// Gets the matcap color strength.
+        /// </summary>
+        internal float MatCapMainStrength => Material.GetFloat("_MatCapMainStrength");
+
+        /// <summary>
         /// Gets the matcap mask texture.
         /// </summary>
         internal Texture MatCapMask => Material.GetTexture("_MatCapBlendMask");
