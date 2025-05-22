@@ -552,6 +552,14 @@ namespace KRT.VRCQuestTools.Utils
         {
             var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
             var format = isMobile ? mobileFormat : TextureFormat.DXT5;
+            if (format == TextureFormat.DXT5)
+            {
+                if (texture.width % 4 != 0 || texture.height % 4 != 0)
+                {
+                    Debug.LogWarning($"[{VRCQuestTools.Name}] Texture {texture.name} is not a multiple of 4. Not compressed to DXT5.", texture);
+                    return;
+                }
+            }
             EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);
         }
 
@@ -767,6 +775,25 @@ namespace KRT.VRCQuestTools.Utils
             RenderTexture.ReleaseTemporary(dstRT);
 
             return result;
+        }
+
+        /// <summary>
+        /// Reduces the size of a texture while maintaining its aspect ratio.
+        /// </summary>
+        /// <param name="width">Original width.</param>
+        /// <param name="height">Original height.</param>
+        /// <param name="maxSize">Maximum size.</param>
+        /// <returns>Reduced size or original size.</returns>
+        internal static (int Width, int Height) AspectFitReduction(int width, int height, int maxSize)
+        {
+            var scale = (float)maxSize / Math.Max(width, height);
+            if (scale > 1.0f)
+            {
+                return (width, height);
+            }
+            var newWidth = Math.Round(width * scale);
+            var newHeight = Math.Round(height * scale);
+            return ((int)newWidth, (int)newHeight);
         }
 
         private static bool ShouldUseAsyncGPUReadback()
