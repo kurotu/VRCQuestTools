@@ -1,4 +1,6 @@
-﻿using KRT.VRCQuestTools.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -43,6 +45,12 @@ namespace KRT.VRCQuestTools.Views
             }
 
             var components = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(gameObject, true);
+#if VQT_HAS_VRCSDK_NO_PRECHECK && VQT_HAS_MA_CONVERT_CONSTRAINTS
+            if (gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() != null)
+            {
+                components = components.Where(c => !(c is UnityEngine.Animations.IConstraint)).ToArray();
+            }
+#endif
             var maComponents = ModularAvatarUtility.GetUnsupportedComponentsInChildren(gameObject, true);
 
             using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPosition))
@@ -89,7 +97,16 @@ namespace KRT.VRCQuestTools.Views
                 if (GUILayout.Button(i18n.RemoveLabel))
                 {
                     Undo.SetCurrentGroupName("Remove Unsupported Components");
-                    VRCQuestTools.ComponentRemover.RemoveUnsupportedComponentsInChildren(gameObject.gameObject, true, true);
+
+                    var allowedComponents = new List<System.Type>();
+#if VQT_HAS_VRCSDK_NO_PRECHECK && VQT_HAS_MA_CONVERT_CONSTRAINTS
+                    if (gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() != null)
+                    {
+                        allowedComponents.Add(typeof(UnityEngine.Animations.IConstraint));
+                        VRCQuestTools.ComponentRemover.RemoveUnsupportedComponentsInChildren(gameObject.gameObject, true, true, new System.Type[] { typeof(UnityEngine.Animations.IConstraint) });
+                    }
+#endif
+                    VRCQuestTools.ComponentRemover.RemoveUnsupportedComponentsInChildren(gameObject.gameObject, true, true, allowedComponents.ToArray());
                     ModularAvatarUtility.RemoveUnsupportedComponents(gameObject.gameObject, true);
                     Close();
                 }

@@ -6,6 +6,14 @@
 
 ## [Unreleased]
 
+### 追加
+- `MA Convert Constraints` コンポーネントとの統合を改善。
+    - `Avatar Converter for Android` ウィンドウの「変換の設定を始める」ボタンを押すと `MA Convert Constraints` を追加。
+    - 以下の場面で `MA Convert Constraints` が存在するとき Unity Constraints を削除しない。 (VRCSDK 3.8.1-beta.1 以降)
+        - 手動での変換
+        - `Unsupported Components` ウィンドウ
+    - [NDMF] `VQT Avatar Converter Settings` で Mobile プラットフォーム向けにアバターをビルドするときに `MA Convert Constraints` を追加。
+
 ### 変更
 - 以下のパラメータを変換した Toon Standard マテリアルに反映するように変更。
     - MatCap カラーのアルファ値

@@ -43,6 +43,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
             InPhase(BuildPhase.Resolving)
                 .BeforePlugin("dev.logilabo.virtuallens2.apply-non-destructive") // need to configure vlens2.
+                .BeforePlugin("nadena.dev.modular-avatar") // need to configure modular avatar
                 .Run(BuildTargetConfigurationPass.Instance)
                 .Then.Run(PlatformGameObjectRemoverPass.Instance)
                 .Then.Run(PlatformComponentRemoverPass.Instance)

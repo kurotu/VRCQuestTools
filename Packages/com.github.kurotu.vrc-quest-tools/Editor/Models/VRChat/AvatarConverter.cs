@@ -19,6 +19,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 
 #if VQT_HAS_VRCSDK_BASE
+using VRC.Core;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
 #else
 using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
@@ -88,6 +89,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
         /// <summary>
+        /// Prepare modular avatar components in place.
+        /// </summary>
+        /// <param name="avatar">Avatar object to convert.</param>
+        internal void PrepareModularAvatarComponentsInPlace(VRChatAvatar avatar)
+        {
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+            avatar.GameObject.GetOrAddComponent<ModularAvatarConvertConstraints>();
+#endif
+        }
+
+        /// <summary>
         /// Convert the avatar for Quest in place.
         /// </summary>
         /// <param name="avatar">Avatar object to convert.</param>
@@ -119,7 +131,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             if (converterSettings != null)
             {
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS && VQT_HAS_VRCSDK_NO_PRECHECK
+                if (saveAssetsAsFile && questAvatarObject.GetComponent<ModularAvatarConvertConstraints>() != null) {
+                    remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true, false, new Type[] { typeof(UnityEngine.Animations.IConstraint) });
+                }
+                else
+                {
+                    remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
+                }
+#else
                 remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
+#endif
                 ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
 
                 ApplyVRCQuestToolsComponents(converterSettings, questAvatarObject);

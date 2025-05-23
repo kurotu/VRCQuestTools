@@ -32,6 +32,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     break;
                 case Models.BuildTarget.Android:
                     VRCQuestTools.AvatarConverter.PrepareConvertForQuestInPlace(avatar);
+                    VRCQuestTools.AvatarConverter.PrepareModularAvatarComponentsInPlace(avatar);
                     break;
                 default:
                     throw new System.InvalidProgramException($"Unsupported build target: {buildTarget}");

@@ -101,11 +101,18 @@ namespace KRT.VRCQuestTools.Views
             editor = Editor.CreateEditor(converterSettings);
             if (targetRoot.gameObject.GetComponent<NetworkIDAssigner>() == null)
             {
-                Undo.SetCurrentGroupName(Undo.GetCurrentGroupName() + " and NetworkIDAssigner");
                 var i18n = VRCQuestToolsSettings.I18nResource;
                 Undo.AddComponent<NetworkIDAssigner>(targetRoot);
                 EditorUtility.DisplayDialog("VRCQuestTools", i18n.NetworkIdAssignerAttached, "OK");
             }
+
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+            if (targetRoot.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
+            {
+                Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(targetRoot);
+            }
+#endif
+
             Undo.CollapseUndoOperations(group);
         }
     }
