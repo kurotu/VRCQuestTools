@@ -232,6 +232,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override bool GetUseShadowRamp()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override bool GetUseSpecular()
         {
             throw new NotImplementedException();

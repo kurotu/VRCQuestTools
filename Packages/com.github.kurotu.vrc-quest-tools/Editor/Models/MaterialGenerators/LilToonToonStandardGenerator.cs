@@ -160,8 +160,8 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateMainTexture(Action<Texture2D> completion)
         {
             var rt = lilMaterial.BakeMain();
-            var textureSize = Math.Min(rt.width, (int)settings.maxTextureSize);
-            var rt2 = RenderTexture.GetTemporary(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
+            var (width, height) = TextureUtility.AspectFitReduction(rt.width, rt.height, (int)settings.maxTextureSize);
+            var rt2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
             TextureUtility.DownscaleBlit(rt, true, rt2);
             return TextureUtility.RequestReadbackRenderTexture(rt2, true, (tex) =>
             {
@@ -176,11 +176,14 @@ namespace KRT.VRCQuestTools.Models
         {
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
             mat.SetTexture("_Texture0", lilMaterial.MatCapTex);
-            mat.SetColor("_Texture0Color", lilMaterial.MatCapColor);
+            var color = lilMaterial.MatCapColor;
+            color.a = 1.0f;
+            mat.SetColor("_Texture0Color", color);
 
-            var matcapSize = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.width : 4;
-            var targetSize = Math.Min(matcapSize, (int)settings.maxTextureSize);
-            var rt = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32);
+            var matcapWidth = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.width : 4;
+            var matcapHeight = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.height : 4;
+            var (width, height) = TextureUtility.AspectFitReduction(matcapWidth, matcapHeight, (int)settings.maxTextureSize);
+            var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(null, rt, mat);
 
             return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
@@ -195,7 +198,7 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateMatcapMask(Action<Texture2D> completion)
         {
             var matcapMask = (Texture2D)lilMaterial.MatCapMask;
-            var targetSize = Math.Min(matcapMask.width, (int)settings.maxTextureSize);
+            var (width, height) = TextureUtility.AspectFitReduction(matcapMask.width, matcapMask.height, (int)settings.maxTextureSize);
 
             var rt = RenderTexture.GetTemporary(matcapMask.width, matcapMask.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -208,7 +211,7 @@ namespace KRT.VRCQuestTools.Models
 
             Graphics.Blit(null, rt, mat);
 
-            var rt2 = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var rt2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             TextureUtility.DownscaleBlit(rt, false, rt2);
 
             return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
@@ -229,7 +232,7 @@ namespace KRT.VRCQuestTools.Models
             var reflectionColorSize = reflectionColor ? reflectionColor.width : 0;
 
             var originalSize = Math.Max(metallicSize, reflectionColorSize);
-            var targetSize = Math.Min(originalSize, (int)settings.maxTextureSize);
+            var (width, height) = TextureUtility.AspectFitReduction(originalSize, originalSize, (int)settings.maxTextureSize);
 
             var rt0 = RenderTexture.GetTemporary(originalSize, originalSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat0 = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -247,7 +250,7 @@ namespace KRT.VRCQuestTools.Models
             mat.SetTexture("_Texture1", metallic);
             Graphics.Blit(null, rt, mat);
 
-            var rt2 = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var rt2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             TextureUtility.DownscaleBlit(rt, false, rt2);
 
             return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
@@ -264,8 +267,8 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion)
         {
             var normal = (Texture2D)lilMaterial.NormalMap;
-            var targetSize = Math.Min(normal.width, (int)settings.maxTextureSize);
-            var newTex = TextureUtility.DownscaleNormalMap(normal, outputRGB, targetSize, targetSize);
+            var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, (int)settings.maxTextureSize);
+            var newTex = TextureUtility.DownscaleNormalMap(normal, outputRGB, width, height);
             return new ResultRequest<Texture2D>(newTex, completion);
         }
 
@@ -361,7 +364,8 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override float GetMatcapMaskStrength()
         {
-            return lilMaterial.MatCapBlend;
+            var mainStrength = 0.9f * (1.0f - lilMaterial.MatCapMainStrength) + 0.1f;
+            return lilMaterial.MatCapBlend * lilMaterial.MatCapColor.a * mainStrength;
         }
 
         /// <inheritdoc/>
@@ -397,7 +401,9 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override Color GetRimColor()
         {
-            return lilMaterial.RimLightColor;
+            var color = lilMaterial.RimLightColor;
+            color.a = 1.0f;
+            return color;
         }
 
         /// <inheritdoc/>
@@ -409,9 +415,11 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override float GetRimIntensity()
         {
-            return GetRimEnvironmental()
+            var intensity = GetRimEnvironmental()
                 ? 0.5f * lilMaterial.RimEnableLighting
                 : 0.5f;
+            intensity *= lilMaterial.RimLightColor.a;
+            return intensity;
         }
 
         /// <inheritdoc/>
@@ -487,6 +495,12 @@ namespace KRT.VRCQuestTools.Models
         protected override bool GetUseRimLighting()
         {
             return lilMaterial.UseRimLight;
+        }
+
+        /// <inheritdoc/>
+        protected override bool GetUseShadowRamp()
+        {
+            return lilMaterial.UseShadow;
         }
 
         /// <inheritdoc/>

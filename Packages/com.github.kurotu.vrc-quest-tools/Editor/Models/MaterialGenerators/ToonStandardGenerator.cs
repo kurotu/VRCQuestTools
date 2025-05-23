@@ -81,13 +81,19 @@ namespace KRT.VRCQuestTools.Models
 
                 newMaterial.Culling = GetCulling();
 
-                MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "shadowRamp", saveTextureAsPng, texturesPath, (compl) => GenerateShadowRamp(compl), (t) =>
+                if (GetUseShadowRamp())
                 {
-                    newMaterial.ShadowRamp = t;
-                    newMaterial.ShadowBoost = 0.0f;
-                    newMaterial.ShadowTint = 0.0f;
-                    newMaterial.MinBrightness = GetMinBrightness();
-                }).WaitForCompletion();
+                    MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "shadowRamp", saveTextureAsPng, texturesPath, (compl) => GenerateShadowRamp(compl), (t) =>
+                    {
+                        newMaterial.ShadowRamp = t;
+                        newMaterial.ShadowBoost = 0.0f;
+                        newMaterial.ShadowTint = 0.0f;
+                        newMaterial.MinBrightness = GetMinBrightness();
+                    }).WaitForCompletion();
+                }
+                else {
+                    newMaterial.ShadowRamp = ToonStandardMaterialWrapper.RampTexture.Flat;
+                }
 
                 if (GetUseEmissionMap())
                 {
@@ -230,6 +236,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Culling mode.</returns>
         protected abstract CullMode GetCulling();
+
+        /// <summary>
+        /// Gets the material should use shadow.
+        /// </summary>
+        /// <returns>True if the material should use shadow ramp.</returns>
+        protected abstract bool GetUseShadowRamp();
 
         /// <summary>
         /// Gets the min brightness of the material.

@@ -4,6 +4,17 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 変更
+- MatCap カラーのアルファ値を変換した Toon Standard マテリアルに反映するように変更。
+- MatCap のメインカラーの強度を変換した Toon Standard マテリアルに反映するように変更。
+- リムライトカラーのアルファ値を変換した Toon Standard マテリアルに反映するように変更。
+
+### 修正
+- Toon Standard への変換でテクスチャのアスペクト比が維持されない問題を修正。
+- 影を使用しないマテリアルを Toon Standard に変換すると影が設定される問題を修正。
+
 ## [2.10.0-beta.2] - 2025-05-20
 
 ### 修正
