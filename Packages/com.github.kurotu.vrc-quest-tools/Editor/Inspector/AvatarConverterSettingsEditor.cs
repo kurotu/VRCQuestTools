@@ -396,7 +396,7 @@ namespace KRT.VRCQuestTools.Inspector
 #if VQT_HAS_MA_CONVERT_CONSTRAINTS
         private void OnClickAddConvertConstraintsButton(VRC_AvatarDescriptor avatar)
         {
-            avatar.gameObject.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>();
+            Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(avatar.gameObject);
         }
 #endif
 
@@ -408,7 +408,7 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickAttachNetworkIDAssignerButton(VRC_AvatarDescriptor descriptor)
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-            descriptor.gameObject.AddComponent<NetworkIDAssigner>();
+            Undo.AddComponent<NetworkIDAssigner>(descriptor.gameObject);
             PrefabUtility.RecordPrefabInstancePropertyModifications(descriptor.gameObject);
             EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NetworkIdAssignerAttached, "OK");
         }

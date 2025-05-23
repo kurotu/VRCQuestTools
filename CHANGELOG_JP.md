@@ -15,6 +15,10 @@
 ### 修正
 - Toon Standard への変換でテクスチャのアスペクト比が維持されない問題を修正。
 - 影を使用しないマテリアルを Toon Standard に変換すると影が設定される問題を修正。
+- 以下の操作を Undo できない問題を修正。
+    - `Conevrt Avatar for Android` ウィンドウの「変換の設定を始める」ボタン
+    - `VQT Avatar Converter Settings` インスペクターでのコンポーネントの追加
+    - `Remove All Vertex Colors` メニューによる `VQT Vertex Color Remover` コンポーネントの追加
 
 ## [2.10.0-beta.2] - 2025-05-20
 

@@ -95,14 +95,18 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnClickAttachAvatarConverterButton()
         {
-            var converterSettings = targetRoot.gameObject.AddComponent<AvatarConverterSettings>();
+            var group = Undo.GetCurrentGroup();
+            Undo.SetCurrentGroupName("Add AvatarConverterSettings");
+            var converterSettings = Undo.AddComponent<AvatarConverterSettings>(targetRoot);
             editor = Editor.CreateEditor(converterSettings);
             if (targetRoot.gameObject.GetComponent<NetworkIDAssigner>() == null)
             {
+                Undo.SetCurrentGroupName(Undo.GetCurrentGroupName() + " and NetworkIDAssigner");
                 var i18n = VRCQuestToolsSettings.I18nResource;
-                targetRoot.gameObject.AddComponent<NetworkIDAssigner>();
+                Undo.AddComponent<NetworkIDAssigner>(targetRoot);
                 EditorUtility.DisplayDialog("VRCQuestTools", i18n.NetworkIdAssignerAttached, "OK");
             }
+            Undo.CollapseUndoOperations(group);
         }
     }
 }

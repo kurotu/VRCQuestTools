@@ -30,7 +30,7 @@ namespace KRT.VRCQuestTools.Menus
             var remover = target.GetComponent<VertexColorRemover>();
             if (remover == null)
             {
-                remover = target.AddComponent<VertexColorRemover>();
+                remover = Undo.AddComponent<VertexColorRemover>(target);
             }
             remover.includeChildren = true;
             remover.enabled = true;

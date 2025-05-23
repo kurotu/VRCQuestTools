@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Aspect ratio not kept when converting textures for Toon Standard.
 - Unexpected shadow ramp when converting materials which don't use shadow to Toon Standard.
+- Undo for following operations:
+    - `Begin Converter Settings` button of `Convert Avatar for Android` window.
+    - Component addition in `VQT Avatar Converter Settings` inspector.
+    - `VQT Vertex Color Remover` component addition by `Remove All Vertex Colors` menu.
 
 ## [2.10.0-beta.2] - 2025-05-20
 
