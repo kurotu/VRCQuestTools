@@ -13,6 +13,7 @@
         - VRCFury が存在: Transforming Phase
 
 ### 変更
+- Toon Standard のマスクテクスチャを可能な限り1つにまとめるように変更。
 - [NDMF] `VQT Avatar Converter Settings` および `VQT Material Conversion Settings` のNDMF変換フェーズの初期値を `Auto` に変更。
 
 ## [2.10.0-beta.3] - 2025-05-24

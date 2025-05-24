@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
@@ -23,6 +25,42 @@ namespace KRT.VRCQuestTools.Models
         internal ToonStandardGenerator(ToonStandardConvertSettings settings)
         {
             this.settings = settings;
+        }
+
+        /// <summary>
+        /// Mask types for the texture pack.
+        /// </summary>
+        protected enum MaskType
+        {
+            /// <summary>
+            /// No mask.
+            /// </summary>
+            None,
+
+            /// <summary>
+            /// Detail mask.
+            /// </summary>
+            DetailMask,
+
+            /// <summary>
+            /// Metallic map.
+            /// </summary>
+            MetallicMap,
+
+            /// <summary>
+            /// Matcap mask.
+            /// </summary>
+            MatcapMask,
+
+            /// <summary>
+            /// Occulusion map.
+            /// </summary>
+            OcculusionMap,
+
+            /// <summary>
+            /// Gloss map.
+            /// </summary>
+            GlossMap,
         }
 
         /// <inheritdoc/>
@@ -54,6 +92,8 @@ namespace KRT.VRCQuestTools.Models
             {
                 newMaterial = new ToonStandardMaterialWrapper();
                 newMaterial.Name = material.Material.name;
+                var masks = new List<MaskType>();
+
                 if (GetUseMainTexture())
                 {
                     MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "main", saveTextureAsPng, texturesPath, (compl) => GenerateMainTexture(compl), (t) =>
@@ -91,7 +131,8 @@ namespace KRT.VRCQuestTools.Models
                         newMaterial.MinBrightness = GetMinBrightness();
                     }).WaitForCompletion();
                 }
-                else {
+                else
+                {
                     newMaterial.ShadowRamp = ToonStandardMaterialWrapper.RampTexture.Flat;
                 }
 
@@ -108,33 +149,18 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.EmissionColor = GetEmissionColor();
                 }
 
-                var texturePack = new TexturePack();
                 if (GetUseSpecular())
                 {
                     newMaterial.UseSpecular = true;
                     if (GetUseMetallicMap())
                     {
-                        MaterialGeneratorUtility.GenerateParameterTexture(material.Material, settings, "metallic", saveTextureAsPng, texturesPath, (compl) => GenerateMetallicMap(compl), (t) =>
-                        {
-                            if (texturePack.R == null)
-                            {
-                                texturePack.R = new Tuple<TexturePack.RedChannelType, Texture2D>(TexturePack.RedChannelType.MetallicMap, t);
-                            }
-                            newMaterial.MetallicMap = t;
-                        }).WaitForCompletion();
+                        masks.Add(MaskType.MetallicMap);
                     }
                     newMaterial.MetallicStrength = GetMetallicStrength();
 
                     if (GetUseGlossMap())
                     {
-                        MaterialGeneratorUtility.GenerateParameterTexture(material.Material, settings, "gloss", saveTextureAsPng, texturesPath, (compl) => GenerateGlossMap(compl), (t) =>
-                        {
-                            if (texturePack.A == null)
-                            {
-                                texturePack.A = new Tuple<TexturePack.AlphaChannelType, Texture2D>(TexturePack.AlphaChannelType.GlossMap, t);
-                            }
-                            newMaterial.GlossMap = t;
-                        }).WaitForCompletion();
+                        masks.Add(MaskType.GlossMap);
                     }
                     newMaterial.GlossStrength = GetGlossStrength();
 
@@ -152,14 +178,7 @@ namespace KRT.VRCQuestTools.Models
 
                     if (GetUseMatcapMask())
                     {
-                        MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "matcapMask", saveTextureAsPng, texturesPath, (compl) => GenerateMatcapMask(compl), (t) =>
-                        {
-                            if (texturePack.R == null)
-                            {
-                                texturePack.R = new Tuple<TexturePack.RedChannelType, Texture2D>(TexturePack.RedChannelType.MatcapMask, t);
-                            }
-                            newMaterial.MatcapMask = t;
-                        }).WaitForCompletion();
+                        masks.Add(MaskType.MatcapMask);
                     }
                     newMaterial.MatcapStrength = GetMatcapMaskStrength();
                     newMaterial.MatcapType = GetMapcapType();
@@ -176,9 +195,60 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.RimEnvironmental = GetRimEnvironmental();
                 }
 
-                if (texturePack.NeedsPacking)
+                if (masks.Count > 0)
                 {
-                    Debug.LogWarning("Pack textures are not supported yet.");
+                    var texturePacks = new List<TexturePack>();
+                    // per 4 masks, generate a texture pack.
+                    for (int i = 0; i < masks.Count; i += 4)
+                    {
+                        var pack = new TexturePack
+                        {
+                            // R and A has higher quality in DXT5.
+                            R = masks.ElementAtOrDefault(i),
+                            A = masks.ElementAtOrDefault(i + 1),
+                            G = masks.ElementAtOrDefault(i + 2),
+                            B = masks.ElementAtOrDefault(i + 3),
+                        };
+                        texturePacks.Add(pack);
+                    }
+
+                    foreach (var pack in texturePacks)
+                    {
+                        var name = $"mask_{pack.R}_{pack.G}_{pack.B}_{pack.A}";
+                        MaterialGeneratorUtility.GenerateTexture(material.Material, settings, name, saveTextureAsPng, texturesPath, (compl) => GeneratePackedMask(pack, compl), (t) =>
+                        {
+                            foreach (var mask in pack.GetMasks())
+                            {
+                                switch (mask.MaskType)
+                                {
+                                    case MaskType.None:
+                                        break;
+                                    case MaskType.DetailMask:
+                                        newMaterial.DetailMask = t;
+                                        newMaterial.DetailMaskChannel = mask.Channel;
+                                        break;
+                                    case MaskType.MetallicMap:
+                                        newMaterial.MetallicMap = t;
+                                        newMaterial.MetallicMapChannel = mask.Channel;
+                                        break;
+                                    case MaskType.MatcapMask:
+                                        newMaterial.MatcapMask = t;
+                                        newMaterial.MatcapMaskChannel = mask.Channel;
+                                        break;
+                                    case MaskType.OcculusionMap:
+                                        newMaterial.OcclusionMap = t;
+                                        newMaterial.OcclusionMapChannel = mask.Channel;
+                                        break;
+                                    case MaskType.GlossMap:
+                                        newMaterial.GlossMap = t;
+                                        newMaterial.GlossMapChannel = mask.Channel;
+                                        break;
+                                    default:
+                                        throw new InvalidProgramException($"Unhandled mask type: {mask.MaskType}");
+                                }
+                            }
+                        }).WaitForCompletion();
+                    }
                 }
             }
             else
@@ -466,56 +536,60 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Async callback request.</returns>
         protected abstract AsyncCallbackRequest GenerateMatcapMask(Action<Texture2D> completion);
 
-        private class TexturePack
+        /// <summary>
+        /// Generates a packed mask texture from the given texture pack.
+        /// </summary>
+        /// <param name="pack">Texture pack configuration.</param>
+        /// <param name="completion">Completion callback.</param>
+        /// <returns>Async callback request.</returns>
+        protected abstract AsyncCallbackRequest GeneratePackedMask(TexturePack pack, Action<Texture2D> completion);
+
+        /// <summary>
+        /// Represents a texture pack for Toon Standard materials, containing different mask types.
+        /// </summary>
+        protected class TexturePack
         {
-            public Tuple<RedChannelType, Texture2D> R;
-            public Tuple<GreenChannelType, Texture2D> G;
-            public Tuple<BlueChannelType, Texture2D> B;
-            public Tuple<AlphaChannelType, Texture2D> A;
+            /// <summary>
+            /// Red channel mask type.
+            /// </summary>
+            public MaskType R;
 
-            internal enum RedChannelType
-            {
-                DetailMask,
-                MetallicMap,
-                MatcapMask,
-            }
+            /// <summary>
+            /// Green channel mask type.
+            /// </summary>
+            public MaskType G;
 
-            internal enum GreenChannelType
-            {
-                OcculusionMap,
-            }
+            /// <summary>
+            /// Blue channel mask type.
+            /// </summary>
+            public MaskType B;
 
-            internal enum BlueChannelType
-            {
-            }
+            /// <summary>
+            /// Alpha channel mask type.
+            /// </summary>
+            public MaskType A;
 
-            internal enum AlphaChannelType
+            /// <summary>
+            /// Enumerates the masks in this texture pack with their corresponding channels.
+            /// </summary>
+            /// <returns>IEnumerable for mask type and channel.</returns>
+            internal IEnumerable<(MaskType MaskType, ToonStandardMaterialWrapper.MaskChannel Channel)> GetMasks()
             {
-                GlossMap,
-            }
-
-            public bool NeedsPacking
-            {
-                get
+                if (R != MaskType.None)
                 {
-                    var count = 0;
-                    if (R != null)
-                    {
-                        count++;
-                    }
-                    if (G != null)
-                    {
-                        count++;
-                    }
-                    if (B != null)
-                    {
-                        count++;
-                    }
-                    if (A != null)
-                    {
-                        count++;
-                    }
-                    return count > 1;
+                    yield return (R, ToonStandardMaterialWrapper.MaskChannel.R);
+                }
+                if (G != MaskType.None)
+                {
+                    yield return (G, ToonStandardMaterialWrapper.MaskChannel.G);
+                }
+                if (B != MaskType.None)
+                {
+                    yield return (B, ToonStandardMaterialWrapper.MaskChannel.B);
+                }
+                if (A != MaskType.None)
+                {
+                    yield return (A, ToonStandardMaterialWrapper.MaskChannel.A);
                 }
             }
         }

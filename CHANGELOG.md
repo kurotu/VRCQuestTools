@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - VRCFury exists: Transforming Phase
 
 ### Changed
+- Toon Standard mask textures are packed into a single texture as well as possible.
 - [NDMF] Default NDMF Phase in `VQT Avatar Converter Settings` and `VQT Material Conversion Settings` components is changed to `Auto`.
 
 ## [2.10.0-beta.3] - 2025-05-24

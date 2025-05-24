@@ -70,6 +70,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override AsyncCallbackRequest GeneratePackedMask(TexturePack pack, Action<Texture2D> completion)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateShadowRamp(Action<Texture2D> completion)
         {
             throw new NotImplementedException();
