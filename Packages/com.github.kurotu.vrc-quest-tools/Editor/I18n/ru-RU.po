@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-05-18 14:51\n"
+"PO-Revision-Date: 2025-05-24 04:13\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -67,8 +67,11 @@ msgstr "Конвертировать этот аватар для загрузк
 msgid "ExitPlayModeToEdit"
 msgstr "Выйдите из игрового режима для редактирования."
 
-msgid "BeingConvertSettingsButtonLabel"
+msgid "BeginConvertSettingsButtonLabel"
 msgstr "Начать настройки конвертера"
+
+msgid "BeginConvertSettingsButtonDescription"
+msgstr ""
 
 msgid "AvatarLabel"
 msgstr "Аватар"
@@ -232,6 +235,9 @@ msgstr "Преобразовать"
 
 msgid "ConfirmationForUnityConstraints"
 msgstr "Ручное преобразование удалит Unity Constraints. Вы можете без разрушения преобразовать их в VRChat Constraints, добавив компонент MA Convert Constraints к аватару и используя Avatar Builder для загрузки. Вы действительно хотите продолжить преобразование?"
+
+msgid "ConfirmationForMAConvertConstraints"
+msgstr ""
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "Ограничение размера текстур"
