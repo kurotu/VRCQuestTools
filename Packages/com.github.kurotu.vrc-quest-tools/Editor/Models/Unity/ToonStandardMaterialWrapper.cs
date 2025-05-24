@@ -46,6 +46,32 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Mask channel enumeration.
+        /// </summary>
+        internal enum MaskChannel
+        {
+            /// <summary>
+            /// Red channel.
+            /// </summary>
+            R,
+
+            /// <summary>
+            /// Green channel.
+            /// </summary>
+            G,
+
+            /// <summary>
+            /// Blue channel.
+            /// </summary>
+            B,
+
+            /// <summary>
+            /// Alpha channel.
+            /// </summary>
+            A,
+        }
+
+        /// <summary>
         /// Detail map mode.
         /// </summary>
         internal enum DetailMapMode
@@ -225,10 +251,19 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <summary>
         /// Gets or sets the occlusion map texture.
         /// </summary>
-        internal Texture OcculusionMap
+        internal Texture OcclusionMap
         {
             get => material.GetTexture("_OcclusionMap");
             set => material.SetTexture("_OcclusionMap", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the occlusion map channel.
+        /// </summary>
+        internal MaskChannel OcclusionMapChannel
+        {
+            get => (MaskChannel)material.GetFloat("_OcclusionMapChannel");
+            set => material.SetFloat("_OcclusionMapChannel", (float)value);
         }
 
         /// <summary>
@@ -265,6 +300,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             get => material.GetTexture("_DetailMask");
             set => material.SetTexture("_DetailMask", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the detail mask channel.
+        /// </summary>
+        internal MaskChannel DetailMaskChannel
+        {
+            get => (MaskChannel)material.GetFloat("_DetailMaskChannel");
+            set => material.SetFloat("_DetailMaskChannel", (float)value);
         }
 
         /// <summary>
@@ -322,6 +366,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Gets or sets the metallic map channel.
+        /// </summary>
+        internal MaskChannel MetallicMapChannel
+        {
+            get => (MaskChannel)material.GetFloat("_MetallicMapChannel");
+            set => material.SetFloat("_MetallicMapChannel", (float)value);
+        }
+
+        /// <summary>
         /// Gets or sets the metallic strength.
         /// </summary>
         internal float MetallicStrength
@@ -337,6 +390,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             get => material.GetTexture("_GlossMap");
             set => material.SetTexture("_GlossMap", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the gloss map channel.
+        /// </summary>
+        internal MaskChannel GlossMapChannel
+        {
+            get => (MaskChannel)material.GetFloat("_GlossMapChannel");
+            set => material.SetFloat("_GlossMapChannel", (float)value);
         }
 
         /// <summary>
@@ -391,6 +453,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             get => material.GetTexture("_MatcapMask");
             set => material.SetTexture("_MatcapMask", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the matcap mask channel.
+        /// </summary>
+        internal MaskChannel MatcapMaskChannel
+        {
+            get => (MaskChannel)material.GetFloat("_MatcapMaskChannel");
+            set => material.SetFloat("_MatcapMaskChannel", (float)value);
         }
 
         /// <summary>
