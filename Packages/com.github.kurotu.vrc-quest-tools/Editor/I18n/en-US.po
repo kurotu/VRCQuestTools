@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-05-18 14:51\n"
+"PO-Revision-Date: 2025-05-24 04:13\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -67,8 +67,11 @@ msgstr "Convert this avatar uploadable for Android platform when the target plat
 msgid "ExitPlayModeToEdit"
 msgstr "Exit play mode to edit."
 
-msgid "BeingConvertSettingsButtonLabel"
+msgid "BeginConvertSettingsButtonLabel"
 msgstr "Begin Converter Settings"
+
+msgid "BeginConvertSettingsButtonDescription"
+msgstr "This will add following components."
 
 msgid "AvatarLabel"
 msgstr "Avatar"
@@ -235,6 +238,9 @@ msgstr "Convert"
 
 msgid "ConfirmationForUnityConstraints"
 msgstr "Manual conversion will remove Unity Constraints. You can non-destructively convert them to VRChat Constraints by adding a MA Convert Constraints component to the avatar and using Avatar Builder to upload. Do you really want to continue conversion?"
+
+msgid "ConfirmationForMAConvertConstraints"
+msgstr "You can non-destructively convert Unity Constraints to VRChat Constraints by adding a MA Convert Constraints. Do you want to add the component before conversion?"
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "Textures Size Limit"
