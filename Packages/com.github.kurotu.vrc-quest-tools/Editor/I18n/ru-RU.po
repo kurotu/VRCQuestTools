@@ -67,7 +67,7 @@ msgstr "Конвертировать этот аватар для загрузк
 msgid "ExitPlayModeToEdit"
 msgstr "Выйдите из игрового режима для редактирования."
 
-msgid "BeingConvertSettingsButtonLabel"
+msgid "BeginConvertSettingsButtonLabel"
 msgstr "Начать настройки конвертера"
 
 msgid "AvatarLabel"

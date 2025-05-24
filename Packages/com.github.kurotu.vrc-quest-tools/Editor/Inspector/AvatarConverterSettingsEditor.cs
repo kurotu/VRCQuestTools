@@ -236,6 +236,12 @@ namespace KRT.VRCQuestTools.Inspector
                     }
 
                     var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+                    if (descriptor.gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() != null)
+                    {
+                        componentsToBeAlearted = componentsToBeAlearted.Where(c => !(c is UnityEngine.Animations.IConstraint)).ToArray();
+                    }
+#endif
                     if (componentsToBeAlearted.Count() > 0)
                     {
                         Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
@@ -463,6 +469,15 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
 #if VQT_HAS_MA_CONVERT_CONSTRAINTS
+    #if VQT_HAS_VRCSDK_NO_PRECHECK
+            if (new VRChatAvatar(avatar).HasUnityConstraints && avatar.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
+            {
+                if (EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForMAConvertConstraints, i18n.YesLabel, i18n.NoLabel))
+                {
+                    Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(avatar.gameObject);
+                }
+            }
+    #else
             if (new VRChatAvatar(avatar).HasUnityConstraints)
             {
                 if (!EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForUnityConstraints, i18n.YesLabel, i18n.NoLabel))
@@ -470,6 +485,7 @@ namespace KRT.VRCQuestTools.Inspector
                     return;
                 }
             }
+    #endif
 #endif
 
             var progressCallback = new ProgressCallback

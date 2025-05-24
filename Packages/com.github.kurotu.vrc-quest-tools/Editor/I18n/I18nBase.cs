@@ -75,7 +75,9 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarConverterSettingsEditorDescription => GetText("AvatarConverterSettingsEditorDescription");
         internal string AvatarConverterSettingsEditorDescriptionNDMF => GetText("AvatarConverterSettingsEditorDescriptionNDMF");
         internal string ExitPlayModeToEdit => GetText("ExitPlayModeToEdit");
-        internal string BeingConvertSettingsButtonLabel => GetText("BeingConvertSettingsButtonLabel");
+        internal string BeginConvertSettingsButtonLabel => GetText("BeginConvertSettingsButtonLabel");
+        internal string BeginConvertSettingsButtonDescription => GetText("BeginConvertSettingsButtonDescription");
+
         internal string AvatarLabel => GetText("AvatarLabel");
         internal string GenerateAndroidTexturesLabel => GetText("GenerateAndroidTexturesLabel");
         internal string GenerateAndroidTexturesTooltip => GetText("GenerateAndroidTexturesTooltip");
@@ -134,6 +136,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string ManualConversionWarning => GetText("ManualConversionWarning");
         internal string ManualConvertButtonLabel => GetText("ManualConvertButtonLabel");
         internal string ConfirmationForUnityConstraints => GetText("ConfirmationForUnityConstraints");
+        internal string ConfirmationForMAConvertConstraints => GetText("ConfirmationForMAConvertConstraints");
 
         // IMaterialConvertSettings
         internal string IMaterialConvertSettingsTexturesSizeLimitLabel => GetText("IMaterialConvertSettingsTexturesSizeLimitLabel");

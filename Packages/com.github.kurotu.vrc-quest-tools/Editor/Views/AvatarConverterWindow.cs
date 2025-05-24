@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
@@ -71,8 +72,19 @@ namespace KRT.VRCQuestTools.Views
                 var converterSettings = targetRoot.GetComponentInChildren<AvatarConverterSettings>(true);
                 if (converterSettings == null)
                 {
+                    var components = new string[]
+                    {
+                        "VQT Avatar Converter Settings",
+                        "VQT Network ID Assigner",
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+                        "MA Convert Constraints",
+#endif
+                    };
+                    var componentsText = components.Select(c => $"  - {c}").Aggregate((a, b) => $"{a}\n{b}");
+                    EditorGUILayout.HelpBox(i18n.BeginConvertSettingsButtonDescription + "\n" + componentsText, MessageType.Info);
+
                     editor = null;
-                    if (GUILayout.Button(i18n.BeingConvertSettingsButtonLabel))
+                    if (GUILayout.Button(i18n.BeginConvertSettingsButtonLabel))
                     {
                         OnClickAttachAvatarConverterButton();
                     }
@@ -101,11 +113,18 @@ namespace KRT.VRCQuestTools.Views
             editor = Editor.CreateEditor(converterSettings);
             if (targetRoot.gameObject.GetComponent<NetworkIDAssigner>() == null)
             {
-                Undo.SetCurrentGroupName(Undo.GetCurrentGroupName() + " and NetworkIDAssigner");
                 var i18n = VRCQuestToolsSettings.I18nResource;
                 Undo.AddComponent<NetworkIDAssigner>(targetRoot);
                 EditorUtility.DisplayDialog("VRCQuestTools", i18n.NetworkIdAssignerAttached, "OK");
             }
+
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+            if (targetRoot.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
+            {
+                Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(targetRoot);
+            }
+#endif
+
             Undo.CollapseUndoOperations(group);
         }
     }

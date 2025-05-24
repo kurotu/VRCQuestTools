@@ -55,10 +55,15 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="gameObject">Target object.</param>
         /// <param name="includeInactive">Whether to include inactive objects.</param>
         /// <param name="canUndo">Whether can undo.</param>
-        internal void RemoveUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive, bool canUndo = false)
+        /// <param name="allowedComponents">Excludable list of component types.</param>
+        internal void RemoveUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive, bool canUndo, System.Type[] allowedComponents)
         {
             foreach (var c in GetUnsupportedComponentsInChildren(gameObject, includeInactive))
             {
+                if (allowedComponents.FirstOrDefault(allowed => allowed.IsAssignableFrom(c.GetType())) != null)
+                {
+                    continue;
+                }
                 var obj = c.gameObject;
                 var message = $"[{VRCQuestTools.Name}] Removed {c.GetType().Name} from {c.gameObject.name}";
                 if (canUndo)
@@ -71,6 +76,17 @@ namespace KRT.VRCQuestTools.Models
                 }
                 Debug.Log(message, obj);
             }
+        }
+
+        /// <summary>
+        /// Remove unsupported components for Quest.
+        /// </summary>
+        /// <param name="gameObject">Target object.</param>
+        /// <param name="includeInactive">Whether to include inactive objects.</param>
+        /// <param name="canUndo">Whether can undo.</param>
+        internal void RemoveUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive, bool canUndo = false)
+        {
+            RemoveUnsupportedComponentsInChildren(gameObject, includeInactive, canUndo, new System.Type[] { });
         }
     }
 }

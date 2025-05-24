@@ -67,8 +67,11 @@ msgstr "ビルドターゲットが Android の場合、このアバターを An
 msgid "ExitPlayModeToEdit"
 msgstr "編集するには再生モードを終了してください。"
 
-msgid "BeingConvertSettingsButtonLabel"
+msgid "BeginConvertSettingsButtonLabel"
 msgstr "変換の設定を始める"
+
+msgid "BeginConvertSettingsButtonDescription"
+msgstr "以下のコンポーネントを追加します。"
 
 msgid "AvatarLabel"
 msgstr "アバター"
@@ -235,6 +238,9 @@ msgstr "変換する"
 
 msgid "ConfirmationForUnityConstraints"
 msgstr "手動変換では Unity Constraints が削除されます。アバターに MA Convert Constraints コンポーネントを追加し Avatar Builder を使用してアップロードすることで VRChat Constraints に非破壊的に変換することができますが、本当に変換を続行しますか？"
+
+msgid "ConfirmationForMAConvertConstraints"
+msgstr "MA Convert Constraints コンポーネントを追加すると Unity Constraints を VRChat Constraints に非破壊的に変換することができます。変換前にコンポーネントを追加しますか？"
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
 msgstr "最大テクスチャサイズ"

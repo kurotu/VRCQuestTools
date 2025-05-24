@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Improved `MA Convert Constraints` integration.
+    - Add the component when using `Begin Converter Settings` button of `Avatar Converter for Android`.
+    - Do not remove Unity constraints when `MA Convert Constraints` exists in following situation. (VRCSDK 3.8.1-beta.1 or later)
+        - Manual conversion.
+        - `Unsupported Components` window.
+    - [NDMF] Add the component when build an avatar for mobile platforms with `VQT Avatar Converter Settings`.
+
 ### Changed
 - Apply following parameters to converted Toon Standard materials.
     - MatCap color alpha.
