@@ -67,8 +67,11 @@ msgstr "Convert this avatar uploadable for Android platform when the target plat
 msgid "ExitPlayModeToEdit"
 msgstr "Exit play mode to edit."
 
-msgid "BeingConvertSettingsButtonLabel"
+msgid "BeginConvertSettingsButtonLabel"
 msgstr "Begin Converter Settings"
+
+msgid "BeginConvertSettingsButtonDescription"
+msgstr "This will add following components."
 
 msgid "AvatarLabel"
 msgstr "Avatar"

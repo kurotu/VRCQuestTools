@@ -67,8 +67,11 @@ msgstr "ビルドターゲットが Android の場合、このアバターを An
 msgid "ExitPlayModeToEdit"
 msgstr "編集するには再生モードを終了してください。"
 
-msgid "BeingConvertSettingsButtonLabel"
+msgid "BeginConvertSettingsButtonLabel"
 msgstr "変換の設定を始める"
+
+msgid "BeginConvertSettingsButtonDescription"
+msgstr "以下のコンポーネントを追加します。"
 
 msgid "AvatarLabel"
 msgstr "アバター"
