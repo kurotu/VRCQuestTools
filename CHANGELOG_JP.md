@@ -4,6 +4,17 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 追加
+- [NDMF] `VQT Avatar Converter Settings` および `VQT Material Conversion Settings` のNDMF変換フェーズに `Auto` を追加。
+    - プロジェクトの状態に応じて以下のようにフェーズを設定します。
+        - 通常: Optimizing Phase
+        - VRCFury が存在: Transforming Phase
+
+### 変更
+- [NDMF] `VQT Avatar Converter Settings` および `VQT Material Conversion Settings` のNDMF変換フェーズの初期値を `Auto` に変更。
+
 ## [2.10.0-beta.3] - 2025-05-24
 
 ### 追加

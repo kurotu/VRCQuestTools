@@ -34,7 +34,7 @@ namespace KRT.VRCQuestTools.Components
         /// NDMF phase to convert the avatar.
         /// </summary>
         [SerializeField]
-        public AvatarConverterNdmfPhase ndmfPhase = AvatarConverterNdmfPhase.Transforming;
+        public AvatarConverterNdmfPhase ndmfPhase = AvatarConverterNdmfPhase.Auto;
 
         /// <inheritdoc/>
         public IMaterialConvertSettings DefaultMaterialConvertSettings => defaultMaterialConvertSettings;

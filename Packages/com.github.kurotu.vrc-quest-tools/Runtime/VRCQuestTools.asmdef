@@ -28,6 +28,11 @@
             "name": "com.vrchat.avatars",
             "expression": "3.7.6-beta.1",
             "define": "VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER"
+        },
+        {
+            "name": "com.vrcfury.vrcfury",
+            "expression": "",
+            "define": "VQT_VRCFURY"
         }
     ],
     "noEngineReferences": false

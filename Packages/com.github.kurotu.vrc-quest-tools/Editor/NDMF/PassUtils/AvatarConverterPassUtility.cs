@@ -35,10 +35,10 @@ namespace KRT.VRCQuestTools.Ndmf
             var primaryRoot = avatarRoot.GetComponents<IMaterialConversionComponent>().FirstOrDefault(c => c.IsPrimaryRoot);
             if (primaryRoot != null)
             {
-                return primaryRoot.NdmfPhase;
+                return primaryRoot.NdmfPhase.Resolve();
             }
 
-            return AvatarConverterNdmfPhase.Transforming;
+            return AvatarConverterNdmfPhase.Auto.Resolve();
         }
 
         /// <summary>
