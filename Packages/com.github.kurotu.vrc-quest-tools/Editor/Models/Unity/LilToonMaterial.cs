@@ -85,6 +85,16 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Texture NormalMap => Material.GetTexture("_BumpMap");
 
         /// <summary>
+        /// Gets the normal map texture scale.
+        /// </summary>
+        internal Vector2 NormalMapTextureScale => Material.GetTextureScale("_BumpMap");
+
+        /// <summary>
+        /// Gets the normal map texture offset.
+        /// </summary>
+        internal Vector2 NormalMapTextureOffset => Material.GetTextureOffset("_BumpMap");
+
+        /// <summary>
         /// Gets the normal map scale.
         /// </summary>
         internal float NormalMapScale => Material.GetFloat("_BumpScale");
@@ -135,9 +145,29 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Texture MetallicMap => Material.GetTexture("_MetallicGlossMap");
 
         /// <summary>
+        /// Gets the metallic map texture scale.
+        /// </summary>
+        internal Vector2 MetallicMapTextureScale => Material.GetTextureScale("_MetallicGlossMap");
+
+        /// <summary>
+        /// Gets the metallic map texture offset.
+        /// </summary>
+        internal Vector2 MetallicMapTextureOffset => Material.GetTextureOffset("_MetallicGlossMap");
+
+        /// <summary>
         /// Gets the smoothness map.
         /// </summary>
         internal Texture SmoothnessTex => Material.GetTexture("_SmoothnessTex");
+
+        /// <summary>
+        /// Gets the smoothness texture scale.
+        /// </summary>
+        internal Vector2 SmoothnessTexScale => Material.GetTextureScale("_SmoothnessTex");
+
+        /// <summary>
+        /// Gets the smoothness texture offset.
+        /// </summary>
+        internal Vector2 SmoothnessTexOffset => Material.GetTextureOffset("_SmoothnessTex");
 
         /// <summary>
         /// Gets the reflection color tex.
@@ -183,6 +213,16 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Gets the matcap mask texture.
         /// </summary>
         internal Texture MatCapMask => Material.GetTexture("_MatCapBlendMask");
+
+        /// <summary>
+        /// Gets the matcap mask texture scale.
+        /// </summary>
+        internal Vector2 MatCapMaskTextureScale => Material.GetTextureScale("_MatCapBlendMask");
+
+        /// <summary>
+        /// Gets the matcap mask texture offset.
+        /// </summary>
+        internal Vector2 MatCapMaskTextureOffset => Material.GetTextureOffset("_MatCapBlendMask");
 
         /// <summary>
         /// Gets the matcap blend value.

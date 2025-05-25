@@ -226,22 +226,27 @@ namespace KRT.VRCQuestTools.Models
                                     case MaskType.DetailMask:
                                         newMaterial.DetailMask = t;
                                         newMaterial.DetailMaskChannel = mask.Channel;
+                                        // TODO: DetailMask ST.
                                         break;
                                     case MaskType.MetallicMap:
                                         newMaterial.MetallicMap = t;
                                         newMaterial.MetallicMapChannel = mask.Channel;
+                                        (newMaterial.MetallicMapTextureScale, newMaterial.MetallicMapTextureOffset) = GetMetallicMapST();
                                         break;
                                     case MaskType.MatcapMask:
                                         newMaterial.MatcapMask = t;
                                         newMaterial.MatcapMaskChannel = mask.Channel;
+                                        (newMaterial.MatcapMaskTextureScale, newMaterial.MatcapMaskTextureOffset) = GetMatcapMaskST();
                                         break;
                                     case MaskType.OcculusionMap:
                                         newMaterial.OcclusionMap = t;
                                         newMaterial.OcclusionMapChannel = mask.Channel;
+                                        // TODO: OcclusionMap ST.
                                         break;
                                     case MaskType.GlossMap:
                                         newMaterial.GlossMap = t;
                                         newMaterial.GlossMapChannel = mask.Channel;
+                                        (newMaterial.GlossMapTextureScale, newMaterial.GlossMapTextureOffset) = GetGlossMapST();
                                         break;
                                     default:
                                         throw new InvalidProgramException($"Unhandled mask type: {mask.MaskType}");
@@ -350,6 +355,12 @@ namespace KRT.VRCQuestTools.Models
         protected abstract bool GetUseMetallicMap();
 
         /// <summary>
+        /// Gets the metallic map texture scale and offset of the material.
+        /// </summary>
+        /// <returns>Scale and offset.</returns>
+        protected abstract (Vector2 Scale, Vector2 Offset) GetMetallicMapST();
+
+        /// <summary>
         /// Gets the metallic strength of the material.
         /// </summary>
         /// <returns>Metallic strength.</returns>
@@ -360,6 +371,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>True if the material should use gloss map.</returns>
         protected abstract bool GetUseGlossMap();
+
+        /// <summary>
+        /// Gets the gloss map texture scale and offset of the material.
+        /// </summary>
+        /// <returns>Scale and offset.</returns>
+        protected abstract (Vector2 Scale, Vector2 Offset) GetGlossMapST();
 
         /// <summary>
         /// Gets the gloss strength of the material.
@@ -396,6 +413,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>True if the material should use matcap mask.</returns>
         protected abstract bool GetUseMatcapMask();
+
+        /// <summary>
+        /// Gets the matcap mask texture scale and offset of the material.
+        /// </summary>
+        /// <returns>Scale and offset.</returns>
+        protected abstract (Vector2 Scale, Vector2 Offset) GetMatcapMaskST();
 
         /// <summary>
         /// Gets the matcap mask strength of the material.

@@ -39,6 +39,8 @@ namespace KRT.VRCQuestTools.Models
             {
                 newMaterial.UseNormalMap = true;
                 newMaterial.NormalMap = lilMaterial.NormalMap;
+                newMaterial.NormalMapTextureScale = lilMaterial.NormalMapTextureScale;
+                newMaterial.NormalMapTextureOffset = lilMaterial.NormalMapTextureOffset;
                 newMaterial.NormalMapScale = lilMaterial.NormalMapScale;
             }
 
@@ -65,9 +67,13 @@ namespace KRT.VRCQuestTools.Models
             {
                 newMaterial.UseSpecular = true;
                 newMaterial.MetallicMap = lilMaterial.MetallicMap;
+                newMaterial.MetallicMapTextureScale = lilMaterial.MetallicMapTextureScale;
+                newMaterial.MetallicMapTextureOffset = lilMaterial.MetallicMapTextureOffset;
                 newMaterial.MetallicStrength = lilMaterial.Metallic;
 
                 newMaterial.GlossMap = lilMaterial.SmoothnessTex;
+                newMaterial.GlossMapTextureScale = lilMaterial.SmoothnessTexScale;
+                newMaterial.GlossMapTextureOffset = lilMaterial.SmoothnessTexOffset;
                 newMaterial.GlossStrength = lilMaterial.Smoothness;
                 newMaterial.Sharpness = 1.0f - lilMaterial.SpecularBlur;
             }
@@ -77,6 +83,8 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.UseMatcap = true;
                 newMaterial.Matcap = lilMaterial.MatCapTex;
                 newMaterial.MatcapMask = lilMaterial.MatCapMask;
+                newMaterial.MatcapMaskTextureScale = lilMaterial.MatCapMaskTextureScale;
+                newMaterial.MatcapMaskTextureOffset = lilMaterial.MatCapMaskTextureOffset;
                 newMaterial.MatcapStrength = lilMaterial.MatCapBlend;
                 switch (lilMaterial.MatCapBlendingMode)
                 {
@@ -391,6 +399,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetGlossMapST()
+        {
+            return (lilMaterial.SmoothnessTexScale, lilMaterial.SmoothnessTexOffset);
+        }
+
+        /// <inheritdoc/>
         protected override float GetGlossStrength()
         {
             return lilMaterial.Smoothness;
@@ -425,10 +439,22 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetMatcapMaskST()
+        {
+            return (lilMaterial.MatCapMaskTextureScale, lilMaterial.MatCapMaskTextureOffset);
+        }
+
+        /// <inheritdoc/>
         protected override float GetMatcapMaskStrength()
         {
             var mainStrength = 0.9f * (1.0f - lilMaterial.MatCapMainStrength) + 0.1f;
             return lilMaterial.MatCapBlend * lilMaterial.MatCapColor.a * mainStrength;
+        }
+
+        /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetMetallicMapST()
+        {
+            return (lilMaterial.MetallicMapTextureScale, lilMaterial.MetallicMapTextureOffset);
         }
 
         /// <inheritdoc/>

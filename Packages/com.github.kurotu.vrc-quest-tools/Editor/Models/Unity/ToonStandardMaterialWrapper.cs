@@ -159,6 +159,24 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Gets or sets the normal map texture scale.
+        /// </summary>
+        internal Vector2 NormalMapTextureScale
+        {
+            get => material.GetTextureScale("_BumpMap");
+            set => material.SetTextureScale("_BumpMap", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the normal map texture offset.
+        /// </summary>
+        internal Vector2 NormalMapTextureOffset
+        {
+            get => material.GetTextureOffset("_BumpMap");
+            set => material.SetTextureOffset("_BumpMap", value);
+        }
+
+        /// <summary>
         /// Gets or sets the normal map scale.
         /// </summary>
         internal float NormalMapScale
@@ -366,6 +384,24 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Gets or sets the metallic map texture scale.
+        /// </summary>
+        internal Vector2 MetallicMapTextureScale
+        {
+            get => material.GetTextureScale("_MetallicMap");
+            set => material.SetTextureScale("_MetallicMap", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the metallic map texture offset.
+        /// </summary>
+        internal Vector2 MetallicMapTextureOffset
+        {
+            get => material.GetTextureOffset("_MetallicMap");
+            set => material.SetTextureOffset("_MetallicMap", value);
+        }
+
+        /// <summary>
         /// Gets or sets the metallic map channel.
         /// </summary>
         internal MaskChannel MetallicMapChannel
@@ -390,6 +426,24 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             get => material.GetTexture("_GlossMap");
             set => material.SetTexture("_GlossMap", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the gloss map texture scale.
+        /// </summary>
+        internal Vector2 GlossMapTextureScale
+        {
+            get => material.GetTextureScale("_GlossMap");
+            set => material.SetTextureScale("_GlossMap", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the gloss map texture offset.
+        /// </summary>
+        internal Vector2 GlossMapTextureOffset
+        {
+            get => material.GetTextureOffset("_GlossMap");
+            set => material.SetTextureOffset("_GlossMap", value);
         }
 
         /// <summary>
@@ -453,6 +507,24 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             get => material.GetTexture("_MatcapMask");
             set => material.SetTexture("_MatcapMask", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the matcap mask texture scale.
+        /// </summary>
+        internal Vector2 MatcapMaskTextureScale
+        {
+            get => material.GetTextureScale("_MatcapMask");
+            set => material.SetTextureScale("_MatcapMask", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the matcap mask texture offset.
+        /// </summary>
+        internal Vector2 MatcapMaskTextureOffset
+        {
+            get => material.GetTextureOffset("_MatcapMask");
+            set => material.SetTextureOffset("_MatcapMask", value);
         }
 
         /// <summary>

@@ -94,6 +94,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetGlossMapST()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override float GetGlossStrength()
         {
             throw new NotImplementedException();
@@ -118,7 +124,19 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetMatcapMaskST()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override float GetMatcapMaskStrength()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetMetallicMapST()
         {
             throw new NotImplementedException();
         }
