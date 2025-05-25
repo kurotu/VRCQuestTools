@@ -796,6 +796,16 @@ namespace KRT.VRCQuestTools.Utils
             return ((int)newWidth, (int)newHeight);
         }
 
+        /// <summary>
+        /// Calculates Rec.709 grayscale value from a color.
+        /// </summary>
+        /// <param name="color">Input color.</param>
+        /// <returns>Grayscale value.</returns>
+        internal static float GetRec709Grayscale(Color color)
+        {
+            return color.r * 0.2126f + color.g * 0.7152f + color.b * 0.0722f;
+        }
+
         private static bool ShouldUseAsyncGPUReadback()
         {
 #if UNITY_2022_1_OR_NEWER

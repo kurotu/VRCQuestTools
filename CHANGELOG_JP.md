@@ -14,6 +14,7 @@
 
 ### 変更
 - Toon Standard のマスクテクスチャを可能な限り1つにまとめるように変更。
+- Toon Standard の Metallic Map および Gloss Map の変換処理を改善。
 - [NDMF] `VQT Avatar Converter Settings` および `VQT Material Conversion Settings` のNDMF変換フェーズの初期値を `Auto` に変更。
 
 ### 修正

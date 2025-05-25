@@ -140,24 +140,46 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateGlossMap(Action<Texture2D> completion)
         {
             var gloss = (Texture2D)lilMaterial.SmoothnessTex;
-            var targetSize = Math.Min(gloss.width, (int)settings.maxTextureSize);
+            var reflectionColorTex = (Texture2D)lilMaterial.ReflectionColorTex;
+            var reflectionColorTexWidth = reflectionColorTex ? reflectionColorTex.width : 4;
+            var reflectionColorTexHeight = reflectionColorTex ? reflectionColorTex.height : 4;
+            var sourceWidth = Math.Max(gloss ? gloss.width : 4, reflectionColorTexWidth);
+            var sourceHeight = Math.Max(gloss ? gloss.height : 4, reflectionColorTexHeight);
+            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, (int)settings.maxTextureSize);
 
-            var rt = RenderTexture.GetTemporary(gloss.width, gloss.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var alphaGlossMap = RenderTexture.GetTemporary(sourceWidth, sourceHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
             mat.SetTexture("_Texture0", gloss);
             mat.SetFloat("_Texture0Input", 0); // R
             mat.SetFloat("_Texture0Output", 3); // A
+            Graphics.Blit(null, alphaGlossMap, mat);
 
-            Graphics.Blit(null, rt, mat);
+            var reflectionGrayscaleTex = RenderTexture.GetTemporary(reflectionColorTexWidth, reflectionColorTexHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var mat0 = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
+            mat0.SetTexture("_Texture0", reflectionColorTex);
+            mat0.SetFloat("_Texture0Input", 4); // Grayscale
+            mat0.SetFloat("_Texture0Output", 3); // A
+            Graphics.Blit(null, reflectionGrayscaleTex, mat0);
 
-            var rt2 = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
-            TextureUtility.DownscaleBlit(rt, false, rt2);
+            var rt1 = RenderTexture.GetTemporary(sourceWidth, sourceHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var mat1 = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
+            mat1.SetTexture("_Texture0", alphaGlossMap);
+            var reflectionColorGrayscale = TextureUtility.GetRec709Grayscale(lilMaterial.ReflectionColor) * lilMaterial.ReflectionColor.a;
+            var reflectionColor = new Color(1.0f, 1.0f, 1.0f, reflectionColorGrayscale);
+            mat1.SetColor("_Texture0Color", reflectionColor);
+            mat1.SetTexture("_Texture1", reflectionGrayscaleTex);
+            Graphics.Blit(null, rt1, mat1);
+
+            var rt2 = RenderTexture.GetTemporary(targetWidth, targetHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            TextureUtility.DownscaleBlit(rt1, false, rt2);
 
             return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
             {
-                RenderTexture.ReleaseTemporary(rt);
+                RenderTexture.ReleaseTemporary(alphaGlossMap);
+                RenderTexture.ReleaseTemporary(rt1);
                 RenderTexture.ReleaseTemporary(rt2);
                 UnityEngine.Object.DestroyImmediate(mat);
+                UnityEngine.Object.DestroyImmediate(mat1);
                 completion?.Invoke(tex);
             });
         }
@@ -230,23 +252,29 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateMetallicMap(Action<Texture2D> completion)
         {
             var metallic = (Texture2D)lilMaterial.MetallicMap;
-            var metallicSize = metallic ? metallic.width : 0;
-            var reflectionColor = (Texture2D)lilMaterial.ReflectionColorTex;
-            var reflectionColorSize = reflectionColor ? reflectionColor.width : 0;
+            var metallicWidth = metallic ? metallic.width : 4;
+            var metallicHeight = metallic ? metallic.height : 4;
+            var reflectionColorTex = (Texture2D)lilMaterial.ReflectionColorTex;
+            var reflectionColorWidth = reflectionColorTex ? reflectionColorTex.width : 4;
+            var reflectionColorHeight = reflectionColorTex ? reflectionColorTex.height : 4;
 
-            var originalSize = Math.Max(metallicSize, reflectionColorSize);
-            var (width, height) = TextureUtility.AspectFitReduction(originalSize, originalSize, (int)settings.maxTextureSize);
+            var originalWidth = Math.Max(metallicWidth, reflectionColorWidth);
+            var originalHeight = Math.Max(metallicHeight, reflectionColorHeight);
+            var (width, height) = TextureUtility.AspectFitReduction(originalWidth, originalHeight, (int)settings.maxTextureSize);
 
-            var rt0 = RenderTexture.GetTemporary(originalSize, originalSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var reflectionGrayscaleTex = RenderTexture.GetTemporary(reflectionColorWidth, reflectionColorHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat0 = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
-            mat0.SetTexture("_Texture0", reflectionColor);
+            mat0.SetTexture("_Texture0", reflectionColorTex);
             mat0.SetFloat("_Texture0Input", 4); // Grayscale
             mat0.SetFloat("_Texture0Output", 0); // R
-            Graphics.Blit(null, rt0, mat0);
+            Graphics.Blit(null, reflectionGrayscaleTex, mat0);
 
-            var rt = RenderTexture.GetTemporary(originalSize, originalSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var rt = RenderTexture.GetTemporary(originalWidth, originalHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
-            mat.SetTexture("_Texture0", rt0);
+            var reflectionGrayscale = TextureUtility.GetRec709Grayscale(lilMaterial.ReflectionColor) * lilMaterial.ReflectionColor.a;
+            var reflectionColor = new Color(reflectionGrayscale, 1.0f, 1.0f, 1.0f);
+            mat.SetTexture("_Texture0", reflectionGrayscaleTex);
+            mat.SetColor("_Texture0Color", reflectionColor);
             mat.SetTexture("_Texture1", metallic);
             Graphics.Blit(null, rt, mat);
 
@@ -255,7 +283,7 @@ namespace KRT.VRCQuestTools.Models
 
             return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
             {
-                RenderTexture.ReleaseTemporary(rt0);
+                RenderTexture.ReleaseTemporary(reflectionGrayscaleTex);
                 RenderTexture.ReleaseTemporary(rt);
                 RenderTexture.ReleaseTemporary(rt2);
                 UnityEngine.Object.DestroyImmediate(mat);
@@ -552,7 +580,11 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseGlossMap()
         {
-            return lilMaterial.UseReflection && lilMaterial.SmoothnessTex != null;
+            if (!lilMaterial.UseReflection)
+            {
+                return false;
+            }
+            return lilMaterial.SmoothnessTex != null || lilMaterial.ReflectionColorTex != null || lilMaterial.ReflectionColor != Color.white;
         }
 
         /// <inheritdoc/>
@@ -576,8 +608,11 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseMetallicMap()
         {
-            return lilMaterial.UseReflection
-                && (lilMaterial.MetallicMap != null || lilMaterial.ReflectionColorTex != null);
+            if (!lilMaterial.UseReflection)
+            {
+                return false;
+            }
+            return lilMaterial.MetallicMap != null || lilMaterial.ReflectionColorTex != null || lilMaterial.ReflectionColor != Color.white;
         }
 
         /// <inheritdoc/>

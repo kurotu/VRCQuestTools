@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Toon Standard mask textures are packed into a single texture as well as possible.
+- Improved metallic map and gloss map conversion for Toon Standard materials.
 - [NDMF] Default NDMF Phase in `VQT Avatar Converter Settings` and `VQT Material Conversion Settings` components is changed to `Auto`.
 
 ### Fixed
