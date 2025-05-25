@@ -8,9 +8,9 @@
 
 ### 追加
 - [NDMF] `VQT Avatar Converter Settings` および `VQT Material Conversion Settings` のNDMF変換フェーズに `Auto` を追加。
-    - プロジェクトの状態に応じて以下のようにフェーズを設定します。
+    - アバターの状態に応じて以下のようにフェーズを設定します。
         - 通常: Optimizing Phase
-        - VRCFury が存在: Transforming Phase
+        - VRCFury のコンポーネントが存在: Transforming Phase
 
 ### 変更
 - Toon Standard のマスクテクスチャを可能な限り1つにまとめるように変更。

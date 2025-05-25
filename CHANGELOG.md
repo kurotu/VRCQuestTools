@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - [NDMF] Add `Auto` option to NDMF Phase in `VQT Avatar Converter Settings` and `VQT Material Conversion Settings` components.
-    - This option automatically sets the phase based on the current project.
+    - This option automatically sets the phase based on the current avatar.
         - Default: Optimizing Phase
-        - VRCFury exists: Transforming Phase
+        - VRCFury components exist: Transforming Phase
 
 ### Changed
 - Toon Standard mask textures are packed into a single texture as well as possible.

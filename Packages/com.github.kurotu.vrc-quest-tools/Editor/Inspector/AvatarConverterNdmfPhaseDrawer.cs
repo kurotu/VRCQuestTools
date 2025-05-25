@@ -2,6 +2,7 @@ using System.Linq;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDKBase;
 
 namespace KRT.VRCQuestTools.Inspector
 {
@@ -11,18 +12,6 @@ namespace KRT.VRCQuestTools.Inspector
     [CustomPropertyDrawer(typeof(AvatarConverterNdmfPhase))]
     internal class AvatarConverterNdmfPhaseDrawer : PropertyDrawer
     {
-        private readonly string[] phaseNames = System.Enum.GetValues(typeof(AvatarConverterNdmfPhase))
-            .Cast<AvatarConverterNdmfPhase>()
-            .Select(n =>
-            {
-                if (n == AvatarConverterNdmfPhase.Auto)
-                {
-                    return $"{n} ({n.Resolve()})";
-                }
-                return n.ToString();
-            })
-            .ToArray();
-
         /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -31,7 +20,9 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 using (var ccs = new EditorGUI.ChangeCheckScope())
                 {
-                    var labels = GetPopupLabels();
+                    var component = property.serializedObject.targetObject as Component;
+                    var avatarDescriptor = GetComponentInParent<VRC_AvatarDescriptor>(component.gameObject);
+                    var labels = GetPopupLabels(avatarDescriptor ? avatarDescriptor.gameObject : null);
                     var newIndex = EditorGUI.Popup(position, label, property.enumValueIndex, labels);
                     if (ccs.changed)
                     {
@@ -41,9 +32,44 @@ namespace KRT.VRCQuestTools.Inspector
             }
         }
 
-        private GUIContent[] GetPopupLabels()
+        private GUIContent[] GetPopupLabels(GameObject avatarRoot)
         {
-            return phaseNames.Select(label => new GUIContent(label)).ToArray();
+            return GetPhaseNames(avatarRoot).Select(label => new GUIContent(label)).ToArray();
+        }
+
+        private string[] GetPhaseNames(GameObject avatarRoot)
+        {
+            return System.Enum.GetValues(typeof(AvatarConverterNdmfPhase))
+                .Cast<AvatarConverterNdmfPhase>()
+                .Select(n =>
+                {
+                    if (n == AvatarConverterNdmfPhase.Auto)
+                    {
+                        return $"{n} ({n.Resolve(avatarRoot)})";
+                    }
+                    return n.ToString();
+                })
+                .ToArray();
+        }
+
+        private T GetComponentInParent<T>(GameObject gameObject)
+            where T : Component
+        {
+#if UNITY_2022_1_OR_NEWER
+            return gameObject.GetComponentInParent<T>(true);
+#else
+            var parent = gameObject.transform;
+            while (parent != null)
+            {
+                var component = parent.GetComponent<T>();
+                if (component != null)
+                {
+                    return component;
+                }
+                parent = parent.parent;
+            }
+            return null;
+#endif
         }
     }
 }
