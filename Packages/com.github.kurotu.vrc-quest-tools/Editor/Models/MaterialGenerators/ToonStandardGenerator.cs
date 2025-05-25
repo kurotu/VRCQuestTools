@@ -115,6 +115,7 @@ namespace KRT.VRCQuestTools.Models
                     MaterialGeneratorUtility.GenerateNormalMap(material.Material, settings, "normal", saveTextureAsPng, texturesPath, (compl) => GenerateNormalMap(outputRGB, compl), (t) =>
                     {
                         newMaterial.NormalMap = t;
+                        (newMaterial.NormalMapTextureScale, newMaterial.NormalMapTextureOffset) = GetNormalMapST();
                         newMaterial.NormalMapScale = GetNormalMapScale();
                     }).WaitForCompletion();
                 }
@@ -299,6 +300,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>True if the material should use normal map.</returns>
         protected abstract bool GetUseNormalMap();
+
+        /// <summary>
+        /// Gets the normal map texture scale and offset of the material.
+        /// </summary>
+        /// <returns>Scale and offset.</returns>
+        protected abstract (Vector2 Scale, Vector2 Offset) GetNormalMapST();
 
         /// <summary>
         /// Gets the normal map scale.

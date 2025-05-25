@@ -160,6 +160,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetNormalMapST()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override float GetReflectance()
         {
             throw new NotImplementedException();

@@ -470,6 +470,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetNormalMapST()
+        {
+            return (lilMaterial.NormalMapTextureScale, lilMaterial.NormalMapTextureOffset);
+        }
+
+        /// <inheritdoc/>
         protected override float GetNormalMapScale()
         {
             return lilMaterial.NormalMapScale;

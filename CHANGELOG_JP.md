@@ -17,7 +17,9 @@
 - [NDMF] `VQT Avatar Converter Settings` および `VQT Material Conversion Settings` のNDMF変換フェーズの初期値を `Auto` に変更。
 
 ### 修正
-- Toon Standard のマスクテクスチャの Tiling, Offset が変換後のマテリアルに反映されない問題を修正。
+- Toon Standard のテクスチャの Tiling, Offset が変換後のマテリアルに反映されない問題を修正。
+    - ノーマルマップ
+    - マスクテクスチャ
 
 ## [2.10.0-beta.3] - 2025-05-24
 
