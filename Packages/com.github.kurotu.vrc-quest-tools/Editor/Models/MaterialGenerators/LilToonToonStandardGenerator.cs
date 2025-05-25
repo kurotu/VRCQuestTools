@@ -139,9 +139,6 @@ namespace KRT.VRCQuestTools.Models
             mat.SetTexture("_Texture0", gloss);
             mat.SetFloat("_Texture0Input", 0); // R
             mat.SetFloat("_Texture0Output", 3); // A
-            mat.SetFloat("_Texture1Output", -1);
-            mat.SetFloat("_Texture2Output", -1);
-            mat.SetFloat("_Texture3Output", -1);
 
             Graphics.Blit(null, rt, mat);
 
@@ -206,9 +203,6 @@ namespace KRT.VRCQuestTools.Models
             mat.SetTexture("_Texture0", matcapMask);
             mat.SetFloat("_Texture0Input", 4); // Grayscale
             mat.SetFloat("_Texture0Output", 0); // R
-            mat.SetFloat("_Texture1Output", -1);
-            mat.SetFloat("_Texture2Output", -1);
-            mat.SetFloat("_Texture3Output", -1);
 
             Graphics.Blit(null, rt, mat);
 
@@ -240,9 +234,6 @@ namespace KRT.VRCQuestTools.Models
             mat0.SetTexture("_Texture0", reflectionColor);
             mat0.SetFloat("_Texture0Input", 4); // Grayscale
             mat0.SetFloat("_Texture0Output", 0); // R
-            mat0.SetFloat("_Texture1Output", -1);
-            mat0.SetFloat("_Texture2Output", -1);
-            mat0.SetFloat("_Texture3Output", -1);
             Graphics.Blit(null, rt0, mat0);
 
             var rt = RenderTexture.GetTemporary(originalSize, originalSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
@@ -277,10 +268,6 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GeneratePackedMask(TexturePack pack, Action<Texture2D> completion)
         {
             var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
-            swizzleMat.SetFloat("_Texture0Output", -1);
-            swizzleMat.SetFloat("_Texture1Output", -1);
-            swizzleMat.SetFloat("_Texture2Output", -1);
-            swizzleMat.SetFloat("_Texture3Output", -1);
 
             int maxWidth = 0;
             int maxHeight = 0;

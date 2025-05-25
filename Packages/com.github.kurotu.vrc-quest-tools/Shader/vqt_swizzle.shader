@@ -4,19 +4,19 @@ Shader "Hidden/VRCQuestTools/Swizzle"
     {
         _Texture0 ("Texture 0", 2D) = "white" {}
         [Enum(R, 0, G, 1, B, 2, A, 3, Grayscale, 4)] _Texture0Input ("Texture 0 Input", Int) = 0
-        [Enum(R, 0, G, 1, B, 2, A, 3)] _Texture0Output ("Texture 0 Output", Int) = 0
+        [Enum(R, 0, G, 1, B, 2, A, 3)] _Texture0Output ("Texture 0 Output", Int) = -1
 
         _Texture1 ("Texture 1", 2D) = "white" {}
         [Enum(R, 0, G, 1, B, 2, A, 3, Grayscale, 4)] _Texture1Input ("Texture 1 Input", Int) = 1
-        [Enum(R, 0, G, 1, B, 2, A, 3)] _Texture1Output ("Texture 1 Output", Int) = 1
+        [Enum(R, 0, G, 1, B, 2, A, 3)] _Texture1Output ("Texture 1 Output", Int) = -1
 
         _Texture2 ("Texture 2", 2D) = "white" {}
         [Enum(R, 0, G, 1, B, 2, A, 3, Grayscale, 4)] _Texture2Input ("Texture 2 Input", Int) = 2
-        [Enum(R, 0, G, 1, B, 2, A, 3)] _Texture2Output ("Texture 2 Output", Int) = 2
+        [Enum(R, 0, G, 1, B, 2, A, 3)] _Texture2Output ("Texture 2 Output", Int) = -1
 
         _Texture3 ("Texture 3", 2D) = "white" {}
         [Enum(R, 0, G, 1, B, 2, A, 3, Grayscale, 4)] _Texture3Input ("Texture 3 Input", Int) = 3
-        [Enum(R, 0, G, 1, B, 2, A, 3)] _Texture3Output ("Texture 3 Output", Int) = 3
+        [Enum(R, 0, G, 1, B, 2, A, 3)] _Texture3Output ("Texture 3 Output", Int) = -1
     }
     SubShader
     {
