@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
@@ -138,9 +139,6 @@ namespace KRT.VRCQuestTools.Models
             mat.SetTexture("_Texture0", gloss);
             mat.SetFloat("_Texture0Input", 0); // R
             mat.SetFloat("_Texture0Output", 3); // A
-            mat.SetFloat("_Texture1Output", -1);
-            mat.SetFloat("_Texture2Output", -1);
-            mat.SetFloat("_Texture3Output", -1);
 
             Graphics.Blit(null, rt, mat);
 
@@ -205,9 +203,6 @@ namespace KRT.VRCQuestTools.Models
             mat.SetTexture("_Texture0", matcapMask);
             mat.SetFloat("_Texture0Input", 4); // Grayscale
             mat.SetFloat("_Texture0Output", 0); // R
-            mat.SetFloat("_Texture1Output", -1);
-            mat.SetFloat("_Texture2Output", -1);
-            mat.SetFloat("_Texture3Output", -1);
 
             Graphics.Blit(null, rt, mat);
 
@@ -239,9 +234,6 @@ namespace KRT.VRCQuestTools.Models
             mat0.SetTexture("_Texture0", reflectionColor);
             mat0.SetFloat("_Texture0Input", 4); // Grayscale
             mat0.SetFloat("_Texture0Output", 0); // R
-            mat0.SetFloat("_Texture1Output", -1);
-            mat0.SetFloat("_Texture2Output", -1);
-            mat0.SetFloat("_Texture3Output", -1);
             Graphics.Blit(null, rt0, mat0);
 
             var rt = RenderTexture.GetTemporary(originalSize, originalSize, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
@@ -270,6 +262,77 @@ namespace KRT.VRCQuestTools.Models
             var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, (int)settings.maxTextureSize);
             var newTex = TextureUtility.DownscaleNormalMap(normal, outputRGB, width, height);
             return new ResultRequest<Texture2D>(newTex, completion);
+        }
+
+        /// <inheritdoc/>
+        protected override AsyncCallbackRequest GeneratePackedMask(TexturePack pack, Action<Texture2D> completion)
+        {
+            var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
+
+            int maxWidth = 0;
+            int maxHeight = 0;
+            foreach (var (mask, index) in pack.GetMasks().Select((mask, index) => (mask, index)))
+            {
+                switch (mask.MaskType)
+                {
+                    case MaskType.None:
+                        break;
+                    case MaskType.DetailMask:
+                        break;
+                    case MaskType.MetallicMap:
+                        GenerateMetallicMap((tex) =>
+                        {
+                            if (tex)
+                            {
+                                swizzleMat.SetTexture($"_Texture{index}", tex);
+                                swizzleMat.SetFloat($"_Texture{index}Input", 0); // R
+                                swizzleMat.SetFloat($"_Texture{index}Output", (int)mask.Channel);
+                                maxHeight = Math.Max(maxHeight, tex.height);
+                                maxWidth = Math.Max(maxWidth, tex.width);
+                            }
+                        }).WaitForCompletion();
+                        break;
+                    case MaskType.MatcapMask:
+                        GenerateMatcapMask((tex) =>
+                        {
+                            if (tex)
+                            {
+                                swizzleMat.SetTexture($"_Texture{index}", tex);
+                                swizzleMat.SetFloat($"_Texture{index}Input", 0); // R
+                                swizzleMat.SetFloat($"_Texture{index}Output", (int)mask.Channel);
+                                maxHeight = Math.Max(maxHeight, tex.height);
+                                maxWidth = Math.Max(maxWidth, tex.width);
+                            }
+                        }).WaitForCompletion();
+                        break;
+                    case MaskType.OcculusionMap:
+                        break;
+                    case MaskType.GlossMap:
+                        GenerateGlossMap((tex) =>
+                        {
+                            if (tex)
+                            {
+                                swizzleMat.SetTexture($"_Texture{index}", tex);
+                                swizzleMat.SetFloat($"_Texture{index}Input", 3); // A
+                                swizzleMat.SetFloat($"_Texture{index}Output", (int)mask.Channel);
+                                maxHeight = Math.Max(maxHeight, tex.height);
+                                maxWidth = Math.Max(maxWidth, tex.width);
+                            }
+                        }).WaitForCompletion();
+                        break;
+                }
+            }
+
+            var width = Math.Min(maxWidth, (int)settings.maxTextureSize);
+            var height = Math.Min(maxHeight, (int)settings.maxTextureSize);
+            var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            Graphics.Blit(null, rt, swizzleMat);
+            return TextureUtility.RequestReadbackRenderTexture(rt, true, true, (tex) =>
+            {
+                RenderTexture.ReleaseTemporary(rt);
+                UnityEngine.Object.DestroyImmediate(swizzleMat);
+                completion?.Invoke(tex);
+            });
         }
 
         /// <inheritdoc/>
