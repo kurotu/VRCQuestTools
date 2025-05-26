@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.10.0-beta.4] - 2025-05-26
 
 ### 追加
 - [NDMF] `VQT Avatar Converter Settings` および `VQT Material Conversion Settings` のNDMF変換フェーズに `Auto` を追加。
