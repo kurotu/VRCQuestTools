@@ -10,7 +10,7 @@ namespace KRT.VRCQuestTools.Components
     [AddComponentMenu("VRCQuestTools/VQT Material Conversion Settings")]
 
     [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/material-conversion-settings?lang=auto")]
-    public class MaterialConversionSettings : VRCQuestToolsEditorOnly, IMaterialConversionComponent, IPlatformDependentComponent, INdmfComponent, IExperimentalComponent
+    public class MaterialConversionSettings : VRCQuestToolsEditorOnly, IMaterialConversionComponent, IPlatformDependentComponent, INdmfComponent
     {
         /// <summary>
         /// Default material convert setting. The default value is <see cref="ToonLitConvertSettings"/>.

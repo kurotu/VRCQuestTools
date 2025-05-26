@@ -10,7 +10,7 @@ namespace KRT.VRCQuestTools.Components
     [AddComponentMenu("VRCQuestTools/VQT Material Swap")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/material-swap?lang=auto")]
     [DisallowMultipleComponent]
-    public class MaterialSwap : VRCQuestToolsEditorOnly, IMaterialOperatorComponent, INdmfComponent, IPlatformDependentComponent, IExperimentalComponent
+    public class MaterialSwap : VRCQuestToolsEditorOnly, IMaterialOperatorComponent, INdmfComponent, IPlatformDependentComponent
     {
         /// <summary>
         /// List of material mappings.

@@ -58,7 +58,7 @@ namespace KRT.VRCQuestTools.Components
     [AddComponentMenu("VRCQuestTools/VQT Mesh Flipper")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/mesh-flipper?lang=auto")]
     [DisallowMultipleComponent]
-    public class MeshFlipper : VRCQuestToolsEditorOnly, INdmfComponent, IPlatformDependentComponent, IExperimentalComponent
+    public class MeshFlipper : VRCQuestToolsEditorOnly, INdmfComponent, IPlatformDependentComponent
     {
         /// <summary>
         /// Direction to flip the mesh.
