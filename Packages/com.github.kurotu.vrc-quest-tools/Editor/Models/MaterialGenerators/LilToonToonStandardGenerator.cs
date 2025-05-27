@@ -125,8 +125,19 @@ namespace KRT.VRCQuestTools.Models
 #endif
             bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/lilToon/Emission");
 
-            var targetSize = Math.Min(lilMaterial.EmissionMap.width, (int)settings.maxTextureSize);
-            var rt = RenderTexture.GetTemporary(targetSize, targetSize, 0, RenderTextureFormat.ARGB32);
+            var sourceWidth = Mathf.Max(
+                lilMaterial.EmissionMap ? lilMaterial.EmissionMap.width : 4,
+                lilMaterial.EmissionBlendMask ? lilMaterial.EmissionBlendMask.width : 4,
+                lilMaterial.Emission2ndMap ? lilMaterial.Emission2ndMap.width : 4,
+                lilMaterial.Emission2ndBlendMask ? lilMaterial.Emission2ndBlendMask.width : 4);
+            var sourceHeight = Mathf.Max(
+                lilMaterial.EmissionMap ? lilMaterial.EmissionMap.height : 4,
+                lilMaterial.EmissionBlendMask ? lilMaterial.EmissionBlendMask.height : 4,
+                lilMaterial.Emission2ndMap ? lilMaterial.Emission2ndMap.height : 4,
+                lilMaterial.Emission2ndBlendMask ? lilMaterial.Emission2ndBlendMask.height : 4);
+
+            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, (int)settings.maxTextureSize);
+            var rt = RenderTexture.GetTemporary(targetWidth, targetHeight, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(lilMaterial.EmissionMap, rt, bakeMat);
             return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
             {
@@ -566,11 +577,11 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseEmissionMap()
         {
-            if (lilMaterial.UseEmission && lilMaterial.EmissionMap != null)
+            if (lilMaterial.UseEmission && (lilMaterial.EmissionMap != null || lilMaterial.EmissionBlendMask != null || lilMaterial.EmissionBlend < 1.0f))
             {
                 return true;
             }
-            if (lilMaterial.UseEmission2nd && lilMaterial.Emission2ndMap != null)
+            if (lilMaterial.UseEmission2nd && (lilMaterial.Emission2ndMap != null || lilMaterial.Emission2ndBlendMask != null || lilMaterial.Emission2ndBlend < 1.0f))
             {
                 return true;
             }

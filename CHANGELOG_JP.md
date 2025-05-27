@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- lilToon でエミッションマスクだけを設定していると Toon Standard のエミッションマップが生成されない問題を修正。
+
 ## [2.10.0-beta.4] - 2025-05-26
 
 ### 追加
