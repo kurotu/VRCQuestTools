@@ -63,6 +63,12 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.EmissionColor = lilMaterial.EmissionColor;
             }
 
+            if (lilMaterial.UseShadow && lilMaterial.AOMap != null)
+            {
+                newMaterial.UseOcclusion = true;
+                newMaterial.OcclusionMap = lilMaterial.AOMap;
+            }
+
             if (lilMaterial.UseReflection)
             {
                 newMaterial.UseSpecular = true;
@@ -312,6 +318,42 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override AsyncCallbackRequest GenerateOcclusionMap(Action<Texture2D> completion)
+        {
+            var aoMap = (Texture2D)lilMaterial.AOMap;
+            var (width, height) = TextureUtility.AspectFitReduction(aoMap.width, aoMap.height, (int)settings.maxTextureSize);
+
+            var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
+            swizzleMat.SetTexture("_Texture0", aoMap);
+            if (lilMaterial.UseShadow3rd)
+            {
+                swizzleMat.SetFloat("_Texture0Input", 2);
+            }
+            else if (lilMaterial.UseShadow2nd)
+            {
+                swizzleMat.SetFloat("_Texture0Input", 1);
+            }
+            else
+            {
+                swizzleMat.SetFloat("_Texture0Input", 0);
+            }
+            swizzleMat.SetFloat("_Texture0Output", 1); // G
+
+            var rt = RenderTexture.GetTemporary(aoMap.width, aoMap.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            Graphics.Blit(null, rt, swizzleMat);
+
+            var rt2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            TextureUtility.DownscaleBlit(rt, false, rt2);
+            return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
+            {
+                RenderTexture.ReleaseTemporary(rt);
+                RenderTexture.ReleaseTemporary(rt2);
+                UnityEngine.Object.DestroyImmediate(swizzleMat);
+                completion?.Invoke(tex);
+            });
+        }
+
+        /// <inheritdoc/>
         protected override AsyncCallbackRequest GeneratePackedMask(TexturePack pack, Action<Texture2D> completion)
         {
             var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -353,6 +395,17 @@ namespace KRT.VRCQuestTools.Models
                         }).WaitForCompletion();
                         break;
                     case MaskType.OcculusionMap:
+                        GenerateOcclusionMap((tex) =>
+                        {
+                            if (tex)
+                            {
+                                swizzleMat.SetTexture($"_Texture{index}", tex);
+                                swizzleMat.SetFloat($"_Texture{index}Input", 1); // G
+                                swizzleMat.SetFloat($"_Texture{index}Output", (int)mask.Channel);
+                                maxHeight = Math.Max(maxHeight, tex.height);
+                                maxWidth = Math.Max(maxWidth, tex.width);
+                            }
+                        }).WaitForCompletion();
                         break;
                     case MaskType.GlossMap:
                         GenerateGlossMap((tex) =>
@@ -630,6 +683,18 @@ namespace KRT.VRCQuestTools.Models
         protected override bool GetUseNormalMap()
         {
             return lilMaterial.UseNormalMap && lilMaterial.NormalMap != null;
+        }
+
+        /// <inheritdoc/>
+        protected override bool GetUseOcclusionMap()
+        {
+            return lilMaterial.UseShadow && lilMaterial.AOMap != null;
+        }
+
+        /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetOcculusionMapST()
+        {
+            return (lilMaterial.AOMapTextureScale, lilMaterial.AOMapTextureOffset);
         }
 
         /// <inheritdoc/>

@@ -70,6 +70,31 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal bool UseShadow => Material.GetFloat("_UseShadow") > 0.5f;
 
         /// <summary>
+        /// Gets a value indicating whether to use 2nd shadow.
+        /// </summary>
+        internal bool UseShadow2nd => UseShadow && Material.GetColor("_Shadow2ndColor").a > 0.0f;
+
+        /// <summary>
+        /// Gets a value indicating whether to use 3rd shadow.
+        /// </summary>
+        internal bool UseShadow3rd => UseShadow && Material.GetColor("_Shadow3rdColor").a > 0.0f;
+
+        /// <summary>
+        /// Gets the ao map texture.
+        /// </summary>
+        internal Texture AOMap => Material.GetTexture("_ShadowBorderMask");
+
+        /// <summary>
+        /// Gets the ao map texture scale.
+        /// </summary>
+        internal Vector2 AOMapTextureScale => Material.GetTextureScale("_ShadowBorderMask");
+
+        /// <summary>
+        /// Gets the ao map texture offset.
+        /// </summary>
+        internal Vector2 AOMapTextureOffset => Material.GetTextureOffset("_ShadowBorderMask");
+
+        /// <summary>
         /// Gets cull mode.
         /// </summary>
         internal CullMode CullMode => (CullMode)Material.GetFloat("_Cull");

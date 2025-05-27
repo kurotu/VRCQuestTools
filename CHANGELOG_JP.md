@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### 変更
+- lilToon でAOマップを使用しているとき Toon Standard の Occlusion Map を生成するように変更。
+
 ### 修正
 - lilToon でエミッションマスクだけを設定していると Toon Standard のエミッションマップが生成されない問題を修正。
 

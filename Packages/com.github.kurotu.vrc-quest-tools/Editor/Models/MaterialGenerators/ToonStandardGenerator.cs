@@ -150,6 +150,12 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.EmissionColor = GetEmissionColor();
                 }
 
+                if (GetUseOcclusionMap())
+                {
+                    newMaterial.UseOcclusion = true;
+                    masks.Add(MaskType.OcculusionMap);
+                }
+
                 if (GetUseSpecular())
                 {
                     newMaterial.UseSpecular = true;
@@ -242,7 +248,7 @@ namespace KRT.VRCQuestTools.Models
                                     case MaskType.OcculusionMap:
                                         newMaterial.OcclusionMap = t;
                                         newMaterial.OcclusionMapChannel = mask.Channel;
-                                        // TODO: OcclusionMap ST.
+                                        (newMaterial.OcclusionMapTextureScale, newMaterial.OcclusionMapTextureOffset) = GetOcculusionMapST();
                                         break;
                                     case MaskType.GlossMap:
                                         newMaterial.GlossMap = t;
@@ -342,6 +348,18 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Emission color.</returns>
         protected abstract Color GetEmissionColor();
+
+        /// <summary>
+        /// Gets the material should use occulusion map.
+        /// </summary>
+        /// <returns>True if the material should use occlusion map.</returns>
+        protected abstract bool GetUseOcclusionMap();
+
+        /// <summary>
+        /// Gets the occulusion map texture scale and offset of the material.
+        /// </summary>
+        /// <returns>Scale and offset.</returns>
+        protected abstract (Vector2 Scale, Vector2 Offset) GetOcculusionMapST();
 
         /// <summary>
         /// Gets the material should use occulusion map.
@@ -511,11 +529,11 @@ namespace KRT.VRCQuestTools.Models
         protected abstract AsyncCallbackRequest GenerateEmissionMap(Action<Texture2D> completion);
 
         /// <summary>
-        /// Generates the occulusion map of the material.
+        /// Generates the occlusion map of the material.
         /// </summary>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Async callback request.</returns>
-        // protected abstract AsyncCallbackRequest GenerateOcculusionMap(Action<Texture2D> completion);
+        protected abstract AsyncCallbackRequest GenerateOcclusionMap(Action<Texture2D> completion);
 
         /// <summary>
         /// Generates the detail mask of the material.
