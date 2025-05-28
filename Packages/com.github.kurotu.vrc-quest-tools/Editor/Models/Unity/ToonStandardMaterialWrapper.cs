@@ -267,12 +267,39 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to use occlusion.
+        /// </summary>
+        internal bool UseOcclusion
+        {
+            get => material.IsKeywordEnabled("USE_OCCLUSION_MAP");
+            set => SetKeyword("USE_OCCLUSION_MAP", value);
+        }
+
+        /// <summary>
         /// Gets or sets the occlusion map texture.
         /// </summary>
         internal Texture OcclusionMap
         {
             get => material.GetTexture("_OcclusionMap");
             set => material.SetTexture("_OcclusionMap", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the occlusion map texture scale.
+        /// </summary>
+        internal Vector2 OcclusionMapTextureScale
+        {
+            get => material.GetTextureScale("_OcclusionMap");
+            set => material.SetTextureScale("_OcclusionMap", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the occlusion map texture offset.
+        /// </summary>
+        internal Vector2 OcclusionMapTextureOffset
+        {
+            get => material.GetTextureOffset("_OcclusionMap");
+            set => material.SetTextureOffset("_OcclusionMap", value);
         }
 
         /// <summary>

@@ -70,6 +70,31 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal bool UseShadow => Material.GetFloat("_UseShadow") > 0.5f;
 
         /// <summary>
+        /// Gets a value indicating whether to use 2nd shadow.
+        /// </summary>
+        internal bool UseShadow2nd => UseShadow && Material.GetColor("_Shadow2ndColor").a > 0.0f;
+
+        /// <summary>
+        /// Gets a value indicating whether to use 3rd shadow.
+        /// </summary>
+        internal bool UseShadow3rd => UseShadow && Material.GetColor("_Shadow3rdColor").a > 0.0f;
+
+        /// <summary>
+        /// Gets the ao map texture.
+        /// </summary>
+        internal Texture AOMap => Material.GetTexture("_ShadowBorderMask");
+
+        /// <summary>
+        /// Gets the ao map texture scale.
+        /// </summary>
+        internal Vector2 AOMapTextureScale => Material.GetTextureScale("_ShadowBorderMask");
+
+        /// <summary>
+        /// Gets the ao map texture offset.
+        /// </summary>
+        internal Vector2 AOMapTextureOffset => Material.GetTextureOffset("_ShadowBorderMask");
+
+        /// <summary>
         /// Gets cull mode.
         /// </summary>
         internal CullMode CullMode => (CullMode)Material.GetFloat("_Cull");
@@ -115,9 +140,23 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Texture EmissionMap => Material.GetTexture("_EmissionMap");
 
         /// <summary>
-        /// Gets the emission color.
+        /// Gets or sets the emission color.
         /// </summary>
-        internal Color EmissionColor => Material.GetColor("_EmissionColor");
+        internal Color EmissionColor
+        {
+            get => Material.GetColor("_EmissionColor");
+            set => Material.SetColor("_EmissionColor", value);
+        }
+
+        /// <summary>
+        /// Gets the emission blend mask texture.
+        /// </summary>
+        internal Texture EmissionBlendMask => Material.GetTexture("_EmissionBlendMask");
+
+        /// <summary>
+        /// Gets the emission blend mask texture scale.
+        /// </summary>
+        internal float EmissionBlend => Material.GetFloat("_EmissionBlend");
 
         /// <summary>
         /// Gets a value indicating whether to use 2nd emission.
@@ -130,9 +169,23 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Texture Emission2ndMap => Material.GetTexture("_Emission2ndMap");
 
         /// <summary>
-        /// Gets the 2nd emission color.
+        /// Gets or sets the 2nd emission color.
         /// </summary>
-        internal Color Emission2ndColor => Material.GetColor("_Emission2ndColor");
+        internal Color Emission2ndColor
+        {
+            get => Material.GetColor("_Emission2ndColor");
+            set => Material.SetColor("_Emission2ndColor", value);
+        }
+
+        /// <summary>
+        /// Gets the 2nd emission blend mask texture.
+        /// </summary>
+        internal Texture Emission2ndBlendMask => Material.GetTexture("_Emission2ndBlendMask");
+
+        /// <summary>
+        /// Gets the 2nd emission blend mask texture scale.
+        /// </summary>
+        internal float Emission2ndBlend => Material.GetFloat("_Emission2ndBlend");
 
         /// <summary>
         /// Gets a value indicating whether to use reflection.

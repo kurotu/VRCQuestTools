@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Improved Toon Standard conversion.
+    - Generate occlusion map when AO map is used in lilToon.
+    - Improved normal MatCap conversion.
+    - Convert HDR color to LDR in emission map conversion.
+
+### Fixed
+- Missing emission map of Toon Standard when lilToon material uses emission mask only.
+
 ## [2.10.0-beta.4] - 2025-05-26
 
 ### Added

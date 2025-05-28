@@ -70,6 +70,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override AsyncCallbackRequest GenerateOcclusionMap(Action<Texture2D> completion)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override AsyncCallbackRequest GeneratePackedMask(TexturePack pack, Action<Texture2D> completion)
         {
             throw new NotImplementedException();
@@ -166,6 +172,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetOcculusionMapST()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override float GetReflectance()
         {
             throw new NotImplementedException();
@@ -251,6 +263,12 @@ namespace KRT.VRCQuestTools.Models
 
         /// <inheritdoc/>
         protected override bool GetUseNormalMap()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        protected override bool GetUseOcclusionMap()
         {
             throw new NotImplementedException();
         }

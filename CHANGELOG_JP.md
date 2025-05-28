@@ -4,6 +4,17 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 変更
+- Toon Standard の変換処理を改善
+    - lilToon でAOマップを使用しているとき Occlusion Map を生成するように変更。
+    - 通常モード MatCap の変換処理を改善。
+    - Emission Map の変換時に HDR カラーを LDR カラーに変換するように変更。
+
+### 修正
+- lilToon でエミッションマスクだけを設定していると Toon Standard のエミッションマップが生成されない問題を修正。
+
 ## [2.10.0-beta.4] - 2025-05-26
 
 ### 追加
