@@ -73,9 +73,15 @@ Launch VRChat and test the avatar.
 After testing the avatar on PC, upload it to VRChat.
 There are following ways to upload the avatar with non-destructive conversion:
 
+- [Regular Upload](#regular-upload) (VRChat SDK)
 - [Multi-Platform Build](#multi-platform-build) (VRChat SDK)
 - [VQT Avatar Builder](#vqt-avatar-builder) (VRCQuestTools)
 - [ContinuousAvatarUploader](https://github.com/anatawa12/ContinuousAvatarUploader)
+
+### Regular Upload
+
+Since VRChat SDK 3.8.1, you can start uploading the avatar even if the avatar in the scene does not meet the Android-compatible conditions.
+Open the VRChat SDK control panel and upload it as you would for PC.
 
 ### Multi-Platform Build
 

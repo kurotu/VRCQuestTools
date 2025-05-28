@@ -42,6 +42,15 @@ VRCQuestToolsだけでは対応できず、別途作業が必要です。
 先ほどの手順5.では**VQT Network ID Assigner**コンポーネントがアバターにアタッチされており、PCとAndroidの間での同期に必要なネットワークIDを割り当てることができます。
 この状態で通常通りアバターをPC用にアップロードします。
 
+### 推奨: アバターの自動最適化
+
+近年のPC用アバターは多くのメッシュやシェイプキーを使用しており、VRCQuestToolsで変換するだけではAndroidプラットフォームの制限である非圧縮サイズ40MB,圧縮サイズ10MBを超えてしまうことがあります。
+アバターをアップロードできるように、不要なメッシュやシェイプキーを削除してアバターのサイズを小さくする必要があります。
+
+1. [Avatar Optimizer](https://vpm.anatawa12.com/avatar-optimizer/ja/)をプロジェクトに追加します。
+2. アバターのルートオブジェクト(VRC Avatar Descriptorがアタッチされているオブジェクト)を選択します。
+3. [**AAO Trance And Optimize**](https://vpm.anatawa12.com/avatar-optimizer/ja/docs/reference/trace-and-optimize/)コンポーネントをアタッチします。
+
 ## アバターの変換設定
 
 以下の項目の設定をします。

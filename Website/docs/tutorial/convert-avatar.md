@@ -47,6 +47,15 @@ But the number of PhysBones is different between PC and Android, so Network IDs 
 In the previous step 5, **VQT Network ID Assigner** component is attached to your avatar, and you can assign Network IDs required for synchronization between PC and Android.
 Upload your avatar for PC platform as usual in this state.
 
+### Recommended: Automatic Avatar Optimization
+
+Recent PC avatars use a lot of meshes and blendshapes, and converting them with VRCQuestTools may exceed the Android platform limits of uncompressed size 40MB and compressed size 10MB.
+You need to reduce the size of your avatar by removing unnecessary meshes and blendshapes to be able to upload your avatar.
+
+1. Add [Avatar Optimizer](https://vpm.anatawa12.com/avatar-optimizer/) to your project.
+2. Select the root object of your avatar (the object which has VRC Avatar Descriptor).
+3. Attach [**AAO Trace And Optimize**](https://vpm.anatawa12.com/avatar-optimizer/en/docs/reference/trace-and-optimize/) component to the root object.
+
 ## Avatar Converter Settings
 
 Do settings for the following items.
