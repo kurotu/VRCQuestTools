@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved Toon Standard conversion.
     - Generate occlusion map when AO map is used in lilToon.
     - Improved normal MatCap conversion.
+    - Convert HDR color to LDR in emission map conversion.
 
 ### Fixed
 - Missing emission map of Toon Standard when lilToon material uses emission mask only.

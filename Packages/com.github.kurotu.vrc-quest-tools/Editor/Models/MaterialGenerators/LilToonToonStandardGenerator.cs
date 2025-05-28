@@ -33,7 +33,7 @@ namespace KRT.VRCQuestTools.Models
             newMaterial.Name = lilMaterial.Material.name;
 
             newMaterial.MainTexture = lilMaterial.Material.mainTexture;
-            newMaterial.MainColor = lilMaterial.Material.color;
+            newMaterial.MainColor = Utils.ColorUtility.HdrToLdr(lilMaterial.Material.color);
 
             if (lilMaterial.UseNormalMap)
             {
@@ -60,7 +60,7 @@ namespace KRT.VRCQuestTools.Models
             if (lilMaterial.UseEmission)
             {
                 newMaterial.EmissionMap = lilMaterial.EmissionMap;
-                newMaterial.EmissionColor = lilMaterial.EmissionColor;
+                newMaterial.EmissionColor = Utils.ColorUtility.HdrToLdr(lilMaterial.EmissionColor);
             }
 
             if (lilMaterial.UseShadow && lilMaterial.AOMap != null)
@@ -108,7 +108,7 @@ namespace KRT.VRCQuestTools.Models
             if (lilMaterial.UseRimLight)
             {
                 newMaterial.UseRimLighting = true;
-                newMaterial.RimColor = lilMaterial.RimLightColor;
+                newMaterial.RimColor = Utils.ColorUtility.HdrToLdr(lilMaterial.RimLightColor);
                 newMaterial.RimAlbedoTint = lilMaterial.RimMainStrength;
                 newMaterial.RimRange = Mathf.Pow(1.0f - lilMaterial.RimLightBorder, lilMaterial.RimFresnelPower);
                 newMaterial.RimSoftness = lilMaterial.RimLightBlur;
@@ -130,6 +130,9 @@ namespace KRT.VRCQuestTools.Models
             bakeMat.parent = null;
 #endif
             bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/lilToon/Emission");
+            var bakeMatWrapper = new LilToonMaterial(bakeMat);
+            bakeMatWrapper.EmissionColor = Utils.ColorUtility.HdrToLdr(bakeMatWrapper.EmissionColor);
+            bakeMatWrapper.Emission2ndColor = Utils.ColorUtility.HdrToLdr(bakeMatWrapper.Emission2ndColor);
 
             var sourceWidth = Mathf.Max(
                 lilMaterial.EmissionMap ? lilMaterial.EmissionMap.width : 4,
@@ -181,7 +184,7 @@ namespace KRT.VRCQuestTools.Models
             var rt1 = RenderTexture.GetTemporary(sourceWidth, sourceHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat1 = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
             mat1.SetTexture("_Texture0", alphaGlossMap);
-            var reflectionColorGrayscale = TextureUtility.GetRec709Grayscale(lilMaterial.ReflectionColor) * lilMaterial.ReflectionColor.a;
+            var reflectionColorGrayscale = Utils.ColorUtility.GetRec709Grayscale(lilMaterial.ReflectionColor) * lilMaterial.ReflectionColor.a;
             var reflectionColor = new Color(1.0f, 1.0f, 1.0f, reflectionColorGrayscale);
             mat1.SetColor("_Texture0Color", reflectionColor);
             mat1.SetTexture("_Texture1", reflectionGrayscaleTex);
@@ -222,6 +225,7 @@ namespace KRT.VRCQuestTools.Models
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
             mat.SetTexture("_Texture0", lilMaterial.MatCapTex);
             var color = lilMaterial.MatCapColor;
+            color = Utils.ColorUtility.HdrToLdr(color);
             switch (lilMaterial.MatCapBlendingMode)
             {
                 case LilToonMaterial.MatCapBlendMode.Add:
@@ -304,7 +308,7 @@ namespace KRT.VRCQuestTools.Models
 
             var rt = RenderTexture.GetTemporary(originalWidth, originalHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
-            var reflectionGrayscale = TextureUtility.GetRec709Grayscale(lilMaterial.ReflectionColor) * lilMaterial.ReflectionColor.a;
+            var reflectionGrayscale = Utils.ColorUtility.GetRec709Grayscale(lilMaterial.ReflectionColor) * lilMaterial.ReflectionColor.a;
             var reflectionColor = new Color(reflectionGrayscale, 1.0f, 1.0f, 1.0f);
             mat.SetTexture("_Texture0", reflectionGrayscaleTex);
             mat.SetColor("_Texture0Color", reflectionColor);

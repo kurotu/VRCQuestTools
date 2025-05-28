@@ -10,6 +10,7 @@
 - Toon Standard の変換処理を改善
     - lilToon でAOマップを使用しているとき Occlusion Map を生成するように変更。
     - 通常モード MatCap の変換処理を改善。
+    - Emission Map の変換時に HDR カラーを LDR カラーに変換するように変更。
 
 ### 修正
 - lilToon でエミッションマスクだけを設定していると Toon Standard のエミッションマップが生成されない問題を修正。

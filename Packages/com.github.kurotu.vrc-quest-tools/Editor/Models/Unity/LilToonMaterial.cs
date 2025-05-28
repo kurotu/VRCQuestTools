@@ -140,9 +140,13 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Texture EmissionMap => Material.GetTexture("_EmissionMap");
 
         /// <summary>
-        /// Gets the emission color.
+        /// Gets or sets the emission color.
         /// </summary>
-        internal Color EmissionColor => Material.GetColor("_EmissionColor");
+        internal Color EmissionColor
+        {
+            get => Material.GetColor("_EmissionColor");
+            set => Material.SetColor("_EmissionColor", value);
+        }
 
         /// <summary>
         /// Gets the emission blend mask texture.
@@ -165,9 +169,13 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Texture Emission2ndMap => Material.GetTexture("_Emission2ndMap");
 
         /// <summary>
-        /// Gets the 2nd emission color.
+        /// Gets or sets the 2nd emission color.
         /// </summary>
-        internal Color Emission2ndColor => Material.GetColor("_Emission2ndColor");
+        internal Color Emission2ndColor
+        {
+            get => Material.GetColor("_Emission2ndColor");
+            set => Material.SetColor("_Emission2ndColor", value);
+        }
 
         /// <summary>
         /// Gets the 2nd emission blend mask texture.
