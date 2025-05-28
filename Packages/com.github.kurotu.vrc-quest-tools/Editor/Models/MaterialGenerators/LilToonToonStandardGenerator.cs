@@ -222,6 +222,22 @@ namespace KRT.VRCQuestTools.Models
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
             mat.SetTexture("_Texture0", lilMaterial.MatCapTex);
             var color = lilMaterial.MatCapColor;
+            switch (lilMaterial.MatCapBlendingMode)
+            {
+                case LilToonMaterial.MatCapBlendMode.Add:
+                case LilToonMaterial.MatCapBlendMode.Screen:
+                    var attenuation = 0.8f;
+                    color.r *= Mathf.Lerp(color.r, 0.0f, lilMaterial.MatCapMainStrength * attenuation);
+                    color.g *= Mathf.Lerp(color.g, 0.0f, lilMaterial.MatCapMainStrength * attenuation);
+                    color.b *= Mathf.Lerp(color.b, 0.0f, lilMaterial.MatCapMainStrength * attenuation);
+                    break;
+                case LilToonMaterial.MatCapBlendMode.Normal:
+                case LilToonMaterial.MatCapBlendMode.Multiply:
+                    color.r *= Mathf.Lerp(color.r, 1.0f, lilMaterial.MatCapMainStrength);
+                    color.g *= Mathf.Lerp(color.g, 1.0f, lilMaterial.MatCapMainStrength);
+                    color.b *= Mathf.Lerp(color.b, 1.0f, lilMaterial.MatCapMainStrength);
+                    break;
+            }
             color.a = 1.0f;
             mat.SetColor("_Texture0Color", color);
 
@@ -513,10 +529,10 @@ namespace KRT.VRCQuestTools.Models
         {
             switch (lilMaterial.MatCapBlendingMode)
             {
-                case LilToonMaterial.MatCapBlendMode.Normal:
                 case LilToonMaterial.MatCapBlendMode.Add:
                 case LilToonMaterial.MatCapBlendMode.Screen:
                     return ToonStandardMaterialWrapper.MatcapTypeMode.Additive;
+                case LilToonMaterial.MatCapBlendMode.Normal:
                 case LilToonMaterial.MatCapBlendMode.Multiply:
                     return ToonStandardMaterialWrapper.MatcapTypeMode.Multiplicative;
                 default:
@@ -539,8 +555,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override float GetMatcapMaskStrength()
         {
-            var mainStrength = 0.9f * (1.0f - lilMaterial.MatCapMainStrength) + 0.1f;
-            return lilMaterial.MatCapBlend * lilMaterial.MatCapColor.a * mainStrength;
+            return lilMaterial.MatCapBlend * lilMaterial.MatCapColor.a;
         }
 
         /// <inheritdoc/>

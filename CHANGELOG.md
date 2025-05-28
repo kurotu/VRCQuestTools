@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Generate occlusion map for Toon Standard materials when AO map is used in lilToon.
+- Improved Toon Standard conversion.
+    - Generate occlusion map when AO map is used in lilToon.
+    - Improved normal MatCap conversion.
 
 ### Fixed
 - Missing emission map of Toon Standard when lilToon material uses emission mask only.
