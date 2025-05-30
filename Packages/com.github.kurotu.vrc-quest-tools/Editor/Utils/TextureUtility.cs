@@ -387,7 +387,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Request to wait.</returns>
         internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, int width, int height, bool useMipmap, Action<Texture2D> completion)
         {
-            return BakeTexture(input, isDataSRGB, null, width, height, useMipmap, completion);
+            return BakeTexture(input, isDataSRGB, width, height, useMipmap, null, completion);
         }
 
         /// <summary>
@@ -395,13 +395,13 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="input">Input texture.</param>
         /// <param name="isDataSRGB">Texture is sRGB.</param>
-        /// <param name="material">Material to bake.</param>
         /// <param name="width">Desired width.</param>
         /// <param name="height">Desired height.</param>
         /// <param name="useMipmap">Use mip map.</param>
+        /// <param name="material">Material to bake.</param>
         /// <param name="completion">Completion action.</param>
         /// <returns>Request to wait.</returns>
-        internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, Material material, int width, int height, bool useMipmap, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, int width, int height, bool useMipmap, Material material, Action<Texture2D> completion)
         {
             var desc = new RenderTextureDescriptor(input.width, input.height, RenderTextureFormat.ARGB32, 0, useMipmap ? input.mipmapCount : 1);
             desc.sRGB = isDataSRGB;

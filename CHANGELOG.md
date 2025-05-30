@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed from 2.10.0-beta.5
 - Require VRCSDK 3.8.1 or later for Toon Standard conversion.
+- Fixed an issue where parameters other than main textures were not applied when converting to Toon Lit.
 - [NDMF] Added Overall NDMF Mesh Simplifier in the execution order constration.
 
 ## [2.10.0-beta.5] - 2025-05-29

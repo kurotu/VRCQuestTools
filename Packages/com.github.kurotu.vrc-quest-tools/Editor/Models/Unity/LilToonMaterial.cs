@@ -687,7 +687,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
-                return TextureUtility.BakeTexture(main, baker.Object, width, height, true, completion);
+                return TextureUtility.BakeTexture(main, true, width, height, true, baker.Object, completion);
             }
         }
 
