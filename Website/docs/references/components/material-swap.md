@@ -1,9 +1,5 @@
 # Material Swap
 
-:::warning
-This component is an experimental feature.
-:::
-
 The VQT Material Swap component provides a simple way to swap materials for mobile platforms.
 
 :::info
@@ -25,8 +21,15 @@ Create material mapping pairs by:
 ## Properties
 
 ### Material Mappings
+
 List of original -> replacement material pairs.
 
-## Future Development
+## NDMF
 
-This is a proof-of-concept implementation. Future versions may break behavior.
+Replace materials when the target platform is mobile.
+
+NDMF Phase is managed by [Avatar Converter Settings] component or the root level Material Conversion Settings component.
+
+When there are no root level components, auto is used.
+
+[Avatar Converter Settings]: avatar-converter-settings.md

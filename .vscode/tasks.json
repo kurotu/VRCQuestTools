@@ -1,0 +1,33 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Website",
+			"detail": "docusaurus start",
+			"type": "shell",
+			"command": "npm",
+			"problemMatcher": [],
+			"args": [
+				"start"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/Website"
+			},
+		},
+		{
+			"label": "Start Website (ja)",
+			"detail": "docusaurus start with Japanese locale",
+			"type": "shell",
+			"command": "npm",
+			"problemMatcher": [],
+			"args": [
+				"start",
+				"--",
+				"--locale=ja"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/Website"
+			},
+		}
+	]
+}

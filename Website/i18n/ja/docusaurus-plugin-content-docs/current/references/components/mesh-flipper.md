@@ -1,11 +1,7 @@
 # Mesh Flipper
 
-:::warning
-このコンポーネントは実験的機能です。
-:::
-
 ポリゴンの反転したメッシュまたは両面になったメッシュを生成します。
-VRChatのモバイルシェーダーは裏面を描画できないため、このコンポーネントは裏面を描画するために使用できます。
+VRChatのモバイルシェーダーの多くは裏面を描画できないため、このコンポーネントは裏面を描画するために使用できます。
 
 :::info
 このコンポーネントには Non-Destructive Modular Framework (NDMF) が必要です。
@@ -45,6 +41,7 @@ NDMFのビルド処理中にどのタイミングでメッシュを生成する�
 - [NDMF Mantis LOD Editor](https://hitsub.booth.pm/items/5409262)
 - [lilNDMFMeshSimplifier](https://github.com/lilxyzw/lilNDMFMeshSimplifier)
 - [Meshia Mesh Simplification](https://github.com/RamType0/Meshia.MeshSimplification)
+- [Overall NDMF Mesh Simplifier](https://github.com/Tliks/OverallNDMFMeshSimplifier)
 
 ### PCで有効
 

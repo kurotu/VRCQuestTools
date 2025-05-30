@@ -1,11 +1,7 @@
 # Mesh Flipper
 
-:::warning
-This component is an experimental feature.
-:::
-
 This component generates a mesh that polygons are flipped or double-sided.
-VRChat's mobile shaders can't render backfaces, so this component is useful for rendering backfaces.
+The most of VRChat's mobile shaders can't render backfaces, so this component is useful for rendering backfaces.
 
 :::info
 This component requires Non-Destructive Modular Framework (NDMF).
@@ -47,6 +43,7 @@ Following polygon reduction tools are considered for the order of processing.
 - [NDMF Mantis LOD Editor](https://hitsub.booth.pm/items/5409262)
 - [lilNDMFMeshSimplifier](https://github.com/lilxyzw/lilNDMFMeshSimplifier)
 - [Meshia Mesh Simplification](https://github.com/RamType0/Meshia.MeshSimplification)
+- [Overall NDMF Mesh Simplifier](https://github.com/Tliks/OverallNDMFMeshSimplifier)
 
 ### Enable on PC
 

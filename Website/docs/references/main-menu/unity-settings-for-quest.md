@@ -10,6 +10,11 @@ Set recommended Unity settings for Android.
 
 ## Build Settings
 
+### Android Build Support
+
+Displays whether Android Build Support is installed.
+If not, refer to the [tutorial](../../tutorial/set-up-environment.mdx) to install it.
+
 ### Android Texture Compression
 
 `Press Set texture compression to ASTC` button sets default texture compression.

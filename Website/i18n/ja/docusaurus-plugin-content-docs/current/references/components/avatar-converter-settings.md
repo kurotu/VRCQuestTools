@@ -36,16 +36,18 @@ VRChatアバターをAndroid向けにアップロード可能に変換するた�
 |---|---|
 | Toon Lit | 変換後のマテリアルに `VRChat/Mobile/Toon Lit` シェーダーを使用します。 |
 | MatCap Lit | 変換後のマテリアルに `VRChat/Mobile/MatCap Lit` シェーダーを使用します。Toon Litと同様の変換処理を適用した後、変換設定で指定したMatCapテクスチャを使用します。 |
+| Toon Standard | 変換後のマテリアルに `VRChat/Mobile/Toon Standard` シェーダーを使用します。 |
 | マテリアル置換 | 変換設定で指定したマテリアルに置き換えます。 |
 
 | パラメーター | 説明 | 変換モード |
 |---|---|---|
-| Android用のテクスチャを生成する | アバターを変換する際にAndroid用のテクスチャを生成します。オフの場合、元のメインテクスチャを使用します。 | Toon Lit, MatCap Lit |
-| 最大テクスチャサイズ | 生成されるテクスチャの最大サイズを選択します。 | Toon Lit, MatCap Lit |
-| 圧縮形式 | 生成されるテクスチャの圧縮形式を選択します。PC向けにはDXT5を使用します。 | Toon Lit, MatCap Lit |
+| Android用のテクスチャを生成する | アバターを変換する際にAndroid用のテクスチャを生成します。オフの場合、元のメインテクスチャを使用します。 | Toon Lit, MatCap Lit, Toon Standard |
+| 最大テクスチャサイズ | 生成されるテクスチャの最大サイズを選択します。 | Toon Lit, MatCap Lit, Toon Standard |
+| 圧縮形式 | 生成されるテクスチャの圧縮形式を選択します。PC向けにはDXT5を使用します。 | Toon Lit, MatCap Lit, Toon Standard |
 | メインテクスチャの明るさ | 生成されるメインテクスチャの明るさを選択します。 | Toon Lit, MatCap Lit |
 | ノーマルマップから影を生成する | ノーマルマップから疑似的な影を生成しテクスチャに反映します。 | Toon Lit, MatCap Lit |
 | MatCapテクスチャ | MatCap Litシェーダーで使用するMatCapテクスチャを設定します。 | MatCap Lit |
+| 影のフォールバック | 非対応マテリアルを変換するときに使用するRampテクスチャを選択します。 | Toon Standard |
 | 置換マテリアル | マテリアル置換モードで使用するマテリアルを設定します。 | マテリアル置換 |
 
 ### 追加のマテリアル変換設定
@@ -110,6 +112,11 @@ Expressions Menuの圧縮されていないアイコンを圧縮します。
 ### NDMF変換フェーズ
 
 NDMFでアバターを変換するときの実行フェーズを選択します。
+
+Autoを選択した場合、以下のフェーズとして扱います。
+
+- 通常：Optimizing
+- VRCFuryコンポーネントが存在する：Transforming
 
 ## 変換
 

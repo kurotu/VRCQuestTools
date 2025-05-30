@@ -72,9 +72,15 @@ VRChatを起動し、アバターをテストしましょう。
 テストで問題がなければ、アバターをAndroid向けにアップロードします。
 アバターを非破壊的に変換しながらアップロードするには以下の方法があります。
 
+- [通常のアップロード](#通常のアップロード) (VRChat SDK)
 - [Multi-Platform Build](#multi-platform-build) (VRChat SDK)
 - [VQT Avatar Builder](#vqt-avatar-builder) (VRCQuestTools)
 - [ContinuousAvatarUploader](https://github.com/anatawa12/ContinuousAvatarUploader)
+
+### 通常のアップロード
+
+VRChat SDK 3.8.1以降では、シーン上のアバターがAndroid対応の条件を満たしていなくてもアップロードを開始できます。
+PC用にアバターをアップロードするときと同様にVRChat SDKコントロールパネルを開いてアップロードします。
 
 ### Multi-Platform Build
 

@@ -10,6 +10,11 @@ Android向けのUnityの推奨設定を行います。
 
 ## Build Settings
 
+### Android Build Support
+
+Android Build Supportがインストールされているかどうかを表示します。
+インストールされていない場合は、[チュートリアル](../../tutorial/set-up-environment.mdx)を参照してインストールしてください。
+
 ### Android テクスチャ圧縮
 
 `ASTCでテクスチャを圧縮` ボタンでデフォルトのテクスチャ圧縮形式を変更します。

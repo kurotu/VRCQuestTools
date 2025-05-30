@@ -36,16 +36,18 @@ The following shaders are supported for material conversion. For unsupported sha
 |---|---|
 | Toon Lit | Use the `VRChat/Mobile/Toon Lit` shader for the converted material. |
 | MatCap Lit | Use the `VRChat/Mobile/MatCap Lit` shader for the converted material. After applying the same conversion process as Toon Lit, use the MatCap texture specified in the conversion settings. |
+| Toon Standard | Use the `VRChat/Mobile/Toon Standard` shader for the converted material. |
 | Material Replacement | Replace with the specified material in the conversion settings. |
 
 | Parameter | Description | Conversion Mode |
 |---|---|---|
-| Generate Textures for Android | Generate Android textures when converting avatar. If off, the original main texture is used. | Toon Lit, MatCap Lit |
-| Textures Size Limit | Select the maximum size of the generated texture. | Toon Lit, MatCap Lit |
-| Main Texture Brightness | Select the brightness of the generated main texture. | Toon Lit, MatCap Lit |
-| Compression Format | Select the compression format of the generated textures. DXT5 is used for PC platform. | Toon Lit, MatCap Lit |
+| Generate Textures for Android | Generate Android textures when converting avatar. If off, the original main texture is used. | Toon Lit, MatCap Lit, Toon Standard |
+| Textures Size Limit | Select the maximum size of the generated texture. | Toon Lit, MatCap Lit, Toon Standard |
+| Main Texture Brightness | Select the brightness of the generated main texture. | Toon Lit, MatCap Lit, Toon Standard |
+| Compression Format | Select the compression format of the generated textures. DXT5 is used for PC platform. | Toon Lit, MatCap Lit, Toon Standard |
 | Generate shadows from normal map | Generate pseudo shadows from normal maps and reflect them in textures. | Toon Lit, MatCap Lit |
 | MatCap Texture | Set the MatCap texture used by the MatCap Lit shader. | MatCap Lit |
+| Fallback Shading | Select the Ramp texture used when converting unsupported materials. | Toon Standard |
 | Replaced Material | Set the material used in Material Replacement mode. | Material Replacement |
 
 ### Additional Material Conversion Settings
@@ -111,6 +113,11 @@ This options is useful to reduce avatar's build size when other tools generate a
 ### NDMF Phase to Convert
 
 Select a NDMF phase to convert the avatar.
+
+If you select Auto, it's treated as following phases:
+
+- Normal: Optimizing
+- VRCFury components exist: Transforming
 
 ## Convert
 
