@@ -69,7 +69,7 @@ jobs:
             vrcsdkVersion: 3.7.5
           # Toon Standard
           - unityVersion: 2022.3.22f1
-            vrcsdkVersion: 3.8.1-beta.4
+            vrcsdkVersion: 3.8.1
         ndmfVersion:
           - ''
           - 1.2.5 # Befor Error report

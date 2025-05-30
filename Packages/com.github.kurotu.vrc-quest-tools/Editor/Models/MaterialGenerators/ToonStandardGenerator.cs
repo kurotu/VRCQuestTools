@@ -270,7 +270,7 @@ namespace KRT.VRCQuestTools.Models
 
             return new ResultRequest<Material>(newMaterial, completion);
 #else
-            throw new InvalidOperationException("VRCSDK 3.8.1-beta.4 or later is required for Toon Standard.");
+            throw new InvalidOperationException("VRCSDK 3.8.1 or later is required for Toon Standard.");
 #endif
         }
 

@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - [NDMF] Added Overall NDMF Mesh Simplifier in the execution order constration.
 
+### Changed
+- Require VRCSDK 3.8.1 or later for Toon Standard conversion.
+
 ## [2.10.0-beta.5] - 2025-05-29
 
 ### Changed

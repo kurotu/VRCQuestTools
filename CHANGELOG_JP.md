@@ -9,6 +9,9 @@
 ### 追加
 - [NDMF] 実行順を考慮するプラグインに Overall NDMF Mesh Simplifier を追加。
 
+### 変更
+- Toon Standard への変換には VRCSDK 3.8.1 以降が必要。
+
 ## [2.10.0-beta.5] - 2025-05-29
 
 ### 変更

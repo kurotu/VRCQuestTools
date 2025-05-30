@@ -46,7 +46,7 @@
         },
         {
             "name": "com.vrchat.avatars",
-            "expression": "3.8.1-beta.4",
+            "expression": "3.8.1",
             "define": "VQT_HAS_VRCSDK_TOON_STANDARD"
         },
         {
