@@ -8,10 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Toon Standard conversion settings. (VRCSDK 3.8.1-beta.4 or later)
+    - There are following limitations:
+        - Only supports lilToon 1.10.0 and later. For unsupported materials, Toon Lit main texture is only used.
+        - [Missing rim lighting mask](https://feedback.vrchat.com/open-beta/p/sdk-381-beta3-add-rim-lighting-mask-for-toon-standard). This might lead overbright rim lighting.
+- Texture compression format option for converted textures.
+- Improved `MA Convert Constraints` integration.
+    - Add the component when using `Begin Converter Settings` button of `Avatar Converter for Android`.
+    - Do not remove Unity constraints when `MA Convert Constraints` exists in following situation. (VRCSDK 3.8.1 or later)
+        - Manual conversion.
+        - `Unsupported Components` window.
+    - [NDMF] Add the component when build an avatar for mobile platforms with `VQT Avatar Converter Settings`.
+- [NDMF] Add `Auto` option to NDMF Phase in `VQT Avatar Converter Settings` and `VQT Material Conversion Settings` components.
+    - This option automatically sets the phase based on the current avatar.
+        - Default: Optimizing Phase
+        - VRCFury components exist: Transforming Phase
 - [NDMF] Added Overall NDMF Mesh Simplifier in the execution order constration.
 
 ### Changed
+- Changed default compression format of `VQT Menu Icon Resizer` to ASTC 8x8.
+- Removed experimental status of `VQT Material Conversion Settings`, `VQT Material Swap`, and `VQT Mesh Flipper` components.
+- [NDMF] Default NDMF Phase in `VQT Avatar Converter Settings` and `VQT Material Conversion Settings` components is changed to `Auto`.
+
+### Fixed
+- Undo for following operations:
+    - `Begin Converter Settings` button of `Convert Avatar for Android` window.
+    - Component addition in `VQT Avatar Converter Settings` inspector.
+    - `VQT Vertex Color Remover` component addition by `Remove All Vertex Colors` menu.
+
+### Changed from 2.10.0-beta.5
 - Require VRCSDK 3.8.1 or later for Toon Standard conversion.
+- [NDMF] Added Overall NDMF Mesh Simplifier in the execution order constration.
 
 ## [2.10.0-beta.5] - 2025-05-29
 

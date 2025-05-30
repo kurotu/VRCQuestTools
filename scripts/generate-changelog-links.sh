@@ -20,3 +20,20 @@ for i in "${!TAGS[@]}"; do
         echo "[${CURRENT_VERSION}]: ${BASE_URL}/compare/${TAGS[i+1]}...${TAGS[$i]}"
     fi
 done
+
+# get all tags including prereleases.
+mapfile -t ALL_TAGS < <(curl -s "https://api.github.com/repos/${REPO}/tags?per_page=100" | jq -r '.[] | .name' | grep -v 'dummy')
+# print links to compare pages for each version including prereleases.
+echo ''
+for i in "${!ALL_TAGS[@]}"; do
+    # skip non-prerelease tags.
+    if [[ ! "${ALL_TAGS[i]}" =~ - ]]; then
+        continue
+    fi
+    CURRENT_VERSION=${ALL_TAGS[i]#v}
+    if [ $((i + 1)) -eq "${#ALL_TAGS[@]}" ]; then
+        echo "[${CURRENT_VERSION}]: ${BASE_URL}/releases/tag/${ALL_TAGS[i]}"
+    else
+        echo "[${CURRENT_VERSION}]: ${BASE_URL}/compare/${ALL_TAGS[i+1]}...${ALL_TAGS[$i]}"
+    fi
+done

@@ -7,10 +7,37 @@
 ## [Unreleased]
 
 ### 追加
+- Toon Standard への変換設定を追加。 (VRCSDK 3.8.1 以降)
+    - 以下の制限があります。
+        - lilToon 1.10.0 以降のみをサポートします。非サポートのマテリアルでは Toon Lit 用のメインテクスチャのみ使用します。
+        - [リムライトマスクがありません](https://feedback.vrchat.com/open-beta/p/sdk-381-beta3-add-rim-lighting-mask-for-toon-standard)。リムライトが過剰に明るくなる可能性があります。
+- 変換後のテクスチャの圧縮形式を指定する機能を追加。
+- `MA Convert Constraints` コンポーネントとの統合を改善。
+    - `Avatar Converter for Android` ウィンドウの「変換の設定を始める」ボタンを押すと `MA Convert Constraints` を追加。
+    - 以下の場面で `MA Convert Constraints` が存在するとき Unity Constraints を削除しない。 (VRCSDK 3.8.1 以降)
+        - 手動での変換
+        - `Unsupported Components` ウィンドウ
+    - [NDMF] `VQT Avatar Converter Settings` で Mobile プラットフォーム向けにアバターをビルドするときに `MA Convert Constraints` を追加。
+- [NDMF] `VQT Avatar Converter Settings` および `VQT Material Conversion Settings` のNDMF変換フェーズに `Auto` を追加。
+    - アバターの状態に応じて以下のようにフェーズを設定します。
+        - 通常: Optimizing Phase
+        - VRCFury のコンポーネントが存在: Transforming Phase
 - [NDMF] 実行順を考慮するプラグインに Overall NDMF Mesh Simplifier を追加。
 
 ### 変更
+- `VQT Menu Icon Resizer` のデフォルトの圧縮形式を `ASTC 8x8` に変更。
+- `VQT Material Conversion Settings`, `VQT Material Swap`, `VQT Mesh Flipper` の実験的コンポーネントの指定を解除。
+- [NDMF] `VQT Avatar Converter Settings` および `VQT Material Conversion Settings` のNDMF変換フェーズの初期値を `Auto` に変更。
+
+### 修正
+- 以下の操作を Undo できない問題を修正。
+    - `Conevrt Avatar for Android` ウィンドウの「変換の設定を始める」ボタン
+    - `VQT Avatar Converter Settings` インスペクターでのコンポーネントの追加
+    - `Remove All Vertex Colors` メニューによる `VQT Vertex Color Remover` コンポーネントの追加
+
+### 2.10.0-beta.5 からの変更
 - Toon Standard への変換には VRCSDK 3.8.1 以降が必要。
+- [NDMF] 実行順を考慮するプラグインに Overall NDMF Mesh Simplifier を追加。
 
 ## [2.10.0-beta.5] - 2025-05-29
 
