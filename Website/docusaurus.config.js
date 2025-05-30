@@ -22,7 +22,7 @@ const config = {
   organizationName: 'kurotu', // Usually your GitHub org/user name.
   projectName: 'VRCQuestTools', // Usually your repo name.
 
-  onBrokenLinks: 'warn', // Temporary ignore broken links for missing i18n pages.
+  // onBrokenLinks: 'warn', // Temporary ignore broken links for missing i18n pages.
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internalization, you can use this field to set useful

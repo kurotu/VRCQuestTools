@@ -1,9 +1,5 @@
 # Material Conversion Settings
 
-:::warning
-This component is an experimental feature.
-:::
-
 Material Conversion Settings component holds settings for converting materials for mobile platform.
 
 :::info
@@ -28,6 +24,6 @@ Convert materials when the target platform is mobile.
 
 NDMF Phase is managed by [Avatar Converter Settings] component or the root level Material Conversion Settings component.
 
-When there are no root level components, transforming phase is used.
+When there are no root level components, auto is used.
 
 [Avatar Converter Settings]: avatar-converter-settings.md
