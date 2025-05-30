@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 追加
+- [NDMF] 実行順を考慮するプラグインに Overall NDMF Mesh Simplifier を追加。
+
 ## [2.10.0-beta.5] - 2025-05-29
 
 ### 変更

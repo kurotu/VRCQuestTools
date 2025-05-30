@@ -75,6 +75,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 .AfterPlugin("jp.unisakistudio.posingsystemeditor.posingsystemconverter") // needs created menus
                 .AfterPlugin("jp.lilxyzw.ndmfmeshsimplifier.NDMF.NDMFPlugin") // polygon reduction
                 .AfterPlugin("Meshia.MeshSimplification.Ndmf.Editor.NdmfPlugin ") // polygon reduction
+                .AfterPlugin("com.aoyon.overall-ndmf-mesh-simplifier") // polygon reduction
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
                 .Run(AvatarConverterOptimizingPass.Instance)
                 .Then.Run(MeshFlipperAfterPolygonReductionPass.Instance)
