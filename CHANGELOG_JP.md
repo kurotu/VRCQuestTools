@@ -38,6 +38,7 @@
 ### 2.10.0-beta.5 からの変更
 - Toon Standard への変換には VRCSDK 3.8.1 以降が必要。
 - Toon Lit への変換時にメインテクスチャ以外のパラメーターが反映されない問題を修正。
+- Metallic Smoothness Map が正しく生成されない問題を修正。
 - [NDMF] 実行順を考慮するプラグインに Overall NDMF Mesh Simplifier を追加。
 
 ## [2.10.0-beta.5] - 2025-05-29

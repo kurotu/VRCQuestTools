@@ -383,22 +383,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="width">Desired width.</param>
         /// <param name="height">Desired height.</param>
         /// <param name="useMipmap">Use mip map.</param>
-        /// <param name="completion">Completion action.</param>
-        /// <returns>Request to wait.</returns>
-        internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, int width, int height, bool useMipmap, Action<Texture2D> completion)
-        {
-            return BakeTexture(input, isDataSRGB, width, height, useMipmap, null, completion);
-        }
-
-        /// <summary>
-        /// Bake a texture to a new one.
-        /// </summary>
-        /// <param name="input">Input texture.</param>
-        /// <param name="isDataSRGB">Texture is sRGB.</param>
-        /// <param name="width">Desired width.</param>
-        /// <param name="height">Desired height.</param>
-        /// <param name="useMipmap">Use mip map.</param>
-        /// <param name="material">Material to bake.</param>
+        /// <param name="material">Material to bake with Graphics.Blit.</param>
         /// <param name="completion">Completion action.</param>
         /// <returns>Request to wait.</returns>
         internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, int width, int height, bool useMipmap, Material material, Action<Texture2D> completion)
@@ -539,7 +524,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Request to wait.</returns>
         internal static AsyncCallbackRequest ResizeTexture(Texture2D texture, bool isDataSRGB, int width, int height, Action<Texture2D> completion)
         {
-            return BakeTexture(texture, isDataSRGB, width, height, texture.mipmapCount > 1, completion);
+            return BakeTexture(texture, isDataSRGB, width, height, texture.mipmapCount > 1, null, completion);
         }
 
         /// <summary>
