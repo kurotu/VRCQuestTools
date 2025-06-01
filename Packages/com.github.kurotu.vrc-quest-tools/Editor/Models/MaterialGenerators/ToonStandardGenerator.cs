@@ -129,13 +129,14 @@ namespace KRT.VRCQuestTools.Models
                         newMaterial.ShadowRamp = t;
                         newMaterial.ShadowBoost = 0.0f;
                         newMaterial.ShadowTint = 0.0f;
-                        newMaterial.MinBrightness = GetMinBrightness();
                     }).WaitForCompletion();
                 }
                 else
                 {
                     newMaterial.ShadowRamp = ToonStandardMaterialWrapper.RampTexture.Flat;
                 }
+
+                newMaterial.MinBrightness = GetMinBrightness();
 
                 if (GetUseEmissionMap())
                 {
