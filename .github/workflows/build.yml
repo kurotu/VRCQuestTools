@@ -30,6 +30,7 @@ jobs:
           max_attempts: 5
           retry_wait_seconds: 60
           command: vrc-get resolve
+      - run: vrc-get info project
 
       - name: Copy README
         run: cp README.md Packages/com.github.kurotu.vrc-quest-tools/
@@ -120,7 +121,7 @@ jobs:
       - run: vrc-get repo add https://vpm.nadena.dev/vpm-prerelease.json
       - run: if [ -n "${{ matrix.ndmfVersion}}" ]; then scripts/vrc-get-install.sh nadena.dev.ndmf ${{ matrix.ndmfVersion }}; fi
 
-      - run: cat Packages/vpm-manifest.json
+      - run: vrc-get info project
 
       - uses: game-ci/unity-test-runner@v4
         env:
