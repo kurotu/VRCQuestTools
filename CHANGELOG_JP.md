@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- lilToon で影を使用していないとき Toon Standard の Min Brightness が設定されない問題を修正。 (by @nekobako)
+
 ## [2.10.0] - 2025-05-31
 
 ### 追加
