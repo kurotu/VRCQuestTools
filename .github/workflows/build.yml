@@ -23,8 +23,13 @@ jobs:
           restore-keys: |
             Library-build-
 
-      - uses: anatawa12/sh-actions/resolve-vpm-packages@master
-      - run: vrc-get install
+      - uses: anatawa12/sh-actions/setup-vrc-get@master
+      - uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 5
+          retry_wait_seconds: 60
+          command: vrc-get resolve
 
       - name: Copy README
         run: cp README.md Packages/com.github.kurotu.vrc-quest-tools/
@@ -101,7 +106,13 @@ jobs:
           restore-keys: |
             Library-test-${{ matrix.sdk.unityVersion }}-${{ matrix.sdk.vrcsdkVersion }}
 
-      - uses: anatawa12/sh-actions/resolve-vpm-packages@master
+      - uses: anatawa12/sh-actions/setup-vrc-get@master
+      - uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 5
+          retry_wait_seconds: 60
+          command: vrc-get resolve
       - run: rm -r Packages/vpm-manifest.json Packages/com.vrchat.avatars Packages/com.vrchat.base
       - run: vrc-get install -y com.vrchat.base ${{ matrix.sdk.vrcsdkVersion }}
       - run: vrc-get install -y com.vrchat.avatars ${{ matrix.sdk.vrcsdkVersion }}
