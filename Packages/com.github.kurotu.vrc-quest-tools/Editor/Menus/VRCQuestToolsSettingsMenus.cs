@@ -25,5 +25,18 @@ namespace KRT.VRCQuestTools.Menus
             Menu.SetChecked(VRCQuestToolsMenus.MenuPaths.EnableValidationAutomator, VRCQuestToolsSettings.IsValidationAutomatorEnabled);
             return true;
         }
+
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.EnableTextureFormatCheckOnStandalone, false, (int)VRCQuestToolsMenus.MenuPriorities.EnableTextureFormatCheckOnStandalone)]
+        private static void ToggleTextureFormatCheckOnStandalone()
+        {
+            VRCQuestToolsSettings.IsCheckTextureFormatOnStandaloneEnabled = !VRCQuestToolsSettings.IsCheckTextureFormatOnStandaloneEnabled;
+        }
+
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.EnableTextureFormatCheckOnStandalone, true)]
+        private static bool ToggleTextureFormatCheckOnStandaloneValidation()
+        {
+            Menu.SetChecked(VRCQuestToolsMenus.MenuPaths.EnableTextureFormatCheckOnStandalone, VRCQuestToolsSettings.IsCheckTextureFormatOnStandaloneEnabled);
+            return true;
+        }
     }
 } 
