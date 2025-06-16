@@ -1,4 +1,4 @@
-﻿// <copyright file="VRCQuestToolsSettings.cs" company="kurotu">
+// <copyright file="VRCQuestToolsSettings.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -168,6 +168,16 @@ namespace KRT.VRCQuestTools.Models
                 EditorPrefs.SetString(Keys.TextureCacheDirectory, value.Trim());
             }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether ValidationAutomator is enabled.
+        /// </summary>
+        internal static bool IsValidationAutomatorEnabled
+        {
+            get { return GetBooleanConfigValue(Keys.ValidationAutomatorEnabled, true); }
+            set { SetBooleanConfigValue(Keys.ValidationAutomatorEnabled, value); }
+        }
+
 
         private static DateTime UnixEpoch => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 

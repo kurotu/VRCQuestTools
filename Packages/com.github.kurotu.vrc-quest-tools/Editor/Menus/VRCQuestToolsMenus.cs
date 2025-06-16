@@ -1,4 +1,4 @@
-﻿// <copyright file="VRCQuestToolsMenus.cs" company="kurotu">
+// <copyright file="VRCQuestToolsMenus.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -27,6 +27,8 @@ namespace KRT.VRCQuestTools.Menus
             internal const string MSMapGenerator = RootMenu + "Metallic Smoothness Map";
             internal const string UnitySettings = RootMenu + "Unity Settings for Android";
             internal const string ClearTextureCache = RootMenu + "Clear Texture Cache";
+            private const string SettingsMenu = RootMenu + "Settings/";
+            internal const string EnableValidationAutomator = SettingsMenu + "Enable Validation Automator";
             private const string LanguageMenu = RootMenu + "Languages/";
             internal const string LanguageAuto = LanguageMenu + "Auto (default)";
             internal const string LanguageEnglish = LanguageMenu + "English";
@@ -49,6 +51,7 @@ namespace KRT.VRCQuestTools.Menus
             MSMapGenerator,
             UnitySettings = 900,
             ClearTextureCache,
+            EnableValidationAutomator = 950,
             LanguageAuto = 1000,
             LanguageEnglish,
             LanguageJapanese,

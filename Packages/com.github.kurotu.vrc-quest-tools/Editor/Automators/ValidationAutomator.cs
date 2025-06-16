@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Validators;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
@@ -48,6 +49,11 @@ namespace KRT.VRCQuestTools.Automators
 
         private static void Update()
         {
+            if (!VRCQuestToolsSettings.IsValidationAutomatorEnabled)
+            {
+                return;
+            }
+
             var avatars = VRCSDKUtility.GetAvatarsFromLoadedScenes();
             foreach (var avatar in avatars)
             {
