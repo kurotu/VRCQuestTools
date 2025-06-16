@@ -183,7 +183,7 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         internal static bool IsCheckTextureFormatOnStandaloneEnabled
         {
-            get { return GetBooleanConfigValue(Keys.CheckTextureFormatOnStandalone, true); }
+            get { return GetBooleanConfigValue(Keys.CheckTextureFormatOnStandalone, false); }
             set { SetBooleanConfigValue(Keys.CheckTextureFormatOnStandalone, value); }
         }
 
