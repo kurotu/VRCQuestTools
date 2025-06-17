@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf;
@@ -21,6 +22,13 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc />
         protected override void Execute(BuildContext context)
         {
+            if ((EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.StandaloneWindows
+                || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.StandaloneWindows64)
+                && !VRCQuestToolsSettings.IsCheckTextureFormatOnStandaloneEnabled)
+            {
+                return;
+            }
+
             var unsupportedTextures = new List<Texture2D>();
             var unknownTextures = new List<Texture2D>();
 

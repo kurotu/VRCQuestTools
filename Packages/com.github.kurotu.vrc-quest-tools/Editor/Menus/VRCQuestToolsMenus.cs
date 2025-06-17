@@ -27,6 +27,9 @@ namespace KRT.VRCQuestTools.Menus
             internal const string MSMapGenerator = RootMenu + "Metallic Smoothness Map";
             internal const string UnitySettings = RootMenu + "Unity Settings for Android";
             internal const string ClearTextureCache = RootMenu + "Clear Texture Cache";
+            private const string SettingsMenu = RootMenu + "Settings/";
+            internal const string EnableValidationAutomator = SettingsMenu + "Enable Validation Automator";
+            internal const string EnableTextureFormatCheckOnStandalone = SettingsMenu + "Enable Texture Format Check on Standalone";
             private const string LanguageMenu = RootMenu + "Languages/";
             internal const string LanguageAuto = LanguageMenu + "Auto (default)";
             internal const string LanguageEnglish = LanguageMenu + "English";
@@ -49,6 +52,8 @@ namespace KRT.VRCQuestTools.Menus
             MSMapGenerator,
             UnitySettings = 900,
             ClearTextureCache,
+            EnableValidationAutomator = 950,
+            EnableTextureFormatCheckOnStandalone,
             LanguageAuto = 1000,
             LanguageEnglish,
             LanguageJapanese,
