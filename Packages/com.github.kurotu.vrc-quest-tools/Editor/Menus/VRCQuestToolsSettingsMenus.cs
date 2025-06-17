@@ -39,4 +39,4 @@ namespace KRT.VRCQuestTools.Menus
             return true;
         }
     }
-} 
+}
