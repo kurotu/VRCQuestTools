@@ -4,6 +4,16 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 追加
+- Settings メニューを追加。
+    - Enable Validation Automator
+    - Enable Texture Format Check on Standalone
+
+### 変更
+- [NDMF] Windows ビルドターゲットではデフォルトでテクスチャフォーマットのチェックを行わないように変更。
+
 ## [2.10.1] - 2025-06-02
 
 ### 修正
