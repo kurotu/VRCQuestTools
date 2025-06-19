@@ -3,7 +3,7 @@ using KRT.VRCQuestTools.Menus;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 
-namespace KRT.VRCQuestTools.Menu
+namespace KRT.VRCQuestTools.Menus
 {
     /// <summary>
     /// Menu for avatar builder.

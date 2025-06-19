@@ -11,7 +11,7 @@ namespace KRT.VRCQuestTools.Menus
     /// <summary>
     /// Settings menus for VRCQuestTools.
     /// </summary>
-    internal static class VRCQuestToolsSettingsMenus
+    internal static class SettingsMenu
     {
         [MenuItem(VRCQuestToolsMenus.MenuPaths.EnableValidationAutomator, false, (int)VRCQuestToolsMenus.MenuPriorities.EnableValidationAutomator)]
         private static void ToggleValidationAutomator()
@@ -39,4 +39,4 @@ namespace KRT.VRCQuestTools.Menus
             return true;
         }
     }
-} 
+}
