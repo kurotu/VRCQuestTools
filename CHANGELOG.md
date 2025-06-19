@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Settings menus.
     - Enable Validation Automator
-    - Enable Texture Format Check on Standalone
+    - Enable Texture Format Check on Windows Build
 
 ### Changed
 - [NDMF] No longer check texture formats on Windows build target by default.

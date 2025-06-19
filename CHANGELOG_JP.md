@@ -9,7 +9,7 @@
 ### 追加
 - Settings メニューを追加。
     - Enable Validation Automator
-    - Enable Texture Format Check on Standalone
+    - Enable Texture Format Check on Windows Build
 
 ### 変更
 - [NDMF] Windows ビルドターゲットではデフォルトでテクスチャフォーマットのチェックを行わないように変更。
