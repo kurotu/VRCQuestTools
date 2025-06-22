@@ -9,6 +9,7 @@
 #pragma warning disable SA1602 // Enumeration items should be documented
 
 using UnityEditor;
+using UnityEngine;
 
 namespace KRT.VRCQuestTools.Menus
 {
@@ -37,6 +38,7 @@ namespace KRT.VRCQuestTools.Menus
             internal const string LanguageRussian = LanguageMenu + "Русский";
             internal const string CheckForUpdate = RootMenu + "Check for Update";
             internal const string MissingSDK = RootMenu + "VRCSDK is missing or incompatible";
+            internal const string Help = RootMenu + "Help";
             internal const string Version = RootMenu + "Version " + VRCQuestTools.Version;
         }
 
@@ -60,6 +62,7 @@ namespace KRT.VRCQuestTools.Menus
             LanguageRussian,
             CheckForUpdate = 1100,
             MissingSDK,
+            Help,
             Version,
         }
 
@@ -101,6 +104,12 @@ namespace KRT.VRCQuestTools.Menus
             return false;
         }
 #endif
+
+        [MenuItem(MenuPaths.Help, false, (int)MenuPriorities.Help)]
+        private static void HelpMenu()
+        {
+            Application.OpenURL(VRCQuestTools.DocsURL + "?lang=auto");
+        }
 
         [MenuItem(MenuPaths.Version, false, (int)MenuPriorities.Version)]
         private static void Dummy()

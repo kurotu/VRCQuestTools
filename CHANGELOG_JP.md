@@ -10,6 +10,7 @@
 - Settings メニューを追加。 (by @Tliks)
     - Enable Validation Automator
     - Enable Texture Format Check on Windows Build
+- ドキュメントサイトを開く Help メニューを追加。
 
 ### 変更
 - [NDMF] Windows ビルドターゲットではデフォルトでテクスチャフォーマットのチェックを行わないように変更。 (by @Tliks)
