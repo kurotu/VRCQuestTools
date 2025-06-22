@@ -7,12 +7,12 @@
 ## [Unreleased]
 
 ### 追加
-- Settings メニューを追加。
+- Settings メニューを追加。 (by @Tliks)
     - Enable Validation Automator
     - Enable Texture Format Check on Windows Build
 
 ### 変更
-- [NDMF] Windows ビルドターゲットではデフォルトでテクスチャフォーマットのチェックを行わないように変更。
+- [NDMF] Windows ビルドターゲットではデフォルトでテクスチャフォーマットのチェックを行わないように変更。 (by @Tliks)
 
 ### 修正
 - マテリアル置換設定のインスペクターのインデントが正しくない問題を修正。

@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Settings menus.
+- Settings menus. (by @Tliks)
     - Enable Validation Automator
     - Enable Texture Format Check on Windows Build
 
 ### Changed
-- [NDMF] No longer check texture formats on Windows build target by default.
+- [NDMF] No longer check texture formats on Windows build target by default. (by @Tliks)
 
 ### Fixed
 - Incorrect indent of Material Replacement settings inspector.
