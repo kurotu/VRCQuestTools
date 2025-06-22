@@ -49,8 +49,6 @@ namespace KRT.VRCQuestTools.Inspector
                 EditorGUI.HelpBox(fieldRect, i18n.MaterialReplaceSettingsMaterialWarning, MessageType.Error);
             }
 
-            EditorGUI.indentLevel--;
-
             return fieldRect;
         }
 

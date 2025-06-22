@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [NDMF] No longer check texture formats on Windows build target by default.
 
+### Fixed
+- Incorrect indent of Material Replacement settings inspector.
+
 ## [2.10.1] - 2025-06-02
 
 ### Fixed
