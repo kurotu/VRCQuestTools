@@ -13,7 +13,7 @@ UnityにAndroid Build Supportがインストールされていない場合、ビ
 
 [チュートリアル: 環境の準備](./tutorial/set-up-environment.mdx)
 
-## 非圧縮サイズが大きい
+## 非圧縮サイズが大きくてアップロードできない
 
 `Avatar uncompressed size is too large for the target platform. XX.XX MB > 40.00 MB`
 
@@ -28,7 +28,7 @@ UnityにAndroid Build Supportがインストールされていない場合、ビ
 アバターの最適化ツールを使うことで、これらの不要なデータを削除できます。
 例として[Avatar Optimizer](https://anatawa12.booth.pm/items/4885109)の[Trace And Optimize](https://vpm.anatawa12.com/avatar-optimizer/ja/docs/reference/trace-and-optimize/)コンポーネントを使うと不要なものをアップロード時に自動的に削除できます。 
 
-## ダウンロードサイズが大きい
+## ダウンロードサイズが大きくてアップロードできない
 
 `Avatar download size is too large for the target platform. XX.XX MB > 10.00 MB`
 
@@ -83,6 +83,19 @@ PCの方にだけ特定のギミックがありAndroidの方にはない場合�
 ### Expression Parametersの順番を一致させる
 
 [Modular Avatar](https://modular-avatar.nadena.dev/ja)の[Sync Parameter Sequence](https://modular-avatar.nadena.dev/ja/docs/reference/sync-parameter-sequence)コンポーネントを使用することでExpression Parametersの順番を一致させることができます。
+
+## ギミックが動作しない
+
+Androidでは使用不可能なコンポーネントがあるため、ギミックが動作しないことがあります。
+
+### Uniyt ConstraintsをVRChat Constraintsにする
+
+UnityのConstraintsコンポーネントはAndroidでは使用できないため、VRChat Constraintsに置き換える必要があります。
+[Modular Avatar](https://modular-avatar.nadena.dev/ja)の[Convert Constraints](https://modular-avatar.nadena.dev/ja/docs/reference/convert-constraints)コンポーネントを使用することでConstraintsを自動的に変換することができます。
+
+### Contact ReceiverとContact Senderを有効にする
+
+[Avatar Converter Settings](./references/components/avatar-converter-settings.md)コンポーネントの`Avatar Dynamics 設定`でContact ReceiverとContact Senderのチェックボックスがオンになっていることを確認してください。
 
 ## PCとAndroidでPhysBoneが同期しない
 

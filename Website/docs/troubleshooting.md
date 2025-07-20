@@ -13,7 +13,7 @@ If Android Build Support is not installed in Unity, you cannot switch the build 
 
 [Tutorial: Set up Environment](./tutorial/set-up-environment.mdx)
 
-## Uncompressed Size is Too Large
+## Uncompressed Size is Too Large and Cannot Upload
 
 `Avatar uncompressed size is too large for the target platform. XX.XX MB > 40.00 MB`
 
@@ -28,7 +28,7 @@ The main causes of large uncompressed size include:
 You can remove these unnecessary data by using avatar optimization tools.
 For example, using the [Trace And Optimize](https://vpm.anatawa12.com/avatar-optimizer/en/docs/reference/trace-and-optimize/) component from [Avatar Optimizer](https://anatawa12.booth.pm/items/4885109) can automatically remove unnecessary data during upload.
 
-## Download Size is Too Large
+## Download Size is Too Large and Cannot Upload
 
 `Avatar download size is too large for the target platform. XX.XX MB > 10.00 MB`
 
@@ -83,6 +83,19 @@ This is particularly likely to occur when certain gimmicks exist only on PC and 
 ### Match the order of Expression Parameters
 
 You can use the [Sync Parameter Sequence](https://modular-avatar.nadena.dev/docs/reference/sync-parameter-sequence) component from [Modular Avatar](https://modular-avatar.nadena.dev/) to match the order of Expression Parameters.
+
+## Gimmicks Don't Work
+
+Some gimmicks may not work on Android due to components that are not available on Android.
+
+### Convert Unity Constraints to VRChat Constraints
+
+Unity's Constraints components cannot be used on Android, so they need to be replaced with VRChat Constraints.
+You can use the [Convert Constraints](https://modular-avatar.nadena.dev/docs/reference/convert-constraints) component from [Modular Avatar](https://modular-avatar.nadena.dev/) to automatically convert constraints.
+
+### Enable Contact Receivers and Contact Senders
+
+Make sure the Contact Receiver and Contact Sender checkboxes are enabled in the `Avatar Dynamics Settings` of the [Avatar Converter Settings](./references/components/avatar-converter-settings.md) component.
 
 ## PhysBones Don't Sync Between PC and Android
 
