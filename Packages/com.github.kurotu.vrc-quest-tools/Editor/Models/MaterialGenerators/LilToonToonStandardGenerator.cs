@@ -35,7 +35,7 @@ namespace KRT.VRCQuestTools.Models
             newMaterial.MainTexture = lilMaterial.Material.mainTexture;
             newMaterial.MainColor = Utils.ColorUtility.HdrToLdr(lilMaterial.Material.color);
 
-            if (lilMaterial.UseNormalMap)
+            if (lilMaterial.UseNormalMap && settings.useNormalMap)
             {
                 newMaterial.UseNormalMap = true;
                 newMaterial.NormalMap = lilMaterial.NormalMap;
@@ -57,19 +57,19 @@ namespace KRT.VRCQuestTools.Models
 
             newMaterial.MinBrightness = lilMaterial.LightMinLimit;
 
-            if (lilMaterial.UseEmission)
+            if (lilMaterial.UseEmission && settings.useEmission)
             {
                 newMaterial.EmissionMap = lilMaterial.EmissionMap;
                 newMaterial.EmissionColor = Utils.ColorUtility.HdrToLdr(lilMaterial.EmissionColor);
             }
 
-            if (lilMaterial.UseShadow && lilMaterial.AOMap != null)
+            if (lilMaterial.UseShadow && lilMaterial.AOMap != null && settings.useOcclusion)
             {
                 newMaterial.UseOcclusion = true;
                 newMaterial.OcclusionMap = lilMaterial.AOMap;
             }
 
-            if (lilMaterial.UseReflection)
+            if (lilMaterial.UseReflection && settings.useSpecular)
             {
                 newMaterial.UseSpecular = true;
                 newMaterial.MetallicMap = lilMaterial.MetallicMap;
@@ -84,7 +84,7 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.Sharpness = 1.0f - lilMaterial.SpecularBlur;
             }
 
-            if (lilMaterial.UseMatCap)
+            if (lilMaterial.UseMatCap && settings.useMatcap)
             {
                 newMaterial.UseMatcap = true;
                 newMaterial.Matcap = lilMaterial.MatCapTex;
@@ -105,7 +105,7 @@ namespace KRT.VRCQuestTools.Models
                 }
             }
 
-            if (lilMaterial.UseRimLight)
+            if (lilMaterial.UseRimLight && settings.useRimLighting)
             {
                 newMaterial.UseRimLighting = true;
                 newMaterial.RimColor = Utils.ColorUtility.HdrToLdr(lilMaterial.RimLightColor);
@@ -207,16 +207,21 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateMainTexture(Action<Texture2D> completion)
         {
-            var rt = lilMaterial.BakeMain();
-            var (width, height) = TextureUtility.AspectFitReduction(rt.width, rt.height, (int)settings.maxTextureSize);
-            var rt2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
-            TextureUtility.DownscaleBlit(rt, true, rt2);
-            return TextureUtility.RequestReadbackRenderTexture(rt2, true, (tex) =>
+            var toonLitConvertSettings = new ToonLitConvertSettings
             {
-                UnityEngine.Object.DestroyImmediate(rt);
-                RenderTexture.ReleaseTemporary(rt2);
-                completion?.Invoke(tex);
-            });
+                generateQuestTextures = settings.generateQuestTextures,
+                maxTextureSize = settings.maxTextureSize,
+                mobileTextureFormat = settings.mobileTextureFormat,
+                mainTextureBrightness = 1.0f,
+                generateShadowFromNormalMap = !settings.useNormalMap,
+            };
+            var toonLitBakeMat = new LilToonMaterial(new Material(lilMaterial.Material));
+            if (settings.useEmission)
+            {
+                toonLitBakeMat.UseEmission = false;
+                toonLitBakeMat.UseEmission2nd = false;
+            }
+            return toonLitBakeMat.GenerateToonLitImage(toonLitConvertSettings, completion);
         }
 
         /// <inheritdoc/>
