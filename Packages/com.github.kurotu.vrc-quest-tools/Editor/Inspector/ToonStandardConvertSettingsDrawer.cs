@@ -105,7 +105,28 @@ namespace KRT.VRCQuestTools.Inspector
                 }
             }
 
-            EditorGUI.LabelField(fieldRect, i18n.ToonStandardConvertSettingsFeaturesLabel);
+            EditorGUI.LabelField(fieldRect, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesLabel));
+            var buttonRect = fieldRect;
+            buttonRect.x = fieldRect.x + EditorGUIUtility.labelWidth;
+            buttonRect.width = (fieldRect.width - EditorGUIUtility.labelWidth) / 2;
+            if(GUI.Button(buttonRect, new GUIContent(i18n.SelectAllButtonLabel)))
+            {
+                if (property.managedReferenceValue is ToonStandardConvertSettings settings)
+                {
+                    settings.SetAllFeatures(true);
+                    property.serializedObject.ApplyModifiedProperties();
+                }
+            }
+            buttonRect.x += buttonRect.width;
+            if(GUI.Button(buttonRect, new GUIContent(i18n.DeselectAllButtonLabel)))
+            {
+                if (property.managedReferenceValue is ToonStandardConvertSettings settings)
+                {
+                    settings.SetAllFeatures(false);
+                    property.serializedObject.ApplyModifiedProperties();
+                }
+            }
+
             fieldRect.y += EditorGUIUtility.singleLineHeight;
             fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
             using(new EditorGUI.IndentLevelScope())

@@ -74,16 +74,35 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
 
-        public static ToonStandardConvertSettings SimpleFeatures => new ToonStandardConvertSettings
+        /// <summary>
+        /// Gets a default instance of <see cref="ToonStandardConvertSettings"/> with all features disabled.
+        /// </summary>
+        public static ToonStandardConvertSettings SimpleFeatures
         {
-            generateShadowRamp = true,
-            useNormalMap = false,
-            useEmission = false,
-            useOcclusion = false,
-            useSpecular = false,
-            useMatcap = false,
-            useRimLighting = false
-        };
+            get
+            {
+                var settings = new ToonStandardConvertSettings
+                {
+                    generateShadowRamp = true,
+                };
+                settings.SetAllFeatures(false);
+                return settings;
+            }
+        }
+
+        /// <summary>
+        /// Enables or disables all features of the settings.
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetAllFeatures(bool value)
+        {
+            useNormalMap = value;
+            useEmission = value;
+            useOcclusion = value;
+            useSpecular = value;
+            useMatcap = value;
+            useRimLighting = value;
+        }
 
         /// <inheritdoc/>
         public string GetCacheKey()
@@ -120,6 +139,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public void LoadDefaultAssets()
         {
+            SetAllFeatures(false);
 #if UNITY_EDITOR
             // RealisticVerySoft shadow
             var path = AssetDatabase.GUIDToAssetPath("5f304bf7a07313d43b8562d9eabce646");
