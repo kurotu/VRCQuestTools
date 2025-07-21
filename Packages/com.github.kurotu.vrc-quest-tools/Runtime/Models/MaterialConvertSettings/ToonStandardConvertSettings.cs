@@ -30,14 +30,60 @@ namespace KRT.VRCQuestTools.Models
         public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_6x6;
 
         /// <summary>
+        /// Whether to generate shadow ramp textures.
+        /// </summary>
+        public bool generateShadowRamp = true;
+
+        /// <summary>
         /// Shadow fallback type.
         /// </summary>
         public Texture2D fallbackShadowRamp;
+
+        /// <summary>
+        /// Whether to use normal map.
+        /// </summary>
+        public bool useNormalMap = true;
+
+        /// <summary>
+        /// Whether to use emission texture.
+        /// </summary>
+        public bool useEmission = true;
+
+        /// <summary>
+        /// Whether to use occlusion texture.
+        /// </summary>
+        public bool useOcclusion = true;
+
+        /// <summary>
+        /// Whether to use specular features.
+        /// </summary>
+        public bool useSpecular = true;
+
+        /// <summary>
+        /// Whether to use matcap texture.
+        /// </summary>
+        public bool useMatcap = true;
+
+        /// <summary>
+        /// Whether to use rim lighting.
+        /// </summary>
+        public bool useRimLighting = true;
 
         private static Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() => GetUnitySerializableFields(typeof(ToonStandardConvertSettings)));
 
         /// <inheritdoc/>
         public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
+
+        public static ToonStandardConvertSettings SimpleFeatures => new ToonStandardConvertSettings
+        {
+            generateShadowRamp = true,
+            useNormalMap = false,
+            useEmission = false,
+            useOcclusion = false,
+            useSpecular = false,
+            useMatcap = false,
+            useRimLighting = false
+        };
 
         /// <inheritdoc/>
         public string GetCacheKey()
