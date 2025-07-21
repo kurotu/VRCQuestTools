@@ -130,7 +130,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal float LightMinLimit => Material.GetFloat("_LightMinLimit");
 
         /// <summary>
-        /// Gets a value indicating whether to use emission.
+        /// Gets or sets a value indicating whether to use emission.
         /// </summary>
         internal bool UseEmission
         {
@@ -163,7 +163,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal float EmissionBlend => Material.GetFloat("_EmissionBlend");
 
         /// <summary>
-        /// Gets a value indicating whether to use 2nd emission.
+        /// Gets or sets a value indicating whether to use 2nd emission.
         /// </summary>
         internal bool UseEmission2nd
         {

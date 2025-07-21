@@ -71,9 +71,6 @@ namespace KRT.VRCQuestTools.Models
 
         private static Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() => GetUnitySerializableFields(typeof(ToonStandardConvertSettings)));
 
-        /// <inheritdoc/>
-        public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
-
         /// <summary>
         /// Gets a default instance of <see cref="ToonStandardConvertSettings"/> with all features disabled.
         /// </summary>
@@ -90,10 +87,13 @@ namespace KRT.VRCQuestTools.Models
             }
         }
 
+        /// <inheritdoc/>
+        public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
+
         /// <summary>
         /// Enables or disables all features of the settings.
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">true or false.</param>
         public void SetAllFeatures(bool value)
         {
             useNormalMap = value;

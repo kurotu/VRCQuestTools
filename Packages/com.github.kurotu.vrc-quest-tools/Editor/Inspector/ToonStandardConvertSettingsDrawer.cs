@@ -110,7 +110,7 @@ namespace KRT.VRCQuestTools.Inspector
             var buttonRect = fieldRect;
             buttonRect.x = fieldRect.x + EditorGUIUtility.labelWidth;
             buttonRect.width = (fieldRect.width - EditorGUIUtility.labelWidth) / 2;
-            if(GUI.Button(buttonRect, new GUIContent(i18n.SelectAllButtonLabel)))
+            if (GUI.Button(buttonRect, new GUIContent(i18n.SelectAllButtonLabel)))
             {
                 if (property.managedReferenceValue is ToonStandardConvertSettings settings)
                 {
@@ -119,7 +119,7 @@ namespace KRT.VRCQuestTools.Inspector
                 }
             }
             buttonRect.x += buttonRect.width;
-            if(GUI.Button(buttonRect, new GUIContent(i18n.DeselectAllButtonLabel)))
+            if (GUI.Button(buttonRect, new GUIContent(i18n.DeselectAllButtonLabel)))
             {
                 if (property.managedReferenceValue is ToonStandardConvertSettings settings)
                 {
@@ -132,7 +132,7 @@ namespace KRT.VRCQuestTools.Inspector
             fieldRect.y += EditorGUIUtility.singleLineHeight;
             fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
 
-            using(new EditorGUI.IndentLevelScope())
+            using (new EditorGUI.IndentLevelScope())
             {
                 var useNormalMap = property.FindPropertyRelative("useNormalMap");
                 EditorGUI.PropertyField(fieldRect, useNormalMap, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesNormalMapLabel));
