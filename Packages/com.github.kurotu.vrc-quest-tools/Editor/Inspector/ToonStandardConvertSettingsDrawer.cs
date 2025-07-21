@@ -106,6 +106,7 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
             EditorGUI.LabelField(fieldRect, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesLabel));
+#if UNITY_2022_3_OR_NEWER
             var buttonRect = fieldRect;
             buttonRect.x = fieldRect.x + EditorGUIUtility.labelWidth;
             buttonRect.width = (fieldRect.width - EditorGUIUtility.labelWidth) / 2;
@@ -126,9 +127,11 @@ namespace KRT.VRCQuestTools.Inspector
                     property.serializedObject.ApplyModifiedProperties();
                 }
             }
+#endif
 
             fieldRect.y += EditorGUIUtility.singleLineHeight;
             fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+
             using(new EditorGUI.IndentLevelScope())
             {
                 var useNormalMap = property.FindPropertyRelative("useNormalMap");
