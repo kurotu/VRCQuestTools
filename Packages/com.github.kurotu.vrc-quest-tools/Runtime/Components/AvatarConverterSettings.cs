@@ -18,7 +18,12 @@ namespace KRT.VRCQuestTools.Components
         /// Default material convert setting.
         /// </summary>
         [SerializeReference]
-        public IMaterialConvertSettings defaultMaterialConvertSettings = ToonStandardConvertSettings.SimpleFeatures;
+        public IMaterialConvertSettings defaultMaterialConvertSettings =
+#if VQT_HAS_VRCSDK_TOON_STANDARD
+            ToonStandardConvertSettings.SimpleFeatures;
+#else
+            new ToonLitConvertSettings();
+#endif
 
         /// <summary>
         /// Additional material convert settings.

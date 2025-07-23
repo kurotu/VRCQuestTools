@@ -30,6 +30,11 @@
             "define": "VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER"
         },
         {
+            "name": "com.vrchat.avatars",
+            "expression": "3.8.1",
+            "define": "VQT_HAS_VRCSDK_TOON_STANDARD"
+        },
+        {
             "name": "com.vrcfury.vrcfury",
             "expression": "",
             "define": "VQT_VRCFURY"

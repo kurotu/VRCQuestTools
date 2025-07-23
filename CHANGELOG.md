@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `Features` to select features to apply to the converted material.
 
 ### Changed
-- Changed the initial value of default material conversion settings to Toon Standard.
+- Changed the initial value of default material conversion settings to Toon Standard. (VRCSDK 3.8.1 or later)
 
 ## [2.11.0] - 2025-06-22
 
@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.10.0] - 2025-05-31
 
 ### Added
-- Toon Standard conversion settings. (VRCSDK 3.8.1-beta.4 or later)
+- Toon Standard conversion settings. (VRCSDK 3.8.1 or later)
     - There are following limitations:
         - Only supports lilToon 1.10.0 and later. For unsupported materials, Toon Lit main texture is only used.
         - [Missing rim lighting mask](https://feedback.vrchat.com/open-beta/p/sdk-381-beta3-add-rim-lighting-mask-for-toon-standard). This might lead overbright rim lighting.
