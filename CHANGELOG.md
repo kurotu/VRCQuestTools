@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Added options to Toon Standard conversion settings.
+    - `Generate shadow ramp` to generate shadow ramp texture.
+    - `Features` to select features to apply to the converted material.
+
+### Changed
+- Changed the initial value of default material conversion settings to Toon Standard.
+
 ## [2.11.0] - 2025-06-22
 
 ### Added
