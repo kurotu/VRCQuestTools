@@ -221,6 +221,10 @@ namespace KRT.VRCQuestTools.Models
                 toonLitBakeMat.UseEmission = false;
                 toonLitBakeMat.UseEmission2nd = false;
             }
+            if (settings.useMatcap)
+            {
+                toonLitBakeMat.Material.SetFloat("_VQT_UseToonStandardMatCap", 1);
+            }
             return toonLitBakeMat.GenerateToonLitImage(toonLitConvertSettings, completion);
         }
 
@@ -530,6 +534,13 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override Color GetMainColor()
         {
+            if (settings.useMatcap && lilMaterial.UseMatCap && lilMaterial.MatCapBlendingMode == LilToonMaterial.MatCapBlendMode.Normal)
+            {
+                if (!GetUseMainTexture())
+                {
+                    return Color.black;
+                }
+            }
             return lilMaterial.Material.color;
         }
 
@@ -538,10 +549,10 @@ namespace KRT.VRCQuestTools.Models
         {
             switch (lilMaterial.MatCapBlendingMode)
             {
+                case LilToonMaterial.MatCapBlendMode.Normal:
                 case LilToonMaterial.MatCapBlendMode.Add:
                 case LilToonMaterial.MatCapBlendMode.Screen:
                     return ToonStandardMaterialWrapper.MatcapTypeMode.Additive;
-                case LilToonMaterial.MatCapBlendMode.Normal:
                 case LilToonMaterial.MatCapBlendMode.Multiply:
                     return ToonStandardMaterialWrapper.MatcapTypeMode.Multiplicative;
                 default:

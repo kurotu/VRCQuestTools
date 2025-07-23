@@ -68,8 +68,14 @@
         _Emission2ndFluorescence("Fluorescence", Range(0,1)) = 0
         _Emission2ndMainStrength("Emission2ndMainStrength", Range(0,1)) = 0
 
+        _UseMatCap("Use MatCap", Int) = 0
+        _MatCapColor("MatCap Color", Color) = (1, 1, 1, 1)
+        _MatCapBlendMask("MatCap Blend Mask", 2D) = "white" {}
+        _MatCapBlendMode("MatCap Blend Mode", Int) = 1
+
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
         _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
+        _VQT_UseToonStandardMatCap("VQT Use Toon Standard MatCap", Int) = 0
     }
     SubShader
     {
@@ -98,6 +104,7 @@
                 float2 uv_EmissionBlendMask : TEXCOORD3;
                 float2 uv_Emission2ndMap : TEXCOORD4;
                 float2 uv_Emission2ndBlendMask : TEXCOORD5;
+                float2 uv_MatCapBlendMask : TEXCOORD6;
                 float4 vertex : SV_POSITION;
             };
 
@@ -167,8 +174,15 @@
             float _Emission2ndFluorescence;
             float _Emission2ndMainStrength;
 
+            uint _UseMatCap;
+            fixed4 _MatCapColor;
+            sampler2D _MatCapBlendMask;
+            float4 _MatCapBlendMask_ST;
+            uint _MatCapBlendMode;
+
             float _VQT_MainTexBrightness;
             uint _VQT_GenerateShadow;
+            uint _VQT_UseToonStandardMatCap;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
                 half angleCos           = cos(angle);
@@ -209,6 +223,7 @@
                 o.uv_EmissionBlendMask = TRANSFORM_TEX(v.uv, _EmissionBlendMask);
                 o.uv_Emission2ndMap = TRANSFORM_TEX(v.uv, _Emission2ndMap);
                 o.uv_Emission2ndBlendMask = TRANSFORM_TEX(v.uv, _Emission2ndBlendMask);
+                o.uv_MatCapBlendMask = TRANSFORM_TEX(v.uv, _MatCapBlendMask);
                 return o;
             }
 
@@ -269,6 +284,13 @@
 
                 albedo.rgb *= _VQT_MainTexBrightness;
                 fixed4 col = albedo;
+
+                // MatCap processing - Set main texture output to (0,0,0) when in normal mode (mode == 0)
+                if (_VQT_UseToonStandardMatCap && _UseMatCap && _MatCapBlendMode == 0) {
+                    float4 matCapMask = tex2D(_MatCapBlendMask, i.uv_MatCapBlendMask);
+                    float matCapMaskValue = matCapMask.r * _MatCapColor.a;
+                    col.rgb = lerp(col.rgb, float3(0,0,0), matCapMaskValue);
+                }
 
                 if (_LIL_FEATURE_EMISSION_1ST && _UseEmission) {
                     float angle;

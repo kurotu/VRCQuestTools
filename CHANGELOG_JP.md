@@ -13,6 +13,7 @@
 
 ### 変更
 - デフォルトのマテリアル変換設定の初期値を Toon Standard に変更。 (VRCSDK 3.8.1 以降)
+- lilToon の通常モードの MatCap を Toon Standard に変換するときの見た目を改善。
 
 ## [2.11.0] - 2025-06-22
 
