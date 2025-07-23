@@ -266,8 +266,32 @@ msgstr "Set MatCap texture."
 msgid "ToonStandardConvertSettingsFallbackShadowRampLabel"
 msgstr "Fallback Shading"
 
+msgid "ToonStandardConvertSettingsGenerateShadowRampLabel"
+msgstr "Generate shadow ramp"
+
 msgid "ToonStandardConvertSettingsCustomFallbackShadowRampLabel"
 msgstr "Shadow Ramp"
+
+msgid "ToonStandardConvertSettingsFeaturesLabel"
+msgstr "Features"
+
+msgid "ToonStandardConvertSettingsFeaturesNormalMapLabel"
+msgstr "Normal Map"
+
+msgid "ToonStandardConvertSettingsFeaturesEmissionLabel"
+msgstr "Emission"
+
+msgid "ToonStandardConvertSettingsFeaturesOcclusionLabel"
+msgstr "Occlusion"
+
+msgid "ToonStandardConvertSettingsFeaturesSpecularLabel"
+msgstr "Specular"
+
+msgid "ToonStandardConvertSettingsFeaturesMatcapLabel"
+msgstr "Matcap"
+
+msgid "ToonStandardConvertSettingsFeaturesRimLightingLabel"
+msgstr "Rim Lighting"
 
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
 msgstr "Target Material"

@@ -4,6 +4,16 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 追加
+- Toon Standard の変換設定に項目を追加
+    - `影の設定を生成する`: 影の設定用のRampテクスチャを生成します。
+    - `機能設定`: 変換されたマテリアルに適用する機能を選択します。
+
+### 変更
+- デフォルトのマテリアル変換設定の初期値を Toon Standard に変更
+
 ## [2.11.0] - 2025-06-22
 
 ### 追加

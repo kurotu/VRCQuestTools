@@ -107,7 +107,7 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.MainColor = GetMainColor();
                 }
 
-                if (GetUseNormalMap())
+                if (GetUseNormalMap() && settings.useNormalMap)
                 {
                     newMaterial.UseNormalMap = true;
                     var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
@@ -124,12 +124,21 @@ namespace KRT.VRCQuestTools.Models
 
                 if (GetUseShadowRamp())
                 {
-                    MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "shadowRamp", saveTextureAsPng, texturesPath, (compl) => GenerateShadowRamp(compl), (t) =>
+                    if (settings.generateShadowRamp)
                     {
-                        newMaterial.ShadowRamp = t;
+                        MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "shadowRamp", saveTextureAsPng, texturesPath, (compl) => GenerateShadowRamp(compl), (t) =>
+                        {
+                            newMaterial.ShadowRamp = t;
+                            newMaterial.ShadowBoost = 0.0f;
+                            newMaterial.ShadowTint = 0.0f;
+                        }).WaitForCompletion();
+                    }
+                    else
+                    {
+                        newMaterial.ShadowRamp = settings.fallbackShadowRamp;
                         newMaterial.ShadowBoost = 0.0f;
-                        newMaterial.ShadowTint = 0.0f;
-                    }).WaitForCompletion();
+                        newMaterial.ShadowTint = 0.5f;
+                    }
                 }
                 else
                 {
@@ -138,7 +147,12 @@ namespace KRT.VRCQuestTools.Models
 
                 newMaterial.MinBrightness = GetMinBrightness();
 
-                if (GetUseEmissionMap())
+                if (!settings.useEmission)
+                {
+                    newMaterial.EmissionMap = null;
+                    newMaterial.EmissionColor = new Color(0, 0, 0, 0);
+                }
+                else if (GetUseEmissionMap())
                 {
                     MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "emission", saveTextureAsPng, texturesPath, (compl) => GenerateEmissionMap(compl), (t) =>
                     {
@@ -151,13 +165,13 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.EmissionColor = GetEmissionColor();
                 }
 
-                if (GetUseOcclusionMap())
+                if (GetUseOcclusionMap() && settings.useOcclusion)
                 {
                     newMaterial.UseOcclusion = true;
                     masks.Add(MaskType.OcculusionMap);
                 }
 
-                if (GetUseSpecular())
+                if (GetUseSpecular() && settings.useSpecular)
                 {
                     newMaterial.UseSpecular = true;
                     if (GetUseMetallicMap())
@@ -176,7 +190,7 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.Reflectance = GetReflectance();
                 }
 
-                if (GetUseMatcap())
+                if (GetUseMatcap() && settings.useMatcap)
                 {
                     newMaterial.UseMatcap = true;
                     MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "matcap", saveTextureAsPng, texturesPath, (compl) => GenerateMatcap(compl), (t) =>
@@ -192,7 +206,7 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.MatcapType = GetMapcapType();
                 }
 
-                if (GetUseRimLighting())
+                if (GetUseRimLighting() && settings.useRimLighting)
                 {
                     newMaterial.UseRimLighting = true;
                     newMaterial.RimColor = GetRimColor();
