@@ -678,6 +678,10 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseMainTexture()
         {
+            if (!settings.useEmission && (lilMaterial.UseEmission || lilMaterial.UseEmission2nd))
+            {
+                return true;
+            }
             return lilMaterial.Material.mainTexture != null;
         }
 
