@@ -756,6 +756,21 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
             public static string GetShaderSettingPath()
             {
+                // https://lilxyzw.github.io/lilToon/ja_JP/migrate1to2.html#liltooninspector
+                if (new SemVer(2, 0, 0) <= AssetUtility.LilToonVersion)
+                {
+                    var lilDirectoryManager = SystemUtility.GetTypeByName("lilToon.lilDirectoryManager");
+                    if (lilDirectoryManager == null)
+                    {
+                        throw new LilToonCompatibilityException("lilToon found, but lilToon.lilDirectoryManager not found");
+                    }
+                    var method = lilDirectoryManager.GetMethod("GetShaderSettingPath");
+                    if (method == null)
+                    {
+                        throw new LilToonCompatibilityException("lilToon.lilDirectoryManager.GetShaderSettingPath not found");
+                    }
+                    return method.Invoke(null, null) as string;
+                }
                 return Invoke<string>("GetShaderSettingPath");
             }
 
