@@ -6,13 +6,10 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-#if VQT_HAS_VRCSDK
 using VRC.Dynamics;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
-#endif
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -27,7 +24,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
         [Test]
         public void TestVRCSDK_Basic()
         {
-#if VQT_HAS_VRCSDK
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "SimplePhysBone");
 
@@ -60,9 +56,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(64, questStatsLevelSet.poor.physBone.transformCount);
             Assert.AreEqual(16, questStatsLevelSet.poor.physBone.colliderCount);
             Assert.AreEqual(64, questStatsLevelSet.poor.physBone.collisionCheckCount);
-#else
-            Assert.Ignore("VRCSDK is not installed.");
-#endif
         }
 
         /// <summary>
@@ -71,7 +64,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
         [Test]
         public void TestVRCSDK_ChildOfEditorOnly()
         {
-#if VQT_HAS_VRCSDK
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
             var stats = new AvatarPerformanceStats(true);
@@ -80,13 +72,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBone>(true).Length);
             Assert.AreEqual(1, root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Length);
             Assert.AreEqual(0, root.GetComponentsInChildren<ContactBase>(true).Length);
-#if VQT_HAS_VRCSDK_LOCAL_CONTACTS
             Assert.True(stats.physBone.HasValue);
             Assert.AreEqual(0, stats.physBone.Value.componentCount);
             Assert.AreEqual(0, stats.physBone.Value.colliderCount);
-#else
-            Assert.IsNull(stats.physBone); // Children components of EditorOnly are ignored.
-#endif
         }
 
         /// <summary>
@@ -113,9 +101,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(1, stats.physBone.Value.transformCount); // children pb of EditorOnly are ignored.
             Assert.AreEqual(1, stats.physBone.Value.colliderCount); // referenced children colliders of EditorOnly are counted
             Assert.AreEqual(0, stats.physBone.Value.collisionCheckCount); // children colliders of EditorOnly are ignored
-#else
-            Assert.Ignore("VRCSDK is not installed.");
-#endif
         }
 
         /// <summary>
@@ -124,7 +109,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
         [Test]
         public void TestBasic()
         {
-#if VQT_HAS_VRCSDK
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "SimplePhysBone");
             var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
@@ -149,9 +133,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneColliderCount));
             Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneCollisionCheckCount));
             Assert.AreEqual(PerformanceRating.Excellent, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.ContactCount));
-#else
-            Assert.Ignore("VRCSDK is not installed.");
-#endif
         }
 
         /// <summary>
@@ -160,7 +141,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
         [Test]
         public void TestEditorOnly()
         {
-#if VQT_HAS_VRCSDK
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
             var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
@@ -176,9 +156,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(0, perfs.PhysBonesColliderCount, "PhysBoneColliders count is wrong.");
             Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBone collision check count is wrong.");
             Assert.AreEqual(0, perfs.ContactsCount, "Contacts count is wrong.");
-#else
-            Assert.Ignore("VRCSDK is not installed.");
-#endif
         }
 
         /// <summary>
@@ -187,7 +164,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
         [Test]
         public void TestEditorOnly_WithNewPB()
         {
-#if VQT_HAS_VRCSDK
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
 
@@ -214,9 +190,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(sdkStats.physBone.Value.colliderCount, perfs.PhysBonesColliderCount, "PhysBoneColliders count is different from SDK.");
             Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
             Assert.AreEqual(sdkStats.contactCount.Value, perfs.ContactsCount, "Contacts count is different from SDK.");
-#else
-            Assert.Ignore("VRCSDK is not installed.");
-#endif
         }
 
         /// <summary>
@@ -225,7 +198,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
         [Test]
         public void TestMultiChilIgnore()
         {
-#if VQT_HAS_VRCSDK
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "MultiChildIgnore");
 
@@ -249,9 +221,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCSDKUtility.Reflection.PhysBoneCollider[0], contacts);
             Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count should be 0 when colliders are missing.");
-#else
-            Assert.Ignore("VRCSDK is not installed.");
-#endif
         }
 
         /// <summary>
@@ -260,7 +229,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
         [Test]
         public void TestMultiChildFirst()
         {
-#if VQT_HAS_VRCSDK
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "MultiChildFirst");
 
@@ -284,9 +252,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCSDKUtility.Reflection.PhysBoneCollider[0], contacts);
             Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count should be 0 when colliders are missing.");
-#else
-            Assert.Ignore("VRCSDK is not installed.");
-#endif
         }
 
         /// <summary>
@@ -295,7 +260,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
         [Test]
         public void TestEndpointPosition()
         {
-#if VQT_HAS_VRCSDK
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "EndpointPosition");
 
@@ -319,12 +283,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCSDKUtility.Reflection.PhysBoneCollider[0], contacts);
             Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count should be 0 when colliders are missing.");
-#else
-            Assert.Ignore("VRCSDK is not installed.");
-#endif
         }
 
-#if VQT_HAS_VRCSDK
         private static AvatarPerformanceStatsLevelSet LoadQuestStatsLevelSet()
         {
             var questStatsLevelSetPath = AssetDatabase.GUIDToAssetPath("f0f530dea3891c04e8ab37831627e702"); // AvatarPerformanceStatLevels_Quest.asset
@@ -337,6 +297,5 @@ namespace KRT.VRCQuestTools.Models.VRChat
             EditorSceneManager.OpenScene(TestUtils.FixturesFolder + "/Scenes/AvatarDynamicsTests.unity");
             return SceneManager.GetActiveScene();
         }
-#endif
     }
 }

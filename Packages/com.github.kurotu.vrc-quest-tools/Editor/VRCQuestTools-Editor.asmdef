@@ -25,39 +25,9 @@
     "defineConstraints": [],
     "versionDefines": [
         {
-            "name": "com.vrchat.base",
-            "expression": "3.6.2-constraints.3",
-            "define": "VQT_HAS_VRCSDK_CONSTRAINTS"
-        },
-        {
-            "name": "com.vrchat.avatars",
-            "expression": "3.7.5",
-            "define": "VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER"
-        },
-        {
-            "name": "com.vrchat.avatars",
-            "expression": "3.7.6-beta.1",
-            "define": "VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER"
-        },
-        {
-            "name": "com.vrchat.avatars",
-            "expression": "3.8.1-beta.1",
-            "define": "VQT_HAS_VRCSDK_NO_PRECHECK"
-        },
-        {
-            "name": "com.vrchat.avatars",
-            "expression": "3.8.1",
-            "define": "VQT_HAS_VRCSDK_TOON_STANDARD"
-        },
-        {
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "VQT_HAS_NEWTONSOFT_JSON"
-        },
-        {
-            "name": "com.vrchat.base",
-            "expression": "",
-            "define": "VQT_HAS_VRCSDK_BASE"
         },
         {
             "name": "nadena.dev.ndmf",

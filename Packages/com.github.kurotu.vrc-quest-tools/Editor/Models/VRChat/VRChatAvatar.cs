@@ -18,12 +18,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using VRC.Dynamics;
 using VRC.SDKBase.Validation.Performance.Stats;
-
-#if VQT_HAS_VRCSDK_BASE
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
-#else
-using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
-#endif
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -240,9 +235,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 stats.clothMaxVertices = null;
                 stats.constraintsCount = null;
                 stats.downloadSizeBytes = null;
-#if !VQT_HAS_VRCSDK_CONSTRAINTS
-                stats.dynamicBone = null;
-#endif
                 stats.lightCount = null;
                 stats.physicsColliderCount = null;
                 stats.physicsRigidbodyCount = null;
@@ -279,7 +271,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             // AV3 Playable Layers
             RuntimeAnimatorController[] playableLayers = { };
-#if VQT_HAS_VRCSDK_BASE
             var avatarDescriptor = rootObject.GetComponent<VRC_AvatarDescriptor>();
             if (avatarDescriptor != null)
             {
@@ -290,7 +281,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     .Select(obj => obj.animatorController)
                     .ToArray();
             }
-#endif
 
             // Modular Avatar Merge Animator
             RuntimeAnimatorController[] mergeAnimators = { };

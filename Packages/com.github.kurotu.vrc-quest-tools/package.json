@@ -15,7 +15,7 @@
         "com.unity.nuget.newtonsoft-json": "2.0.2"
     },
     "vpmDependencies": {
-        "com.vrchat.avatars": "^3.3.0"
+        "com.vrchat.avatars": "^3.8.1"
     },
     "url": "https://github.com/kurotu/VRCQuestTools/releases/download/v2.11.0/com.github.kurotu.vrc-quest-tools-2.11.0.zip",
     "legacyFolders": {

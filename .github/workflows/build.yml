@@ -58,12 +58,6 @@ jobs:
       fail-fast: false
       matrix:
         sdk:
-          # VRC Constraints
-          - unityVersion: 2022.3.22f1
-            vrcsdkVersion: 3.6.2-constraints.3
-          # Local-only Contact Receiver
-          - unityVersion: 2022.3.22f1
-            vrcsdkVersion: 3.7.5
           # Toon Standard
           - unityVersion: 2022.3.22f1
             vrcsdkVersion: 3.8.1
