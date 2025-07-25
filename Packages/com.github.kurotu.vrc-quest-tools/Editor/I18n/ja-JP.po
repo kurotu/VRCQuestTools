@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-07-23 16:12\n"
+"PO-Revision-Date: 2025-07-25 14:54\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -267,31 +267,31 @@ msgid "ToonStandardConvertSettingsFallbackShadowRampLabel"
 msgstr "影のフォールバック"
 
 msgid "ToonStandardConvertSettingsGenerateShadowRampLabel"
-msgstr ""
+msgstr "影の設定を生成する"
 
 msgid "ToonStandardConvertSettingsCustomFallbackShadowRampLabel"
 msgstr "Shadow Ramp"
 
 msgid "ToonStandardConvertSettingsFeaturesLabel"
-msgstr ""
+msgstr "機能設定"
 
 msgid "ToonStandardConvertSettingsFeaturesNormalMapLabel"
-msgstr ""
+msgstr "ノーマルマップ"
 
 msgid "ToonStandardConvertSettingsFeaturesEmissionLabel"
-msgstr ""
+msgstr "発光"
 
 msgid "ToonStandardConvertSettingsFeaturesOcclusionLabel"
-msgstr ""
+msgstr "オクルージョン"
 
 msgid "ToonStandardConvertSettingsFeaturesSpecularLabel"
-msgstr ""
+msgstr "反射"
 
 msgid "ToonStandardConvertSettingsFeaturesMatcapLabel"
-msgstr ""
+msgstr "マットキャップ"
 
 msgid "ToonStandardConvertSettingsFeaturesRimLightingLabel"
-msgstr ""
+msgstr "リムライト"
 
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
 msgstr "対象マテリアル"
