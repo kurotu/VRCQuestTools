@@ -152,13 +152,7 @@ namespace KRT.VRCQuestTools.Views
 
                 EditorGUILayout.Space();
 
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
                 var contactsHeader = "Non-Local Contact Senders & Non-Local Contact Receivers";
-#elif VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
-                var contactsHeader = "Contact Senders & Non-Local Contact Receivers";
-#else
-                var contactsHeader = "Contact Senders & Contact Receivers";
-#endif
                 using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutContacts, new GUIContent(contactsHeader, i18n.PhysBonesListTooltip)))
                 {
                     foldoutContacts = foldout.Foldout;

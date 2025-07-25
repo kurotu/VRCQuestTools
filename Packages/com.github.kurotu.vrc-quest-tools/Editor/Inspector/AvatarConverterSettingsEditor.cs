@@ -88,7 +88,6 @@ namespace KRT.VRCQuestTools.Inspector
                         }
                     }
 
-#if VQT_HAS_VRCSDK_CONSTRAINTS
                     if (avatar.HasUnityConstraints)
                     {
 #if VQT_HAS_MA_CONVERT_CONSTRAINTS
@@ -110,7 +109,6 @@ namespace KRT.VRCQuestTools.Inspector
                         }
 #endif
                     }
-#endif
 
                     if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor) && avatar.GameObject.GetComponent<NetworkIDAssigner>() == null)
                     {
@@ -308,11 +306,7 @@ namespace KRT.VRCQuestTools.Inspector
                 }
                 else
                 {
-#if VQT_HAS_VRCSDK_NO_PRECHECK
                     EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion2, MessageType.Info);
-#else
-                    EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion, MessageType.Info);
-#endif
 #if VQT_HAS_NDMF
                     if (GUILayout.Button(i18n.OpenAvatarBuilder, GUILayout.Height(38)))
                     {
@@ -469,7 +463,6 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
 #if VQT_HAS_MA_CONVERT_CONSTRAINTS
-    #if VQT_HAS_VRCSDK_NO_PRECHECK
             if (new VRChatAvatar(avatar).HasUnityConstraints && avatar.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
             {
                 if (EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForMAConvertConstraints, i18n.YesLabel, i18n.NoLabel))
@@ -477,15 +470,6 @@ namespace KRT.VRCQuestTools.Inspector
                     Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(avatar.gameObject);
                 }
             }
-    #else
-            if (new VRChatAvatar(avatar).HasUnityConstraints)
-            {
-                if (!EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForUnityConstraints, i18n.YesLabel, i18n.NoLabel))
-                {
-                    return;
-                }
-            }
-    #endif
 #endif
 
             var progressCallback = new ProgressCallback

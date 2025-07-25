@@ -19,11 +19,7 @@ namespace KRT.VRCQuestTools.Components
         /// </summary>
         [SerializeReference]
         public IMaterialConvertSettings defaultMaterialConvertSettings =
-#if VQT_HAS_VRCSDK_TOON_STANDARD
             ToonStandardConvertSettings.SimpleFeatures;
-#else
-            new ToonLitConvertSettings();
-#endif
 
         /// <summary>
         /// Additional material convert settings.
@@ -141,14 +137,10 @@ namespace KRT.VRCQuestTools.Components
                 {
                     switch (c)
                     {
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
                         case ContactReceiver receiver:
                             return !receiver.IsLocalOnly;
-#endif
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
                         case ContactSender sender:
                             return !sender.IsLocalOnly;
-#endif
                         default:
                             return true;
                     }

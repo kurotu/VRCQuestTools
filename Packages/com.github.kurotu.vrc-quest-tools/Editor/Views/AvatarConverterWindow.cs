@@ -8,12 +8,7 @@ using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;
-
-#if VQT_HAS_VRCSDK_BASE
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
-#else
-using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
-#endif
 
 namespace KRT.VRCQuestTools.Views
 {
