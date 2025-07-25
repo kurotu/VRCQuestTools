@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-05-24 04:13\n"
+"PO-Revision-Date: 2025-07-23 16:12\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -263,7 +263,31 @@ msgstr "Установите текстуру MatCap."
 msgid "ToonStandardConvertSettingsFallbackShadowRampLabel"
 msgstr ""
 
+msgid "ToonStandardConvertSettingsGenerateShadowRampLabel"
+msgstr ""
+
 msgid "ToonStandardConvertSettingsCustomFallbackShadowRampLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesNormalMapLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesEmissionLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesOcclusionLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesSpecularLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesMatcapLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesRimLightingLabel"
 msgstr ""
 
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
