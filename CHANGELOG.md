@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Removed support for Unity 2019.
 
+## [2.11.1] - 2025-07-26
+
+### Added
+- Support for lilToon 2.0.0 and later.
+
 ## [2.11.0] - 2025-06-22
 
 ### Added
