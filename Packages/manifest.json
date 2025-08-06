@@ -44,8 +44,8 @@
   },
   "scopedRegistries": [
     {
-      "name": "Unity NuGet",
-      "url": "https://unitynuget-registry.openupm.com",
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
       "scopes": [
         "org.nuget"
       ]

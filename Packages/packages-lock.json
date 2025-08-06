@@ -222,14 +222,14 @@
       "dependencies": {
         "org.nuget.stylecop.analyzers.unstable": "1.2.0-556"
       },
-      "url": "https://unitynuget-registry.openupm.com"
+      "url": "https://package.openupm.com"
     },
     "org.nuget.stylecop.analyzers.unstable": {
       "version": "1.2.0-556",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
-      "url": "https://unitynuget-registry.openupm.com"
+      "url": "https://package.openupm.com"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
