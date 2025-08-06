@@ -112,19 +112,50 @@ jobs:
           checkName: "Test Results: ${{ matrix.sdk.unityVersion }}, vrcsdk-${{ matrix.sdk.vrcsdkVersion }}, ndmf-${{ matrix.ndmfVersion }}"
 
   lint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container: unityci/editor:ubuntu-2022.3.22f1-windows-mono-3
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-build-${{ github.ref }}
+          restore-keys: |
+            Library-build-
+
+      - uses: anatawa12/sh-actions/setup-vrc-get@master
+      - uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 5
+          retry_wait_seconds: 60
+          command: vrc-get resolve
+      - run: vrc-get info project
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 3.1.x
-      - name: Restore dependencies
-        run: dotnet tool restore
+          dotnet-version: 9.0.x
+
+      # https://github.com/game-ci/unity-builder/issues/497#issuecomment-1407712495
+      - name: Locate LICENSE
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          FILE_PATH=$(mktemp).ulf
+          echo "$UNITY_LICENSE" > $FILE_PATH
+          unity-editor -batchmode -nographics -logFile /dev/stdout -quit -manualLicenseFile $FILE_PATH
+          rm $FILE_PATH
+
+      - name: Generate Solution
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        run: unity-editor -nographics -logFile /dev/stdout -customBuildName Card-Game-Simulator -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
+
       - name: Check style
-        run: dotnet style check -r stylecop.ruleset -j stylecop.json . > result.txt
-      - name: Report result
-        run: if [ "$(wc -l < result.txt)" = "0" ]; then true; else cat result.txt && false; fi
+        run: dotnet build --no-incremental *.sln --verbosity normal
 
   vpm:
     runs-on: ubuntu-latest
