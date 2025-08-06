@@ -1,6 +1,9 @@
 {
     "name": "VRCQuestTools",
-    "references": [],
+    "rootNamespace": "",
+    "references": [
+        "VRCQuestTools-Analyzers"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
