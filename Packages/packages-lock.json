@@ -8,6 +8,12 @@
         "com.unity.nuget.newtonsoft-json": "2.0.2"
       }
     },
+    "com.github.kurotu.vrc-quest-tools.analyzers": {
+      "version": "file:com.github.kurotu.vrc-quest-tools-analyzers",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.ai.navigation": {
       "version": "1.1.5",
       "depth": 0,
@@ -208,6 +214,22 @@
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.0.2"
       }
+    },
+    "org.nuget.stylecop.analyzers": {
+      "version": "1.2.0-beta.556",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "org.nuget.stylecop.analyzers.unstable": "1.2.0-556"
+      },
+      "url": "https://package.openupm.com"
+    },
+    "org.nuget.stylecop.analyzers.unstable": {
+      "version": "1.2.0-556",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
