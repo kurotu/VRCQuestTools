@@ -5,7 +5,7 @@
 			"label": "lint",
 			"detail": "Run analyzers",
 			"type": "shell",
-			"command": "dotnet",
+			"command": "PowerShell",
 			"problemMatcher": {
 				"owner": "csharp",
 				"fileLocation": "absolute",
@@ -22,9 +22,9 @@
 				]
 			},
 			"args": [
-				"build",
-				"--no-incremental",
-				"${workspaceFolderBasename}.sln"
+				"-ExecutionPolicy",
+				"RemoteSigned",
+				".\\scripts\\lint.ps1"
 			],
 			"options": {
 				"env": {

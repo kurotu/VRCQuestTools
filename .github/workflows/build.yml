@@ -158,7 +158,7 @@ jobs:
         run: echo "::add-matcher::.github/problem-matchers/dotnet.json"
 
       - name: Check style
-        run: dotnet build --no-incremental *.sln --verbosity normal --warnaserror
+        run: ./scripts/lint.sh
         env:
           DOTNET_CLI_UI_LANGUAGE: en
 
