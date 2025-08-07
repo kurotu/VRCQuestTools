@@ -131,6 +131,8 @@ jobs:
           retry_wait_seconds: 60
           command: vrc-get resolve
       - run: vrc-get info project
+      - run: vrc-get repo add https://vpm.nadena.dev/vpm-prerelease.json
+      - run: scripts/vrc-get-install.sh nadena.dev.modular-avatar latest
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
