@@ -45,30 +45,30 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     case MaterialConversionException e:
                         {
-                            var matRef = NdmfObjectRegistry.GetReference(e.source);
+                            var matRef = NdmfObjectRegistry.GetReference(e.SourceObject);
                             ndmfError = new MaterialConversionError(matRef, e);
                         }
                         break;
                     case AnimationClipConversionException e:
                         {
-                            var animRef = NdmfObjectRegistry.GetReference(e.source);
+                            var animRef = NdmfObjectRegistry.GetReference(e.SourceObject);
                             ndmfError = new ObjectConversionError(animRef, e);
                         }
                         break;
                     case AnimatorControllerConversionException e:
                         {
-                            var animRef = NdmfObjectRegistry.GetReference(e.source);
+                            var animRef = NdmfObjectRegistry.GetReference(e.SourceObject);
                             ndmfError = new ObjectConversionError(animRef, e);
                         }
                         break;
                     case InvalidMaterialSwapNullException e:
-                        ndmfError = new MaterialSwapNullError(e.component, e.MaterialMapping);
+                        ndmfError = new MaterialSwapNullError(e.Component, e.MaterialMapping);
                         break;
                     case InvalidReplacementMaterialException e:
-                        ndmfError = new ReplacementMaterialError(e.component, e.replacementMaterial);
+                        ndmfError = new ReplacementMaterialError(e.Component, e.ReplacementMaterial);
                         break;
                     case TargetMaterialNullException e:
-                        ndmfError = new TargetMaterialNullError(e.component);
+                        ndmfError = new TargetMaterialNullError(e.Component);
                         break;
                     default:
                         ndmfError = new SimpleStringError(

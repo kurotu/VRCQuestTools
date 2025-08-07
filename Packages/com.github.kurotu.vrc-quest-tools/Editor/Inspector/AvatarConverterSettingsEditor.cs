@@ -549,32 +549,32 @@ namespace KRT.VRCQuestTools.Inspector
                 case MaterialConversionException e:
                     message = $"{i18n.MaterialExceptionDialogMessage}\n" +
                         "\n" +
-                        $"Material: {AssetDatabase.GetAssetPath(e.source)}\n" +
-                        $"Shader: {e.source.shader.name}";
+                        $"Material: {AssetDatabase.GetAssetPath(e.SourceObject)}\n" +
+                        $"Shader: {e.SourceObject.shader.name}";
                     dialogException = e.InnerException;
-                    context = e.source;
+                    context = e.SourceObject;
                     break;
                 case AnimationClipConversionException e:
                     message = $"{i18n.AnimationClipExceptionDialogMessage}\n" +
                         $"\n" +
-                        $"AnimationClip: {e.source.name}";
+                        $"AnimationClip: {e.SourceObject.name}";
                     dialogException = e.InnerException;
-                    context = e.source;
+                    context = e.SourceObject;
                     break;
                 case AnimatorControllerConversionException e:
                     message = $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
                         $"\n" +
-                        $"AnimatorController: {e.source.name}";
+                        $"AnimatorController: {e.SourceObject.name}";
                     dialogException = e.InnerException;
-                    context = e.source;
+                    context = e.SourceObject;
                     break;
                 case InvalidReplacementMaterialException e:
                     message = $"{i18n.InvalidReplacementMaterialExceptionDialogMessage}\n" +
                         $"\n" +
-                        $"Material: {e.replacementMaterial.name}\n" +
-                        $"Shader: {e.replacementMaterial.shader.name}";
+                        $"Material: {e.ReplacementMaterial.name}\n" +
+                        $"Shader: {e.ReplacementMaterial.shader.name}";
                     dialogException = e;
-                    context = e.component;
+                    context = e.Component;
                     break;
             }
             if (exception.InnerException != null)

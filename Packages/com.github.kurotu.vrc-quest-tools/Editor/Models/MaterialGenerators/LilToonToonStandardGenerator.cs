@@ -35,7 +35,7 @@ namespace KRT.VRCQuestTools.Models
             newMaterial.MainTexture = lilMaterial.Material.mainTexture;
             newMaterial.MainColor = Utils.ColorUtility.HdrToLdr(lilMaterial.Material.color);
 
-            if (lilMaterial.UseNormalMap && settings.useNormalMap)
+            if (lilMaterial.UseNormalMap && Settings.useNormalMap)
             {
                 newMaterial.UseNormalMap = true;
                 newMaterial.NormalMap = lilMaterial.NormalMap;
@@ -48,7 +48,7 @@ namespace KRT.VRCQuestTools.Models
 
             if (lilMaterial.UseShadow)
             {
-                newMaterial.ShadowRamp = settings.fallbackShadowRamp;
+                newMaterial.ShadowRamp = Settings.fallbackShadowRamp;
             }
             else
             {
@@ -57,19 +57,19 @@ namespace KRT.VRCQuestTools.Models
 
             newMaterial.MinBrightness = lilMaterial.LightMinLimit;
 
-            if (lilMaterial.UseEmission && settings.useEmission)
+            if (lilMaterial.UseEmission && Settings.useEmission)
             {
                 newMaterial.EmissionMap = lilMaterial.EmissionMap;
                 newMaterial.EmissionColor = Utils.ColorUtility.HdrToLdr(lilMaterial.EmissionColor);
             }
 
-            if (lilMaterial.UseShadow && lilMaterial.AOMap != null && settings.useOcclusion)
+            if (lilMaterial.UseShadow && lilMaterial.AOMap != null && Settings.useOcclusion)
             {
                 newMaterial.UseOcclusion = true;
                 newMaterial.OcclusionMap = lilMaterial.AOMap;
             }
 
-            if (lilMaterial.UseReflection && settings.useSpecular)
+            if (lilMaterial.UseReflection && Settings.useSpecular)
             {
                 newMaterial.UseSpecular = true;
                 newMaterial.MetallicMap = lilMaterial.MetallicMap;
@@ -84,7 +84,7 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.Sharpness = 1.0f - lilMaterial.SpecularBlur;
             }
 
-            if (lilMaterial.UseMatCap && settings.useMatcap)
+            if (lilMaterial.UseMatCap && Settings.useMatcap)
             {
                 newMaterial.UseMatcap = true;
                 newMaterial.Matcap = lilMaterial.MatCapTex;
@@ -105,7 +105,7 @@ namespace KRT.VRCQuestTools.Models
                 }
             }
 
-            if (lilMaterial.UseRimLight && settings.useRimLighting)
+            if (lilMaterial.UseRimLight && Settings.useRimLighting)
             {
                 newMaterial.UseRimLighting = true;
                 newMaterial.RimColor = Utils.ColorUtility.HdrToLdr(lilMaterial.RimLightColor);
@@ -145,7 +145,7 @@ namespace KRT.VRCQuestTools.Models
                 lilMaterial.Emission2ndMap ? lilMaterial.Emission2ndMap.height : 4,
                 lilMaterial.Emission2ndBlendMask ? lilMaterial.Emission2ndBlendMask.height : 4);
 
-            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, (int)settings.maxTextureSize);
+            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, (int)Settings.maxTextureSize);
             var rt = RenderTexture.GetTemporary(targetWidth, targetHeight, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(lilMaterial.EmissionMap, rt, bakeMat);
             return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
@@ -165,7 +165,7 @@ namespace KRT.VRCQuestTools.Models
             var reflectionColorTexHeight = reflectionColorTex ? reflectionColorTex.height : 4;
             var sourceWidth = Math.Max(gloss ? gloss.width : 4, reflectionColorTexWidth);
             var sourceHeight = Math.Max(gloss ? gloss.height : 4, reflectionColorTexHeight);
-            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, (int)settings.maxTextureSize);
+            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, (int)Settings.maxTextureSize);
 
             var alphaGlossMap = RenderTexture.GetTemporary(sourceWidth, sourceHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -209,19 +209,19 @@ namespace KRT.VRCQuestTools.Models
         {
             var toonLitConvertSettings = new ToonLitConvertSettings
             {
-                generateQuestTextures = settings.generateQuestTextures,
-                maxTextureSize = settings.maxTextureSize,
-                mobileTextureFormat = settings.mobileTextureFormat,
+                generateQuestTextures = Settings.generateQuestTextures,
+                maxTextureSize = Settings.maxTextureSize,
+                mobileTextureFormat = Settings.mobileTextureFormat,
                 mainTextureBrightness = 1.0f,
-                generateShadowFromNormalMap = !settings.useNormalMap,
+                generateShadowFromNormalMap = !Settings.useNormalMap,
             };
             var toonLitBakeMat = new LilToonMaterial(new Material(lilMaterial.Material));
-            if (settings.useEmission)
+            if (Settings.useEmission)
             {
                 toonLitBakeMat.UseEmission = false;
                 toonLitBakeMat.UseEmission2nd = false;
             }
-            if (settings.useMatcap)
+            if (Settings.useMatcap)
             {
                 toonLitBakeMat.Material.SetFloat("_VQT_UseToonStandardMatCap", 1);
             }
@@ -256,7 +256,7 @@ namespace KRT.VRCQuestTools.Models
 
             var matcapWidth = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.width : 4;
             var matcapHeight = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.height : 4;
-            var (width, height) = TextureUtility.AspectFitReduction(matcapWidth, matcapHeight, (int)settings.maxTextureSize);
+            var (width, height) = TextureUtility.AspectFitReduction(matcapWidth, matcapHeight, (int)Settings.maxTextureSize);
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(null, rt, mat);
 
@@ -272,7 +272,7 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateMatcapMask(Action<Texture2D> completion)
         {
             var matcapMask = (Texture2D)lilMaterial.MatCapMask;
-            var (width, height) = TextureUtility.AspectFitReduction(matcapMask.width, matcapMask.height, (int)settings.maxTextureSize);
+            var (width, height) = TextureUtility.AspectFitReduction(matcapMask.width, matcapMask.height, (int)Settings.maxTextureSize);
 
             var rt = RenderTexture.GetTemporary(matcapMask.width, matcapMask.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -306,7 +306,7 @@ namespace KRT.VRCQuestTools.Models
 
             var originalWidth = Math.Max(metallicWidth, reflectionColorWidth);
             var originalHeight = Math.Max(metallicHeight, reflectionColorHeight);
-            var (width, height) = TextureUtility.AspectFitReduction(originalWidth, originalHeight, (int)settings.maxTextureSize);
+            var (width, height) = TextureUtility.AspectFitReduction(originalWidth, originalHeight, (int)Settings.maxTextureSize);
 
             var reflectionGrayscaleTex = RenderTexture.GetTemporary(reflectionColorWidth, reflectionColorHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat0 = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -341,7 +341,7 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion)
         {
             var normal = (Texture2D)lilMaterial.NormalMap;
-            var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, (int)settings.maxTextureSize);
+            var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, (int)Settings.maxTextureSize);
             var newTex = TextureUtility.DownscaleNormalMap(normal, outputRGB, width, height);
             return new ResultRequest<Texture2D>(newTex, completion);
         }
@@ -350,7 +350,7 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateOcclusionMap(Action<Texture2D> completion)
         {
             var aoMap = (Texture2D)lilMaterial.AOMap;
-            var (width, height) = TextureUtility.AspectFitReduction(aoMap.width, aoMap.height, (int)settings.maxTextureSize);
+            var (width, height) = TextureUtility.AspectFitReduction(aoMap.width, aoMap.height, (int)Settings.maxTextureSize);
 
             var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
             swizzleMat.SetTexture("_Texture0", aoMap);
@@ -452,8 +452,8 @@ namespace KRT.VRCQuestTools.Models
                 }
             }
 
-            var width = Math.Min(maxWidth, (int)settings.maxTextureSize);
-            var height = Math.Min(maxHeight, (int)settings.maxTextureSize);
+            var width = Math.Min(maxWidth, (int)Settings.maxTextureSize);
+            var height = Math.Min(maxHeight, (int)Settings.maxTextureSize);
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             Graphics.Blit(null, rt, swizzleMat);
             return TextureUtility.RequestReadbackRenderTexture(rt, true, true, (tex) =>
@@ -534,7 +534,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override Color GetMainColor()
         {
-            if (settings.useMatcap && lilMaterial.UseMatCap && lilMaterial.MatCapBlendingMode == LilToonMaterial.MatCapBlendMode.Normal)
+            if (Settings.useMatcap && lilMaterial.UseMatCap && lilMaterial.MatCapBlendingMode == LilToonMaterial.MatCapBlendMode.Normal)
             {
                 if (!GetUseMainTexture())
                 {
@@ -689,7 +689,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseMainTexture()
         {
-            if (!settings.useEmission && (lilMaterial.UseEmission || lilMaterial.UseEmission2nd))
+            if (!Settings.useEmission && (lilMaterial.UseEmission || lilMaterial.UseEmission2nd))
             {
                 return true;
             }
