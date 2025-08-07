@@ -2,6 +2,37 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "lint",
+			"detail": "Run analyzers",
+			"type": "shell",
+			"command": "dotnet",
+			"problemMatcher": {
+				"owner": "csharp",
+				"fileLocation": "absolute",
+				"pattern": [
+					{
+						"regexp": "^\\s*(.+)\\((\\d+),(\\d+)\\):\\s+(warning|error)\\s+(\\w+):\\s+(.*)$",
+						"file": 1,
+						"line": 2,
+						"column": 3,
+						"severity": 4,
+						"code": 5,
+						"message": 6
+					}
+				]
+			},
+			"args": [
+				"build",
+				"--no-incremental",
+				"${workspaceFolderBasename}.sln"
+			],
+			"options": {
+				"env": {
+					"DOTNET_CLI_UI_LANGUAGE": "en"
+				}
+			}
+		},
+		{
 			"label": "Start Website",
 			"detail": "docusaurus start",
 			"type": "shell",
