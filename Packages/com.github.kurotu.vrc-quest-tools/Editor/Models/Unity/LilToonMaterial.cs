@@ -760,7 +760,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
         }
 
-        private class LilToonInspector
+        private static class LilToonInspector
         {
             public static string GetShaderSettingPath()
             {

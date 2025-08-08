@@ -67,7 +67,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var mesh = RendererUtility.GetSharedMesh(targetRenderer);
             if (mesh == null)
             {
-                return null;
+                return Task.FromResult<IRenderFilterNode>(null);
             }
 
             context.Observe(meshFlipper);

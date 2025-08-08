@@ -7,7 +7,7 @@ namespace KRT.VRCQuestTools.Utils
     /// <summary>
     /// Utility for VirtualLens.
     /// </summary>
-    internal class VirtualLensUtility
+    internal static class VirtualLensUtility
     {
         /// <summary>
         /// Type object of VirtualLensSettings.

@@ -847,7 +847,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Reflection to use VRCSDK features.
         /// </summary>
-        internal class Reflection
+        internal static class Reflection
         {
             /// <summary>
             /// Reflection wrapper for VRCPhysBone.

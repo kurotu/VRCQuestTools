@@ -1,0 +1,4 @@
+[*.cs]
+
+# RCS1194: Implement exception constructors
+dotnet_diagnostic.RCS1194.severity = none
