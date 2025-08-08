@@ -3,6 +3,7 @@ using KRT.VRCQuestTools.Models.VRChat;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -17,14 +18,21 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
-            var converterSettings = context.AvatarRootObject.GetComponent<AvatarConverterSettings>();
+            var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
+            if (avatarDescriptor == null)
+            {
+                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping avatar conversion preparation.");
+                return;
+            }
+
+            var converterSettings = avatarDescriptor.GetComponent<AvatarConverterSettings>();
             if (converterSettings == null)
             {
                 return;
             }
 
             var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
-            var avatar = new VRChatAvatar(context.AvatarDescriptor);
+            var avatar = new VRChatAvatar(avatarDescriptor);
             switch (buildTarget)
             {
                 case Models.BuildTarget.PC:

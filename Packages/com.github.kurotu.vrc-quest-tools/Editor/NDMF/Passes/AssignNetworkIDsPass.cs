@@ -1,6 +1,8 @@
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf;
+using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -15,17 +17,24 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
-            var assigner = context.AvatarRootObject.GetComponent<NetworkIDAssigner>();
+            var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
+            if (avatarDescriptor == null)
+            {
+                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping network ID assignment.");
+                return;
+            }
+
+            var assigner = avatarDescriptor.GetComponent<NetworkIDAssigner>();
             if (assigner == null)
             {
-                if (context.AvatarRootObject.GetComponent<AvatarConverterSettings>() != null && VRCSDKUtility.HasMissingNetworkIds(context.AvatarDescriptor))
+                if (avatarDescriptor.GetComponent<AvatarConverterSettings>() != null && VRCSDKUtility.HasMissingNetworkIds(avatarDescriptor))
                 {
                     NdmfErrorReport.ReportError(new MissingNetworkIDAssignerWarning());
                 }
                 return;
             }
 
-            VRCSDKUtility.AssignNetworkIdsToPhysBonesByHierarchyHash(context.AvatarDescriptor);
+            VRCSDKUtility.AssignNetworkIdsToPhysBonesByHierarchyHash(avatarDescriptor);
         }
     }
 }
