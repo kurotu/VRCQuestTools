@@ -172,8 +172,7 @@ namespace KRT.VRCQuestTools
         {
 #if !UNITY_EDITOR_WIN
             Assert.Ignore("The result is different on Linux.");
-            return;
-#endif
+#else
             var wrapper = TestUtils.LoadMaterialWrapper("render_texture.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             var setting = new ToonLitConvertSettings
@@ -187,6 +186,7 @@ namespace KRT.VRCQuestTools
             {
                 Assert.Less(TestUtils.MaxDifference(tex.Object, original.Object), Threshold);
             }
+#endif
         }
     }
 }
