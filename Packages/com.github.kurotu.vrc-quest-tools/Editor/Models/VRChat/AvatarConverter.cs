@@ -127,7 +127,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
             if (converterSettings != null)
             {
 #if VQT_HAS_MA_CONVERT_CONSTRAINTS
-                if (saveAssetsAsFile && questAvatarObject.GetComponent<ModularAvatarConvertConstraints>() != null) {
+                if (saveAssetsAsFile && questAvatarObject.GetComponent<ModularAvatarConvertConstraints>() != null)
+                {
                     remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true, false, new Type[] { typeof(UnityEngine.Animations.IConstraint) });
                 }
                 else

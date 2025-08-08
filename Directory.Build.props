@@ -1,8 +1,0 @@
-<Project>
-  
-  <!-- StyleCop Analyzers Configuration -->
-  <ItemGroup>
-    <!-- Include the StyleCop configuration file for all projects -->
-    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
-</Project>

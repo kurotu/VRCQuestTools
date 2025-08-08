@@ -131,6 +131,8 @@ jobs:
           retry_wait_seconds: 60
           command: vrc-get resolve
       - run: vrc-get info project
+      - run: vrc-get repo add https://vpm.nadena.dev/vpm-prerelease.json
+      - run: scripts/vrc-get-install.sh nadena.dev.modular-avatar latest
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -154,8 +156,13 @@ jobs:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         run: unity-editor -nographics -logFile /dev/stdout -customBuildName Card-Game-Simulator -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
 
+      - name: Add dotnet problem matcher
+        run: echo "::add-matcher::.github/problem-matchers/dotnet.json"
+
       - name: Check style
-        run: dotnet build --no-incremental *.sln --verbosity normal
+        run: ./scripts/lint.sh
+        env:
+          DOTNET_CLI_UI_LANGUAGE: en
 
   vpm:
     runs-on: ubuntu-latest
