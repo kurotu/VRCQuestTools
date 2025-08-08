@@ -26,7 +26,8 @@ namespace KRT.VRCQuestTools.Utils
         internal static Component[] GetUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive)
         {
 #if VQT_HAS_MODULAR_AVATAR
-            var types = new Type[] {
+            var types = new Type[]
+            {
                 #if !VQT_HAS_MODULAR_AVATAR_WFO_ANDROID
                     typeof(ModularAvatarVisibleHeadAccessory),
                     #if VQT_HAS_MODULAR_AVATAR_WFO

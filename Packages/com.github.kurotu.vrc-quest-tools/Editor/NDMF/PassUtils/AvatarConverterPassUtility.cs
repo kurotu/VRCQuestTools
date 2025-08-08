@@ -6,6 +6,7 @@ using KRT.VRCQuestTools.Models.VRChat;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 using VRC.SDKBase;
 
 namespace KRT.VRCQuestTools.Ndmf
@@ -47,6 +48,13 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <param name="context">BuildContext.</param>
         internal static void ConvertAvatarInPass(BuildContext context)
         {
+            var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
+            if (avatarDescriptor == null)
+            {
+                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping avatar conversion.");
+                return;
+            }
+
             var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
             if (buildTarget != Models.BuildTarget.Android)
             {
@@ -61,10 +69,10 @@ namespace KRT.VRCQuestTools.Ndmf
 
             try
             {
-                TrackObjectRegistryForMaterialSwaps(context);
-                TrackObjectRegistryForMaterialConversion(context);
+                TrackObjectRegistryForMaterialSwaps(avatarDescriptor);
+                TrackObjectRegistryForMaterialConversion(avatarDescriptor);
 
-                var avatar = new VRChatAvatar(context.AvatarDescriptor);
+                var avatar = new VRChatAvatar(avatarDescriptor);
                 var objectRegistry = context.GetState<NdmfObjectRegistry>();
                 VRCQuestTools.AvatarConverter.ConvertForQuestInPlace(avatar, VRCQuestTools.ComponentRemover, false, null, new Models.VRChat.AvatarConverter.ProgressCallback()
                 {
@@ -101,12 +109,12 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <summary>
         /// Track object registry then add as new settings.
         /// </summary>
-        private static void TrackObjectRegistryForMaterialConversion(BuildContext context)
+        private static void TrackObjectRegistryForMaterialConversion(VRCAvatarDescriptor avatarDescriptor)
         {
-            var avatar = new VRChatAvatar(context.AvatarDescriptor);
+            var avatar = new VRChatAvatar(avatarDescriptor);
             var currentMaterials = avatar.Materials;
 
-            var conversions = context.AvatarRootObject.GetComponentsInChildren<IMaterialConversionComponent>(true);
+            var conversions = avatarDescriptor.GetComponentsInChildren<IMaterialConversionComponent>(true);
             foreach (var conversion in conversions)
             {
                 // Create new additional material settings by tracking object registry.
@@ -135,12 +143,12 @@ namespace KRT.VRCQuestTools.Ndmf
             }
         }
 
-        private static void TrackObjectRegistryForMaterialSwaps(BuildContext context)
+        private static void TrackObjectRegistryForMaterialSwaps(VRCAvatarDescriptor avatarDescriptor)
         {
-            var avatar = new VRChatAvatar(context.AvatarDescriptor);
+            var avatar = new VRChatAvatar(avatarDescriptor);
             var currentMaterials = avatar.Materials;
 
-            var swaps = context.AvatarRootObject.GetComponentsInChildren<MaterialSwap>(true);
+            var swaps = avatarDescriptor.GetComponentsInChildren<MaterialSwap>(true);
             foreach (var swap in swaps)
             {
                 var newMappings = new List<MaterialSwap.MaterialMapping>();

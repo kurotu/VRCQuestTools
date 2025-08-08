@@ -7,6 +7,7 @@ using nadena.dev.ndmf;
 using nadena.dev.ndmf.util;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
 
 namespace KRT.VRCQuestTools.Ndmf
@@ -22,6 +23,13 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc />
         protected override void Execute(BuildContext context)
         {
+            var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
+            if (avatarDescriptor == null)
+            {
+                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping texture format check.");
+                return;
+            }
+
             if ((EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.StandaloneWindows
                 || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.StandaloneWindows64)
                 && !VRCQuestToolsSettings.IsCheckTextureFormatOnStandaloneEnabled)
@@ -32,7 +40,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var unsupportedTextures = new List<Texture2D>();
             var unknownTextures = new List<Texture2D>();
 
-            var avatar = new VRChatAvatar(context.AvatarDescriptor);
+            var avatar = new VRChatAvatar(avatarDescriptor);
             var materialTextures = avatar.Materials.SelectMany(m =>
             {
                 var props = m.GetTexturePropertyNames();
@@ -42,7 +50,7 @@ namespace KRT.VRCQuestTools.Ndmf
             .Where(t => t is Texture2D)
             .Cast<Texture2D>();
 
-            var menuTextures = VRCSDKUtility.GetTexturesFromMenu(context.AvatarDescriptor.expressionsMenu);
+            var menuTextures = VRCSDKUtility.GetTexturesFromMenu(avatarDescriptor.expressionsMenu);
 
             var allTextures = materialTextures.Concat(menuTextures).Distinct().ToArray();
             foreach (var texture in allTextures)

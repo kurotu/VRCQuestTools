@@ -4,6 +4,7 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -20,7 +21,14 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
-            var menu = context.AvatarDescriptor.expressionsMenu;
+            var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
+            if (avatarDescriptor == null)
+            {
+                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping menu icon resizing.");
+                return;
+            }
+
+            var menu = avatarDescriptor.expressionsMenu;
             if (menu == null)
             {
                 return;
@@ -79,7 +87,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var objectRegistry = context.GetState<NdmfObjectRegistry>();
 
             var newMenu = VRCSDKUtility.DuplicateExpressionsMenu(menu);
-            context.AvatarDescriptor.expressionsMenu = newMenu;
+            avatarDescriptor.expressionsMenu = newMenu;
             objectRegistry.RegisterReplacedObject(menu, newMenu);
 
             VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, maxSize, compressTextures, (oldTex, newTex) =>
