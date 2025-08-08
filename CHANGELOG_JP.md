@@ -15,6 +15,9 @@
 - デフォルトのマテリアル変換設定の初期値を Toon Standard に変更。 (VRCSDK 3.8.1 以降)
 - lilToon の通常モードの MatCap を Toon Standard に変換するときの見た目を改善。
 
+### 修正
+- `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。
+
 ### 削除
 - Unity 2019 のサポートを終了。
 

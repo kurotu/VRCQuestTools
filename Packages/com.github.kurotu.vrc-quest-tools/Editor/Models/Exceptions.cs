@@ -132,6 +132,7 @@ namespace KRT.VRCQuestTools.Models
             : base(message)
         {
             this.Component = materialSwap;
+            this.index = index;
         }
 
         /// <summary>

@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed the initial value of default material conversion settings to Toon Standard. (VRCSDK 3.8.1 or later)
 - Improved the appearance when converting lilToon normal mode MatCap to Toon Standard.
 
+### Fixed
+- `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
+
 ### Removed
 - Removed support for Unity 2019.
 
