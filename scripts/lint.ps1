@@ -8,10 +8,10 @@ if (Test-Path build.log) {
 # Build solution files quietly
 Get-ChildItem -Path "*.sln" | ForEach-Object {
     echo "Building solution: $_.Name" >> build.log
-    dotnet build $_.Name --verbosity quiet >> build.log
+    dotnet build $_.Name >> build.log
 }
 
 # Build VRCQuestTools project files with normal verbosity
 Get-ChildItem -Path "VRCQuestTools*.csproj" | ForEach-Object {
-    dotnet build $_.Name --no-incremental --no-dependencies --verbosity normal
+    dotnet build $_.Name --no-incremental --no-dependencies --verbosity quiet
 }
