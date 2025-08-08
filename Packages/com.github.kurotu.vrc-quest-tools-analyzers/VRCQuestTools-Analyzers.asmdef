@@ -2,6 +2,9 @@
     "name": "VRCQuestTools-Analyzers",
     "rootNamespace": "",
     "references": [
+        "Roslynator.Analyzers_Unity",
+        "Roslynator.CodeAnalysis.Analyzers_Unity",
+        "Roslynator.Formatting.Analyzers_Unity",
         "StyleCop.Analyzers.Unstable_Unity"
     ],
     "includePlatforms": [],
