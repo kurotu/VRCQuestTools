@@ -48,7 +48,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             {
                 throw new LilToonCompatibilityException($"{lilToonInspector.Name}.{name} not found");
             }
-            return method.Invoke(null, null) as T;
+            return (T)method.Invoke(null, null);
         }
     }
 }
