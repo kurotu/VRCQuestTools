@@ -1,5 +1,6 @@
 {
     "recommendations": [
-      "visualstudiotoolsforunity.vstuc"
+      "visualstudiotoolsforunity.vstuc",
+      "editorconfig.editorconfig"
     ]
 }
