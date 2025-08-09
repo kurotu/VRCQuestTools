@@ -12,6 +12,7 @@
     "org.nuget.roslynator.analyzers": "4.14.0",
     "org.nuget.roslynator.codeanalysis.analyzers": "4.14.0",
     "org.nuget.roslynator.formatting.analyzers": "4.14.0",
+    "org.nuget.sonaranalyzer.csharp": "10.15.0-120848",
     "org.nuget.stylecop.analyzers": "1.2.0-beta.556",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
