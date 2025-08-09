@@ -42,40 +42,6 @@ namespace KRT.VRCQuestTools.Inspector
                 foldOutAdditionalMaterialSettings = EditorGUI.Foldout(headerRect, foldOutAdditionalMaterialSettings, property.content, true);
                 if (foldOutAdditionalMaterialSettings)
                 {
-                    if (additionalMaterialConvertSettingsReorderableList == null)
-                    {
-                        additionalMaterialConvertSettingsReorderableList = new ReorderableList(so, additionalMaterialConvertSettings, true, false, true, true);
-                        additionalMaterialConvertSettingsReorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
-                        {
-                            EditorGUI.PropertyField(rect, additionalMaterialConvertSettings.GetArrayElementAtIndex(index));
-                            so.ApplyModifiedProperties();
-                        };
-                        additionalMaterialConvertSettingsReorderableList.elementHeightCallback = (index) =>
-                        {
-                            var element = additionalMaterialConvertSettings.GetArrayElementAtIndex(index);
-                            return EditorGUI.GetPropertyHeight(element);
-                        };
-                        additionalMaterialConvertSettingsReorderableList.onAddCallback = (list) =>
-                        {
-                            var index = list.serializedProperty.arraySize;
-                            list.serializedProperty.arraySize++;
-                            list.index = index;
-                            var element = list.serializedProperty.GetArrayElementAtIndex(index);
-                            var newValue = new AdditionalMaterialConvertSettings();
-                            newValue.LoadDefaultAssets();
-                            element.managedReferenceValue = newValue;
-                            so.ApplyModifiedProperties();
-                        };
-                        additionalMaterialConvertSettingsReorderableList.onRemoveCallback = (list) =>
-                        {
-                            if (list.index < 0 || list.index >= list.serializedProperty.arraySize)
-                            {
-                                return;
-                            }
-                            list.serializedProperty.DeleteArrayElementAtIndex(list.index);
-                            so.ApplyModifiedProperties();
-                        };
-                    }
                     additionalMaterialConvertSettingsReorderableList.DoLayoutList();
                 }
             }
@@ -105,6 +71,48 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
             return foldOutAdditionalMaterialSettings;
+        }
+
+        /// <summary>
+        /// Creates a reorderable list for additional material conversion settings.
+        /// </summary>
+        /// <param name="so">Target serialized object.</param>
+        /// <param name="additionalMaterialConvertSettings">Property representing additional material conversion settings.</param>
+        /// <returns>A reorderable list.</returns>
+        internal static ReorderableList CreateAdditionalMaterialConvertSettingsList(SerializedObject so, SerializedProperty additionalMaterialConvertSettings)
+        {
+            ReorderableList additionalMaterialConvertSettingsReorderableList = new ReorderableList(so, additionalMaterialConvertSettings, true, false, true, true);
+            additionalMaterialConvertSettingsReorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
+            {
+                EditorGUI.PropertyField(rect, additionalMaterialConvertSettings.GetArrayElementAtIndex(index));
+                so.ApplyModifiedProperties();
+            };
+            additionalMaterialConvertSettingsReorderableList.elementHeightCallback = (index) =>
+            {
+                var element = additionalMaterialConvertSettings.GetArrayElementAtIndex(index);
+                return EditorGUI.GetPropertyHeight(element);
+            };
+            additionalMaterialConvertSettingsReorderableList.onAddCallback = (list) =>
+            {
+                var index = list.serializedProperty.arraySize;
+                list.serializedProperty.arraySize++;
+                list.index = index;
+                var element = list.serializedProperty.GetArrayElementAtIndex(index);
+                var newValue = new AdditionalMaterialConvertSettings();
+                newValue.LoadDefaultAssets();
+                element.managedReferenceValue = newValue;
+                so.ApplyModifiedProperties();
+            };
+            additionalMaterialConvertSettingsReorderableList.onRemoveCallback = (list) =>
+            {
+                if (list.index < 0 || list.index >= list.serializedProperty.arraySize)
+                {
+                    return;
+                }
+                list.serializedProperty.DeleteArrayElementAtIndex(list.index);
+                so.ApplyModifiedProperties();
+            };
+            return additionalMaterialConvertSettingsReorderableList;
         }
     }
 }
