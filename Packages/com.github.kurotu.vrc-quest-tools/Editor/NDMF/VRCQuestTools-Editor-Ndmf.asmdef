@@ -14,7 +14,13 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [],
+    "precompiledReferences": [
+        "System.Collections.Immutable.dll",
+        "VRCCore-Editor.dll",
+        "VRCSDK3A.dll",
+        "VRCSDKBase.dll",
+        "VRCSDKBase-Editor.dll"
+    ],
     "autoReferenced": false,
     "defineConstraints": [
         "VQT_HAS_NDMF"
