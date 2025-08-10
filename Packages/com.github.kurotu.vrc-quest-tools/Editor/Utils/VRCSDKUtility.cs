@@ -131,17 +131,16 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>The avatar root GameObject if found; otherwise, null.</returns>
         internal static GameObject GetAvatarRoot(GameObject obj)
         {
-            if (obj == null)
+            while (obj != null)
             {
-                return null;
+                if (IsAvatarRoot(obj))
+                {
+                    return obj;
+                }
+                var parent = obj.transform.parent;
+                obj = parent != null ? parent.gameObject : null;
             }
-
-            if (IsAvatarRoot(obj))
-            {
-                return obj;
-            }
-
-            return GetAvatarRoot(obj.transform.parent != null ? obj.transform.parent.gameObject : null);
+            return null;
         }
 
         /// <summary>
