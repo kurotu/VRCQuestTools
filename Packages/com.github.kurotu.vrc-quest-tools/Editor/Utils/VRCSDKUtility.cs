@@ -125,6 +125,25 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Gets the avatar root GameObject from the specified GameObject.
+        /// </summary>
+        /// <param name="obj">The GameObject to check.</param>
+        /// <returns>The avatar root GameObject if found; otherwise, null.</returns>
+        internal static GameObject GetAvatarRoot(GameObject obj)
+        {
+            while (obj != null)
+            {
+                if (IsAvatarRoot(obj))
+                {
+                    return obj;
+                }
+                var parent = obj.transform.parent;
+                obj = parent != null ? parent.gameObject : null;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Whether the animation clips is a proxy animation.
         /// </summary>
         /// <param name="animationClip">Animation clip.</param>

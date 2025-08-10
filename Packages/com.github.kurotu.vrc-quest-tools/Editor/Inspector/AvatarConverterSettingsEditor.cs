@@ -169,6 +169,7 @@ namespace KRT.VRCQuestTools.Inspector
                 editorState.foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingsLabel, editorState.foldOutMaterialSettings);
                 if (editorState.foldOutMaterialSettings)
                 {
+                    additionalMaterialConvertSettingsReorderableList ??= MaterialConversionGUI.CreateAdditionalMaterialConvertSettingsList(so, so.FindProperty(nameof(AvatarConverterSettings.additionalMaterialConvertSettings)));
                     editorState.foldOutAdditionalMaterialSettings = MaterialConversionGUI.Draw(so, editorState.foldOutAdditionalMaterialSettings, additionalMaterialConvertSettingsReorderableList);
 
                     EditorGUILayout.Space();
