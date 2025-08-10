@@ -21,7 +21,7 @@ However, existing code may not fully comply with these rules, and developers sho
 
 This project uses NUnit for testing. Tests are located in the `Assets/VRCQuestTools-Tests` directory.
 To run the tests, open the Unity Test Runner window and execute all tests.
-So probably you can't execute tests by yourself.
+Note: Test execution may require a specific Unity environment setup.
 
 ### Documentation
 
