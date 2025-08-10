@@ -17,6 +17,12 @@ Other assets and packages are not part of the VRCQuestTools source code and shou
 This project has Roslyn Analyzers enabled to enforce code quality and consistency.
 However, existing code may not fully comply with these rules, and developers should be aware of this when making changes.
 
+#### Testing
+
+This project uses NUnit for testing. Tests are located in the `Assets/VRCQuestTools-Tests` directory.
+To run the tests, open the Unity Test Runner window and execute all tests.
+So probably you can't execute tests by yourself.
+
 ### Documentation
 
 The documentation for VRCQuestTools is located in the `Website` directory.
