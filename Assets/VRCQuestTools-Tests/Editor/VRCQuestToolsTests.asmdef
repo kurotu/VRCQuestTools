@@ -1,5 +1,6 @@
 {
     "name": "VRCQuestTools-EditorTests",
+    "rootNamespace": "KRT.VRCQuestTools",
     "references": [
         "VRCQuestTools",
         "VRCQuestTools-Editor",

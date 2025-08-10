@@ -1,5 +1,6 @@
 {
     "name": "VRCQuestTools-Editor-Ndmf",
+    "rootNamespace": "KRT.VRCQuestTools.Ndmf",
     "references": [
         "VRCQuestTools",
         "VRCQuestTools-Editor",
@@ -12,9 +13,15 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "System.Collections.Immutable.dll",
+        "VRCCore-Editor.dll",
+        "VRCSDK3A.dll",
+        "VRCSDKBase.dll",
+        "VRCSDKBase-Editor.dll"
+    ],
+    "autoReferenced": false,
     "defineConstraints": [
         "VQT_HAS_NDMF"
     ],
