@@ -51,5 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "VRCQuestTools.sln"
+    "dotnet.defaultSolution": "VRCQuestTools.sln",
+    "editor.formatOnSave": true
 }
