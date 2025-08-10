@@ -157,7 +157,7 @@ jobs:
         run: unity-editor -nographics -logFile /dev/stdout -customBuildName Card-Game-Simulator -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
 
       - name: Add dotnet problem matcher
-        run: echo "::add-matcher::.github/problem-matchers/dotnet.json"
+        run: echo "::add-matcher::.github/problem-matchers/csc.json"
 
       - name: Check style
         run: ./scripts/lint.sh | tee lint.log
