@@ -3,9 +3,11 @@ using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 
 namespace KRT.VRCQuestTools.Inspector
 {
@@ -49,6 +51,7 @@ namespace KRT.VRCQuestTools.Inspector
             var targetGameObject = targetComponent.gameObject;
             var unverifiedMaterials = VRChatAvatar.GetRelatedMaterials(targetGameObject)
                 .Where(m => VRCQuestTools.AvatarConverter.MaterialWrapperBuilder.DetectShaderCategory(m) == MaterialWrapperBuilder.ShaderCategory.Unverified)
+                .Where(m => !IsHandledMaterial(m, targetComponent))
                 .ToArray();
 
             if (unverifiedMaterials.Length > 0)
@@ -113,6 +116,105 @@ namespace KRT.VRCQuestTools.Inspector
                 so.ApplyModifiedProperties();
             };
             return additionalMaterialConvertSettingsReorderableList;
+        }
+
+        /// <summary>
+        /// Checks if a material is handled by any material conversion or replacement settings.
+        /// </summary>
+        /// <param name="material">The material to check.</param>
+        /// <param name="targetComponent">The target component containing the material settings.</param>
+        /// <returns>True if the material is handled by conversion or replacement settings.</returns>
+        private static bool IsHandledMaterial(Material material, Component targetComponent)
+        {
+            if (material == null)
+            {
+                return false;
+            }
+
+            // Get the avatar root object using VRCSDKUtility
+            var searchRoot = VRCSDKUtility.GetAvatarRoot(targetComponent.gameObject);
+
+            // If no avatar root found, find the topmost IMaterialConversionComponent in the hierarchy
+            if (searchRoot == null)
+            {
+                var current = targetComponent.transform;
+                GameObject topmostWithMaterialConversion = null;
+
+                while (current != null)
+                {
+                    if (current.GetComponent<IMaterialConversionComponent>() != null)
+                    {
+                        topmostWithMaterialConversion = current.gameObject;
+                    }
+                    current = current.parent;
+                }
+
+                searchRoot = topmostWithMaterialConversion;
+            }
+
+            if (searchRoot == null)
+            {
+                searchRoot = targetComponent.gameObject;
+            }
+
+            // Check if material is handled by additional material conversion settings
+            // Check all components that implement IMaterialConversionComponent in the avatar hierarchy
+            var allMaterialConversionComponents = searchRoot.GetComponentsInChildren<IMaterialConversionComponent>(true);
+            foreach (var component in allMaterialConversionComponents)
+            {
+                if (CheckMaterialInConversionSettings(material, component))
+                {
+                    return true;
+                }
+            }
+
+            // Check if material is handled by MaterialSwap components in the avatar hierarchy
+            var materialSwapComponents = searchRoot.GetComponentsInChildren<MaterialSwap>(true);
+            foreach (var materialSwap in materialSwapComponents)
+            {
+                if (materialSwap.materialMappings != null)
+                {
+                    foreach (var mapping in materialSwap.materialMappings)
+                    {
+                        if (mapping.originalMaterial == material && mapping.replacementMaterial != null)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if a material is handled by the conversion settings of a specific component.
+        /// </summary>
+        /// <param name="material">The material to check.</param>
+        /// <param name="materialConversionComponent">The component to check settings for.</param>
+        /// <returns>True if the material is handled by the component's settings.</returns>
+        private static bool CheckMaterialInConversionSettings(Material material, IMaterialConversionComponent materialConversionComponent)
+        {
+            var additionalSettings = materialConversionComponent.AdditionalMaterialConvertSettings;
+            if (additionalSettings != null)
+            {
+                foreach (var setting in additionalSettings)
+                {
+                    if (setting.targetMaterial == material)
+                    {
+                        // Check if it's a MaterialReplaceSettings with a valid replacement
+                        if (setting.materialConvertSettings is MaterialReplaceSettings replaceSettings)
+                        {
+                            return replaceSettings.material != null;
+                        }
+
+                        // For other conversion settings, consider them as handled
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
