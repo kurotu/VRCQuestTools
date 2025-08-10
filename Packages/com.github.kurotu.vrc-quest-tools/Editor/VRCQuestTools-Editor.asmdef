@@ -1,5 +1,6 @@
 {
     "name": "VRCQuestTools-Editor",
+    "rootNamespace": "KRT.VRCQuestTools",
     "references": [
         "VRCQuestTools",
         "VRC.SDK3A.Editor",
@@ -21,7 +22,7 @@
         "VRC.SDK3.Dynamics.PhysBone.dll",
         "Newtonsoft.Json.dll"
     ],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [
         {

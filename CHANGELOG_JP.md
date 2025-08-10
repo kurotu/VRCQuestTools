@@ -15,6 +15,7 @@
 - デフォルトのマテリアル変換設定の初期値を Toon Standard に変更。 (VRCSDK 3.8.1 以降)
 - lilToon の通常モードの MatCap を Toon Standard に変換するときの見た目を改善。
 - 処理対象の非対応マテリアルは `Avatar Converter Settings` と `Material Conversion Settings` で警告されないように変更。
+- asmdefの Auto Referenced をオフに変更。
 
 ### 修正
 - `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。

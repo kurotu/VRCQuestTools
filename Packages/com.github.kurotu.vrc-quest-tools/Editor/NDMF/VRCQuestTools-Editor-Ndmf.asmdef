@@ -1,5 +1,6 @@
 {
     "name": "VRCQuestTools-Editor-Ndmf",
+    "rootNamespace": "KRT.VRCQuestTools.Ndmf",
     "references": [
         "VRCQuestTools",
         "VRCQuestTools-Editor",
@@ -12,9 +13,9 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
+    "overrideReferences": true,
     "precompiledReferences": [],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [
         "VQT_HAS_NDMF"
     ],

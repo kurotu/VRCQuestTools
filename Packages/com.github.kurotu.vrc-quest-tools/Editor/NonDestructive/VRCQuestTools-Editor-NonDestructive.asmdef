@@ -1,18 +1,23 @@
 {
     "name": "VRCQuestTools-Editor-NonDestructive",
-    "rootNamespace": "",
+    "rootNamespace": "KRT.VRCQuestTools.NonDestructive",
     "references": [
         "VRCQuestTools",
-        "VRCQuestTools-Editor"
+        "VRCQuestTools-Editor",
+        "VRC.SDKBase.Editor",
+        "VRC.SDKBase.Editor.BuildPipeline"
     ],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "VRCSDKBase.dll",
+        "VRCSDKBase-Editor.dll"
+    ],
+    "autoReferenced": false,
     "defineConstraints": [
         "!VQT_HAS_NDMF"
     ],

@@ -1,6 +1,6 @@
 {
     "name": "VRCQuestTools",
-    "rootNamespace": "",
+    "rootNamespace": "KRT.VRCQuestTools",
     "references": [
         "VRCQuestTools-Analyzers"
     ],
@@ -14,7 +14,7 @@
         "VRC.SDK3.Dynamics.PhysBone.dll",
         "VRC.SDK3.Dynamics.Contact.dll"
     ],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [
         {
