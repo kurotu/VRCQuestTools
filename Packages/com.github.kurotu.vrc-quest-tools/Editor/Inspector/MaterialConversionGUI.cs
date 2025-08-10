@@ -49,9 +49,34 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
             var targetGameObject = targetComponent.gameObject;
+            // Get the avatar root object using VRCSDKUtility
+            var searchRoot = VRCSDKUtility.GetAvatarRoot(targetGameObject);
+
+            // If no avatar root found, find the topmost IMaterialConversionComponent in the hierarchy
+            if (searchRoot == null)
+            {
+                var current = targetComponent.transform;
+                GameObject topmostWithMaterialConversion = null;
+                while (current != null)
+                {
+                    if (current.GetComponent<IMaterialConversionComponent>() != null)
+                    {
+                        topmostWithMaterialConversion = current.gameObject;
+                    }
+                    current = current.parent;
+                }
+                searchRoot = topmostWithMaterialConversion;
+            }
+            if (searchRoot == null)
+            {
+                searchRoot = targetComponent.gameObject;
+            }
+
+            var materialConversionComponents = searchRoot.GetComponentsInChildren<IMaterialConversionComponent>(true);
+            var materialSwapComponents = searchRoot.GetComponentsInChildren<MaterialSwap>(true);
             var unverifiedMaterials = VRChatAvatar.GetRelatedMaterials(targetGameObject)
-                .Where(m => VRCQuestTools.AvatarConverter.MaterialWrapperBuilder.DetectShaderCategory(m) == MaterialWrapperBuilder.ShaderCategory.Unverified)
-                .Where(m => !IsHandledMaterial(m, targetComponent))
+                .Where(m => VRCQuestTools.AvatarConverter.MaterialWrapperBuilder.DetectShaderCategory(m) == MaterialWrapperBuilder.ShaderCategory.Unverified
+                       && !IsHandledMaterial(m, materialConversionComponents, materialSwapComponents))
                 .ToArray();
 
             if (unverifiedMaterials.Length > 0)
@@ -122,45 +147,19 @@ namespace KRT.VRCQuestTools.Inspector
         /// Checks if a material is handled by any material conversion or replacement settings.
         /// </summary>
         /// <param name="material">The material to check.</param>
-        /// <param name="targetComponent">The target component containing the material settings.</param>
+        /// <param name="materialConversionComponents">All components implementing IMaterialConversionComponent in the avatar hierarchy.</param>
+        /// <param name="materialSwapComponents">All MaterialSwap components in the avatar hierarchy.</param>
         /// <returns>True if the material is handled by conversion or replacement settings.</returns>
-        private static bool IsHandledMaterial(Material material, Component targetComponent)
+        private static bool IsHandledMaterial(Material material, IMaterialConversionComponent[] materialConversionComponents, MaterialSwap[] materialSwapComponents)
         {
             if (material == null)
             {
                 return false;
             }
 
-            // Get the avatar root object using VRCSDKUtility
-            var searchRoot = VRCSDKUtility.GetAvatarRoot(targetComponent.gameObject);
-
-            // If no avatar root found, find the topmost IMaterialConversionComponent in the hierarchy
-            if (searchRoot == null)
-            {
-                var current = targetComponent.transform;
-                GameObject topmostWithMaterialConversion = null;
-
-                while (current != null)
-                {
-                    if (current.GetComponent<IMaterialConversionComponent>() != null)
-                    {
-                        topmostWithMaterialConversion = current.gameObject;
-                    }
-                    current = current.parent;
-                }
-
-                searchRoot = topmostWithMaterialConversion;
-            }
-
-            if (searchRoot == null)
-            {
-                searchRoot = targetComponent.gameObject;
-            }
-
             // Check if material is handled by additional material conversion settings
             // Check all components that implement IMaterialConversionComponent in the avatar hierarchy
-            var allMaterialConversionComponents = searchRoot.GetComponentsInChildren<IMaterialConversionComponent>(true);
-            foreach (var component in allMaterialConversionComponents)
+            foreach (var component in materialConversionComponents)
             {
                 if (CheckMaterialInConversionSettings(material, component))
                 {
@@ -169,7 +168,6 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
             // Check if material is handled by MaterialSwap components in the avatar hierarchy
-            var materialSwapComponents = searchRoot.GetComponentsInChildren<MaterialSwap>(true);
             foreach (var materialSwap in materialSwapComponents)
             {
                 if (materialSwap.materialMappings != null)
