@@ -16,11 +16,11 @@ namespace KRT.VRCQuestTools.Inspector
     /// Tests for MaterialConversionGUI.IsHandledMaterial method.
     /// This method is used to determine if a material is already handled by conversion or replacement settings,
     /// preventing unnecessary warnings for materials with custom rules (issue#80).
-    /// 
+    ///
     /// The method should return true when:
-    /// 1. Material has AdditionalMaterialConvertSettings (except MaterialReplaceSettings with null replacement)
-    /// 2. Material has valid MaterialReplaceSettings with non-null replacement material
-    /// 3. Material is mapped in MaterialSwap component with non-null replacement material
+    /// 1. Material has AdditionalMaterialConvertSettings (except MaterialReplaceSettings with null replacement).
+    /// 2. Material has valid MaterialReplaceSettings with non-null replacement material.
+    /// 3. Material is mapped in MaterialSwap component with non-null replacement material.
     /// </summary>
     public class MaterialConversionGUITests
     {
@@ -45,15 +45,15 @@ namespace KRT.VRCQuestTools.Inspector
             // Create test materials
             testMaterial1 = new Material(Shader.Find("Standard"))
             {
-                name = "TestMaterial1"
+                name = "TestMaterial1",
             };
             testMaterial2 = new Material(Shader.Find("Standard"))
             {
-                name = "TestMaterial2"
+                name = "TestMaterial2",
             };
             replacementMaterial = new Material(Shader.Find("VRChat/Mobile/Toon Lit"))
             {
-                name = "ReplacementMaterial"
+                name = "ReplacementMaterial",
             };
         }
 
@@ -67,14 +67,17 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 Object.DestroyImmediate(testAvatarObject);
             }
+
             if (testMaterial1 != null)
             {
                 Object.DestroyImmediate(testMaterial1);
             }
+
             if (testMaterial2 != null)
             {
                 Object.DestroyImmediate(testMaterial2);
             }
+
             if (replacementMaterial != null)
             {
                 Object.DestroyImmediate(replacementMaterial);
@@ -89,9 +92,11 @@ namespace KRT.VRCQuestTools.Inspector
         {
             // Arrange
             avatarConverterSettings = testAvatarObject.AddComponent<AvatarConverterSettings>();
+            var materialConversionComponents = new IMaterialConversionComponent[] { avatarConverterSettings };
+            var materialSwapComponents = new MaterialSwap[0];
 
             // Act
-            bool result = InvokeIsHandledMaterial(null, avatarConverterSettings);
+            bool result = InvokeIsHandledMaterial(null, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsFalse(result);
@@ -105,9 +110,11 @@ namespace KRT.VRCQuestTools.Inspector
         {
             // Arrange
             avatarConverterSettings = testAvatarObject.AddComponent<AvatarConverterSettings>();
+            var materialConversionComponents = new IMaterialConversionComponent[] { avatarConverterSettings };
+            var materialSwapComponents = new MaterialSwap[0];
 
             // Act
-            bool result = InvokeIsHandledMaterial(testMaterial1, avatarConverterSettings);
+            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsFalse(result);
@@ -127,12 +134,14 @@ namespace KRT.VRCQuestTools.Inspector
                 new AdditionalMaterialConvertSettings
                 {
                     targetMaterial = testMaterial1,
-                    materialConvertSettings = new ToonLitConvertSettings()
-                }
+                    materialConvertSettings = new ToonLitConvertSettings(),
+                },
             };
+            var materialConversionComponents = new IMaterialConversionComponent[] { avatarConverterSettings };
+            var materialSwapComponents = new MaterialSwap[0];
 
             // Act
-            bool result = InvokeIsHandledMaterial(testMaterial1, avatarConverterSettings);
+            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsTrue(result);
@@ -154,13 +163,15 @@ namespace KRT.VRCQuestTools.Inspector
                     targetMaterial = testMaterial1,
                     materialConvertSettings = new MaterialReplaceSettings
                     {
-                        material = null
-                    }
-                }
+                        material = null,
+                    },
+                },
             };
+            var materialConversionComponents = new IMaterialConversionComponent[] { avatarConverterSettings };
+            var materialSwapComponents = new MaterialSwap[0];
 
             // Act
-            bool result = InvokeIsHandledMaterial(testMaterial1, avatarConverterSettings);
+            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsFalse(result);
@@ -181,13 +192,15 @@ namespace KRT.VRCQuestTools.Inspector
                     targetMaterial = testMaterial1,
                     materialConvertSettings = new MaterialReplaceSettings
                     {
-                        material = replacementMaterial
-                    }
-                }
+                        material = replacementMaterial,
+                    },
+                },
             };
+            var materialConversionComponents = new IMaterialConversionComponent[] { avatarConverterSettings };
+            var materialSwapComponents = new MaterialSwap[0];
 
             // Act
-            bool result = InvokeIsHandledMaterial(testMaterial1, avatarConverterSettings);
+            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsTrue(result);
@@ -208,12 +221,14 @@ namespace KRT.VRCQuestTools.Inspector
                 new MaterialSwap.MaterialMapping
                 {
                     originalMaterial = testMaterial1,
-                    replacementMaterial = replacementMaterial
-                }
+                    replacementMaterial = replacementMaterial,
+                },
             };
+            var materialConversionComponents = new IMaterialConversionComponent[] { avatarConverterSettings };
+            var materialSwapComponents = new MaterialSwap[] { materialSwap };
 
             // Act
-            bool result = InvokeIsHandledMaterial(testMaterial1, avatarConverterSettings);
+            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsTrue(result);
@@ -233,12 +248,14 @@ namespace KRT.VRCQuestTools.Inspector
                 new MaterialSwap.MaterialMapping
                 {
                     originalMaterial = testMaterial1,
-                    replacementMaterial = null
-                }
+                    replacementMaterial = null,
+                },
             };
+            var materialConversionComponents = new IMaterialConversionComponent[] { avatarConverterSettings };
+            var materialSwapComponents = new MaterialSwap[] { materialSwap };
 
             // Act
-            bool result = InvokeIsHandledMaterial(testMaterial1, avatarConverterSettings);
+            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsFalse(result);
@@ -257,12 +274,14 @@ namespace KRT.VRCQuestTools.Inspector
                 new AdditionalMaterialConvertSettings
                 {
                     targetMaterial = testMaterial1,
-                    materialConvertSettings = new ToonLitConvertSettings()
-                }
+                    materialConvertSettings = new ToonLitConvertSettings(),
+                },
             };
+            var materialConversionComponents = new IMaterialConversionComponent[] { materialConversionSettings };
+            var materialSwapComponents = new MaterialSwap[0];
 
             // Act
-            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionSettings);
+            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsTrue(result);
@@ -287,12 +306,15 @@ namespace KRT.VRCQuestTools.Inspector
                 new MaterialSwap.MaterialMapping
                 {
                     originalMaterial = testMaterial1,
-                    replacementMaterial = replacementMaterial
-                }
+                    replacementMaterial = replacementMaterial,
+                },
             };
 
+            var materialConversionComponents = new IMaterialConversionComponent[] { avatarConverterSettings };
+            var materialSwapComponents = new MaterialSwap[] { materialSwap };
+
             // Act
-            bool result = InvokeIsHandledMaterial(testMaterial1, avatarConverterSettings);
+            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsTrue(result);
@@ -321,8 +343,11 @@ namespace KRT.VRCQuestTools.Inspector
                 },
             };
 
+            var materialConversionComponents = new IMaterialConversionComponent[] { avatarConverterSettings, childMaterialConversionSettings };
+            var materialSwapComponents = new MaterialSwap[0];
+
             // Act
-            bool result = InvokeIsHandledMaterial(testMaterial1, avatarConverterSettings);
+            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsTrue(result);
@@ -353,8 +378,11 @@ namespace KRT.VRCQuestTools.Inspector
             childObject.transform.SetParent(parentObject.transform);
             var childMaterialConversionSettings = childObject.AddComponent<MaterialConversionSettings>();
 
+            var materialConversionComponents = new IMaterialConversionComponent[] { parentMaterialConversionSettings, childMaterialConversionSettings };
+            var materialSwapComponents = new MaterialSwap[0];
+
             // Act
-            bool result = InvokeIsHandledMaterial(testMaterial1, childMaterialConversionSettings);
+            bool result = InvokeIsHandledMaterial(testMaterial1, materialConversionComponents, materialSwapComponents);
 
             // Assert
             Assert.IsTrue(result);
@@ -364,15 +392,16 @@ namespace KRT.VRCQuestTools.Inspector
         /// Invokes the private IsHandledMaterial method using reflection.
         /// </summary>
         /// <param name="material">The material to check.</param>
-        /// <param name="targetComponent">The target component.</param>
+        /// <param name="materialConversionComponents">Array of material conversion components.</param>
+        /// <param name="materialSwapComponents">Array of material swap components.</param>
         /// <returns>The result of IsHandledMaterial.</returns>
-        private static bool InvokeIsHandledMaterial(Material material, Component targetComponent)
+        private static bool InvokeIsHandledMaterial(Material material, IMaterialConversionComponent[] materialConversionComponents, MaterialSwap[] materialSwapComponents)
         {
             var type = typeof(MaterialConversionGUI);
             var method = type.GetMethod("IsHandledMaterial", BindingFlags.NonPublic | BindingFlags.Static);
             Assert.IsNotNull(method, "IsHandledMaterial method should exist");
 
-            return (bool)method.Invoke(null, new object[] { material, targetComponent });
+            return (bool)method.Invoke(null, new object[] { material, materialConversionComponents, materialSwapComponents });
         }
     }
 }
