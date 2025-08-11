@@ -61,11 +61,12 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 10
+      # TODO: use pnpm
       - uses: actions/setup-node@v4
         with:
-          cache: 'pnpm'
-          cache-dependency-path: Website/pnpm-lock.yaml
-      - run: cd Website && pnpm install --frozen-lockfile
+          cache: 'npm'
+          cache-dependency-path: Website/package-lock.json
+      - run: cd Website && npm ci
 
       - name: Generate changelog
         run: |
