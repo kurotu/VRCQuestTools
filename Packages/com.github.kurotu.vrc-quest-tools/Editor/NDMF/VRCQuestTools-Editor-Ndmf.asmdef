@@ -32,16 +32,6 @@
             "define": "VQT_HAS_NDMF"
         },
         {
-            "name": "nadena.dev.ndmf",
-            "expression": "1.3.0",
-            "define": "VQT_HAS_NDMF_ERROR_REPORT"
-        },
-        {
-            "name": "nadena.dev.ndmf",
-            "expression": "1.5.0",
-            "define": "VQT_HAS_NDMF_PREVIEW"
-        },
-        {
             "name": "jp.lilxyzw.ndmfmeshsimplifier",
             "expression": "0.2.0",
             "define": "VQT_LIL_NDMF_MESH_SIMPLIFIER"
