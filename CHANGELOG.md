@@ -17,12 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved the appearance when converting lilToon normal mode MatCap to Toon Standard.
 - Unsupported materials to be processed are no longer warned in `Avatar Converter Settings` and `Material Conversion Settings`.
 - Turned off Auto Referenced in asmdef.
+- [NDMF] Show an error dialog then abort the build when using unsupported version of NDMF.
 
 ### Fixed
 - `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
 
 ### Removed
 - Removed support for Unity 2019.
+- Removed support for NDMF earlier than 1.5.0.
 
 ## [2.11.1] - 2025-07-26
 

@@ -1,5 +1,3 @@
-#if VQT_HAS_NDMF_PREVIEW
-
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -132,5 +130,3 @@ namespace KRT.VRCQuestTools.Ndmf
         }
     }
 }
-
-#endif

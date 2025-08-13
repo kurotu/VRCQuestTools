@@ -16,12 +16,14 @@
 - lilToon の通常モードの MatCap を Toon Standard に変換するときの見た目を改善。
 - 処理対象の非対応マテリアルは `Avatar Converter Settings` と `Material Conversion Settings` で警告されないように変更。
 - asmdefの Auto Referenced をオフに変更。
+- [NDMF] 非対応のバージョンを使用しているときビルド時にエラーダイアログを表示してビルドを中止するように変更。
 
 ### 修正
 - `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。
 
 ### 削除
 - Unity 2019 のサポートを終了。
+- NDMF 1.5.0 未満のサポートを終了。
 
 ## [2.11.1] - 2025-07-26
 
