@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-07-25 14:54\n"
+"PO-Revision-Date: 2025-08-13 14:05\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -680,14 +680,23 @@ msgstr "Android 用のビルド設定で Tools -> NDM Framework -> Manual bake a
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK コントロールパネルで設定してください。"
 
+msgid "LilToonLegacyExceptionMessage"
+msgstr ""
+
+msgid "LilToonBreakingExceptionMessage"
+msgstr ""
+
+msgid "LilToonWrongInstallationExceptionMessage"
+msgstr ""
+
 msgid "FeatureRequiresNdmf"
 msgstr "Non-Destructive Modular Framework (NDMF) が必要です。"
 
-msgid "NdmfPluginRequiresNdmfUpdate"
-msgstr "Non-Destructive Modular Framework (NDMF) {0} 以降が必要です。NDMF を更新してください。"
+msgid "UnsupportedNdmfCallbackMessageLegacy"
+msgstr ""
 
-msgid "NdmfPluginRemovedUnsupportedComponent"
-msgstr "ビルド中に非対応コンポーネント {0} を \"{1}\" から削除しました。動作に問題がないか確認してください。"
+msgid "UnsupportedNdmfCallbackMessageBreaking"
+msgstr ""
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
 msgstr "非対応コンポーネントの削除"
