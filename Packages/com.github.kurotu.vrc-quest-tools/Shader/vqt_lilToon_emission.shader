@@ -5,12 +5,6 @@ Shader "Hidden/VRCQuestTools/lilToon/Emission"
         _VQT_AlbedoTex("Albedo Texture", 2D) = "black" {}
         _VQT_AlbedoBrightness("Albedo Brightness", Range(0, 1)) = 1
 
-        _LIL_FEATURE_EMISSION_1ST("LIL_FEATURE_EMISSION_1ST", Int) = 1
-        _LIL_FEATURE_EMISSION_2ND("LIL_FEATURE_EMISSION_2ND", Int) = 1
-        _LIL_FEATURE_ANIMATE_EMISSION_UV("LIL_FEATURE_ANIMATE_EMISSION_UV", Int) = 1
-        _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV("LIL_FEATURE_ANIMATE_EMISSION_MASK_UV", Int) = 1
-        _LIL_FEATURE_EMISSION_GRADATION("LIL_FEATURE_EMISSION_GRADATION", Int) = 1
-
         _UseEmission("Use Emission", Int) = 0
         [HDR]_EmissionColor("Color", Color) = (1,1,1,1)
         _EmissionMap("Texture", 2D) = "white" {}
@@ -63,12 +57,6 @@ Shader "Hidden/VRCQuestTools/lilToon/Emission"
             sampler2D _VQT_AlbedoTex;
             float4 _VQT_AlbedoTex_ST;
             float _VQT_AlbedoBrightness;
-
-            uint _LIL_FEATURE_EMISSION_1ST;
-            uint _LIL_FEATURE_EMISSION_2ND;
-            uint _LIL_FEATURE_ANIMATE_EMISSION_UV;
-            uint _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV;
-            uint _LIL_FEATURE_EMISSION_GRADATION;
 
             uint _UseEmission;
             fixed4 _EmissionColor;
@@ -167,14 +155,14 @@ Shader "Hidden/VRCQuestTools/lilToon/Emission"
                 fixed4 col = albedo;
                 col.rgb *= _VQT_AlbedoBrightness;
 
-                if (_LIL_FEATURE_EMISSION_1ST && _UseEmission) {
+                if (_UseEmission) {
                     float angle;
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_UV ? _EmissionMap_ScrollRotate.b : 0.0f;
+                    angle = _EmissionMap_ScrollRotate.b;
                     float4 emi = sampleTex2D(_EmissionMap, i.uv_EmissionMap, angle);
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? _EmissionBlendMask_ScrollRotate.b : 0.0f;
+                    angle = _EmissionBlendMask_ScrollRotate.b;
                     float4 emiMask = sampleTex2D(_EmissionBlendMask, i.uv_EmissionBlendMask, angle);
                     emi = emissionRGB(_EmissionColor, emi, _EmissionBlend, emiMask, albedo, _EmissionMainStrength);
-                    if (_LIL_FEATURE_EMISSION_GRADATION && _EmissionUseGrad) {
+                    if (_EmissionUseGrad) {
                         // Use first color
                         fixed4 c = _EmissionGradTex.Sample(sampler_EmissionGradTex, 0);
                         emi.rgb *= c.rgb;
@@ -183,14 +171,14 @@ Shader "Hidden/VRCQuestTools/lilToon/Emission"
                     col = compose(col, emi, _EmissionBlendMode);
                 }
 
-                if (_LIL_FEATURE_EMISSION_2ND && _UseEmission2nd) {
+                if (_UseEmission2nd) {
                     float angle;
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_UV ? _Emission2ndMap_ScrollRotate.b : 0.0f;
+                    angle = _Emission2ndMap_ScrollRotate.b;
                     float4 emi = sampleTex2D(_Emission2ndMap, i.uv_Emission2ndMap, angle);
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? _Emission2ndBlendMask_ScrollRotate.b : 0.0f;
+                    angle = _Emission2ndBlendMask_ScrollRotate.b;
                     float4 emiMask = sampleTex2D(_Emission2ndBlendMask, i.uv_Emission2ndBlendMask, angle);
                     emi.rgb = emissionRGB(_Emission2ndColor, emi, _Emission2ndBlend, emiMask, albedo, _Emission2ndMainStrength);
-                    if (_LIL_FEATURE_EMISSION_GRADATION && _Emission2ndUseGrad) {
+                    if (_Emission2ndUseGrad) {
                         // Use first color
                         fixed4 c = _Emission2ndGradTex.Sample(sampler_Emission2ndGradTex, 0);
                         emi.rgb *= c.rgb;

@@ -327,6 +327,11 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarBuilderWindowNdmfManualBakingDescription => GetText("AvatarBuilderWindowNdmfManualBakingDescription");
         internal string AvatarBuilderWindowRequiresAvatarNameAndThumb => GetText("AvatarBuilderWindowRequiresAvatarNameAndThumb");
 
+        // lilToon Compatibility Exceptions
+        internal string LilToonLegacyExceptionMessage(string requiredVersion) => GetText("LilToonLegacyExceptionMessage", requiredVersion);
+        internal string LilToonBreakingExceptionMessage(string breakingVersion) => GetText("LilToonBreakingExceptionMessage", breakingVersion);
+        internal string LilToonWrongInstallationExceptionMessage => GetText("LilToonWrongInstallationExceptionMessage");
+
         // NDMF
         internal string FeatureRequiresNdmf => GetText("FeatureRequiresNdmf");
         internal string UnsupportedNdmfCallbackMessageLegacy(string requiredVersion) => GetText("UnsupportedNdmfCallbackMessageLegacy", requiredVersion);
