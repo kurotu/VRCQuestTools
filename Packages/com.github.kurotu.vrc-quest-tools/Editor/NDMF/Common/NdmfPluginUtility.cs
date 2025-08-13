@@ -1,5 +1,6 @@
 ﻿using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Models.Unity;
 using nadena.dev.ndmf;
 using UnityEngine;
 
@@ -43,7 +44,14 @@ namespace KRT.VRCQuestTools.Ndmf
                     case MaterialConversionException e:
                         {
                             var matRef = NdmfObjectRegistry.GetReference(e.SourceObject);
-                            ndmfError = new MaterialConversionError(matRef, e);
+                            if (e.InnerException is LilToonCompatibilityException lilException)
+                            {
+                                ndmfError = new LilToonCompatibilityError(lilException);
+                            }
+                            else
+                            {
+                                ndmfError = new MaterialConversionError(matRef, e);
+                            }
                         }
                         break;
                     case AnimationClipConversionException e:
