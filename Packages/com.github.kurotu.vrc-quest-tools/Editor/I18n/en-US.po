@@ -684,7 +684,7 @@ msgid "LilToonLegacyExceptionMessage"
 msgstr "This version of lilToon is not supported. Update lilToon to {0} or later."
 
 msgid "LilToonBreakingExceptionMessage"
-msgstr "This version of lilToon is not supported. Update VRCQuestTools or downgrade lilToon to earlier than {0}"
+msgstr "This version of lilToon is not supported. Update VRCQuestTools or downgrade lilToon to earlier than {0}."
 
 msgid "LilToonWrongInstallationExceptionMessage"
 msgstr "lilToon installation is wrong. Reinstall lilToon with VCC or ALCOM."
@@ -713,6 +713,12 @@ msgstr "An error occurred when conversion a material.\n\n"
 "Shader: {1}\n\n"
 "{2}: {3}\n"
 "{4}"
+
+msgid "NDMF:LilToonCompatibilityErrorTitle"
+msgstr "Unsupported Version of lilToon"
+
+msgid "NDMF:LilToonCompatibilityErrorDescription"
+msgstr "{0}"
 
 msgid "NDMF:MaterialSwapNullErrorTitle"
 msgstr "Material Not Set"
