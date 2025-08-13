@@ -683,11 +683,11 @@ msgstr "Need to set name and thumbnail in VRChat SDK Control Panel when uploadin
 msgid "FeatureRequiresNdmf"
 msgstr "Non-Destructive Modular Framework is required."
 
-msgid "NdmfPluginRequiresNdmfUpdate"
-msgstr "Non-Destructive Modular Framework (NDMF) {0} or later is required. Please update NDMF."
+msgid "UnsupportedNdmfCallbackMessageLegacy"
+msgstr "This version of NDMF is no longer supported. Update NDMF to {0} or later."
 
-msgid "NdmfPluginRemovedUnsupportedComponent"
-msgstr "Removed unsupported component \"{0}\" from \"{1}\". Please test the avatar."
+msgid "UnsupportedNdmfCallbackMessageBreaking"
+msgstr "This version of NDMF is not supported yet. Update VRCQuestTools or downgrade NDMF to earlier than {0}."
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
 msgstr "Removed Unsupported Component"

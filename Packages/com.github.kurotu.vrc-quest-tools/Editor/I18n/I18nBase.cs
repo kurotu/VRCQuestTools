@@ -329,7 +329,7 @@ namespace KRT.VRCQuestTools.I18n
 
         // NDMF
         internal string FeatureRequiresNdmf => GetText("FeatureRequiresNdmf");
-        internal string NdmfPluginRequiresNdmfUpdate(string requiredVersion) => GetText("NdmfPluginRequiresNdmfUpdate", requiredVersion);
-        internal string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => GetText("NdmfPluginRemovedUnsupportedComponent", typeName, objectName);
+        internal string UnsupportedNdmfCallbackMessageLegacy(string requiredVersion) => GetText("UnsupportedNdmfCallbackMessageLegacy", requiredVersion);
+        internal string UnsupportedNdmfCallbackMessageBreaking(string breakingVersion) => GetText("UnsupportedNdmfCallbackMessageBreaking", breakingVersion);
     }
 }

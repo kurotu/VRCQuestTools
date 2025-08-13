@@ -1,0 +1,34 @@
+{
+    "name": "VRCQuestTools-Editor-Ndmf-Unsupported",
+    "rootNamespace": "KRT.VRCQuestTools.NonDestructive",
+    "references": [
+        "VRCQuestTools-Editor",
+        "VRC.SDKBase.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "VRCSDKBase-Editor.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "VQT_NDMF_LEGACY || VQT_NDMF_BREAKING"
+    ],
+    "versionDefines": [
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "[0.0.0,1.5.0)",
+            "define": "VQT_NDMF_LEGACY"
+        },
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "2.0.0",
+            "define": "VQT_NDMF_BREAKING"
+        }
+    ],
+    "noEngineReferences": false
+}
