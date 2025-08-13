@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-08-13 14:05\n"
+"PO-Revision-Date: 2025-08-13 15:14\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -710,6 +710,12 @@ msgstr "Произошла ошибка при конвертации матер
 "Шейдер: {1}\n\n"
 "{2}: {3}\n"
 "{4}"
+
+msgid "NDMF:LilToonCompatibilityErrorTitle"
+msgstr ""
+
+msgid "NDMF:LilToonCompatibilityErrorDescription"
+msgstr ""
 
 msgid "NDMF:MaterialSwapNullErrorTitle"
 msgstr ""
