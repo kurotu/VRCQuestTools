@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-07-23 16:12\n"
+"PO-Revision-Date: 2025-08-13 14:05\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -677,14 +677,23 @@ msgstr "Выполните меню, Инструменты -> NDM Framework -> 
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "Необходимо установить имя и миниатюру в панели управления VRChat SDK при загрузке нового аватара."
 
+msgid "LilToonLegacyExceptionMessage"
+msgstr ""
+
+msgid "LilToonBreakingExceptionMessage"
+msgstr ""
+
+msgid "LilToonWrongInstallationExceptionMessage"
+msgstr ""
+
 msgid "FeatureRequiresNdmf"
 msgstr "Требуется Неразрушаемая Модульная Структура (NDMF)."
 
-msgid "NdmfPluginRequiresNdmfUpdate"
-msgstr "Требуется Неразрушаемая Модульная Структура (NDMF) {0} или более поздняя версия. Пожалуйста, обновите NDMF."
+msgid "UnsupportedNdmfCallbackMessageLegacy"
+msgstr ""
 
-msgid "NdmfPluginRemovedUnsupportedComponent"
-msgstr "Удален неподдерживаемый компонент \"{0}\" из \"{1}\". Пожалуйста, протестируйте аватар."
+msgid "UnsupportedNdmfCallbackMessageBreaking"
+msgstr ""
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
 msgstr "Удалён неподдерживаемый компонент"
