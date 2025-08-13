@@ -548,10 +548,19 @@ namespace KRT.VRCQuestTools.Inspector
             switch (exception)
             {
                 case MaterialConversionException e:
-                    message = $"{i18n.MaterialExceptionDialogMessage}\n" +
-                        "\n" +
-                        $"Material: {AssetDatabase.GetAssetPath(e.SourceObject)}\n" +
-                        $"Shader: {e.SourceObject.shader.name}";
+                    if (e.InnerException is LilToonCompatibilityException lilException)
+                    {
+                        message = $"{lilException.LocalizedMessage}\n" +
+                            "\n" +
+                            $"Current: {AssetUtility.LilToonVersion}";
+                    }
+                    else
+                    {
+                        message = $"{i18n.MaterialExceptionDialogMessage}\n" +
+                            "\n" +
+                            $"Material: {AssetDatabase.GetAssetPath(e.SourceObject)}\n" +
+                            $"Shader: {e.SourceObject.shader.name}";
+                    }
                     dialogException = e.InnerException;
                     context = e.SourceObject;
                     break;

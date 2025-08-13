@@ -31,6 +31,21 @@
             "define": "VQT_HAS_NEWTONSOFT_JSON"
         },
         {
+            "name": "jp.lilxyzw.liltoon",
+            "expression": "",
+            "define": "VQT_LILTOON"
+        },
+        {
+            "name": "jp.lilxyzw.liltoon",
+            "expression": "[0.0.0,1.10.0)",
+            "define": "VQT_LILTOON_LEGACY"
+        },
+        {
+            "name": "jp.lilxyzw.liltoon",
+            "expression": "3.0.0",
+            "define": "VQT_LILTOON_BREAKING"
+        },
+        {
             "name": "nadena.dev.ndmf",
             "expression": "",
             "define": "VQT_HAS_NDMF"

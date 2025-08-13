@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -23,6 +22,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal LilToonMaterial(Material material)
             : base(material)
         {
+#if VQT_LILTOON_LEGACY
+            throw new LilToonLegacyException();
+#endif
+#if VQT_LILTOON_BREAKING
+            throw new LilToonBreakingException();
+#endif
+#if !VQT_LILTOON
+            throw new LilToonWrongInstallationException();
+#endif
         }
 
         /// <summary>
@@ -355,14 +363,6 @@ namespace KRT.VRCQuestTools.Models.Unity
             return MainBake(Material, 0);
         }
 
-        private static LilToonSetting LoadShaderSetting()
-        {
-            var path = LilToonInspector.GetShaderSettingPath();
-            var lilToonSettingType = SystemUtility.GetTypeByName("lilToonSetting");
-            var lilToonSetting = AssetDatabase.LoadAssetAtPath(path, lilToonSettingType);
-            return new LilToonSetting(lilToonSetting);
-        }
-
         private static void CopyMaterialProperty(Material target, Material source, MaterialProperty property)
         {
             if (property.name == null)
@@ -418,7 +418,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <param name="bakeType">Bake type: 0: All.</param>
         private RenderTexture MainBake(Material material, int bakeType)
         {
-            var shaderSetting = LoadShaderSetting();
             var ltsbaker = Shader.Find("Hidden/ltsother_baker");
             var defaultHSVG = new Vector4(0.0f, 1.0f, 1.0f, 1.0f);
             var mats = new[] { material };
@@ -511,11 +510,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                 CopyMaterialProperty(hsvgMaterial, material, mainColorAdjustMask);
                 hsvgMaterial.SetFloat(mainGradationStrength.name, 0.0f);
 
-                if (CheckFeature(shaderSetting.LIL_FEATURE_MAIN_GRADATION_MAP))
-                {
-                    CopyMaterialProperty(hsvgMaterial, material, mainGradationStrength);
-                    CopyMaterialProperty(hsvgMaterial, material, mainGradationTex);
-                }
+                CopyMaterialProperty(hsvgMaterial, material, mainGradationStrength);
+                CopyMaterialProperty(hsvgMaterial, material, mainGradationTex);
 
                 srcTexture = TextureUtility.LoadUncompressedTexture(material.GetTexture(mainTex.name));
                 if (srcTexture != null)
@@ -644,16 +640,6 @@ namespace KRT.VRCQuestTools.Models.Unity
                 height = System.Math.Min(maxTextureSize, height);
             }
 
-            var shaderSetting = LoadShaderSetting();
-
-            if (!shaderSetting.LIL_FEATURE_EMISSION_1ST && !shaderSetting.LIL_FEATURE_EMISSION_2ND)
-            {
-                return TextureUtility.RequestReadbackRenderTexture(main, true, (baked) =>
-                {
-                    baked.filterMode = FilterMode.Bilinear;
-                });
-            }
-
             var mats = new[] { material };
             var emissionMap = MaterialEditor.GetMaterialProperty(mats, "_EmissionMap");
             var emissionBlendMask = MaterialEditor.GetMaterialProperty(mats, "_EmissionBlendMask");
@@ -681,12 +667,6 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.mainTextureOffset = new Vector2(0.0f, 0.0f);
                 baker.Object.mainTextureScale = new Vector2(1.0f, 1.0f);
                 baker.Object.color = Color.white;
-                baker.Object.SetFloat("_LIL_FEATURE_NORMAL_1ST", shaderSetting.LIL_FEATURE_NORMAL_1ST ? 1.0f : 0.0f);
-                baker.Object.SetFloat("_LIL_FEATURE_EMISSION_1ST", shaderSetting.LIL_FEATURE_EMISSION_1ST ? 1.0f : 0.0f);
-                baker.Object.SetFloat("_LIL_FEATURE_EMISSION_2ND", shaderSetting.LIL_FEATURE_EMISSION_2ND ? 1.0f : 0.0f);
-                baker.Object.SetFloat("_LIL_FEATURE_ANIMATE_EMISSION_UV", shaderSetting.LIL_FEATURE_ANIMATE_EMISSION_UV ? 1.0f : 0.0f);
-                baker.Object.SetFloat("_LIL_FEATURE_ANIMATE_EMISSION_MASK_UV", shaderSetting.LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? 1.0f : 0.0f);
-                baker.Object.SetFloat("_LIL_FEATURE_EMISSION_GRADATION", shaderSetting.LIL_FEATURE_EMISSION_GRADATION ? 1.0f : 0.0f);
 
                 baker.Object.SetTexture(emissionMap.name, srcEmissionMap.Object);
                 baker.Object.SetTexture(emissionBlendMask.name, srcEmissionBlendMask.Object);
@@ -696,67 +676,6 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
 
                 return TextureUtility.BakeTexture(main, true, width, height, true, baker.Object, completion);
-            }
-        }
-
-        private bool CheckFeature(bool feature)
-        {
-            var isMulti = false;
-            return isMulti || feature;
-        }
-
-        private class LilToonSetting
-        {
-            private static readonly SemVer LilToon130 = new SemVer("1.3.0");
-
-            private Object settingObject;
-
-            public LilToonSetting(Object obj)
-            {
-                settingObject = obj;
-            }
-
-            public bool LIL_FEATURE_MAIN_GRADATION_MAP => IsFeatureEnabled("LIL_FEATURE_MAIN_GRADATION_MAP");
-
-            public bool LIL_FEATURE_NORMAL_1ST => IsFeatureEnabled("LIL_FEATURE_NORMAL_1ST");
-
-            public bool LIL_FEATURE_EMISSION_1ST => IsFeatureEnabled("LIL_FEATURE_EMISSION_1ST");
-
-            public bool LIL_FEATURE_EMISSION_2ND => IsFeatureEnabled("LIL_FEATURE_EMISSION_2ND");
-
-            public bool LIL_FEATURE_ANIMATE_EMISSION_UV => IsFeatureEnabled("LIL_FEATURE_ANIMATE_EMISSION_UV");
-
-            public bool LIL_FEATURE_ANIMATE_EMISSION_MASK_UV => IsFeatureEnabled("LIL_FEATURE_ANIMATE_EMISSION_MASK_UV");
-
-            public bool LIL_FEATURE_EMISSION_GRADATION => IsFeatureEnabled("LIL_FEATURE_EMISSION_GRADATION");
-
-            private bool IsFeatureEnabled(string name)
-            {
-                // lilToon v1.3.0 no longer needs shader setting in edit mode.
-                if (AssetUtility.LilToonVersion >= LilToon130)
-                {
-                    return true;
-                }
-                return GetFieldValue<bool>(name);
-            }
-
-            private T GetFieldValue<T>(string name)
-            {
-                if (!AssetUtility.IsLilToonImported())
-                {
-                    throw new LilToonCompatibilityException("lilToon not found in Assets.");
-                }
-                var lilToonSetting = SystemUtility.GetTypeByName("lilToonSetting");
-                if (lilToonSetting == null)
-                {
-                    throw new LilToonCompatibilityException($"lilToon found, but lilToonSetting not found");
-                }
-                var field = lilToonSetting.GetField(name);
-                if (field == null)
-                {
-                    throw new LilToonCompatibilityException($"Field {lilToonSetting.Name}.{name} not found");
-                }
-                return (T)field.GetValue(settingObject);
             }
         }
     }

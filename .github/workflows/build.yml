@@ -68,6 +68,11 @@ jobs:
           - 1.4.1 # Unsupported
           - 1.5.0 # Supported, Preview
           - latest
+        lilToonVersion:
+          - ''
+          - 1.9.0 # Unsupported
+          - 1.10.0 # Supported, Ramp
+          - latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -90,6 +95,9 @@ jobs:
 
       - run: vrc-get repo add https://vpm.nadena.dev/vpm-prerelease.json
       - run: if [ -n "${{ matrix.ndmfVersion}}" ]; then scripts/vrc-get-install.sh nadena.dev.ndmf ${{ matrix.ndmfVersion }}; fi
+
+      - run: vrc-get repo add https://lilxyzw.github.io/vpm-repos/vpm.json
+      - run: if [ -n "${{ matrix.lilToonVersion}}" ]; then scripts/vrc-get-install.sh jp.lilxyzw.liltoon ${{ matrix.lilToonVersion }}; fi
 
       - run: vrc-get info project
 

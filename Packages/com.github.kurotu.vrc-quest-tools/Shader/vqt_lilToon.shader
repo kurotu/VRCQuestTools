@@ -2,13 +2,6 @@
 {
     Properties
     {
-        _LIL_FEATURE_NORMAL_1ST("LIL_FEATURE_NORMAL_1ST", Int) = 1
-        _LIL_FEATURE_EMISSION_1ST("LIL_FEATURE_EMISSION_1ST", Int) = 1
-        _LIL_FEATURE_EMISSION_2ND("LIL_FEATURE_EMISSION_2ND", Int) = 1
-        _LIL_FEATURE_ANIMATE_EMISSION_UV("LIL_FEATURE_ANIMATE_EMISSION_UV", Int) = 1
-        _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV("LIL_FEATURE_ANIMATE_EMISSION_MASK_UV", Int) = 1
-        _LIL_FEATURE_EMISSION_GRADATION("LIL_FEATURE_EMISSION_GRADATION", Int) = 1
-
         _MainTex ("Texture", 2D) = "white" {}
         [HDR]_Color("Color", Color) = (1,1,1,1)
 
@@ -107,13 +100,6 @@
                 float2 uv_MatCapBlendMask : TEXCOORD6;
                 float4 vertex : SV_POSITION;
             };
-
-            uint _LIL_FEATURE_NORMAL_1ST;
-            uint _LIL_FEATURE_EMISSION_1ST;
-            uint _LIL_FEATURE_EMISSION_2ND;
-            uint _LIL_FEATURE_ANIMATE_EMISSION_UV;
-            uint _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV;
-            uint _LIL_FEATURE_EMISSION_GRADATION;
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
@@ -273,7 +259,7 @@
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 albedo = tex2D(_MainTex, i.uv);
-                if (_VQT_GenerateShadow && _LIL_FEATURE_NORMAL_1ST && _UseShadow && _UseBumpMap) {
+                if (_VQT_GenerateShadow && _UseShadow && _UseBumpMap) {
                     half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv_BumpMap), _BumpScale);
                     half4 normalCol = vqt_normalToGrayScale(normal);
 
@@ -292,14 +278,14 @@
                     col.rgb = lerp(col.rgb, float3(0,0,0), matCapMaskValue);
                 }
 
-                if (_LIL_FEATURE_EMISSION_1ST && _UseEmission) {
+                if (_UseEmission) {
                     float angle;
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_UV ? _EmissionMap_ScrollRotate.b : 0.0f;
+                    angle = _EmissionMap_ScrollRotate.b;
                     float4 emi = sampleTex2D(_EmissionMap, i.uv_EmissionMap, angle);
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? _EmissionBlendMask_ScrollRotate.b : 0.0f;
+                    angle = _EmissionBlendMask_ScrollRotate.b;
                     float4 emiMask = sampleTex2D(_EmissionBlendMask, i.uv_EmissionBlendMask, angle);
                     emi = emissionRGB(_EmissionColor, emi, _EmissionBlend, emiMask, albedo, _EmissionMainStrength);
-                    if (_LIL_FEATURE_EMISSION_GRADATION && _EmissionUseGrad) {
+                    if (_EmissionUseGrad) {
                         // Use first color
                         fixed4 c = _EmissionGradTex.Sample(sampler_EmissionGradTex, 0);
                         emi.rgb *= c.rgb;
@@ -308,14 +294,14 @@
                     col = compose(col, emi, _EmissionBlendMode);
                 }
 
-                if (_LIL_FEATURE_EMISSION_2ND && _UseEmission2nd) {
+                if (_UseEmission2nd) {
                     float angle;
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_UV ? _Emission2ndMap_ScrollRotate.b : 0.0f;
+                    angle = _Emission2ndMap_ScrollRotate.b;
                     float4 emi = sampleTex2D(_Emission2ndMap, i.uv_Emission2ndMap, angle);
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? _Emission2ndBlendMask_ScrollRotate.b : 0.0f;
+                    angle = _Emission2ndBlendMask_ScrollRotate.b;
                     float4 emiMask = sampleTex2D(_Emission2ndBlendMask, i.uv_Emission2ndBlendMask, angle);
                     emi.rgb = emissionRGB(_Emission2ndColor, emi, _Emission2ndBlend, emiMask, albedo, _Emission2ndMainStrength);
-                    if (_LIL_FEATURE_EMISSION_GRADATION && _Emission2ndUseGrad) {
+                    if (_Emission2ndUseGrad) {
                         // Use first color
                         fixed4 c = _Emission2ndGradTex.Sample(sampler_Emission2ndGradTex, 0);
                         emi.rgb *= c.rgb;

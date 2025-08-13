@@ -680,6 +680,15 @@ msgstr "Execute the menu, Tools -> NDM Framework -> Manual bake avatar with Andr
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "Need to set name and thumbnail in VRChat SDK Control Panel when uploading a new avatar."
 
+msgid "LilToonLegacyExceptionMessage"
+msgstr "This version of lilToon is not supported. Update lilToon to {0} or later."
+
+msgid "LilToonBreakingExceptionMessage"
+msgstr "This version of lilToon is not supported. Update VRCQuestTools or downgrade lilToon to earlier than {0}"
+
+msgid "LilToonWrongInstallationExceptionMessage"
+msgstr "lilToon installation is wrong. Reinstall lilToon with VCC or ALCOM."
+
 msgid "FeatureRequiresNdmf"
 msgstr "Non-Destructive Modular Framework is required."
 
