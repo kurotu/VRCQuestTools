@@ -70,12 +70,10 @@ jobs:
             packages: []
           - name: unsupported
             packages:
-              - { name: nadena.dev.modular-avatar, version: '1.11.7' }
               - { name: nadena.dev.ndmf, version: '1.4.1' }
               - { name: jp.lilxyzw.liltoon, version: '1.9.0' }
           - name: minimum
             packages:
-              - { name: nadena.dev.modular-avatar, version: '1.12.0' } # android world-fixed-object
               - { name: nadena.dev.ndmf, version: '1.5.0' } # ndmf-preview
               - { name: jp.lilxyzw.liltoon, version: '1.10.0' } # shadow ramp
           - name: latest
@@ -83,6 +81,12 @@ jobs:
               - { name: nadena.dev.modular-avatar, version: 'latest' }
               - { name: nadena.dev.ndmf, version: 'latest' }
               - { name: jp.lilxyzw.liltoon, version: 'latest' }
+          - name: ma-unsupported
+            packages:
+              - { name: nadena.dev.modular-avatar, version: '1.11.7' }
+          - name: ma-minimum
+            packages:
+              - { name: nadena.dev.modular-avatar, version: '1.12.0' }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
