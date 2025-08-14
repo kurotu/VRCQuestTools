@@ -7,9 +7,6 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-#if !UNITY_2021_2_OR_NEWER
-using UnityEditor.Experimental.SceneManagement;
-#endif
 using UnityEngine;
 using VRC.Core;
 using VRC.SDK3A.Editor;

@@ -400,11 +400,9 @@ namespace KRT.VRCQuestTools.Models.Unity
                 case MaterialProperty.PropType.Vector:
                     target.SetVector(property.name, property.vectorValue);
                     break;
-#if UNITY_2021_1_OR_NEWER
                 case MaterialProperty.PropType.Int:
                     target.SetInt(property.name, property.intValue);
                     break;
-#endif
             }
         }
 
@@ -657,9 +655,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var srcEmission2ndGradTex = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emission2ndGradTex.textureValue)))
             {
                 var lilBaker = Shader.Find("Hidden/VRCQuestTools/lilToon");
-#if UNITY_2022_1_OR_NEWER
                 baker.Object.parent = null;
-#endif
                 baker.Object.shader = lilBaker;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
                 baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);

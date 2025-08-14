@@ -175,11 +175,7 @@ namespace KRT.VRCQuestTools
         /// <returns>Copied texture.</returns>
         internal static Texture2D CopyTextureAsReadable(Texture2D tex)
         {
-#if UNITY_2022_1_OR_NEWER
             var copy = new Texture2D(tex.width, tex.height, tex.format, tex.mipmapCount > 1, !tex.isDataSRGB);
-#else
-            var copy = new Texture2D(tex.width, tex.height, tex.format, tex.mipmapCount > 1);
-#endif
             var data = tex.GetRawTextureData();
             copy.LoadRawTextureData(data);
             copy.Apply();
