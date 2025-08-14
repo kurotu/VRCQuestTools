@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-08-13 15:14\n"
+"PO-Revision-Date: 2025-08-14 01:14\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -681,19 +681,19 @@ msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK コントロールパネルで設定してください。"
 
 msgid "LilToonLegacyExceptionMessage"
-msgstr "このバージョンのllilToonには非対応です。{0}以降にアップデートしてください。"
+msgstr "このバージョンのlilToonには非対応です。{0}以降にアップデートしてください。"
 
 msgid "LilToonBreakingExceptionMessage"
-msgstr ""
+msgstr "このバージョンのlilToonには非対応です。VRCQuestToolsをアップデートするか、lilToonを{0}未満にダウングレードしてください。"
 
 msgid "LilToonWrongInstallationExceptionMessage"
-msgstr ""
+msgstr "lilToonのインストール状態が正しくありません。VCCかALCOMで再度インストールしてください。"
 
 msgid "FeatureRequiresNdmf"
 msgstr "Non-Destructive Modular Framework (NDMF) が必要です。"
 
 msgid "UnsupportedNdmfCallbackMessageLegacy"
-msgstr ""
+msgstr "このバージョンのNDMFには非対応です。{0}以降にアップデートしてください。"
 
 msgid "UnsupportedNdmfCallbackMessageBreaking"
 msgstr "このバージョンのNDMFには非対応です。VRCQuestToolsをアップデートするか、NDMFを{0}未満にダウングレードしてください。"
@@ -715,10 +715,10 @@ msgstr "マテリアルの変換中にエラーが発生しました。\n\n"
 "{4}"
 
 msgid "NDMF:LilToonCompatibilityErrorTitle"
-msgstr ""
+msgstr "非対応のlilToon"
 
 msgid "NDMF:LilToonCompatibilityErrorDescription"
-msgstr ""
+msgstr "{0}"
 
 msgid "NDMF:MaterialSwapNullErrorTitle"
 msgstr "マテリアル未設定"
