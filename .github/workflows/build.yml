@@ -78,8 +78,15 @@ jobs:
               - { name: jp.lilxyzw.liltoon, version: '1.10.0' } # shadow ramp
           - name: latest
             packages:
+              - { name: nadena.dev.modular-avatar, version: 'latest' }
               - { name: nadena.dev.ndmf, version: 'latest' }
               - { name: jp.lilxyzw.liltoon, version: 'latest' }
+          - name: ma-unsupported
+            packages:
+              - { name: nadena.dev.modular-avatar, version: '1.11.7' }
+          - name: ma-minimum
+            packages:
+              - { name: nadena.dev.modular-avatar, version: '1.12.0' }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
