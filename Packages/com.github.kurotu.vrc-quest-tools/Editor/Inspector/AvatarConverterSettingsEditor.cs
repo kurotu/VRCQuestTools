@@ -87,7 +87,7 @@ namespace KRT.VRCQuestTools.Inspector
 
                     if (avatar.HasUnityConstraints)
                     {
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+#if VQT_MODULAR_AVATAR
                         if (avatar.GameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
                         {
                             using (var horizontal = new EditorGUILayout.HorizontalScope())
@@ -232,7 +232,7 @@ namespace KRT.VRCQuestTools.Inspector
                     }
 
                     var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+#if VQT_MODULAR_AVATAR
                     if (descriptor.gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() != null)
                     {
                         componentsToBeAlearted = componentsToBeAlearted.Where(c => !(c is UnityEngine.Animations.IConstraint)).ToArray();
@@ -391,7 +391,7 @@ namespace KRT.VRCQuestTools.Inspector
             EditorApplication.ExecuteMenuItem("VRChat SDK/Utilities/Convert DynamicBones To PhysBones");
         }
 
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+#if VQT_MODULAR_AVATAR
         private void OnClickAddConvertConstraintsButton(VRC_AvatarDescriptor avatar)
         {
             Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(avatar.gameObject);
@@ -460,7 +460,7 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickConvertButton(VRC_AvatarDescriptor avatar)
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+#if VQT_MODULAR_AVATAR
             if (new VRChatAvatar(avatar).HasUnityConstraints && avatar.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
             {
                 if (EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForMAConvertConstraints, i18n.YesLabel, i18n.NoLabel))

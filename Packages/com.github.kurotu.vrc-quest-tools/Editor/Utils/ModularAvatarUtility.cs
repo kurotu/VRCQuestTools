@@ -3,11 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System;
-using System.Linq;
-#if VQT_HAS_MODULAR_AVATAR
-using nadena.dev.modular_avatar.core;
-#endif
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
@@ -25,21 +20,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Unsupported components.</returns>
         internal static Component[] GetUnsupportedComponentsInChildren(GameObject gameObject, bool includeInactive)
         {
-#if VQT_HAS_MODULAR_AVATAR
-            var types = new Type[]
-            {
-                #if !VQT_HAS_MODULAR_AVATAR_WFO_ANDROID
-                    typeof(ModularAvatarVisibleHeadAccessory),
-                    #if VQT_HAS_MODULAR_AVATAR_WFO
-                    typeof(ModularAvatarWorldFixedObject),
-                    #endif
-                #endif
-            };
-            var components = types.SelectMany(t => gameObject.GetComponentsInChildren(t, includeInactive)).ToArray();
-            return components;
-#else
             return new Component[] { };
-#endif
         }
 
         /// <summary>

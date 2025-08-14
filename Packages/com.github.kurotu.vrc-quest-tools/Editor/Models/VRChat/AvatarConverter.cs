@@ -11,7 +11,7 @@ using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
-#if VQT_HAS_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR
 using nadena.dev.modular_avatar.core;
 #endif
 using UnityEditor;
@@ -89,7 +89,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="avatar">Avatar object to convert.</param>
         internal void PrepareModularAvatarComponentsInPlace(VRChatAvatar avatar)
         {
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+#if VQT_MODULAR_AVATAR
             avatar.GameObject.GetOrAddComponent<ModularAvatarConvertConstraints>();
 #endif
         }
@@ -126,7 +126,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             if (converterSettings != null)
             {
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+#if VQT_MODULAR_AVATAR
                 if (saveAssetsAsFile && questAvatarObject.GetComponent<ModularAvatarConvertConstraints>() != null)
                 {
                     remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true, false, new Type[] { typeof(UnityEngine.Animations.IConstraint) });
@@ -238,7 +238,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                 }
 
-#if VQT_HAS_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR
                 foreach (var ma in questAvatarObject.GetComponentsInChildren<ModularAvatarMergeAnimator>(true))
                 {
                     if (ma.animator != null)

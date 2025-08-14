@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
-#if VQT_HAS_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR
 using nadena.dev.modular_avatar.core;
 #endif
 using UnityEditor;
@@ -284,7 +284,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             // Modular Avatar Merge Animator
             RuntimeAnimatorController[] mergeAnimators = { };
-#if VQT_HAS_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR
             mergeAnimators = rootObject
                 .GetComponentsInChildren<ModularAvatarMergeAnimator>(true)
                 .Select(ma => ma.animator)

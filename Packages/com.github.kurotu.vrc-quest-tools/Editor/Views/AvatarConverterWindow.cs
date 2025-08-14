@@ -71,7 +71,7 @@ namespace KRT.VRCQuestTools.Views
                     {
                         "VQT Avatar Converter Settings",
                         "VQT Network ID Assigner",
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+#if VQT_MODULAR_AVATAR
                         "MA Convert Constraints",
 #endif
                     };
@@ -113,7 +113,7 @@ namespace KRT.VRCQuestTools.Views
                 EditorUtility.DisplayDialog("VRCQuestTools", i18n.NetworkIdAssignerAttached, "OK");
             }
 
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+#if VQT_MODULAR_AVATAR
             if (targetRoot.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
             {
                 Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(targetRoot);
