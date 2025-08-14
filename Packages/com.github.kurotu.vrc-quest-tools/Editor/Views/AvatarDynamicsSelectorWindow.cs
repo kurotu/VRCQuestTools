@@ -6,9 +6,6 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
-#if !UNITY_2021_2_OR_NEWER
-using UnityEditor.Experimental.SceneManagement;
-#endif
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;

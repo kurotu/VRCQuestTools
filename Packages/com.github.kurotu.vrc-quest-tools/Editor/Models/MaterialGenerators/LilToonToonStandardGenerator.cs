@@ -126,9 +126,7 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateEmissionMap(Action<Texture2D> completion)
         {
             var bakeMat = new Material(lilMaterial.Material);
-#if UNITY_2022_1_OR_NEWER
             bakeMat.parent = null;
-#endif
             bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/lilToon/Emission");
             var bakeMatWrapper = new LilToonMaterial(bakeMat);
             bakeMatWrapper.EmissionColor = Utils.ColorUtility.HdrToLdr(bakeMatWrapper.EmissionColor);
@@ -468,9 +466,7 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateShadowRamp(Action<Texture2D> completion)
         {
             var material = new Material(lilMaterial.Material);
-#if UNITY_2022_1_OR_NEWER
             material.parent = null;
-#endif
 
             if (AssetUtility.CanLilToonBakeShadowRamp())
             {

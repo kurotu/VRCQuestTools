@@ -56,11 +56,9 @@ namespace KRT.VRCQuestTools.Utils
                             sb.Append($"{name}_null");
                         }
                         break;
-#if UNITY_2021_1_OR_NEWER
                     case ShaderPropertyType.Int:
                         sb.Append($"{name}_{material.GetInteger(name)}");
                         break;
-#endif
                 }
             }
             return sb.ToString();
