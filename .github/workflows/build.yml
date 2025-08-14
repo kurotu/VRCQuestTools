@@ -53,6 +53,7 @@ jobs:
           path: VRCQuestTools.unitypackage
 
   test:
+    name: test (${{matrix.sdk.unityVersion}}, sdk-${{matrix.sdk.vrcsdkVersion}}, deps-${{matrix.dependencies.name}})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -63,16 +64,21 @@ jobs:
             vrcsdkVersion: 3.8.1
           - unityVersion: 2022.3.22f1
             vrcsdkVersion: latest
-        ndmfVersion:
-          - ''
-          - 1.4.1 # Unsupported
-          - 1.5.0 # Supported, Preview
-          - latest
-        lilToonVersion:
-          - ''
-          - 1.9.0 # Unsupported
-          - 1.10.0 # Supported, Ramp
-          - latest
+        dependencies:
+          - name: nothing
+            packages: []
+          - name: unsupported
+            packages:
+              - { name: nadena.dev.ndmf, version: '1.4.1' }
+              - { name: jp.lilxyzw.liltoon, version: '1.9.0' }
+          - name: minimum
+            packages:
+              - { name: nadena.dev.ndmf, version: '1.5.0' } # ndmf-preview
+              - { name: jp.lilxyzw.liltoon, version: '1.10.0' } # shadow ramp
+          - name: latest
+            packages:
+              - { name: nadena.dev.ndmf, version: 'latest' }
+              - { name: jp.lilxyzw.liltoon, version: 'latest' }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -90,14 +96,24 @@ jobs:
           retry_wait_seconds: 60
           command: vrc-get resolve
       - run: rm -r Packages/vpm-manifest.json Packages/com.vrchat.avatars Packages/com.vrchat.base
-      - run: scripts/vrc-get-install.sh com.vrchat.base ${{ matrix.sdk.vrcsdkVersion }}
-      - run: scripts/vrc-get-install.sh com.vrchat.avatars ${{ matrix.sdk.vrcsdkVersion }}
 
-      - run: vrc-get repo add https://vpm.nadena.dev/vpm-prerelease.json
-      - run: if [ -n "${{ matrix.ndmfVersion}}" ]; then scripts/vrc-get-install.sh nadena.dev.ndmf ${{ matrix.ndmfVersion }}; fi
+      - name: Install VRChat SDK
+        run: |
+          scripts/vrc-get-install.sh com.vrchat.base ${{ matrix.sdk.vrcsdkVersion }}
+          scripts/vrc-get-install.sh com.vrchat.avatars ${{ matrix.sdk.vrcsdkVersion }}
 
-      - run: vrc-get repo add https://lilxyzw.github.io/vpm-repos/vpm.json
-      - run: if [ -n "${{ matrix.lilToonVersion}}" ]; then scripts/vrc-get-install.sh jp.lilxyzw.liltoon ${{ matrix.lilToonVersion }}; fi
+      - name: Add VPM repositories
+        run: |
+          vrc-get repo add https://vpm.nadena.dev/vpm.json
+          vrc-get repo add https://lilxyzw.github.io/vpm-repos/vpm.json
+
+      - name: Install dependencies
+        run: |
+          for pkg in $(echo '${{ toJson(matrix.dependencies.packages) }}' | jq -c '.[]'); do
+            name=$(echo "$pkg" | jq -r '.name')
+            version=$(echo "$pkg" | jq -r '.version')
+            scripts/vrc-get-install.sh "$name" "$version"
+          done
 
       - run: vrc-get info project
 
