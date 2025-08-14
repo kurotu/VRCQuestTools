@@ -53,16 +53,17 @@ jobs:
           path: VRCQuestTools.unitypackage
 
   test:
-    name: test (${{matrix.sdk.unityVersion}}, sdk-${{matrix.sdk.vrcsdkVersion}}, deps-${{matrix.dependencies.name}})
+    name: test (${{matrix.sdk.unityVersion}}, sdk-${{matrix.sdk.name}}, deps-${{matrix.dependencies.name}})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         sdk:
-          # Toon Standard
-          - unityVersion: 2022.3.22f1
-            vrcsdkVersion: 3.8.1
-          - unityVersion: 2022.3.22f1
+          - name: minimum
+            unityVersion: 2022.3.22f1
+            vrcsdkVersion: 3.8.1 # toon standard
+          - name: latest
+            unityVersion: 2022.3.22f1
             vrcsdkVersion: latest
         dependencies:
           - name: nothing
@@ -125,7 +126,7 @@ jobs:
         with:
           unityVersion: ${{ matrix.sdk.unityVersion }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          checkName: "Test Results: ${{ matrix.sdk.unityVersion }}, vrcsdk-${{ matrix.sdk.vrcsdkVersion }}, ndmf-${{ matrix.ndmfVersion }}"
+          checkName: "Test Results: ${{matrix.sdk.unityVersion}}, sdk-${{matrix.sdk.name}}, deps-${{matrix.dependencies.name}}"
 
   lint:
     runs-on: ubuntu-latest
