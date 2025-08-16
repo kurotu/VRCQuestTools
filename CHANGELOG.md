@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed an issue where materials with emission disabled, when converted to Toon Standard, could unintentionally show emission due to animations.
+- Fixed compiler warnings that appeared with NDMF 1.8.0 and later.
 
 ## [2.11.1] - 2025-07-26
 
