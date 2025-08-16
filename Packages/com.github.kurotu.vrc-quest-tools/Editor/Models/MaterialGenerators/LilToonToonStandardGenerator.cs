@@ -19,8 +19,9 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <param name="material">LilToon material.</param>
         /// <param name="settings">Convert settings.</param>
-        public LilToonToonStandardGenerator(LilToonMaterial material, ToonStandardConvertSettings settings)
-            : base(settings)
+        /// <param name="sharedBlackTexture">Shared black texture to disable emission.</param>
+        public LilToonToonStandardGenerator(LilToonMaterial material, ToonStandardConvertSettings settings, Texture2D sharedBlackTexture)
+            : base(settings, sharedBlackTexture)
         {
             this.lilMaterial = material;
         }
@@ -61,6 +62,11 @@ namespace KRT.VRCQuestTools.Models
             {
                 newMaterial.EmissionMap = lilMaterial.EmissionMap;
                 newMaterial.EmissionColor = Utils.ColorUtility.HdrToLdr(lilMaterial.EmissionColor);
+            }
+            else
+            {
+                newMaterial.EmissionMap = sharedBlackTexture;
+                newMaterial.EmissionColor = Color.black;
             }
 
             if (lilMaterial.UseShadow && lilMaterial.AOMap != null)
@@ -644,6 +650,12 @@ namespace KRT.VRCQuestTools.Models
         protected override float GetSharpness()
         {
             return 1.0f - lilMaterial.SpecularBlur;
+        }
+
+        /// <inheritdoc/>
+        protected override bool GetUseEmission()
+        {
+            return lilMaterial.UseEmission;
         }
 
         /// <inheritdoc/>

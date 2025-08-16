@@ -294,6 +294,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 AssetDatabase.Refresh();
             }
 
+            var sharedBlackTexture = TextureUtility.CreateColorTexture(Color.black, 4, 4);
+            sharedBlackTexture.name = "VQT_Shared_Black";
+            if (saveAsPng)
+            {
+                var pngPath = Path.Combine(saveDirectory, $"{sharedBlackTexture.name}.png");
+                sharedBlackTexture = TextureUtility.SaveUncompressedTexture(pngPath, sharedBlackTexture, TextureFormat.ASTC_12x12);
+            }
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedTextures = new Dictionary<Material, Texture2D>();
 
@@ -340,11 +347,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                                 var m2 = MaterialWrapperBuilder.Build(m);
                                 if (m2 is LilToonMaterial lil)
                                 {
-                                    request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings, sharedBlackTexture).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
                                 }
                                 else
                                 {
-                                    request = new GenericToonStandardGenerator(toonStandardConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    request = new GenericToonStandardGenerator(toonStandardConvertSettings, sharedBlackTexture).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
                                 }
                             }
                             else
@@ -577,6 +584,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
             var texturesPath = $"{assetsDirectory}/Textures";
 
+            var sharedBlackTexture = TextureUtility.CreateColorTexture(Color.black, 4, 4);
+            sharedBlackTexture.name = "VQT_Shared_Black";
+            if (saveAsFile)
+            {
+                var pngPath = Path.Combine(texturesPath, $"{sharedBlackTexture.name}.png");
+                sharedBlackTexture = TextureUtility.SaveUncompressedTexture(pngPath, sharedBlackTexture, TextureFormat.ASTC_12x12);
+            }
+
             switch (settings)
             {
                 case ToonLitConvertSettings toonLitSettings:
@@ -586,9 +601,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 case ToonStandardConvertSettings toonStandardSettings:
                     if (material is LilToonMaterial)
                     {
-                        return new LilToonToonStandardGenerator((LilToonMaterial)material, toonStandardSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                        return new LilToonToonStandardGenerator((LilToonMaterial)material, toonStandardSettings, sharedBlackTexture).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                     }
-                    return new GenericToonStandardGenerator(toonStandardSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                    return new GenericToonStandardGenerator(toonStandardSettings, sharedBlackTexture).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case MaterialReplaceSettings replaceSettings:
                     if (replaceSettings.material == null)
                     {

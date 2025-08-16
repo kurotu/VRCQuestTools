@@ -141,6 +141,11 @@ namespace KRT.VRCQuestTools.Utils
         {
             var src = texture.isReadable ? texture : CopyAsReadable(texture, isSRGB);
             var png = src.EncodeToPNG();
+            var dir = Path.GetDirectoryName(path);
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
             File.WriteAllBytes(path, png);
             AssetDatabase.ImportAsset(path);
             ConfigureTextureImporter(path, mobileFormat, isSRGB);
