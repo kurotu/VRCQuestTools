@@ -87,24 +87,27 @@ namespace KRT.VRCQuestTools.Inspector
 
                     if (avatar.HasUnityConstraints)
                     {
-#if VQT_MODULAR_AVATAR
-                        if (avatar.GameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
+                        if (ModularAvatarUtility.IsModularAvatarImported())
                         {
-                            using (var horizontal = new EditorGUILayout.HorizontalScope())
+                            if (!ModularAvatarUtility.HasConvertConstraintsComponent(avatar.GameObject))
                             {
-                                EditorGUILayout.HelpBox(i18n.AlertForMAConvertConstraints, MessageType.Warning);
-                                if (GUILayout.Button(i18n.AddLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                                using (var horizontal = new EditorGUILayout.HorizontalScope())
                                 {
-                                    OnClickAddConvertConstraintsButton(descriptor);
+                                    EditorGUILayout.HelpBox(i18n.AlertForMAConvertConstraints, MessageType.Warning);
+                                    if (GUILayout.Button(i18n.AddLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                                    {
+                                        OnClickAddConvertConstraintsButton(descriptor);
+                                    }
                                 }
                             }
                         }
-#else
-                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        else
                         {
-                            EditorGUILayout.HelpBox(i18n.AlertForUnityConstraintsConversion, MessageType.Warning);
+                            using (var horizontal = new EditorGUILayout.HorizontalScope())
+                            {
+                                EditorGUILayout.HelpBox(i18n.AlertForUnityConstraintsConversion, MessageType.Warning);
+                            }
                         }
-#endif
                     }
 
                     if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor) && avatar.GameObject.GetComponent<NetworkIDAssigner>() == null)
@@ -232,12 +235,10 @@ namespace KRT.VRCQuestTools.Inspector
                     }
 
                     var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
-#if VQT_MODULAR_AVATAR
-                    if (descriptor.gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() != null)
+                    if (ModularAvatarUtility.IsModularAvatarImported() && ModularAvatarUtility.HasConvertConstraintsComponent(descriptor.gameObject))
                     {
                         componentsToBeAlearted = componentsToBeAlearted.Where(c => !(c is UnityEngine.Animations.IConstraint)).ToArray();
                     }
-#endif
                     if (componentsToBeAlearted.Count() > 0)
                     {
                         Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
@@ -391,12 +392,10 @@ namespace KRT.VRCQuestTools.Inspector
             EditorApplication.ExecuteMenuItem("VRChat SDK/Utilities/Convert DynamicBones To PhysBones");
         }
 
-#if VQT_MODULAR_AVATAR
         private void OnClickAddConvertConstraintsButton(VRC_AvatarDescriptor avatar)
         {
-            Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(avatar.gameObject);
+            ModularAvatarUtility.AddConvertConstraintsComponent(avatar.gameObject);
         }
-#endif
 
         private void OnClickAssignNetIdsButton(VRC_AvatarDescriptor avatar)
         {
@@ -460,15 +459,13 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickConvertButton(VRC_AvatarDescriptor avatar)
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-#if VQT_MODULAR_AVATAR
-            if (new VRChatAvatar(avatar).HasUnityConstraints && avatar.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
+            if (ModularAvatarUtility.IsModularAvatarImported() && new VRChatAvatar(avatar).HasUnityConstraints && !ModularAvatarUtility.HasConvertConstraintsComponent(avatar.gameObject))
             {
                 if (EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForMAConvertConstraints, i18n.YesLabel, i18n.NoLabel))
                 {
-                    Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(avatar.gameObject);
+                    ModularAvatarUtility.AddConvertConstraintsComponent(avatar.gameObject);
                 }
             }
-#endif
 
             var progressCallback = new ProgressCallback
             {
