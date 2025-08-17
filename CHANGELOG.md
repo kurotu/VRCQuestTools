@@ -28,6 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed support for lilToon earlier than 1.10.0.
 - Removed support for NDMF earlier than 1.5.0.
 
+## [2.11.3] - 2025-08-17
+
+### Fixed
+- Fixed an issue where lilToon emission was not correctly converted to Toon Standard.
+    - Emission was not applied when only Emission 2nd was used.
+    - Emission became too weak when the main color power was high.
+
 ## [2.11.2] - 2025-08-16
 
 ### Fixed
