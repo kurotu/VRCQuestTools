@@ -131,12 +131,20 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateEmissionMap(Action<Texture2D> completion)
         {
+            Texture2D main = null;
+            var mTask = GenerateMainTexture((tex) =>
+            {
+                main = tex;
+            });
+            mTask.WaitForCompletion();
+
             var bakeMat = new Material(lilMaterial.Material);
 #if UNITY_2022_1_OR_NEWER
             bakeMat.parent = null;
 #endif
             bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/lilToon/Emission");
             var bakeMatWrapper = new LilToonMaterial(bakeMat);
+            bakeMatWrapper.Material.SetTexture("_VQT_AlbedoTex", main);
             bakeMatWrapper.EmissionColor = Utils.ColorUtility.HdrToLdr(bakeMatWrapper.EmissionColor);
             bakeMatWrapper.Emission2ndColor = Utils.ColorUtility.HdrToLdr(bakeMatWrapper.Emission2ndColor);
 
@@ -655,7 +663,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseEmission()
         {
-            return lilMaterial.UseEmission;
+            return lilMaterial.UseEmission || lilMaterial.UseEmission2nd;
         }
 
         /// <inheritdoc/>

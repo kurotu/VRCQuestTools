@@ -4,6 +4,13 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- lilToon の発光が Toon Standard に正しく変換されない問題を修正。
+    - 発光テクスチャ2ndのみを使用する場合にエミッションが反映されない。
+    - メインカラーの強度が大きい場合にエミッションが弱くなる。
+
 ## [2.11.2] - 2025-08-16
 
 ### 修正

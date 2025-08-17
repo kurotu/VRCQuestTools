@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Fixed an issue where lilToon emission was not correctly converted to Toon Standard.
+    - Emission was not applied when only Emission 2nd was used.
+    - Emission became too weak when the main color power was high.
+
 ## [2.11.2] - 2025-08-16
 
 ### Fixed
