@@ -45,7 +45,7 @@ namespace KRT.VRCQuestTools.Views
             }
 
             var components = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(gameObject, true);
-#if VQT_HAS_VRCSDK_NO_PRECHECK && VQT_HAS_MA_CONVERT_CONSTRAINTS
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
             if (gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() != null)
             {
                 components = components.Where(c => !(c is UnityEngine.Animations.IConstraint)).ToArray();
@@ -99,7 +99,7 @@ namespace KRT.VRCQuestTools.Views
                     Undo.SetCurrentGroupName("Remove Unsupported Components");
 
                     var allowedComponents = new List<System.Type>();
-#if VQT_HAS_VRCSDK_NO_PRECHECK && VQT_HAS_MA_CONVERT_CONSTRAINTS
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
                     if (gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() != null)
                     {
                         allowedComponents.Add(typeof(UnityEngine.Animations.IConstraint));

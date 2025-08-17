@@ -6,9 +6,6 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
-#if !UNITY_2021_2_OR_NEWER
-using UnityEditor.Experimental.SceneManagement;
-#endif
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
@@ -152,13 +149,7 @@ namespace KRT.VRCQuestTools.Views
 
                 EditorGUILayout.Space();
 
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
                 var contactsHeader = "Non-Local Contact Senders & Non-Local Contact Receivers";
-#elif VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
-                var contactsHeader = "Contact Senders & Non-Local Contact Receivers";
-#else
-                var contactsHeader = "Contact Senders & Contact Receivers";
-#endif
                 using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutContacts, new GUIContent(contactsHeader, i18n.PhysBonesListTooltip)))
                 {
                     foldoutContacts = foldout.Foldout;

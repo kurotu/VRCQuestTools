@@ -1,13 +1,7 @@
 using System;
 using System.Collections.Generic;
 using KRT.VRCQuestTools.I18n;
-
-#if VQT_HAS_NDMF_ERROR_REPORT
 using nadena.dev.ndmf.localization;
-
-#else
-using KRT.VRCQuestTools.Ndmf.Dummy;
-#endif
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -21,6 +15,8 @@ namespace KRT.VRCQuestTools.Ndmf
         internal const string RemovedUnsupportedComponentDescription = "NDMF:RemovedUnsupportedComponentDescription";
         internal const string MaterialConversionErrorTitle = "NDMF:MaterialConversionErrorTitle";
         internal const string MaterialConversionErrorDescription = "NDMF:MaterialConversionErrorDescription";
+        internal const string LilToonCompatibilityErrorTitle = "NDMF:LilToonCompatibilityErrorTitle";
+        internal const string LilToonCompatibilityErrorDescription = "NDMF:LilToonCompatibilityErrorDescription";
         internal const string MaterialSwapNullErrorTitle = "NDMF:MaterialSwapNullErrorTitle";
         internal const string MaterialSwapNullErrorDescription = "NDMF:MaterialSwapNullErrorDescription";
         internal const string ObjectConversionErrorTitle = "NDMF:ObjectConversionErrorTitle";

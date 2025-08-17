@@ -224,7 +224,7 @@ namespace KRT.VRCQuestTools.Utils
             /// <summary>
             /// package version.
             /// </summary>
-            public string version;
+            public string version = "0.0.0";
         }
     }
 }

@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Added options to Toon Standard conversion settings.
+    - `Generate shadow ramp` to generate shadow ramp texture.
+    - `Features` to select features to apply to the converted material.
+
+### Changed
+- Changed the initial value of default material conversion settings to Toon Standard. (VRCSDK 3.8.1 or later)
+- Improved the appearance when converting lilToon normal mode MatCap to Toon Standard.
+- Unsupported materials to be processed are no longer warned in `Avatar Converter Settings` and `Material Conversion Settings`.
+- Turned off Auto Referenced in asmdef.
+- Improved error messages when converting unsupported lilToon materials.
+- [NDMF] Show an error dialog then abort the build when using unsupported version of NDMF.
+
+### Fixed
+- `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
+
+### Removed
+- Removed support for Unity 2019.
+- Removed support for lilToon earlier than 1.10.0.
+- Removed support for NDMF earlier than 1.5.0.
+
 ## [2.11.2] - 2025-08-16
 
 ### Fixed
@@ -38,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.10.0] - 2025-05-31
 
 ### Added
-- Toon Standard conversion settings. (VRCSDK 3.8.1-beta.4 or later)
+- Toon Standard conversion settings. (VRCSDK 3.8.1 or later)
     - There are following limitations:
         - Only supports lilToon 1.10.0 and later. For unsupported materials, Toon Lit main texture is only used.
         - [Missing rim lighting mask](https://feedback.vrchat.com/open-beta/p/sdk-381-beta3-add-rim-lighting-mask-for-toon-standard). This might lead overbright rim lighting.

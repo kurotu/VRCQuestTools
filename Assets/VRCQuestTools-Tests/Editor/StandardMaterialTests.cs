@@ -58,7 +58,6 @@ namespace KRT.VRCQuestTools
         [Test]
         public void StandardNpEmission_EmissionVariant()
         {
-#if UNITY_2022_1_OR_NEWER
             var wrapper = TestUtils.LoadMaterialWrapper("Standard_NoEmission EmissionVariant.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             var setting = new ToonLitConvertSettings
@@ -86,9 +85,6 @@ namespace KRT.VRCQuestTools
                 composed.Object.SetPixels32(compose);
                 Assert.Less(TestUtils.MaxDifference(tex.Object, composed.Object), Threshold);
             }
-#else
-            Assert.Ignore("This test is not supported on Unity 2021.2 or older.");
-#endif
         }
 
         /// <summary>
@@ -176,8 +172,7 @@ namespace KRT.VRCQuestTools
         {
 #if !UNITY_EDITOR_WIN
             Assert.Ignore("The result is different on Linux.");
-            return;
-#endif
+#else
             var wrapper = TestUtils.LoadMaterialWrapper("render_texture.mat");
             Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
             var setting = new ToonLitConvertSettings
@@ -191,6 +186,7 @@ namespace KRT.VRCQuestTools
             {
                 Assert.Less(TestUtils.MaxDifference(tex.Object, original.Object), Threshold);
             }
+#endif
         }
     }
 }

@@ -47,7 +47,9 @@ The following shaders are supported for material conversion. For unsupported sha
 | Compression Format | Select the compression format of the generated textures. DXT5 is used for PC platform. | Toon Lit, MatCap Lit, Toon Standard |
 | Generate shadows from normal map | Generate pseudo shadows from normal maps and reflect them in textures. | Toon Lit, MatCap Lit |
 | MatCap Texture | Set the MatCap texture used by the MatCap Lit shader. | MatCap Lit |
+| Generate shadow ramp | Generate a ramp texture for shadow settings. | Toon Standard |
 | Fallback Shading | Select the Ramp texture used when converting unsupported materials. | Toon Standard |
+| Features | | Select features to apply to the converted material. | Toon Standard |
 | Replaced Material | Set the material used in Material Replacement mode. | Material Replacement |
 
 ### Additional Material Conversion Settings

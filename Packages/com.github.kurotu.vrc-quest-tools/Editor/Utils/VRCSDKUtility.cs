@@ -23,20 +23,10 @@ using VRC.SDK3A.Editor;
 using VRC.SDKBase;
 using VRC.SDKBase.Network;
 using VRC.SDKBase.Validation;
-
-#if VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 using AvatarPerformanceStatsLevelSet = VRC.SDKBase.Validation.Performance.Stats.AvatarPerformanceStatsLevelSet;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
-#else
-using AvatarPerformance = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformance;
-using AvatarPerformanceStats = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceStats;
-using AvatarPerformanceStatsLevel = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceStatsLevel;
-using AvatarPerformanceStatsLevelSet = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceStatsLevelSet;
-using PerformanceRating = KRT.VRCQuestTools.Mocks.Mock_PerformanceRating;
-using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
-#endif
 
 namespace KRT.VRCQuestTools.Utils
 {
@@ -132,6 +122,25 @@ namespace KRT.VRCQuestTools.Utils
                 return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Gets the avatar root GameObject from the specified GameObject.
+        /// </summary>
+        /// <param name="obj">The GameObject to check.</param>
+        /// <returns>The avatar root GameObject if found; otherwise, null.</returns>
+        internal static GameObject GetAvatarRoot(GameObject obj)
+        {
+            while (obj != null)
+            {
+                if (IsAvatarRoot(obj))
+                {
+                    return obj;
+                }
+                var parent = obj.transform.parent;
+                obj = parent != null ? parent.gameObject : null;
+            }
+            return null;
         }
 
         /// <summary>
@@ -326,7 +335,6 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when the avatar has missing network ids.</returns>
         internal static bool HasMissingNetworkIds(VRC_AvatarDescriptor avatarDescriptor)
         {
-#if VQT_HAS_VRCSDK_BASE
             var ids = avatarDescriptor.NetworkIDCollection;
             var pbs = avatarDescriptor.gameObject.GetComponentsInChildren(PhysBoneType, true);
             if (ids.Count == 0)
@@ -343,9 +351,6 @@ namespace KRT.VRCQuestTools.Utils
                 return missingInIds;
             }) != null;
             return pbNetId0;
-#else
-            return false;
-#endif
         }
 
         /// <summary>
@@ -355,7 +360,6 @@ namespace KRT.VRCQuestTools.Utils
         /// <exception cref="NotImplementedException">VRCSDK dones't support Network IDs.</exception>
         internal static void AssignNetworkIdsToPhysBones(VRC_AvatarDescriptor avatarDescriptor)
         {
-#if VQT_HAS_VRCSDK_BASE
             var ids = avatarDescriptor.NetworkIDCollection;
             var pbs = avatarDescriptor.GetComponentsInChildren(PhysBoneType, true)
                 .Select(c => new Reflection.PhysBone(c))
@@ -381,9 +385,6 @@ namespace KRT.VRCQuestTools.Utils
                 }
             }
             PrefabUtility.RecordPrefabInstancePropertyModifications(avatarDescriptor);
-#else
-            throw new NotImplementedException();
-#endif
         }
 
         /// <summary>
@@ -539,18 +540,14 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when the contact is local-only.</returns>
         internal static bool IsLocalOnlyContact(ContactBase contact)
         {
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
             if (contact is ContactReceiver receiver)
             {
                 return receiver.IsLocalOnly;
             }
-#endif
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
             if (contact is ContactSender sender)
             {
                 return sender.IsLocalOnly;
             }
-#endif
             return false;
         }
 
@@ -561,7 +558,6 @@ namespace KRT.VRCQuestTools.Utils
         /// <exception cref="NotImplementedException">VRCSDK dones't support Network IDs.</exception>
         internal static void StripeUnusedNetworkIds(VRC_AvatarDescriptor avatarDescriptor)
         {
-#if VQT_HAS_VRCSDK_BASE
             for (var i = 0; i < avatarDescriptor.NetworkIDCollection.Count; i++)
             {
                 var pair = avatarDescriptor.NetworkIDCollection[i];
@@ -571,9 +567,6 @@ namespace KRT.VRCQuestTools.Utils
                     i--;
                 }
             }
-#else
-            throw new NotImplementedException();
-#endif
         }
 
         /// <summary>
@@ -600,9 +593,6 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>StatsLevelSet.</returns>
         internal static AvatarPerformanceStatsLevelSet LoadAvatarPerformanceStatsLevelSet(bool isMobile)
         {
-#if !VQT_HAS_VRCSDK_BASE
-            throw new InvalidOperationException("VRCSDK3 is not imported.");
-#endif
             var guid = isMobile
                 ? "f0f530dea3891c04e8ab37831627e702" // AvatarPerformanceStatLevels_Quest.asset
                 : "438f83f183e95f740877d4c22ed91af2"; // AvatarPerformanceStatLevels_Windows.asset
@@ -876,7 +866,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Reflection to use VRCSDK features.
         /// </summary>
-        internal class Reflection
+        internal static class Reflection
         {
             /// <summary>
             /// Reflection wrapper for VRCPhysBone.

@@ -28,7 +28,7 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// Related texture.
         /// </summary>
-        public readonly Texture2D texture;
+        public readonly Texture2D Texture;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MeshFlipperMaskNotReadableException"/> class.
@@ -38,7 +38,7 @@ namespace KRT.VRCQuestTools.Components
         public MeshFlipperMaskNotReadableException(string message, Texture2D texture)
             : base(message)
         {
-            this.texture = texture;
+            this.Texture = texture;
         }
     }
 }

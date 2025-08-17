@@ -146,8 +146,16 @@ namespace KRT.VRCQuestTools.I18n
         internal string ToonLitConvertSettingsGenerateShadowFromNormalMapLabel => GetText("ToonLitConvertSettingsGenerateShadowFromNormalMapLabel");
         internal string MatCapLitConvertSettingsMatCapTextureLabel => GetText("MatCapLitConvertSettingsMatCapTextureLabel");
         internal string MatCapLitConvertSettingsMatCapTextureWarning => GetText("MatCapLitConvertSettingsMatCapTextureWarning");
+        internal string ToonStandardConvertSettingsGenerateShadowRampLabel => GetText("ToonStandardConvertSettingsGenerateShadowRampLabel");
         internal string ToonStandardConvertSettingsFallbackShadowRampLabel => GetText("ToonStandardConvertSettingsFallbackShadowRampLabel");
         internal string ToonStandardConvertSettingsCustomFallbackShadowRampLabel => GetText("ToonStandardConvertSettingsCustomFallbackShadowRampLabel");
+        internal string ToonStandardConvertSettingsFeaturesLabel => GetText("ToonStandardConvertSettingsFeaturesLabel");
+        internal string ToonStandardConvertSettingsFeaturesNormalMapLabel => GetText("ToonStandardConvertSettingsFeaturesNormalMapLabel");
+        internal string ToonStandardConvertSettingsFeaturesEmissionLabel => GetText("ToonStandardConvertSettingsFeaturesEmissionLabel");
+        internal string ToonStandardConvertSettingsFeaturesOcclusionLabel => GetText("ToonStandardConvertSettingsFeaturesOcclusionLabel");
+        internal string ToonStandardConvertSettingsFeaturesSpecularLabel => GetText("ToonStandardConvertSettingsFeaturesSpecularLabel");
+        internal string ToonStandardConvertSettingsFeaturesMatcapLabel => GetText("ToonStandardConvertSettingsFeaturesMatcapLabel");
+        internal string ToonStandardConvertSettingsFeaturesRimLightingLabel => GetText("ToonStandardConvertSettingsFeaturesRimLightingLabel");
         internal string AdditionalMaterialConvertSettingsTargetMaterialLabel => GetText("AdditionalMaterialConvertSettingsTargetMaterialLabel");
         internal string AdditionalMaterialConvertSettingsSelectMaterialLabel => GetText("AdditionalMaterialConvertSettingsSelectMaterialLabel");
         internal string MaterialConvertTypePopupLabelToonLit => GetText("MaterialConvertTypePopupLabelToonLit");
@@ -319,9 +327,14 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarBuilderWindowNdmfManualBakingDescription => GetText("AvatarBuilderWindowNdmfManualBakingDescription");
         internal string AvatarBuilderWindowRequiresAvatarNameAndThumb => GetText("AvatarBuilderWindowRequiresAvatarNameAndThumb");
 
+        // lilToon Compatibility Exceptions
+        internal string LilToonLegacyExceptionMessage(string requiredVersion) => GetText("LilToonLegacyExceptionMessage", requiredVersion);
+        internal string LilToonBreakingExceptionMessage(string breakingVersion) => GetText("LilToonBreakingExceptionMessage", breakingVersion);
+        internal string LilToonWrongInstallationExceptionMessage => GetText("LilToonWrongInstallationExceptionMessage");
+
         // NDMF
         internal string FeatureRequiresNdmf => GetText("FeatureRequiresNdmf");
-        internal string NdmfPluginRequiresNdmfUpdate(string requiredVersion) => GetText("NdmfPluginRequiresNdmfUpdate", requiredVersion);
-        internal string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => GetText("NdmfPluginRemovedUnsupportedComponent", typeName, objectName);
+        internal string UnsupportedNdmfCallbackMessageLegacy(string requiredVersion) => GetText("UnsupportedNdmfCallbackMessageLegacy", requiredVersion);
+        internal string UnsupportedNdmfCallbackMessageBreaking(string breakingVersion) => GetText("UnsupportedNdmfCallbackMessageBreaking", breakingVersion);
     }
 }
