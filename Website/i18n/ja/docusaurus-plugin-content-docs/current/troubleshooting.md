@@ -15,7 +15,7 @@ UnityにAndroid Build Supportがインストールされていない場合、ビ
 
 ## 非圧縮サイズが大きくてアップロードできない
 
-`Avatar uncompressed size is too large for the target platform. XX.XX MB > 40.00 MB`
+> Avatar uncompressed size is too large for the target platform. XX.XX MB > 40.00 MB
 
 非圧縮サイズ(Uncompressed Size)が大きくなる原因として、主に以下のようなものがあります。
 
@@ -30,7 +30,7 @@ UnityにAndroid Build Supportがインストールされていない場合、ビ
 
 ## ダウンロードサイズが大きくてアップロードできない
 
-`Avatar download size is too large for the target platform. XX.XX MB > 10.00 MB`
+> Avatar download size is too large for the target platform. XX.XX MB > 10.00 MB
 
 ダウンロードサイズ(Download Size)が大きくなる原因として、主に以下のようなものがあります。
 

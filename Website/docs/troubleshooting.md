@@ -15,7 +15,7 @@ If Android Build Support is not installed in Unity, you cannot switch the build 
 
 ## Uncompressed Size is Too Large and Cannot Upload
 
-`Avatar uncompressed size is too large for the target platform. XX.XX MB > 40.00 MB`
+> Avatar uncompressed size is too large for the target platform. XX.XX MB > 40.00 MB
 
 The main causes of large uncompressed size include:
 
@@ -30,7 +30,7 @@ For example, using the [Trace And Optimize](https://vpm.anatawa12.com/avatar-opt
 
 ## Download Size is Too Large and Cannot Upload
 
-`Avatar download size is too large for the target platform. XX.XX MB > 10.00 MB`
+> Avatar download size is too large for the target platform. XX.XX MB > 10.00 MB
 
 The main causes of large download size include:
 

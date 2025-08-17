@@ -15,8 +15,9 @@ namespace KRT.VRCQuestTools.Models
         /// Initializes a new instance of the <see cref="GenericToonStandardGenerator"/> class.
         /// </summary>
         /// <param name="settings">Convert settings.</param>
-        public GenericToonStandardGenerator(ToonStandardConvertSettings settings)
-            : base(settings)
+        /// <param name="sharedBlackTexture">Shared black texture to disable emission.</param>
+        public GenericToonStandardGenerator(ToonStandardConvertSettings settings, Texture2D sharedBlackTexture)
+            : base(settings, sharedBlackTexture)
         {
         }
 
@@ -223,6 +224,12 @@ namespace KRT.VRCQuestTools.Models
         protected override float GetSharpness()
         {
             throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        protected override bool GetUseEmission()
+        {
+            return false;
         }
 
         /// <inheritdoc/>

@@ -28,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed support for lilToon earlier than 1.10.0.
 - Removed support for NDMF earlier than 1.5.0.
 
+## [2.11.2] - 2025-08-16
+
+### Fixed
+- Fixed an issue where materials with emission disabled, when converted to Toon Standard, could unintentionally show emission due to animations.
+- Fixed compiler warnings that appeared with NDMF 1.8.0 and later.
+
 ## [2.11.1] - 2025-07-26
 
 ### Added

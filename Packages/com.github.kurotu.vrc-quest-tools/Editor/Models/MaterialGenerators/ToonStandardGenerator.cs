@@ -19,12 +19,19 @@ namespace KRT.VRCQuestTools.Models
         protected readonly ToonStandardConvertSettings Settings;
 
         /// <summary>
+        /// Shared black texture to disable emission.
+        /// </summary>
+        protected readonly Texture2D sharedBlackTexture;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ToonStandardGenerator"/> class.
         /// </summary>
         /// <param name="settings">Convert settings.</param>
-        internal ToonStandardGenerator(ToonStandardConvertSettings settings)
+        /// <param name="sharedBlackTexture">Shared black texture to disable emission.</param>
+        internal ToonStandardGenerator(ToonStandardConvertSettings settings, Texture2D sharedBlackTexture)
         {
             this.Settings = settings;
+            this.sharedBlackTexture = sharedBlackTexture;
         }
 
         /// <summary>
@@ -146,22 +153,25 @@ namespace KRT.VRCQuestTools.Models
 
                 newMaterial.MinBrightness = GetMinBrightness();
 
-                if (!Settings.useEmission)
+                if (GetUseEmission() && Settings.useEmission)
                 {
-                    newMaterial.EmissionMap = null;
-                    newMaterial.EmissionColor = new Color(0, 0, 0, 0);
-                }
-                else if (GetUseEmissionMap())
-                {
-                    MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "emission", saveTextureAsPng, texturesPath, (compl) => GenerateEmissionMap(compl), (t) =>
+                    if (GetUseEmissionMap())
                     {
-                        newMaterial.EmissionMap = t;
-                        newMaterial.EmissionColor = new Color(1, 1, 1, 1);
-                    }).WaitForCompletion();
+                        MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "emission", saveTextureAsPng, texturesPath, (compl) => GenerateEmissionMap(compl), (t) =>
+                        {
+                            newMaterial.EmissionMap = t;
+                            newMaterial.EmissionColor = new Color(1, 1, 1, 1);
+                        }).WaitForCompletion();
+                    }
+                    else
+                    {
+                        newMaterial.EmissionColor = GetEmissionColor();
+                    }
                 }
                 else
                 {
-                    newMaterial.EmissionColor = GetEmissionColor();
+                    newMaterial.EmissionMap = sharedBlackTexture;
+                    newMaterial.EmissionColor = Color.black;
                 }
 
                 if (GetUseOcclusionMap() && Settings.useOcclusion)
@@ -349,6 +359,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Minimum brightness.</returns>
         protected abstract float GetMinBrightness();
+
+        /// <summary>
+        /// Gets the material should use emission.
+        /// </summary>
+        /// <returns>True if the material should use emission.</returns>
+        protected abstract bool GetUseEmission();
 
         /// <summary>
         /// Gets the material should use emission map.
