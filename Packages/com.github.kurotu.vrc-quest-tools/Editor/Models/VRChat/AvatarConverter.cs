@@ -17,13 +17,8 @@ using nadena.dev.modular_avatar.core;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
-
-#if VQT_HAS_VRCSDK_BASE
 using VRC.Core;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
-#else
-using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
-#endif
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -131,8 +126,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             if (converterSettings != null)
             {
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS && VQT_HAS_VRCSDK_NO_PRECHECK
-                if (saveAssetsAsFile && questAvatarObject.GetComponent<ModularAvatarConvertConstraints>() != null) {
+#if VQT_HAS_MA_CONVERT_CONSTRAINTS
+                if (saveAssetsAsFile && questAvatarObject.GetComponent<ModularAvatarConvertConstraints>() != null)
+                {
                     remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true, false, new Type[] { typeof(UnityEngine.Animations.IConstraint) });
                 }
                 else
@@ -219,7 +215,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 var convertedAnimatorControllers = ConvertAnimatorControllersForQuest(avatar.GetRuntimeAnimatorControllers(), saveAssetsAsFile, assetsDirectory, convertedMotions, progressCallback.onRuntimeAnimatorProgress);
 
                 // Apply converted animator controllers.
-#if VQT_HAS_VRCSDK_BASE
                 var layers = questAvatarObject.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
                 for (int i = 0; i < layers.Length; i++)
                 {
@@ -231,7 +226,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         }
                     }
                 }
-#endif
 
                 foreach (var animator in questAvatarObject.GetComponentsInChildren<Animator>(true))
                 {
@@ -841,7 +835,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 questAvatarObject.AddComponent<ConvertedAvatar>();
             }
-#if VQT_HAS_VRCSDK_BASE
             if (setting.removeVertexColor)
             {
                 var vcr = questAvatarObject.GetComponent<VertexColorRemover>();
@@ -852,7 +845,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 vcr.includeChildren = true;
                 vcr.enabled = true;
             }
-#endif
 
 #if VQT_HAS_NDMF
             if (setting.compressExpressionsMenuIcons)

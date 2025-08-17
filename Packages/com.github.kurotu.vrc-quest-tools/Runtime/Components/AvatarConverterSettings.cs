@@ -15,10 +15,11 @@ namespace KRT.VRCQuestTools.Components
     public class AvatarConverterSettings : VRCQuestToolsEditorOnly, IMaterialConversionComponent
     {
         /// <summary>
-        /// Default material convert setting. The default value is <see cref="ToonLitConvertSettings"/>.
+        /// Default material convert setting.
         /// </summary>
         [SerializeReference]
-        public IMaterialConvertSettings defaultMaterialConvertSettings = new ToonLitConvertSettings();
+        public IMaterialConvertSettings defaultMaterialConvertSettings =
+            ToonStandardConvertSettings.SimpleFeatures;
 
         /// <summary>
         /// Additional material convert settings.
@@ -54,9 +55,7 @@ namespace KRT.VRCQuestTools.Components
         /// Animator override controllers to apply while conversion.
         /// </summary>
         [SerializeField]
-#if UNITY_2020_2_OR_NEWER
         [NonReorderable] // somehow reorderable list doesn't work well
-#endif
         public AnimatorOverrideController[] animatorOverrideControllers = { };
 
         /// <summary>
@@ -136,14 +135,10 @@ namespace KRT.VRCQuestTools.Components
                 {
                     switch (c)
                     {
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
                         case ContactReceiver receiver:
                             return !receiver.IsLocalOnly;
-#endif
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
                         case ContactSender sender:
                             return !sender.IsLocalOnly;
-#endif
                         default:
                             return true;
                     }

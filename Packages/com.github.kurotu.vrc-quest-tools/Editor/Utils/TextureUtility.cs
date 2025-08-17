@@ -4,12 +4,7 @@ using System.IO;
 using System.Linq;
 using Unity.Collections;
 using UnityEditor;
-
-#if UNITY_2020_2_OR_NEWER
 using UnityEditor.AssetImporters;
-#else
-using UnityEditor.Experimental.AssetImporters;
-#endif
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
@@ -788,11 +783,7 @@ namespace KRT.VRCQuestTools.Utils
 
         private static bool ShouldUseAsyncGPUReadback()
         {
-#if UNITY_2022_1_OR_NEWER
             return SystemInfo.supportsAsyncGPUReadback;
-#else
-            return false;
-#endif
         }
     }
 }

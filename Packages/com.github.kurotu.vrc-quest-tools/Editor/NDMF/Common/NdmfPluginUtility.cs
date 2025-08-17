@@ -1,10 +1,8 @@
 ﻿using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Models.Unity;
 using nadena.dev.ndmf;
 using UnityEngine;
-#if !VQT_HAS_NDMF_ERROR_REPORT
-using KRT.VRCQuestTools.Ndmf.Dummy;
-#endif
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -45,30 +43,37 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     case MaterialConversionException e:
                         {
-                            var matRef = NdmfObjectRegistry.GetReference(e.source);
-                            ndmfError = new MaterialConversionError(matRef, e);
+                            var matRef = NdmfObjectRegistry.GetReference(e.SourceObject);
+                            if (e.InnerException is LilToonCompatibilityException lilException)
+                            {
+                                ndmfError = new LilToonCompatibilityError(lilException);
+                            }
+                            else
+                            {
+                                ndmfError = new MaterialConversionError(matRef, e);
+                            }
                         }
                         break;
                     case AnimationClipConversionException e:
                         {
-                            var animRef = NdmfObjectRegistry.GetReference(e.source);
+                            var animRef = NdmfObjectRegistry.GetReference(e.SourceObject);
                             ndmfError = new ObjectConversionError(animRef, e);
                         }
                         break;
                     case AnimatorControllerConversionException e:
                         {
-                            var animRef = NdmfObjectRegistry.GetReference(e.source);
+                            var animRef = NdmfObjectRegistry.GetReference(e.SourceObject);
                             ndmfError = new ObjectConversionError(animRef, e);
                         }
                         break;
                     case InvalidMaterialSwapNullException e:
-                        ndmfError = new MaterialSwapNullError(e.component, e.MaterialMapping);
+                        ndmfError = new MaterialSwapNullError(e.Component, e.MaterialMapping);
                         break;
                     case InvalidReplacementMaterialException e:
-                        ndmfError = new ReplacementMaterialError(e.component, e.replacementMaterial);
+                        ndmfError = new ReplacementMaterialError(e.Component, e.ReplacementMaterial);
                         break;
                     case TargetMaterialNullException e:
-                        ndmfError = new TargetMaterialNullError(e.component);
+                        ndmfError = new TargetMaterialNullError(e.Component);
                         break;
                     default:
                         ndmfError = new SimpleStringError(

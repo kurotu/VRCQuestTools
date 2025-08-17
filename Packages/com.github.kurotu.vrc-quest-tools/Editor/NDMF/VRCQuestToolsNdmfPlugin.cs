@@ -13,6 +13,8 @@ namespace KRT.VRCQuestTools.Ndmf
     /// </summary>
     internal class VRCQuestToolsNdmfPlugin : Plugin<VRCQuestToolsNdmfPlugin>
     {
+        private static readonly Lazy<Texture2D> LazyLogoTexture = new Lazy<Texture2D>(() => AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("e6a14816c3530ec498d3a7f1aad45a5a")));
+
         /// <summary>
         /// Gets the display name of the plugin.
         /// </summary>
@@ -21,26 +23,12 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public override string QualifiedName => "com.github.kurotu.vrc-quest-tools";
 
-#if VQT_HAS_NDMF_ERROR_REPORT
-        private static readonly Lazy<Texture2D> logoTexture = new Lazy<Texture2D>(() => AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("e6a14816c3530ec498d3a7f1aad45a5a")));
         /// <inheritdoc/>
-        public override Texture2D LogoTexture => logoTexture.Value;
-#endif
+        public override Texture2D LogoTexture => LazyLogoTexture.Value;
 
         /// <inheritdoc/>
         protected override void Configure()
         {
-#if !VQT_HAS_NDMF_ERROR_REPORT
-            InPhase(BuildPhase.Resolving)
-                .Run("Clear report window", ctx =>
-                {
-                    if (UnityEditor.EditorWindow.HasOpenInstances<NdmfReportWindow>())
-                    {
-                        NdmfReportWindow.Clear();
-                    }
-                });
-#endif
-
             InPhase(BuildPhase.Resolving)
                 .BeforePlugin("dev.logilabo.virtuallens2.apply-non-destructive") // need to configure vlens2.
                 .BeforePlugin("nadena.dev.modular-avatar") // need to configure modular avatar
@@ -61,9 +49,7 @@ namespace KRT.VRCQuestTools.Ndmf
             InPhase(BuildPhase.Transforming)
                 .BeforePlugin("MantisLODEditor.ndmf") // needs unmodified UVs for mask textures
                 .Run(MeshFlipperPass.Instance)
-#if VQT_HAS_NDMF_PREVIEW
                 .PreviewingWith(new MeshFlipperFilter(Components.MeshFlipperProcessingPhase.BeforePolygonReduction))
-#endif
                 ;
 
             InPhase(BuildPhase.Transforming)
@@ -79,9 +65,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
                 .Run(AvatarConverterOptimizingPass.Instance)
                 .Then.Run(MeshFlipperAfterPolygonReductionPass.Instance)
-#if VQT_HAS_NDMF_PREVIEW
                 .PreviewingWith(new MeshFlipperFilter(Components.MeshFlipperProcessingPhase.AfterPolygonReduction))
-#endif
                 .Then.Run(RemoveUnsupportedComponentsPass.Instance)
                 .Then.Run(MenuIconResizerPass.Instance)
                 .Then.Run(RemoveVRCQuestToolsComponentsPass.Instance);

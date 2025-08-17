@@ -9,9 +9,6 @@ using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-#if !UNITY_2021_2_OR_NEWER
-using UnityEditor.Experimental.SceneManagement;
-#endif
 using UnityEditorInternal;
 using UnityEngine;
 using VRC.SDKBase;
@@ -88,7 +85,6 @@ namespace KRT.VRCQuestTools.Inspector
                         }
                     }
 
-#if VQT_HAS_VRCSDK_CONSTRAINTS
                     if (avatar.HasUnityConstraints)
                     {
 #if VQT_HAS_MA_CONVERT_CONSTRAINTS
@@ -110,7 +106,6 @@ namespace KRT.VRCQuestTools.Inspector
                         }
 #endif
                     }
-#endif
 
                     if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor) && avatar.GameObject.GetComponent<NetworkIDAssigner>() == null)
                     {
@@ -171,6 +166,7 @@ namespace KRT.VRCQuestTools.Inspector
                 editorState.foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingsLabel, editorState.foldOutMaterialSettings);
                 if (editorState.foldOutMaterialSettings)
                 {
+                    additionalMaterialConvertSettingsReorderableList ??= MaterialConversionGUI.CreateAdditionalMaterialConvertSettingsList(so, so.FindProperty(nameof(AvatarConverterSettings.additionalMaterialConvertSettings)));
                     editorState.foldOutAdditionalMaterialSettings = MaterialConversionGUI.Draw(so, editorState.foldOutAdditionalMaterialSettings, additionalMaterialConvertSettingsReorderableList);
 
                     EditorGUILayout.Space();
@@ -308,11 +304,7 @@ namespace KRT.VRCQuestTools.Inspector
                 }
                 else
                 {
-#if VQT_HAS_VRCSDK_NO_PRECHECK
                     EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion2, MessageType.Info);
-#else
-                    EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion, MessageType.Info);
-#endif
 #if VQT_HAS_NDMF
                     if (GUILayout.Button(i18n.OpenAvatarBuilder, GUILayout.Height(38)))
                     {
@@ -469,7 +461,6 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
 #if VQT_HAS_MA_CONVERT_CONSTRAINTS
-    #if VQT_HAS_VRCSDK_NO_PRECHECK
             if (new VRChatAvatar(avatar).HasUnityConstraints && avatar.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
             {
                 if (EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForMAConvertConstraints, i18n.YesLabel, i18n.NoLabel))
@@ -477,15 +468,6 @@ namespace KRT.VRCQuestTools.Inspector
                     Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(avatar.gameObject);
                 }
             }
-    #else
-            if (new VRChatAvatar(avatar).HasUnityConstraints)
-            {
-                if (!EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForUnityConstraints, i18n.YesLabel, i18n.NoLabel))
-                {
-                    return;
-                }
-            }
-    #endif
 #endif
 
             var progressCallback = new ProgressCallback
@@ -563,34 +545,43 @@ namespace KRT.VRCQuestTools.Inspector
             switch (exception)
             {
                 case MaterialConversionException e:
-                    message = $"{i18n.MaterialExceptionDialogMessage}\n" +
-                        "\n" +
-                        $"Material: {AssetDatabase.GetAssetPath(e.source)}\n" +
-                        $"Shader: {e.source.shader.name}";
+                    if (e.InnerException is LilToonCompatibilityException lilException)
+                    {
+                        message = $"{lilException.LocalizedMessage}\n" +
+                            "\n" +
+                            $"Current: {AssetUtility.LilToonVersion}";
+                    }
+                    else
+                    {
+                        message = $"{i18n.MaterialExceptionDialogMessage}\n" +
+                            "\n" +
+                            $"Material: {AssetDatabase.GetAssetPath(e.SourceObject)}\n" +
+                            $"Shader: {e.SourceObject.shader.name}";
+                    }
                     dialogException = e.InnerException;
-                    context = e.source;
+                    context = e.SourceObject;
                     break;
                 case AnimationClipConversionException e:
                     message = $"{i18n.AnimationClipExceptionDialogMessage}\n" +
                         $"\n" +
-                        $"AnimationClip: {e.source.name}";
+                        $"AnimationClip: {e.SourceObject.name}";
                     dialogException = e.InnerException;
-                    context = e.source;
+                    context = e.SourceObject;
                     break;
                 case AnimatorControllerConversionException e:
                     message = $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
                         $"\n" +
-                        $"AnimatorController: {e.source.name}";
+                        $"AnimatorController: {e.SourceObject.name}";
                     dialogException = e.InnerException;
-                    context = e.source;
+                    context = e.SourceObject;
                     break;
                 case InvalidReplacementMaterialException e:
                     message = $"{i18n.InvalidReplacementMaterialExceptionDialogMessage}\n" +
                         $"\n" +
-                        $"Material: {e.replacementMaterial.name}\n" +
-                        $"Shader: {e.replacementMaterial.shader.name}";
+                        $"Material: {e.ReplacementMaterial.name}\n" +
+                        $"Shader: {e.ReplacementMaterial.shader.name}";
                     dialogException = e;
-                    context = e.component;
+                    context = e.Component;
                     break;
             }
             if (exception.InnerException != null)

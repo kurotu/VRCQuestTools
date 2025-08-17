@@ -55,21 +55,7 @@ namespace KRT.VRCQuestTools.Inspector
         private T GetComponentInParent<T>(GameObject gameObject)
             where T : Component
         {
-#if UNITY_2022_1_OR_NEWER
             return gameObject.GetComponentInParent<T>(true);
-#else
-            var parent = gameObject.transform;
-            while (parent != null)
-            {
-                var component = parent.GetComponent<T>();
-                if (component != null)
-                {
-                    return component;
-                }
-                parent = parent.parent;
-            }
-            return null;
-#endif
         }
     }
 }

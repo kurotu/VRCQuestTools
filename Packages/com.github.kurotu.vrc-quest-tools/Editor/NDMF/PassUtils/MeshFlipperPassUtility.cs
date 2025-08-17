@@ -62,7 +62,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     }
                     catch (MeshFlipperMaskNotReadableException e)
                     {
-                        var obj = NdmfObjectRegistry.GetReference(e.texture);
+                        var obj = NdmfObjectRegistry.GetReference(e.Texture);
                         NdmfErrorReport.ReportError(new MeshFlipperMaskNotReadableError(meshFlipper, obj));
                     }
                 }

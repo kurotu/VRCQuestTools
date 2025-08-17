@@ -1,5 +1,3 @@
-#if VQT_HAS_NDMF_PREVIEW
-
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -67,7 +65,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var mesh = RendererUtility.GetSharedMesh(targetRenderer);
             if (mesh == null)
             {
-                return null;
+                return Task.FromResult<IRenderFilterNode>(null);
             }
 
             context.Observe(meshFlipper);
@@ -132,5 +130,3 @@ namespace KRT.VRCQuestTools.Ndmf
         }
     }
 }
-
-#endif

@@ -15,7 +15,7 @@ namespace KRT.VRCQuestTools.Utils
     /// <summary>
     /// Modular Avatar utilities.
     /// </summary>
-    internal class ModularAvatarUtility
+    internal static class ModularAvatarUtility
     {
         /// <summary>
         /// Gets unsupported MA components for Android.
