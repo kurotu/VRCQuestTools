@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-08-13 15:14\n"
+"PO-Revision-Date: 2025-08-18 12:51\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -686,6 +686,12 @@ msgstr ""
 msgid "LilToonWrongInstallationExceptionMessage"
 msgstr ""
 
+msgid "ModularAvatarLegacyExceptionMessage"
+msgstr ""
+
+msgid "ModularAvatarBreakingExceptionMessage"
+msgstr ""
+
 msgid "FeatureRequiresNdmf"
 msgstr "Требуется Неразрушаемая Модульная Структура (NDMF)."
 
@@ -715,6 +721,12 @@ msgid "NDMF:LilToonCompatibilityErrorTitle"
 msgstr ""
 
 msgid "NDMF:LilToonCompatibilityErrorDescription"
+msgstr ""
+
+msgid "NDMF:ModularAvatarCompatibilityErrorTitle"
+msgstr ""
+
+msgid "NDMF:ModularAvatarCompatibilityErrorDescription"
 msgstr ""
 
 msgid "NDMF:MaterialSwapNullErrorTitle"
