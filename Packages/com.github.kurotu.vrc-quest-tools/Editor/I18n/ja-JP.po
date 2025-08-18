@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-08-14 01:14\n"
+"PO-Revision-Date: 2025-08-18 12:51\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -689,6 +689,12 @@ msgstr "このバージョンのlilToonには非対応です。VRCQuestToolsを�
 msgid "LilToonWrongInstallationExceptionMessage"
 msgstr "lilToonのインストール状態が正しくありません。VCCかALCOMで再度インストールしてください。"
 
+msgid "ModularAvatarLegacyExceptionMessage"
+msgstr ""
+
+msgid "ModularAvatarBreakingExceptionMessage"
+msgstr ""
+
 msgid "FeatureRequiresNdmf"
 msgstr "Non-Destructive Modular Framework (NDMF) が必要です。"
 
@@ -719,6 +725,12 @@ msgstr "非対応のlilToon"
 
 msgid "NDMF:LilToonCompatibilityErrorDescription"
 msgstr "{0}"
+
+msgid "NDMF:ModularAvatarCompatibilityErrorTitle"
+msgstr ""
+
+msgid "NDMF:ModularAvatarCompatibilityErrorDescription"
+msgstr ""
 
 msgid "NDMF:MaterialSwapNullErrorTitle"
 msgstr "マテリアル未設定"
