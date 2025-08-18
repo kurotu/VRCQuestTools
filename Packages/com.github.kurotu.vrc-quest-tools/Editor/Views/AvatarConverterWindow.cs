@@ -3,9 +3,11 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
@@ -67,14 +69,15 @@ namespace KRT.VRCQuestTools.Views
                 var converterSettings = targetRoot.GetComponentInChildren<AvatarConverterSettings>(true);
                 if (converterSettings == null)
                 {
-                    var components = new string[]
+                    var components = new List<string>
                     {
                         "VQT Avatar Converter Settings",
                         "VQT Network ID Assigner",
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
-                        "MA Convert Constraints",
-#endif
                     };
+                    if (ModularAvatarUtility.IsModularAvatarImported())
+                    {
+                        components.Add("MA Convert Constraints");
+                    }
                     var componentsText = components.Select(c => $"  - {c}").Aggregate((a, b) => $"{a}\n{b}");
                     EditorGUILayout.HelpBox(i18n.BeginConvertSettingsButtonDescription + "\n" + componentsText, MessageType.Info);
 
@@ -113,12 +116,10 @@ namespace KRT.VRCQuestTools.Views
                 EditorUtility.DisplayDialog("VRCQuestTools", i18n.NetworkIdAssignerAttached, "OK");
             }
 
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
-            if (targetRoot.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
+            if (ModularAvatarUtility.IsModularAvatarImported() && !ModularAvatarUtility.HasConvertConstraintsComponent(targetRoot))
             {
-                Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(targetRoot);
+                ModularAvatarUtility.AddConvertConstraintsComponent(targetRoot);
             }
-#endif
 
             Undo.CollapseUndoOperations(group);
         }

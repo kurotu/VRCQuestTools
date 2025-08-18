@@ -11,9 +11,6 @@ using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
-#if VQT_HAS_MODULAR_AVATAR
-using nadena.dev.modular_avatar.core;
-#endif
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -89,9 +86,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="avatar">Avatar object to convert.</param>
         internal void PrepareModularAvatarComponentsInPlace(VRChatAvatar avatar)
         {
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
-            avatar.GameObject.GetOrAddComponent<ModularAvatarConvertConstraints>();
-#endif
+            if (ModularAvatarUtility.IsModularAvatarImported())
+            {
+                ModularAvatarUtility.GetOrAddConvertConstraintsComponent(avatar.GameObject);
+            }
         }
 
         /// <summary>
@@ -104,6 +102,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="progressCallback">Callback to show progress.</param>
         internal void ConvertForQuestInPlace(VRChatAvatar avatar, ComponentRemover remover, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
         {
+            if (ModularAvatarUtility.IsLegacyVersion())
+            {
+                throw new ModularAvatarLegacyException();
+            }
+            if (ModularAvatarUtility.IsBreakingVersion())
+            {
+                throw new ModularAvatarBreakingException();
+            }
+
             var questAvatarObject = avatar.GameObject;
             questAvatarObject.SetActive(true);
             var converterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();
@@ -126,8 +133,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             if (converterSettings != null)
             {
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
-                if (saveAssetsAsFile && questAvatarObject.GetComponent<ModularAvatarConvertConstraints>() != null)
+                if (ModularAvatarUtility.IsModularAvatarImported() && saveAssetsAsFile && ModularAvatarUtility.HasConvertConstraintsComponent(questAvatarObject))
                 {
                     remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true, false, new Type[] { typeof(UnityEngine.Animations.IConstraint) });
                 }
@@ -135,9 +141,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 {
                     remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
                 }
-#else
-                remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
-#endif
                 ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
 
                 ApplyVRCQuestToolsComponents(converterSettings, questAvatarObject);
@@ -238,18 +241,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                 }
 
-#if VQT_HAS_MODULAR_AVATAR
-                foreach (var ma in questAvatarObject.GetComponentsInChildren<ModularAvatarMergeAnimator>(true))
+                if (ModularAvatarUtility.IsModularAvatarImported())
                 {
-                    if (ma.animator != null)
+                    foreach (var ma in ModularAvatarUtility.GetMergeAnimatorComponentsInChildren(questAvatarObject, true))
                     {
-                        if (convertedAnimatorControllers.ContainsKey(ma.animator))
+                        var animator = ModularAvatarUtility.GetMergeAnimatorController(ma);
+                        if (animator != null && convertedAnimatorControllers.ContainsKey(animator))
                         {
-                            ma.animator = convertedAnimatorControllers[ma.animator];
+                            ModularAvatarUtility.SetMergeAnimatorController(ma, convertedAnimatorControllers[animator]);
                         }
                     }
                 }
-#endif
             }
 
             // Apply converted materials to renderers.

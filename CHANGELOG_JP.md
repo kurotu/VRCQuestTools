@@ -17,6 +17,7 @@
 - 処理対象の非対応マテリアルは `Avatar Converter Settings` と `Material Conversion Settings` で警告されないように変更。
 - asmdefの Auto Referenced をオフに変更。
 - 非対応の lilToon のマテリアルを変換するときのエラーメッセージを改善。
+- 非対応の Modular Avatar を使用しているときアバターの変換時にエラーとなるよう変更。
 - [NDMF] 非対応のバージョンを使用しているときビルド時にエラーダイアログを表示してビルドを中止するように変更。
 
 ### 修正

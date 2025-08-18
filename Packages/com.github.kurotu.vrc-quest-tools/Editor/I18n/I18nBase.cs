@@ -332,6 +332,10 @@ namespace KRT.VRCQuestTools.I18n
         internal string LilToonBreakingExceptionMessage(string breakingVersion) => GetText("LilToonBreakingExceptionMessage", breakingVersion);
         internal string LilToonWrongInstallationExceptionMessage => GetText("LilToonWrongInstallationExceptionMessage");
 
+        // Modular Avatar Compatibility Exceptions
+        internal string ModularAvatarLegacyExceptionMessage(string requiredVersion) => GetText("ModularAvatarLegacyExceptionMessage", requiredVersion);
+        internal string ModularAvatarBreakingExceptionMessage(string breakingVersion) => GetText("ModularAvatarBreakingExceptionMessage", breakingVersion);
+
         // NDMF
         internal string FeatureRequiresNdmf => GetText("FeatureRequiresNdmf");
         internal string UnsupportedNdmfCallbackMessageLegacy(string requiredVersion) => GetText("UnsupportedNdmfCallbackMessageLegacy", requiredVersion);

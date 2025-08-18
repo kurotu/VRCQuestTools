@@ -9,9 +9,6 @@ using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
-#if VQT_HAS_MODULAR_AVATAR
-using nadena.dev.modular_avatar.core;
-#endif
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -284,12 +281,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             // Modular Avatar Merge Animator
             RuntimeAnimatorController[] mergeAnimators = { };
-#if VQT_HAS_MODULAR_AVATAR
-            mergeAnimators = rootObject
-                .GetComponentsInChildren<ModularAvatarMergeAnimator>(true)
-                .Select(ma => ma.animator)
-                .ToArray();
-#endif
+            if (ModularAvatarUtility.IsModularAvatarImported())
+            {
+                mergeAnimators = ModularAvatarUtility.GetMergeAnimatorComponentsInChildren(rootObject, true)
+                    .Select(ma => ModularAvatarUtility.GetMergeAnimatorController(ma))
+                    .Where(controller => controller != null)
+                    .ToArray();
+            }
 
             var controllers = animatorControllers.Concat(playableLayers).Concat(mergeAnimators).Where(c => c != null).ToArray();
             var overrideBases = controllers
