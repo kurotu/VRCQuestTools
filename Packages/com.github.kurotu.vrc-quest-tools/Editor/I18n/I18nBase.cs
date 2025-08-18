@@ -327,18 +327,11 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarBuilderWindowNdmfManualBakingDescription => GetText("AvatarBuilderWindowNdmfManualBakingDescription");
         internal string AvatarBuilderWindowRequiresAvatarNameAndThumb => GetText("AvatarBuilderWindowRequiresAvatarNameAndThumb");
 
-        // lilToon Compatibility Exceptions
-        internal string LilToonLegacyExceptionMessage(string requiredVersion) => GetText("LilToonLegacyExceptionMessage", requiredVersion);
-        internal string LilToonBreakingExceptionMessage(string breakingVersion) => GetText("LilToonBreakingExceptionMessage", breakingVersion);
-        internal string LilToonWrongInstallationExceptionMessage => GetText("LilToonWrongInstallationExceptionMessage");
-
-        // Modular Avatar Compatibility Exceptions
-        internal string ModularAvatarLegacyExceptionMessage(string requiredVersion) => GetText("ModularAvatarLegacyExceptionMessage", requiredVersion);
-        internal string ModularAvatarBreakingExceptionMessage(string breakingVersion) => GetText("ModularAvatarBreakingExceptionMessage", breakingVersion);
+        // Compatibility Exceptions
+        internal string LegacyPackageExceptionMessage(string packageName, string requiredVersion) => GetText("LegacyPackageExceptionMessage", packageName, requiredVersion);
+        internal string BreakingPackageExceptionMessage(string packageName, string breakingVersion) => GetText("BreakingPackageExceptionMessage", packageName, breakingVersion);
 
         // NDMF
         internal string FeatureRequiresNdmf => GetText("FeatureRequiresNdmf");
-        internal string UnsupportedNdmfCallbackMessageLegacy(string requiredVersion) => GetText("UnsupportedNdmfCallbackMessageLegacy", requiredVersion);
-        internal string UnsupportedNdmfCallbackMessageBreaking(string breakingVersion) => GetText("UnsupportedNdmfCallbackMessageBreaking", breakingVersion);
     }
 }

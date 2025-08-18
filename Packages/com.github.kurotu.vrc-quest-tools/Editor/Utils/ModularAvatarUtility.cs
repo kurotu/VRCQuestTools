@@ -16,12 +16,27 @@ namespace KRT.VRCQuestTools.Utils
     internal static class ModularAvatarUtility
     {
         /// <summary>
+        /// The display name of the package.
+        /// </summary>
+        internal const string PackageDisplayName = "Modular Avatar";
+
+        /// <summary>
+        /// The required version of the package.
+        /// </summary>
+        internal const string RequiredVersion = "1.12.2";
+
+        /// <summary>
+        /// The breaking version of the package.
+        /// </summary>
+        internal const string BreakingVersion = "2.0.0";
+
+        /// <summary>
         /// Checks if the Modular Avatar package is imported.
         /// </summary>
         /// <returns>True if imported, false otherwise.</returns>
         internal static bool IsModularAvatarImported()
         {
-#if VQT_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR && !VQT_MODULAR_AVATAR_LEGACY && !VQT_MODULAR_AVATAR_BREAKING
             return true;
 #else
             return false;

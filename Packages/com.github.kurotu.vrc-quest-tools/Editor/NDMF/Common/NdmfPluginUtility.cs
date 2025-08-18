@@ -42,15 +42,15 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 switch (vqte)
                 {
-                    case ModularAvatarCompatibilityException e:
-                        ndmfError = new ModularAvatarCompatibilityError(e);
+                    case PackageCompatibilityException e:
+                        ndmfError = new PackageCompatibilityError(e);
                         break;
                     case MaterialConversionException e:
                         {
                             var matRef = NdmfObjectRegistry.GetReference(e.SourceObject);
-                            if (e.InnerException is LilToonCompatibilityException lilException)
+                            if (e.InnerException is PackageCompatibilityException packageException)
                             {
-                                ndmfError = new LilToonCompatibilityError(lilException);
+                                ndmfError = new PackageCompatibilityError(packageException);
                             }
                             else
                             {

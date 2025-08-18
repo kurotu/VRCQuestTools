@@ -63,9 +63,9 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             if (isInstalled && lilToonVersion < RequiredVersion)
             {
-                var ex = Assert.Throws<LilToonLegacyException>(() => new LilToonMaterial(testMaterial));
+                var ex = Assert.Throws<LegacyPackageException>(() => new LilToonMaterial(testMaterial));
                 Assert.IsNotNull(ex);
-                Assert.IsInstanceOf<LilToonCompatibilityException>(ex);
+                Assert.IsInstanceOf<PackageCompatibilityException>(ex);
                 Assert.IsNotNull(ex.LocalizedMessage);
                 Assert.IsNotEmpty(ex.LocalizedMessage);
                 StringAssert.Contains(RequiredVersion.ToString(), ex.LocalizedMessage);
@@ -88,9 +88,9 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             if (isInstalled && lilToonVersion >= BreakingVersion)
             {
-                var ex = Assert.Throws<LilToonBreakingException>(() => new LilToonMaterial(testMaterial));
+                var ex = Assert.Throws<BreakingPackageException>(() => new LilToonMaterial(testMaterial));
                 Assert.IsNotNull(ex);
-                Assert.IsInstanceOf<LilToonCompatibilityException>(ex);
+                Assert.IsInstanceOf<PackageCompatibilityException>(ex);
                 Assert.IsNotNull(ex.LocalizedMessage);
                 Assert.IsNotEmpty(ex.LocalizedMessage);
                 StringAssert.Contains(BreakingVersion.ToString(), ex.LocalizedMessage);
@@ -112,9 +112,9 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             if (!isInstalled)
             {
-                var ex = Assert.Throws<LilToonWrongInstallationException>(() => new LilToonMaterial(testMaterial));
+                var ex = Assert.Throws<LegacyPackageException>(() => new LilToonMaterial(testMaterial));
                 Assert.IsNotNull(ex);
-                Assert.IsInstanceOf<LilToonCompatibilityException>(ex);
+                Assert.IsInstanceOf<PackageCompatibilityException>(ex);
                 Assert.IsNotNull(ex.LocalizedMessage);
                 Assert.IsNotEmpty(ex.LocalizedMessage);
             }
@@ -145,17 +145,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
-        /// Test that all exception types inherit from LilToonCompatibilityException.
-        /// </summary>
-        [Test]
-        public void ExceptionTypes_InheritFromLilToonCompatibilityException()
-        {
-            Assert.IsTrue(typeof(LilToonLegacyException).IsSubclassOf(typeof(LilToonCompatibilityException)));
-            Assert.IsTrue(typeof(LilToonBreakingException).IsSubclassOf(typeof(LilToonCompatibilityException)));
-            Assert.IsTrue(typeof(LilToonWrongInstallationException).IsSubclassOf(typeof(LilToonCompatibilityException)));
-        }
-
-        /// <summary>
         /// Test exception message content based on current lilToon installation.
         /// </summary>
         [Test]
@@ -166,7 +155,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
             if (!isInstalled)
             {
-                var ex = Assert.Throws<LilToonWrongInstallationException>(() => new LilToonMaterial(testMaterial));
+                var ex = Assert.Throws<LegacyPackageException>(() => new LilToonMaterial(testMaterial));
                 Assert.IsNotNull(ex.Message);
                 Assert.IsNotNull(ex.LocalizedMessage);
                 Assert.IsNotEmpty(ex.Message);
@@ -174,13 +163,13 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
             else if (lilToonVersion < RequiredVersion)
             {
-                var ex = Assert.Throws<LilToonLegacyException>(() => new LilToonMaterial(testMaterial));
+                var ex = Assert.Throws<LegacyPackageException>(() => new LilToonMaterial(testMaterial));
                 StringAssert.Contains(RequiredVersion.ToString(), ex.Message);
                 StringAssert.Contains(RequiredVersion.ToString(), ex.LocalizedMessage);
             }
             else if (lilToonVersion >= BreakingVersion)
             {
-                var ex = Assert.Throws<LilToonBreakingException>(() => new LilToonMaterial(testMaterial));
+                var ex = Assert.Throws<BreakingPackageException>(() => new LilToonMaterial(testMaterial));
                 StringAssert.Contains(BreakingVersion.ToString(), ex.Message);
                 StringAssert.Contains(BreakingVersion.ToString(), ex.LocalizedMessage);
             }

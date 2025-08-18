@@ -33,9 +33,9 @@ namespace KRT.VRCQuestTools.Ndmf
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
 #if VQT_NDMF_LEGACY
-            var message = i18n.UnsupportedNdmfCallbackMessageLegacy(RequiredNdmfVersion);
+            var message = i18n.LegacyPackageExceptionMessage("NDMF", RequiredNdmfVersion);
 #elif VQT_NDMF_BREAKING
-            var message = i18n.UnsupportedNdmfCallbackMessageBreaking(BreakingNdmfVersion);
+            var message = i18n.BreakingPackageExceptionMessage("NDMF", BreakingNdmfVersion);
 #endif
             Debug.LogError($"[{VRCQuestTools.Name}] " + message);
             EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
