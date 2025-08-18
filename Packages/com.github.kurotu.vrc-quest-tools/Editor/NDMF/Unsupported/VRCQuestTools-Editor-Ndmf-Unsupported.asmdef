@@ -26,7 +26,7 @@
         },
         {
             "name": "nadena.dev.ndmf",
-            "expression": "2.0.0",
+            "expression": "2.0.0-a",
             "define": "VQT_NDMF_BREAKING"
         }
     ],

@@ -42,7 +42,7 @@
         },
         {
             "name": "jp.lilxyzw.liltoon",
-            "expression": "3.0.0",
+            "expression": "3.0.0-a",
             "define": "VQT_LILTOON_BREAKING"
         },
         {
@@ -57,12 +57,12 @@
         },
         {
             "name": "nadena.dev.modular-avatar",
-            "expression": "[0.0.0,1.12.0)",
+            "expression": "[0.0.0,1.12.2)",
             "define": "VQT_MODULAR_AVATAR_LEGACY"
         },
         {
             "name": "nadena.dev.modular-avatar",
-            "expression": "2.0.0",
+            "expression": "2.0.0-a",
             "define": "VQT_MODULAR_AVATAR_BREAKING"
         }
     ],
