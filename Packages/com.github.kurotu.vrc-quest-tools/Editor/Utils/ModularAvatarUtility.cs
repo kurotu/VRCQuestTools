@@ -105,7 +105,7 @@ namespace KRT.VRCQuestTools.Utils
 #if VQT_MODULAR_AVATAR && !VQT_MODULAR_AVATAR_LEGACY && !VQT_MODULAR_AVATAR_BREAKING
             Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(gameObject);
 #else
-            throw new System.InvalidProgramException("Modular Avatar is not available.");
+            throw new System.InvalidProgramException("Cannot add ModularAvatarConvertConstraints component: Modular Avatar package is not installed or version is incompatible.");
 #endif
         }
 
@@ -124,7 +124,7 @@ namespace KRT.VRCQuestTools.Utils
             }
             return component;
 #else
-            throw new System.InvalidProgramException("Modular Avatar is not available.");
+            throw new System.InvalidProgramException("Cannot get or add ModularAvatarConvertConstraints component: Modular Avatar package is not installed or version is incompatible.");
 #endif
         }
 
