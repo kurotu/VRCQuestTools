@@ -17,6 +17,8 @@ namespace KRT.VRCQuestTools.Ndmf
         internal const string MaterialConversionErrorDescription = "NDMF:MaterialConversionErrorDescription";
         internal const string LilToonCompatibilityErrorTitle = "NDMF:LilToonCompatibilityErrorTitle";
         internal const string LilToonCompatibilityErrorDescription = "NDMF:LilToonCompatibilityErrorDescription";
+        internal const string ModularAvatarCompatibilityErrorTitle = "NDMF:ModularAvatarCompatibilityErrorTitle";
+        internal const string ModularAvatarCompatibilityErrorDescription = "NDMF:ModularAvatarCompatibilityErrorDescription";
         internal const string MaterialSwapNullErrorTitle = "NDMF:MaterialSwapNullErrorTitle";
         internal const string MaterialSwapNullErrorDescription = "NDMF:MaterialSwapNullErrorDescription";
         internal const string ObjectConversionErrorTitle = "NDMF:ObjectConversionErrorTitle";

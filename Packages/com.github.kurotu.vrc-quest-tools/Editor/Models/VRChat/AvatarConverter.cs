@@ -102,6 +102,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="progressCallback">Callback to show progress.</param>
         internal void ConvertForQuestInPlace(VRChatAvatar avatar, ComponentRemover remover, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
         {
+            if (ModularAvatarUtility.IsLegacyVersion())
+            {
+                throw new ModularAvatarLegacyException();
+            }
+            if (ModularAvatarUtility.IsBreakingVersion())
+            {
+                throw new ModularAvatarBreakingException();
+            }
+
             var questAvatarObject = avatar.GameObject;
             questAvatarObject.SetActive(true);
             var converterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();

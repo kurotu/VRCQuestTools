@@ -541,6 +541,10 @@ namespace KRT.VRCQuestTools.Inspector
             Object context = null;
             switch (exception)
             {
+                case ModularAvatarCompatibilityException e:
+                    message = $"{e.LocalizedMessage}";
+                    dialogException = e;
+                    break;
                 case MaterialConversionException e:
                     if (e.InnerException is LilToonCompatibilityException lilException)
                     {

@@ -1,6 +1,7 @@
 ﻿using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf;
 using UnityEngine;
 
@@ -41,6 +42,9 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 switch (vqte)
                 {
+                    case ModularAvatarCompatibilityException e:
+                        ndmfError = new ModularAvatarCompatibilityError(e);
+                        break;
                     case MaterialConversionException e:
                         {
                             var matRef = NdmfObjectRegistry.GetReference(e.SourceObject);

@@ -29,6 +29,32 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Checks if the Modular Avatar package is using a legacy version.
+        /// </summary>
+        /// <returns>True if legacy version, false otherwise.</returns>
+        internal static bool IsLegacyVersion()
+        {
+#if VQT_MODULAR_AVATAR_LEGACY
+            return true;
+#else
+            return false;
+#endif
+        }
+
+        /// <summary>
+        /// Checks if the Modular Avatar package is using a breaking version.
+        /// </summary>
+        /// <returns>True if breaking version, false otherwise.</returns>
+        internal static bool IsBreakingVersion()
+        {
+#if VQT_MODULAR_AVATAR_BREAKING
+            return true;
+#else
+            return false;
+#endif
+        }
+
+        /// <summary>
         /// Gets unsupported MA components for Android.
         /// </summary>
         /// <param name="gameObject">GameObject to inspect.</param>
@@ -63,7 +89,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>True if the component exists, false otherwise.</returns>
         internal static bool HasConvertConstraintsComponent(GameObject gameObject)
         {
-#if VQT_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR && !VQT_MODULAR_AVATAR_LEGACY && !VQT_MODULAR_AVATAR_BREAKING
             return gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() != null;
 #else
             return false;
@@ -76,7 +102,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="gameObject">GameObject to add the component to.</param>
         internal static void AddConvertConstraintsComponent(GameObject gameObject)
         {
-#if VQT_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR && !VQT_MODULAR_AVATAR_LEGACY && !VQT_MODULAR_AVATAR_BREAKING
             Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(gameObject);
 #else
             throw new System.InvalidProgramException("Modular Avatar is not available.");
@@ -90,7 +116,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>The component, or null if Modular Avatar is not available.</returns>
         internal static Component GetOrAddConvertConstraintsComponent(GameObject gameObject)
         {
-#if VQT_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR && !VQT_MODULAR_AVATAR_LEGACY && !VQT_MODULAR_AVATAR_BREAKING
             var component = gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>();
             if (component == null)
             {
@@ -110,7 +136,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Array of ModularAvatarMergeAnimator components.</returns>
         internal static Component[] GetMergeAnimatorComponentsInChildren(GameObject gameObject, bool includeInactive)
         {
-#if VQT_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR && !VQT_MODULAR_AVATAR_LEGACY && !VQT_MODULAR_AVATAR_BREAKING
             return gameObject.GetComponentsInChildren<nadena.dev.modular_avatar.core.ModularAvatarMergeAnimator>(includeInactive)
                 .Cast<Component>().ToArray();
 #else
@@ -125,7 +151,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>The animator controller, or null if not applicable.</returns>
         internal static RuntimeAnimatorController GetMergeAnimatorController(Component component)
         {
-#if VQT_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR && !VQT_MODULAR_AVATAR_LEGACY && !VQT_MODULAR_AVATAR_BREAKING
             if (component is nadena.dev.modular_avatar.core.ModularAvatarMergeAnimator ma)
             {
                 return ma.animator;
@@ -142,7 +168,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="controller">The animator controller to set.</param>
         internal static void SetMergeAnimatorController(Component component, RuntimeAnimatorController controller)
         {
-#if VQT_MODULAR_AVATAR
+#if VQT_MODULAR_AVATAR && !VQT_MODULAR_AVATAR_LEGACY && !VQT_MODULAR_AVATAR_BREAKING
             if (component is nadena.dev.modular_avatar.core.ModularAvatarMergeAnimator ma)
             {
                 ma.animator = controller;

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unsupported materials to be processed are no longer warned in `Avatar Converter Settings` and `Material Conversion Settings`.
 - Turned off Auto Referenced in asmdef.
 - Improved error messages when converting unsupported lilToon materials.
+- Changed to show an error when converting an avatar that uses an unsupported Modular Avatar.
 - [NDMF] Show an error dialog then abort the build when using unsupported version of NDMF.
 
 ### Fixed

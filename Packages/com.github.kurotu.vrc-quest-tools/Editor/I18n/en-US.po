@@ -689,6 +689,12 @@ msgstr "This version of lilToon is not supported. Update VRCQuestTools or downgr
 msgid "LilToonWrongInstallationExceptionMessage"
 msgstr "lilToon installation is wrong. Reinstall lilToon with VCC or ALCOM."
 
+msgid "ModularAvatarLegacyExceptionMessage"
+msgstr "This version of Modular Avatar is not supported. Update Modular Avatar to {0} or later."
+
+msgid "ModularAvatarBreakingExceptionMessage"
+msgstr "This version of Modular Avatar is not supported. Update VRCQuestTools or downgrade Modular Avatar to earlier than {0}."
+
 msgid "FeatureRequiresNdmf"
 msgstr "Non-Destructive Modular Framework is required."
 
@@ -718,6 +724,12 @@ msgid "NDMF:LilToonCompatibilityErrorTitle"
 msgstr "Unsupported Version of lilToon"
 
 msgid "NDMF:LilToonCompatibilityErrorDescription"
+msgstr "{0}"
+
+msgid "NDMF:ModularAvatarCompatibilityErrorTitle"
+msgstr "Unsupported Version of Modular Avatar"
+
+msgid "NDMF:ModularAvatarCompatibilityErrorDescription"
 msgstr "{0}"
 
 msgid "NDMF:MaterialSwapNullErrorTitle"
