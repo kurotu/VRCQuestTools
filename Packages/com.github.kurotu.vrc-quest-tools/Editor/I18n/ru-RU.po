@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-08-18 12:51\n"
+"PO-Revision-Date: 2025-08-19 02:19\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -677,29 +677,14 @@ msgstr "Выполните меню, Инструменты -> NDM Framework -> 
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "Необходимо установить имя и миниатюру в панели управления VRChat SDK при загрузке нового аватара."
 
-msgid "LilToonLegacyExceptionMessage"
+msgid "LegacyPackageExceptionMessage"
 msgstr ""
 
-msgid "LilToonBreakingExceptionMessage"
-msgstr ""
-
-msgid "LilToonWrongInstallationExceptionMessage"
-msgstr ""
-
-msgid "ModularAvatarLegacyExceptionMessage"
-msgstr ""
-
-msgid "ModularAvatarBreakingExceptionMessage"
+msgid "BreakingPackageExceptionMessage"
 msgstr ""
 
 msgid "FeatureRequiresNdmf"
 msgstr "Требуется Неразрушаемая Модульная Структура (NDMF)."
-
-msgid "UnsupportedNdmfCallbackMessageLegacy"
-msgstr ""
-
-msgid "UnsupportedNdmfCallbackMessageBreaking"
-msgstr ""
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
 msgstr "Удалён неподдерживаемый компонент"
@@ -717,16 +702,10 @@ msgstr "Произошла ошибка при конвертации матер
 "{2}: {3}\n"
 "{4}"
 
-msgid "NDMF:LilToonCompatibilityErrorTitle"
+msgid "NDMF:PackageCompatibilityErrorTitle"
 msgstr ""
 
-msgid "NDMF:LilToonCompatibilityErrorDescription"
-msgstr ""
-
-msgid "NDMF:ModularAvatarCompatibilityErrorTitle"
-msgstr ""
-
-msgid "NDMF:ModularAvatarCompatibilityErrorDescription"
+msgid "NDMF:PackageCompatibilityErrorDescription"
 msgstr ""
 
 msgid "NDMF:MaterialSwapNullErrorTitle"
