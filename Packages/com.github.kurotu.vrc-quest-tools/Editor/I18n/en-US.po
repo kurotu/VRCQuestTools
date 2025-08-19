@@ -680,29 +680,14 @@ msgstr "Execute the menu, Tools -> NDM Framework -> Manual bake avatar with Andr
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "Need to set name and thumbnail in VRChat SDK Control Panel when uploading a new avatar."
 
-msgid "LilToonLegacyExceptionMessage"
-msgstr "This version of lilToon is not supported. Update lilToon to {0} or later."
+msgid "LegacyPackageExceptionMessage"
+msgstr "Current version of {0} is not supported. Update {0} to {1} or later."
 
-msgid "LilToonBreakingExceptionMessage"
-msgstr "This version of lilToon is not supported. Update VRCQuestTools or downgrade lilToon to earlier than {0}."
-
-msgid "LilToonWrongInstallationExceptionMessage"
-msgstr "lilToon installation is wrong. Reinstall lilToon with VCC or ALCOM."
-
-msgid "ModularAvatarLegacyExceptionMessage"
-msgstr "This version of Modular Avatar is not supported. Update Modular Avatar to {0} or later."
-
-msgid "ModularAvatarBreakingExceptionMessage"
-msgstr "This version of Modular Avatar is not supported. Update VRCQuestTools or downgrade Modular Avatar to earlier than {0}."
+msgid "BreakingPackageExceptionMessage"
+msgstr "Current version of {0} is not supported. Update VRCQuestTools or downgrade {0} to earlier than {1}."
 
 msgid "FeatureRequiresNdmf"
 msgstr "Non-Destructive Modular Framework is required."
-
-msgid "UnsupportedNdmfCallbackMessageLegacy"
-msgstr "This version of NDMF is no longer supported. Update NDMF to {0} or later."
-
-msgid "UnsupportedNdmfCallbackMessageBreaking"
-msgstr "This version of NDMF is not supported yet. Update VRCQuestTools or downgrade NDMF to earlier than {0}."
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
 msgstr "Removed Unsupported Component"
@@ -720,16 +705,10 @@ msgstr "An error occurred when conversion a material.\n\n"
 "{2}: {3}\n"
 "{4}"
 
-msgid "NDMF:LilToonCompatibilityErrorTitle"
-msgstr "Unsupported Version of lilToon"
+msgid "NDMF:PackageCompatibilityErrorTitle"
+msgstr "Unsupported Version of {0}"
 
-msgid "NDMF:LilToonCompatibilityErrorDescription"
-msgstr "{0}"
-
-msgid "NDMF:ModularAvatarCompatibilityErrorTitle"
-msgstr "Unsupported Version of Modular Avatar"
-
-msgid "NDMF:ModularAvatarCompatibilityErrorDescription"
+msgid "NDMF:PackageCompatibilityErrorDescription"
 msgstr "{0}"
 
 msgid "NDMF:MaterialSwapNullErrorTitle"

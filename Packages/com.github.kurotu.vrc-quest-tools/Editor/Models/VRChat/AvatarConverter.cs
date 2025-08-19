@@ -104,11 +104,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             if (ModularAvatarUtility.IsLegacyVersion())
             {
-                throw new ModularAvatarLegacyException();
+                throw new LegacyPackageException(ModularAvatarUtility.PackageDisplayName, ModularAvatarUtility.RequiredVersion);
             }
             if (ModularAvatarUtility.IsBreakingVersion())
             {
-                throw new ModularAvatarBreakingException();
+                throw new BreakingPackageException(ModularAvatarUtility.PackageDisplayName, ModularAvatarUtility.BreakingVersion);
             }
 
             var questAvatarObject = avatar.GameObject;

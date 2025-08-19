@@ -1,22 +1,21 @@
-using System.Collections.Generic;
-using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf;
 using nadena.dev.ndmf.localization;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
     /// <summary>
-    /// Error for lilToon compatibility issues.
+    /// Error for package compatibility issues.
     /// </summary>
-    internal class LilToonCompatibilityError : SimpleError
+    internal class PackageCompatibilityError : SimpleError
     {
-        private readonly LilToonCompatibilityException exception;
+        private readonly PackageCompatibilityException exception;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LilToonCompatibilityError"/> class.
+        /// Initializes a new instance of the <see cref="PackageCompatibilityError"/> class.
         /// </summary>
         /// <param name="exception">Thrown exception.</param>
-        public LilToonCompatibilityError(LilToonCompatibilityException exception)
+        public PackageCompatibilityError(PackageCompatibilityException exception)
         {
             this.exception = exception;
         }
@@ -28,10 +27,13 @@ namespace KRT.VRCQuestTools.Ndmf
         public override Localizer Localizer => NdmfLocalizer.Instance;
 
         /// <inheritdoc/>
-        public override string TitleKey => NdmfLocalizer.LilToonCompatibilityErrorTitle;
+        public override string TitleKey => NdmfLocalizer.PackageCompatibilityErrorTitle;
 
         /// <inheritdoc/>
-        public override string DetailsKey => NdmfLocalizer.LilToonCompatibilityErrorDescription;
+        public override string[] TitleSubst => new[] { exception.PackageDisplayName };
+
+        /// <inheritdoc/>
+        public override string DetailsKey => NdmfLocalizer.PackageCompatibilityErrorDescription;
 
         /// <inheritdoc/>
         public override string[] DetailsSubst => new[] { exception.LocalizedMessage };

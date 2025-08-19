@@ -16,20 +16,32 @@ namespace KRT.VRCQuestTools.Models.Unity
     internal class LilToonMaterial : MaterialBase, IToonStandardConvertable
     {
         /// <summary>
+        /// Package display name.
+        /// </summary>
+        internal const string PackageDisplayName = "lilToon";
+
+        /// <summary>
+        /// Required version.
+        /// </summary>
+        internal const string RequiredVersion = "1.10.0";
+
+        /// <summary>
+        /// Breaking version.
+        /// </summary>
+        internal const string BreakingVersion = "3.0.0";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="LilToonMaterial"/> class.
         /// </summary>
         /// <param name="material">Material.</param>
         internal LilToonMaterial(Material material)
             : base(material)
         {
-#if VQT_LILTOON_LEGACY
-            throw new LilToonLegacyException();
+#if VQT_LILTOON_LEGACY || !VQT_LILTOON
+            throw new LegacyPackageException(PackageDisplayName, RequiredVersion);
 #endif
 #if VQT_LILTOON_BREAKING
-            throw new LilToonBreakingException();
-#endif
-#if !VQT_LILTOON
-            throw new LilToonWrongInstallationException();
+            throw new BreakingPackageException(PackageDisplayName, BreakingVersion);
 #endif
         }
 
