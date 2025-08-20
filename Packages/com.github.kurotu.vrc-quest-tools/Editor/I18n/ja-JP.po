@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-08-14 01:14\n"
+"PO-Revision-Date: 2025-08-20 03:44\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -680,23 +680,14 @@ msgstr "Android 用のビルド設定で Tools -> NDM Framework -> Manual bake a
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK コントロールパネルで設定してください。"
 
-msgid "LilToonLegacyExceptionMessage"
-msgstr "このバージョンのlilToonには非対応です。{0}以降にアップデートしてください。"
+msgid "LegacyPackageExceptionMessage"
+msgstr "現在のバージョンの{0}には非対応です。{0}を{1}以降に更新してください。"
 
-msgid "LilToonBreakingExceptionMessage"
-msgstr "このバージョンのlilToonには非対応です。VRCQuestToolsをアップデートするか、lilToonを{0}未満にダウングレードしてください。"
-
-msgid "LilToonWrongInstallationExceptionMessage"
-msgstr "lilToonのインストール状態が正しくありません。VCCかALCOMで再度インストールしてください。"
+msgid "BreakingPackageExceptionMessage"
+msgstr "現在のバージョンの{0}には非対応です。VRCQuestToolsを更新するか{0}を{1}未満にダウングレードしてください。"
 
 msgid "FeatureRequiresNdmf"
 msgstr "Non-Destructive Modular Framework (NDMF) が必要です。"
-
-msgid "UnsupportedNdmfCallbackMessageLegacy"
-msgstr "このバージョンのNDMFには非対応です。{0}以降にアップデートしてください。"
-
-msgid "UnsupportedNdmfCallbackMessageBreaking"
-msgstr "このバージョンのNDMFには非対応です。VRCQuestToolsをアップデートするか、NDMFを{0}未満にダウングレードしてください。"
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
 msgstr "非対応コンポーネントの削除"
@@ -714,10 +705,10 @@ msgstr "マテリアルの変換中にエラーが発生しました。\n\n"
 "{2}: {3}\n"
 "{4}"
 
-msgid "NDMF:LilToonCompatibilityErrorTitle"
-msgstr "非対応のlilToon"
+msgid "NDMF:PackageCompatibilityErrorTitle"
+msgstr "非対応の{0}"
 
-msgid "NDMF:LilToonCompatibilityErrorDescription"
+msgid "NDMF:PackageCompatibilityErrorDescription"
 msgstr "{0}"
 
 msgid "NDMF:MaterialSwapNullErrorTitle"
