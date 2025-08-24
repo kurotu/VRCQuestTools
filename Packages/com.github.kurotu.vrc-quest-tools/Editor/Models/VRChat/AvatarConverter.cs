@@ -116,9 +116,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var converterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();
 
             // Remove extra material slots such as lilToon FakeShadow.
-            var primaryRootConversion = questAvatarObject
-                .GetComponents<IMaterialConversionComponent>()
-                .FirstOrDefault(c => c.IsPrimaryRoot);
+            var primaryRootConversion = ComponentUtility.GetPrimaryMaterialConversionComponent(questAvatarObject);
             if (primaryRootConversion != null && primaryRootConversion.RemoveExtraMaterialSlots)
             {
                 RemoveExtraMaterialSlots(questAvatarObject);
@@ -525,9 +523,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             // Apply default material convert settings
-            var primaryConversion = avatarRoot
-                .GetComponents<IMaterialConversionComponent>()
-                .FirstOrDefault(c => c.IsPrimaryRoot);
+            var primaryConversion = ComponentUtility.GetPrimaryMaterialConversionComponent(avatarRoot);
             if (primaryConversion != null)
             {
                 foreach (var material in avatarMaterials)
