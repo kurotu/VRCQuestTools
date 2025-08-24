@@ -49,8 +49,15 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public ImmutableList<RenderGroup> GetTargetGroups(ComputeContext context)
         {
-            return context.GetComponentsByType<MeshFlipper>()
-                .Where(mf => mf.processingPhase == phase)
+            var components = context.GetComponentsByType<MeshFlipper>()
+                .Where(mf => mf.processingPhase == phase);
+
+            foreach (var mf in components)
+            {
+                context.Observe(mf, mf => mf.processingPhase);
+            }
+
+            return components
                 .Select(mf => context.GetComponent<Renderer>(mf.gameObject))
                 .Where(r => r is SkinnedMeshRenderer || r is MeshRenderer)
                 .Select(r => RenderGroup.For(r))
