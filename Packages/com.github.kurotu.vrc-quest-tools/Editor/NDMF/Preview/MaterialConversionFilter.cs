@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using KRT.VRCQuestTools.Components;
@@ -55,9 +54,26 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public ImmutableList<RenderGroup> GetTargetGroups(ComputeContext context)
         {
-            return context.GetAvatarRoots()
-                .Where(root => root.GetComponentsInChildren<IMaterialConversionComponent>(true).Any())
-                .Select(root => root.GetComponentsInChildren<Renderer>().Where(r => r is SkinnedMeshRenderer || r is MeshRenderer))
+            var rootConversions = context.GetAvatarRoots()
+                .Select(root => ComponentUtility.GetPrimaryMaterialConversionComponent(root))
+                .Cast<Component>()
+                .Where(component =>
+                {
+                    if (component == null)
+                    {
+                        return false;
+                    }
+                    return AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(component.gameObject) == phase;
+                })
+                .ToArray();
+
+            foreach (var rootConversion in rootConversions)
+            {
+                context.Observe(rootConversion, c => AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(c.gameObject));
+                Debug.Log($"[{VRCQuestTools.Name}] Found material conversion component {rootConversion} for {phase}", rootConversion);
+            }
+
+            return rootConversions.Select(root => root.GetComponentsInChildren<Renderer>().Where(r => r is SkinnedMeshRenderer || r is MeshRenderer))
                 .Where(r => r.Any())
                 .Select(r => RenderGroup.For(r))
                 .ToImmutableList();
@@ -67,6 +83,8 @@ namespace KRT.VRCQuestTools.Ndmf
         public Task<IRenderFilterNode> Instantiate(RenderGroup group, IEnumerable<(Renderer, Renderer)> proxyPairs, ComputeContext context)
         {
             var avatarRoot = context.GetAvatarRoot(group.Renderers[0].gameObject);
+            Debug.Log($"[{VRCQuestTools.Name}] Reload preview for {avatarRoot} in {phase}", avatarRoot);
+
             IMaterialConversionComponent settings = avatarRoot.GetComponent<AvatarConverterSettings>();
             if (settings == null)
             {
