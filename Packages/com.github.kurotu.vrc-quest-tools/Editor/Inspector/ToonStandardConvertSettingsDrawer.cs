@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -116,6 +117,7 @@ namespace KRT.VRCQuestTools.Inspector
                 {
                     settings.SetAllFeatures(true);
                     property.serializedObject.ApplyModifiedProperties();
+                    NdmfUtility.NotifyObjectUpdate(property.serializedObject.targetObject);
                 }
             }
             buttonRect.x += buttonRect.width;
@@ -125,6 +127,7 @@ namespace KRT.VRCQuestTools.Inspector
                 {
                     settings.SetAllFeatures(false);
                     property.serializedObject.ApplyModifiedProperties();
+                    NdmfUtility.NotifyObjectUpdate(property.serializedObject.targetObject);
                 }
             }
 

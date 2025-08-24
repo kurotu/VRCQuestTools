@@ -91,7 +91,6 @@ namespace KRT.VRCQuestTools.Ndmf
                 settings = avatarRoot.GetComponent<MaterialConversionSettings>();
             }
             context.Observe(settings as Object);
-            context.Observe(settings as Object, s => (s as IMaterialConversionComponent).DefaultMaterialConvertSettings.GetCacheKey());
             if (settings is Component c && c.TryGetComponent<PlatformTargetSettings>(out var targetSettings))
             {
                 context.Observe(targetSettings);
