@@ -22,8 +22,8 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Tests that normal maps have the correct Android and iOS overrides for all combinations of size and format.
         /// </summary>
-        /// <param name="size">テクスチャサイズ.</param>
-        /// <param name="format">期待されるフォーマット.</param>
+        /// <param name="size">Texture size.</param>
+        /// <param name="format">Expected format.</param>
         [Test]
         [Combinatorial]
         public void NormalMap_Has_Correct_Android_And_iOS_Overrides(
