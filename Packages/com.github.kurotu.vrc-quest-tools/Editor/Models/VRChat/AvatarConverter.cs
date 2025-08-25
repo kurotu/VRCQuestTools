@@ -558,13 +558,20 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory, convertedMaterial =>
             {
                 // Save as asset if required
-                if (saveAsFile && !(convertSettings is MaterialReplaceSettings))
+                if (!(convertSettings is MaterialReplaceSettings))
                 {
-                    convertedMaterial = SaveMaterialAsset(
-                        convertedMaterial,
-                        material.name,
-                        guid,
-                        assetsDirectory);
+                    if (saveAsFile)
+                    {
+                        convertedMaterial = SaveMaterialAsset(
+                            convertedMaterial,
+                            material.name,
+                            guid,
+                            assetsDirectory);
+                    }
+                    else
+                    {
+                        convertedMaterial.name += " (VQT)";
+                    }
                 }
                 completion(convertedMaterial);
             });

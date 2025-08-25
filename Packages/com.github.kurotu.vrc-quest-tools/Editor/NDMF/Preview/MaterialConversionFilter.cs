@@ -110,14 +110,20 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var removeExtraMaterialSlots = settings.RemoveExtraMaterialSlots;
-            List<Material> avatarMaterials = new List<Material>();
-            foreach (var (original, _) in proxyPairs)
+            HashSet<Material> avatarMaterials = new();
+            foreach (var (original, proxy) in proxyPairs)
             {
                 context.Observe(original);
+                context.Observe(proxy);
                 var slots = removeExtraMaterialSlots
                     ? RendererUtility.GetSharedMeshSubMeshCount(original)
                     : original.sharedMaterials.Length;
                 foreach (var m in original.sharedMaterials.Take(slots))
+                {
+                    avatarMaterials.Add(m);
+                    context.Observe(m);
+                }
+                foreach (var m in proxy.sharedMaterials.Take(slots))
                 {
                     avatarMaterials.Add(m);
                     context.Observe(m);
@@ -152,7 +158,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     return;
                 }
                 var slots = removeExtraMaterialSlots ? RendererUtility.GetSharedMeshSubMeshCount(proxy) : proxy.sharedMaterials.Length;
-                proxy.sharedMaterials = original.sharedMaterials.Take(slots).Select(m => materialMap.TryGetValue(m, out var converted) ? converted : m).ToArray();
+                proxy.sharedMaterials = proxy.sharedMaterials.Take(slots).Select(m => materialMap.TryGetValue(m, out var converted) ? converted : m).ToArray();
             }
 
             public void Dispose()
