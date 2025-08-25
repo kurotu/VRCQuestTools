@@ -175,7 +175,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     {
                         if (material != null)
                         {
-                            // destroy all on-memory textures here.
+                            // destroy all on-memory objects here.
                             foreach (var prop in material.GetTexturePropertyNames())
                             {
                                 var texture = material.GetTexture(prop);
@@ -184,9 +184,13 @@ namespace KRT.VRCQuestTools.Ndmf
                                     Object.DestroyImmediate(texture);
                                 }
                             }
-                            Object.DestroyImmediate(material);
+                            if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(material)))
+                            {
+                                Object.DestroyImmediate(material);
+                            }
                         }
                     }
+                    materialMap.Clear();
 
                     disposedValue = true;
                 }
