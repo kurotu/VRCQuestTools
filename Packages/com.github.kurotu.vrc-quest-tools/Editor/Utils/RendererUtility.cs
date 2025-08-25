@@ -55,6 +55,17 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Gets the number of sub meshes in the shared mesh of a renderer.
+        /// </summary>
+        /// <param name="renderer">Renderer to get sub mesh count.</param>
+        /// <returns>Number of sub meshes.</returns>
+        internal static int GetSharedMeshSubMeshCount(Renderer renderer)
+        {
+            var mesh = GetSharedMesh(renderer);
+            return mesh != null ? mesh.subMeshCount : 0;
+        }
+
+        /// <summary>
         /// Remove vertex color from renderer's sharedMesh.
         /// </summary>
         /// <param name="renderer">MeshRenderer or SkinnedMeshRenderer.</param>

@@ -115,7 +115,7 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 context.Observe(original);
                 var slots = removeExtraMaterialSlots
-                    ? RendererUtility.GetSharedMesh(original).subMeshCount
+                    ? RendererUtility.GetSharedMeshSubMeshCount(original)
                     : original.sharedMaterials.Length;
                 foreach (var m in original.sharedMaterials.Take(slots))
                 {
@@ -151,7 +151,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     return;
                 }
-                var slots = removeExtraMaterialSlots ? RendererUtility.GetSharedMesh(original).subMeshCount : original.sharedMaterials.Length;
+                var slots = removeExtraMaterialSlots ? RendererUtility.GetSharedMeshSubMeshCount(proxy) : proxy.sharedMaterials.Length;
                 proxy.sharedMaterials = original.sharedMaterials.Take(slots).Select(m => materialMap.TryGetValue(m, out var converted) ? converted : m).ToArray();
             }
 
