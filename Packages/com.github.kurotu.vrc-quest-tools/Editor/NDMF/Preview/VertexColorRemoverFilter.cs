@@ -37,14 +37,9 @@ namespace KRT.VRCQuestTools.Ndmf
                 .Where(component => component != null)
                 .ToArray();
 
-            foreach (var conv in rootConversions)
-            {
-                context.Observe(conv, c => c.removeVertexColor);
-            }
-
             return rootConversions
-                .Where(root => root.removeVertexColor)
                 .SelectMany(root => root.GetComponentsInChildren<Renderer>())
+                .Distinct()
                 .Where(renderer => renderer is SkinnedMeshRenderer || renderer is MeshRenderer)
                 .Select(renderer => RenderGroup.For(renderer))
                 .ToImmutableList();
@@ -53,10 +48,22 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public Task<IRenderFilterNode> Instantiate(RenderGroup group, IEnumerable<(Renderer, Renderer)> proxyPairs, ComputeContext context)
         {
+            var root = context.GetAvatarRoot(group.Renderers[0].gameObject);
+            var settings = root.GetComponent<AvatarConverterSettings>();
+            if (settings.TryGetComponent<PlatformTargetSettings>(out var platformSettings))
+            {
+                context.Observe(platformSettings);
+            }
+
+            var removeVertexColor = context.Observe(settings, s => s.removeVertexColor);
+            var isTargetMobile = NdmfHelper.ResolveBuildTarget(root) == Models.BuildTarget.Android;
+
             var proxy = proxyPairs.First().Item2;
             var mesh = RendererUtility.GetSharedMesh(proxy);
             Mesh newMesh = mesh;
-            if (mesh != null && mesh.colors32 != null && mesh.colors32.Length > 0)
+
+            var shouldRemove = removeVertexColor && isTargetMobile && mesh != null && mesh.colors32 != null && mesh.colors32.Length > 0;
+            if (shouldRemove)
             {
                 newMesh = Mesh.Instantiate(newMesh);
                 newMesh.colors32 = null;
