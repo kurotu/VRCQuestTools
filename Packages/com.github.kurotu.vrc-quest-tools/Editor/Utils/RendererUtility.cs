@@ -55,6 +55,24 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Sets the shared mesh for a renderer.
+        /// </summary>
+        /// <param name="renderer">MeshRenderer or SkinnedMeshRenderer to set the mesh on.</param>
+        /// <param name="mesh">Mesh to assign as sharedMesh.</param>
+        internal static void SetSharedMesh(Renderer renderer, Mesh mesh)
+        {
+            var type = renderer.GetType();
+            if (type == typeof(SkinnedMeshRenderer))
+            {
+                ((SkinnedMeshRenderer)renderer).sharedMesh = mesh;
+            }
+            else if (type == typeof(MeshRenderer) && renderer.TryGetComponent<MeshFilter>(out var meshFilter))
+            {
+                meshFilter.sharedMesh = mesh;
+            }
+        }
+
+        /// <summary>
         /// Gets the number of sub meshes in the shared mesh of a renderer.
         /// </summary>
         /// <param name="renderer">Renderer to get sub mesh count.</param>

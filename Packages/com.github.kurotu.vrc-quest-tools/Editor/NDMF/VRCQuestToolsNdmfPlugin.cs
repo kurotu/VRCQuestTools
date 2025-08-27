@@ -57,7 +57,9 @@ namespace KRT.VRCQuestTools.Ndmf
 
             InPhase(BuildPhase.Transforming)
                 .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control polygon reduction
-                .Run(RemoveVertexColorPass.Instance);
+                .Run(RemoveVertexColorPass.Instance)
+                .PreviewingWith(new VertexColorRemoverFilter())
+                ;
 
             InPhase(BuildPhase.Optimizing)
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
