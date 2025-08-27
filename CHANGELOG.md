@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved error messages when converting unsupported lilToon materials.
 - Changed to show an error when converting an avatar that uses an unsupported Modular Avatar.
 - [NDMF] Show an error dialog then abort the build when using unsupported version of NDMF.
+- [NDMF] Enabled preview for `Mesh Flipper` by default.
 
 ### Fixed
 - `InvalidMaterialSwapNullException` did not properly return the invalid mapping.

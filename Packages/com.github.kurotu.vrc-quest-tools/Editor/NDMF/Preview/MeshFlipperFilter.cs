@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf.preview;
+using UnityEditor;
 using UnityEngine;
 
 #pragma warning disable SA1414 // tuple element names
@@ -17,7 +18,7 @@ namespace KRT.VRCQuestTools.Ndmf
     /// </summary>
     internal class MeshFlipperFilter : IRenderFilter
     {
-        private static readonly TogglablePreviewNode PreviewNode = TogglablePreviewNode.Create(() => "Mesh Flipper", "vrc-quest-tools/MeshFlipperPreview", false);
+        private static readonly TogglablePreviewNode PreviewNode = TogglablePreviewNode.Create(() => "Mesh Flipper", "vrc-quest-tools/MeshFlipperPreview", true);
 
         private readonly MeshFlipperProcessingPhase phase;
 
@@ -67,7 +68,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public Task<IRenderFilterNode> Instantiate(RenderGroup group, IEnumerable<(Renderer, Renderer)> proxyPairs, ComputeContext context)
         {
-            var meshFlipper = group.Renderers.First().GetComponent<MeshFlipper>();
+            var meshFlipper = group.Renderers[0].GetComponent<MeshFlipper>();
             var targetRenderer = proxyPairs.First().Item2;
 
             var mesh = RendererUtility.GetSharedMesh(targetRenderer);
@@ -102,14 +103,15 @@ namespace KRT.VRCQuestTools.Ndmf
                     // do not report missing mask.
                 }
             }
-            return Task.FromResult<IRenderFilterNode>(new MeshFlipperFilterNode(result, targetRenderer));
+            return Task.FromResult<IRenderFilterNode>(new MeshFlipperFilterNode(result));
         }
 
         private class MeshFlipperFilterNode : IRenderFilterNode
         {
             private Mesh flippedMesh;
+            private bool disposedValue;
 
-            public MeshFlipperFilterNode(Mesh flippedMesh, Renderer targetRenderer)
+            public MeshFlipperFilterNode(Mesh flippedMesh)
             {
                 this.flippedMesh = flippedMesh;
             }
@@ -133,6 +135,28 @@ namespace KRT.VRCQuestTools.Ndmf
                             mf.sharedMesh = flippedMesh;
                             return;
                         }
+                }
+            }
+
+            public void Dispose()
+            {
+                Dispose(disposing: true);
+                System.GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!disposedValue)
+                {
+                    if (flippedMesh != null)
+                    {
+                        if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(flippedMesh)))
+                        {
+                            UnityEngine.Object.DestroyImmediate(flippedMesh);
+                        }
+                        flippedMesh = null;
+                    }
+                    disposedValue = true;
                 }
             }
         }
