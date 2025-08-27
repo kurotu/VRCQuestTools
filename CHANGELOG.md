@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added options to Toon Standard conversion settings.
     - `Generate shadow ramp` to generate shadow ramp texture.
     - `Features` to select features to apply to the converted material.
+- [NDMF] Preview for material conversion and removal of vertex color.
 
 ### Changed
 - Changed the initial value of default material conversion settings to Toon Standard. (VRCSDK 3.8.1 or later)
