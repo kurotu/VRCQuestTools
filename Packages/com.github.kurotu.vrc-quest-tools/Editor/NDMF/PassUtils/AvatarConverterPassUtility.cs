@@ -52,7 +52,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
             if (avatarDescriptor == null)
             {
-                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping avatar conversion.");
+                Logger.LogWarning($"No VRCAvatarDescriptor found in the avatar root object. Skipping avatar conversion.");
                 return;
             }
 

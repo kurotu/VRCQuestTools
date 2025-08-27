@@ -631,7 +631,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
             catch (Exception e)
             {
-                Debug.LogException(e);
+                Logger.LogException(e);
                 lastException = e;
             }
             finally
@@ -672,13 +672,13 @@ namespace KRT.VRCQuestTools.Ndmf
                     {
                         if (!avatar.Value.Tags.Contains(VRCSDKUtility.AvatarContentTag.Fallback))
                         {
-                            Debug.Log($"[{VRCQuestTools.Name}] Setting avatar as fallback");
+                            Logger.Log($"Setting avatar as fallback");
                             uploadedVrcAvatar = await VRCApi.SetAvatarAsFallback(blueprintId, avatar.Value);
                         }
                     }
                     else
                     {
-                        Debug.LogWarning($"[{VRCQuestTools.Name}] The avatar is not allowed to be set as a fallback avatar: {overallRating}");
+                        Logger.LogWarning($"The avatar is not allowed to be set as a fallback avatar: {overallRating}");
                         EditorUtility.DisplayDialog(VRCQuestTools.Name, VRCQuestToolsSettings.I18nResource.AvatarBuilderWindowFallbackNotAllowed(overallRating.ToString()), "OK");
                     }
                 }
@@ -686,7 +686,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
             catch (Exception e)
             {
-                Debug.LogException(e);
+                Logger.LogException(e);
                 lastException = e;
             }
             finally
@@ -714,9 +714,9 @@ namespace KRT.VRCQuestTools.Ndmf
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"Failed to get VRCAvatar ({e.GetType().Name}): {e.Message}");
+                Logger.LogWarning($"Failed to get VRCAvatar ({e.GetType().Name}): {e.Message}");
 
-                // Debug.LogException(e);
+                // Logger.LogException(e);
                 return null;
             }
         }

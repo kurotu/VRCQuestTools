@@ -493,7 +493,7 @@ namespace KRT.VRCQuestTools.Inspector
                 sw.Start();
                 questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, VRCQuestTools.ComponentRemover, true, GetOutputPath(avatar), progressCallback);
                 sw.Stop();
-                Debug.Log($"[{VRCQuestTools.Name}] Converted avatar for Android in {sw.ElapsedMilliseconds}ms");
+                Logger.Log($"Converted avatar for Android in {sw.ElapsedMilliseconds}ms");
             }
             catch (System.Exception exception)
             {
@@ -585,9 +585,9 @@ namespace KRT.VRCQuestTools.Inspector
             }
             if (exception.InnerException != null)
             {
-                Debug.LogException(exception.InnerException, context);
+                Logger.LogException(exception.InnerException, context);
             }
-            Debug.LogException(exception, context);
+            Logger.LogException(exception, context);
             DisplayErrorDialog(message, dialogException);
         }
 

@@ -86,7 +86,7 @@ namespace KRT.VRCQuestTools.Ndmf
                             "Report to the developer to show detailed error report.",
                             ErrorSeverity.NonFatal);
                         shouldRethrow = true;
-                        Debug.LogError($"Unhandled exception type: {exception.GetType()}");
+                        Logger.LogError($"Unhandled exception type: {exception.GetType()}");
                         break;
                 }
             }
@@ -102,7 +102,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
             if (exception.InnerException != null)
             {
-                Debug.LogException(exception.InnerException);
+                Logger.LogException(exception.InnerException);
             }
             if (shouldRethrow)
             {

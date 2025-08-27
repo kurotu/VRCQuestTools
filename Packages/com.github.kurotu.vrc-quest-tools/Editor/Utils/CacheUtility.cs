@@ -132,7 +132,7 @@ namespace KRT.VRCQuestTools.Utils
                     {
                         return TextureUtility.CopyAsReadable(normal, false);
                     }
-                    Debug.LogWarning($"Failed to load normal map from {path}. Creating normal map from uncompressed one.");
+                    Logger.LogWarning($"Failed to load normal map from {path}. Creating normal map from uncompressed one.");
                 }
                 var tex = new Texture2D(width, height, format, mipmap, linear);
                 return TextureUtility.CompressNormalMap(tex, buildTarget, format, true);

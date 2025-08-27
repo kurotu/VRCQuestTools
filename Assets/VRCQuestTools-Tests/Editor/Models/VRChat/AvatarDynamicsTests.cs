@@ -127,7 +127,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             // https://creators.vrchat.com/avatars/avatar-performance-ranking-system/#quest-limits
             var questStatsLevelSet = LoadQuestStatsLevelSet();
-            Debug.Log(questStatsLevelSet);
+            Logger.Log(questStatsLevelSet);
             Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneComponentCount));
             Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneTransformCount));
             Assert.AreEqual(PerformanceRating.Good, AvatarPerformanceCalculator.GetPerformanceRating(perfs, questStatsLevelSet, AvatarPerformanceCategory.PhysBoneColliderCount));

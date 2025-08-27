@@ -74,7 +74,7 @@ namespace KRT.VRCQuestTools.Components
                 AssetDatabase.ImportAsset(p);
             }
 #else
-            Debug.LogError("RestoreVertexColor is not supported in runtime");
+            Logger.LogError("RestoreVertexColor is not supported in runtime");
 #endif
         }
 
@@ -110,7 +110,7 @@ namespace KRT.VRCQuestTools.Components
             if (mesh.colors32.Length > 0)
             {
                 mesh.colors32 = null;
-                Debug.Log($"[VRCQuestTools] Removed vertex color from {renderer.name}", renderer);
+                Logger.Log($"Removed vertex color from {renderer.name}", renderer);
             }
         }
 
@@ -127,7 +127,7 @@ namespace KRT.VRCQuestTools.Components
                 return meshFilter.sharedMesh;
             }
 
-            Debug.LogErrorFormat("{0} is not either SkinnedMeshRenderer or MeshRenderer", renderer);
+            Logger.LogError($"{renderer} is not either SkinnedMeshRenderer or MeshRenderer");
             return null;
         }
 

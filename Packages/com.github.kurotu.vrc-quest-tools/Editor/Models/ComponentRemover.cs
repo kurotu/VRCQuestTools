@@ -65,7 +65,7 @@ namespace KRT.VRCQuestTools.Models
                     continue;
                 }
                 var obj = c.gameObject;
-                var message = $"[{VRCQuestTools.Name}] Removed {c.GetType().Name} from {c.gameObject.name}";
+                var message = $"Removed {c.GetType().Name} from {c.gameObject.name}";
                 if (canUndo)
                 {
                     Undo.DestroyObjectImmediate(c);
@@ -74,7 +74,7 @@ namespace KRT.VRCQuestTools.Models
                 {
                     Object.DestroyImmediate(c);
                 }
-                Debug.Log(message, obj);
+                Logger.Log(message, obj);
             }
         }
 
