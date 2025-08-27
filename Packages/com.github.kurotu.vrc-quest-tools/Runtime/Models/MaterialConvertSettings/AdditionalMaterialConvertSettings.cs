@@ -32,5 +32,15 @@ namespace KRT.VRCQuestTools.Models
         {
             materialConvertSettings.LoadDefaultAssets();
         }
+
+        /// <summary>
+        /// Gets the cache key for the additional material convert settings.
+        /// </summary>
+        /// <returns>Cache key.</returns>
+        public string GetCacheKey()
+        {
+            var materialKey = targetMaterial != null ? targetMaterial.GetInstanceID().ToString() : "null";
+            return $"{materialKey}_{materialConvertSettings.GetCacheKey()}";
+        }
     }
 }
