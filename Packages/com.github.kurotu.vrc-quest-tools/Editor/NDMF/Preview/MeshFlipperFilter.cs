@@ -148,11 +148,14 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 if (!disposedValue)
                 {
-                    if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(flippedMesh)))
+                    if (flippedMesh != null)
                     {
-                        UnityEngine.Object.DestroyImmediate(flippedMesh);
+                        if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(flippedMesh)))
+                        {
+                            UnityEngine.Object.DestroyImmediate(flippedMesh);
+                        }
+                        flippedMesh = null;
                     }
-                    flippedMesh = null;
                     disposedValue = true;
                 }
             }
