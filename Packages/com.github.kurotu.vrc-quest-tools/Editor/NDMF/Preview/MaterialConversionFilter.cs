@@ -70,7 +70,6 @@ namespace KRT.VRCQuestTools.Ndmf
             foreach (var rootConversion in rootConversions)
             {
                 context.Observe(rootConversion, c => AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(c.gameObject));
-                Debug.Log($"[{VRCQuestTools.Name}] Found material conversion component {rootConversion} for {phase}", rootConversion);
             }
 
             return rootConversions.Select(root => root.GetComponentsInChildren<Renderer>().Where(r => r is SkinnedMeshRenderer || r is MeshRenderer))
@@ -83,7 +82,6 @@ namespace KRT.VRCQuestTools.Ndmf
         public Task<IRenderFilterNode> Instantiate(RenderGroup group, IEnumerable<(Renderer, Renderer)> proxyPairs, ComputeContext context)
         {
             var avatarRoot = context.GetAvatarRoot(group.Renderers[0].gameObject);
-            Debug.Log($"[{VRCQuestTools.Name}] Reload preview for {avatarRoot} in {phase}", avatarRoot);
 
             IMaterialConversionComponent settings = avatarRoot.GetComponent<AvatarConverterSettings>();
             if (settings == null)
