@@ -48,14 +48,8 @@ namespace KRT.VRCQuestTools.Utils
                         break;
                     case ShaderPropertyType.Texture:
                         var tex = material.GetTexture(name);
-                        if (tex != null)
-                        {
-                            sb.Append($"{name}_{tex.imageContentsHash}");
-                        }
-                        else
-                        {
-                            sb.Append($"{name}_null");
-                        }
+                        var hash = TextureUtility.GetImageContentsHash(tex);
+                        sb.Append($"{name}_{hash}");
                         break;
                     case ShaderPropertyType.Int:
                         sb.Append($"{name}_{material.GetInteger(name)}");

@@ -231,9 +231,15 @@ namespace KRT.VRCQuestTools.Utils
                 return null;
             }
 
-            if (texture.GetType() == typeof(RenderTexture))
+            if (texture is RenderTexture rt)
             {
-                return CreateColorTexture(Color.black);
+                Texture2D newTex = null;
+                var request = RequestReadbackRenderTexture(rt, rt.mipmapCount > 1, !rt.isDataSRGB, (result) =>
+                {
+                    newTex = result;
+                });
+                request.WaitForCompletion();
+                return newTex;
             }
 
             var path = AssetDatabase.GetAssetPath(texture);
@@ -779,6 +785,25 @@ namespace KRT.VRCQuestTools.Utils
             var newWidth = Math.Round(width * scale);
             var newHeight = Math.Round(height * scale);
             return ((int)newWidth, (int)newHeight);
+        }
+
+        /// <summary>
+        /// Requests the image content hash of a texture.
+        /// </summary>
+        /// <param name="texture">The texture to compute the content hash for.</param>
+        /// <returns>Contents Hash.</returns>
+        internal static Hash128 GetImageContentsHash(Texture texture)
+        {
+            switch (texture)
+            {
+                case null:
+                    return default;
+                case RenderTexture:
+                    // RenderTexture's imageContentsHash is 0, so we generate a random hash.
+                    return Hash128.Compute(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
+                default:
+                    return texture.imageContentsHash;
+            }
         }
 
         private static bool ShouldUseAsyncGPUReadback()
