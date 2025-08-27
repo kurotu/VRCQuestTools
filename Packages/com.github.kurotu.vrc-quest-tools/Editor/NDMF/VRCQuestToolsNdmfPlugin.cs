@@ -1,4 +1,5 @@
 using System;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Ndmf;
 using nadena.dev.ndmf;
 using UnityEditor;
@@ -44,7 +45,9 @@ namespace KRT.VRCQuestTools.Ndmf
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
                 .AfterPlugin("nadena.dev.modular-avatar") // convert built avatar
                 .AfterPlugin("jp.lilxyzw.lilycalinventory") // convert built avatar
-                .Run(AvatarConverterTransformingPass.Instance);
+                .Run(AvatarConverterTransformingPass.Instance)
+                .PreviewingWith(new MaterialConversionFilter(AvatarConverterNdmfPhase.Transforming))
+                ;
 
             InPhase(BuildPhase.Transforming)
                 .BeforePlugin("MantisLODEditor.ndmf") // needs unmodified UVs for mask textures
@@ -54,7 +57,9 @@ namespace KRT.VRCQuestTools.Ndmf
 
             InPhase(BuildPhase.Transforming)
                 .AfterPlugin("MantisLODEditor.ndmf") // needs vertex color to control polygon reduction
-                .Run(RemoveVertexColorPass.Instance);
+                .Run(RemoveVertexColorPass.Instance)
+                .PreviewingWith(new VertexColorRemoverFilter())
+                ;
 
             InPhase(BuildPhase.Optimizing)
                 .AfterPlugin("net.rs64.tex-trans-tool") // needs generated textures
@@ -64,6 +69,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 .AfterPlugin("com.aoyon.overall-ndmf-mesh-simplifier") // polygon reduction
                 .BeforePlugin("com.anatawa12.avatar-optimizer")
                 .Run(AvatarConverterOptimizingPass.Instance)
+                .PreviewingWith(new MaterialConversionFilter(AvatarConverterNdmfPhase.Optimizing))
                 .Then.Run(MeshFlipperAfterPolygonReductionPass.Instance)
                 .PreviewingWith(new MeshFlipperFilter(Components.MeshFlipperProcessingPhase.AfterPolygonReduction))
                 .Then.Run(RemoveUnsupportedComponentsPass.Instance)

@@ -116,9 +116,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var converterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();
 
             // Remove extra material slots such as lilToon FakeShadow.
-            var primaryRootConversion = questAvatarObject
-                .GetComponents<IMaterialConversionComponent>()
-                .FirstOrDefault(c => c.IsPrimaryRoot);
+            var primaryRootConversion = ComponentUtility.GetPrimaryMaterialConversionComponent(questAvatarObject);
             if (primaryRootConversion != null && primaryRootConversion.RemoveExtraMaterialSlots)
             {
                 RemoveExtraMaterialSlots(questAvatarObject);
@@ -379,7 +377,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted materials (key: original material).</returns>
-        private Dictionary<Material, Material> ConvertMaterialsForAndroid(
+        internal Dictionary<Material, Material> ConvertMaterialsForAndroid(
             Dictionary<Material, IMaterialConvertSettings> convertSettingsMap,
             bool saveAsFile,
             string assetsDirectory,
@@ -397,14 +395,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 var currentIndex = i;
                 var material = materialsToConvert[i];
-                progressCallback(materialsToConvert.Length, i, material, null);
+                progressCallback?.Invoke(materialsToConvert.Length, i, material, null);
 
                 try
                 {
                     var request = ConvertSingleMaterial(material, convertSettingsMap[material], saveAsFile, assetsDirectory, (output) =>
                     {
                         convertedMaterials[material] = output;
-                        progressCallback(materialsToConvert.Length, currentIndex, material, output);
+                        progressCallback?.Invoke(materialsToConvert.Length, currentIndex, material, output);
                     });
                     request.WaitForCompletion();
                 }
@@ -436,12 +434,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
         }
 
-        private Dictionary<Material, IMaterialConvertSettings> CreateMaterialConvertSettingsMap(VRChatAvatar avatar)
+        internal Dictionary<Material, IMaterialConvertSettings> CreateMaterialConvertSettingsMap(VRChatAvatar avatar)
+        {
+            return CreateMaterialConvertSettingsMap(avatar.GameObject, avatar.Materials);
+        }
+
+        internal Dictionary<Material, IMaterialConvertSettings> CreateMaterialConvertSettingsMap(GameObject avatarRoot, Material[] avatarMaterials)
         {
             var convertSettingsMap = new Dictionary<Material, IMaterialConvertSettings>();
 
             // Apply MaterialConversionSettings
-            var materialConversionSettings = avatar.GameObject.GetComponentsInChildren<MaterialConversionSettings>(true);
+            var materialConversionSettings = avatarRoot.GetComponentsInChildren<MaterialConversionSettings>(true);
             foreach (var setting in materialConversionSettings)
             {
                 foreach (var s in setting.additionalMaterialConvertSettings)
@@ -465,7 +468,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             // Apply MaterialSwap
-            var materialSwaps = avatar.GameObject.GetComponentsInChildren<MaterialSwap>(true);
+            var materialSwaps = avatarRoot.GetComponentsInChildren<MaterialSwap>(true);
             foreach (var swap in materialSwaps)
             {
                 foreach (var (mapping, index) in swap.materialMappings.Select((value, index) => (value, index)))
@@ -496,7 +499,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             // Apply AvatarConverterSettings
-            var converterSettings = avatar.GameObject.GetComponent<AvatarConverterSettings>();
+            var converterSettings = avatarRoot.GetComponent<AvatarConverterSettings>();
             if (converterSettings != null)
             {
                 foreach (var setting in converterSettings.additionalMaterialConvertSettings)
@@ -520,10 +523,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             // Apply default material convert settings
-            var avatarMaterials = avatar.Materials;
-            var primaryConversion = avatar.GameObject
-                .GetComponents<IMaterialConversionComponent>()
-                .FirstOrDefault(c => c.IsPrimaryRoot);
+            var primaryConversion = ComponentUtility.GetPrimaryMaterialConversionComponent(avatarRoot);
             if (primaryConversion != null)
             {
                 foreach (var material in avatarMaterials)
@@ -558,13 +558,20 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory, convertedMaterial =>
             {
                 // Save as asset if required
-                if (saveAsFile && !(convertSettings is MaterialReplaceSettings))
+                if (!(convertSettings is MaterialReplaceSettings))
                 {
-                    convertedMaterial = SaveMaterialAsset(
-                        convertedMaterial,
-                        material.name,
-                        guid,
-                        assetsDirectory);
+                    if (saveAsFile)
+                    {
+                        convertedMaterial = SaveMaterialAsset(
+                            convertedMaterial,
+                            material.name,
+                            guid,
+                            assetsDirectory);
+                    }
+                    else
+                    {
+                        convertedMaterial.name += " (VQT)";
+                    }
                 }
                 completion(convertedMaterial);
             });

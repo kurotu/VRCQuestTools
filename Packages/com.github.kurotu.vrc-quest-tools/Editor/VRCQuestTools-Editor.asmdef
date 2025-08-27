@@ -5,7 +5,8 @@
         "VRCQuestTools",
         "VRC.SDK3A.Editor",
         "VRC.SDKBase",
-        "nadena.dev.modular-avatar.core"
+        "nadena.dev.modular-avatar.core",
+        "nadena.dev.ndmf"
     ],
     "includePlatforms": [
         "Editor"
@@ -47,7 +48,7 @@
         },
         {
             "name": "nadena.dev.ndmf",
-            "expression": "",
+            "expression": "[1.5.0,2.0.0-a)",
             "define": "VQT_HAS_NDMF"
         },
         {
