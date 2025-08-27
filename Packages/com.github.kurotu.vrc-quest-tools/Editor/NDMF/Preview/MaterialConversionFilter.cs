@@ -10,7 +10,6 @@ using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf.preview;
 using UnityEditor;
 using UnityEngine;
-using VRC.SDK3.Avatars.Components;
 
 #pragma warning disable SA1414 // tuple element names
 #pragma warning disable SA1648 // inherit documentation
