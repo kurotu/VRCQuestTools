@@ -33,7 +33,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders
         }
 
         /// <inheritdoc/>
-        public VRCPhysBone Component { get; }
+        public Component Component { get; }
 
         /// <inheritdoc/>
         public GameObject GameObject => Component.gameObject;

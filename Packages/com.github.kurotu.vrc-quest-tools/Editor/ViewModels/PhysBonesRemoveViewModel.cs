@@ -247,7 +247,7 @@ namespace KRT.VRCQuestTools.ViewModels
         {
             Undo.IncrementCurrentGroup();
             Undo.SetCurrentGroupName("Remove Avatar Dynamics Components");
-            var pbToKeep = physBonesToKeep.Select(b => (VRCPhysBone)b).ToArray();
+            var pbToKeep = physBonesToKeep.Cast<VRCPhysBone>().ToArray();
             var pbcToKeep = physBoneCollidersToKeep.Select(c => (VRCPhysBoneCollider)c).ToArray();
             var cToKeep = contactsToKeep.Select(c => (ContactBase)c).ToArray();
             VRCSDKUtility.DeleteAvatarDynamicsComponents(Avatar, pbToKeep, pbcToKeep, cToKeep);

@@ -5,7 +5,6 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders
 {
@@ -17,7 +16,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders
         /// <summary>
         /// Gets the underlying VRCPhysBone component.
         /// </summary>
-        VRCPhysBone Component { get; }
+        Component Component { get; }
 
         /// <summary>
         /// Gets the GameObject that contains the PhysBone component.
