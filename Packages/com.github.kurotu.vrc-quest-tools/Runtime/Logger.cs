@@ -46,6 +46,11 @@ namespace KRT.VRCQuestTools
         /// <summary>
         /// Logs an exception.
         /// </summary>
+        /// <remarks>
+        /// Unlike other logging methods, this does <b>not</b> add the "[VRCQuestTools] " prefix,
+        /// as it directly calls <see cref="Debug.LogException(Exception, UnityEngine.Object)"/>,
+        /// which handles exception formatting differently and does not accept a string message.
+        /// </remarks>
         /// <param name="exception">The exception to log.</param>
         /// <param name="context">The context object for the log entry.</param>
         [HideInCallstack]
