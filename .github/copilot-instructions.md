@@ -51,7 +51,7 @@ Note: Test execution may require a specific Unity environment setup.
 ### Documentation
 
 The documentation for VRCQuestTools is located in the `Website` directory.
-It's built by using Docusaurus.
+It's built using Docusaurus.
 
 ## Code of Conduct
 
