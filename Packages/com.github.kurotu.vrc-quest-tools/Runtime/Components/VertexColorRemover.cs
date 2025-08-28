@@ -127,7 +127,7 @@ namespace KRT.VRCQuestTools.Components
                 return meshFilter.sharedMesh;
             }
 
-            Logger.LogError($"{renderer} is not either SkinnedMeshRenderer or MeshRenderer");
+            Logger.LogError($"{renderer} is not either SkinnedMeshRenderer or MeshRenderer", renderer);
             return null;
         }
 
