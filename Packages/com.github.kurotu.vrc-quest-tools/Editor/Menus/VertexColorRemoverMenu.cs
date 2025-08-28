@@ -33,7 +33,7 @@ namespace KRT.VRCQuestTools.Menus
             }
             remover.includeChildren = true;
             remover.enabled = true;
-            Debug.Log($"[{VRCQuestTools.Name}] All vertex colors will be removed from {target}", target);
+            Logger.Log($"All vertex colors will be removed from {target}", target);
         }
 
         [MenuItem(VRCQuestToolsMenus.MenuPaths.RemoveAllVertexColors, true)]

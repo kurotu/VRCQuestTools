@@ -602,7 +602,7 @@ namespace KRT.VRCQuestTools.Utils
                 path = isMobile
                     ? "Packages/com.vrchat.base/Runtime/VRCSDK/Dependencies/VRChat/Resources/Validation/Performance/StatsLevels/Quest/AvatarPerformanceStatLevels_Quest.asset"
                     : "Packages/com.vrchat.base/Runtime/VRCSDK/Dependencies/VRChat/Resources/Validation/Performance/StatsLevels/Windows/AvatarPerformanceStatLevels_Windows.asset";
-                Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to find AvatarPerformanceStatLevelSet by GUID. Using {path}.");
+                Logger.LogWarning($"Failed to find AvatarPerformanceStatLevelSet by GUID. Using {path}.");
             }
             var statsLevelSet = AssetDatabase.LoadAssetAtPath<AvatarPerformanceStatsLevelSet>(path);
             if (statsLevelSet == null)

@@ -673,7 +673,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             }
                             break;
                         default:
-                            Debug.LogWarning($"Unsupported controller type: {controller.name}: {controller.GetType().Name}");
+                            Logger.LogWarning($"Unsupported controller type: {controller.name}: {controller.GetType().Name}");
                             break;
                     }
                     if (cloneController)
@@ -825,7 +825,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             Directory.CreateDirectory(dir);
                         }
                         anim = AssetUtility.CreateAsset(anim, outFile);
-                        Debug.Log("create asset: " + outFile);
+                        Logger.Log("create asset: " + outFile);
                     }
                     convertedAnimationClips.Add(clip, anim);
                     progressCallback(animationClips.Length, i, clip, anim);

@@ -61,7 +61,7 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     if (RemoteOnlyModeField == null)
                     {
-                        Debug.LogWarning("VirtualLensSettings.remoteOnlyMode is not found.");
+                        Logger.LogWarning("VirtualLensSettings.remoteOnlyMode is not found.");
                         return;
                     }
                     RemoteOnlyModeField.SetValue(Component, (int)value);

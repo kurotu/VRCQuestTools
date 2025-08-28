@@ -103,7 +103,7 @@ namespace KRT.VRCQuestTools
         private static void PrintProjectInfo()
         {
 #if VRC_SDK_VRCSDK2
-            Debug.LogError($"[{Name}] VRCSDK2 is no longer supported. (VRC_SDK_VRCSDK2 is defined)");
+            Logger.LogError($"VRCSDK2 is no longer supported. (VRC_SDK_VRCSDK2 is defined)");
 #endif
         }
     }

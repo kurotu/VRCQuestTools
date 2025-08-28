@@ -2,6 +2,7 @@
     "name": "VRCQuestTools-Editor-Ndmf-Unsupported",
     "rootNamespace": "KRT.VRCQuestTools.NonDestructive",
     "references": [
+        "VRCQuestTools",
         "VRCQuestTools-Editor",
         "VRC.SDKBase.Editor"
     ],

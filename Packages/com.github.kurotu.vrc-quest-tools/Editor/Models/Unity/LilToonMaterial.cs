@@ -385,14 +385,14 @@ namespace KRT.VRCQuestTools.Models.Unity
             var targetProp = MaterialEditor.GetMaterialProperty(new[] { target }, property.name);
             if (targetProp.name == null)
             {
-                Debug.LogWarning(
-                    $"[{VRCQuestTools.Name}] Property {property.name} not found in target material.\n" +
+                Logger.LogWarning(
+                    $"Property {property.name} not found in target material.\n" +
                     $"Material: {source}, Shader: {source.shader.name}");
             }
             else if (targetProp.type != property.type)
             {
-                Debug.LogWarning(
-                    $"[{VRCQuestTools.Name}] Property {property.name} type mismatch: target: {targetProp.type}, source: {property.type}.\n" +
+                Logger.LogWarning(
+                    $"Property {property.name} type mismatch: target: {targetProp.type}, source: {property.type}.\n" +
                     $"Material: {source}, Shader: {source.shader.name}");
             }
             switch (property.type)
@@ -479,22 +479,22 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
             else if (shouldNotBakeColor)
             {
-                Debug.Log("Should not need to bake");
+                Logger.Log("Should not need to bake");
                 return null;
             }
             else if (shouldNotBake2nd)
             {
-                Debug.Log("Should not bake 2nd");
+                Logger.Log("Should not bake 2nd");
                 return null;
             }
             else if (shouldNotBake3rd)
             {
-                Debug.Log("Should not bake 3rd");
+                Logger.Log("Should not bake 3rd");
                 return null;
             }
             else if (shouldNotBakeAll)
             {
-                Debug.Log("Should not bake all");
+                Logger.Log("Should not bake all");
                 return null;
             }*/
             if (false)

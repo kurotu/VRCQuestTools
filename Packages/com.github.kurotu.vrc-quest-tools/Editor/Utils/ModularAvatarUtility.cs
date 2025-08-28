@@ -93,7 +93,7 @@ namespace KRT.VRCQuestTools.Utils
                 var obj = component.gameObject;
                 var message = $"[{VRCQuestTools.Name}] Removed {component.GetType().Name} from {obj.name}";
                 UnityEngine.Object.DestroyImmediate(component);
-                Debug.Log(message, obj);
+                Logger.Log(message, obj);
             }
         }
 

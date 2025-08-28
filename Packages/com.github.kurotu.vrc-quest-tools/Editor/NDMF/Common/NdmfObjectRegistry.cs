@@ -30,7 +30,7 @@ namespace KRT.VRCQuestTools.Ndmf
         {
             if (registeredObjects.Contains(replaced))
             {
-                Debug.LogWarning($"{VRCQuestTools.Name} Replaced object {replaced} is already registered.");
+                Logger.LogWarning($"Replaced object {replaced} is already registered.");
                 return;
             }
             ObjectRegistry.RegisterReplacedObject(original, replaced);

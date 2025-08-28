@@ -53,6 +53,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public ImmutableList<RenderGroup> GetTargetGroups(ComputeContext context)
         {
+            Logger.LogDebug("Getting target groups");
             var rootConversions = context.GetAvatarRoots()
                 .Select(root => ComponentUtility.GetPrimaryMaterialConversionComponent(root))
                 .Cast<Component>()
@@ -81,6 +82,7 @@ namespace KRT.VRCQuestTools.Ndmf
         public Task<IRenderFilterNode> Instantiate(RenderGroup group, IEnumerable<(Renderer, Renderer)> proxyPairs, ComputeContext context)
         {
             var avatarRoot = context.GetAvatarRoot(group.Renderers[0].gameObject);
+            Logger.LogDebug($"Instantiating material conversion filter for {avatarRoot}", avatarRoot);
 
             IMaterialConversionComponent settings = avatarRoot.GetComponent<AvatarConverterSettings>();
             if (settings == null)

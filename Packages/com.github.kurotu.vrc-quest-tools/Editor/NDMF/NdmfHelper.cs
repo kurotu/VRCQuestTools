@@ -46,7 +46,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     break;
                 default:
                     target = Models.BuildTarget.PC;
-                    Debug.LogWarning($"[{VRCQuestTools.Name}] Unsupported unity build target: {EditorUserBuildSettings.activeBuildTarget}. Fallback to PC configuration.");
+                    Logger.LogWarning($"Unsupported unity build target: {EditorUserBuildSettings.activeBuildTarget}. Fallback to PC configuration.");
                     break;
             }
             Assert.IsTrue(target != Models.BuildTarget.Auto);

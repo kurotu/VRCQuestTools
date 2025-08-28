@@ -37,7 +37,7 @@ namespace KRT.VRCQuestTools.Menus
             var i18n = VRCQuestToolsSettings.I18nResource;
             var obj = Selection.activeGameObject;
             var count = VRCSDKUtility.CountMissingComponentsInChildren(obj, true);
-            Debug.Log($"[{VRCQuestTools.Name}] {obj.name} has {count} missing scripts in children");
+            Logger.Log($"{obj.name} has {count} missing scripts in children");
             if (count == 0)
             {
                 EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NoMissingComponentsMessage(obj.name), "OK");
@@ -61,7 +61,7 @@ namespace KRT.VRCQuestTools.Menus
 
                 // Somehow unpacking is needed to apply changes to the scene file.
                 PrefabUtility.UnpackPrefabInstance(obj, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
-                Debug.Log($"[{VRCQuestTools.Name}] {obj.name} has been unpacked");
+                Logger.Log($"{obj.name} has been unpacked");
             }
             VRCSDKUtility.RemoveMissingComponentsInChildren(obj, true);
         }

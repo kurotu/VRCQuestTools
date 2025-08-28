@@ -37,7 +37,7 @@ namespace KRT.VRCQuestTools.Ndmf
 #elif VQT_NDMF_BREAKING
             var message = i18n.BreakingPackageExceptionMessage("NDMF", BreakingNdmfVersion);
 #endif
-            Debug.LogError($"[{VRCQuestTools.Name}] " + message);
+            Logger.LogError(message);
             EditorUtility.DisplayDialog(VRCQuestTools.Name, message, "OK");
             return false;
         }

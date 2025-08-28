@@ -51,7 +51,7 @@ namespace KRT.VRCQuestTools.Utils
                 }
                 catch (Exception e)
                 {
-                    Debug.LogException(e);
+                    Logger.LogException(e);
                     EditorUtility.DisplayDialog(VRCQuestTools.Name, $"Error occurred when detecting lilToon version.\nPlease report this message and the console error log.\n\n{e.GetType().Name}: {e.Message}", "OK");
                     LilToonVersion = new SemVer("0.0.0");
                 }
@@ -188,13 +188,13 @@ namespace KRT.VRCQuestTools.Utils
             var path = AssetDatabase.GUIDToAssetPath(guid);
             if (string.IsNullOrEmpty(path))
             {
-                Debug.LogError($"Failed to get asset path by GUID: {guid}");
+                Logger.LogError($"Failed to get asset path by GUID: {guid}");
                 return null;
             }
             var asset = AssetDatabase.LoadAssetAtPath<T>(path);
             if (asset == null)
             {
-                Debug.LogError($"Failed to load asset by GUID: {guid}");
+                Logger.LogError($"Failed to load asset by GUID: {guid}");
                 return null;
             }
             return asset;

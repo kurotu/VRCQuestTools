@@ -547,7 +547,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 if (texture.width % 4 != 0 || texture.height % 4 != 0)
                 {
-                    Debug.LogWarning($"[{VRCQuestTools.Name}] Texture {texture.name} is not a multiple of 4. Not compressed to DXT5.", texture);
+                    Logger.LogWarning($"Texture {texture.name} is not a multiple of 4. Not compressed to DXT5.", texture);
                     return;
                 }
             }
