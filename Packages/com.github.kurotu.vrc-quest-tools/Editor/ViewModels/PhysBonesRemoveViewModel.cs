@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -53,7 +54,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <summary>
         /// Gets a value indicating whether all PhysBones are selected.
         /// </summary>
-        internal bool DoesSelectAllPhysBones => Avatar.GetPhysBones().Length == physBonesToKeep.Count;
+        internal bool DoesSelectAllPhysBones => Avatar.GetPhysBoneComponents().Length == physBonesToKeep.Count;
 
         /// <summary>
         /// Gets a value indicating whether all PhysBoneColliders are selected.
@@ -68,7 +69,16 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <summary>
         /// Gets selected PhysBones to keep.
         /// </summary>
-        internal IEnumerable<Component> PhysBonesToKeep => physBonesToKeep;
+        internal IEnumerable<IVRCPhysBoneProvider> PhysBonesToKeep
+        {
+            get
+            {
+                return physBonesToKeep
+                    .Cast<VRCPhysBone>()
+                    .Select(pb => new VRCPhysBoneProvider(pb))
+                    .Cast<IVRCPhysBoneProvider>();
+            }
+        }
 
         /// <summary>
         /// Gets selected PhysBoneColliders to keep.
@@ -107,10 +117,10 @@ namespace KRT.VRCQuestTools.ViewModels
         /// Set selected PhysBones.
         /// </summary>
         /// <param name="physBones">Components.</param>
-        internal void SetSelectedPhysBones(IEnumerable<Component> physBones)
+        internal void SetSelectedPhysBones(IEnumerable<IVRCPhysBoneProvider> physBones)
         {
             physBonesToKeep.Clear();
-            physBonesToKeep.AddRange(physBones);
+            physBonesToKeep.AddRange(physBones.Select(pb => pb.Component));
         }
 
         /// <summary>
@@ -118,18 +128,18 @@ namespace KRT.VRCQuestTools.ViewModels
         /// </summary>
         /// <param name="physBone">Target component.</param>
         /// <param name="select">true to select, false to deselect.</param>
-        internal void SelectPhysBone(Component physBone, bool select)
+        internal void SelectPhysBone(IVRCPhysBoneProvider physBone, bool select)
         {
             if (select)
             {
-                if (!physBonesToKeep.Contains(physBone))
+                if (!physBonesToKeep.Contains(physBone.Component))
                 {
-                    physBonesToKeep.Add(physBone);
+                    physBonesToKeep.Add(physBone.Component);
                 }
             }
             else
             {
-                physBonesToKeep.Remove(physBone);
+                physBonesToKeep.Remove(physBone.Component);
             }
         }
 
@@ -249,7 +259,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// </summary>
         internal void DeselectRemovedComponents()
         {
-            var physbones = Avatar.GetPhysBones();
+            var physbones = Avatar.GetPhysBoneComponents();
             physBonesToKeep.RemoveAll(c => !physbones.Contains(c));
 
             var colliders = Avatar.GetPhysBoneColliders();
@@ -265,7 +275,8 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <returns>true when matched.</returns>
         internal bool SelectedPhysBonesOrderMatchesWithOriginal()
         {
-            return PhysBonesToKeep.SequenceEqual(Avatar.GetPhysBones().Take(PhysBonesToKeep.Count()));
+            var originalComponents = Avatar.GetPhysBones().Select(pb => pb.Component).Take(PhysBonesToKeep.Count());
+            return PhysBonesToKeep.Select(pb => pb.Component).SequenceEqual(originalComponents);
         }
     }
 }

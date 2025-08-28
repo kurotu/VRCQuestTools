@@ -465,7 +465,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="contactsToKeep">ContanctSenders and ContactReceivers to keep.</param>
         internal static void DeleteAvatarDynamicsComponents(VRChatAvatar avatar, VRCPhysBone[] physBonesToKeep, VRCPhysBoneCollider[] physBoneCollidersToKeep, ContactBase[] contactsToKeep)
         {
-            foreach (var c in avatar.GetPhysBones().Except(physBonesToKeep))
+            foreach (var c in avatar.GetPhysBoneComponents().Except(physBonesToKeep))
             {
                 var go = c.gameObject;
                 Undo.DestroyObjectImmediate(c);
@@ -473,7 +473,7 @@ namespace KRT.VRCQuestTools.Utils
             }
             foreach (var c in avatar.GetPhysBoneColliders().Except(physBoneCollidersToKeep))
             {
-                var physbones = avatar.GetPhysBones();
+                var physbones = avatar.GetPhysBoneComponents();
 
                 // Remove reference from PhysBone before destroying.
                 for (var boneIndex = 0; boneIndex < physbones.Length; boneIndex++)

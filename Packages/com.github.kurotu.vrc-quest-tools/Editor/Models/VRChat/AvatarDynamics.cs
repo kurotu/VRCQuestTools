@@ -1,4 +1,5 @@
 using System.Linq;
+using KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
@@ -9,6 +10,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// </summary>
     internal static class AvatarDynamics
     {
+        /// <summary>
+        /// Calculate performance stats for Avatar Dynamics.
+        /// </summary>
+        /// <param name="root">Avatar root object (VRCAvatarDescriptor).</param>
+        /// <param name="physbones">PhysBone providers.</param>
+        /// <param name="colliders">PhysBoneCollider GameObjects.</param>
+        /// <param name="contacts">ContactSender and ContactReceiver GameObjects.</param>
+        /// <returns>Calculated performance stats.</returns>
+        internal static PerformanceStats CalculatePerformanceStats(
+            GameObject root,
+            IVRCPhysBoneProvider[] physbones,
+            VRCSDKUtility.Reflection.PhysBoneCollider[] colliders,
+            VRCSDKUtility.Reflection.ContactBase[] contacts)
+        {
+            var reflectionPhysBones = physbones.Select(pb => new VRCSDKUtility.Reflection.PhysBone(pb.Component)).ToArray();
+            return CalculatePerformanceStats(root, reflectionPhysBones, colliders, contacts);
+        }
+
         /// <summary>
         /// Calculate performance stats for Avatar Dynamics.
         /// </summary>

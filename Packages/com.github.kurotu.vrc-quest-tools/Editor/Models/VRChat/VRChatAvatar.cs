@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -132,7 +133,25 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Gets PhysBones.
         /// </summary>
         /// <returns>All attached PhysBones.</returns>
-        internal Component[] GetPhysBones()
+        internal IVRCPhysBoneProvider[] GetPhysBones()
+        {
+            if (VRCSDKUtility.IsPhysBonesImported())
+            {
+                var physBones = AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true)
+                    .Cast<VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone>()
+                    .Select(pb => new VRCPhysBoneProvider(pb))
+                    .Cast<IVRCPhysBoneProvider>()
+                    .ToArray();
+                return physBones;
+            }
+            return new IVRCPhysBoneProvider[] { };
+        }
+
+        /// <summary>
+        /// Gets PhysBone components (for compatibility).
+        /// </summary>
+        /// <returns>All attached PhysBone components.</returns>
+        internal Component[] GetPhysBoneComponents()
         {
             if (VRCSDKUtility.IsPhysBonesImported())
             {
@@ -198,6 +217,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             return AvatarDescriptor.GetComponentsInChildren<ContactSender>(true)
                 .Where(VRCSDKUtility.IsLocalOnlyContact).ToArray();
+        }
+
+        /// <summary>
+        /// Estimates performance stats.
+        /// </summary>
+        /// <param name="physbones">PhysBones to keep.</param>
+        /// <param name="colliders">PhysBone colliders to keep.</param>
+        /// <param name="contacts">Contacts to keep.</param>
+        /// <param name="isMobile">true for mobile.</param>
+        /// <returns>Estimated performance stats.</returns>
+        internal AvatarPerformanceStats EstimatePerformanceStats(
+            IVRCPhysBoneProvider[] physbones,
+            VRCSDKUtility.Reflection.PhysBoneCollider[] colliders,
+            VRCSDKUtility.Reflection.ContactBase[] contacts,
+            bool isMobile = true)
+        {
+            var reflectionPhysBones = physbones.Select(pb => new VRCSDKUtility.Reflection.PhysBone(pb.Component)).ToArray();
+            return EstimatePerformanceStats(reflectionPhysBones, colliders, contacts, isMobile);
         }
 
         /// <summary>
