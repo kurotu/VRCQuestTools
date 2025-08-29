@@ -361,9 +361,8 @@ namespace KRT.VRCQuestTools.Utils
         internal static void AssignNetworkIdsToPhysBones(VRC_AvatarDescriptor avatarDescriptor)
         {
             var ids = avatarDescriptor.NetworkIDCollection;
-            var pbs = avatarDescriptor.GetComponentsInChildren(PhysBoneType, true)
-                .Select(c => new Reflection.PhysBone(c))
-                .OrderBy(pb => GetFullPathInHierarchy(pb.GameObject))
+            var pbs = avatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true)
+                .OrderBy(pb => GetFullPathInHierarchy(pb.gameObject))
                 .ToArray();
             var assignedIds = new HashSet<int>(ids.Select(oair => oair.ID));
 
@@ -374,12 +373,12 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     id++;
                 }
-                var alreadyAssigned = ids.FirstOrDefault(pair => pair.gameObject == pb.GameObject) != null;
+                var alreadyAssigned = ids.FirstOrDefault(pair => pair.gameObject == pb.gameObject) != null;
                 if (!alreadyAssigned)
                 {
                     var pair = new VRC.SDKBase.Network.NetworkIDPair();
                     pair.ID = id;
-                    pair.gameObject = pb.GameObject;
+                    pair.gameObject = pb.gameObject;
                     avatarDescriptor.NetworkIDCollection.Add(pair);
                     assignedIds.Add(id);
                 }
@@ -479,12 +478,11 @@ namespace KRT.VRCQuestTools.Utils
                 for (var boneIndex = 0; boneIndex < physbones.Length; boneIndex++)
                 {
                     var boneObject = physbones[boneIndex];
-                    var boneComponent = new Reflection.PhysBone(boneObject);
-                    for (var colliderIndex = 0; colliderIndex < boneComponent.Colliders.Count; colliderIndex++)
+                    for (var colliderIndex = 0; colliderIndex < boneObject.colliders.Count; colliderIndex++)
                     {
-                        if (boneComponent.Colliders[colliderIndex] == c)
+                        if (boneObject.colliders[colliderIndex] == c)
                         {
-                            boneComponent.ClearCollider(colliderIndex);
+                            boneObject.colliders[colliderIndex] = null;
                         }
                     }
                     PrefabUtility.RecordPrefabInstancePropertyModifications(boneObject);
@@ -511,23 +509,19 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Root Transform.</returns>
         internal static Transform GetRootTransform(Component component)
         {
-            var type = component.GetType();
-            if (type == PhysBoneType)
+            if (component is VRCPhysBone physBone)
             {
-                var bone = new Reflection.PhysBone(component);
-                return bone.RootTransform;
+                return physBone.rootTransform;
             }
 
-            if (type == PhysBoneColliderType)
+            if (component is VRCPhysBoneCollider collider)
             {
-                var collider = new Reflection.PhysBoneCollider(component);
-                return collider.RootTransform;
+                return collider.rootTransform;
             }
 
-            if (type == ContactReceiverType || type == ContactSenderType)
+            if (component is ContactBase contact)
             {
-                var contact = new Reflection.ContactBase(component);
-                return contact.RootTransform;
+                return contact.rootTransform;
             }
 
             return null;
@@ -561,7 +555,7 @@ namespace KRT.VRCQuestTools.Utils
             for (var i = 0; i < avatarDescriptor.NetworkIDCollection.Count; i++)
             {
                 var pair = avatarDescriptor.NetworkIDCollection[i];
-                if (pair.gameObject == null || pair.gameObject.GetComponent(PhysBoneType) == null)
+                if (pair.gameObject == null || pair.gameObject.GetComponent<VRCPhysBone>() == null)
                 {
                     avatarDescriptor.NetworkIDCollection.RemoveAt(i);
                     i--;

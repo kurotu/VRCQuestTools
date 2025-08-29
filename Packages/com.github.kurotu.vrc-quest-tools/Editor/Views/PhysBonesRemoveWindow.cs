@@ -204,9 +204,9 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.Space();
 
             var stats = model.Avatar.EstimatePerformanceStats(
-                model.PhysBonesToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray(),
-                model.PhysBoneCollidersToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray(),
-                model.ContactsToKeep.Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray(),
+                model.PhysBonesToKeep.ToArray(),
+                model.PhysBoneCollidersToKeep.ToArray(),
+                model.ContactsToKeep.ToArray(),
                 true);
             EditorGUILayout.LabelField(i18n.EstimatedPerformanceStats, EditorStyles.boldLabel);
             foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
