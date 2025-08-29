@@ -272,15 +272,6 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Whether VRCSDK has PhysBones.
-        /// </summary>
-        /// <returns>true when PhysBones exists in the project.</returns>
-        internal static bool IsPhysBonesImported()
-        {
-            return typeof(VRCPhysBone) != null;
-        }
-
-        /// <summary>
         /// Gets whether VRCSDK is imported as a package.
         /// </summary>
         /// <returns>true when com.vrchat.avatars exists.</returns>

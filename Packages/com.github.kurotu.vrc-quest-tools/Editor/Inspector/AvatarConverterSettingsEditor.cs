@@ -355,9 +355,9 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 return null;
             }
-            var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).Cast<VRCPhysBone>().ToArray();
-            var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).Cast<VRCPhysBoneCollider>().ToArray();
-            var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).Cast<ContactBase>().ToArray();
+            var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).ToArray();
+            var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).ToArray();
+            var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).ToArray();
             var avatar = new VRChatAvatar(original);
             return avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, contactsToKeep);
         }

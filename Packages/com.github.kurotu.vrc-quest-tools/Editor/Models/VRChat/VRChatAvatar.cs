@@ -135,11 +135,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>All attached PhysBones.</returns>
         internal VRCPhysBone[] GetPhysBones()
         {
-            if (VRCSDKUtility.IsPhysBonesImported())
-            {
-                return AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true);
-            }
-            return new VRCPhysBone[] { };
+            return AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true);
         }
 
         /// <summary>
@@ -148,11 +144,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>All attached PhysBoneColliders.</returns>
         internal VRCPhysBoneCollider[] GetPhysBoneColliders()
         {
-            if (VRCSDKUtility.IsPhysBonesImported())
-            {
-                return AvatarDescriptor.GetComponentsInChildren<VRCPhysBoneCollider>(true);
-            }
-            return new VRCPhysBoneCollider[] { };
+            return AvatarDescriptor.GetComponentsInChildren<VRCPhysBoneCollider>(true);
         }
 
         /// <summary>
@@ -161,11 +153,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>All attached ContactReceivers and ContactSenders.</returns>
         internal ContactBase[] GetContacts()
         {
-            if (VRCSDKUtility.IsPhysBonesImported())
-            {
-                return AvatarDescriptor.GetComponentsInChildren<ContactBase>(true);
-            }
-            return new ContactBase[] { };
+            return AvatarDescriptor.GetComponentsInChildren<ContactBase>(true);
         }
 
         /// <summary>

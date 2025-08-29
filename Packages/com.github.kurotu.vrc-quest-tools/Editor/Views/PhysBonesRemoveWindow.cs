@@ -74,11 +74,6 @@ namespace KRT.VRCQuestTools.Views
         private void OnGUI()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-            if (!VRCSDKUtility.IsPhysBonesImported())
-            {
-                EditorGUILayout.LabelField(i18n.PhysBonesSDKRequired);
-                return;
-            }
 
             var selectedAvatar = (VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, model.Avatar?.AvatarDescriptor, typeof(VRC_AvatarDescriptor), true);
             if (model.Avatar?.AvatarDescriptor != selectedAvatar)
