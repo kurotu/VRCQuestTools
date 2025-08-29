@@ -163,7 +163,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal ContactBase[] GetNonLocalContacts()
         {
             return AvatarDescriptor.GetComponentsInChildren<ContactBase>(true)
-                .Where(c => !VRCSDKUtility.IsLocalOnlyContact(c))
+                .Where(c => !c.IsLocalOnly)
                 .ToArray();
         }
 
@@ -174,7 +174,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal ContactReceiver[] GetLocalContactReceivers()
         {
             return AvatarDescriptor.GetComponentsInChildren<ContactReceiver>(true)
-                .Where(VRCSDKUtility.IsLocalOnlyContact).ToArray();
+                .Where(r => r.IsLocalOnly).ToArray();
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal ContactSender[] GetLocalContactSenders()
         {
             return AvatarDescriptor.GetComponentsInChildren<ContactSender>(true)
-                .Where(VRCSDKUtility.IsLocalOnlyContact).ToArray();
+                .Where(s => s.IsLocalOnly).ToArray();
         }
 
         /// <summary>

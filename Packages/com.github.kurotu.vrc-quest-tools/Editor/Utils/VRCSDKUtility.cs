@@ -498,23 +498,6 @@ namespace KRT.VRCQuestTools.Utils
             return null;
         }
 
-        /// <summary>
-        /// Gets the contact is local-only.
-        /// </summary>
-        /// <param name="contact">Contact to inspect.</param>
-        /// <returns>true when the contact is local-only.</returns>
-        internal static bool IsLocalOnlyContact(ContactBase contact)
-        {
-            if (contact is ContactReceiver receiver)
-            {
-                return receiver.IsLocalOnly;
-            }
-            if (contact is ContactSender sender)
-            {
-                return sender.IsLocalOnly;
-            }
-            return false;
-        }
 
         /// <summary>
         /// Stripes unused network ids from the avatar.

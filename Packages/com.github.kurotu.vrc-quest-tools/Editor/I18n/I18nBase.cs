@@ -183,7 +183,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string UnsupportedRemoverConfirmationMessage(string objectName) => GetText("UnsupportedRemoverConfirmationMessage", objectName);
 
         // Remove PhysBones
-        internal string PhysBonesSDKRequired => GetText("PhysBonesSDKRequired");
         internal string SelectComponentsToKeep => GetText("SelectComponentsToKeep");
         internal string PhysBonesListTooltip => GetText("PhysBonesListTooltip");
         internal string KeepAll => GetText("KeepAll");
