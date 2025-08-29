@@ -63,26 +63,6 @@ namespace KRT.VRCQuestTools.Utils
         };
 
         /// <summary>
-        /// Type object of VRCPhysBone.
-        /// </summary>
-        internal static readonly System.Type PhysBoneType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
-
-        /// <summary>
-        /// Type object of VRCPhysBoneCollider.
-        /// </summary>
-        internal static readonly System.Type PhysBoneColliderType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBoneCollider");
-
-        /// <summary>
-        /// Type object of VRCContactReceiver.
-        /// </summary>
-        internal static readonly System.Type ContactReceiverType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.Contact.Components.VRCContactReceiver");
-
-        /// <summary>
-        /// Type object of VRCContactSender.
-        /// </summary>
-        internal static readonly System.Type ContactSenderType = SystemUtility.GetTypeByName("VRC.SDK3.Dynamics.Contact.Components.VRCContactSender");
-
-        /// <summary>
         /// Types which is not allowed for Quest avatars. (except FinalIK).
         /// </summary>
         internal static readonly System.Type[] UnsupportedComponentTypes = new System.Type[]
@@ -297,7 +277,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when PhysBones exists in the project.</returns>
         internal static bool IsPhysBonesImported()
         {
-            return PhysBoneType != null;
+            return typeof(VRCPhysBone) != null;
         }
 
         /// <summary>
@@ -336,7 +316,7 @@ namespace KRT.VRCQuestTools.Utils
         internal static bool HasMissingNetworkIds(VRC_AvatarDescriptor avatarDescriptor)
         {
             var ids = avatarDescriptor.NetworkIDCollection;
-            var pbs = avatarDescriptor.gameObject.GetComponentsInChildren(PhysBoneType, true);
+            var pbs = avatarDescriptor.gameObject.GetComponentsInChildren<VRCPhysBone>(true);
             if (ids.Count == 0)
             {
                 return pbs.Length > 0;
@@ -857,171 +837,5 @@ namespace KRT.VRCQuestTools.Utils
 #pragma warning restore SA1600
         }
 
-        /// <summary>
-        /// Reflection to use VRCSDK features.
-        /// </summary>
-        internal static class Reflection
-        {
-            /// <summary>
-            /// Reflection wrapper for VRCPhysBone.
-            /// </summary>
-            internal class PhysBone
-            {
-                private static readonly FieldInfo RootTransformField = PhysBoneType?.GetField("rootTransform");
-                private static readonly FieldInfo IgnoreTransformsField = PhysBoneType?.GetField("ignoreTransforms");
-                private static readonly FieldInfo EndpointPositionField = PhysBoneType?.GetField("endpointPosition");
-                private static readonly FieldInfo MultiChildTypeField = PhysBoneType?.GetField("multiChildType");
-                private static readonly FieldInfo CollidersField = PhysBoneType?.GetField("colliders");
-                private readonly Component component;
-
-                /// <summary>
-                /// Initializes a new instance of the <see cref="PhysBone"/> class.
-                /// </summary>
-                /// <param name="component">Component to wrap.</param>
-                internal PhysBone(Component component)
-                {
-                    this.component = component;
-                }
-
-                /// <summary>
-                /// VRCPhysBoneBase.MultiChildType.
-                /// </summary>
-                internal enum MultiChildTypeEnum
-                {
-                    /// <summary>
-                    /// VRCPhysBoneBase.MultiChildType.Ignore.
-                    /// </summary>
-                    Ignore,
-
-                    /// <summary>
-                    /// VRCPhysBoneBase.MultiChildType.First.
-                    /// </summary>
-                    First,
-
-                    /// <summary>
-                    /// VRCPhysBoneBase.MultiChildType.Average.
-                    /// </summary>
-                    Average,
-                }
-
-                /// <summary>
-                /// Gets gameObject of the component.
-                /// </summary>
-                internal GameObject GameObject => component.gameObject;
-
-                /// <summary>
-                /// Gets root tansform set by inspector.
-                /// </summary>
-                internal Transform RootTransform => (Transform)RootTransformField.GetValue(component);
-
-                /// <summary>
-                /// Gets ignore transforms set by inspector.
-                /// </summary>
-                internal List<Transform> IgnoreTransforms => (List<Transform>)IgnoreTransformsField.GetValue(component);
-
-                /// <summary>
-                /// Gets endpoint position set by inspector.
-                /// </summary>
-                internal Vector3 EndpointPosition => (Vector3)EndpointPositionField.GetValue(component);
-
-                /// <summary>
-                /// Gets multi child type set by inspector.
-                /// </summary>
-                internal MultiChildTypeEnum MultiChildType => (MultiChildTypeEnum)MultiChildTypeField.GetValue(component);
-
-                /// <summary>
-                /// Gets PhysBoneCollider instances.
-                /// </summary>
-                internal List<Component> Colliders
-                {
-                    get
-                    {
-                        var colliders = CollidersField.GetValue(component);
-                        dynamic[] c = Enumerable.ToArray((dynamic)colliders);
-                        return c.Cast<Component>().ToList();
-                    }
-                }
-
-                /// <summary>
-                /// Sets null to PhysBoneCollider at index.
-                /// </summary>
-                /// <param name="index">index to set null.</param>
-                internal void ClearCollider(int index)
-                {
-                    var colliders = CollidersField.GetValue(component);
-                    ((dynamic)colliders)[index] = null;
-                }
-            }
-
-            /// <summary>
-            /// Reflection wrapper for VRCPhysBoneCollider.
-            /// </summary>
-            internal class PhysBoneCollider
-            {
-                /// <summary>
-                /// Gets the component object of PhysBoneCollider.
-                /// </summary>
-                internal readonly Component Component;
-                private static readonly FieldInfo RootTransformField = PhysBoneColliderType?.GetField("rootTransform");
-
-                /// <summary>
-                /// Initializes a new instance of the <see cref="PhysBoneCollider"/> class.
-                /// </summary>
-                /// <param name="component">Component to wrap.</param>
-                internal PhysBoneCollider(Component component)
-                {
-                    this.Component = component;
-                }
-
-                /// <summary>
-                /// Gets root tansform set by inspector.
-                /// </summary>
-                internal Transform RootTransform => (Transform)RootTransformField.GetValue(Component);
-            }
-
-            /// <summary>
-            /// Reflection wrapper for ContactBase.
-            /// </summary>
-            internal class ContactBase
-            {
-                private static readonly System.Type ContactBaseType = SystemUtility.GetTypeByName("VRC.Dynamics.ContactBase");
-                private static readonly FieldInfo RootTransformField = ContactBaseType?.GetField("rootTransform");
-                private readonly Component component;
-
-                /// <summary>
-                /// Initializes a new instance of the <see cref="ContactBase"/> class.
-                /// </summary>
-                /// <param name="component">Component to wrap.</param>
-                internal ContactBase(Component component)
-                {
-                    this.component = component;
-                }
-
-                /// <summary>
-                /// Gets gameObject of the component.
-                /// </summary>
-                internal GameObject GameObject => component.gameObject;
-
-                /// <summary>
-                /// Gets root tansform set by inspector.
-                /// </summary>
-                internal Transform RootTransform => (Transform)RootTransformField.GetValue(component);
-
-                /// <summary>
-                /// Gets a value indicating whether the component is local only.
-                /// </summary>
-                internal bool IsLocalOnly
-                {
-                    get
-                    {
-                        if (component is VRC.Dynamics.ContactBase contact)
-                        {
-                            return IsLocalOnlyContact(contact);
-                        }
-                        return false;
-                    }
-                }
-            }
-        }
     }
 }
