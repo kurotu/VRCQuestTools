@@ -1,6 +1,8 @@
 using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
+using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -20,11 +22,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal static PerformanceStats CalculatePerformanceStats(
             GameObject root,
             IVRCPhysBoneProvider[] physbones,
-            VRCSDKUtility.Reflection.PhysBoneCollider[] colliders,
-            VRCSDKUtility.Reflection.ContactBase[] contacts)
+            VRCPhysBoneCollider[] colliders,
+            ContactBase[] contacts)
         {
-            var reflectionPhysBones = physbones.Select(pb => new VRCSDKUtility.Reflection.PhysBone(pb.Component)).ToArray();
-            return CalculatePerformanceStats(root, reflectionPhysBones, colliders, contacts);
+            var vrcPhysBones = physbones.Select(pb => pb.Component as VRCPhysBone).Where(pb => pb != null).ToArray();
+            return CalculatePerformanceStats(root, vrcPhysBones, colliders, contacts);
         }
 
         /// <summary>
@@ -37,9 +39,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>Calculated performance stats.</returns>
         internal static PerformanceStats CalculatePerformanceStats(
             GameObject root,
-            VRCSDKUtility.Reflection.PhysBone[] physbones,
-            VRCSDKUtility.Reflection.PhysBoneCollider[] colliders,
-            VRCSDKUtility.Reflection.ContactBase[] contacts)
+            VRCPhysBone[] physbones,
+            VRCPhysBoneCollider[] colliders,
+            ContactBase[] contacts)
         {
             return new PerformanceStats()
             {
@@ -51,19 +53,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
             };
         }
 
-        private static int CalculatePhysBonesCount(GameObject root, VRCSDKUtility.Reflection.PhysBone[] physbones)
+        private static int CalculatePhysBonesCount(GameObject root, VRCPhysBone[] physbones)
         {
             return GetActualPhysBones(root, physbones).Count();
         }
 
-        private static int CalculatePhysBonesTransformCount(GameObject root, VRCSDKUtility.Reflection.PhysBone[] physbones)
+        private static int CalculatePhysBonesTransformCount(GameObject root, VRCPhysBone[] physbones)
         {
             // exclude editor only physbones
             var actual = GetActualPhysBones(root, physbones);
             return actual.Sum(pb => CalculatePhysBoneTransformCount(pb));
         }
 
-        private static int CalculatePhysBonesColliderCount(GameObject root, VRCSDKUtility.Reflection.PhysBone[] physbones, VRCSDKUtility.Reflection.PhysBoneCollider[] colliders)
+        private static int CalculatePhysBonesColliderCount(GameObject root, VRCPhysBone[] physbones, VRCPhysBoneCollider[] colliders)
         {
             var actualPbs = GetActualPhysBones(root, physbones);
             var actual = colliders.Where((collider) =>
@@ -73,14 +75,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return actual.Count();
         }
 
-        private static int CalculatePhysBonesCollisionCheckCount(GameObject root, VRCSDKUtility.Reflection.PhysBone[] physbones, VRCSDKUtility.Reflection.PhysBoneCollider[] colliders)
+        private static int CalculatePhysBonesCollisionCheckCount(GameObject root, VRCPhysBone[] physbones, VRCPhysBoneCollider[] colliders)
         {
             // exclude editor only physbones
-            var actualPbs = physbones.Where((obj) => !IsFinallyEditorOnly(root, obj.GameObject));
+            var actualPbs = physbones.Where((obj) => !IsFinallyEditorOnly(root, obj.gameObject));
             var collisions = actualPbs.Select((pb) =>
             {
                 var transformCount = CalculatePhysBoneTransformCount(pb) - 1; // ignore itself.
-                var rootTrans = pb.RootTransform == null ? pb.GameObject.transform : pb.RootTransform;
+                var rootTrans = pb.rootTransform == null ? pb.gameObject.transform : pb.rootTransform;
 
                 var multiChildRoots = rootTrans.GetComponentsInChildren<Transform>(true)
                     .Where(t => !IsFinallyEditorOnly(root, t.gameObject))
@@ -88,14 +90,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     .ToArray();
                 transformCount -= multiChildRoots.Sum(t => t.childCount);
 
-                if (pb.MultiChildType != VRCSDKUtility.Reflection.PhysBone.MultiChildTypeEnum.Ignore)
+                if (pb.multiChildType != VRCPhysBoneBase.MultiChildType.Ignore)
                 {
                     transformCount += multiChildRoots.Length;
                 }
 
-                if (pb.EndpointPosition.magnitude > 0)
+                if (pb.endpointPosition.magnitude > 0)
                 {
-                    var ignore = pb.IgnoreTransforms.ToArray();
+                    var ignore = pb.ignoreTransforms.ToArray();
                     var endpoints = rootTrans.GetComponentsInChildren<Transform>(true)
                         .Where(t => t.childCount == 0)
                         .Where(t => !IsIgnoredTransform(t, ignore))
@@ -103,30 +105,30 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     transformCount += endpoints.Count();
                 }
 
-                var colliderCount = pb.Colliders
+                var colliderCount = pb.colliders
                     .Distinct()
                     .Where(c => c != null)
-                    .Where(c => colliders.FirstOrDefault(cc => cc.Component == c) != null)
+                    .Where(c => colliders.FirstOrDefault(cc => cc == c) != null)
                     .Count();
                 return transformCount * colliderCount;
             });
             return collisions.Sum();
         }
 
-        private static int CalculateContactsCount(VRCSDKUtility.Reflection.ContactBase[] contacts)
+        private static int CalculateContactsCount(ContactBase[] contacts)
         {
             return contacts.Count(c => !c.IsLocalOnly);
         }
 
-        private static VRCSDKUtility.Reflection.PhysBone[] GetActualPhysBones(GameObject root, VRCSDKUtility.Reflection.PhysBone[] physbones)
+        private static VRCPhysBone[] GetActualPhysBones(GameObject root, VRCPhysBone[] physbones)
         {
             // exclude editor only physbones
-            return physbones.Where(obj => !IsFinallyEditorOnly(root, obj.GameObject)).ToArray();
+            return physbones.Where(obj => !IsFinallyEditorOnly(root, obj.gameObject)).ToArray();
         }
 
-        private static bool IsColliderReferencedByPhysBone(VRCSDKUtility.Reflection.PhysBoneCollider collider, VRCSDKUtility.Reflection.PhysBone physBone)
+        private static bool IsColliderReferencedByPhysBone(VRCPhysBoneCollider collider, VRCPhysBone physBone)
         {
-            return physBone.Colliders.Contains(collider.Component);
+            return physBone.colliders.Contains(collider);
         }
 
         private static bool IsFinallyEditorOnly(GameObject root, GameObject obj)
@@ -151,7 +153,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return ignoreTransforms.Contains(transform);
         }
 
-        private static bool IsMultiChildRoot(VRCSDKUtility.Reflection.PhysBone physBone, Transform transform)
+        private static bool IsMultiChildRoot(VRCPhysBone physBone, Transform transform)
         {
             if (transform.childCount <= 1)
             {
@@ -162,13 +164,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var children = transform.GetComponentsInChildren<Transform>(true)
                 .Where(t => t.parent == transform)
                 .ToArray();
-            return children.Where(t => !IsIgnoredTransform(t, physBone.IgnoreTransforms.ToArray())).Count() > 1;
+            return children.Where(t => !IsIgnoredTransform(t, physBone.ignoreTransforms.ToArray())).Count() > 1;
         }
 
-        private static int CalculatePhysBoneTransformCount(VRCSDKUtility.Reflection.PhysBone physbone)
+        private static int CalculatePhysBoneTransformCount(VRCPhysBone physbone)
         {
-            var rootTransform = physbone.RootTransform == null ? physbone.GameObject.transform : physbone.RootTransform;
-            return CountChildrenRecursive(rootTransform, physbone.IgnoreTransforms.ToArray()) + 1; // count root itself.
+            var rootTransform = physbone.rootTransform == null ? physbone.gameObject.transform : physbone.rootTransform;
+            return CountChildrenRecursive(rootTransform, physbone.ignoreTransforms.ToArray()) + 1; // count root itself.
         }
 
         private static int CountChildrenRecursive(Transform transform, Transform[] ignoreTransforms)

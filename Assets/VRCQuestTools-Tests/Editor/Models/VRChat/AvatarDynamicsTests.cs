@@ -111,9 +111,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "SimplePhysBone");
-            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
-            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
-            var contacts = root.GetComponentsInChildren<ContactBase>(true).Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray();
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true);
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true);
+            var contacts = root.GetComponentsInChildren<ContactBase>(true);
             var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
 
             var sdkStats = new AvatarPerformanceStats(true);
@@ -143,9 +143,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "ChildOfEditorOnly");
-            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
-            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
-            var contacts = root.GetComponentsInChildren<ContactBase>(true).Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray();
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true);
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true);
+            var contacts = root.GetComponentsInChildren<ContactBase>(true);
             var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
 
             var sdkStats = new AvatarPerformanceStats(true);
@@ -173,9 +173,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             newPB.transform.SetParent(root.transform, true);
             newPB.GetComponent<VRCPhysBone>().colliders.Add(root.GetComponentInChildren<VRCPhysBoneCollider>());
 
-            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
-            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
-            var contacts = root.GetComponentsInChildren<ContactBase>(true).Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray();
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true);
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true);
+            var contacts = root.GetComponentsInChildren<ContactBase>(true);
             var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
 
             var sdkStats = new AvatarPerformanceStats(true);
@@ -201,9 +201,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "MultiChildIgnore");
 
-            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
-            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
-            var contacts = new VRCSDKUtility.Reflection.ContactBase[0];
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true);
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true);
+            var contacts = new ContactBase[0];
             var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
 
             var sdkStats = new AvatarPerformanceStats(true);
@@ -219,7 +219,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
             Assert.AreEqual(sdkStats.contactCount.Value, perfs.ContactsCount, "Contacts count is different from SDK.");
 
-            perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCSDKUtility.Reflection.PhysBoneCollider[0], contacts);
+            perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCPhysBoneCollider[0], contacts);
             Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count should be 0 when colliders are missing.");
         }
 
@@ -232,9 +232,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "MultiChildFirst");
 
-            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
-            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
-            var contacts = new VRCSDKUtility.Reflection.ContactBase[0];
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true);
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true);
+            var contacts = new ContactBase[0];
             var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
 
             var sdkStats = new AvatarPerformanceStats(true);
@@ -250,7 +250,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
             Assert.AreEqual(sdkStats.contactCount.Value, perfs.ContactsCount, "Contacts count is different from SDK.");
 
-            perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCSDKUtility.Reflection.PhysBoneCollider[0], contacts);
+            perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCPhysBoneCollider[0], contacts);
             Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count should be 0 when colliders are missing.");
         }
 
@@ -263,9 +263,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var scene = OpenTestScene();
             var root = scene.GetRootGameObjects().First((obj) => obj.name == "EndpointPosition");
 
-            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true).Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray();
-            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true).Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray();
-            var contacts = new VRCSDKUtility.Reflection.ContactBase[0];
+            var pbs = root.GetComponentsInChildren<VRCPhysBone>(true);
+            var colliders = root.GetComponentsInChildren<VRCPhysBoneCollider>(true);
+            var contacts = new ContactBase[0];
             var perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, colliders, contacts);
 
             var sdkStats = new AvatarPerformanceStats(true);
@@ -281,7 +281,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.AreEqual(sdkStats.physBone.Value.collisionCheckCount, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count is different from SDK.");
             Assert.AreEqual(sdkStats.contactCount.Value, perfs.ContactsCount, "Contacts count is different from SDK.");
 
-            perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCSDKUtility.Reflection.PhysBoneCollider[0], contacts);
+            perfs = AvatarDynamics.CalculatePerformanceStats(root, pbs, new VRCPhysBoneCollider[0], contacts);
             Assert.AreEqual(0, perfs.PhysBonesCollisionCheckCount, "PhysBones collision check count should be 0 when colliders are missing.");
         }
 
