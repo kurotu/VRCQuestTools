@@ -350,9 +350,6 @@ msgstr "{0} に非対応コンポーネントはありません。"
 msgid "UnsupportedRemoverConfirmationMessage"
 msgstr "{0} から以下の非対応コンポーネントを削除します。"
 
-msgid "PhysBonesSDKRequired"
-msgstr "Avatar Dynamics に対応した VRCSDK が必要です。"
-
 msgid "SelectComponentsToKeep"
 msgstr "削除せずに残すコンポーネントを選択してください。"
 

@@ -133,7 +133,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Gets PhysBones.
         /// </summary>
         /// <returns>All attached PhysBones.</returns>
-        internal IVRCPhysBoneProvider[] GetPhysBones()
+        internal VRCPhysBone[] GetPhysBones()
+        {
+            return AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true);
+        }
+
+        /// <summary>
+        /// Gets PhysBones as providers for abstraction layer.
+        /// </summary>
+        /// <returns>All attached PhysBones as providers.</returns>
+        internal IVRCPhysBoneProvider[] GetPhysBoneProviders()
         {
             return AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true)
                 .Select(pb => new VRCPhysBoneProvider(pb))
@@ -193,7 +202,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <summary>
         /// Estimates performance stats.
         /// </summary>
-        /// <param name="physbones">PhysBones to keep.</param>
+        /// <param name="physbones">PhysBone providers to keep.</param>
         /// <param name="colliders">PhysBone colliders to keep.</param>
         /// <param name="contacts">Contacts to keep.</param>
         /// <param name="isMobile">true for mobile.</param>
@@ -204,33 +213,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
             ContactBase[] contacts,
             bool isMobile = true)
         {
-            var stats = VRCSDKUtility.CalculatePerformanceStats(AvatarDescriptor.gameObject, isMobile);
-            var dynaimcsStats = AvatarDynamics.CalculatePerformanceStats(AvatarDescriptor.gameObject, physbones, colliders, contacts);
-            stats.physBone = new AvatarPerformanceStats.PhysBoneStats
-            {
-                componentCount = dynaimcsStats.PhysBonesCount,
-                transformCount = dynaimcsStats.PhysBonesTransformCount,
-                colliderCount = dynaimcsStats.PhysBonesColliderCount,
-                collisionCheckCount = dynaimcsStats.PhysBonesCollisionCheckCount,
-            };
-            stats.contactCount = dynaimcsStats.ContactsCount;
-
-            if (isMobile)
-            {
-                stats.audioSourceCount = null;
-                stats.clothCount = null;
-                stats.clothMaxVertices = null;
-                stats.constraintsCount = null;
-                stats.downloadSizeBytes = null;
-                stats.lightCount = null;
-                stats.physicsColliderCount = null;
-                stats.physicsRigidbodyCount = null;
-                stats.textureMegabytes = null;
-                stats.uncompressedSizeBytes = null;
-            }
-
-            stats.CalculateAllPerformanceRatings(isMobile);
-            return stats;
+            var vrcPhysBones = physbones.Select(pb => pb.Component as VRCPhysBone).Where(pb => pb != null).ToArray();
+            return EstimatePerformanceStats(vrcPhysBones, colliders, contacts, isMobile);
         }
 
         /// <summary>

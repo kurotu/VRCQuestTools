@@ -349,10 +349,6 @@ msgstr "There are no unsupported components in {0}."
 
 msgid "UnsupportedRemoverConfirmationMessage"
 msgstr "Remove following unsupported components from {0}."
-
-msgid "PhysBonesSDKRequired"
-msgstr "VRCSDK which supports Avatar Dynamics is required."
-
 msgid "SelectComponentsToKeep"
 msgstr "Select components to keep."
 
