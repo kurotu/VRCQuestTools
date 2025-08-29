@@ -6,7 +6,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders
+namespace KRT.VRCQuestTools.Models.VRChat
 {
     /// <summary>
     /// Interface for providing abstracted access to VRCPhysBone functionality.

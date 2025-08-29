@@ -10,7 +10,7 @@ using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 
-namespace KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders
+namespace KRT.VRCQuestTools.Models.VRChat
 {
     /// <summary>
     /// Default implementation of IVRCPhysBoneProvider that wraps a VRCPhysBone component.

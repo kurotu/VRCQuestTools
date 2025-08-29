@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
-using KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders;
+
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEditor.Animations;

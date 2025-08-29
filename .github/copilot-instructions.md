@@ -48,6 +48,11 @@ This project uses NUnit for testing. Tests are located in the `Assets/VRCQuestTo
 To run the tests, open the Unity Test Runner window and execute all tests.
 Note: Test execution may require a specific Unity environment setup.
 
+#### Documentation Policy
+
+- Instruction files are not needed. If testing instructions are necessary, write them as comments in test code.
+- Do not create separate instruction or guide files for development or testing purposes.
+
 ### Documentation
 
 The documentation for VRCQuestTools is located in the `Website` directory.

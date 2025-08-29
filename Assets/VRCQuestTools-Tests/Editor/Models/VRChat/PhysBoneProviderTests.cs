@@ -1,9 +1,9 @@
-using KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders;
+using KRT.VRCQuestTools.Models.VRChat;
 using NUnit.Framework;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 
-namespace KRT.VRCQuestTools.Models.VRChat.PhysBoneProviders
+namespace KRT.VRCQuestTools.Models.VRChat
 {
     /// <summary>
     /// Tests for PhysBoneProvider classes.
