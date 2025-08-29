@@ -15,7 +15,6 @@ jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:
     runs-on: ubuntu-latest
-    container: unityci/editor:ubuntu-2022.3.22f1-windows-mono-3
 
     # Set the permissions to the lowest permissions possible needed for your steps.
     # Copilot will be given its own token for its operations.
@@ -53,19 +52,17 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
-      # https://github.com/game-ci/unity-builder/issues/497#issuecomment-1407712495
-      - name: Locate LICENSE
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        run: |
-          FILE_PATH=$(mktemp).ulf
-          echo "$UNITY_LICENSE" > $FILE_PATH
-          unity-editor -batchmode -nographics -logFile /dev/stdout -quit -manualLicenseFile $FILE_PATH
-          rm $FILE_PATH
+      # TODO: Install unity
 
-      - name: Generate Solution
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-        run: unity-editor -nographics -logFile /dev/stdout -customBuildName VRCQuestTools -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          cache-dependency-path: Website/pnpm-lock.yaml
+      - run: cd Website && pnpm install --frozen-lockfile
