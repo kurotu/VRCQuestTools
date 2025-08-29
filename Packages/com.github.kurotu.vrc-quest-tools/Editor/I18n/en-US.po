@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-08-19 02:19\n"
+"PO-Revision-Date: 2025-08-29 14:07\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -349,6 +349,7 @@ msgstr "There are no unsupported components in {0}."
 
 msgid "UnsupportedRemoverConfirmationMessage"
 msgstr "Remove following unsupported components from {0}."
+
 msgid "SelectComponentsToKeep"
 msgstr "Select components to keep."
 
