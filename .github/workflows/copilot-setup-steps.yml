@@ -68,4 +68,4 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-        run: unity-editor -nographics -logFile /dev/stdout -customBuildName Card-Game-Simulator -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
+        run: unity-editor -nographics -logFile /dev/stdout -customBuildName VRCQuestTools -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
