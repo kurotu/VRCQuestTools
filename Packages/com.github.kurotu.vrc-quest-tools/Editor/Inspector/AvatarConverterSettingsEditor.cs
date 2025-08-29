@@ -11,11 +11,12 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using UnityEngine;
+using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 using static KRT.VRCQuestTools.Models.VRChat.AvatarConverter;
-using static KRT.VRCQuestTools.Utils.VRCSDKUtility.Reflection;
 
 namespace KRT.VRCQuestTools.Inspector
 {
@@ -122,10 +123,10 @@ namespace KRT.VRCQuestTools.Inspector
                         }
                     }
 
-                    var pbs = descriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
+                    var pbs = descriptor.GetComponentsInChildren<VRCPhysBone>(true);
                     var multiPbObjs = pbs
                         .Select(pb => pb.gameObject)
-                        .Where(go => go.GetComponents(VRCSDKUtility.PhysBoneType).Count() >= 2)
+                        .Where(go => go.GetComponents<VRCPhysBone>().Count() >= 2)
                         .Distinct()
                         .ToArray();
                     if (multiPbObjs.Length > 0)
@@ -354,9 +355,9 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 return null;
             }
-            var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).Select(pb => new PhysBone(pb)).ToArray();
-            var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
-            var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).Select(c => new ContactBase(c)).ToArray();
+            var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).ToArray();
+            var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).ToArray();
+            var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).ToArray();
             var avatar = new VRChatAvatar(original);
             return avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, contactsToKeep);
         }

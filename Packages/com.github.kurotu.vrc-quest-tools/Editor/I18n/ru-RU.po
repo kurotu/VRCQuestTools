@@ -346,10 +346,6 @@ msgstr "В {0} нет неподдерживаемых компонентов."
 
 msgid "UnsupportedRemoverConfirmationMessage"
 msgstr "Удалить следующие неподдерживаемые компоненты из {0}?"
-
-msgid "PhysBonesSDKRequired"
-msgstr "Требуется VRCSDK, поддерживающий динамику аватара."
-
 msgid "SelectComponentsToKeep"
 msgstr "Выберите компоненты для сохранения."
 

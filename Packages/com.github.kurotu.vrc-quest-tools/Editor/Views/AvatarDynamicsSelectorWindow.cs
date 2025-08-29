@@ -8,10 +8,10 @@ using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using VRC.Dynamics;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
-using static KRT.VRCQuestTools.Utils.VRCSDKUtility.Reflection;
 
 namespace KRT.VRCQuestTools.Views
 {
@@ -187,9 +187,9 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.LabelField(i18n.EstimatedPerformanceStats, EditorStyles.boldLabel);
             var avatar = new VRChatAvatar(converterSettings.AvatarDescriptor);
-            var pbToKeep = physBonesToKeep.Where(x => x != null).Select(pb => new PhysBone(pb)).ToArray();
-            var pbcToKeep = physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
-            var cToKeep = contactsToKeep.Where(x => x != null).Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray();
+            var pbToKeep = physBonesToKeep.Where(x => x != null).ToArray();
+            var pbcToKeep = physBoneCollidersToKeep.Where(x => x != null).ToArray();
+            var cToKeep = contactsToKeep.Where(x => x != null).Cast<ContactBase>().ToArray();
             var stats = avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, cToKeep, true);
             var categories = VRCSDKUtility.AvatarDynamicsPerformanceCategories;
             var ratings = categories.ToDictionary(x => x, x => stats.GetPerformanceRatingForCategory(x));

@@ -74,11 +74,6 @@ namespace KRT.VRCQuestTools.Views
         private void OnGUI()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-            if (!VRCSDKUtility.IsPhysBonesImported())
-            {
-                EditorGUILayout.LabelField(i18n.PhysBonesSDKRequired);
-                return;
-            }
 
             var selectedAvatar = (VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, model.Avatar?.AvatarDescriptor, typeof(VRC_AvatarDescriptor), true);
             if (model.Avatar?.AvatarDescriptor != selectedAvatar)
@@ -204,9 +199,9 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.Space();
 
             var stats = model.Avatar.EstimatePerformanceStats(
-                model.PhysBonesToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray(),
-                model.PhysBoneCollidersToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray(),
-                model.ContactsToKeep.Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray(),
+                model.PhysBonesToKeep.ToArray(),
+                model.PhysBoneCollidersToKeep.ToArray(),
+                model.ContactsToKeep.ToArray(),
                 true);
             EditorGUILayout.LabelField(i18n.EstimatedPerformanceStats, EditorStyles.boldLabel);
             foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
