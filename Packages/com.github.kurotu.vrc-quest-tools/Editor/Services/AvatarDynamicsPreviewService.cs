@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
 using UnityEngine;
 using VRC.Dynamics;
@@ -91,11 +92,21 @@ namespace KRT.VRCQuestTools.Services
 
         private static void DrawPhysBonePreview(VRCPhysBone physBone)
         {
-            if (physBone == null || physBone.rootTransform == null)
+            if (physBone == null)
                 return;
 
-            var transforms = GetPhysBoneTransforms(physBone);
-            var previousTransform = physBone.rootTransform;
+            // Create provider to use the abstraction
+            var provider = new VRCPhysBoneProvider(physBone);
+            DrawPhysBonePreview(provider);
+        }
+
+        private static void DrawPhysBonePreview(VRCPhysBoneProviderBase provider)
+        {
+            if (provider == null || provider.RootTransform == null)
+                return;
+
+            var transforms = GetPhysBoneTransforms(provider);
+            var previousTransform = provider.RootTransform;
 
             foreach (var transform in transforms)
             {
@@ -103,7 +114,7 @@ namespace KRT.VRCQuestTools.Services
                     continue;
 
                 // Draw wireframe sphere at each transform
-                var radius = GetPhysBoneRadius(physBone, transform);
+                var radius = GetPhysBoneRadius(provider, transform);
                 DrawWireSphere(transform.position, radius);
 
                 // Draw line connecting to previous transform
@@ -208,10 +219,10 @@ namespace KRT.VRCQuestTools.Services
             Handles.DrawLine(corners[1], corners[3]);
         }
 
-        private static List<Transform> GetPhysBoneTransforms(VRCPhysBone physBone)
+        private static List<Transform> GetPhysBoneTransforms(VRCPhysBoneProviderBase provider)
         {
             var transforms = new List<Transform>();
-            var rootTransform = physBone.rootTransform;
+            var rootTransform = provider.RootTransform;
 
             if (rootTransform == null)
                 return transforms;
@@ -220,39 +231,52 @@ namespace KRT.VRCQuestTools.Services
             transforms.Add(rootTransform);
 
             // Get all child transforms based on the PhysBone configuration
-            AddChildTransforms(rootTransform, transforms, physBone);
+            AddChildTransforms(rootTransform, transforms, provider);
 
             return transforms;
         }
 
-        private static void AddChildTransforms(Transform parent, List<Transform> transforms, VRCPhysBone physBone)
+        private static void AddChildTransforms(Transform parent, List<Transform> transforms, VRCPhysBoneProviderBase provider)
         {
             for (int i = 0; i < parent.childCount; i++)
             {
                 var child = parent.GetChild(i);
                 
                 // Check if this child should be included based on PhysBone settings
-                if (ShouldIncludeTransform(child, physBone))
+                if (ShouldIncludeTransform(child, provider))
                 {
                     transforms.Add(child);
                     
                     // Recursively add children if not at max depth
                     if (transforms.Count < 100) // Safety limit to prevent infinite recursion
                     {
-                        AddChildTransforms(child, transforms, physBone);
+                        AddChildTransforms(child, transforms, provider);
                     }
                 }
             }
         }
 
-        private static bool ShouldIncludeTransform(Transform transform, VRCPhysBone physBone)
+        private static bool ShouldIncludeTransform(Transform transform, VRCPhysBoneProviderBase provider)
         {
             // Basic check - include if not in ignore list
-            if (physBone.ignoreTransforms != null && physBone.ignoreTransforms.Contains(transform))
+            if (provider.IgnoreTransforms != null && provider.IgnoreTransforms.Contains(transform))
                 return false;
 
             // Include if has significant child count or is explicitly included
             return true;
+        }
+
+        private static float GetPhysBoneRadius(VRCPhysBoneProviderBase provider, Transform transform)
+        {
+            // For the abstraction layer, we need to get radius from the underlying component
+            // This is a limitation of the current abstraction - it doesn't expose radius or curves
+            if (provider.Component is VRCPhysBone physBone)
+            {
+                return GetPhysBoneRadius(physBone, transform);
+            }
+
+            // Fallback to a default radius if we can't access the component
+            return 0.1f * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
         }
 
         private static float GetPhysBoneRadius(VRCPhysBone physBone, Transform transform)
