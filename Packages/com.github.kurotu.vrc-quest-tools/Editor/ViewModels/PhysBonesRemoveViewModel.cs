@@ -53,7 +53,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <summary>
         /// Gets a value indicating whether all PhysBones are selected.
         /// </summary>
-        internal bool DoesSelectAllPhysBones => Avatar.GetPhysBones().Length == physBonesToKeep.Count;
+        internal bool DoesSelectAllPhysBones => Avatar.GetPhysBoneProviders().Length == physBonesToKeep.Count;
 
         /// <summary>
         /// Gets a value indicating whether all PhysBoneColliders are selected.
@@ -66,9 +66,17 @@ namespace KRT.VRCQuestTools.ViewModels
         internal bool DoesSelectAllContacts => Avatar.GetContacts().Length == contactsToKeep.Count;
 
         /// <summary>
-        /// Gets selected PhysBones to keep.
+        /// Gets selected PhysBones to keep as providers for abstraction layer.
         /// </summary>
-        internal IEnumerable<VRCPhysBone> PhysBonesToKeep => physBonesToKeep;
+        internal IEnumerable<VRCPhysBoneProviderBase> PhysBoneProvidersToKeep
+        {
+            get
+            {
+                return physBonesToKeep
+                    .Select(pb => new VRCPhysBoneProvider(pb))
+                    .Cast<VRCPhysBoneProviderBase>();
+            }
+        }
 
         /// <summary>
         /// Gets selected PhysBoneColliders to keep.
@@ -104,6 +112,16 @@ namespace KRT.VRCQuestTools.ViewModels
         }
 
         /// <summary>
+        /// Set selected PhysBones using providers.
+        /// </summary>
+        /// <param name="physBoneProviders">Provider components.</param>
+        internal void SetSelectedPhysBoneProviders(IEnumerable<VRCPhysBoneProviderBase> physBoneProviders)
+        {
+            physBonesToKeep.Clear();
+            physBonesToKeep.AddRange(physBoneProviders.Select(p => p.Component as VRCPhysBone).Where(pb => pb != null));
+        }
+
+        /// <summary>
         /// Set selected PhysBones.
         /// </summary>
         /// <param name="physBones">Components.</param>
@@ -111,6 +129,20 @@ namespace KRT.VRCQuestTools.ViewModels
         {
             physBonesToKeep.Clear();
             physBonesToKeep.AddRange(physBones);
+        }
+
+        /// <summary>
+        /// Select a PhysBone using provider.
+        /// </summary>
+        /// <param name="physBoneProvider">Target component provider.</param>
+        /// <param name="select">true to select, false to deselect.</param>
+        internal void SelectPhysBoneProvider(VRCPhysBoneProviderBase physBoneProvider, bool select)
+        {
+            var physBone = physBoneProvider.Component as VRCPhysBone;
+            if (physBone != null)
+            {
+                SelectPhysBone(physBone, select);
+            }
         }
 
         /// <summary>
@@ -130,6 +162,19 @@ namespace KRT.VRCQuestTools.ViewModels
             else
             {
                 physBonesToKeep.Remove(physBone);
+            }
+        }
+
+        /// <summary>
+        /// Select all PhysBones using providers.
+        /// </summary>
+        /// <param name="select">true to select, false to deselect.</param>
+        internal void SelectAllPhysBoneProviders(bool select)
+        {
+            physBonesToKeep.Clear();
+            foreach (var provider in Avatar.GetPhysBoneProviders())
+            {
+                SelectPhysBoneProvider(provider, select);
             }
         }
 
@@ -249,7 +294,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// </summary>
         internal void DeselectRemovedComponents()
         {
-            var physbones = Avatar.GetPhysBones();
+            var physbones = Avatar.GetPhysBoneProviders().Select(p => p.Component as VRCPhysBone).Where(pb => pb != null).ToArray();
             physBonesToKeep.RemoveAll(c => !physbones.Contains(c));
 
             var colliders = Avatar.GetPhysBoneColliders();
@@ -265,7 +310,9 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <returns>true when matched.</returns>
         internal bool SelectedPhysBonesOrderMatchesWithOriginal()
         {
-            return PhysBonesToKeep.SequenceEqual(Avatar.GetPhysBones().Take(PhysBonesToKeep.Count()));
+            var originalPhysBones = Avatar.GetPhysBoneProviders().Select(p => p.Component as VRCPhysBone).Where(pb => pb != null);
+            var selectedPhysBones = PhysBoneProvidersToKeep.Select(p => p.Component as VRCPhysBone).Where(pb => pb != null);
+            return selectedPhysBones.SequenceEqual(originalPhysBones.Take(selectedPhysBones.Count()));
         }
     }
 }

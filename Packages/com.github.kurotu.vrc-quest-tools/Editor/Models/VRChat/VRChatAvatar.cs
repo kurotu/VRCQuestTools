@@ -139,6 +139,18 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
         /// <summary>
+        /// Gets PhysBones as providers for abstraction layer.
+        /// </summary>
+        /// <returns>All attached PhysBones as providers.</returns>
+        internal VRCPhysBoneProviderBase[] GetPhysBoneProviders()
+        {
+            return AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true)
+                .Select(pb => new VRCPhysBoneProvider(pb))
+                .Cast<VRCPhysBoneProviderBase>()
+                .ToArray();
+        }
+
+        /// <summary>
         /// Gets PhysBoneColliders.
         /// </summary>
         /// <returns>All attached PhysBoneColliders.</returns>
@@ -185,6 +197,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             return AvatarDescriptor.GetComponentsInChildren<ContactSender>(true)
                 .Where(s => s.IsLocalOnly).ToArray();
+        }
+
+        /// <summary>
+        /// Estimates performance stats.
+        /// </summary>
+        /// <param name="physbones">PhysBone providers to keep.</param>
+        /// <param name="colliders">PhysBone colliders to keep.</param>
+        /// <param name="contacts">Contacts to keep.</param>
+        /// <param name="isMobile">true for mobile.</param>
+        /// <returns>Estimated performance stats.</returns>
+        internal AvatarPerformanceStats EstimatePerformanceStats(
+            VRCPhysBoneProviderBase[] physbones,
+            VRCPhysBoneCollider[] colliders,
+            ContactBase[] contacts,
+            bool isMobile = true)
+        {
+            var vrcPhysBones = physbones.Select(pb => pb.Component as VRCPhysBone).Where(pb => pb != null).ToArray();
+            return EstimatePerformanceStats(vrcPhysBones, colliders, contacts, isMobile);
         }
 
         /// <summary>

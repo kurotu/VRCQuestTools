@@ -14,6 +14,7 @@ using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase.Validation.Performance;
 using AvatarPerformanceStatsLevelSet = VRC.SDKBase.Validation.Performance.Stats.AvatarPerformanceStatsLevelSet;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
@@ -105,23 +106,27 @@ namespace KRT.VRCQuestTools.Views
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
-                        var physBones = model.Avatar.GetPhysBones().OrderBy(p => VRCSDKUtility.GetFullPathInHierarchy(p.gameObject)).ToArray();
+                        var physBones = model.Avatar.GetPhysBoneProviders().OrderBy(p => VRCSDKUtility.GetFullPathInHierarchy(p.GameObject)).ToArray();
                         if (physBones.Length > 0)
                         {
                             using (var horizontal = new EditorGUILayout.HorizontalScope())
                             {
                                 if (GUILayout.Button(i18n.SelectAllButtonLabel))
                                 {
-                                    model.SelectAllPhysBones(true);
+                                    model.SelectAllPhysBoneProviders(true);
                                 }
                                 if (GUILayout.Button(i18n.DeselectAllButtonLabel))
                                 {
-                                    model.SelectAllPhysBones(false);
+                                    model.SelectAllPhysBoneProviders(false);
                                 }
                             }
-                            var selected = model.PhysBonesToKeep.ToArray();
-                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(model.Avatar.GetPhysBones(), selected);
-                            model.SetSelectedPhysBones(selected);
+                            var selected = model.PhysBoneProvidersToKeep.Select(pb => pb.Component).ToArray();
+                            var physBoneComponents = physBones.Select(pb => pb.Component).ToArray();
+                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(physBoneComponents, selected);
+                            var selectedProviders = selected.Cast<VRCPhysBone>()
+                                .Select(component => physBones.First(provider => provider.Component == component))
+                                .ToArray();
+                            model.SetSelectedPhysBoneProviders(selectedProviders);
                         }
                         else
                         {
@@ -206,7 +211,7 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.Space();
 
             var stats = model.Avatar.EstimatePerformanceStats(
-                model.PhysBonesToKeep.ToArray(),
+                model.PhysBoneProvidersToKeep.ToArray(),
                 model.PhysBoneCollidersToKeep.ToArray(),
                 model.ContactsToKeep.ToArray(),
                 true);

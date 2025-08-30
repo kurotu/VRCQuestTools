@@ -15,6 +15,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Calculate performance stats for Avatar Dynamics.
         /// </summary>
         /// <param name="root">Avatar root object (VRCAvatarDescriptor).</param>
+        /// <param name="physbones">PhysBone providers.</param>
+        /// <param name="colliders">PhysBoneCollider GameObjects.</param>
+        /// <param name="contacts">ContactSender and ContactReceiver GameObjects.</param>
+        /// <returns>Calculated performance stats.</returns>
+        internal static PerformanceStats CalculatePerformanceStats(
+            GameObject root,
+            VRCPhysBoneProviderBase[] physbones,
+            VRCPhysBoneCollider[] colliders,
+            ContactBase[] contacts)
+        {
+            var vrcPhysBones = physbones.Select(pb => pb.Component as VRCPhysBone).Where(pb => pb != null).ToArray();
+            return CalculatePerformanceStats(root, vrcPhysBones, colliders, contacts);
+        }
+
+        /// <summary>
+        /// Calculate performance stats for Avatar Dynamics.
+        /// </summary>
+        /// <param name="root">Avatar root object (VRCAvatarDescriptor).</param>
         /// <param name="physbones">PhysBone GameObjects.</param>
         /// <param name="colliders">PhysBoneCollider GameObjects.</param>
         /// <param name="contacts">ContactSender and ContactReceiver GameObjects.</param>
