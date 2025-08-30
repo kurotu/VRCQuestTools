@@ -1,4 +1,4 @@
-// <copyright file="IVRCPhysBoneProvider.cs" company="kurotu">
+// <copyright file="VRCPhysBoneProviderBase.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -10,51 +10,51 @@ using UnityEngine;
 namespace KRT.VRCQuestTools.Models.VRChat
 {
     /// <summary>
-    /// Interface for providing abstracted access to VRCPhysBone functionality.
+    /// Base class for providing abstracted access to VRCPhysBone functionality.
     /// </summary>
     [Serializable]
-    internal interface IVRCPhysBoneProvider
+    internal abstract class VRCPhysBoneProviderBase
     {
         /// <summary>
         /// Gets the underlying VRCPhysBone component.
         /// </summary>
-        Component Component { get; }
+        public abstract Component Component { get; }
 
         /// <summary>
         /// Gets the GameObject that contains the PhysBone component.
         /// </summary>
-        GameObject GameObject { get; }
+        public abstract GameObject GameObject { get; }
 
         /// <summary>
         /// Gets the root transform set by inspector.
         /// </summary>
-        Transform RootTransform { get; }
+        public abstract Transform RootTransform { get; }
 
         /// <summary>
         /// Gets the ignore transforms set by inspector.
         /// </summary>
-        List<Transform> IgnoreTransforms { get; }
+        public abstract List<Transform> IgnoreTransforms { get; }
 
         /// <summary>
         /// Gets the endpoint position set by inspector.
         /// </summary>
-        Vector3 EndpointPosition { get; }
+        public abstract Vector3 EndpointPosition { get; }
 
         /// <summary>
         /// Gets the multi child type set by inspector.
         /// </summary>
-        MultiChildType MultiChildType { get; }
+        public abstract MultiChildType MultiChildType { get; }
 
         /// <summary>
         /// Gets the PhysBoneCollider instances.
         /// </summary>
-        List<Component> Colliders { get; }
+        public abstract List<Component> Colliders { get; }
 
         /// <summary>
         /// Sets null to PhysBoneCollider at index.
         /// </summary>
         /// <param name="index">Index to set null.</param>
-        void ClearCollider(int index);
+        public abstract void ClearCollider(int index);
     }
 
     /// <summary>

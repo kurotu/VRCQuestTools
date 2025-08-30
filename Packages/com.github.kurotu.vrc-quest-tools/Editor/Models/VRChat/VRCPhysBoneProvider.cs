@@ -11,9 +11,9 @@ using VRC.SDK3.Dynamics.PhysBone.Components;
 namespace KRT.VRCQuestTools.Models.VRChat
 {
     /// <summary>
-    /// Default implementation of IVRCPhysBoneProvider that wraps a VRCPhysBone component.
+    /// Default implementation of VRCPhysBoneProviderBase that wraps a VRCPhysBone component.
     /// </summary>
-    internal class VRCPhysBoneProvider : IVRCPhysBoneProvider
+    internal class VRCPhysBoneProvider : VRCPhysBoneProviderBase
     {
         private readonly VRCPhysBone physBone;
 
@@ -27,28 +27,28 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
         /// <inheritdoc/>
-        public Component Component => physBone;
+        public override Component Component => physBone;
 
         /// <inheritdoc/>
-        public GameObject GameObject => physBone.gameObject;
+        public override GameObject GameObject => physBone.gameObject;
 
         /// <inheritdoc/>
-        public Transform RootTransform => physBone.rootTransform;
+        public override Transform RootTransform => physBone.rootTransform;
 
         /// <inheritdoc/>
-        public List<Transform> IgnoreTransforms => physBone.ignoreTransforms;
+        public override List<Transform> IgnoreTransforms => physBone.ignoreTransforms;
 
         /// <inheritdoc/>
-        public Vector3 EndpointPosition => physBone.endpointPosition;
+        public override Vector3 EndpointPosition => physBone.endpointPosition;
 
         /// <inheritdoc/>
-        public MultiChildType MultiChildType => (MultiChildType)(int)physBone.multiChildType;
+        public override MultiChildType MultiChildType => (MultiChildType)(int)physBone.multiChildType;
 
         /// <inheritdoc/>
-        public List<Component> Colliders => physBone.colliders.Cast<Component>().ToList();
+        public override List<Component> Colliders => physBone.colliders.Cast<Component>().ToList();
 
         /// <inheritdoc/>
-        public void ClearCollider(int index)
+        public override void ClearCollider(int index)
         {
             if (index >= 0 && index < physBone.colliders.Count)
             {

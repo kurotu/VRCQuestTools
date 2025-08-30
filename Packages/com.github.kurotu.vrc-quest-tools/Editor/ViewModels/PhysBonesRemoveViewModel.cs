@@ -68,13 +68,13 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <summary>
         /// Gets selected PhysBones to keep as providers for abstraction layer.
         /// </summary>
-        internal IEnumerable<IVRCPhysBoneProvider> PhysBoneProvidersToKeep
+        internal IEnumerable<VRCPhysBoneProviderBase> PhysBoneProvidersToKeep
         {
             get
             {
                 return physBonesToKeep
                     .Select(pb => new VRCPhysBoneProvider(pb))
-                    .Cast<IVRCPhysBoneProvider>();
+                    .Cast<VRCPhysBoneProviderBase>();
             }
         }
 
@@ -115,7 +115,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// Set selected PhysBones using providers.
         /// </summary>
         /// <param name="physBoneProviders">Provider components.</param>
-        internal void SetSelectedPhysBoneProviders(IEnumerable<IVRCPhysBoneProvider> physBoneProviders)
+        internal void SetSelectedPhysBoneProviders(IEnumerable<VRCPhysBoneProviderBase> physBoneProviders)
         {
             physBonesToKeep.Clear();
             physBonesToKeep.AddRange(physBoneProviders.Select(p => p.Component as VRCPhysBone).Where(pb => pb != null));
@@ -136,7 +136,7 @@ namespace KRT.VRCQuestTools.ViewModels
         /// </summary>
         /// <param name="physBoneProvider">Target component provider.</param>
         /// <param name="select">true to select, false to deselect.</param>
-        internal void SelectPhysBoneProvider(IVRCPhysBoneProvider physBoneProvider, bool select)
+        internal void SelectPhysBoneProvider(VRCPhysBoneProviderBase physBoneProvider, bool select)
         {
             var physBone = physBoneProvider.Component as VRCPhysBone;
             if (physBone != null)

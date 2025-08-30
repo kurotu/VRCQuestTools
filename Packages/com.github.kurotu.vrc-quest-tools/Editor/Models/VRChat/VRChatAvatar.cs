@@ -142,11 +142,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Gets PhysBones as providers for abstraction layer.
         /// </summary>
         /// <returns>All attached PhysBones as providers.</returns>
-        internal IVRCPhysBoneProvider[] GetPhysBoneProviders()
+        internal VRCPhysBoneProviderBase[] GetPhysBoneProviders()
         {
             return AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true)
                 .Select(pb => new VRCPhysBoneProvider(pb))
-                .Cast<IVRCPhysBoneProvider>()
+                .Cast<VRCPhysBoneProviderBase>()
                 .ToArray();
         }
 
@@ -208,7 +208,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="isMobile">true for mobile.</param>
         /// <returns>Estimated performance stats.</returns>
         internal AvatarPerformanceStats EstimatePerformanceStats(
-            IVRCPhysBoneProvider[] physbones,
+            VRCPhysBoneProviderBase[] physbones,
             VRCPhysBoneCollider[] colliders,
             ContactBase[] contacts,
             bool isMobile = true)

@@ -53,6 +53,11 @@ Note: Test execution may require a specific Unity environment setup.
 - Instruction files are not needed. If testing instructions are necessary, write them as comments in test code.
 - Do not create separate instruction or guide files for development or testing purposes.
 
+#### Unity Meta Files Policy
+
+- Do not create Unity .meta files manually. Unity should generate them automatically.
+- Especially, GUID values must not be created from static values as this can cause conflicts.
+
 ### Documentation
 
 The documentation for VRCQuestTools is located in the `Website` directory.

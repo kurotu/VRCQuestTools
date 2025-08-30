@@ -21,7 +21,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <returns>Calculated performance stats.</returns>
         internal static PerformanceStats CalculatePerformanceStats(
             GameObject root,
-            IVRCPhysBoneProvider[] physbones,
+            VRCPhysBoneProviderBase[] physbones,
             VRCPhysBoneCollider[] colliders,
             ContactBase[] contacts)
         {
