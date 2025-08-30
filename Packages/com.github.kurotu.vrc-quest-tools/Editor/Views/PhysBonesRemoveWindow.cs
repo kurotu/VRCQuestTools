@@ -9,6 +9,7 @@ using System.Linq;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Services;
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
@@ -69,6 +70,12 @@ namespace KRT.VRCQuestTools.Views
                 },
             };
             statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(true);
+            AvatarDynamicsPreviewService.Initialize();
+        }
+
+        private void OnDisable()
+        {
+            AvatarDynamicsPreviewService.Cleanup();
         }
 
         private void OnGUI()
