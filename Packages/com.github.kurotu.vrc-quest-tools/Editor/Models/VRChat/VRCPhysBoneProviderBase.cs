@@ -51,6 +51,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
         public abstract List<Component> Colliders { get; }
 
         /// <summary>
+        /// Gets the radius value set by inspector.
+        /// </summary>
+        public abstract float Radius { get; }
+
+        /// <summary>
+        /// Gets the radius curve set by inspector.
+        /// </summary>
+        public abstract AnimationCurve RadiusCurve { get; }
+
+        /// <summary>
         /// Sets null to PhysBoneCollider at index.
         /// </summary>
         /// <param name="index">Index to set null.</param>

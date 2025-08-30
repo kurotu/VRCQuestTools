@@ -27,12 +27,12 @@ namespace KRT.VRCQuestTools.Tests
         }
 
         /// <summary>
-        /// Test that preview component can be set to null without errors.
+        /// Test that preview can be cleared without errors.
         /// </summary>
         [Test]
-        public void SetPreviewComponentNullTest()
+        public void ClearPreviewTest()
         {
-            Assert.DoesNotThrow(() => AvatarDynamicsPreviewService.SetPreviewComponent(null));
+            Assert.DoesNotThrow(() => AvatarDynamicsPreviewService.ClearPreview());
         }
     }
 }

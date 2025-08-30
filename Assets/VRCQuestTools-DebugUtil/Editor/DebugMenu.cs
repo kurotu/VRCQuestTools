@@ -57,8 +57,8 @@ namespace KRT.VRCQuestTools.Debug
                 AvatarDynamicsPreviewService.Initialize();
                 UnityEngine.Debug.Log("✓ Preview service initialized successfully");
                 
-                AvatarDynamicsPreviewService.SetPreviewComponent(null);
-                UnityEngine.Debug.Log("✓ SetPreviewComponent(null) works");
+                AvatarDynamicsPreviewService.ClearPreview();
+                UnityEngine.Debug.Log("✓ ClearPreview() works");
                 
                 AvatarDynamicsPreviewService.Cleanup();
                 UnityEngine.Debug.Log("✓ Preview service cleanup successful");

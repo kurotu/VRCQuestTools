@@ -19,18 +19,68 @@ namespace KRT.VRCQuestTools.Services
     internal static class AvatarDynamicsPreviewService
     {
         private static Component hoveredComponent;
-        private static readonly Color PreviewColor = Color.red;
+        private static readonly Color PhysBoneColor = Color.red;
+        private static readonly Color ColliderColor = Color.blue;
+        private static readonly Color ContactColor = Color.green;
         private static bool isInitialized = false;
 
         /// <summary>
-        /// Sets the component to preview in the scene view.
+        /// Sets the VRCPhysBoneProviderBase component to preview in the scene view.
         /// </summary>
-        /// <param name="component">Component to preview, or null to clear preview.</param>
-        internal static void SetPreviewComponent(Component component)
+        /// <param name="provider">Provider to preview, or null to clear preview.</param>
+        internal static void SetPreviewComponent(VRCPhysBoneProviderBase provider)
         {
+            var component = provider?.Component;
             if (hoveredComponent != component)
             {
                 hoveredComponent = component;
+                if (isInitialized)
+                {
+                    SceneView.RepaintAll();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the PhysBoneCollider component to preview in the scene view.
+        /// </summary>
+        /// <param name="collider">Collider to preview, or null to clear preview.</param>
+        internal static void SetPreviewComponent(VRCPhysBoneCollider collider)
+        {
+            if (hoveredComponent != collider)
+            {
+                hoveredComponent = collider;
+                if (isInitialized)
+                {
+                    SceneView.RepaintAll();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the ContactBase component to preview in the scene view.
+        /// </summary>
+        /// <param name="contact">Contact to preview, or null to clear preview.</param>
+        internal static void SetPreviewComponent(ContactBase contact)
+        {
+            if (hoveredComponent != contact)
+            {
+                hoveredComponent = contact;
+                if (isInitialized)
+                {
+                    SceneView.RepaintAll();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clears the current preview component.
+        /// </summary>
+        internal static void ClearPreview()
+        {
+            if (hoveredComponent != null)
+            {
+                hoveredComponent = null;
                 if (isInitialized)
                 {
                     SceneView.RepaintAll();
@@ -67,21 +117,25 @@ namespace KRT.VRCQuestTools.Services
                 return;
 
             var originalColor = Handles.color;
-            Handles.color = PreviewColor;
 
             try
             {
-                switch (hoveredComponent)
+                // Handle VRCPhysBone through abstraction
+                if (hoveredComponent is VRCPhysBone physBone)
                 {
-                    case VRCPhysBone physBone:
-                        DrawPhysBonePreview(physBone);
-                        break;
-                    case VRCPhysBoneCollider collider:
-                        DrawColliderPreview(collider);
-                        break;
-                    case ContactBase contact:
-                        DrawContactPreview(contact);
-                        break;
+                    var provider = new VRCPhysBoneProvider(physBone);
+                    Handles.color = PhysBoneColor;
+                    DrawPhysBonePreview(provider);
+                }
+                else if (hoveredComponent is VRCPhysBoneCollider collider)
+                {
+                    Handles.color = ColliderColor;
+                    DrawColliderPreview(collider);
+                }
+                else if (hoveredComponent is ContactBase contact)
+                {
+                    Handles.color = ContactColor;
+                    DrawContactPreview(contact);
                 }
             }
             finally
@@ -90,21 +144,12 @@ namespace KRT.VRCQuestTools.Services
             }
         }
 
-        private static void DrawPhysBonePreview(VRCPhysBone physBone)
-        {
-            if (physBone == null)
-                return;
-
-            // Create provider to use the abstraction
-            var provider = new VRCPhysBoneProvider(physBone);
-            DrawPhysBonePreview(provider);
-        }
-
         private static void DrawPhysBonePreview(VRCPhysBoneProviderBase provider)
         {
             if (provider == null || provider.RootTransform == null)
                 return;
 
+            // Draw the PhysBone chain
             var transforms = GetPhysBoneTransforms(provider);
             var previousTransform = provider.RootTransform;
 
@@ -124,6 +169,27 @@ namespace KRT.VRCQuestTools.Services
                 }
 
                 previousTransform = transform;
+            }
+
+            // Draw colliders referenced by this PhysBone
+            var originalColor = Handles.color;
+            Handles.color = ColliderColor;
+            try
+            {
+                if (provider.Colliders != null)
+                {
+                    foreach (var colliderComponent in provider.Colliders)
+                    {
+                        if (colliderComponent is VRCPhysBoneCollider collider)
+                        {
+                            DrawColliderPreview(collider);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                Handles.color = originalColor;
             }
         }
 
@@ -268,28 +334,15 @@ namespace KRT.VRCQuestTools.Services
 
         private static float GetPhysBoneRadius(VRCPhysBoneProviderBase provider, Transform transform)
         {
-            // For the abstraction layer, we need to get radius from the underlying component
-            // This is a limitation of the current abstraction - it doesn't expose radius or curves
-            if (provider.Component is VRCPhysBone physBone)
-            {
-                return GetPhysBoneRadius(physBone, transform);
-            }
-
-            // Fallback to a default radius if we can't access the component
-            return 0.1f * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
-        }
-
-        private static float GetPhysBoneRadius(VRCPhysBone physBone, Transform transform)
-        {
-            // Get radius for this transform, could be based on curves or default value
-            var radius = physBone.radius;
+            // Use the abstraction layer radius
+            var radius = provider.Radius;
             
             // Apply any radius curve if available
-            if (physBone.radiusCurve != null && physBone.radiusCurve.keys.Length > 0)
+            if (provider.RadiusCurve != null && provider.RadiusCurve.keys.Length > 0)
             {
                 // Calculate position along the bone chain (simplified)
                 var normalizedPosition = 0.5f; // This would need proper calculation
-                radius *= physBone.radiusCurve.Evaluate(normalizedPosition);
+                radius *= provider.RadiusCurve.Evaluate(normalizedPosition);
             }
 
             return radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
