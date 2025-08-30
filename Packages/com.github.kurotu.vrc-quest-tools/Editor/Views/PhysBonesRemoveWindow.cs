@@ -99,27 +99,27 @@ namespace KRT.VRCQuestTools.Views
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
-                        var physBones = model.Avatar.GetPhysBones().OrderBy(p => VRCSDKUtility.GetFullPathInHierarchy(p.GameObject)).ToArray();
+                        var physBones = model.Avatar.GetPhysBoneProviders().OrderBy(p => VRCSDKUtility.GetFullPathInHierarchy(p.GameObject)).ToArray();
                         if (physBones.Length > 0)
                         {
                             using (var horizontal = new EditorGUILayout.HorizontalScope())
                             {
                                 if (GUILayout.Button(i18n.SelectAllButtonLabel))
                                 {
-                                    model.SelectAllPhysBones(true);
+                                    model.SelectAllPhysBoneProviders(true);
                                 }
                                 if (GUILayout.Button(i18n.DeselectAllButtonLabel))
                                 {
-                                    model.SelectAllPhysBones(false);
+                                    model.SelectAllPhysBoneProviders(false);
                                 }
                             }
-                            var selected = model.PhysBonesToKeep.Select(pb => pb.Component).ToArray();
+                            var selected = model.PhysBoneProvidersToKeep.Select(pb => pb.Component).ToArray();
                             var physBoneComponents = physBones.Select(pb => pb.Component).ToArray();
                             selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(physBoneComponents, selected);
                             var selectedProviders = selected.Cast<VRCPhysBone>()
                                 .Select(component => physBones.First(provider => provider.Component == component))
                                 .ToArray();
-                            model.SetSelectedPhysBones(selectedProviders);
+                            model.SetSelectedPhysBoneProviders(selectedProviders);
                         }
                         else
                         {
@@ -204,7 +204,7 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.Space();
 
             var stats = model.Avatar.EstimatePerformanceStats(
-                model.PhysBonesToKeep.ToArray(),
+                model.PhysBoneProvidersToKeep.ToArray(),
                 model.PhysBoneCollidersToKeep.ToArray(),
                 model.ContactsToKeep.ToArray(),
                 true);
