@@ -13,7 +13,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// Base class for providing abstracted access to VRCPhysBone functionality.
     /// </summary>
     [Serializable]
-    internal abstract class VRCPhysBoneProviderBase
+    internal abstract class VRCPhysBoneProviderBase : IVRCAvatarDynamicsProvider
     {
         /// <summary>
         /// Gets the underlying VRCPhysBone component.
@@ -49,6 +49,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Gets the PhysBoneCollider instances.
         /// </summary>
         public abstract List<Component> Colliders { get; }
+
+        /// <summary>
+        /// Gets the radius value set by inspector.
+        /// </summary>
+        public abstract float Radius { get; }
+
+        /// <summary>
+        /// Gets the radius curve set by inspector.
+        /// </summary>
+        public abstract AnimationCurve RadiusCurve { get; }
+
+        /// <inheritdoc/>
+        public AvatarDynamicsComponentType ComponentType => AvatarDynamicsComponentType.PhysBone;
 
         /// <summary>
         /// Sets null to PhysBoneCollider at index.

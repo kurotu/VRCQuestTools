@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Services;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
+using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 
@@ -115,17 +119,31 @@ namespace KRT.VRCQuestTools.Views
             where T : UnityEngine.Component
         {
             var afterSelected = new List<T>();
+            Component hoveredComponent = null;
+
             foreach (var obj in objects)
             {
-                using (var horizontal = new EditorGUILayout.HorizontalScope())
+                var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Contains(obj), obj);
+
+                // Check for hover on the last drawn control
+                var currentEvent = Event.current;
+                if ((currentEvent.type == EventType.Repaint || currentEvent.type == EventType.MouseMove))
                 {
-                    var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Contains(obj), obj);
-                    if (isSelected)
+                    var lastRect = GUILayoutUtility.GetLastRect();
+                    if (lastRect.Contains(currentEvent.mousePosition))
                     {
-                        afterSelected.Add(obj);
+                        hoveredComponent = obj;
                     }
                 }
+
+                if (isSelected)
+                {
+                    afterSelected.Add(obj);
+                }
             }
+
+            // Update preview component after all controls are processed
+            UpdatePreviewComponent(hoveredComponent);
             return afterSelected.ToArray();
         }
 
@@ -359,6 +377,30 @@ namespace KRT.VRCQuestTools.Views
                     return UnityEditor.EditorGUIUtility.IconContent("console.erroricon");
                 default:
                     throw new System.ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+        /// <summary>
+        /// Updates the preview component using the appropriate overload based on component type.
+        /// </summary>
+        /// <param name="component">Component to preview, or null to clear preview.</param>
+        private static void UpdatePreviewComponent(Component component)
+        {
+            switch (component)
+            {
+                case VRCPhysBone physBone:
+                    var provider = new VRCPhysBoneProvider(physBone);
+                    AvatarDynamicsPreviewService.SetPreviewComponent(provider);
+                    break;
+                case VRCPhysBoneCollider collider:
+                    AvatarDynamicsPreviewService.SetPreviewComponent(collider);
+                    break;
+                case ContactBase contact:
+                    AvatarDynamicsPreviewService.SetPreviewComponent(contact);
+                    break;
+                default:
+                    AvatarDynamicsPreviewService.ClearPreview();
+                    break;
             }
         }
 

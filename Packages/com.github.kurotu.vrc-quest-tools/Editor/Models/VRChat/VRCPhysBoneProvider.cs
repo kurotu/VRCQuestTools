@@ -48,6 +48,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
         public override List<Component> Colliders => physBone.colliders.Cast<Component>().ToList();
 
         /// <inheritdoc/>
+        public override float Radius => physBone.radius;
+
+        /// <inheritdoc/>
+        public override AnimationCurve RadiusCurve => physBone.radiusCurve;
+
+        /// <inheritdoc/>
         public override void ClearCollider(int index)
         {
             if (index >= 0 && index < physBone.colliders.Count)
