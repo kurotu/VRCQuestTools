@@ -66,11 +66,6 @@ namespace KRT.VRCQuestTools.ViewModels
         internal bool DoesSelectAllContacts => Avatar.GetContacts().Length == contactsToKeep.Count;
 
         /// <summary>
-        /// Gets selected PhysBones to keep.
-        /// </summary>
-        internal IEnumerable<VRCPhysBone> PhysBonesToKeep => physBonesToKeep;
-
-        /// <summary>
         /// Gets selected PhysBones to keep as providers for abstraction layer.
         /// </summary>
         internal IEnumerable<IVRCPhysBoneProvider> PhysBoneProvidersToKeep
@@ -316,7 +311,8 @@ namespace KRT.VRCQuestTools.ViewModels
         internal bool SelectedPhysBonesOrderMatchesWithOriginal()
         {
             var originalPhysBones = Avatar.GetPhysBoneProviders().Select(p => p.Component as VRCPhysBone).Where(pb => pb != null);
-            return PhysBonesToKeep.SequenceEqual(originalPhysBones.Take(PhysBonesToKeep.Count()));
+            var selectedPhysBones = PhysBoneProvidersToKeep.Select(p => p.Component as VRCPhysBone).Where(pb => pb != null);
+            return selectedPhysBones.SequenceEqual(originalPhysBones.Take(selectedPhysBones.Count()));
         }
     }
 }

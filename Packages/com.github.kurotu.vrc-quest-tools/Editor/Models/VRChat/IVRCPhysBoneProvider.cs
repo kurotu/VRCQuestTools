@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// <summary>
     /// Interface for providing abstracted access to VRCPhysBone functionality.
     /// </summary>
+    [Serializable]
     internal interface IVRCPhysBoneProvider
     {
         /// <summary>
