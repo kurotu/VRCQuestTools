@@ -8,7 +8,7 @@ using NUnit.Framework;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 
-namespace KRT.VRCQuestTools.Services
+namespace KRT.VRCQuestTools.Tests
 {
     /// <summary>
     /// Tests for AvatarDynamicsPreviewService.

@@ -19,6 +19,7 @@ namespace KRT.VRCQuestTools.Services
     {
         private static Component hoveredComponent;
         private static readonly Color PreviewColor = Color.cyan;
+        private static bool isInitialized = false;
 
         /// <summary>
         /// Sets the component to preview in the scene view.
@@ -29,7 +30,10 @@ namespace KRT.VRCQuestTools.Services
             if (hoveredComponent != component)
             {
                 hoveredComponent = component;
-                SceneView.RepaintAll();
+                if (isInitialized)
+                {
+                    SceneView.RepaintAll();
+                }
             }
         }
 
@@ -38,8 +42,12 @@ namespace KRT.VRCQuestTools.Services
         /// </summary>
         internal static void Initialize()
         {
-            SceneView.duringSceneGui -= OnSceneGUI;
-            SceneView.duringSceneGui += OnSceneGUI;
+            if (!isInitialized)
+            {
+                SceneView.duringSceneGui -= OnSceneGUI;
+                SceneView.duringSceneGui += OnSceneGUI;
+                isInitialized = true;
+            }
         }
 
         /// <summary>
@@ -49,6 +57,7 @@ namespace KRT.VRCQuestTools.Services
         {
             SceneView.duringSceneGui -= OnSceneGUI;
             hoveredComponent = null;
+            isInitialized = false;
         }
 
         private static void OnSceneGUI(SceneView sceneView)

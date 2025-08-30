@@ -116,14 +116,33 @@ namespace KRT.VRCQuestTools.Views
             where T : UnityEngine.Component
         {
             var afterSelected = new List<T>();
+            Component hoveredComponent = null;
+            
             foreach (var obj in objects)
             {
-                var isSelected = ToggleAvatarDynamicsComponentFieldWithHover(selectedObjects.Contains(obj), obj);
-                if (isSelected)
+                using (var horizontal = new EditorGUILayout.HorizontalScope())
                 {
-                    afterSelected.Add(obj);
+                    var rect = EditorGUILayout.GetControlRect();
+                    var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Contains(obj), obj);
+                    
+                    // Check for hover
+                    var currentEvent = Event.current;
+                    if ((currentEvent.type == EventType.Repaint || currentEvent.type == EventType.MouseMove) && 
+                        rect.Contains(currentEvent.mousePosition))
+                    {
+                        hoveredComponent = obj;
+                    }
+                    
+                    if (isSelected)
+                    {
+                        afterSelected.Add(obj);
+                    }
                 }
             }
+            
+            // Update preview component after all controls are processed
+            AvatarDynamicsPreviewService.SetPreviewComponent(hoveredComponent);
+            
             return afterSelected.ToArray();
         }
 
@@ -143,48 +162,6 @@ namespace KRT.VRCQuestTools.Views
                 EditorGUILayout.ObjectField(component, component.GetType(), true);
                 GUILayout.Space(2);
                 EditorGUILayout.ObjectField(VRCSDKUtility.GetRootTransform(component), typeof(Transform), true);
-                return selected;
-            }
-        }
-
-        /// <summary>
-        /// Show a toggle field for Avatar Dynamics component with hover detection for preview.
-        /// </summary>
-        /// <param name="value">Current state.</param>
-        /// <param name="component">Component to show.</param>
-        /// <returns>true for selected.</returns>
-        internal static bool ToggleAvatarDynamicsComponentFieldWithHover(bool value, Component component)
-        {
-            const int CheckBoxWidth = 16;
-            
-            using (var horizontal = new EditorGUILayout.HorizontalScope())
-            {
-                var rect = EditorGUILayout.GetControlRect();
-                
-                // Handle hover events
-                var currentEvent = Event.current;
-                if (currentEvent.type == EventType.MouseMove || currentEvent.type == EventType.Repaint)
-                {
-                    if (rect.Contains(currentEvent.mousePosition))
-                    {
-                        AvatarDynamicsPreviewService.SetPreviewComponent(component);
-                        if (currentEvent.type == EventType.MouseMove)
-                        {
-                            currentEvent.Use();
-                        }
-                    }
-                }
-
-                // Draw the UI elements within the rect
-                var checkBoxRect = new Rect(rect.x, rect.y, CheckBoxWidth, rect.height);
-                var selected = EditorGUI.Toggle(checkBoxRect, value);
-                
-                var objectFieldRect = new Rect(rect.x + CheckBoxWidth + 2, rect.y, (rect.width - CheckBoxWidth - 6) * 0.6f, rect.height);
-                EditorGUI.ObjectField(objectFieldRect, component, component.GetType(), true);
-                
-                var transformFieldRect = new Rect(objectFieldRect.xMax + 2, rect.y, rect.width - objectFieldRect.xMax - 2, rect.height);
-                EditorGUI.ObjectField(transformFieldRect, VRCSDKUtility.GetRootTransform(component), typeof(Transform), true);
-                
                 return selected;
             }
         }
