@@ -120,11 +120,11 @@ namespace KRT.VRCQuestTools.Views
         {
             var afterSelected = new List<T>();
             Component hoveredComponent = null;
-            
+
             foreach (var obj in objects)
             {
                 var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Contains(obj), obj);
-                
+
                 // Check for hover on the last drawn control
                 var currentEvent = Event.current;
                 if ((currentEvent.type == EventType.Repaint || currentEvent.type == EventType.MouseMove))
@@ -135,17 +135,15 @@ namespace KRT.VRCQuestTools.Views
                         hoveredComponent = obj;
                     }
                 }
-                
+
                 if (isSelected)
                 {
                     afterSelected.Add(obj);
                 }
             }
-            }
-            
+
             // Update preview component after all controls are processed
             UpdatePreviewComponent(hoveredComponent);
-            
             return afterSelected.ToArray();
         }
 
