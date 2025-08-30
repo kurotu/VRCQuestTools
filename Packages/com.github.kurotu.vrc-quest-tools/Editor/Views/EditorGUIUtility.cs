@@ -120,24 +120,24 @@ namespace KRT.VRCQuestTools.Views
             
             foreach (var obj in objects)
             {
-                using (var horizontal = new EditorGUILayout.HorizontalScope())
+                var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Contains(obj), obj);
+                
+                // Check for hover on the last drawn control
+                var currentEvent = Event.current;
+                if ((currentEvent.type == EventType.Repaint || currentEvent.type == EventType.MouseMove))
                 {
-                    var rect = EditorGUILayout.GetControlRect();
-                    var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Contains(obj), obj);
-                    
-                    // Check for hover
-                    var currentEvent = Event.current;
-                    if ((currentEvent.type == EventType.Repaint || currentEvent.type == EventType.MouseMove) && 
-                        rect.Contains(currentEvent.mousePosition))
+                    var lastRect = GUILayoutUtility.GetLastRect();
+                    if (lastRect.Contains(currentEvent.mousePosition))
                     {
                         hoveredComponent = obj;
                     }
-                    
-                    if (isSelected)
-                    {
-                        afterSelected.Add(obj);
-                    }
                 }
+                
+                if (isSelected)
+                {
+                    afterSelected.Add(obj);
+                }
+            }
             }
             
             // Update preview component after all controls are processed

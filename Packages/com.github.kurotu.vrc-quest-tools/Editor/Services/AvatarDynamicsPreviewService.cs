@@ -18,7 +18,7 @@ namespace KRT.VRCQuestTools.Services
     internal static class AvatarDynamicsPreviewService
     {
         private static Component hoveredComponent;
-        private static readonly Color PreviewColor = Color.cyan;
+        private static readonly Color PreviewColor = Color.red;
         private static bool isInitialized = false;
 
         /// <summary>
