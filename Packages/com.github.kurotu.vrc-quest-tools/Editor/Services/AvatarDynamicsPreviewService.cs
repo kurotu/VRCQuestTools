@@ -18,7 +18,7 @@ namespace KRT.VRCQuestTools.Services
     /// </summary>
     internal static class AvatarDynamicsPreviewService
     {
-        private static Component hoveredComponent;
+        private static IVRCAvatarDynamicsProvider hoveredProvider;
         private static readonly Color PhysBoneColor = Color.red;
         private static readonly Color ColliderColor = Color.blue;
         private static readonly Color ContactColor = Color.green;
@@ -30,10 +30,9 @@ namespace KRT.VRCQuestTools.Services
         /// <param name="provider">Provider to preview, or null to clear preview.</param>
         internal static void SetPreviewComponent(VRCPhysBoneProviderBase provider)
         {
-            var component = provider?.Component;
-            if (hoveredComponent != component)
+            if (hoveredProvider != provider)
             {
-                hoveredComponent = component;
+                hoveredProvider = provider;
                 if (isInitialized)
                 {
                     SceneView.RepaintAll();
@@ -47,9 +46,10 @@ namespace KRT.VRCQuestTools.Services
         /// <param name="collider">Collider to preview, or null to clear preview.</param>
         internal static void SetPreviewComponent(VRCPhysBoneCollider collider)
         {
-            if (hoveredComponent != collider)
+            var provider = collider != null ? new VRCPhysBoneColliderProvider(collider) : null;
+            if (hoveredProvider != provider)
             {
-                hoveredComponent = collider;
+                hoveredProvider = provider;
                 if (isInitialized)
                 {
                     SceneView.RepaintAll();
@@ -63,9 +63,10 @@ namespace KRT.VRCQuestTools.Services
         /// <param name="contact">Contact to preview, or null to clear preview.</param>
         internal static void SetPreviewComponent(ContactBase contact)
         {
-            if (hoveredComponent != contact)
+            var provider = contact != null ? new VRCContactBaseProvider(contact) : null;
+            if (hoveredProvider != provider)
             {
-                hoveredComponent = contact;
+                hoveredProvider = provider;
                 if (isInitialized)
                 {
                     SceneView.RepaintAll();
@@ -78,9 +79,9 @@ namespace KRT.VRCQuestTools.Services
         /// </summary>
         internal static void ClearPreview()
         {
-            if (hoveredComponent != null)
+            if (hoveredProvider != null)
             {
-                hoveredComponent = null;
+                hoveredProvider = null;
                 if (isInitialized)
                 {
                     SceneView.RepaintAll();
@@ -107,35 +108,33 @@ namespace KRT.VRCQuestTools.Services
         internal static void Cleanup()
         {
             SceneView.duringSceneGui -= OnSceneGUI;
-            hoveredComponent = null;
+            hoveredProvider = null;
             isInitialized = false;
         }
 
         private static void OnSceneGUI(SceneView sceneView)
         {
-            if (hoveredComponent == null)
+            if (hoveredProvider == null)
                 return;
 
             var originalColor = Handles.color;
 
             try
             {
-                // Handle VRCPhysBone through abstraction
-                if (hoveredComponent is VRCPhysBone physBone)
+                switch (hoveredProvider.ComponentType)
                 {
-                    var provider = new VRCPhysBoneProvider(physBone);
-                    Handles.color = PhysBoneColor;
-                    DrawPhysBonePreview(provider);
-                }
-                else if (hoveredComponent is VRCPhysBoneCollider collider)
-                {
-                    Handles.color = ColliderColor;
-                    DrawColliderPreview(collider);
-                }
-                else if (hoveredComponent is ContactBase contact)
-                {
-                    Handles.color = ContactColor;
-                    DrawContactPreview(contact);
+                    case AvatarDynamicsComponentType.PhysBone:
+                        Handles.color = PhysBoneColor;
+                        DrawPhysBonePreview((VRCPhysBoneProviderBase)hoveredProvider);
+                        break;
+                    case AvatarDynamicsComponentType.PhysBoneCollider:
+                        Handles.color = ColliderColor;
+                        DrawColliderPreview((VRCPhysBoneColliderProvider)hoveredProvider);
+                        break;
+                    case AvatarDynamicsComponentType.Contact:
+                        Handles.color = ContactColor;
+                        DrawContactPreview((VRCContactBaseProvider)hoveredProvider);
+                        break;
                 }
             }
             finally
@@ -182,7 +181,8 @@ namespace KRT.VRCQuestTools.Services
                     {
                         if (colliderComponent is VRCPhysBoneCollider collider)
                         {
-                            DrawColliderPreview(collider);
+                            var colliderProvider = new VRCPhysBoneColliderProvider(collider);
+                            DrawColliderPreview(colliderProvider);
                         }
                     }
                 }
@@ -193,25 +193,25 @@ namespace KRT.VRCQuestTools.Services
             }
         }
 
-        private static void DrawColliderPreview(VRCPhysBoneCollider collider)
+        private static void DrawColliderPreview(VRCPhysBoneColliderProvider provider)
         {
-            if (collider == null)
+            if (provider?.Component == null)
                 return;
 
-            var transform = collider.transform;
+            var transform = provider.Component.transform;
             var position = transform.position;
             var rotation = transform.rotation;
 
-            switch (collider.shapeType)
+            switch (provider.ShapeType)
             {
                 case VRCPhysBoneCollider.ShapeType.Sphere:
-                    var sphereRadius = collider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+                    var sphereRadius = provider.Radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
                     DrawWireSphere(position, sphereRadius);
                     break;
 
                 case VRCPhysBoneCollider.ShapeType.Capsule:
-                    var capsuleRadius = collider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.z);
-                    var capsuleHeight = collider.height * transform.lossyScale.y;
+                    var capsuleRadius = provider.Radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.z);
+                    var capsuleHeight = provider.Height * transform.lossyScale.y;
                     DrawWireCapsule(position, rotation, capsuleRadius, capsuleHeight);
                     break;
 
@@ -222,13 +222,13 @@ namespace KRT.VRCQuestTools.Services
             }
         }
 
-        private static void DrawContactPreview(ContactBase contact)
+        private static void DrawContactPreview(VRCContactBaseProvider provider)
         {
-            if (contact == null)
+            if (provider?.Component == null)
                 return;
 
-            var position = contact.transform.position;
-            var radius = contact.radius * Mathf.Max(contact.transform.lossyScale.x, contact.transform.lossyScale.y, contact.transform.lossyScale.z);
+            var position = provider.Component.transform.position;
+            var radius = provider.Radius * Mathf.Max(provider.Component.transform.lossyScale.x, provider.Component.transform.lossyScale.y, provider.Component.transform.lossyScale.z);
             DrawWireSphere(position, radius);
         }
 
