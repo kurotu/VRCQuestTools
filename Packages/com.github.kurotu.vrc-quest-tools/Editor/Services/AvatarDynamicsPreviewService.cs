@@ -195,10 +195,13 @@ namespace KRT.VRCQuestTools.Services
 
         private static void DrawWireSphere(Vector3 center, float radius)
         {
-            // Draw wireframe sphere using Handles
+            // Draw wireframe sphere using Handles with consistent angular spacing
             Handles.DrawWireArc(center, Vector3.up, Vector3.forward, 360f, radius);
             Handles.DrawWireArc(center, Vector3.forward, Vector3.up, 360f, radius);
             Handles.DrawWireArc(center, Vector3.right, Vector3.up, 360f, radius);
+            
+            // Add additional arcs for better sphere definition aligned with other wireframes
+            Handles.DrawWireArc(center, (Vector3.forward + Vector3.right).normalized, Vector3.up, 360f, radius);
         }
 
         private static void DrawWireCapsule(Vector3 center, Quaternion rotation, float radius, float height)
@@ -211,16 +214,17 @@ namespace KRT.VRCQuestTools.Services
             DrawWireSphere(topCenter, radius);
             DrawWireSphere(bottomCenter, radius);
 
-            // Draw connecting lines
-            var forward = rotation * Vector3.forward * radius;
-            var right = rotation * Vector3.right * radius;
-            var back = rotation * Vector3.back * radius;
-            var left = rotation * Vector3.left * radius;
-
-            Handles.DrawLine(topCenter + forward, bottomCenter + forward);
-            Handles.DrawLine(topCenter + right, bottomCenter + right);
-            Handles.DrawLine(topCenter + back, bottomCenter + back);
-            Handles.DrawLine(topCenter + left, bottomCenter + left);
+            // Draw connecting lines aligned with the sphere wireframes (every 45 degrees)
+            for (int i = 0; i < 8; i++)
+            {
+                var angle = i * 45f * Mathf.Deg2Rad;
+                var forward = rotation * Vector3.forward;
+                var right = rotation * Vector3.right;
+                var offset = forward * Mathf.Cos(angle) + right * Mathf.Sin(angle);
+                
+                var connectionOffset = offset * radius;
+                Handles.DrawLine(topCenter + connectionOffset, bottomCenter + connectionOffset);
+            }
         }
 
         private static void DrawWirePlane(Vector3 center, Quaternion rotation, float size)
@@ -356,10 +360,10 @@ namespace KRT.VRCQuestTools.Services
             }
             var perpendicular2 = Vector3.Cross(direction, perpendicular1).normalized;
 
-            // Draw 4 connecting lines between the circles
-            for (int i = 0; i < 4; i++)
+            // Draw connecting lines aligned with the meridian arcs (every 45 degrees)
+            for (int i = 0; i < 8; i++)
             {
-                var angle = i * 90f * Mathf.Deg2Rad;
+                var angle = i * 45f * Mathf.Deg2Rad;
                 var offset = perpendicular1 * Mathf.Cos(angle) + perpendicular2 * Mathf.Sin(angle);
                 
                 var startPoint = startPos + offset * startRadius;
@@ -379,11 +383,11 @@ namespace KRT.VRCQuestTools.Services
             // Draw the circular edge of the hemisphere
             Handles.DrawWireArc(center, up, forward, 360f, radius);
 
-            // Draw meridian arcs (only the hemisphere part)
+            // Draw meridian arcs (only the hemisphere part) - aligned with connecting lines
             var arcDirection = isBottom ? -up : up;
             
-            // Draw 4 meridian arcs for the hemisphere
-            for (int i = 0; i < 4; i++)
+            // Draw 8 meridian arcs for the hemisphere (every 45 degrees to align with connecting lines)
+            for (int i = 0; i < 8; i++)
             {
                 var meridianDirection = Quaternion.AngleAxis(i * 45f, up) * forward;
                 Handles.DrawWireArc(center, meridianDirection, arcDirection, 180f, radius);
