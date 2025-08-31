@@ -134,23 +134,23 @@ namespace KRT.VRCQuestTools.Services
                     var startPos = previousTransform.position;
                     var endPos = transform.position;
                     var distance = Vector3.Distance(startPos, endPos);
-                    
+
                     if (distance > 0.001f) // Only draw if there's meaningful distance
                     {
                         var startRadius = GetPhysBoneRadiusAtPosition(provider, previousTransform, previousNormalizedPosition);
                         var endRadius = GetPhysBoneRadiusAtPosition(provider, transform, normalizedPosition);
                         var direction = (endPos - startPos).normalized;
                         var rotation = Quaternion.FromToRotation(Vector3.up, direction);
-                        
+
                         // Position capsule so edge spheres are centered at transform positions
                         // Capsule height should be distance + startRadius + endRadius
                         var capsuleHeight = distance + startRadius + endRadius;
                         var center = startPos + direction * (distance * 0.5f + startRadius);
-                        
+
                         // For now, use average radius for the capsule body
                         // In future, could implement tapered capsules
                         var avgRadius = (startRadius + endRadius) * 0.5f;
-                        
+
                         DrawWireCapsule(center, rotation, avgRadius, capsuleHeight);
                     }
                 }
@@ -189,12 +189,12 @@ namespace KRT.VRCQuestTools.Services
 
             var collider = provider.Component as VRCPhysBoneCollider;
             var transform = provider.Component.transform;
-            
+
             // Apply world transform with collider's local position and rotation offsets
             var worldMatrix = transform.localToWorldMatrix;
             var localPosition = collider.position;
-            var localRotation = Quaternion.Euler(collider.rotation);
-            
+            var localRotation = collider.rotation;
+
             var worldPosition = worldMatrix.MultiplyPoint3x4(localPosition);
             var worldRotation = transform.rotation * localRotation;
 
@@ -225,11 +225,11 @@ namespace KRT.VRCQuestTools.Services
 
             var contact = provider.Component as ContactBase;
             var transform = provider.Component.transform;
-            
+
             // Apply world transform with contact's local position offset if it exists
             var worldMatrix = transform.localToWorldMatrix;
             var localPosition = contact.position;
-            
+
             var worldPosition = worldMatrix.MultiplyPoint3x4(localPosition);
             var radius = provider.Radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
             DrawWireSphere(worldPosition, radius);
