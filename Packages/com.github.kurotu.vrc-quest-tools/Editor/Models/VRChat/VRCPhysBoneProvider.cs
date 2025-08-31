@@ -33,7 +33,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         public override GameObject GameObject => physBone.gameObject;
 
         /// <inheritdoc/>
-        public override Transform RootTransform => physBone.rootTransform;
+        public override Transform RootTransform => physBone.rootTransform == null ? physBone.gameObject.transform : physBone.rootTransform;
 
         /// <inheritdoc/>
         public override List<Transform> IgnoreTransforms => physBone.ignoreTransforms;
@@ -60,6 +60,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 physBone.colliders[index] = null;
             }
+        }
+
+        /// <inheritdoc/>
+        public override VRCPhysBone[] GetPhysBones()
+        {
+            if (physBone == null)
+            {
+                return new VRCPhysBone[] { };
+            }
+            return new VRCPhysBone[] { physBone };
         }
     }
 }

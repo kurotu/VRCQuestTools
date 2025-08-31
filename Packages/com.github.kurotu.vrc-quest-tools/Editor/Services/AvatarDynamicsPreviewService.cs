@@ -28,42 +28,8 @@ namespace KRT.VRCQuestTools.Services
         /// Sets the VRCPhysBoneProviderBase component to preview in the scene view.
         /// </summary>
         /// <param name="provider">Provider to preview, or null to clear preview.</param>
-        internal static void SetPreviewComponent(VRCPhysBoneProviderBase provider)
+        internal static void SetPreviewComponent(IVRCAvatarDynamicsProvider provider)
         {
-            if (hoveredProvider != provider)
-            {
-                hoveredProvider = provider;
-                if (isInitialized)
-                {
-                    SceneView.RepaintAll();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sets the PhysBoneCollider component to preview in the scene view.
-        /// </summary>
-        /// <param name="collider">Collider to preview, or null to clear preview.</param>
-        internal static void SetPreviewComponent(VRCPhysBoneCollider collider)
-        {
-            var provider = collider != null ? new VRCPhysBoneColliderProvider(collider) : null;
-            if (hoveredProvider != provider)
-            {
-                hoveredProvider = provider;
-                if (isInitialized)
-                {
-                    SceneView.RepaintAll();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sets the ContactBase component to preview in the scene view.
-        /// </summary>
-        /// <param name="contact">Contact to preview, or null to clear preview.</param>
-        internal static void SetPreviewComponent(ContactBase contact)
-        {
-            var provider = contact != null ? new VRCContactBaseProvider(contact) : null;
             if (hoveredProvider != provider)
             {
                 hoveredProvider = provider;
@@ -307,12 +273,12 @@ namespace KRT.VRCQuestTools.Services
             for (int i = 0; i < parent.childCount; i++)
             {
                 var child = parent.GetChild(i);
-                
+
                 // Check if this child should be included based on PhysBone settings
                 if (ShouldIncludeTransform(child, provider))
                 {
                     transforms.Add(child);
-                    
+
                     // Recursively add children if not at max depth
                     if (transforms.Count < 100) // Safety limit to prevent infinite recursion
                     {
@@ -336,7 +302,7 @@ namespace KRT.VRCQuestTools.Services
         {
             // Use the abstraction layer radius
             var radius = provider.Radius;
-            
+
             // Apply any radius curve if available
             if (provider.RadiusCurve != null && provider.RadiusCurve.keys.Length > 0)
             {

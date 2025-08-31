@@ -430,6 +430,18 @@ namespace KRT.VRCQuestTools.Utils
         /// Deletes avatar dynamics components.
         /// </summary>
         /// <param name="avatar">Target avatar.</param>
+        /// <param name="physBoneProvidersToKeep">PhysBone providers to keep.</param>
+        /// <param name="physBoneCollidersToKeep">PhysBoneColliders to keep.</param>
+        /// <param name="contactsToKeep">ContanctSenders and ContactReceivers to keep.</param>
+        internal static void DeleteAvatarDynamicsComponents(VRChatAvatar avatar, VRCPhysBoneProviderBase[] physBoneProvidersToKeep, VRCPhysBoneCollider[] physBoneCollidersToKeep, ContactBase[] contactsToKeep)
+        {
+            DeleteAvatarDynamicsComponents(avatar, physBoneProvidersToKeep.SelectMany(p => p.GetPhysBones()).ToArray(), physBoneCollidersToKeep, contactsToKeep);
+        }
+
+        /// <summary>
+        /// Deletes avatar dynamics components.
+        /// </summary>
+        /// <param name="avatar">Target avatar.</param>
         /// <param name="physBonesToKeep">PhysBones to keep.</param>
         /// <param name="physBoneCollidersToKeep">PhysBoneColliders to keep.</param>
         /// <param name="contactsToKeep">ContanctSenders and ContactReceivers to keep.</param>

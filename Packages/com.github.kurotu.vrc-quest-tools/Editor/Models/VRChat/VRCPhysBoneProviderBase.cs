@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -68,6 +69,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// </summary>
         /// <param name="index">Index to set null.</param>
         public abstract void ClearCollider(int index);
+
+        /// <summary>
+        /// Gets the PhysBone instances.
+        /// </summary>
+        /// <returns>An array of <see cref="VRCPhysBone"/> instances managed by this provider.</returns>
+        public abstract VRCPhysBone[] GetPhysBones();
     }
 
     /// <summary>

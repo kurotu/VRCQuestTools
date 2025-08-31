@@ -11,7 +11,6 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using VRC.Dynamics;
 using VRC.SDK3.Dynamics.PhysBone.Components;
-using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 
 namespace KRT.VRCQuestTools.Views
@@ -27,9 +26,9 @@ namespace KRT.VRCQuestTools.Views
         internal AvatarConverterSettings converterSettings;
 
         /// <summary>
-        /// PhysBones to keep.
+        /// PhysBone providers to keep.
         /// </summary>
-        internal VRCPhysBone[] physBonesToKeep = { };
+        internal VRCPhysBoneProviderBase[] physBoneProvidersToKeep = { };
 
         /// <summary>
         /// PhysBoneColliders to keep.
@@ -83,6 +82,8 @@ namespace KRT.VRCQuestTools.Views
                 return;
             }
 
+            var avatar = new VRChatAvatar(converterSettings.AvatarDescriptor);
+
             EditorGUILayout.LabelField(i18n.SelectComponentsToKeep, EditorStyles.wordWrappedLabel);
             using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPosition))
             {
@@ -95,7 +96,7 @@ namespace KRT.VRCQuestTools.Views
                     {
                         using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
                         {
-                            var pbs = converterSettings.AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true);
+                            var pbs = avatar.GetPhysBoneProviders();
                             if (pbs.Length == 0)
                             {
                                 EditorGUILayout.LabelField("No PhysBones found.");
@@ -106,14 +107,14 @@ namespace KRT.VRCQuestTools.Views
                                 {
                                     if (GUILayout.Button(i18n.SelectAllButtonLabel))
                                     {
-                                        physBonesToKeep = pbs.ToArray();
+                                        physBoneProvidersToKeep = pbs.ToArray();
                                     }
                                     if (GUILayout.Button(i18n.DeselectAllButtonLabel))
                                     {
-                                        physBonesToKeep = new VRCPhysBone[] { };
+                                        physBoneProvidersToKeep = new VRCPhysBoneProviderBase[] { };
                                     }
                                 }
-                                physBonesToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(pbs, physBonesToKeep);
+                                physBoneProvidersToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(pbs, physBoneProvidersToKeep);
                             }
                         }
                     }
@@ -147,7 +148,10 @@ namespace KRT.VRCQuestTools.Views
                                         physBoneCollidersToKeep = new VRCPhysBoneCollider[] { };
                                     }
                                 }
-                                physBoneCollidersToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(colliders, physBoneCollidersToKeep);
+                                var providers = colliders.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray();
+                                var selected = physBoneCollidersToKeep.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray();
+                                selected = EditorGUIUtility.AvatarDynamicsComponentSelectorList(providers, selected);
+                                physBoneCollidersToKeep = selected.Select(p => p.Component).Cast<VRCPhysBoneCollider>().ToArray();
                             }
                         }
                     }
@@ -182,7 +186,10 @@ namespace KRT.VRCQuestTools.Views
                                         contactsToKeep = new VRC.Dynamics.ContactBase[] { };
                                     }
                                 }
-                                contactsToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(contacts, contactsToKeep);
+                                var providers = contacts.Select(c => new VRCContactBaseProvider(c)).ToArray();
+                                var selected = contactsToKeep.Select(c => new VRCContactBaseProvider(c)).ToArray();
+                                selected = EditorGUIUtility.AvatarDynamicsComponentSelectorList(providers, selected);
+                                contactsToKeep = selected.Select(p => p.Component).Cast<ContactBase>().ToArray();
                             }
                         }
                     }
@@ -193,13 +200,10 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField(i18n.EstimatedPerformanceStats, EditorStyles.boldLabel);
-            var avatar = new VRChatAvatar(converterSettings.AvatarDescriptor);
-            var pbToKeep = physBonesToKeep.Where(x => x != null).ToArray();
             var pbcToKeep = physBoneCollidersToKeep.Where(x => x != null).ToArray();
-            var cToKeep = contactsToKeep.Where(x => x != null).Cast<ContactBase>().ToArray();
-            var stats = avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, cToKeep, true);
+            var cToKeep = contactsToKeep.Where(x => x != null).ToArray();
+            var stats = avatar.EstimatePerformanceStats(physBoneProvidersToKeep, pbcToKeep, cToKeep, true);
             var categories = VRCSDKUtility.AvatarDynamicsPerformanceCategories;
-            var ratings = categories.ToDictionary(x => x, x => stats.GetPerformanceRatingForCategory(x));
             foreach (var category in categories)
             {
                 EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
@@ -209,7 +213,7 @@ namespace KRT.VRCQuestTools.Views
 
             if (GUILayout.Button(i18n.ApplyButtonLabel))
             {
-                converterSettings.physBonesToKeep = physBonesToKeep;
+                converterSettings.physBonesToKeep = physBoneProvidersToKeep.SelectMany(p => p.GetPhysBones()).ToArray();
                 converterSettings.physBoneCollidersToKeep = physBoneCollidersToKeep;
                 converterSettings.contactsToKeep = contactsToKeep;
                 PrefabUtility.RecordPrefabInstancePropertyModifications(converterSettings);

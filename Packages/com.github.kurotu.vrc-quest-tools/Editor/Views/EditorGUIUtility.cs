@@ -116,14 +116,14 @@ namespace KRT.VRCQuestTools.Views
         /// <param name="selectedObjects">Already selected components.</param>
         /// <returns>New selected components.</returns>
         internal static T[] AvatarDynamicsComponentSelectorList<T>(T[] objects, T[] selectedObjects)
-            where T : UnityEngine.Component
+            where T : IVRCAvatarDynamicsProvider
         {
             var afterSelected = new List<T>();
-            Component hoveredComponent = null;
+            IVRCAvatarDynamicsProvider hoveredProvider = null;
 
             foreach (var obj in objects)
             {
-                var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Contains(obj), obj);
+                var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Select(o => o.Component).Contains(obj.Component), obj);
 
                 // Check for hover on the last drawn control
                 var currentEvent = Event.current;
@@ -132,7 +132,7 @@ namespace KRT.VRCQuestTools.Views
                     var lastRect = GUILayoutUtility.GetLastRect();
                     if (lastRect.Contains(currentEvent.mousePosition))
                     {
-                        hoveredComponent = obj;
+                        hoveredProvider = obj;
                     }
                 }
 
@@ -143,7 +143,10 @@ namespace KRT.VRCQuestTools.Views
             }
 
             // Update preview component after all controls are processed
-            UpdatePreviewComponent(hoveredComponent);
+            if (hoveredProvider != null)
+            {
+                AvatarDynamicsPreviewService.SetPreviewComponent(hoveredProvider);
+            }
             return afterSelected.ToArray();
         }
 
@@ -151,18 +154,17 @@ namespace KRT.VRCQuestTools.Views
         /// Show a toggle field for Avatar Dynamics component.
         /// </summary>
         /// <param name="value">Current state.</param>
-        /// <param name="component">Component to show.</param>
+        /// <param name="provider">Provider to show.</param>
         /// <returns>true for selected.</returns>
-        internal static bool ToggleAvatarDynamicsComponentField(bool value, Component component)
+        internal static bool ToggleAvatarDynamicsComponentField(bool value, IVRCAvatarDynamicsProvider provider)
         {
             const int CheckBoxWidth = 16;
             using (var horizontal = new EditorGUILayout.HorizontalScope())
             {
                 var selected = EditorGUILayout.Toggle(value, GUILayout.Width(CheckBoxWidth));
                 GUILayout.Space(2);
-                EditorGUILayout.ObjectField(component, component.GetType(), true);
-                GUILayout.Space(2);
-                EditorGUILayout.ObjectField(VRCSDKUtility.GetRootTransform(component), typeof(Transform), true);
+                using var disabledScope = new EditorGUI.DisabledScope(true);
+                EditorGUILayout.ObjectField(provider.Component, typeof(Component), true);
                 return selected;
             }
         }
@@ -377,30 +379,6 @@ namespace KRT.VRCQuestTools.Views
                     return UnityEditor.EditorGUIUtility.IconContent("console.erroricon");
                 default:
                     throw new System.ArgumentOutOfRangeException(nameof(type), type, null);
-            }
-        }
-
-        /// <summary>
-        /// Updates the preview component using the appropriate overload based on component type.
-        /// </summary>
-        /// <param name="component">Component to preview, or null to clear preview.</param>
-        private static void UpdatePreviewComponent(Component component)
-        {
-            switch (component)
-            {
-                case VRCPhysBone physBone:
-                    var provider = new VRCPhysBoneProvider(physBone);
-                    AvatarDynamicsPreviewService.SetPreviewComponent(provider);
-                    break;
-                case VRCPhysBoneCollider collider:
-                    AvatarDynamicsPreviewService.SetPreviewComponent(collider);
-                    break;
-                case ContactBase contact:
-                    AvatarDynamicsPreviewService.SetPreviewComponent(contact);
-                    break;
-                default:
-                    AvatarDynamicsPreviewService.ClearPreview();
-                    break;
             }
         }
 
