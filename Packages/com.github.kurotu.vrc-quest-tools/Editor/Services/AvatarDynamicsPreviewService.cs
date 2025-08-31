@@ -114,50 +114,8 @@ namespace KRT.VRCQuestTools.Services
             if (provider == null || provider.RootTransform == null)
                 return;
 
-            // Draw the PhysBone chain as capsules between transforms
-            var transforms = GetPhysBoneTransforms(provider);
-            Transform previousTransform = null;
-            float previousNormalizedPosition = 0f;
-
-            for (int i = 0; i < transforms.Count; i++)
-            {
-                var transform = transforms[i];
-                if (transform == null)
-                    continue;
-
-                // Calculate normalized position along the bone chain
-                var normalizedPosition = (float)i / Mathf.Max(1f, transforms.Count - 1f);
-
-                // Draw capsule between previous and current transform
-                if (previousTransform != null)
-                {
-                    var startPos = previousTransform.position;
-                    var endPos = transform.position;
-                    var distance = Vector3.Distance(startPos, endPos);
-
-                    if (distance > 0.001f) // Only draw if there's meaningful distance
-                    {
-                        var startRadius = GetPhysBoneRadiusAtPosition(provider, previousTransform, previousNormalizedPosition);
-                        var endRadius = GetPhysBoneRadiusAtPosition(provider, transform, normalizedPosition);
-                        var direction = (endPos - startPos).normalized;
-                        var rotation = Quaternion.FromToRotation(Vector3.up, direction);
-
-                        // Position capsule so edge spheres are centered at transform positions
-                        // Capsule height should be distance + startRadius + endRadius
-                        var capsuleHeight = distance + startRadius + endRadius;
-                        var center = startPos + direction * (distance * 0.5f + startRadius);
-
-                        // For now, use average radius for the capsule body
-                        // In future, could implement tapered capsules
-                        var avgRadius = (startRadius + endRadius) * 0.5f;
-
-                        DrawWireCapsule(center, rotation, avgRadius, capsuleHeight);
-                    }
-                }
-
-                previousTransform = transform;
-                previousNormalizedPosition = normalizedPosition;
-            }
+            // Draw the PhysBone tree as capsules between connected transforms
+            DrawPhysBoneTransformTree(provider, provider.RootTransform, 0f, 0);
 
             // Draw colliders referenced by this PhysBone
             var originalColor = Handles.color;
@@ -288,51 +246,149 @@ namespace KRT.VRCQuestTools.Services
             Handles.DrawLine(corners[1], corners[3]);
         }
 
-        private static List<Transform> GetPhysBoneTransforms(VRCPhysBoneProviderBase provider)
+        private static void DrawPhysBoneTransformTree(VRCPhysBoneProviderBase provider, Transform transform, float parentNormalizedPosition, int depth)
         {
-            var transforms = new List<Transform>();
-            var rootTransform = provider.RootTransform;
+            if (transform == null || depth > 20) // Safety limit to prevent infinite recursion
+                return;
 
-            if (rootTransform == null)
-                return transforms;
+            // Check if this transform should be included
+            if (provider.IgnoreTransforms != null && provider.IgnoreTransforms.Contains(transform))
+                return;
 
-            // Add root transform
-            transforms.Add(rootTransform);
-
-            // Get all child transforms based on the PhysBone configuration
-            AddChildTransforms(rootTransform, transforms, provider);
-
-            return transforms;
-        }
-
-        private static void AddChildTransforms(Transform parent, List<Transform> transforms, VRCPhysBoneProviderBase provider)
-        {
-            for (int i = 0; i < parent.childCount; i++)
+            // Get child transforms that should be included
+            var validChildren = new List<Transform>();
+            for (int i = 0; i < transform.childCount; i++)
             {
-                var child = parent.GetChild(i);
-
-                // Check if this child should be included based on PhysBone settings
-                if (ShouldIncludeTransform(child, provider))
+                var child = transform.GetChild(i);
+                if (provider.IgnoreTransforms == null || !provider.IgnoreTransforms.Contains(child))
                 {
-                    transforms.Add(child);
-
-                    // Recursively add children if not at max depth
-                    if (transforms.Count < 100) // Safety limit to prevent infinite recursion
-                    {
-                        AddChildTransforms(child, transforms, provider);
-                    }
+                    validChildren.Add(child);
                 }
+            }
+
+            // Handle MultiChildType
+            var childrenToProcess = new List<Transform>();
+            if (validChildren.Count > 0)
+            {
+                switch (provider.MultiChildType)
+                {
+                    case MultiChildType.Ignore:
+                        // Only process the first child, and skip the first capsule if this is the root
+                        if (validChildren.Count > 0)
+                        {
+                            childrenToProcess.Add(validChildren[0]);
+                        }
+                        break;
+                    case MultiChildType.First:
+                        // Process only the first child
+                        if (validChildren.Count > 0)
+                        {
+                            childrenToProcess.Add(validChildren[0]);
+                        }
+                        break;
+                    case MultiChildType.Average:
+                        // Process all children
+                        childrenToProcess.AddRange(validChildren);
+                        break;
+                }
+            }
+
+            // Draw capsules to children (leaf transforms don't have capsules)
+            bool isRoot = depth == 0;
+            bool skipFirstCapsule = isRoot && provider.MultiChildType == MultiChildType.Ignore;
+
+            foreach (var child in childrenToProcess)
+            {
+                // Skip the first capsule when MultiChildType is Ignore and this is the root
+                if (skipFirstCapsule)
+                {
+                    skipFirstCapsule = false; // Only skip the very first one
+                }
+                else
+                {
+                    DrawPhysBoneCapsule(provider, transform, child, parentNormalizedPosition, depth);
+                }
+
+                // Recursively process children
+                var childNormalizedPosition = (float)(depth + 1) / 20f; // Approximate normalized position
+                DrawPhysBoneTransformTree(provider, child, childNormalizedPosition, depth + 1);
             }
         }
 
-        private static bool ShouldIncludeTransform(Transform transform, VRCPhysBoneProviderBase provider)
+        private static void DrawPhysBoneCapsule(VRCPhysBoneProviderBase provider, Transform startTransform, Transform endTransform, float startNormalizedPosition, int depth)
         {
-            // Basic check - include if not in ignore list
-            if (provider.IgnoreTransforms != null && provider.IgnoreTransforms.Contains(transform))
-                return false;
+            var startPos = startTransform.position;
+            var endPos = endTransform.position;
+            var distance = Vector3.Distance(startPos, endPos);
 
-            // Include if has significant child count or is explicitly included
-            return true;
+            if (distance <= 0.001f) // Skip if transforms are too close
+                return;
+
+            // Calculate normalized positions for radius curve evaluation
+            var endNormalizedPosition = (float)(depth + 1) / 20f; // Approximate normalized position
+
+            var startRadius = GetPhysBoneRadiusAtPosition(provider, startTransform, startNormalizedPosition);
+            var endRadius = GetPhysBoneRadiusAtPosition(provider, endTransform, endNormalizedPosition);
+
+            // Draw tapered capsule with different radii at each end
+            DrawTaperedWireCapsule(startPos, endPos, startRadius, endRadius);
+        }
+
+        private static void DrawTaperedWireCapsule(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius)
+        {
+            var direction = (endPos - startPos).normalized;
+            var distance = Vector3.Distance(startPos, endPos);
+            
+            if (distance <= 0.001f)
+                return;
+
+            var rotation = Quaternion.FromToRotation(Vector3.up, direction);
+
+            // Draw half spheres at each end (centered at transform positions)
+            DrawWireHalfSphere(startPos, startRadius, rotation, true);  // Bottom half sphere
+            DrawWireHalfSphere(endPos, endRadius, rotation, false);     // Top half sphere
+
+            // Draw connecting lines for the truncated cone
+            var perpendicular1 = Vector3.Cross(direction, Vector3.up).normalized;
+            if (perpendicular1.magnitude < 0.1f) // Handle case where direction is parallel to up
+            {
+                perpendicular1 = Vector3.Cross(direction, Vector3.forward).normalized;
+            }
+            var perpendicular2 = Vector3.Cross(direction, perpendicular1).normalized;
+
+            // Draw 4 connecting lines between the circles
+            for (int i = 0; i < 4; i++)
+            {
+                var angle = i * 90f * Mathf.Deg2Rad;
+                var offset = perpendicular1 * Mathf.Cos(angle) + perpendicular2 * Mathf.Sin(angle);
+                
+                var startPoint = startPos + offset * startRadius;
+                var endPoint = endPos + offset * endRadius;
+                
+                Handles.DrawLine(startPoint, endPoint);
+            }
+        }
+
+        private static void DrawWireHalfSphere(Vector3 center, float radius, Quaternion rotation, bool isBottom)
+        {
+            // Draw hemisphere by drawing arcs
+            var up = rotation * Vector3.up;
+            var forward = rotation * Vector3.forward;
+            var right = rotation * Vector3.right;
+
+            // Draw the circular edge of the hemisphere
+            Handles.DrawWireArc(center, up, forward, 360f, radius);
+
+            // Draw meridian arcs (only the hemisphere part)
+            float arcAngle = isBottom ? -180f : 180f;
+            float startAngle = isBottom ? 0f : -180f;
+            
+            // Draw 4 meridian arcs for the hemisphere
+            for (int i = 0; i < 4; i++)
+            {
+                var meridianDirection = Quaternion.AngleAxis(i * 45f, up) * forward;
+                Handles.DrawWireArc(center, meridianDirection, up, arcAngle, radius);
+            }
         }
 
         private static float GetPhysBoneRadiusAtPosition(VRCPhysBoneProviderBase provider, Transform transform, float normalizedPosition)
