@@ -114,23 +114,31 @@ namespace KRT.VRCQuestTools.Services
             if (provider == null || provider.RootTransform == null)
                 return;
 
-            // Draw the PhysBone chain
+            // Draw the PhysBone chain as capsules between transforms
             var transforms = GetPhysBoneTransforms(provider);
-            var previousTransform = provider.RootTransform;
+            Transform previousTransform = null;
 
             foreach (var transform in transforms)
             {
                 if (transform == null)
                     continue;
 
-                // Draw wireframe sphere at each transform
-                var radius = GetPhysBoneRadius(provider, transform);
-                DrawWireSphere(transform.position, radius);
-
-                // Draw line connecting to previous transform
-                if (previousTransform != null && previousTransform != transform)
+                // Draw capsule between previous and current transform
+                if (previousTransform != null)
                 {
-                    Handles.DrawLine(previousTransform.position, transform.position);
+                    var startPos = previousTransform.position;
+                    var endPos = transform.position;
+                    var distance = Vector3.Distance(startPos, endPos);
+                    
+                    if (distance > 0.001f) // Only draw if there's meaningful distance
+                    {
+                        var radius = GetPhysBoneRadius(provider, previousTransform);
+                        var center = (startPos + endPos) * 0.5f;
+                        var direction = (endPos - startPos).normalized;
+                        var rotation = Quaternion.LookRotation(direction, Vector3.up);
+                        
+                        DrawWireCapsule(center, rotation, radius, distance);
+                    }
                 }
 
                 previousTransform = transform;
@@ -164,26 +172,33 @@ namespace KRT.VRCQuestTools.Services
             if (provider?.Component == null)
                 return;
 
+            var collider = provider.Component as VRCPhysBoneCollider;
             var transform = provider.Component.transform;
-            var position = transform.position;
-            var rotation = transform.rotation;
+            
+            // Apply world transform with collider's local position and rotation offsets
+            var worldMatrix = transform.localToWorldMatrix;
+            var localPosition = collider.position;
+            var localRotation = Quaternion.Euler(collider.rotation);
+            
+            var worldPosition = worldMatrix.MultiplyPoint3x4(localPosition);
+            var worldRotation = transform.rotation * localRotation;
 
             switch (provider.ShapeType)
             {
                 case VRCPhysBoneCollider.ShapeType.Sphere:
                     var sphereRadius = provider.Radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
-                    DrawWireSphere(position, sphereRadius);
+                    DrawWireSphere(worldPosition, sphereRadius);
                     break;
 
                 case VRCPhysBoneCollider.ShapeType.Capsule:
                     var capsuleRadius = provider.Radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.z);
                     var capsuleHeight = provider.Height * transform.lossyScale.y;
-                    DrawWireCapsule(position, rotation, capsuleRadius, capsuleHeight);
+                    DrawWireCapsule(worldPosition, worldRotation, capsuleRadius, capsuleHeight);
                     break;
 
                 case VRCPhysBoneCollider.ShapeType.Plane:
                     var planeScale = Mathf.Max(transform.lossyScale.x, transform.lossyScale.z) * 2f;
-                    DrawWirePlane(position, rotation, planeScale);
+                    DrawWirePlane(worldPosition, worldRotation, planeScale);
                     break;
             }
         }
@@ -193,9 +208,16 @@ namespace KRT.VRCQuestTools.Services
             if (provider?.Component == null)
                 return;
 
-            var position = provider.Component.transform.position;
-            var radius = provider.Radius * Mathf.Max(provider.Component.transform.lossyScale.x, provider.Component.transform.lossyScale.y, provider.Component.transform.lossyScale.z);
-            DrawWireSphere(position, radius);
+            var contact = provider.Component as ContactBase;
+            var transform = provider.Component.transform;
+            
+            // Apply world transform with contact's local position offset if it exists
+            var worldMatrix = transform.localToWorldMatrix;
+            var localPosition = contact.position;
+            
+            var worldPosition = worldMatrix.MultiplyPoint3x4(localPosition);
+            var radius = provider.Radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+            DrawWireSphere(worldPosition, radius);
         }
 
         private static void DrawWireSphere(Vector3 center, float radius)
