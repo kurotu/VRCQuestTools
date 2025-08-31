@@ -380,14 +380,13 @@ namespace KRT.VRCQuestTools.Services
             Handles.DrawWireArc(center, up, forward, 360f, radius);
 
             // Draw meridian arcs (only the hemisphere part)
-            float arcAngle = isBottom ? -180f : 180f;
-            float startAngle = isBottom ? 0f : -180f;
+            var arcDirection = isBottom ? -up : up;
             
             // Draw 4 meridian arcs for the hemisphere
             for (int i = 0; i < 4; i++)
             {
                 var meridianDirection = Quaternion.AngleAxis(i * 45f, up) * forward;
-                Handles.DrawWireArc(center, meridianDirection, up, arcAngle, radius);
+                Handles.DrawWireArc(center, meridianDirection, arcDirection, 180f, radius);
             }
         }
 

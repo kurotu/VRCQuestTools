@@ -34,5 +34,14 @@ namespace KRT.VRCQuestTools.Tests
         {
             Assert.DoesNotThrow(() => AvatarDynamicsPreviewService.ClearPreview());
         }
+
+        /// <summary>
+        /// Test that SetPreviewComponent methods handle null values gracefully.
+        /// </summary>
+        [Test]
+        public void SetPreviewComponentNullTest()
+        {
+            Assert.DoesNotThrow(() => AvatarDynamicsPreviewService.SetPreviewComponent((KRT.VRCQuestTools.Models.VRChat.IVRCAvatarDynamicsProvider)null));
+        }
     }
 }
