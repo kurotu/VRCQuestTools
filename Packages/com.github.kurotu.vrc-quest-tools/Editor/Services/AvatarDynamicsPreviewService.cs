@@ -117,11 +117,16 @@ namespace KRT.VRCQuestTools.Services
             // Draw the PhysBone chain as capsules between transforms
             var transforms = GetPhysBoneTransforms(provider);
             Transform previousTransform = null;
+            float previousNormalizedPosition = 0f;
 
-            foreach (var transform in transforms)
+            for (int i = 0; i < transforms.Count; i++)
             {
+                var transform = transforms[i];
                 if (transform == null)
                     continue;
+
+                // Calculate normalized position along the bone chain
+                var normalizedPosition = (float)i / Mathf.Max(1f, transforms.Count - 1f);
 
                 // Draw capsule between previous and current transform
                 if (previousTransform != null)
@@ -132,16 +137,26 @@ namespace KRT.VRCQuestTools.Services
                     
                     if (distance > 0.001f) // Only draw if there's meaningful distance
                     {
-                        var radius = GetPhysBoneRadius(provider, previousTransform);
-                        var center = (startPos + endPos) * 0.5f;
+                        var startRadius = GetPhysBoneRadiusAtPosition(provider, previousTransform, previousNormalizedPosition);
+                        var endRadius = GetPhysBoneRadiusAtPosition(provider, transform, normalizedPosition);
                         var direction = (endPos - startPos).normalized;
                         var rotation = Quaternion.FromToRotation(Vector3.up, direction);
                         
-                        DrawWireCapsule(center, rotation, radius, distance);
+                        // Position capsule so edge spheres are centered at transform positions
+                        // Capsule height should be distance + startRadius + endRadius
+                        var capsuleHeight = distance + startRadius + endRadius;
+                        var center = startPos + direction * (distance * 0.5f + startRadius);
+                        
+                        // For now, use average radius for the capsule body
+                        // In future, could implement tapered capsules
+                        var avgRadius = (startRadius + endRadius) * 0.5f;
+                        
+                        DrawWireCapsule(center, rotation, avgRadius, capsuleHeight);
                     }
                 }
 
                 previousTransform = transform;
+                previousNormalizedPosition = normalizedPosition;
             }
 
             // Draw colliders referenced by this PhysBone
@@ -320,16 +335,14 @@ namespace KRT.VRCQuestTools.Services
             return true;
         }
 
-        private static float GetPhysBoneRadius(VRCPhysBoneProviderBase provider, Transform transform)
+        private static float GetPhysBoneRadiusAtPosition(VRCPhysBoneProviderBase provider, Transform transform, float normalizedPosition)
         {
             // Use the abstraction layer radius
             var radius = provider.Radius;
 
-            // Apply any radius curve if available
+            // Apply radius curve if available
             if (provider.RadiusCurve != null && provider.RadiusCurve.keys.Length > 0)
             {
-                // Calculate position along the bone chain (simplified)
-                var normalizedPosition = 0.5f; // This would need proper calculation
                 radius *= provider.RadiusCurve.Evaluate(normalizedPosition);
             }
 
