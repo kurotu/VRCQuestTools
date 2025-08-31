@@ -135,7 +135,7 @@ namespace KRT.VRCQuestTools.Services
                         var radius = GetPhysBoneRadius(provider, previousTransform);
                         var center = (startPos + endPos) * 0.5f;
                         var direction = (endPos - startPos).normalized;
-                        var rotation = Quaternion.LookRotation(direction, Vector3.up);
+                        var rotation = Quaternion.FromToRotation(Vector3.up, direction);
                         
                         DrawWireCapsule(center, rotation, radius, distance);
                     }
