@@ -247,4 +247,3 @@ namespace KRT.VRCQuestTools.Utils
         return index1 < index2;
     }
 }
-}
