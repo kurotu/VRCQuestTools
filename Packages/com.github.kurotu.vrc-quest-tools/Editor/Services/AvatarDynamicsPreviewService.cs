@@ -349,6 +349,46 @@ namespace KRT.VRCQuestTools.Services
                 var childNormalizedPosition = (float)(depth + 1) / 20f; // Approximate normalized position
                 DrawPhysBoneTransformTree(provider, child, childNormalizedPosition, depth + 1);
             }
+
+            // If this is a leaf and EndpointPosition is set, draw an extra virtual segment beyond the leaf.
+            if (childrenToProcess.Count == 0 && provider.EndpointPosition.magnitude > 0f)
+            {
+                // Determine the world-space extension length from the root's local endpoint offset
+                var worldOffset = provider.RootTransform != null
+                    ? provider.RootTransform.TransformVector(provider.EndpointPosition)
+                    : provider.EndpointPosition;
+                var extensionLength = worldOffset.magnitude;
+
+                if (extensionLength > 0f)
+                {
+                    // Direction to extend: continue past the leaf in the direction from parent to this leaf.
+                    Vector3 dir;
+                    if (transform.parent != null)
+                    {
+                        dir = (transform.position - transform.parent.position).normalized;
+                        if (dir.sqrMagnitude < 1e-6f)
+                        {
+                            dir = transform.up; // fallback
+                        }
+                    }
+                    else
+                    {
+                        // Root without parent: use endpoint direction relative to root
+                        dir = (provider.RootTransform != null)
+                            ? provider.RootTransform.TransformDirection(provider.EndpointPosition.normalized)
+                            : provider.EndpointPosition.normalized;
+                    }
+
+                    var endPos = transform.position + dir * extensionLength;
+
+                    // Radii at start/end using the same transform scale context
+                    var startRadius = GetPhysBoneRadiusAtPosition(provider, transform, parentNormalizedPosition);
+                    var endNormalizedPosition = (float)(depth + 1) / 20f;
+                    var endRadius = GetPhysBoneRadiusAtPosition(provider, transform, endNormalizedPosition);
+
+                    DrawTaperedWireCapsule(transform.position, endPos, startRadius, endRadius);
+                }
+            }
         }
 
         private static void DrawPhysBoneCapsule(VRCPhysBoneProviderBase provider, Transform startTransform, Transform endTransform, float startNormalizedPosition, int depth)
