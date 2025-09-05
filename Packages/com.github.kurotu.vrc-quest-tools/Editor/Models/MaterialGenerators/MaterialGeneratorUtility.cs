@@ -142,14 +142,18 @@ namespace KRT.VRCQuestTools.Models
 
         private static AsyncCallbackRequest GenerateTextureWithOverrides(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
-            // Create texture format resolver
-            var resolver = new PlatformTextureFormatResolver();
-            
             // Extract source textures from the material
             var sourceTextures = ExtractSourceTextures(material);
             
+            // Create fallback settings from material settings
+            var fallbackSettings = new TextureOverrideUtility.FallbackTextureSettings
+            {
+                mobileTextureFormat = settings.MobileTextureFormat,
+                maxTextureSize = GetMaxTextureSizeFromSettings(settings)
+            };
+            
             // Resolve texture format using platform overrides or fallback to material settings
-            var formatResult = resolver.ResolveTextureFormat(sourceTextures, settings);
+            var formatResult = TextureOverrideUtility.ResolveTextureFormat(sourceTextures, EditorUserBuildSettings.activeBuildTarget, fallbackSettings);
             
             var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material) + settings.GetCacheKey());
             var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}_{assetHash}" + (saveAsPng ? ".png" : ".json");
@@ -377,6 +381,25 @@ namespace KRT.VRCQuestTools.Models
             }
 
             return texToWrite;
+        }
+
+        /// <summary>
+        /// Extracts maximum texture size from material convert settings.
+        /// </summary>
+        /// <param name="settings">Material convert settings.</param>
+        /// <returns>Maximum texture size value.</returns>
+        private static int GetMaxTextureSizeFromSettings(IMaterialConvertSettings settings)
+        {
+            if (settings is ToonStandardConvertSettings toonStandardSettings)
+            {
+                return (int)toonStandardSettings.maxTextureSize;
+            }
+            else if (settings is IToonLitConvertSettings toonLitSettings)
+            {
+                return (int)toonLitSettings.MaxTextureSize;
+            }
+            
+            return 0; // No limit if unknown settings type
         }
 
         private struct TextureConfig

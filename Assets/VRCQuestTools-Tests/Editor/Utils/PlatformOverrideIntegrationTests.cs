@@ -16,24 +16,23 @@ namespace KRT.VRCQuestTools.Utils
     public class PlatformOverrideIntegrationTests
     {
         /// <summary>
-        /// Test that the full integration works: resolver uses utility to check overrides and falls back properly.
+        /// Test that the full integration works: texture override utility resolves format and falls back properly.
         /// </summary>
         [Test]
-        public void Integration_ResolverUsesOverrideUtility_FallsBackCorrectly()
+        public void Integration_TextureOverrideUtility_ResolvesFallbackCorrectly()
         {
             // Arrange
-            var resolver = new PlatformTextureFormatResolver();
-            var fallbackSettings = new ToonStandardConvertSettings
+            var fallbackSettings = new TextureOverrideUtility.FallbackTextureSettings
             {
                 mobileTextureFormat = MobileTextureFormat.ASTC_6x6,
-                maxTextureSize = TextureSizeLimit.Max1024x1024
+                maxTextureSize = 1024
             };
             
             // Test with empty texture list (no overrides available)
             var emptyTextures = new List<Texture>();
 
             // Act
-            var result = resolver.ResolveTextureFormat(emptyTextures, fallbackSettings);
+            var result = TextureOverrideUtility.ResolveTextureFormat(emptyTextures, UnityEditor.BuildTarget.Android, fallbackSettings);
 
             // Assert
             Assert.IsFalse(result.fromOverride, "Should indicate result came from fallback, not override");

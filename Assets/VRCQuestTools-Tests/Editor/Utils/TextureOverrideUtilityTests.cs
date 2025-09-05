@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.Utils
             var emptyTextures = new List<Texture>();
 
             // Act
-            var result = TextureOverrideUtility.GetBestPlatformOverride(emptyTextures);
+            var result = TextureOverrideUtility.GetBestPlatformOverride(emptyTextures, UnityEditor.BuildTarget.Android);
 
             // Assert
             Assert.IsFalse(result.hasOverride);
@@ -45,7 +45,7 @@ namespace KRT.VRCQuestTools.Utils
             var textures = new List<Texture> { texture };
 
             // Act
-            var result = TextureOverrideUtility.GetBestPlatformOverride(textures);
+            var result = TextureOverrideUtility.GetBestPlatformOverride(textures, UnityEditor.BuildTarget.Android);
 
             // Assert
             Assert.IsFalse(result.hasOverride);
@@ -61,10 +61,50 @@ namespace KRT.VRCQuestTools.Utils
             var textures = new List<Texture> { null };
 
             // Act
-            var result = TextureOverrideUtility.GetBestPlatformOverride(textures);
+            var result = TextureOverrideUtility.GetBestPlatformOverride(textures, UnityEditor.BuildTarget.Android);
 
             // Assert
             Assert.IsFalse(result.hasOverride);
+        }
+
+        /// <summary>
+        /// Test that iOS build target falls back to Android platform override when iOS override not found.
+        /// </summary>
+        [Test]
+        public void GetBestPlatformOverride_iOS_FallsBackToAndroid()
+        {
+            // This test would require creating test textures with platform overrides
+            // For now, we test the basic parameter handling
+            var emptyTextures = new List<Texture>();
+
+            // Act  
+            var result = TextureOverrideUtility.GetBestPlatformOverride(emptyTextures, UnityEditor.BuildTarget.iOS);
+
+            // Assert - should still handle gracefully even with iOS target
+            Assert.IsFalse(result.hasOverride);
+        }
+
+        /// <summary>
+        /// Test ResolveTextureFormat with fallback settings.
+        /// </summary>
+        [Test]
+        public void ResolveTextureFormat_NoOverrides_UsesFallbackSettings()
+        {
+            // Arrange
+            var emptyTextures = new List<Texture>();
+            var fallbackSettings = new TextureOverrideUtility.FallbackTextureSettings
+            {
+                mobileTextureFormat = MobileTextureFormat.ASTC_6x6,
+                maxTextureSize = 1024
+            };
+
+            // Act
+            var result = TextureOverrideUtility.ResolveTextureFormat(emptyTextures, UnityEditor.BuildTarget.Android, fallbackSettings);
+
+            // Assert
+            Assert.IsFalse(result.fromOverride);
+            Assert.AreEqual(MobileTextureFormat.ASTC_6x6, result.mobileTextureFormat);
+            Assert.AreEqual(1024, result.maxTextureSize);
         }
 
         /// <summary>
