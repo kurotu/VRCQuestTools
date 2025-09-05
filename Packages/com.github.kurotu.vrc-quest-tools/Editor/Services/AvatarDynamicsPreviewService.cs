@@ -118,8 +118,9 @@ namespace KRT.VRCQuestTools.Services
                 return;
             }
 
-            // Draw the PhysBone tree as capsules between connected transforms
-            DrawPhysBoneTransformTree(provider, provider.RootTransform, 0f, 0);
+            // Build graph info (distances and total length), then draw the PhysBone tree
+            var graph = BuildPhysBoneGraph(provider);
+            DrawPhysBoneTransformTree(provider, provider.RootTransform, graph, 0);
 
             // Draw colliders referenced by this PhysBone
             var originalColor = Handles.color;
@@ -278,7 +279,7 @@ namespace KRT.VRCQuestTools.Services
             Handles.DrawLine(corners[1], corners[3]);
         }
 
-        private static void DrawPhysBoneTransformTree(VRCPhysBoneProviderBase provider, Transform transform, float parentNormalizedPosition, int depth)
+        private static void DrawPhysBoneTransformTree(VRCPhysBoneProviderBase provider, Transform transform, PhysBoneGraph graph, int depth)
         {
             if (transform == null || depth > 20)
             {
@@ -291,46 +292,12 @@ namespace KRT.VRCQuestTools.Services
                 return;
             }
 
-            // Get child transforms that should be included
-            var validChildren = new List<Transform>();
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                var child = transform.GetChild(i);
-                if (provider.IgnoreTransforms == null || !provider.IgnoreTransforms.Contains(child))
-                {
-                    validChildren.Add(child);
-                }
-            }
-
-            // Handle MultiChildType only when RootTransform branches (has multiple children)
-            var childrenToProcess = new List<Transform>();
-            bool isRoot = depth == 0;
-            if (validChildren.Count > 0)
-            {
-                if (isRoot && validChildren.Count > 1)
-                {
-                    // Apply MultiChildType only at root when there are multiple children (branching)
-                    switch (provider.MultiChildType)
-                    {
-                        case MultiChildType.Ignore:
-                            childrenToProcess.Add(validChildren[0]);
-                            break;
-                        case MultiChildType.First:
-                            childrenToProcess.Add(validChildren[0]);
-                            break;
-                        case MultiChildType.Average:
-                            childrenToProcess.AddRange(validChildren);
-                            break;
-                    }
-                }
-                else
-                {
-                    // No branching at root or not root: process all children normally
-                    childrenToProcess.AddRange(validChildren);
-                }
-            }
+            // Get children to process according to provider settings
+            var validChildren = GetValidChildren(provider, transform);
+            var childrenToProcess = GetChildrenToProcess(provider, transform, depth, validChildren);
 
             // Draw capsules to children (leaf transforms don't have capsules)
+            bool isRoot = depth == 0;
             bool skipFirstCapsule = isRoot && validChildren.Count > 1 && provider.MultiChildType == MultiChildType.Ignore;
 
             foreach (var child in childrenToProcess)
@@ -342,22 +309,18 @@ namespace KRT.VRCQuestTools.Services
                 }
                 else
                 {
-                    DrawPhysBoneCapsule(provider, transform, child, parentNormalizedPosition, depth);
+                    DrawPhysBoneCapsule(provider, transform, child, graph);
                 }
 
                 // Recursively process children
-                var childNormalizedPosition = (float)(depth + 1) / 20f; // Approximate normalized position
-                DrawPhysBoneTransformTree(provider, child, childNormalizedPosition, depth + 1);
+                DrawPhysBoneTransformTree(provider, child, graph, depth + 1);
             }
 
             // If this is a leaf and EndpointPosition is set, draw an extra virtual segment beyond the leaf.
-            if (childrenToProcess.Count == 0 && provider.EndpointPosition.magnitude > 0f)
+            if (childrenToProcess.Count == 0 && graph.EndpointWorldLength > 0f)
             {
                 // Determine the world-space extension length from the root's local endpoint offset
-                var worldOffset = provider.RootTransform != null
-                    ? provider.RootTransform.TransformVector(provider.EndpointPosition)
-                    : provider.EndpointPosition;
-                var extensionLength = worldOffset.magnitude;
+                var extensionLength = graph.EndpointWorldLength;
 
                 if (extensionLength > 0f)
                 {
@@ -382,16 +345,21 @@ namespace KRT.VRCQuestTools.Services
                     var endPos = transform.position + dir * extensionLength;
 
                     // Radii at start/end using the same transform scale context
-                    var startRadius = GetPhysBoneRadiusAtPosition(provider, transform, parentNormalizedPosition);
-                    var endNormalizedPosition = (float)(depth + 1) / 20f;
-                    var endRadius = GetPhysBoneRadiusAtPosition(provider, transform, endNormalizedPosition);
+                    var startNormalized = graph.TotalLength > 0f
+                        ? Mathf.Clamp01(GetDistanceFromRoot(graph, transform) / graph.TotalLength)
+                        : 0f;
+                    var endNormalized = graph.TotalLength > 0f
+                        ? Mathf.Clamp01((GetDistanceFromRoot(graph, transform) + extensionLength) / graph.TotalLength)
+                        : 1f;
+                    var startRadius = GetPhysBoneRadiusAtPosition(provider, transform, startNormalized);
+                    var endRadius = GetPhysBoneRadiusAtPosition(provider, transform, endNormalized);
 
                     DrawTaperedWireCapsule(transform.position, endPos, startRadius, endRadius);
                 }
             }
         }
 
-        private static void DrawPhysBoneCapsule(VRCPhysBoneProviderBase provider, Transform startTransform, Transform endTransform, float startNormalizedPosition, int depth)
+        private static void DrawPhysBoneCapsule(VRCPhysBoneProviderBase provider, Transform startTransform, Transform endTransform, PhysBoneGraph graph)
         {
             var startPos = startTransform.position;
             var endPos = endTransform.position;
@@ -403,8 +371,14 @@ namespace KRT.VRCQuestTools.Services
                 return;
             }
 
-            // Calculate normalized positions for radius curve evaluation
-            var endNormalizedPosition = (float)(depth + 1) / 20f; // Approximate normalized position
+            // Calculate normalized positions for radius curve evaluation from actual distances
+            float startNormalizedPosition = 0f;
+            float endNormalizedPosition = 1f;
+            if (graph.TotalLength > 0f)
+            {
+                startNormalizedPosition = Mathf.Clamp01(GetDistanceFromRoot(graph, startTransform) / graph.TotalLength);
+                endNormalizedPosition = Mathf.Clamp01(GetDistanceFromRoot(graph, endTransform) / graph.TotalLength);
+            }
 
             var startRadius = GetPhysBoneRadiusAtPosition(provider, startTransform, startNormalizedPosition);
             var endRadius = GetPhysBoneRadiusAtPosition(provider, endTransform, endNormalizedPosition);
@@ -429,28 +403,26 @@ namespace KRT.VRCQuestTools.Services
             var forward = rotation * Vector3.forward;
 
             // Oval in the Up-Forward plane (axis normal = Right)
-            var fromTop_UF = -Vector3.Cross(right, up).normalized;
-            var fromBottom_UF = -Vector3.Cross(right, -up).normalized;
-            Handles.DrawWireArc(endPos, right, fromTop_UF, 180f, endRadius);
-            Handles.DrawWireArc(startPos, right, fromBottom_UF, 180f, startRadius);
-            var sideA_TopUF = endPos + forward * endRadius;
-            var sideA_BotUF = startPos + forward * startRadius;
-            var sideB_TopUF = endPos - forward * endRadius;
-            var sideB_BotUF = startPos - forward * startRadius;
-            Handles.DrawLine(sideA_TopUF, sideA_BotUF);
-            Handles.DrawLine(sideB_TopUF, sideB_BotUF);
+            var fromTopUF = -Vector3.Cross(right, up).normalized;
+            var fromBottomUF = -Vector3.Cross(right, -up).normalized;
+            Handles.DrawWireArc(endPos, right, fromTopUF, 180f, endRadius);
+            Handles.DrawWireArc(startPos, right, fromBottomUF, 180f, startRadius);
+            var sideATopUF = endPos + forward * endRadius;
+            var sideABotUF = startPos + forward * startRadius;
+            var sideBTopUF = endPos - forward * endRadius;
+            var sideBBotUF = startPos - forward * startRadius;
+            Handles.DrawLine(sideATopUF, sideABotUF);
+            Handles.DrawLine(sideBTopUF, sideBBotUF);
 
             // Oval in the Up-Right plane (axis normal = Forward)
-            var fromTop_UR = -Vector3.Cross(forward, up).normalized;
-            var fromBottom_UR = -Vector3.Cross(forward, -up).normalized;
-            Handles.DrawWireArc(endPos, forward, fromTop_UR, 180f, endRadius);
-            Handles.DrawWireArc(startPos, forward, fromBottom_UR, 180f, startRadius);
-            var sideA_TopUR = endPos + right * endRadius;
-            var sideA_BotUR = startPos + right * startRadius;
-            var sideB_TopUR = endPos - right * endRadius;
-            var sideB_BotUR = startPos - right * startRadius;
-            Handles.DrawLine(sideA_TopUR, sideA_BotUR);
-            Handles.DrawLine(sideB_TopUR, sideB_BotUR);
+            Handles.DrawWireArc(endPos, forward, -Vector3.Cross(forward, up).normalized, 180f, endRadius);
+            Handles.DrawWireArc(startPos, forward, -Vector3.Cross(forward, -up).normalized, 180f, startRadius);
+            var sideATopUR = endPos + right * endRadius;
+            var sideABotUR = startPos + right * startRadius;
+            var sideBTopUR = endPos - right * endRadius;
+            var sideBBotUR = startPos - right * startRadius;
+            Handles.DrawLine(sideATopUR, sideABotUR);
+            Handles.DrawLine(sideBTopUR, sideBBotUR);
 
             // End-cap circles around the start and end centers (normals = Up/Down along the bone)
             Handles.DrawWireArc(endPos, up, right, 360f, endRadius);
@@ -469,6 +441,142 @@ namespace KRT.VRCQuestTools.Services
             }
 
             return radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+        }
+
+        private static float GetDistanceFromRoot(PhysBoneGraph graph, Transform t)
+        {
+            return graph.DistanceFromRoot.TryGetValue(t, out var d) ? d : 0f;
+        }
+
+        private static PhysBoneGraph BuildPhysBoneGraph(VRCPhysBoneProviderBase provider)
+        {
+            var graph = new PhysBoneGraph();
+
+            // Compute endpoint length in world space once
+            var worldOffset = provider.RootTransform != null
+                ? provider.RootTransform.TransformVector(provider.EndpointPosition)
+                : provider.EndpointPosition;
+            graph.EndpointWorldLength = worldOffset.magnitude;
+
+            if (provider.RootTransform == null)
+            {
+                return graph;
+            }
+
+            // DFS to accumulate distances
+            void DFS(Transform current, int depth)
+            {
+                var validChildren = GetValidChildren(provider, current);
+                var childrenToProcess = GetChildrenToProcess(provider, current, depth, validChildren);
+
+                if (childrenToProcess.Count == 0)
+                {
+                    // Leaf: candidate for total length (include endpoint extension if any)
+                    var d = GetDistanceFromRoot(graph, current);
+                    var candidate = d + graph.EndpointWorldLength;
+                    if (candidate > graph.TotalLength)
+                    {
+                        graph.TotalLength = candidate;
+                    }
+                }
+                else
+                {
+                    foreach (var child in childrenToProcess)
+                    {
+                        // Distance from root for this child
+                        var seg = Vector3.Distance(current.position, child.position);
+                        var parentDist = GetDistanceFromRoot(graph, current);
+                        var childDist = parentDist + seg;
+                        if (!graph.DistanceFromRoot.ContainsKey(child) || graph.DistanceFromRoot[child] < childDist)
+                        {
+                            graph.DistanceFromRoot[child] = childDist;
+                        }
+
+                        DFS(child, depth + 1);
+                    }
+                }
+            }
+
+            graph.DistanceFromRoot[provider.RootTransform] = 0f;
+            DFS(provider.RootTransform, 0);
+
+            // Fallback: if no leaves were found or total is zero, set to max distance found
+            if (graph.TotalLength <= 0f)
+            {
+                foreach (var kv in graph.DistanceFromRoot)
+                {
+                    if (kv.Value > graph.TotalLength)
+                    {
+                        graph.TotalLength = kv.Value;
+                    }
+                }
+            }
+
+            // Guard against zero total length
+            if (graph.TotalLength <= 0f)
+            {
+                graph.TotalLength = 1f;
+            }
+
+            return graph;
+        }
+
+        private static List<Transform> GetValidChildren(VRCPhysBoneProviderBase provider, Transform transform)
+        {
+            var validChildren = new List<Transform>();
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var child = transform.GetChild(i);
+                if (provider.IgnoreTransforms == null || !provider.IgnoreTransforms.Contains(child))
+                {
+                    validChildren.Add(child);
+                }
+            }
+
+            return validChildren;
+        }
+
+        private static List<Transform> GetChildrenToProcess(VRCPhysBoneProviderBase provider, Transform transform, int depth, List<Transform> validChildren = null)
+        {
+            validChildren ??= GetValidChildren(provider, transform);
+            var childrenToProcess = new List<Transform>();
+            bool isRoot = depth == 0;
+
+            if (validChildren.Count > 0)
+            {
+                if (isRoot && validChildren.Count > 1)
+                {
+                    // Apply MultiChildType only at root when there are multiple children (branching)
+                    switch (provider.MultiChildType)
+                    {
+                        case MultiChildType.Ignore:
+                        case MultiChildType.First:
+                            childrenToProcess.Add(validChildren[0]);
+                            break;
+                        case MultiChildType.Average:
+                            childrenToProcess.AddRange(validChildren);
+                            break;
+                    }
+                }
+                else
+                {
+                    // No branching at root or not root: process all children normally
+                    childrenToProcess.AddRange(validChildren);
+                }
+            }
+
+            return childrenToProcess;
+        }
+
+        /// <summary>
+        /// Data used for drawing normalized along actual path length.
+        /// Nested type is placed at the end to satisfy analyzers' member ordering rules.
+        /// </summary>
+        private sealed class PhysBoneGraph
+        {
+            public readonly Dictionary<Transform, float> DistanceFromRoot = new Dictionary<Transform, float>();
+            public float TotalLength;
+            public float EndpointWorldLength;
         }
     }
 }
