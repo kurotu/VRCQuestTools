@@ -143,18 +143,16 @@ namespace KRT.VRCQuestTools.Services
         private static void DrawColliderPreview(VRCPhysBoneColliderProvider provider)
         {
             if (provider?.Component == null)
+            {
                 return;
+            }
 
             var collider = provider.Component as VRCPhysBoneCollider;
             var transform = provider.Component.transform;
 
             // Apply world transform with collider's local position and rotation offsets
-            var worldMatrix = transform.localToWorldMatrix;
-            var localPosition = collider.position;
-            var localRotation = collider.rotation;
-
-            var worldPosition = worldMatrix.MultiplyPoint3x4(localPosition);
-            var worldRotation = transform.rotation * localRotation;
+            var worldPosition = transform.TransformPoint(collider.position);
+            var worldRotation = transform.rotation * collider.rotation;
 
             switch (provider.ShapeType)
             {
@@ -199,32 +197,56 @@ namespace KRT.VRCQuestTools.Services
             Handles.DrawWireArc(center, Vector3.up, Vector3.forward, 360f, radius);
             Handles.DrawWireArc(center, Vector3.forward, Vector3.up, 360f, radius);
             Handles.DrawWireArc(center, Vector3.right, Vector3.up, 360f, radius);
-            
+
             // Add additional arcs for better sphere definition aligned with other wireframes
             Handles.DrawWireArc(center, (Vector3.forward + Vector3.right).normalized, Vector3.up, 360f, radius);
         }
 
         private static void DrawWireCapsule(Vector3 center, Quaternion rotation, float radius, float height)
         {
+            var up = rotation * Vector3.up;
+            var right = rotation * Vector3.right;
+            var forward = rotation * Vector3.forward;
+
             var halfHeight = height * 0.5f;
-            var topCenter = center + rotation * Vector3.up * (halfHeight - radius);
-            var bottomCenter = center + rotation * Vector3.up * -(halfHeight - radius);
-
-            // Draw spheres at top and bottom
-            DrawWireSphere(topCenter, radius);
-            DrawWireSphere(bottomCenter, radius);
-
-            // Draw connecting lines aligned with the sphere wireframes (every 45 degrees)
-            for (int i = 0; i < 8; i++)
+            var seamOffset = halfHeight - radius;
+            if (seamOffset < 0f)
             {
-                var angle = i * 45f * Mathf.Deg2Rad;
-                var forward = rotation * Vector3.forward;
-                var right = rotation * Vector3.right;
-                var offset = forward * Mathf.Cos(angle) + right * Mathf.Sin(angle);
-                
-                var connectionOffset = offset * radius;
-                Handles.DrawLine(topCenter + connectionOffset, bottomCenter + connectionOffset);
+                seamOffset = 0f; // guard: avoid negative when height < 2r
             }
+
+            var topCenter = center + up * seamOffset;
+            var bottomCenter = center - up * seamOffset;
+
+            // Oval 1: in the Up-Forward plane (axis normal = Right)
+            //   Ensure the top arc passes through +up and the bottom arc through -up
+            var fromTop_UF = -Vector3.Cross(right, up).normalized;      // endpoints at +/- forward
+            var fromBottom_UF = -Vector3.Cross(right, -up).normalized;  // endpoints at +/- forward
+            Handles.DrawWireArc(topCenter, right, fromTop_UF, 180f, radius);
+            Handles.DrawWireArc(bottomCenter, right, fromBottom_UF, 180f, radius);
+            var sideA_TopUF = topCenter + forward * radius;
+            var sideA_BotUF = bottomCenter + forward * radius;
+            var sideB_TopUF = topCenter - forward * radius;
+            var sideB_BotUF = bottomCenter - forward * radius;
+            Handles.DrawLine(sideA_TopUF, sideA_BotUF);
+            Handles.DrawLine(sideB_TopUF, sideB_BotUF);
+
+            // Oval 2: in the Up-Right plane (axis normal = Forward)
+            var fromTop_UR = -Vector3.Cross(forward, up).normalized;      // endpoints at +/- right
+            var fromBottom_UR = -Vector3.Cross(forward, -up).normalized;  // endpoints at +/- right
+            Handles.DrawWireArc(topCenter, forward, fromTop_UR, 180f, radius);
+            Handles.DrawWireArc(bottomCenter, forward, fromBottom_UR, 180f, radius);
+            var sideA_TopUR = topCenter + right * radius;
+            var sideA_BotUR = bottomCenter + right * radius;
+            var sideB_TopUR = topCenter - right * radius;
+            var sideB_BotUR = bottomCenter - right * radius;
+            Handles.DrawLine(sideA_TopUR, sideA_BotUR);
+            Handles.DrawLine(sideB_TopUR, sideB_BotUR);
+
+            // Seam circles: connect the junctions between semicircles and straight segments
+            // Two rings around the capsule at the seam positions (normals = Up)
+            Handles.DrawWireArc(topCenter, up, right, 360f, radius);
+            Handles.DrawWireArc(bottomCenter, up, right, 360f, radius);
         }
 
         private static void DrawWirePlane(Vector3 center, Quaternion rotation, float size)
