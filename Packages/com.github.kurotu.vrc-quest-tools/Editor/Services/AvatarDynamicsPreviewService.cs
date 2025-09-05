@@ -302,36 +302,36 @@ namespace KRT.VRCQuestTools.Services
                 }
             }
 
-            // Handle MultiChildType
+            // Handle MultiChildType only when RootTransform branches (has multiple children)
             var childrenToProcess = new List<Transform>();
+            bool isRoot = depth == 0;
             if (validChildren.Count > 0)
             {
-                switch (provider.MultiChildType)
+                if (isRoot && validChildren.Count > 1)
                 {
-                    case MultiChildType.Ignore:
-                        // Only process the first child, and skip the first capsule if this is the root
-                        if (validChildren.Count > 0)
-                        {
+                    // Apply MultiChildType only at root when there are multiple children (branching)
+                    switch (provider.MultiChildType)
+                    {
+                        case MultiChildType.Ignore:
                             childrenToProcess.Add(validChildren[0]);
-                        }
-                        break;
-                    case MultiChildType.First:
-                        // Process only the first child
-                        if (validChildren.Count > 0)
-                        {
+                            break;
+                        case MultiChildType.First:
                             childrenToProcess.Add(validChildren[0]);
-                        }
-                        break;
-                    case MultiChildType.Average:
-                        // Process all children
-                        childrenToProcess.AddRange(validChildren);
-                        break;
+                            break;
+                        case MultiChildType.Average:
+                            childrenToProcess.AddRange(validChildren);
+                            break;
+                    }
+                }
+                else
+                {
+                    // No branching at root or not root: process all children normally
+                    childrenToProcess.AddRange(validChildren);
                 }
             }
 
             // Draw capsules to children (leaf transforms don't have capsules)
-            bool isRoot = depth == 0;
-            bool skipFirstCapsule = isRoot && provider.MultiChildType == MultiChildType.Ignore;
+            bool skipFirstCapsule = isRoot && validChildren.Count > 1 && provider.MultiChildType == MultiChildType.Ignore;
 
             foreach (var child in childrenToProcess)
             {
