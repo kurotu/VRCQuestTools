@@ -364,57 +364,47 @@ namespace KRT.VRCQuestTools.Services
         {
             var direction = (endPos - startPos).normalized;
             var distance = Vector3.Distance(startPos, endPos);
-            
+
             if (distance <= 0.001f)
+            {
                 return;
+            }
 
             var rotation = Quaternion.FromToRotation(Vector3.up, direction);
-
-            // Draw half spheres at each end (centered at transform positions)
-            DrawWireHalfSphere(startPos, startRadius, rotation, true);  // Bottom half sphere
-            DrawWireHalfSphere(endPos, endRadius, rotation, false);     // Top half sphere
-
-            // Draw connecting lines for the truncated cone
-            var perpendicular1 = Vector3.Cross(direction, Vector3.up).normalized;
-            if (perpendicular1.magnitude < 0.1f) // Handle case where direction is parallel to up
-            {
-                perpendicular1 = Vector3.Cross(direction, Vector3.forward).normalized;
-            }
-            var perpendicular2 = Vector3.Cross(direction, perpendicular1).normalized;
-
-            // Draw connecting lines aligned with the meridian arcs (every 45 degrees)
-            for (int i = 0; i < 8; i++)
-            {
-                var angle = i * 45f * Mathf.Deg2Rad;
-                var offset = perpendicular1 * Mathf.Cos(angle) + perpendicular2 * Mathf.Sin(angle);
-                
-                var startPoint = startPos + offset * startRadius;
-                var endPoint = endPos + offset * endRadius;
-                
-                Handles.DrawLine(startPoint, endPoint);
-            }
-        }
-
-        private static void DrawWireHalfSphere(Vector3 center, float radius, Quaternion rotation, bool isBottom)
-        {
-            // Draw hemisphere by drawing arcs
             var up = rotation * Vector3.up;
-            var forward = rotation * Vector3.forward;
             var right = rotation * Vector3.right;
+            var forward = rotation * Vector3.forward;
 
-            // Draw the circular edge of the hemisphere
-            Handles.DrawWireArc(center, up, forward, 360f, radius);
+            // Oval in the Up-Forward plane (axis normal = Right)
+            var fromTop_UF = -Vector3.Cross(right, up).normalized;
+            var fromBottom_UF = -Vector3.Cross(right, -up).normalized;
+            Handles.DrawWireArc(endPos, right, fromTop_UF, 180f, endRadius);
+            Handles.DrawWireArc(startPos, right, fromBottom_UF, 180f, startRadius);
+            var sideA_TopUF = endPos + forward * endRadius;
+            var sideA_BotUF = startPos + forward * startRadius;
+            var sideB_TopUF = endPos - forward * endRadius;
+            var sideB_BotUF = startPos - forward * startRadius;
+            Handles.DrawLine(sideA_TopUF, sideA_BotUF);
+            Handles.DrawLine(sideB_TopUF, sideB_BotUF);
 
-            // Draw meridian arcs (only the hemisphere part) - aligned with connecting lines
-            var arcDirection = isBottom ? -up : up;
-            
-            // Draw 8 meridian arcs for the hemisphere (every 45 degrees to align with connecting lines)
-            for (int i = 0; i < 8; i++)
-            {
-                var meridianDirection = Quaternion.AngleAxis(i * 45f, up) * forward;
-                Handles.DrawWireArc(center, meridianDirection, arcDirection, 180f, radius);
-            }
+            // Oval in the Up-Right plane (axis normal = Forward)
+            var fromTop_UR = -Vector3.Cross(forward, up).normalized;
+            var fromBottom_UR = -Vector3.Cross(forward, -up).normalized;
+            Handles.DrawWireArc(endPos, forward, fromTop_UR, 180f, endRadius);
+            Handles.DrawWireArc(startPos, forward, fromBottom_UR, 180f, startRadius);
+            var sideA_TopUR = endPos + right * endRadius;
+            var sideA_BotUR = startPos + right * startRadius;
+            var sideB_TopUR = endPos - right * endRadius;
+            var sideB_BotUR = startPos - right * startRadius;
+            Handles.DrawLine(sideA_TopUR, sideA_BotUR);
+            Handles.DrawLine(sideB_TopUR, sideB_BotUR);
+
+            // End-cap circles around the start and end centers (normals = Up/Down along the bone)
+            Handles.DrawWireArc(endPos, up, right, 360f, endRadius);
+            Handles.DrawWireArc(startPos, up, right, 360f, startRadius);
         }
+
+        // Removed: DrawWireHalfSphere — replaced by oval-based capsule drawing
 
         private static float GetPhysBoneRadiusAtPosition(VRCPhysBoneProviderBase provider, Transform transform, float normalizedPosition)
         {
