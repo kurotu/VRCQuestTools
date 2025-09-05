@@ -4,7 +4,6 @@
 // </copyright>
 
 using System.Collections.Generic;
-using System.Linq;
 using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
 using UnityEngine;
@@ -18,10 +17,11 @@ namespace KRT.VRCQuestTools.Services
     /// </summary>
     internal static class AvatarDynamicsPreviewService
     {
-        private static IVRCAvatarDynamicsProvider hoveredProvider;
         private static readonly Color PhysBoneColor = Color.red;
         private static readonly Color ColliderColor = Color.blue;
         private static readonly Color ContactColor = Color.green;
+
+        private static IVRCAvatarDynamicsProvider hoveredProvider;
         private static bool isInitialized = false;
 
         /// <summary>
@@ -81,7 +81,9 @@ namespace KRT.VRCQuestTools.Services
         private static void OnSceneGUI(SceneView sceneView)
         {
             if (hoveredProvider == null)
+            {
                 return;
+            }
 
             var originalColor = Handles.color;
 
@@ -112,7 +114,9 @@ namespace KRT.VRCQuestTools.Services
         private static void DrawPhysBonePreview(VRCPhysBoneProviderBase provider)
         {
             if (provider == null || provider.RootTransform == null)
+            {
                 return;
+            }
 
             // Draw the PhysBone tree as capsules between connected transforms
             DrawPhysBoneTransformTree(provider, provider.RootTransform, 0f, 0);
@@ -177,7 +181,9 @@ namespace KRT.VRCQuestTools.Services
         private static void DrawContactPreview(VRCContactBaseProvider provider)
         {
             if (provider?.Component == null)
+            {
                 return;
+            }
 
             var contact = provider.Component as ContactBase;
             var transform = provider.Component.transform;
@@ -257,7 +263,7 @@ namespace KRT.VRCQuestTools.Services
                 center + rotation * new Vector3(-halfSize, 0, -halfSize),
                 center + rotation * new Vector3(halfSize, 0, -halfSize),
                 center + rotation * new Vector3(halfSize, 0, halfSize),
-                center + rotation * new Vector3(-halfSize, 0, halfSize)
+                center + rotation * new Vector3(-halfSize, 0, halfSize),
             };
 
             // Draw rectangle
@@ -274,12 +280,16 @@ namespace KRT.VRCQuestTools.Services
 
         private static void DrawPhysBoneTransformTree(VRCPhysBoneProviderBase provider, Transform transform, float parentNormalizedPosition, int depth)
         {
-            if (transform == null || depth > 20) // Safety limit to prevent infinite recursion
+            if (transform == null || depth > 20)
+            {
                 return;
+            }
 
             // Check if this transform should be included
             if (provider.IgnoreTransforms != null && provider.IgnoreTransforms.Contains(transform))
+            {
                 return;
+            }
 
             // Get child transforms that should be included
             var validChildren = new List<Transform>();
@@ -347,8 +357,11 @@ namespace KRT.VRCQuestTools.Services
             var endPos = endTransform.position;
             var distance = Vector3.Distance(startPos, endPos);
 
-            if (distance <= 0.001f) // Skip if transforms are too close
+            // Skip if transforms are too close
+            if (distance <= 0.001f)
+            {
                 return;
+            }
 
             // Calculate normalized positions for radius curve evaluation
             var endNormalizedPosition = (float)(depth + 1) / 20f; // Approximate normalized position
@@ -403,8 +416,6 @@ namespace KRT.VRCQuestTools.Services
             Handles.DrawWireArc(endPos, up, right, 360f, endRadius);
             Handles.DrawWireArc(startPos, up, right, 360f, startRadius);
         }
-
-        // Removed: DrawWireHalfSphere — replaced by oval-based capsule drawing
 
         private static float GetPhysBoneRadiusAtPosition(VRCPhysBoneProviderBase provider, Transform transform, float normalizedPosition)
         {
