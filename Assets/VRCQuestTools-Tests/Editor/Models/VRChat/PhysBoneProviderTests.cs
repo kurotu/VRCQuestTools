@@ -54,7 +54,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
             // Test default values
             Assert.AreEqual(Vector3.zero, provider.EndpointPosition);
             Assert.AreEqual(MultiChildType.Ignore, provider.MultiChildType);
-            Assert.IsNull(provider.RootTransform);
+            Assert.AreEqual(null, testPhysBone.rootTransform);
+            Assert.AreEqual(testPhysBone.transform, provider.RootTransform);
         }
 
         /// <summary>

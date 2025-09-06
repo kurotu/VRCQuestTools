@@ -213,7 +213,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             ContactBase[] contacts,
             bool isMobile = true)
         {
-            var vrcPhysBones = physbones.Select(pb => pb.Component as VRCPhysBone).Where(pb => pb != null).ToArray();
+            var vrcPhysBones = physbones.SelectMany(pb => pb.GetPhysBones()).ToArray();
             return EstimatePerformanceStats(vrcPhysBones, colliders, contacts, isMobile);
         }
 

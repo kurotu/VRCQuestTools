@@ -446,7 +446,7 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var window = EditorWindow.GetWindow<AvatarDynamicsSelectorWindow>();
             window.converterSettings = converterSettings;
-            window.physBonesToKeep = converterSettings.physBonesToKeep;
+            window.physBoneProvidersToKeep = converterSettings.physBonesToKeep.Select(p => new VRCPhysBoneProvider(p)).ToArray();
             window.physBoneCollidersToKeep = converterSettings.physBoneCollidersToKeep;
             window.contactsToKeep = converterSettings.contactsToKeep;
             window.Show();
