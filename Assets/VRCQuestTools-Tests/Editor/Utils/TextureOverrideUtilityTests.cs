@@ -41,7 +41,7 @@ namespace KRT.VRCQuestTools.Utils
         public void GetBestPlatformOverride_TexturesWithoutOverrides_ReturnsNoOverride()
         {
             // Arrange
-            var texture = TestUtils.LoadFixture<Texture2D>("Textures/albedo_1024px_png.png");
+            var texture = TestUtils.LoadFixtureAssetAtPath<Texture2D>("Textures/albedo_1024px_png.png");
             var textures = new List<Texture> { texture };
 
             // Act

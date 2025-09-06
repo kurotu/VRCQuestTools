@@ -49,7 +49,7 @@ namespace KRT.VRCQuestTools.Utils
             // Arrange
             var shader = Shader.Find("Standard");
             var material = new Material(shader);
-            var testTexture = TestUtils.LoadFixture<Texture2D>("Textures/albedo_1024px_png.png");
+            var testTexture = TestUtils.LoadFixtureAssetAtPath<Texture2D>("Textures/albedo_1024px_png.png");
             material.mainTexture = testTexture;
 
             // Act - Use reflection to access private method for testing
