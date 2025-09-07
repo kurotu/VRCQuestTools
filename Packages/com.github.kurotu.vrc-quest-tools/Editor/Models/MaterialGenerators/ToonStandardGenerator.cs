@@ -102,7 +102,7 @@ namespace KRT.VRCQuestTools.Models
 
                 if (GetUseMainTexture())
                 {
-                    MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "main", saveTextureAsPng, texturesPath, (compl) => GenerateMainTexture(compl), (t) =>
+                    MaterialGeneratorUtility.GenerateTextureWithOverrides(material.Material, Settings, "main", saveTextureAsPng, texturesPath, (compl) => GenerateMainTexture(compl), (t) =>
                     {
                         newMaterial.MainTexture = t;
                         newMaterial.MainColor = new Color(1, 1, 1, 1);
@@ -118,7 +118,7 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.UseNormalMap = true;
                     var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
                     var outputRGB = saveTextureAsPng || isMobile;
-                    MaterialGeneratorUtility.GenerateNormalMap(material.Material, Settings, "normal", saveTextureAsPng, texturesPath, (compl) => GenerateNormalMap(outputRGB, compl), (t) =>
+                    MaterialGeneratorUtility.GenerateNormalMapWithOverrides(material.Material, Settings, "normal", saveTextureAsPng, texturesPath, (compl) => GenerateNormalMap(outputRGB, compl), (t) =>
                     {
                         newMaterial.NormalMap = t;
                         (newMaterial.NormalMapTextureScale, newMaterial.NormalMapTextureOffset) = GetNormalMapST();
@@ -132,7 +132,7 @@ namespace KRT.VRCQuestTools.Models
                 {
                     if (Settings.generateShadowRamp)
                     {
-                        MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "shadowRamp", saveTextureAsPng, texturesPath, (compl) => GenerateShadowRamp(compl), (t) =>
+                        MaterialGeneratorUtility.GenerateTextureWithOverrides(material.Material, Settings, "shadowRamp", saveTextureAsPng, texturesPath, (compl) => GenerateShadowRamp(compl), (t) =>
                         {
                             newMaterial.ShadowRamp = t;
                             newMaterial.ShadowBoost = 0.0f;
@@ -157,7 +157,7 @@ namespace KRT.VRCQuestTools.Models
                 {
                     if (GetUseEmissionMap())
                     {
-                        MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "emission", saveTextureAsPng, texturesPath, (compl) => GenerateEmissionMap(compl), (t) =>
+                        MaterialGeneratorUtility.GenerateTextureWithOverrides(material.Material, Settings, "emission", saveTextureAsPng, texturesPath, (compl) => GenerateEmissionMap(compl), (t) =>
                         {
                             newMaterial.EmissionMap = t;
                             newMaterial.EmissionColor = new Color(1, 1, 1, 1);
@@ -202,7 +202,7 @@ namespace KRT.VRCQuestTools.Models
                 if (GetUseMatcap() && Settings.useMatcap)
                 {
                     newMaterial.UseMatcap = true;
-                    MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "matcap", saveTextureAsPng, texturesPath, (compl) => GenerateMatcap(compl), (t) =>
+                    MaterialGeneratorUtility.GenerateTextureWithOverrides(material.Material, Settings, "matcap", saveTextureAsPng, texturesPath, (compl) => GenerateMatcap(compl), (t) =>
                     {
                         newMaterial.Matcap = t;
                     }).WaitForCompletion();
@@ -247,7 +247,7 @@ namespace KRT.VRCQuestTools.Models
                     foreach (var pack in texturePacks)
                     {
                         var name = $"mask_{pack.R}_{pack.G}_{pack.B}_{pack.A}";
-                        MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, name, saveTextureAsPng, texturesPath, (compl) => GeneratePackedMask(pack, compl), (t) =>
+                        MaterialGeneratorUtility.GenerateTextureWithOverrides(material.Material, Settings, name, saveTextureAsPng, texturesPath, (compl) => GeneratePackedMask(pack, compl), (t) =>
                         {
                             foreach (var mask in pack.GetMasks())
                             {
