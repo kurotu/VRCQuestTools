@@ -425,6 +425,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             var mainColor2nd = MaterialEditor.GetMaterialProperty(mats, "_Color2nd");
             var main2ndTex = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTex");
             var main2ndTexAngle = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexAngle");
+            var main2ndTexUVMode = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTex_UVMode");
             var main2ndTexIsDecal = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexIsDecal");
             var main2ndTexIsLeftOnly = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexIsLeftOnly");
             var main2ndTexIsRightOnly = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexIsRightOnly");
@@ -439,6 +440,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             var mainColor3rd = MaterialEditor.GetMaterialProperty(mats, "_Color3rd");
             var main3rdTex = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTex");
             var main3rdTexAngle = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexAngle");
+            var main3rdTexUVMode = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTex_UVMode");
             var main3rdTexIsDecal = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexIsDecal");
             var main3rdTexIsLeftOnly = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexIsLeftOnly");
             var main3rdTexIsRightOnly = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexIsRightOnly");
@@ -486,7 +488,16 @@ namespace KRT.VRCQuestTools.Models.Unity
             else
             {
                 bool bake2nd = (bakeType == 0 || bakeType == 2 || bakeType == 5) && useMain2ndTex.floatValue != 0.0;
+                if (main2ndTexUVMode.floatValue > 0.0f && main2ndTex.textureValue != null)
+                {
+                    bake2nd = false;
+                }
+
                 bool bake3rd = (bakeType == 0 || bakeType == 3 || bakeType == 6) && useMain3rdTex.floatValue != 0.0;
+                if (main3rdTexUVMode.floatValue > 0.0f && main3rdTex.textureValue != null)
+                {
+                    bake3rd = false;
+                }
 
                 // run bake
                 // Texture bufMainTexture = mainTex.textureValue;
