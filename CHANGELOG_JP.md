@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- lilToon のメインカラー 2nd/3rd テクスチャが UV0 以外を使用する場合、メインテクスチャに焼きこまないように修正。
+
 ## [2.11.3] - 2025-08-17
 
 ### 修正
