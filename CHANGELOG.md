@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed so that lilToon Main Color 2nd/3rd textures are not baked into the main texture when they use UVs other than UV0.
+- Fixed an issue where lilToon Main Color 2nd/3rd, when used as decal and animated, were not correctly baked into the main texture. (Requires lilToon 2.3.0 or later)
 
 ## [2.11.3] - 2025-08-17
 
