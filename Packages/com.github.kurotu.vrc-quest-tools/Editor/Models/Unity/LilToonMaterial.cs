@@ -426,6 +426,8 @@ namespace KRT.VRCQuestTools.Models.Unity
             var main2ndTex = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTex");
             var main2ndTexAngle = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexAngle");
             var main2ndTexUVMode = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTex_UVMode");
+            var main2ndTexDecalAnimation = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexDecalAnimation");
+            var main2ndTexDecalSubParam = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexDecalSubParam");
             var main2ndTexIsDecal = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexIsDecal");
             var main2ndTexIsLeftOnly = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexIsLeftOnly");
             var main2ndTexIsRightOnly = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexIsRightOnly");
@@ -441,6 +443,8 @@ namespace KRT.VRCQuestTools.Models.Unity
             var main3rdTex = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTex");
             var main3rdTexAngle = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexAngle");
             var main3rdTexUVMode = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTex_UVMode");
+            var main3rdTexDecalAnimation = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexDecalAnimation");
+            var main3rdTexDecalSubParam = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexDecalSubParam");
             var main3rdTexIsDecal = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexIsDecal");
             var main3rdTexIsLeftOnly = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexIsLeftOnly");
             var main3rdTexIsRightOnly = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexIsRightOnly");
@@ -536,6 +540,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                     CopyMaterialProperty(hsvgMaterial, material, useMain2ndTex);
                     CopyMaterialProperty(hsvgMaterial, material, mainColor2nd);
                     CopyMaterialProperty(hsvgMaterial, material, main2ndTexAngle);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexDecalAnimation);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexDecalSubParam);
                     CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsDecal);
                     CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsLeftOnly);
                     CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsRightOnly);
@@ -579,6 +585,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                     CopyMaterialProperty(hsvgMaterial, material, useMain3rdTex);
                     CopyMaterialProperty(hsvgMaterial, material, mainColor3rd);
                     CopyMaterialProperty(hsvgMaterial, material, main3rdTexAngle);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexDecalAnimation);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexDecalSubParam);
                     CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsDecal);
                     CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsLeftOnly);
                     CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsRightOnly);
