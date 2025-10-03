@@ -408,16 +408,26 @@ namespace KRT.VRCQuestTools.Services
                     var endPos = transform.position + dir * extensionLength;
 
                     // Radii at start/end using the same transform scale context
-                    var startNormalized = graph.TotalLength > 0f
-                        ? Mathf.Clamp01(GetDistanceFromRoot(graph, transform) / graph.TotalLength)
-                        : 0f;
-                    var endNormalized = graph.TotalLength > 0f
-                        ? Mathf.Clamp01((GetDistanceFromRoot(graph, transform) + extensionLength) / graph.TotalLength)
-                        : 1f;
+                    float startNormalized;
+                    float endNormalized;
+                    if (graph.BoneLength > 0f)
+                    {
+                        var distanceFromRoot = GetDistanceFromRoot(graph, transform);
+                        startNormalized = Mathf.Clamp01(distanceFromRoot / graph.BoneLength);
+                        endNormalized = Mathf.Clamp01((distanceFromRoot + extensionLength) / graph.BoneLength);
+                    }
+                    else
+                    {
+                        startNormalized = 0f;
+                        endNormalized = 1f;
+                    }
                     var startRadius = GetPhysBoneRadiusAtPosition(provider, transform, startNormalized);
                     var endRadius = GetPhysBoneRadiusAtPosition(provider, transform, endNormalized);
 
-                    DrawTaperedWireCapsule(transform.position, endPos, startRadius, endRadius);
+                    if (startRadius > Mathf.Epsilon && endRadius > Mathf.Epsilon)
+                    {
+                        DrawTaperedWireCapsule(transform.position, endPos, transform.rotation, startRadius, endRadius);
+                    }
                 }
             }
         }
@@ -437,37 +447,54 @@ namespace KRT.VRCQuestTools.Services
             // Calculate normalized positions for radius curve evaluation from actual distances
             float startNormalizedPosition = 0f;
             float endNormalizedPosition = 1f;
-            if (graph.TotalLength > 0f)
+            if (graph.BoneLength > 0f)
             {
-                startNormalizedPosition = Mathf.Clamp01(GetDistanceFromRoot(graph, startTransform) / graph.TotalLength);
-                endNormalizedPosition = Mathf.Clamp01(GetDistanceFromRoot(graph, endTransform) / graph.TotalLength);
+                startNormalizedPosition = Mathf.Clamp01(GetDistanceFromRoot(graph, startTransform) / graph.BoneLength);
+                endNormalizedPosition = Mathf.Clamp01(GetDistanceFromRoot(graph, endTransform) / graph.BoneLength);
             }
 
             var startRadius = GetPhysBoneRadiusAtPosition(provider, startTransform, startNormalizedPosition);
             var endRadius = GetPhysBoneRadiusAtPosition(provider, endTransform, endNormalizedPosition);
 
             // Draw tapered capsule with different radii at each end
-            DrawTaperedWireCapsule(startPos, endPos, startRadius, endRadius);
+            if (startRadius > Mathf.Epsilon && endRadius > Mathf.Epsilon)
+            {
+                DrawTaperedWireCapsule(startPos, endPos, startTransform.rotation, startRadius, endRadius);
+            }
         }
 
-        private static void DrawTaperedWireCapsule(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius)
+        private static void DrawTaperedWireCapsule(Vector3 startPos, Vector3 endPos, Quaternion referenceRotation, float startRadius, float endRadius)
         {
-            var direction = (endPos - startPos).normalized;
-            var distance = Vector3.Distance(startPos, endPos);
+            var segment = endPos - startPos;
+            var distance = segment.magnitude;
 
             if (distance <= 0.001f)
             {
                 return;
             }
 
-            var rotation = Quaternion.FromToRotation(Vector3.up, direction);
-            var up = rotation * Vector3.up;
-            var right = rotation * Vector3.right;
-            var forward = rotation * Vector3.forward;
+            var up = segment / distance;
+
+            var projectedRight = Vector3.ProjectOnPlane(referenceRotation * Vector3.right, up);
+            if (projectedRight.sqrMagnitude < 1e-6f)
+            {
+                projectedRight = Vector3.ProjectOnPlane(referenceRotation * Vector3.forward, up);
+                if (projectedRight.sqrMagnitude < 1e-6f)
+                {
+                    projectedRight = Vector3.Cross(up, Vector3.up);
+                    if (projectedRight.sqrMagnitude < 1e-6f)
+                    {
+                        projectedRight = Vector3.Cross(up, Vector3.right);
+                    }
+                }
+            }
+
+            var right = projectedRight.normalized;
+            var forward = Vector3.Cross(up, right).normalized;
 
             // Oval in the Up-Forward plane (axis normal = Right)
-            var fromTopUF = -Vector3.Cross(right, up).normalized;
-            var fromBottomUF = -Vector3.Cross(right, -up).normalized;
+            var fromTopUF = forward;
+            var fromBottomUF = -forward;
             Handles.DrawWireArc(endPos, right, fromTopUF, 180f, endRadius);
             Handles.DrawWireArc(startPos, right, fromBottomUF, 180f, startRadius);
             var sideATopUF = endPos + forward * endRadius;
@@ -478,8 +505,8 @@ namespace KRT.VRCQuestTools.Services
             Handles.DrawLine(sideBTopUF, sideBBotUF);
 
             // Oval in the Up-Right plane (axis normal = Forward)
-            Handles.DrawWireArc(endPos, forward, -Vector3.Cross(forward, up).normalized, 180f, endRadius);
-            Handles.DrawWireArc(startPos, forward, -Vector3.Cross(forward, -up).normalized, 180f, startRadius);
+            Handles.DrawWireArc(endPos, forward, Vector3.Cross(up, forward).normalized, 180f, endRadius);
+            Handles.DrawWireArc(startPos, forward, Vector3.Cross(-up, forward).normalized, 180f, startRadius);
             var sideATopUR = endPos + right * endRadius;
             var sideABotUR = startPos + right * startRadius;
             var sideBTopUR = endPos - right * endRadius;
@@ -536,6 +563,10 @@ namespace KRT.VRCQuestTools.Services
                 {
                     // Leaf: candidate for total length (include endpoint extension if any)
                     var d = GetDistanceFromRoot(graph, current);
+                    if (d > graph.BoneLength)
+                    {
+                        graph.BoneLength = d;
+                    }
                     var candidate = d + graph.EndpointWorldLength;
                     if (candidate > graph.TotalLength)
                     {
@@ -572,7 +603,17 @@ namespace KRT.VRCQuestTools.Services
                     {
                         graph.TotalLength = kv.Value;
                     }
+
+                    if (kv.Value > graph.BoneLength)
+                    {
+                        graph.BoneLength = kv.Value;
+                    }
                 }
+            }
+
+            if (graph.BoneLength < 0f)
+            {
+                graph.BoneLength = 0f;
             }
 
             // Guard against zero total length
@@ -640,6 +681,7 @@ namespace KRT.VRCQuestTools.Services
             public readonly Dictionary<Transform, float> DistanceFromRoot = new Dictionary<Transform, float>();
             public float TotalLength;
             public float EndpointWorldLength;
+            public float BoneLength;
         }
     }
 }
