@@ -23,7 +23,7 @@ namespace KRT.VRCQuestTools.Services
         private const float MinimumSegmentLength = 0.001f;
         private const float MinimumDirectionMagnitude = 1e-6f;
 
-        private static readonly Color PrimaryPreviewColor = Color.red;
+        private static readonly Color PrimaryPreviewColor = Color.magenta;
         private static readonly Color SecondaryPreviewColor = Color.blue;
 
         private static IVRCAvatarDynamicsProvider hoveredProvider;
