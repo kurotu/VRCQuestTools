@@ -157,6 +157,7 @@ namespace KRT.VRCQuestTools.Services
 
             var collider = provider.Component as VRCPhysBoneCollider;
             var transform = provider.Component.transform;
+            const float planePreviewScreenSize = 1.0f;
 
             // Apply world transform with collider's local position and rotation offsets
             var worldPosition = transform.TransformPoint(collider.position);
@@ -176,8 +177,7 @@ namespace KRT.VRCQuestTools.Services
                     break;
 
                 case VRCPhysBoneCollider.ShapeType.Plane:
-                    var planeScale = Mathf.Max(transform.lossyScale.x, transform.lossyScale.z) * 2f;
-                    DrawWirePlane(worldPosition, worldRotation, planeScale);
+                    DrawWirePlane(worldPosition, worldRotation, planePreviewScreenSize);
                     break;
             }
 
@@ -319,9 +319,10 @@ namespace KRT.VRCQuestTools.Services
             Handles.DrawWireArc(bottomCenter, up, right, 360f, radius);
         }
 
-        private static void DrawWirePlane(Vector3 center, Quaternion rotation, float size)
+        private static void DrawWirePlane(Vector3 center, Quaternion rotation, float screenSize)
         {
-            var halfSize = size * 0.5f;
+            var pixelConstantSize = Mathf.Max(HandleUtility.GetHandleSize(center) * screenSize, 0.001f);
+            var halfSize = pixelConstantSize;
             var corners = new Vector3[]
             {
                 center + rotation * new Vector3(-halfSize, 0, -halfSize),
@@ -337,9 +338,10 @@ namespace KRT.VRCQuestTools.Services
                 Handles.DrawLine(corners[i], corners[nextIndex]);
             }
 
-            // Draw diagonals
-            Handles.DrawLine(corners[0], corners[2]);
-            Handles.DrawLine(corners[1], corners[3]);
+            // Draw normal direction line from the center of the rectangle.
+            var normalDirection = rotation * Vector3.up;
+            var normalLength = pixelConstantSize;
+            Handles.DrawLine(center, center + normalDirection * normalLength);
         }
 
         private static void DrawPhysBoneTransformTree(VRCPhysBoneProviderBase provider, Transform transform, PhysBoneGraph graph, int depth)
