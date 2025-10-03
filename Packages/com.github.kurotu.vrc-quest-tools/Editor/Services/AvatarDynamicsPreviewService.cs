@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
@@ -18,6 +19,10 @@ namespace KRT.VRCQuestTools.Services
     /// </summary>
     internal static class AvatarDynamicsPreviewService
     {
+        private const int MaxHierarchyDepth = 20;
+        private const float MinimumSegmentLength = 0.001f;
+        private const float MinimumDirectionMagnitude = 1e-6f;
+
         private static readonly Color PrimaryPreviewColor = Color.red;
         private static readonly Color SecondaryPreviewColor = Color.blue;
 
@@ -113,89 +118,78 @@ namespace KRT.VRCQuestTools.Services
 
         private static void DrawPhysBonePreview(VRCPhysBoneProviderBase provider, bool includeReferencedColliders = true)
         {
-            if (provider == null || provider.RootTransform == null)
+            if (provider?.RootTransform == null)
             {
                 return;
             }
 
-            // Build graph info (distances and total length), then draw the PhysBone tree
             var graph = BuildPhysBoneGraph(provider);
-            DrawPhysBoneTransformTree(provider, provider.RootTransform, graph, 0);
+            DrawPhysBoneTransformTree(provider, provider.RootTransform, graph, depth: 0);
 
-            if (includeReferencedColliders)
+            if (!includeReferencedColliders || provider.Colliders == null)
             {
-                // Draw colliders referenced by this PhysBone
-                var originalColor = Handles.color;
-                Handles.color = SecondaryPreviewColor;
-                try
+                return;
+            }
+
+            using var colorScope = new HandlesColorScope(SecondaryPreviewColor);
+            foreach (var colliderComponent in provider.Colliders)
+            {
+                if (colliderComponent is VRCPhysBoneCollider collider)
                 {
-                    if (provider.Colliders != null)
-                    {
-                        foreach (var colliderComponent in provider.Colliders)
-                        {
-                            if (colliderComponent is VRCPhysBoneCollider collider)
-                            {
-                                var colliderProvider = new VRCPhysBoneColliderProvider(collider);
-                                DrawColliderPreview(colliderProvider);
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    Handles.color = originalColor;
+                    DrawColliderPreview(new VRCPhysBoneColliderProvider(collider));
                 }
             }
         }
 
         private static void DrawColliderPreview(VRCPhysBoneColliderProvider provider, bool drawRelatedPhysBones = false)
         {
-            if (provider?.Component == null)
+            if (provider?.Component is not VRCPhysBoneCollider collider)
             {
                 return;
             }
 
-            var collider = provider.Component as VRCPhysBoneCollider;
-            var transform = provider.Component.transform;
-            const float planePreviewScreenSize = 1.0f;
-
-            // Apply world transform with collider's local position and rotation offsets
+            var transform = collider.transform;
             var worldPosition = transform.TransformPoint(collider.position);
             var worldRotation = transform.rotation * collider.rotation;
+
+            DrawColliderShape(provider, worldPosition, worldRotation, transform);
+
+            if (!drawRelatedPhysBones)
+            {
+                return;
+            }
+
+            using var colorScope = new HandlesColorScope(SecondaryPreviewColor);
+            foreach (var physBoneProvider in GetPhysBoneProvidersReferencingCollider(collider))
+            {
+                DrawPhysBonePreview(physBoneProvider, includeReferencedColliders: false);
+            }
+        }
+
+        private static void DrawColliderShape(VRCPhysBoneColliderProvider provider, Vector3 worldPosition, Quaternion worldRotation, Transform transform)
+        {
+            const float planePreviewScreenSize = 1.0f;
 
             switch (provider.ShapeType)
             {
                 case VRCPhysBoneCollider.ShapeType.Sphere:
-                    var sphereRadius = provider.Radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
-                    DrawWireSphere(worldPosition, sphereRadius);
+                    DrawWireSphere(worldPosition, provider.Radius * GetMaxLossyScale(transform));
                     break;
 
                 case VRCPhysBoneCollider.ShapeType.Capsule:
-                    var capsuleRadius = provider.Radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.z);
-                    var capsuleHeight = provider.Height * transform.lossyScale.y;
-                    DrawWireCapsule(worldPosition, worldRotation, capsuleRadius, capsuleHeight);
+                    DrawWireCapsule(
+                        worldPosition,
+                        worldRotation,
+                        provider.Radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.z),
+                        provider.Height * transform.lossyScale.y);
                     break;
 
                 case VRCPhysBoneCollider.ShapeType.Plane:
                     DrawWirePlane(worldPosition, worldRotation, planePreviewScreenSize);
                     break;
-            }
 
-            if (drawRelatedPhysBones && collider != null)
-            {
-                var originalColor = Handles.color;
-                Handles.color = SecondaryPreviewColor;
-                try
-                {
-                    foreach (var physBoneProvider in GetPhysBoneProvidersReferencingCollider(collider))
-                    {
-                        DrawPhysBonePreview(physBoneProvider, includeReferencedColliders: false);
-                    }
-                }
-                finally
-                {
-                    Handles.color = originalColor;
-                }
+                default:
+                    break;
             }
         }
 
@@ -207,58 +201,30 @@ namespace KRT.VRCQuestTools.Services
             }
 
             var visited = new HashSet<VRCPhysBone>();
-            VRCPhysBone[] physBones;
-
-            var avatarDescriptor = collider.GetComponentInParent<VRCAvatarDescriptor>();
-            if (avatarDescriptor != null)
-            {
-                physBones = avatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true);
-            }
-            else
-            {
-                physBones = Object.FindObjectsOfType<VRCPhysBone>(true);
-            }
-
-            foreach (var physBone in physBones)
+            foreach (var physBone in EnumeratePhysBones(collider))
             {
                 if (physBone == null || !visited.Add(physBone))
                 {
                     continue;
                 }
 
-                var colliderList = physBone.colliders;
-                if (colliderList == null)
+                if (ReferencesCollider(physBone, collider))
                 {
-                    continue;
-                }
-
-                foreach (var referencedCollider in colliderList)
-                {
-                    if (referencedCollider == collider)
-                    {
-                        yield return new VRCPhysBoneProvider(physBone);
-                        break;
-                    }
+                    yield return new VRCPhysBoneProvider(physBone);
                 }
             }
         }
 
         private static void DrawContactPreview(VRCContactBaseProvider provider)
         {
-            if (provider?.Component == null)
+            if (provider?.Component is not ContactBase contact)
             {
                 return;
             }
 
-            var contact = provider.Component as ContactBase;
-            var transform = provider.Component.transform;
-
-            // Apply world transform with contact's local position offset if it exists
-            var worldMatrix = transform.localToWorldMatrix;
-            var localPosition = contact.position;
-
-            var worldPosition = worldMatrix.MultiplyPoint3x4(localPosition);
-            var radius = provider.Radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+            var transform = contact.transform;
+            var worldPosition = transform.localToWorldMatrix.MultiplyPoint3x4(contact.position);
+            var radius = provider.Radius * GetMaxLossyScale(transform);
             DrawWireSphere(worldPosition, radius);
         }
 
@@ -346,107 +312,44 @@ namespace KRT.VRCQuestTools.Services
 
         private static void DrawPhysBoneTransformTree(VRCPhysBoneProviderBase provider, Transform transform, PhysBoneGraph graph, int depth)
         {
-            if (transform == null || depth > 20)
+            if (transform == null || depth > MaxHierarchyDepth || IsIgnoredTransform(provider, transform))
             {
                 return;
             }
 
-            // Check if this transform should be included
-            if (provider.IgnoreTransforms != null && provider.IgnoreTransforms.Contains(transform))
-            {
-                return;
-            }
-
-            // Get children to process according to provider settings
             var validChildren = GetValidChildren(provider, transform);
             var childrenToProcess = GetChildrenToProcess(provider, transform, depth, validChildren);
-
-            // Draw capsules to children (leaf transforms don't have capsules)
-            bool isRoot = depth == 0;
-            bool skipFirstCapsule = isRoot && validChildren.Count > 1 && provider.MultiChildType == MultiChildType.Ignore;
+            var skipFirstCapsule = ShouldSkipFirstCapsule(provider, depth, validChildren.Count);
 
             foreach (var child in childrenToProcess)
             {
-                // Skip the first capsule when MultiChildType is Ignore and this is the root
                 if (skipFirstCapsule)
                 {
-                    skipFirstCapsule = false; // Only skip the very first one
+                    skipFirstCapsule = false;
                 }
                 else
                 {
                     DrawPhysBoneCapsule(provider, transform, child, graph);
                 }
 
-                // Recursively process children
                 DrawPhysBoneTransformTree(provider, child, graph, depth + 1);
             }
 
-            // If this is a leaf and EndpointPosition is set, draw an extra virtual segment beyond the leaf.
-            if (childrenToProcess.Count == 0 && graph.EndpointWorldLength > 0f)
+            if (childrenToProcess.Count == 0)
             {
-                // Determine the world-space extension length from the root's local endpoint offset
-                var extensionLength = graph.EndpointWorldLength;
-
-                if (extensionLength > 0f)
-                {
-                    // Direction to extend: continue past the leaf in the direction from parent to this leaf.
-                    Vector3 dir;
-                    if (transform.parent != null)
-                    {
-                        dir = (transform.position - transform.parent.position).normalized;
-                        if (dir.sqrMagnitude < 1e-6f)
-                        {
-                            dir = transform.up; // fallback
-                        }
-                    }
-                    else
-                    {
-                        // Root without parent: use endpoint direction relative to root
-                        dir = (provider.RootTransform != null)
-                            ? provider.RootTransform.TransformDirection(provider.EndpointPosition.normalized)
-                            : provider.EndpointPosition.normalized;
-                    }
-
-                    var endPos = transform.position + dir * extensionLength;
-
-                    DrawPhysBoneSegmentLine(transform.position, endPos, Handles.color);
-
-                    // Radii at start/end using the same transform scale context
-                    float startNormalized;
-                    float endNormalized;
-                    if (graph.BoneLength > 0f)
-                    {
-                        var distanceFromRoot = GetDistanceFromRoot(graph, transform);
-                        startNormalized = Mathf.Clamp01(distanceFromRoot / graph.BoneLength);
-                        endNormalized = Mathf.Clamp01((distanceFromRoot + extensionLength) / graph.BoneLength);
-                    }
-                    else
-                    {
-                        startNormalized = 0f;
-                        endNormalized = 1f;
-                    }
-                    var startRadius = GetPhysBoneRadiusAtPosition(provider, transform, startNormalized);
-                    var endRadius = GetPhysBoneRadiusAtPosition(provider, transform, endNormalized);
-
-                    if (startRadius > Mathf.Epsilon && endRadius > Mathf.Epsilon)
-                    {
-                        DrawTaperedWireCapsule(transform.position, endPos, transform.rotation, startRadius, endRadius);
-                    }
-                }
+                DrawEndpointExtension(provider, transform, graph);
             }
         }
 
         private static void DrawPhysBoneSegmentLine(Vector3 startPos, Vector3 endPos, Color baseColor)
         {
-            if ((endPos - startPos).sqrMagnitude <= 1e-6f)
+            if ((endPos - startPos).sqrMagnitude <= MinimumSegmentLength * MinimumSegmentLength)
             {
                 return;
             }
 
-            var originalColor = Handles.color;
-            Handles.color = Color.Lerp(baseColor, Color.white, 0.35f);
+            using var colorScope = new HandlesColorScope(Color.Lerp(baseColor, Color.white, 0.35f));
             Handles.DrawLine(startPos, endPos);
-            Handles.color = originalColor;
         }
 
         private static void DrawPhysBoneCapsule(VRCPhysBoneProviderBase provider, Transform startTransform, Transform endTransform, PhysBoneGraph graph)
@@ -455,27 +358,19 @@ namespace KRT.VRCQuestTools.Services
             var endPos = endTransform.position;
             var distance = Vector3.Distance(startPos, endPos);
 
-            // Skip if transforms are too close
-            if (distance <= 0.001f)
+            if (distance <= MinimumSegmentLength)
             {
                 return;
             }
 
             DrawPhysBoneSegmentLine(startPos, endPos, Handles.color);
 
-            // Calculate normalized positions for radius curve evaluation from actual distances
-            float startNormalizedPosition = 0f;
-            float endNormalizedPosition = 1f;
-            if (graph.BoneLength > 0f)
-            {
-                startNormalizedPosition = Mathf.Clamp01(GetDistanceFromRoot(graph, startTransform) / graph.BoneLength);
-                endNormalizedPosition = Mathf.Clamp01(GetDistanceFromRoot(graph, endTransform) / graph.BoneLength);
-            }
+            var startNormalizedPosition = GetNormalizedDistance(graph, startTransform);
+            var endNormalizedPosition = GetNormalizedDistance(graph, endTransform);
 
             var startRadius = GetPhysBoneRadiusAtPosition(provider, startTransform, startNormalizedPosition);
             var endRadius = GetPhysBoneRadiusAtPosition(provider, endTransform, endNormalizedPosition);
 
-            // Draw tapered capsule with different radii at each end
             if (startRadius > Mathf.Epsilon && endRadius > Mathf.Epsilon)
             {
                 DrawTaperedWireCapsule(startPos, endPos, startTransform.rotation, startRadius, endRadius);
@@ -487,28 +382,13 @@ namespace KRT.VRCQuestTools.Services
             var segment = endPos - startPos;
             var distance = segment.magnitude;
 
-            if (distance <= 0.001f)
+            if (distance <= MinimumSegmentLength)
             {
                 return;
             }
 
             var up = segment / distance;
-
-            var projectedRight = Vector3.ProjectOnPlane(referenceRotation * Vector3.right, up);
-            if (projectedRight.sqrMagnitude < 1e-6f)
-            {
-                projectedRight = Vector3.ProjectOnPlane(referenceRotation * Vector3.forward, up);
-                if (projectedRight.sqrMagnitude < 1e-6f)
-                {
-                    projectedRight = Vector3.Cross(up, Vector3.up);
-                    if (projectedRight.sqrMagnitude < 1e-6f)
-                    {
-                        projectedRight = Vector3.Cross(up, Vector3.right);
-                    }
-                }
-            }
-
-            var right = projectedRight.normalized;
+            var right = GetPerpendicularAxis(up, referenceRotation * Vector3.right, referenceRotation * Vector3.forward);
             var forward = Vector3.Cross(up, right).normalized;
 
             // Oval in the Up-Forward plane (axis normal = Right)
@@ -549,7 +429,7 @@ namespace KRT.VRCQuestTools.Services
                 radius *= provider.RadiusCurve.Evaluate(normalizedPosition);
             }
 
-            return radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+            return radius * GetMaxLossyScale(transform);
         }
 
         private static float GetDistanceFromRoot(PhysBoneGraph graph, Transform t)
@@ -691,9 +571,195 @@ namespace KRT.VRCQuestTools.Services
             return childrenToProcess;
         }
 
+        private static bool IsIgnoredTransform(VRCPhysBoneProviderBase provider, Transform transform)
+        {
+            return provider.IgnoreTransforms != null && provider.IgnoreTransforms.Contains(transform);
+        }
+
+        private static bool ShouldSkipFirstCapsule(VRCPhysBoneProviderBase provider, int depth, int validChildCount)
+        {
+            return depth == 0 && validChildCount > 1 && provider.MultiChildType == MultiChildType.Ignore;
+        }
+
+        private static void DrawEndpointExtension(VRCPhysBoneProviderBase provider, Transform transform, PhysBoneGraph graph)
+        {
+            if (graph.EndpointWorldLength <= 0f)
+            {
+                return;
+            }
+
+            var extensionLength = graph.EndpointWorldLength;
+            if (extensionLength <= 0f)
+            {
+                return;
+            }
+
+            var direction = GetExtensionDirection(provider, transform);
+            if (direction.sqrMagnitude <= MinimumDirectionMagnitude)
+            {
+                return;
+            }
+
+            var endPos = transform.position + direction * extensionLength;
+            DrawPhysBoneSegmentLine(transform.position, endPos, Handles.color);
+
+            var startNormalized = GetNormalizedDistance(graph, transform);
+            var endDistance = GetDistanceFromRoot(graph, transform) + extensionLength;
+            var endNormalized = graph.BoneLength > Mathf.Epsilon
+                ? Mathf.Clamp01(endDistance / graph.BoneLength)
+                : 1f;
+
+            var startRadius = GetPhysBoneRadiusAtPosition(provider, transform, startNormalized);
+            var endRadius = GetPhysBoneRadiusAtPosition(provider, transform, endNormalized);
+
+            if (startRadius > Mathf.Epsilon && endRadius > Mathf.Epsilon)
+            {
+                DrawTaperedWireCapsule(transform.position, endPos, transform.rotation, startRadius, endRadius);
+            }
+        }
+
+        private static Vector3 GetExtensionDirection(VRCPhysBoneProviderBase provider, Transform transform)
+        {
+            if (transform.parent != null)
+            {
+                var direction = (transform.position - transform.parent.position).normalized;
+                if (direction.sqrMagnitude > MinimumDirectionMagnitude)
+                {
+                    return direction;
+                }
+            }
+
+            if (provider.RootTransform != null)
+            {
+                var worldDirection = provider.RootTransform.TransformDirection(provider.EndpointPosition);
+                if (worldDirection.sqrMagnitude > MinimumDirectionMagnitude)
+                {
+                    return worldDirection.normalized;
+                }
+            }
+
+            if (provider.EndpointPosition.sqrMagnitude > MinimumDirectionMagnitude)
+            {
+                return provider.EndpointPosition.normalized;
+            }
+
+            return transform.up;
+        }
+
+        private static float GetNormalizedDistance(PhysBoneGraph graph, Transform transform)
+        {
+            if (graph.BoneLength <= Mathf.Epsilon)
+            {
+                return 0f;
+            }
+
+            return Mathf.Clamp01(GetDistanceFromRoot(graph, transform) / graph.BoneLength);
+        }
+
+        private static float GetMaxLossyScale(Transform transform)
+        {
+            if (transform == null)
+            {
+                return 1f;
+            }
+
+            return Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+        }
+
+        private static Vector3 GetPerpendicularAxis(Vector3 direction, params Vector3[] candidates)
+        {
+            foreach (var candidate in candidates)
+            {
+                var projected = Vector3.ProjectOnPlane(candidate, direction);
+                if (projected.sqrMagnitude > MinimumDirectionMagnitude)
+                {
+                    return projected.normalized;
+                }
+            }
+
+            var fallback = Vector3.Cross(direction, Vector3.up);
+            if (fallback.sqrMagnitude > MinimumDirectionMagnitude)
+            {
+                return fallback.normalized;
+            }
+
+            fallback = Vector3.Cross(direction, Vector3.right);
+            if (fallback.sqrMagnitude > MinimumDirectionMagnitude)
+            {
+                return fallback.normalized;
+            }
+
+            fallback = Vector3.Cross(direction, Vector3.forward);
+            if (fallback.sqrMagnitude > MinimumDirectionMagnitude)
+            {
+                return fallback.normalized;
+            }
+
+            return Vector3.up;
+        }
+
+        private static IEnumerable<VRCPhysBone> EnumeratePhysBones(VRCPhysBoneCollider collider)
+        {
+            var avatarDescriptor = collider.GetComponentInParent<VRCAvatarDescriptor>();
+            if (avatarDescriptor != null)
+            {
+                foreach (var physBone in avatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true))
+                {
+                    yield return physBone;
+                }
+
+                yield break;
+            }
+
+            foreach (var physBone in UnityEngine.Object.FindObjectsOfType<VRCPhysBone>(true))
+            {
+                yield return physBone;
+            }
+        }
+
+        private static bool ReferencesCollider(VRCPhysBone physBone, VRCPhysBoneCollider collider)
+        {
+            if (physBone == null)
+            {
+                return false;
+            }
+
+            var colliderList = physBone.colliders;
+            if (colliderList == null)
+            {
+                return false;
+            }
+
+            foreach (var referencedCollider in colliderList)
+            {
+                if (referencedCollider == collider)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private readonly struct HandlesColorScope : IDisposable
+        {
+            private readonly Color previousColor;
+
+            public HandlesColorScope(Color color)
+            {
+                previousColor = Handles.color;
+                Handles.color = color;
+            }
+
+            public void Dispose()
+            {
+                Handles.color = previousColor;
+            }
+        }
+
         /// <summary>
         /// Data used for drawing normalized along actual path length.
-        /// Nested type is placed at the end to satisfy analyzers' member ordering rules.
+        /// Nested types are placed at the end to satisfy analyzers' member ordering rules.
         /// </summary>
         private sealed class PhysBoneGraph
         {
