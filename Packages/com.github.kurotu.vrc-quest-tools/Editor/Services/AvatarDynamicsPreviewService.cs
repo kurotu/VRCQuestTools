@@ -8,6 +8,7 @@ using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
 using UnityEngine;
 using VRC.Dynamics;
+using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace KRT.VRCQuestTools.Services
@@ -97,7 +98,7 @@ namespace KRT.VRCQuestTools.Services
                         break;
                     case AvatarDynamicsComponentType.PhysBoneCollider:
                         Handles.color = ColliderColor;
-                        DrawColliderPreview((VRCPhysBoneColliderProvider)hoveredProvider);
+                        DrawColliderPreview((VRCPhysBoneColliderProvider)hoveredProvider, drawRelatedPhysBones: true);
                         break;
                     case AvatarDynamicsComponentType.Contact:
                         Handles.color = ContactColor;
@@ -111,7 +112,7 @@ namespace KRT.VRCQuestTools.Services
             }
         }
 
-        private static void DrawPhysBonePreview(VRCPhysBoneProviderBase provider)
+        private static void DrawPhysBonePreview(VRCPhysBoneProviderBase provider, bool includeReferencedColliders = true)
         {
             if (provider == null || provider.RootTransform == null)
             {
@@ -122,30 +123,33 @@ namespace KRT.VRCQuestTools.Services
             var graph = BuildPhysBoneGraph(provider);
             DrawPhysBoneTransformTree(provider, provider.RootTransform, graph, 0);
 
-            // Draw colliders referenced by this PhysBone
-            var originalColor = Handles.color;
-            Handles.color = ColliderColor;
-            try
+            if (includeReferencedColliders)
             {
-                if (provider.Colliders != null)
+                // Draw colliders referenced by this PhysBone
+                var originalColor = Handles.color;
+                Handles.color = ColliderColor;
+                try
                 {
-                    foreach (var colliderComponent in provider.Colliders)
+                    if (provider.Colliders != null)
                     {
-                        if (colliderComponent is VRCPhysBoneCollider collider)
+                        foreach (var colliderComponent in provider.Colliders)
                         {
-                            var colliderProvider = new VRCPhysBoneColliderProvider(collider);
-                            DrawColliderPreview(colliderProvider);
+                            if (colliderComponent is VRCPhysBoneCollider collider)
+                            {
+                                var colliderProvider = new VRCPhysBoneColliderProvider(collider);
+                                DrawColliderPreview(colliderProvider);
+                            }
                         }
                     }
                 }
-            }
-            finally
-            {
-                Handles.color = originalColor;
+                finally
+                {
+                    Handles.color = originalColor;
+                }
             }
         }
 
-        private static void DrawColliderPreview(VRCPhysBoneColliderProvider provider)
+        private static void DrawColliderPreview(VRCPhysBoneColliderProvider provider, bool drawRelatedPhysBones = false)
         {
             if (provider?.Component == null)
             {
@@ -176,6 +180,67 @@ namespace KRT.VRCQuestTools.Services
                     var planeScale = Mathf.Max(transform.lossyScale.x, transform.lossyScale.z) * 2f;
                     DrawWirePlane(worldPosition, worldRotation, planeScale);
                     break;
+            }
+
+            if (drawRelatedPhysBones && collider != null)
+            {
+                var originalColor = Handles.color;
+                Handles.color = PhysBoneColor;
+                try
+                {
+                    foreach (var physBoneProvider in GetPhysBoneProvidersReferencingCollider(collider))
+                    {
+                        DrawPhysBonePreview(physBoneProvider, includeReferencedColliders: false);
+                    }
+                }
+                finally
+                {
+                    Handles.color = originalColor;
+                }
+            }
+        }
+
+        private static IEnumerable<VRCPhysBoneProviderBase> GetPhysBoneProvidersReferencingCollider(VRCPhysBoneCollider collider)
+        {
+            if (collider == null)
+            {
+                yield break;
+            }
+
+            var visited = new HashSet<VRCPhysBone>();
+            VRCPhysBone[] physBones;
+
+            var avatarDescriptor = collider.GetComponentInParent<VRCAvatarDescriptor>();
+            if (avatarDescriptor != null)
+            {
+                physBones = avatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true);
+            }
+            else
+            {
+                physBones = Object.FindObjectsOfType<VRCPhysBone>(true);
+            }
+
+            foreach (var physBone in physBones)
+            {
+                if (physBone == null || !visited.Add(physBone))
+                {
+                    continue;
+                }
+
+                var colliderList = physBone.colliders;
+                if (colliderList == null)
+                {
+                    continue;
+                }
+
+                foreach (var referencedCollider in colliderList)
+                {
+                    if (referencedCollider == collider)
+                    {
+                        yield return new VRCPhysBoneProvider(physBone);
+                        break;
+                    }
+                }
             }
         }
 
