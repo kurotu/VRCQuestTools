@@ -409,6 +409,8 @@ namespace KRT.VRCQuestTools.Services
 
                     var endPos = transform.position + dir * extensionLength;
 
+                    DrawPhysBoneSegmentLine(transform.position, endPos, Handles.color);
+
                     // Radii at start/end using the same transform scale context
                     float startNormalized;
                     float endNormalized;
@@ -434,6 +436,19 @@ namespace KRT.VRCQuestTools.Services
             }
         }
 
+        private static void DrawPhysBoneSegmentLine(Vector3 startPos, Vector3 endPos, Color baseColor)
+        {
+            if ((endPos - startPos).sqrMagnitude <= 1e-6f)
+            {
+                return;
+            }
+
+            var originalColor = Handles.color;
+            Handles.color = Color.Lerp(baseColor, Color.white, 0.35f);
+            Handles.DrawLine(startPos, endPos);
+            Handles.color = originalColor;
+        }
+
         private static void DrawPhysBoneCapsule(VRCPhysBoneProviderBase provider, Transform startTransform, Transform endTransform, PhysBoneGraph graph)
         {
             var startPos = startTransform.position;
@@ -445,6 +460,8 @@ namespace KRT.VRCQuestTools.Services
             {
                 return;
             }
+
+            DrawPhysBoneSegmentLine(startPos, endPos, Handles.color);
 
             // Calculate normalized positions for radius curve evaluation from actual distances
             float startNormalizedPosition = 0f;
