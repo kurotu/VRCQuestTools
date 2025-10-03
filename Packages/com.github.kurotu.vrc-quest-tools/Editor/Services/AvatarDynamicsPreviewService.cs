@@ -269,8 +269,7 @@ namespace KRT.VRCQuestTools.Services
             Handles.DrawWireArc(center, Vector3.forward, Vector3.up, 360f, radius);
             Handles.DrawWireArc(center, Vector3.right, Vector3.up, 360f, radius);
 
-            // Add additional arcs for better sphere definition aligned with other wireframes
-            Handles.DrawWireArc(center, (Vector3.forward + Vector3.right).normalized, Vector3.up, 360f, radius);
+            // Keep three orthogonal arcs to avoid redundant lines in the sphere visualization
         }
 
         private static void DrawWireCapsule(Vector3 center, Quaternion rotation, float radius, float height)
