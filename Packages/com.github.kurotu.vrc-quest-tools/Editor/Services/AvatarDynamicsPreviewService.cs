@@ -18,9 +18,8 @@ namespace KRT.VRCQuestTools.Services
     /// </summary>
     internal static class AvatarDynamicsPreviewService
     {
-        private static readonly Color PhysBoneColor = Color.red;
-        private static readonly Color ColliderColor = Color.blue;
-        private static readonly Color ContactColor = Color.green;
+        private static readonly Color PrimaryPreviewColor = Color.red;
+        private static readonly Color SecondaryPreviewColor = Color.blue;
 
         private static IVRCAvatarDynamicsProvider hoveredProvider;
         private static bool isInitialized = false;
@@ -93,15 +92,15 @@ namespace KRT.VRCQuestTools.Services
                 switch (hoveredProvider.ComponentType)
                 {
                     case AvatarDynamicsComponentType.PhysBone:
-                        Handles.color = PhysBoneColor;
+                        Handles.color = PrimaryPreviewColor;
                         DrawPhysBonePreview((VRCPhysBoneProviderBase)hoveredProvider);
                         break;
                     case AvatarDynamicsComponentType.PhysBoneCollider:
-                        Handles.color = ColliderColor;
+                        Handles.color = PrimaryPreviewColor;
                         DrawColliderPreview((VRCPhysBoneColliderProvider)hoveredProvider, drawRelatedPhysBones: true);
                         break;
                     case AvatarDynamicsComponentType.Contact:
-                        Handles.color = ContactColor;
+                        Handles.color = PrimaryPreviewColor;
                         DrawContactPreview((VRCContactBaseProvider)hoveredProvider);
                         break;
                 }
@@ -127,7 +126,7 @@ namespace KRT.VRCQuestTools.Services
             {
                 // Draw colliders referenced by this PhysBone
                 var originalColor = Handles.color;
-                Handles.color = ColliderColor;
+                Handles.color = SecondaryPreviewColor;
                 try
                 {
                     if (provider.Colliders != null)
@@ -185,7 +184,7 @@ namespace KRT.VRCQuestTools.Services
             if (drawRelatedPhysBones && collider != null)
             {
                 var originalColor = Handles.color;
-                Handles.color = PhysBoneColor;
+                Handles.color = SecondaryPreviewColor;
                 try
                 {
                     foreach (var physBoneProvider in GetPhysBoneProvidersReferencingCollider(collider))
