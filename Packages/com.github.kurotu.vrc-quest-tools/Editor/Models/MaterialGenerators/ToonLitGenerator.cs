@@ -50,7 +50,7 @@ namespace KRT.VRCQuestTools.Models
 
         private AsyncCallbackRequest GenerateToonLitTexture(MaterialBase material, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
-            return MaterialGeneratorUtility.GenerateTextureWithOverrides(material.Material, settings, "main", saveAsPng, texturesPath, (compl) => material.GenerateToonLitImage(settings, compl), completion);
+            return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "main", saveAsPng, texturesPath, (compl) => material.GenerateToonLitImage(settings, compl), completion);
         }
     }
 }

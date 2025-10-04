@@ -24,9 +24,9 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Async callback request.</returns>
-        internal static AsyncCallbackRequest GenerateTextureWithOverrides(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
-            return GenerateTextureWithOverrides(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.SRGB, requestGenerateImageFunc, completion);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.SRGB, requestGenerateImageFunc, completion);
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Async callback request.</returns>
-        internal static AsyncCallbackRequest GenerateParameterTextureWithOverrides(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest GenerateParameterTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
-            return GenerateTextureWithOverrides(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.Parameter, requestGenerateImageFunc, completion);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.Parameter, requestGenerateImageFunc, completion);
         }
 
         /// <summary>
@@ -56,12 +56,12 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
         /// <param name="completion">Completion callback.</param>
         /// <returns>Async callback request.</returns>
-        internal static AsyncCallbackRequest GenerateNormalMapWithOverrides(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest GenerateNormalMap(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
-            return GenerateTextureWithOverrides(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.NormalMap, requestGenerateImageFunc, completion);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.NormalMap, requestGenerateImageFunc, completion);
         }
 
-        private static AsyncCallbackRequest GenerateTextureWithOverrides(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
+        private static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
             // Extract source textures from the material
             var sourceTextures = ExtractSourceTextures(material);
@@ -76,7 +76,7 @@ namespace KRT.VRCQuestTools.Models
             // Resolve texture format using platform overrides or fallback to material settings
             var formatResult = TextureOverrideUtility.ResolveTextureFormat(sourceTextures, EditorUserBuildSettings.activeBuildTarget, fallbackSettings);
             
-            var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material) + settings.GetCacheKey() + formatResult.mobileTextureFormat.ToString());
+            var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material) + settings.GetCacheKey() + formatResult.mobileTextureFormat.ToString() + formatResult.maxTextureSize.ToString() + formatResult.fromOverride.ToString());
             var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}_{assetHash}" + (saveAsPng ? ".png" : ".json");
             var texName = $"{material.name}_{textureType}";
             string outFile = null;
