@@ -72,6 +72,15 @@ namespace KRT.VRCQuestTools.Utils
             /// Whether the result came from platform overrides (true) or fallback settings (false).
             /// </summary>
             public bool fromOverride;
+
+            /// <summary>
+            /// Gets a cache key string representation of this result.
+            /// </summary>
+            /// <returns>A string suitable for use in cache key generation.</returns>
+            public string GetCacheKey()
+            {
+                return mobileTextureFormat.ToString() + maxTextureSize.ToString() + fromOverride.ToString();
+            }
         }
 
         /// <summary>
