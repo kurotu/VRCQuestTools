@@ -76,7 +76,7 @@ namespace KRT.VRCQuestTools.Models
             // Resolve texture format using platform overrides or fallback to material settings
             var formatResult = TextureOverrideUtility.ResolveTextureFormat(sourceTextures, EditorUserBuildSettings.activeBuildTarget, fallbackSettings);
             
-            var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material) + settings.GetCacheKey());
+            var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material) + settings.GetCacheKey() + formatResult.mobileTextureFormat.ToString());
             var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}_{assetHash}" + (saveAsPng ? ".png" : ".json");
             var texName = $"{material.name}_{textureType}";
             string outFile = null;
