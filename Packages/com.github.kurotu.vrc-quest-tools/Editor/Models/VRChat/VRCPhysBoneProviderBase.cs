@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -13,7 +14,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// Base class for providing abstracted access to VRCPhysBone functionality.
     /// </summary>
     [Serializable]
-    internal abstract class VRCPhysBoneProviderBase
+    internal abstract class VRCPhysBoneProviderBase : IVRCAvatarDynamicsProvider
     {
         /// <summary>
         /// Gets the underlying VRCPhysBone component.
@@ -51,10 +52,29 @@ namespace KRT.VRCQuestTools.Models.VRChat
         public abstract List<Component> Colliders { get; }
 
         /// <summary>
+        /// Gets the radius value set by inspector.
+        /// </summary>
+        public abstract float Radius { get; }
+
+        /// <summary>
+        /// Gets the radius curve set by inspector.
+        /// </summary>
+        public abstract AnimationCurve RadiusCurve { get; }
+
+        /// <inheritdoc/>
+        public AvatarDynamicsComponentType ComponentType => AvatarDynamicsComponentType.PhysBone;
+
+        /// <summary>
         /// Sets null to PhysBoneCollider at index.
         /// </summary>
         /// <param name="index">Index to set null.</param>
         public abstract void ClearCollider(int index);
+
+        /// <summary>
+        /// Gets the PhysBone instances.
+        /// </summary>
+        /// <returns>An array of <see cref="VRCPhysBone"/> instances managed by this provider.</returns>
+        public abstract VRCPhysBone[] GetPhysBones();
     }
 
     /// <summary>
