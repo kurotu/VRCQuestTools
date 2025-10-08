@@ -1,8 +1,8 @@
 using System;
-using System.IO;
-using KRT.VRCQuestTools.Utils;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -99,13 +99,9 @@ namespace KRT.VRCQuestTools.Models
                 {
                     texToWrite.name = texName;
                     
-                    // Apply resolution override if available
-                    if (formatResult.fromOverride && formatResult.maxTextureSize > 0)
-                    {
-                        texToWrite = ApplyTextureResolutionLimit(texToWrite, formatResult.maxTextureSize);
-                    }
-                    
-                    texToWrite = SaveTexture(formatResult.mobileTextureFormat, saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile);
+                    // Pass maxTextureSize to SaveTexture for platform override configuration
+                    var maxSize = formatResult.fromOverride && formatResult.maxTextureSize > 0 ? formatResult.maxTextureSize : 0;
+                    texToWrite = SaveTexture(formatResult.mobileTextureFormat, saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile, maxSize);
                 }
                 completion?.Invoke(texToWrite);
             });
@@ -113,14 +109,16 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
-        /// Extracts all textures from a material for platform override analysis.
+        /// Extracts textures from a material for platform override analysis.
         /// </summary>
         /// <param name="material">Material to extract textures from.</param>
+        /// <param name="texturePropertyNames">Optional array of specific texture property names to extract. If null, extracts all textures.</param>
         /// <returns>Collection of textures found in the material.</returns>
-        private static IEnumerable<Texture> ExtractSourceTextures(Material material)
+        private static IEnumerable<Texture> ExtractSourceTextures(Material material, string[] texturePropertyNames = null)
         {
             var textures = new List<Texture>();
-            foreach (var propertyName in material.GetTexturePropertyNames())
+            var propertyNames = texturePropertyNames ?? material.GetTexturePropertyNames();
+            foreach (var propertyName in propertyNames)
             {
                 var texture = material.GetTexture(propertyName);
                 if (texture != null)
@@ -129,41 +127,6 @@ namespace KRT.VRCQuestTools.Models
                 }
             }
             return textures;
-        }
-
-        /// <summary>
-        /// Applies resolution limit to a texture by resizing if necessary.
-        /// </summary>
-        /// <param name="texture">Source texture.</param>
-        /// <param name="maxSize">Maximum allowed size.</param>
-        /// <returns>Resized texture if needed, original texture otherwise.</returns>
-        private static Texture2D ApplyTextureResolutionLimit(Texture2D texture, int maxSize)
-        {
-            if (texture.width <= maxSize && texture.height <= maxSize)
-            {
-                return texture;
-            }
-
-            // Calculate new dimensions while maintaining aspect ratio
-            var aspectRatio = (float)texture.width / texture.height;
-            int newWidth, newHeight;
-            
-            if (texture.width > texture.height)
-            {
-                newWidth = maxSize;
-                newHeight = Mathf.RoundToInt(maxSize / aspectRatio);
-            }
-            else
-            {
-                newHeight = maxSize;
-                newWidth = Mathf.RoundToInt(maxSize * aspectRatio);
-            }
-
-            // Create a resized copy
-            var resized = new Texture2D(newWidth, newHeight, texture.format, texture.mipmapCount > 1);
-            Graphics.CopyTexture(texture, resized);
-            
-            return resized;
         }
 
         private static Texture2D TryLoadCacheTexture(Material material, MobileTextureFormat mobileTextureFormat, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile)
@@ -216,7 +179,7 @@ namespace KRT.VRCQuestTools.Models
             }
             return null;
         }
-        private static Texture2D SaveTexture(MobileTextureFormat mobileTextureFormat, bool saveAsPng, string texturesPath, TextureConfig config, Texture2D texToWrite, string cacheFile, string outFile)
+        private static Texture2D SaveTexture(MobileTextureFormat mobileTextureFormat, bool saveAsPng, string texturesPath, TextureConfig config, Texture2D texToWrite, string cacheFile, string outFile, int maxTextureSize = 0)
         {
             if (saveAsPng)
             {
@@ -231,7 +194,11 @@ namespace KRT.VRCQuestTools.Models
                 texToWrite = TextureUtility.SaveUncompressedTexture(outFile, texToWrite, (TextureFormat)mobileTextureFormat, config.isSRGB);
                 if (config.isNormalMap)
                 {
-                    TextureUtility.ConfigureNormalMapImporter(outFile, (TextureFormat)mobileTextureFormat);
+                    TextureUtility.ConfigureNormalMapImporter(outFile, (TextureFormat)mobileTextureFormat, maxTextureSize);
+                }
+                else
+                {
+                    TextureUtility.ConfigureTextureImporter(outFile, (TextureFormat)mobileTextureFormat, config.isSRGB, maxTextureSize);
                 }
                 CacheManager.Texture.CopyToCache(outFile, cacheFile);
             }

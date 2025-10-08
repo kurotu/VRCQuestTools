@@ -153,7 +153,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="path">Texture path.</param>
         /// <param name="mobileFormat">Texture format for mobile build target.</param>
         /// <param name="isSRGB">Texture is sRGB.</param>
-        internal static void ConfigureTextureImporter(string path, TextureFormat? mobileFormat, bool isSRGB = true)
+        internal static void ConfigureTextureImporter(string path, TextureFormat? mobileFormat, bool isSRGB = true, int maxTextureSize = 0)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.alphaSource = TextureImporterAlphaSource.FromInput;
@@ -165,11 +165,12 @@ namespace KRT.VRCQuestTools.Utils
             }
             if (mobileFormat.HasValue)
             {
+                var platformMaxTextureSize = maxTextureSize > 0 ? maxTextureSize : importer.maxTextureSize;
                 var androidSettings = new TextureImporterPlatformSettings
                 {
                     name = "Android",
                     overridden = true,
-                    maxTextureSize = importer.maxTextureSize,
+                    maxTextureSize = platformMaxTextureSize,
                     format = (TextureImporterFormat)mobileFormat.Value,
                 };
                 var iosSettings = new TextureImporterPlatformSettings
@@ -190,7 +191,8 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="path">Texture path.</param>
         /// <param name="mobileFormat">Texture format for mobile build target.</param>
-        internal static void ConfigureNormalMapImporter(string path, TextureFormat? mobileFormat)
+        /// <param name="maxTextureSize">Maximum texture size for platform overrides (0 means use importer default).</param>
+        internal static void ConfigureNormalMapImporter(string path, TextureFormat? mobileFormat, int maxTextureSize = 0)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.textureType = TextureImporterType.NormalMap;
@@ -199,11 +201,12 @@ namespace KRT.VRCQuestTools.Utils
             importer.mipmapEnabled = false;
             if (mobileFormat.HasValue)
             {
+                var platformMaxTextureSize = maxTextureSize > 0 ? maxTextureSize : importer.maxTextureSize;
                 var androidSettings = new TextureImporterPlatformSettings
                 {
                     name = "Android",
                     overridden = true,
-                    maxTextureSize = importer.maxTextureSize,
+                    maxTextureSize = platformMaxTextureSize,
                     format = (TextureImporterFormat)mobileFormat.Value,
                 };
                 var iosSettings = new TextureImporterPlatformSettings
@@ -721,7 +724,7 @@ namespace KRT.VRCQuestTools.Utils
             };
             var inputRGB = !raFomrats.Contains(source.format);
 
-            // ì¸óÕÇ∆èoóÕÇÃRenderTexture
+            // ÔøΩÔøΩÔøΩÕÇ∆èoÔøΩÕÇÔøΩRenderTexture
             var d = new RenderTextureDescriptor(source.width, source.height, RenderTextureFormat.ARGB32)
             {
                 useMipMap = false,
@@ -754,7 +757,7 @@ namespace KRT.VRCQuestTools.Utils
             int threadGroupsY = Mathf.CeilToInt(targetHeight / 8.0f);
             computeShader.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
 
-            // åãâ ÇTexture2DÇ…ïœä∑
+            // ÔøΩÔøΩÔøΩ ÇÔøΩTexture2DÔøΩ…ïœäÔøΩ
             var prevActive = RenderTexture.active;
             RenderTexture.active = dstRT;
             Texture2D result = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false, true);
