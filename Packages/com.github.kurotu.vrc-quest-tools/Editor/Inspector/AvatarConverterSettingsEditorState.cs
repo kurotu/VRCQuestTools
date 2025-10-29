@@ -37,5 +37,23 @@ namespace KRT.VRCQuestTools.Inspector
         /// </summary>
         [SerializeField]
         internal bool foldOutAdvancedSettings = false;
+
+        /// <summary>
+        /// Whether to show the foldout for PhysBones checklist.
+        /// </summary>
+        [SerializeField]
+        internal bool foldOutPhysBones = true;
+
+        /// <summary>
+        /// Whether to show the foldout for PhysBone Colliders checklist.
+        /// </summary>
+        [SerializeField]
+        internal bool foldOutPhysBoneColliders = true;
+
+        /// <summary>
+        /// Whether to show the foldout for Contacts checklist.
+        /// </summary>
+        [SerializeField]
+        internal bool foldOutContacts = true;
     }
 }

@@ -33,6 +33,7 @@ namespace KRT.VRCQuestTools.Inspector
         private ReorderableList additionalMaterialConvertSettingsReorderableList;
         private AvatarPerformanceStatsLevelSet statsLevelSet;
         private PerformanceRating avatarDynamicsPerfLimit;
+        private GUIStyle foldoutContentStyle;
 
         /// <inheritdoc/>
         protected override string Description
@@ -196,12 +197,142 @@ namespace KRT.VRCQuestTools.Inspector
                             OnClickSelectAvatarDynamicsComponentsButton(descriptor);
                         }
 
-                        var m_physBones = so.FindProperty("physBonesToKeep");
-                        EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones to Keep", i18n.AvatarConverterPhysBonesTooltip));
-                        var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
-                        EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders to Keep", i18n.AvatarConverterPhysBoneCollidersTooltip));
-                        var m_contacts = so.FindProperty("contactsToKeep");
-                        EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers to Keep", i18n.AvatarConverterContactsTooltip));
+                        // Initialize foldout content style if needed
+                        if (foldoutContentStyle == null)
+                        {
+                            foldoutContentStyle = new GUIStyle()
+                            {
+                                padding = new RectOffset(16, 0, 0, 0),
+                            };
+                        }
+
+                        var avatar = new VRChatAvatar(descriptor);
+
+                        // PhysBones Section
+                        if (editorState.foldOutPhysBones = EditorGUILayout.BeginFoldoutHeaderGroup(editorState.foldOutPhysBones, new GUIContent(i18n.AvatarConverterPhysBonesHeader, i18n.AvatarConverterPhysBonesTooltip)))
+                        {
+                            using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
+                            {
+                                var allPhysBones = avatar.GetPhysBoneProviders();
+                                if (allPhysBones.Length > 0)
+                                {
+                                    using (var horizontal = new EditorGUILayout.HorizontalScope())
+                                    {
+                                        if (GUILayout.Button(new GUIContent(i18n.SelectAllButtonLabel, i18n.SelectAllPhysBonesButtonTooltip)))
+                                        {
+                                            Undo.RecordObject(converterSettings, "Select All PhysBones");
+                                            converterSettings.physBonesToKeep = allPhysBones.SelectMany(p => p.GetPhysBones()).ToArray();
+                                            EditorUtility.SetDirty(converterSettings);
+                                        }
+                                        if (GUILayout.Button(new GUIContent(i18n.DeselectAllButtonLabel, i18n.DeselectAllPhysBonesButtonTooltip)))
+                                        {
+                                            Undo.RecordObject(converterSettings, "Deselect All PhysBones");
+                                            converterSettings.physBonesToKeep = new VRCPhysBone[] { };
+                                            EditorUtility.SetDirty(converterSettings);
+                                        }
+                                    }
+                                    var selectedProviders = converterSettings.physBonesToKeep.Where(pb => pb != null).Select(pb => new VRCPhysBoneProvider(pb)).Cast<VRCPhysBoneProviderBase>().ToArray();
+                                    var newSelectedProviders = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(allPhysBones, selectedProviders);
+                                    if (!selectedProviders.SequenceEqual(newSelectedProviders))
+                                    {
+                                        Undo.RecordObject(converterSettings, "Update PhysBones Selection");
+                                        converterSettings.physBonesToKeep = newSelectedProviders.SelectMany(p => p.GetPhysBones()).ToArray();
+                                        EditorUtility.SetDirty(converterSettings);
+                                    }
+                                }
+                                else
+                                {
+                                    EditorGUILayout.LabelField(i18n.NoPhysBonesFound);
+                                }
+                                EditorGUILayout.Space();
+                            }
+                        }
+                        EditorGUILayout.EndFoldoutHeaderGroup();
+
+                        // PhysBone Colliders Section
+                        if (editorState.foldOutPhysBoneColliders = EditorGUILayout.BeginFoldoutHeaderGroup(editorState.foldOutPhysBoneColliders, new GUIContent(i18n.AvatarConverterPhysBoneCollidersHeader, i18n.AvatarConverterPhysBoneCollidersTooltip)))
+                        {
+                            using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
+                            {
+                                var allColliders = avatar.GetPhysBoneColliders();
+                                if (allColliders.Length > 0)
+                                {
+                                    using (var horizontal = new EditorGUILayout.HorizontalScope())
+                                    {
+                                        if (GUILayout.Button(new GUIContent(i18n.SelectAllButtonLabel, i18n.SelectAllPhysBoneCollidersButtonTooltip)))
+                                        {
+                                            Undo.RecordObject(converterSettings, "Select All PhysBone Colliders");
+                                            converterSettings.physBoneCollidersToKeep = allColliders.ToArray();
+                                            EditorUtility.SetDirty(converterSettings);
+                                        }
+                                        if (GUILayout.Button(new GUIContent(i18n.DeselectAllButtonLabel, i18n.DeselectAllPhysBoneCollidersButtonTooltip)))
+                                        {
+                                            Undo.RecordObject(converterSettings, "Deselect All PhysBone Colliders");
+                                            converterSettings.physBoneCollidersToKeep = new VRCPhysBoneCollider[] { };
+                                            EditorUtility.SetDirty(converterSettings);
+                                        }
+                                    }
+                                    var allColliderProviders = allColliders.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray();
+                                    var selectedColliderProviders = converterSettings.physBoneCollidersToKeep.Where(c => c != null).Select(c => new VRCPhysBoneColliderProvider(c)).ToArray();
+                                    var newSelectedColliderProviders = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(allColliderProviders, selectedColliderProviders);
+                                    if (!selectedColliderProviders.SequenceEqual(newSelectedColliderProviders))
+                                    {
+                                        Undo.RecordObject(converterSettings, "Update PhysBone Colliders Selection");
+                                        converterSettings.physBoneCollidersToKeep = newSelectedColliderProviders.Select(p => p.Component).Cast<VRCPhysBoneCollider>().ToArray();
+                                        EditorUtility.SetDirty(converterSettings);
+                                    }
+                                }
+                                else
+                                {
+                                    EditorGUILayout.LabelField(i18n.NoPhysBoneCollidersFound);
+                                }
+                                EditorGUILayout.Space();
+                            }
+                        }
+                        EditorGUILayout.EndFoldoutHeaderGroup();
+
+                        // Contacts Section
+                        if (editorState.foldOutContacts = EditorGUILayout.BeginFoldoutHeaderGroup(editorState.foldOutContacts, new GUIContent(i18n.AvatarConverterContactsHeader, i18n.AvatarConverterContactsTooltip)))
+                        {
+                            using (var vertical = new EditorGUILayout.VerticalScope(foldoutContentStyle))
+                            {
+                                var allContacts = avatar.GetNonLocalContacts();
+                                if (allContacts.Length > 0)
+                                {
+                                    using (var horizontal = new EditorGUILayout.HorizontalScope())
+                                    {
+                                        if (GUILayout.Button(new GUIContent(i18n.SelectAllButtonLabel, i18n.SelectAllContactsButtonTooltip)))
+                                        {
+                                            Undo.RecordObject(converterSettings, "Select All Contacts");
+                                            converterSettings.contactsToKeep = allContacts.ToArray();
+                                            EditorUtility.SetDirty(converterSettings);
+                                        }
+                                        if (GUILayout.Button(new GUIContent(i18n.DeselectAllButtonLabel, i18n.DeselectAllContactsButtonTooltip)))
+                                        {
+                                            Undo.RecordObject(converterSettings, "Deselect All Contacts");
+                                            converterSettings.contactsToKeep = new VRC.Dynamics.ContactBase[] { };
+                                            EditorUtility.SetDirty(converterSettings);
+                                        }
+                                    }
+                                    var allContactProviders = allContacts.Select(c => new VRCContactBaseProvider(c)).ToArray();
+                                    var selectedContactProviders = converterSettings.contactsToKeep.Where(c => c != null).Select(c => new VRCContactBaseProvider(c)).ToArray();
+                                    var newSelectedContactProviders = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(allContactProviders, selectedContactProviders);
+                                    if (!selectedContactProviders.SequenceEqual(newSelectedContactProviders))
+                                    {
+                                        Undo.RecordObject(converterSettings, "Update Contacts Selection");
+                                        converterSettings.contactsToKeep = newSelectedContactProviders.Select(p => p.Component).Cast<VRC.Dynamics.ContactBase>().ToArray();
+                                        EditorUtility.SetDirty(converterSettings);
+                                    }
+                                }
+                                else
+                                {
+                                    EditorGUILayout.LabelField(i18n.NoContactsFound);
+                                }
+                                EditorGUILayout.Space();
+                            }
+                        }
+                        EditorGUILayout.EndFoldoutHeaderGroup();
+
                         AvatarDynamicsPerformanceGUI(stats);
                     }
 

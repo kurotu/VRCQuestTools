@@ -227,6 +227,24 @@ msgstr "Set PhysBoneColliders to keep while conversion."
 msgid "AvatarConverterContactsTooltip"
 msgstr "Set ContactSenders and ContactReceivers to keep while conversion."
 
+msgid "AvatarConverterPhysBonesHeader"
+msgstr "PhysBones to Keep"
+
+msgid "AvatarConverterPhysBoneCollidersHeader"
+msgstr "PhysBone Colliders to Keep"
+
+msgid "AvatarConverterContactsHeader"
+msgstr "Contact Senders & Receivers to Keep"
+
+msgid "NoPhysBonesFound"
+msgstr "No PhysBones found."
+
+msgid "NoPhysBoneCollidersFound"
+msgstr "No PhysBone Colliders found."
+
+msgid "NoContactsFound"
+msgstr "No Contact Senders & Receivers to Keep found."
+
 msgid "OpenAvatarBuilder"
 msgstr "Convert Non-Destructively"
 

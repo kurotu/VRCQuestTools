@@ -132,6 +132,12 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarConverterPhysBonesTooltip => GetText("AvatarConverterPhysBonesTooltip");
         internal string AvatarConverterPhysBoneCollidersTooltip => GetText("AvatarConverterPhysBoneCollidersTooltip");
         internal string AvatarConverterContactsTooltip => GetText("AvatarConverterContactsTooltip");
+        internal string AvatarConverterPhysBonesHeader => GetText("AvatarConverterPhysBonesHeader");
+        internal string AvatarConverterPhysBoneCollidersHeader => GetText("AvatarConverterPhysBoneCollidersHeader");
+        internal string AvatarConverterContactsHeader => GetText("AvatarConverterContactsHeader");
+        internal string NoPhysBonesFound => GetText("NoPhysBonesFound");
+        internal string NoPhysBoneCollidersFound => GetText("NoPhysBoneCollidersFound");
+        internal string NoContactsFound => GetText("NoContactsFound");
         internal string OpenAvatarBuilder => GetText("OpenAvatarBuilder");
         internal string ManualConversionWarning => GetText("ManualConversionWarning");
         internal string ManualConvertButtonLabel => GetText("ManualConvertButtonLabel");

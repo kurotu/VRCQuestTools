@@ -224,6 +224,24 @@ msgstr "Установите коллайдеры физической кост�
 msgid "AvatarConverterContactsTooltip"
 msgstr "Установите отправители и получатели контактов, которые нужно сохранить во время конвертации."
 
+msgid "AvatarConverterPhysBonesHeader"
+msgstr "PhysBones для сохранения"
+
+msgid "AvatarConverterPhysBoneCollidersHeader"
+msgstr "PhysBone Colliders для сохранения"
+
+msgid "AvatarConverterContactsHeader"
+msgstr "Contact Senders & Receivers для сохранения"
+
+msgid "NoPhysBonesFound"
+msgstr "PhysBones не найдены."
+
+msgid "NoPhysBoneCollidersFound"
+msgstr "PhysBone Colliders не найдены."
+
+msgid "NoContactsFound"
+msgstr "Contact Senders & Receivers не найдены."
+
 msgid "OpenAvatarBuilder"
 msgstr "Неразрушающее преобразование"
 

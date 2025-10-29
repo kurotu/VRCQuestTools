@@ -227,6 +227,24 @@ msgstr "変換時に残しておく PhysBoneCollider を選択します。"
 msgid "AvatarConverterContactsTooltip"
 msgstr "変換時に残しておく ContactSender と ContactReceiver を選択します。"
 
+msgid "AvatarConverterPhysBonesHeader"
+msgstr "残すPhysBones"
+
+msgid "AvatarConverterPhysBoneCollidersHeader"
+msgstr "残すPhysBone Colliders"
+
+msgid "AvatarConverterContactsHeader"
+msgstr "残すContact Senders & Receivers"
+
+msgid "NoPhysBonesFound"
+msgstr "PhysBonesが見つかりません。"
+
+msgid "NoPhysBoneCollidersFound"
+msgstr "PhysBone Collidersが見つかりません。"
+
+msgid "NoContactsFound"
+msgstr "Contact Senders & Receiversが見つかりません。"
+
 msgid "OpenAvatarBuilder"
 msgstr "非破壊的に変換する"
 
