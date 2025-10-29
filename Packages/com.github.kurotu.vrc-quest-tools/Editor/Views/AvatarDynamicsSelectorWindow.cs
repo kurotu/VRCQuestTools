@@ -105,11 +105,11 @@ namespace KRT.VRCQuestTools.Views
                             {
                                 using (var horizontal = new EditorGUILayout.HorizontalScope())
                                 {
-                                    if (GUILayout.Button(i18n.SelectAllButtonLabel))
+                                    if (GUILayout.Button(new GUIContent(i18n.SelectAllButtonLabel, i18n.SelectAllPhysBonesButtonTooltip)))
                                     {
                                         physBoneProvidersToKeep = pbs.ToArray();
                                     }
-                                    if (GUILayout.Button(i18n.DeselectAllButtonLabel))
+                                    if (GUILayout.Button(new GUIContent(i18n.DeselectAllButtonLabel, i18n.DeselectAllPhysBonesButtonTooltip)))
                                     {
                                         physBoneProvidersToKeep = new VRCPhysBoneProviderBase[] { };
                                     }
@@ -139,11 +139,11 @@ namespace KRT.VRCQuestTools.Views
                             {
                                 using (var horizontal = new EditorGUILayout.HorizontalScope())
                                 {
-                                    if (GUILayout.Button(i18n.SelectAllButtonLabel))
+                                    if (GUILayout.Button(new GUIContent(i18n.SelectAllButtonLabel, i18n.SelectAllPhysBoneCollidersButtonTooltip)))
                                     {
                                         physBoneCollidersToKeep = colliders.ToArray();
                                     }
-                                    if (GUILayout.Button(i18n.DeselectAllButtonLabel))
+                                    if (GUILayout.Button(new GUIContent(i18n.DeselectAllButtonLabel, i18n.DeselectAllPhysBoneCollidersButtonTooltip)))
                                     {
                                         physBoneCollidersToKeep = new VRCPhysBoneCollider[] { };
                                     }
@@ -177,11 +177,11 @@ namespace KRT.VRCQuestTools.Views
                             {
                                 using (var horizontal = new EditorGUILayout.HorizontalScope())
                                 {
-                                    if (GUILayout.Button(i18n.SelectAllButtonLabel))
+                                    if (GUILayout.Button(new GUIContent(i18n.SelectAllButtonLabel, i18n.SelectAllContactsButtonTooltip)))
                                     {
                                         contactsToKeep = contacts.ToArray();
                                     }
-                                    if (GUILayout.Button(i18n.DeselectAllButtonLabel))
+                                    if (GUILayout.Button(new GUIContent(i18n.DeselectAllButtonLabel, i18n.DeselectAllContactsButtonTooltip)))
                                     {
                                         contactsToKeep = new VRC.Dynamics.ContactBase[] { };
                                     }

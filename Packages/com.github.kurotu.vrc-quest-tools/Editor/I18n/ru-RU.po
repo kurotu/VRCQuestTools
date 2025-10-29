@@ -395,6 +395,24 @@ msgstr "Снять выделение"
 msgid "ApplyButtonLabel"
 msgstr "Применить"
 
+msgid "SelectAllPhysBonesButtonTooltip"
+msgstr "Выбрать все PhysBones для сохранения в Quest-аватаре"
+
+msgid "DeselectAllPhysBonesButtonTooltip"
+msgstr "Отменить выбор всех PhysBones (они будут удалены из Quest-аватара)"
+
+msgid "SelectAllPhysBoneCollidersButtonTooltip"
+msgstr "Выбрать все PhysBone Colliders для сохранения в Quest-аватаре"
+
+msgid "DeselectAllPhysBoneCollidersButtonTooltip"
+msgstr "Отменить выбор всех PhysBone Colliders (они будут удалены из Quest-аватара)"
+
+msgid "SelectAllContactsButtonTooltip"
+msgstr "Выбрать все Contacts для сохранения в Quest-аватаре"
+
+msgid "DeselectAllContactsButtonTooltip"
+msgstr "Отменить выбор всех Contacts (они будут удалены из Quest-аватара)"
+
 msgid "TextureLabel"
 msgstr "Текстура"
 

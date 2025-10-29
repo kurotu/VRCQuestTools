@@ -202,6 +202,14 @@ namespace KRT.VRCQuestTools.I18n
         internal string DeselectAllButtonLabel => GetText("DeselectAllButtonLabel");
         internal string ApplyButtonLabel => GetText("ApplyButtonLabel");
 
+        // Avatar Dynamics Selector - Button Tooltips
+        internal string SelectAllPhysBonesButtonTooltip => GetText("SelectAllPhysBonesButtonTooltip");
+        internal string DeselectAllPhysBonesButtonTooltip => GetText("DeselectAllPhysBonesButtonTooltip");
+        internal string SelectAllPhysBoneCollidersButtonTooltip => GetText("SelectAllPhysBoneCollidersButtonTooltip");
+        internal string DeselectAllPhysBoneCollidersButtonTooltip => GetText("DeselectAllPhysBoneCollidersButtonTooltip");
+        internal string SelectAllContactsButtonTooltip => GetText("SelectAllContactsButtonTooltip");
+        internal string DeselectAllContactsButtonTooltip => GetText("DeselectAllContactsButtonTooltip");
+
         // Metallic Smoothness
         internal string TextureLabel => GetText("TextureLabel");
         internal string InvertLabel => GetText("InvertLabel");

@@ -398,6 +398,24 @@ msgstr "すべて解除"
 msgid "ApplyButtonLabel"
 msgstr "適用"
 
+msgid "SelectAllPhysBonesButtonTooltip"
+msgstr "Questアバターに残すPhysBonesをすべて選択します"
+
+msgid "DeselectAllPhysBonesButtonTooltip"
+msgstr "PhysBonesをすべて解除します（Questアバターから削除されます）"
+
+msgid "SelectAllPhysBoneCollidersButtonTooltip"
+msgstr "Questアバターに残すPhysBone Collidersをすべて選択します"
+
+msgid "DeselectAllPhysBoneCollidersButtonTooltip"
+msgstr "PhysBone Collidersをすべて解除します（Questアバターから削除されます）"
+
+msgid "SelectAllContactsButtonTooltip"
+msgstr "Questアバターに残すContactsをすべて選択します"
+
+msgid "DeselectAllContactsButtonTooltip"
+msgstr "Contactsをすべて解除します（Questアバターから削除されます）"
+
 msgid "TextureLabel"
 msgstr "テクスチャ"
 

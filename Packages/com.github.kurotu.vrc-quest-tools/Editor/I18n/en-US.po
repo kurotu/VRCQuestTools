@@ -398,6 +398,24 @@ msgstr "Deselect All"
 msgid "ApplyButtonLabel"
 msgstr "Apply"
 
+msgid "SelectAllPhysBonesButtonTooltip"
+msgstr "Select all PhysBones to keep on the Quest avatar"
+
+msgid "DeselectAllPhysBonesButtonTooltip"
+msgstr "Deselect all PhysBones (they will be removed from the Quest avatar)"
+
+msgid "SelectAllPhysBoneCollidersButtonTooltip"
+msgstr "Select all PhysBone Colliders to keep on the Quest avatar"
+
+msgid "DeselectAllPhysBoneCollidersButtonTooltip"
+msgstr "Deselect all PhysBone Colliders (they will be removed from the Quest avatar)"
+
+msgid "SelectAllContactsButtonTooltip"
+msgstr "Select all Contacts to keep on the Quest avatar"
+
+msgid "DeselectAllContactsButtonTooltip"
+msgstr "Deselect all Contacts (they will be removed from the Quest avatar)"
+
 msgid "TextureLabel"
 msgstr "Texture"
 

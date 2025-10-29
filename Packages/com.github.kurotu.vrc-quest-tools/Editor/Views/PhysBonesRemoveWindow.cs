@@ -111,11 +111,11 @@ namespace KRT.VRCQuestTools.Views
                         {
                             using (var horizontal = new EditorGUILayout.HorizontalScope())
                             {
-                                if (GUILayout.Button(i18n.SelectAllButtonLabel))
+                                if (GUILayout.Button(new GUIContent(i18n.SelectAllButtonLabel, i18n.SelectAllPhysBonesButtonTooltip)))
                                 {
                                     model.SelectAllPhysBoneProviders(true);
                                 }
-                                if (GUILayout.Button(i18n.DeselectAllButtonLabel))
+                                if (GUILayout.Button(new GUIContent(i18n.DeselectAllButtonLabel, i18n.DeselectAllPhysBonesButtonTooltip)))
                                 {
                                     model.SelectAllPhysBoneProviders(false);
                                 }
@@ -143,11 +143,11 @@ namespace KRT.VRCQuestTools.Views
                         {
                             using (var horizontal = new EditorGUILayout.HorizontalScope())
                             {
-                                if (GUILayout.Button(i18n.SelectAllButtonLabel))
+                                if (GUILayout.Button(new GUIContent(i18n.SelectAllButtonLabel, i18n.SelectAllPhysBoneCollidersButtonTooltip)))
                                 {
                                     model.SelectAllPhysBoneColliders(true);
                                 }
-                                if (GUILayout.Button(i18n.DeselectAllButtonLabel))
+                                if (GUILayout.Button(new GUIContent(i18n.DeselectAllButtonLabel, i18n.DeselectAllPhysBoneCollidersButtonTooltip)))
                                 {
                                     model.SelectAllPhysBoneColliders(false);
                                 }
@@ -175,11 +175,11 @@ namespace KRT.VRCQuestTools.Views
                         {
                             using (var horizontal = new EditorGUILayout.HorizontalScope())
                             {
-                                if (GUILayout.Button(i18n.SelectAllButtonLabel))
+                                if (GUILayout.Button(new GUIContent(i18n.SelectAllButtonLabel, i18n.SelectAllContactsButtonTooltip)))
                                 {
                                     model.SelectAllContacts(true);
                                 }
-                                if (GUILayout.Button(i18n.DeselectAllButtonLabel))
+                                if (GUILayout.Button(new GUIContent(i18n.DeselectAllButtonLabel, i18n.DeselectAllContactsButtonTooltip)))
                                 {
                                     model.SelectAllContacts(false);
                                 }
