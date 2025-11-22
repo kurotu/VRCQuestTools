@@ -811,10 +811,11 @@ namespace KRT.VRCQuestTools.Utils
         /// Analyzes Android and iOS platform overrides from texture importers.
         /// Only ASTC compression formats are considered, as per VRCQuestTools mobile texture format requirements.
         /// Non-ASTC override formats will be ignored.
+        /// HDR ASTC formats are mapped to their non-HDR equivalents.
         /// </summary>
         /// <param name="textures">Source textures to analyze.</param>
-        /// <returns>A tuple containing the maximum resolution and the highest quality ASTC compression format from the overrides, or null if no overrides exist or if no ASTC formats are found.</returns>
-        internal static (int maxTextureSize, TextureFormat format)? GetPlatformOverrideSettings(params Texture[] textures)
+        /// <returns>A tuple containing the maximum resolution and the mobile texture format from the overrides, or null if no overrides exist or if no ASTC formats are found.</returns>
+        internal static (int maxTextureSize, MobileTextureFormat format)? GetPlatformOverrideSettings(params Texture[] textures)
         {
             if (textures == null || textures.Length == 0)
             {
@@ -822,7 +823,7 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             int? maxResolution = null;
-            TextureFormat? bestFormat = null;
+            MobileTextureFormat? bestFormat = null;
 
             foreach (var texture in textures)
             {
@@ -851,7 +852,7 @@ namespace KRT.VRCQuestTools.Utils
                 if (androidSettings.overridden)
                 {
                     var resolution = androidSettings.maxTextureSize;
-                    var format = GetTextureFormatFromImporterFormat(androidSettings.format);
+                    var format = GetMobileTextureFormatFromImporterFormat(androidSettings.format);
 
                     if (format.HasValue)
                     {
@@ -864,7 +865,7 @@ namespace KRT.VRCQuestTools.Utils
                 if (iosSettings.overridden)
                 {
                     var resolution = iosSettings.maxTextureSize;
-                    var format = GetTextureFormatFromImporterFormat(iosSettings.format);
+                    var format = GetMobileTextureFormatFromImporterFormat(iosSettings.format);
 
                     if (format.HasValue)
                     {
@@ -883,39 +884,35 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Converts TextureImporterFormat to TextureFormat.
+        /// Converts TextureImporterFormat to MobileTextureFormat.
+        /// HDR ASTC formats are mapped to their non-HDR equivalents.
         /// </summary>
         /// <param name="importerFormat">The TextureImporterFormat to convert.</param>
-        /// <returns>The corresponding TextureFormat, or null if the format is not an ASTC format.</returns>
-        private static TextureFormat? GetTextureFormatFromImporterFormat(TextureImporterFormat importerFormat)
+        /// <returns>The corresponding MobileTextureFormat, or null if the format is not a supported ASTC format.</returns>
+        private static MobileTextureFormat? GetMobileTextureFormatFromImporterFormat(TextureImporterFormat importerFormat)
         {
             // Only handle ASTC formats as per requirements
+            // HDR ASTC formats are mapped to their non-HDR equivalents
             switch (importerFormat)
             {
                 case TextureImporterFormat.ASTC_4x4:
-                    return TextureFormat.ASTC_4x4;
-                case TextureImporterFormat.ASTC_5x5:
-                    return TextureFormat.ASTC_5x5;
-                case TextureImporterFormat.ASTC_6x6:
-                    return TextureFormat.ASTC_6x6;
-                case TextureImporterFormat.ASTC_8x8:
-                    return TextureFormat.ASTC_8x8;
-                case TextureImporterFormat.ASTC_10x10:
-                    return TextureFormat.ASTC_10x10;
-                case TextureImporterFormat.ASTC_12x12:
-                    return TextureFormat.ASTC_12x12;
                 case TextureImporterFormat.ASTC_HDR_4x4:
-                    return TextureFormat.ASTC_HDR_4x4;
+                    return MobileTextureFormat.ASTC_4x4;
+                case TextureImporterFormat.ASTC_5x5:
                 case TextureImporterFormat.ASTC_HDR_5x5:
-                    return TextureFormat.ASTC_HDR_5x5;
+                    return MobileTextureFormat.ASTC_5x5;
+                case TextureImporterFormat.ASTC_6x6:
                 case TextureImporterFormat.ASTC_HDR_6x6:
-                    return TextureFormat.ASTC_HDR_6x6;
+                    return MobileTextureFormat.ASTC_6x6;
+                case TextureImporterFormat.ASTC_8x8:
                 case TextureImporterFormat.ASTC_HDR_8x8:
-                    return TextureFormat.ASTC_HDR_8x8;
+                    return MobileTextureFormat.ASTC_8x8;
+                case TextureImporterFormat.ASTC_10x10:
                 case TextureImporterFormat.ASTC_HDR_10x10:
-                    return TextureFormat.ASTC_HDR_10x10;
+                    return MobileTextureFormat.ASTC_10x10;
+                case TextureImporterFormat.ASTC_12x12:
                 case TextureImporterFormat.ASTC_HDR_12x12:
-                    return TextureFormat.ASTC_HDR_12x12;
+                    return MobileTextureFormat.ASTC_12x12;
                 default:
                     return null;
             }
@@ -927,7 +924,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="current">The current best format, or null.</param>
         /// <param name="candidate">The candidate format to compare.</param>
         /// <returns>The higher quality ASTC format.</returns>
-        private static TextureFormat GetBetterASTCFormat(TextureFormat? current, TextureFormat candidate)
+        private static MobileTextureFormat GetBetterASTCFormat(MobileTextureFormat? current, MobileTextureFormat candidate)
         {
             if (!current.HasValue)
             {
@@ -948,27 +945,21 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="format">The ASTC format.</param>
         /// <returns>Quality score (lower is better).</returns>
-        private static int GetASTCQualityScore(TextureFormat format)
+        private static int GetASTCQualityScore(MobileTextureFormat format)
         {
             switch (format)
             {
-                case TextureFormat.ASTC_4x4:
-                case TextureFormat.ASTC_HDR_4x4:
+                case MobileTextureFormat.ASTC_4x4:
                     return 16;
-                case TextureFormat.ASTC_5x5:
-                case TextureFormat.ASTC_HDR_5x5:
+                case MobileTextureFormat.ASTC_5x5:
                     return 25;
-                case TextureFormat.ASTC_6x6:
-                case TextureFormat.ASTC_HDR_6x6:
+                case MobileTextureFormat.ASTC_6x6:
                     return 36;
-                case TextureFormat.ASTC_8x8:
-                case TextureFormat.ASTC_HDR_8x8:
+                case MobileTextureFormat.ASTC_8x8:
                     return 64;
-                case TextureFormat.ASTC_10x10:
-                case TextureFormat.ASTC_HDR_10x10:
+                case MobileTextureFormat.ASTC_10x10:
                     return 100;
-                case TextureFormat.ASTC_12x12:
-                case TextureFormat.ASTC_HDR_12x12:
+                case MobileTextureFormat.ASTC_12x12:
                     return 144;
                 default:
                     return int.MaxValue;

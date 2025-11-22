@@ -81,7 +81,7 @@ namespace KRT.VRCQuestTools.Models
             MobileTextureFormat formatToUse;
             if (platformOverride.HasValue)
             {
-                formatToUse = (MobileTextureFormat)platformOverride.Value.format;
+                formatToUse = platformOverride.Value.format;
             }
             else
             {
