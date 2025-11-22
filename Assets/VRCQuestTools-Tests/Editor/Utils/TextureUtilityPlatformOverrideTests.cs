@@ -60,7 +60,8 @@ namespace KRT.VRCQuestTools.Utils
         public void GetPlatformOverrideSettings_WithNoOverrides_ReturnsNull()
         {
             // Create a test texture without platform overrides
-            var texture = CreateTestTexture("test_no_override.png", 512, 512, false, 0, TextureFormat.RGBA32);
+            // Format doesn't matter since hasOverride=false, but using valid MobileTextureFormat for consistency
+            var texture = CreateTestTexture("test_no_override.png", 512, 512, false, 0, MobileTextureFormat.ASTC_6x6);
             
             var result = TextureUtility.GetPlatformOverrideSettings(texture);
             Assert.IsNull(result);
