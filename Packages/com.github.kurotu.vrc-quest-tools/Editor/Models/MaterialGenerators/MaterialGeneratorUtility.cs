@@ -61,6 +61,31 @@ namespace KRT.VRCQuestTools.Models
 
         private static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
+            // Collect source textures from the material for platform override analysis
+            var sourceTextures = new System.Collections.Generic.List<Texture>();
+            foreach (var propertyName in material.GetTexturePropertyNames())
+            {
+                var texture = material.GetTexture(propertyName);
+                if (texture != null && !(texture is Cubemap))
+                {
+                    sourceTextures.Add(texture);
+                }
+            }
+
+            // Check for platform-specific overrides
+            var platformOverride = TextureUtility.GetPlatformOverrideSettings(sourceTextures.ToArray());
+
+            // Determine the format to use: platform override if available, otherwise settings
+            MobileTextureFormat formatToUse;
+            if (platformOverride.HasValue)
+            {
+                formatToUse = (MobileTextureFormat)platformOverride.Value.format;
+            }
+            else
+            {
+                formatToUse = settings.MobileTextureFormat;
+            }
+
             var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material) + settings.GetCacheKey());
             var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}_{assetHash}" + (saveAsPng ? ".png" : ".json");
             var texName = $"{material.name}_{textureType}";
@@ -71,7 +96,7 @@ namespace KRT.VRCQuestTools.Models
                 outFile = $"{texturesPath}/{texName}_from_{guid}.png";
             }
 
-            var cacheTexture = TryLoadCacheTexture(material, settings, saveAsPng, texturesPath, config, cacheFile, outFile);
+            var cacheTexture = TryLoadCacheTexture(material, settings, saveAsPng, texturesPath, config, cacheFile, outFile, formatToUse);
             if (cacheTexture)
             {
                 cacheTexture.name = texName;
@@ -83,14 +108,14 @@ namespace KRT.VRCQuestTools.Models
                 if (texToWrite)
                 {
                     texToWrite.name = texName;
-                    texToWrite = SaveTexture(settings.MobileTextureFormat, saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile);
+                    texToWrite = SaveTexture(formatToUse, saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile);
                 }
                 completion?.Invoke(texToWrite);
             });
             return request;
         }
 
-        private static Texture2D TryLoadCacheTexture(Material material, IMaterialConvertSettings settings, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile)
+        private static Texture2D TryLoadCacheTexture(Material material, IMaterialConvertSettings settings, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile, MobileTextureFormat formatToUse)
         {
             using (var mutex = CacheManager.Texture.CreateMutex())
             {
@@ -108,11 +133,11 @@ namespace KRT.VRCQuestTools.Models
                                 AssetDatabase.ImportAsset(outFile);
                                 if (config.isNormalMap)
                                 {
-                                    TextureUtility.ConfigureNormalMapImporter(outFile, (TextureFormat)settings.MobileTextureFormat);
+                                    TextureUtility.ConfigureNormalMapImporter(outFile, (TextureFormat)formatToUse);
                                 }
                                 else
                                 {
-                                    TextureUtility.ConfigureTextureImporter(outFile, (TextureFormat)settings.MobileTextureFormat, config.isSRGB);
+                                    TextureUtility.ConfigureTextureImporter(outFile, (TextureFormat)formatToUse, config.isSRGB);
                                 }
                                 var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
                                 return tex;

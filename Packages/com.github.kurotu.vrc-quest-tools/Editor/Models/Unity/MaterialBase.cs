@@ -70,8 +70,33 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <returns>Request to wait.</returns>
         internal virtual AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
-            var maxTextureSize = (int)settings.MaxTextureSize;
             var mainTexture = Material.mainTexture ?? Texture2D.whiteTexture;
+
+            // Collect all source textures for platform override analysis
+            var sourceTextures = new System.Collections.Generic.List<Texture>();
+            foreach (var name in Material.GetTexturePropertyNames())
+            {
+                var t = Material.GetTexture(name);
+                if (t != null && !(t is Cubemap) && !TextureUtility.IsNormalMapAsset(t))
+                {
+                    sourceTextures.Add(t);
+                }
+            }
+
+            // Check for platform-specific overrides
+            var platformOverride = TextureUtility.GetPlatformOverrideSettings(sourceTextures.ToArray());
+
+            // Determine resolution: use platform override if available, otherwise use settings
+            int maxTextureSize;
+            if (platformOverride.HasValue)
+            {
+                maxTextureSize = platformOverride.Value.maxTextureSize;
+            }
+            else
+            {
+                maxTextureSize = (int)settings.MaxTextureSize;
+            }
+
             var width = mainTexture.width;
             var height = mainTexture.height;
             if (maxTextureSize > 0)
