@@ -206,18 +206,55 @@ namespace KRT.VRCQuestTools.Utils
                 var importer = AssetImporter.GetAtPath(path) as TextureImporter;
                 Assert.IsNotNull(importer);
 
+                var importerFormat = ConvertToImporterFormat(overrideFormat);
+                Assert.IsNotNull(importerFormat, $"Unsupported format for testing: {overrideFormat}");
+
                 var platformSettings = new TextureImporterPlatformSettings
                 {
                     name = platformName,
                     overridden = true,
                     maxTextureSize = overrideMaxSize,
-                    format = (TextureImporterFormat)overrideFormat,
+                    format = importerFormat.Value,
                 };
                 importer.SetPlatformTextureSettings(platformSettings);
                 importer.SaveAndReimport();
             }
 
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
+        private TextureImporterFormat? ConvertToImporterFormat(TextureFormat textureFormat)
+        {
+            // Convert TextureFormat to TextureImporterFormat for ASTC formats
+            switch (textureFormat)
+            {
+                case TextureFormat.ASTC_4x4:
+                    return TextureImporterFormat.ASTC_4x4;
+                case TextureFormat.ASTC_5x5:
+                    return TextureImporterFormat.ASTC_5x5;
+                case TextureFormat.ASTC_6x6:
+                    return TextureImporterFormat.ASTC_6x6;
+                case TextureFormat.ASTC_8x8:
+                    return TextureImporterFormat.ASTC_8x8;
+                case TextureFormat.ASTC_10x10:
+                    return TextureImporterFormat.ASTC_10x10;
+                case TextureFormat.ASTC_12x12:
+                    return TextureImporterFormat.ASTC_12x12;
+                case TextureFormat.ASTC_HDR_4x4:
+                    return TextureImporterFormat.ASTC_HDR_4x4;
+                case TextureFormat.ASTC_HDR_5x5:
+                    return TextureImporterFormat.ASTC_HDR_5x5;
+                case TextureFormat.ASTC_HDR_6x6:
+                    return TextureImporterFormat.ASTC_HDR_6x6;
+                case TextureFormat.ASTC_HDR_8x8:
+                    return TextureImporterFormat.ASTC_HDR_8x8;
+                case TextureFormat.ASTC_HDR_10x10:
+                    return TextureImporterFormat.ASTC_HDR_10x10;
+                case TextureFormat.ASTC_HDR_12x12:
+                    return TextureImporterFormat.ASTC_HDR_12x12;
+                default:
+                    return null;
+            }
         }
     }
 }
