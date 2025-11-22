@@ -64,7 +64,7 @@ namespace KRT.VRCQuestTools.Models
         private static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
         {
             // Collect source textures from the material for platform override analysis
-            var sourceTextures = new System.Collections.Generic.List<Texture>();
+            var sourceTextures = new List<Texture>();
             foreach (var propertyName in material.GetTexturePropertyNames())
             {
                 var texture = material.GetTexture(propertyName);

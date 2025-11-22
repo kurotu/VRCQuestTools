@@ -74,7 +74,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             var mainTexture = Material.mainTexture ?? Texture2D.whiteTexture;
 
             // Collect all source textures for platform override analysis
-            var sourceTextures = new System.Collections.Generic.List<Texture>();
+            var sourceTextures = new List<Texture>();
             foreach (var name in Material.GetTexturePropertyNames())
             {
                 var t = Material.GetTexture(name);
