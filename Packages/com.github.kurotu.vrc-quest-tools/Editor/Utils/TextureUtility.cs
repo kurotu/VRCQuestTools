@@ -721,7 +721,7 @@ namespace KRT.VRCQuestTools.Utils
             };
             var inputRGB = !raFomrats.Contains(source.format);
 
-            // Input and output are RenderTexture
+            // Input and output are RenderTextures
             var d = new RenderTextureDescriptor(source.width, source.height, RenderTextureFormat.ARGB32)
             {
                 useMipMap = false,
