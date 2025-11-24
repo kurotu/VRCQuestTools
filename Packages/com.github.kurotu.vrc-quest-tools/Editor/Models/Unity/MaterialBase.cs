@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
@@ -71,33 +70,8 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <returns>Request to wait.</returns>
         internal virtual AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
+            var maxTextureSize = (int)settings.MaxTextureSize;
             var mainTexture = Material.mainTexture ?? Texture2D.whiteTexture;
-
-            // Collect all source textures for platform override analysis
-            var sourceTextures = new List<Texture>();
-            foreach (var name in Material.GetTexturePropertyNames())
-            {
-                var t = Material.GetTexture(name);
-                if (t != null && !(t is Cubemap) && !TextureUtility.IsNormalMapAsset(t))
-                {
-                    sourceTextures.Add(t);
-                }
-            }
-
-            // Check for platform-specific overrides
-            var platformOverride = TextureUtility.GetPlatformOverrideSettings(sourceTextures.ToArray());
-
-            // Determine resolution: use platform override if available, otherwise use settings
-            int maxTextureSize;
-            if (platformOverride.HasValue)
-            {
-                maxTextureSize = platformOverride.Value.maxTextureSize;
-            }
-            else
-            {
-                maxTextureSize = (int)settings.MaxTextureSize;
-            }
-
             var width = mainTexture.width;
             var height = mainTexture.height;
             if (maxTextureSize > 0)

@@ -721,7 +721,7 @@ namespace KRT.VRCQuestTools.Utils
             };
             var inputRGB = !raFomrats.Contains(source.format);
 
-            // ���͂Əo�͂�RenderTexture
+            // Input and output are RenderTexture
             var d = new RenderTextureDescriptor(source.width, source.height, RenderTextureFormat.ARGB32)
             {
                 useMipMap = false,
@@ -754,7 +754,7 @@ namespace KRT.VRCQuestTools.Utils
             int threadGroupsY = Mathf.CeilToInt(targetHeight / 8.0f);
             computeShader.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
 
-            // ���ʂ�Texture2D�ɕϊ�
+            // Convert result to Texture2D
             var prevActive = RenderTexture.active;
             RenderTexture.active = dstRT;
             Texture2D result = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false, true);
