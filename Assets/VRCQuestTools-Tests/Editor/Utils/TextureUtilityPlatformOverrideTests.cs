@@ -201,6 +201,7 @@ namespace KRT.VRCQuestTools.Utils
             var bytes = texture.EncodeToPNG();
             File.WriteAllBytes(path, bytes);
             AssetDatabase.ImportAsset(path);
+            Object.DestroyImmediate(texture);
 
             // Configure platform override if needed
             if (hasOverride)
