@@ -4,7 +4,6 @@
 // </copyright>
 
 using System.IO;
-using KRT.VRCQuestTools.Models;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -79,8 +78,8 @@ namespace KRT.VRCQuestTools.Utils
             var result = TextureUtility.GetPlatformOverrideSettings(texture);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(256, result.Value.maxTextureSize);
-            Assert.AreEqual(TextureFormat.ASTC_6x6, result.Value.format);
+            Assert.AreEqual(256, result.Value.MaxTextureSize);
+            Assert.AreEqual(TextureFormat.ASTC_6x6, result.Value.Format);
         }
 
         /// <summary>
@@ -97,7 +96,7 @@ namespace KRT.VRCQuestTools.Utils
             var result = TextureUtility.GetPlatformOverrideSettings(texture1, texture2, texture3);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(1024, result.Value.maxTextureSize);
+            Assert.AreEqual(1024, result.Value.MaxTextureSize);
         }
 
         /// <summary>
@@ -114,7 +113,7 @@ namespace KRT.VRCQuestTools.Utils
             var result = TextureUtility.GetPlatformOverrideSettings(texture1, texture2, texture3);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(TextureFormat.ASTC_4x4, result.Value.format);
+            Assert.AreEqual(TextureFormat.ASTC_4x4, result.Value.Format);
         }
 
         /// <summary>
@@ -130,8 +129,8 @@ namespace KRT.VRCQuestTools.Utils
             var result = TextureUtility.GetPlatformOverrideSettings(textureWithOverride, textureWithoutOverride);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(256, result.Value.maxTextureSize);
-            Assert.AreEqual(TextureFormat.ASTC_6x6, result.Value.format);
+            Assert.AreEqual(256, result.Value.MaxTextureSize);
+            Assert.AreEqual(TextureFormat.ASTC_6x6, result.Value.Format);
         }
 
         /// <summary>
@@ -145,8 +144,8 @@ namespace KRT.VRCQuestTools.Utils
             var result = TextureUtility.GetPlatformOverrideSettings(null, texture, null);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(256, result.Value.maxTextureSize);
-            Assert.AreEqual(TextureFormat.ASTC_6x6, result.Value.format);
+            Assert.AreEqual(256, result.Value.MaxTextureSize);
+            Assert.AreEqual(TextureFormat.ASTC_6x6, result.Value.Format);
         }
 
         /// <summary>
@@ -161,8 +160,8 @@ namespace KRT.VRCQuestTools.Utils
             var result = TextureUtility.GetPlatformOverrideSettings(texture);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(512, result.Value.maxTextureSize);
-            Assert.AreEqual(TextureFormat.ASTC_8x8, result.Value.format);
+            Assert.AreEqual(512, result.Value.MaxTextureSize);
+            Assert.AreEqual(TextureFormat.ASTC_8x8, result.Value.Format);
         }
 
         /// <summary>
@@ -173,15 +172,17 @@ namespace KRT.VRCQuestTools.Utils
         {
             // Create texture with Android override (256, ASTC_6x6)
             var textureAndroid = CreateTestTexture("test_android.png", 512, 512, true, 256, TextureFormat.ASTC_6x6, platformName: "Android");
+
             // Create texture with iOS override (512, ASTC_4x4)
             var textureIos = CreateTestTexture("test_ios.png", 512, 512, true, 512, TextureFormat.ASTC_4x4, platformName: "iPhone");
 
             var result = TextureUtility.GetPlatformOverrideSettings(textureAndroid, textureIos);
 
             Assert.IsNotNull(result);
+
             // Should select max resolution (512 from iOS) and best format (ASTC_4x4 from iOS)
-            Assert.AreEqual(512, result.Value.maxTextureSize);
-            Assert.AreEqual(TextureFormat.ASTC_4x4, result.Value.format);
+            Assert.AreEqual(512, result.Value.MaxTextureSize);
+            Assert.AreEqual(TextureFormat.ASTC_4x4, result.Value.Format);
         }
 
         private Texture2D CreateTestTexture(string name, int width, int height, bool hasOverride, int overrideMaxSize, TextureFormat overrideFormat, string platformName = "Android")
@@ -226,7 +227,9 @@ namespace KRT.VRCQuestTools.Utils
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
-        private TextureImporterFormat? ConvertToImporterFormat(TextureFormat textureFormat)
+#pragma warning disable SA1204 // Static elements should appear before instance elements
+        private static TextureImporterFormat? ConvertToImporterFormat(TextureFormat textureFormat)
+#pragma warning restore SA1204 // Static elements should appear before instance elements
         {
             // Convert TextureFormat to TextureImporterFormat for ASTC formats
             switch (textureFormat)

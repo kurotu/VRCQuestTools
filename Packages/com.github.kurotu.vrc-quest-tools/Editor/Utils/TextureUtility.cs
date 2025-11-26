@@ -815,7 +815,7 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="textures">Source textures to analyze.</param>
         /// <returns>A tuple containing the maximum resolution and the mobile texture format from the overrides, or null if no overrides exist or if no ASTC formats are found.</returns>
-        internal static (int maxTextureSize, MobileTextureFormat format)? GetPlatformOverrideSettings(params Texture[] textures)
+        internal static (int MaxTextureSize, TextureFormat Format)? GetPlatformOverrideSettings(params Texture[] textures)
         {
             if (textures == null || textures.Length == 0)
             {
