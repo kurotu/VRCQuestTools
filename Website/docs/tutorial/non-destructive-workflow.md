@@ -80,7 +80,7 @@ There are following ways to upload the avatar with non-destructive conversion:
 
 ### Regular Upload
 
-Since VRChat SDK 3.8.1, you can start uploading the avatar even if the avatar in the scene does not meet the Android-compatible conditions.
+VRChat SDK allows you to start uploading the avatar even if the avatar in the scene does not meet the Android-compatible conditions.
 Open the VRChat SDK control panel and upload it as you would for PC.
 
 ### Multi-Platform Build
