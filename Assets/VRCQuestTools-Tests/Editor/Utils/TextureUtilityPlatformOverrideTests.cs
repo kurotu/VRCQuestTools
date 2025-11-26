@@ -60,9 +60,9 @@ namespace KRT.VRCQuestTools.Utils
         public void GetPlatformOverrideSettings_WithNoOverrides_ReturnsNull()
         {
             // Create a test texture without platform overrides
-            // Format doesn't matter since hasOverride=false, but using valid MobileTextureFormat for consistency
-            var texture = CreateTestTexture("test_no_override.png", 512, 512, false, 0, MobileTextureFormat.ASTC_6x6);
-            
+            // Format doesn't matter since hasOverride=false, but using valid TextureFormat for consistency
+            var texture = CreateTestTexture("test_no_override.png", 512, 512, false, 0, TextureFormat.ASTC_6x6);
+
             var result = TextureUtility.GetPlatformOverrideSettings(texture);
             Assert.IsNull(result);
         }
@@ -74,13 +74,13 @@ namespace KRT.VRCQuestTools.Utils
         public void GetPlatformOverrideSettings_WithAndroidOverride_ReturnsCorrectSettings()
         {
             // Create a test texture with Android override
-            var texture = CreateTestTexture("test_android_override.png", 512, 512, true, 256, MobileTextureFormat.ASTC_6x6);
-            
+            var texture = CreateTestTexture("test_android_override.png", 512, 512, true, 256, TextureFormat.ASTC_6x6);
+
             var result = TextureUtility.GetPlatformOverrideSettings(texture);
-            
+
             Assert.IsNotNull(result);
             Assert.AreEqual(256, result.Value.maxTextureSize);
-            Assert.AreEqual(MobileTextureFormat.ASTC_6x6, result.Value.format);
+            Assert.AreEqual(TextureFormat.ASTC_6x6, result.Value.format);
         }
 
         /// <summary>
@@ -90,12 +90,12 @@ namespace KRT.VRCQuestTools.Utils
         public void GetPlatformOverrideSettings_WithMultipleTextures_SelectsMaxResolution()
         {
             // Create textures with different resolutions
-            var texture1 = CreateTestTexture("test_256.png", 512, 512, true, 256, MobileTextureFormat.ASTC_6x6);
-            var texture2 = CreateTestTexture("test_512.png", 1024, 1024, true, 512, MobileTextureFormat.ASTC_6x6);
-            var texture3 = CreateTestTexture("test_1024.png", 2048, 2048, true, 1024, MobileTextureFormat.ASTC_6x6);
-            
+            var texture1 = CreateTestTexture("test_256.png", 512, 512, true, 256, TextureFormat.ASTC_6x6);
+            var texture2 = CreateTestTexture("test_512.png", 1024, 1024, true, 512, TextureFormat.ASTC_6x6);
+            var texture3 = CreateTestTexture("test_1024.png", 2048, 2048, true, 1024, TextureFormat.ASTC_6x6);
+
             var result = TextureUtility.GetPlatformOverrideSettings(texture1, texture2, texture3);
-            
+
             Assert.IsNotNull(result);
             Assert.AreEqual(1024, result.Value.maxTextureSize);
         }
@@ -107,14 +107,14 @@ namespace KRT.VRCQuestTools.Utils
         public void GetPlatformOverrideSettings_WithDifferentFormats_SelectsHighestQuality()
         {
             // Create textures with different ASTC formats (4x4 is highest quality)
-            var texture1 = CreateTestTexture("test_12x12.png", 512, 512, true, 512, MobileTextureFormat.ASTC_12x12);
-            var texture2 = CreateTestTexture("test_6x6.png", 512, 512, true, 512, MobileTextureFormat.ASTC_6x6);
-            var texture3 = CreateTestTexture("test_4x4.png", 512, 512, true, 512, MobileTextureFormat.ASTC_4x4);
-            
+            var texture1 = CreateTestTexture("test_12x12.png", 512, 512, true, 512, TextureFormat.ASTC_12x12);
+            var texture2 = CreateTestTexture("test_6x6.png", 512, 512, true, 512, TextureFormat.ASTC_6x6);
+            var texture3 = CreateTestTexture("test_4x4.png", 512, 512, true, 512, TextureFormat.ASTC_4x4);
+
             var result = TextureUtility.GetPlatformOverrideSettings(texture1, texture2, texture3);
-            
+
             Assert.IsNotNull(result);
-            Assert.AreEqual(MobileTextureFormat.ASTC_4x4, result.Value.format);
+            Assert.AreEqual(TextureFormat.ASTC_4x4, result.Value.format);
         }
 
         /// <summary>
@@ -124,14 +124,14 @@ namespace KRT.VRCQuestTools.Utils
         public void GetPlatformOverrideSettings_WithMixedTextures_UsesOnlyOverrides()
         {
             // Create one texture with override and one without
-            var textureWithOverride = CreateTestTexture("test_with_override.png", 512, 512, true, 256, MobileTextureFormat.ASTC_6x6);
-            var textureWithoutOverride = CreateTestTexture("test_without_override.png", 1024, 1024, false, 0, MobileTextureFormat.ASTC_6x6);
-            
+            var textureWithOverride = CreateTestTexture("test_with_override.png", 512, 512, true, 256, TextureFormat.ASTC_6x6);
+            var textureWithoutOverride = CreateTestTexture("test_without_override.png", 1024, 1024, false, 0, TextureFormat.ASTC_6x6);
+
             var result = TextureUtility.GetPlatformOverrideSettings(textureWithOverride, textureWithoutOverride);
-            
+
             Assert.IsNotNull(result);
             Assert.AreEqual(256, result.Value.maxTextureSize);
-            Assert.AreEqual(MobileTextureFormat.ASTC_6x6, result.Value.format);
+            Assert.AreEqual(TextureFormat.ASTC_6x6, result.Value.format);
         }
 
         /// <summary>
@@ -140,13 +140,13 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void GetPlatformOverrideSettings_WithNullTextures_IgnoresNulls()
         {
-            var texture = CreateTestTexture("test_with_null.png", 512, 512, true, 256, MobileTextureFormat.ASTC_6x6);
-            
+            var texture = CreateTestTexture("test_with_null.png", 512, 512, true, 256, TextureFormat.ASTC_6x6);
+
             var result = TextureUtility.GetPlatformOverrideSettings(null, texture, null);
-            
+
             Assert.IsNotNull(result);
             Assert.AreEqual(256, result.Value.maxTextureSize);
-            Assert.AreEqual(MobileTextureFormat.ASTC_6x6, result.Value.format);
+            Assert.AreEqual(TextureFormat.ASTC_6x6, result.Value.format);
         }
 
         /// <summary>
@@ -156,13 +156,13 @@ namespace KRT.VRCQuestTools.Utils
         public void GetPlatformOverrideSettings_WithIosOverride_ReturnsCorrectSettings()
         {
             // Create a test texture with iOS override
-            var texture = CreateTestTexture("test_ios_override.png", 512, 512, true, 512, MobileTextureFormat.ASTC_8x8, platformName: "iPhone");
-            
+            var texture = CreateTestTexture("test_ios_override.png", 512, 512, true, 512, TextureFormat.ASTC_8x8, platformName: "iPhone");
+
             var result = TextureUtility.GetPlatformOverrideSettings(texture);
-            
+
             Assert.IsNotNull(result);
             Assert.AreEqual(512, result.Value.maxTextureSize);
-            Assert.AreEqual(MobileTextureFormat.ASTC_8x8, result.Value.format);
+            Assert.AreEqual(TextureFormat.ASTC_8x8, result.Value.format);
         }
 
         /// <summary>
@@ -172,19 +172,19 @@ namespace KRT.VRCQuestTools.Utils
         public void GetPlatformOverrideSettings_WithBothPlatforms_CombinesCorrectly()
         {
             // Create texture with Android override (256, ASTC_6x6)
-            var textureAndroid = CreateTestTexture("test_android.png", 512, 512, true, 256, MobileTextureFormat.ASTC_6x6, platformName: "Android");
+            var textureAndroid = CreateTestTexture("test_android.png", 512, 512, true, 256, TextureFormat.ASTC_6x6, platformName: "Android");
             // Create texture with iOS override (512, ASTC_4x4)
-            var textureIos = CreateTestTexture("test_ios.png", 512, 512, true, 512, MobileTextureFormat.ASTC_4x4, platformName: "iPhone");
-            
+            var textureIos = CreateTestTexture("test_ios.png", 512, 512, true, 512, TextureFormat.ASTC_4x4, platformName: "iPhone");
+
             var result = TextureUtility.GetPlatformOverrideSettings(textureAndroid, textureIos);
-            
+
             Assert.IsNotNull(result);
             // Should select max resolution (512 from iOS) and best format (ASTC_4x4 from iOS)
             Assert.AreEqual(512, result.Value.maxTextureSize);
-            Assert.AreEqual(MobileTextureFormat.ASTC_4x4, result.Value.format);
+            Assert.AreEqual(TextureFormat.ASTC_4x4, result.Value.format);
         }
 
-        private Texture2D CreateTestTexture(string name, int width, int height, bool hasOverride, int overrideMaxSize, MobileTextureFormat overrideFormat, string platformName = "Android")
+        private Texture2D CreateTestTexture(string name, int width, int height, bool hasOverride, int overrideMaxSize, TextureFormat overrideFormat, string platformName = "Android")
         {
             // Create a simple texture
             var texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
@@ -226,22 +226,22 @@ namespace KRT.VRCQuestTools.Utils
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
-        private TextureImporterFormat? ConvertToImporterFormat(MobileTextureFormat textureFormat)
+        private TextureImporterFormat? ConvertToImporterFormat(TextureFormat textureFormat)
         {
-            // Convert MobileTextureFormat to TextureImporterFormat for ASTC formats
+            // Convert TextureFormat to TextureImporterFormat for ASTC formats
             switch (textureFormat)
             {
-                case MobileTextureFormat.ASTC_4x4:
+                case TextureFormat.ASTC_4x4:
                     return TextureImporterFormat.ASTC_4x4;
-                case MobileTextureFormat.ASTC_5x5:
+                case TextureFormat.ASTC_5x5:
                     return TextureImporterFormat.ASTC_5x5;
-                case MobileTextureFormat.ASTC_6x6:
+                case TextureFormat.ASTC_6x6:
                     return TextureImporterFormat.ASTC_6x6;
-                case MobileTextureFormat.ASTC_8x8:
+                case TextureFormat.ASTC_8x8:
                     return TextureImporterFormat.ASTC_8x8;
-                case MobileTextureFormat.ASTC_10x10:
+                case TextureFormat.ASTC_10x10:
                     return TextureImporterFormat.ASTC_10x10;
-                case MobileTextureFormat.ASTC_12x12:
+                case TextureFormat.ASTC_12x12:
                     return TextureImporterFormat.ASTC_12x12;
                 default:
                     return null;
