@@ -12,7 +12,7 @@ NDMFを使用して非破壊的にアバターを変換する場合、シーン�
 ビルドするアバターの選択や情報入力はVRChat SDKコントロールパネルで行います。
 
 :::tip
-VRChat SDKでは、シーン上のアバターがAndroid対応の条件を満たしていなくてもアップロードを開始できます。
+VRChat SDK 3.8.1以降では、シーン上のアバターがAndroid対応の条件を満たしていなくてもアップロードを開始できます。
 :::
 
 ![Avatar Builder](/img/avatar-builder.png)

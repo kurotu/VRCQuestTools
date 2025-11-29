@@ -12,7 +12,7 @@ You cannot build avatars for Android as is, but you can start building avatars b
 Selecting and entering information for the avatar to build is done in the VRChat SDK Control Panel.
 
 :::tip
-VRChat SDK allows you to start uploading avatars even if the avatar in the scene does not meet the Android-compatible conditions.
+VRChat SDK 3.8.1 or later allows you to start uploading avatars even if the avatar in the scene does not meet the Android-compatible conditions.
 :::
 
 ![Avatar Builder](/img/avatar-builder.png)
