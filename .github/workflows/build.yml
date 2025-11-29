@@ -61,7 +61,7 @@ jobs:
         sdk:
           - name: minimum
             unityVersion: 2022.3.22f1
-            vrcsdkVersion: 3.8.1 # toon standard
+            vrcsdkVersion: 3.9.0 # required for new avatars
           - name: latest
             unityVersion: 2022.3.22f1
             vrcsdkVersion: latest
