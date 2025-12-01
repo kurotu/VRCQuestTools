@@ -16,13 +16,13 @@
       "dependencies": {}
     },
     "com.vrchat.avatars": {
-      "version": "3.8.1",
+      "version": "3.9.0",
       "dependencies": {
-        "com.vrchat.base": "3.8.1"
+        "com.vrchat.base": "3.9.0"
       }
     },
     "com.vrchat.base": {
-      "version": "3.8.1",
+      "version": "3.9.0",
       "dependencies": {}
     }
   }
