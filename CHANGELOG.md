@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added options to Toon Standard conversion settings.
     - `Generate shadow ramp` to generate shadow ramp texture.
     - `Features` to select features to apply to the converted material.
-- Preview wireframe when selection PhysBones to keep.
+- Preview wireframe when selecting PhysBones to keep.
 - [NDMF] Preview for material conversion and removal of vertex color.
 
 ### Changed
