@@ -11,10 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added options to Toon Standard conversion settings.
     - `Generate shadow ramp` to generate shadow ramp texture.
     - `Features` to select features to apply to the converted material.
+- Preview wireframe when selecting PhysBones to keep.
 - [NDMF] Preview for material conversion and removal of vertex color.
 
 ### Changed
-- Changed the initial value of default material conversion settings to Toon Standard. (VRCSDK 3.8.1 or later)
+- Changed the initial value of default material conversion settings to Toon Standard.
 - Improved the appearance when converting lilToon normal mode MatCap to Toon Standard.
 - Unsupported materials to be processed are no longer warned in `Avatar Converter Settings` and `Material Conversion Settings`.
 - Turned off Auto Referenced in asmdef.
@@ -28,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Removed support for Unity 2019.
+- Removed support for VRCSDK earlier than 3.9.0.
 - Removed support for lilToon earlier than 1.10.0.
 - Removed support for NDMF earlier than 1.5.0.
 

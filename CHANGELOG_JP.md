@@ -10,10 +10,11 @@
 - Toon Standard の変換設定に項目を追加
     - `影の設定を生成する`: 影の設定用のRampテクスチャを生成します。
     - `機能設定`: 変換されたマテリアルに適用する機能を選択します。
+- 残しておく PhysBone を選択するときにワイヤーフレームによるプレビューを追加。
 - [NDMF] マテリアル変換と頂点カラー削除のプレビューを追加。
 
 ### 変更
-- デフォルトのマテリアル変換設定の初期値を Toon Standard に変更。 (VRCSDK 3.8.1 以降)
+- デフォルトのマテリアル変換設定の初期値を Toon Standard に変更。
 - lilToon の通常モードの MatCap を Toon Standard に変換するときの見た目を改善。
 - 処理対象の非対応マテリアルは `Avatar Converter Settings` と `Material Conversion Settings` で警告されないように変更。
 - asmdefの Auto Referenced をオフに変更。
@@ -27,6 +28,7 @@
 
 ### 削除
 - Unity 2019 のサポートを終了。
+- VRCSDK 3.9.0 未満のサポートを終了。
 - lilToon 1.10.0 未満のサポートを終了。
 - NDMF 1.5.0 未満のサポートを終了。
 
