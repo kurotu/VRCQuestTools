@@ -40,14 +40,26 @@ namespace KRT.VRCQuestTools.Inspector
             var i18n = VRCQuestToolsSettings.I18nResource;
             return mobileTextureFormatNames.Select((label, i) =>
                 {
-                    if (i == 0)
+                    var enumValue = (MobileTextureFormat)Enum.Parse(typeof(MobileTextureFormat), Enum.GetNames(typeof(MobileTextureFormat))[i]);
+                    
+                    // DontOverride special handling
+                    if (enumValue == MobileTextureFormat.DontOverride)
+                    {
+                        return $"{label.Replace("Dont", "Don't")}";
+                    }
+                    
+                    // ASTC_4x4 is highest quality
+                    if (enumValue == MobileTextureFormat.ASTC_4x4)
                     {
                         return $"{label} ({i18n.TextureFormatHighQuality})";
                     }
-                    if (i == mobileTextureFormatNames.Length - 1)
+                    
+                    // ASTC_12x12 is highest compression
+                    if (enumValue == MobileTextureFormat.ASTC_12x12)
                     {
                         return $"{label} ({i18n.TextureFormatHighCompression})";
                     }
+                    
                     return label;
                 })
                 .Select(label => new GUIContent(label))

@@ -29,7 +29,7 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// Texture format for android.
         /// </summary>
-        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_8x8;
+        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.DontOverride;
 
         /// <summary>
         /// Texture size limit for quest.

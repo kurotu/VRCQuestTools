@@ -8,6 +8,10 @@ namespace KRT.VRCQuestTools.Models
     public enum MobileTextureFormat
     {
 #pragma warning disable SA1602 // Disable SA1602 for enum documentation
+        /// <summary>
+        /// Don't set platform-specific override for texture import settings.
+        /// </summary>
+        DontOverride = -1,
         ASTC_4x4 = TextureFormat.ASTC_4x4,
         ASTC_5x5 = TextureFormat.ASTC_5x5,
         ASTC_6x6 = TextureFormat.ASTC_6x6,
