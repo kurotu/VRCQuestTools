@@ -42,10 +42,10 @@ namespace KRT.VRCQuestTools.Inspector
                 {
                     var enumValue = (MobileTextureFormat)Enum.Parse(typeof(MobileTextureFormat), Enum.GetNames(typeof(MobileTextureFormat))[i]);
                     
-                    // DontOverride special handling
-                    if (enumValue == MobileTextureFormat.DontOverride)
+                    // NoOverride special handling
+                    if (enumValue == MobileTextureFormat.NoOverride)
                     {
-                        return $"{label.Replace("Dont", "Don't")}";
+                        return "No Override";
                     }
                     
                     // ASTC_4x4 is highest quality

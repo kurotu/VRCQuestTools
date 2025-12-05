@@ -92,8 +92,8 @@ namespace KRT.VRCQuestTools.Models
 
         private static Texture2D TryLoadCacheTexture(Material material, IMaterialConvertSettings settings, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile)
         {
-            // Convert MobileTextureFormat to TextureFormat?, handling DontOverride case
-            TextureFormat? mobileTextureFormatNullable = settings.MobileTextureFormat == MobileTextureFormat.DontOverride
+            // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
+            TextureFormat? mobileTextureFormatNullable = settings.MobileTextureFormat == MobileTextureFormat.NoOverride
                 ? null
                 : (TextureFormat?)settings.MobileTextureFormat;
 
@@ -148,13 +148,13 @@ namespace KRT.VRCQuestTools.Models
 
         private static Texture2D SaveTexture(MobileTextureFormat mobileTextureFormat, bool saveAsPng, string texturesPath, TextureConfig config, Texture2D texToWrite, string cacheFile, string outFile)
         {
-            // Convert MobileTextureFormat to TextureFormat?, handling DontOverride case
-            TextureFormat? mobileTextureFormatNullable = mobileTextureFormat == MobileTextureFormat.DontOverride
+            // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
+            TextureFormat? mobileTextureFormatNullable = mobileTextureFormat == MobileTextureFormat.NoOverride
                 ? null
                 : (TextureFormat?)mobileTextureFormat;
 
-            // For in-code compression when DontOverride is selected, use ASTC_6x6
-            TextureFormat mobileTextureFormatForCompression = mobileTextureFormat == MobileTextureFormat.DontOverride
+            // For in-code compression when NoOverride is selected, use ASTC_6x6
+            TextureFormat mobileTextureFormatForCompression = mobileTextureFormat == MobileTextureFormat.NoOverride
                 ? TextureFormat.ASTC_6x6
                 : (TextureFormat)mobileTextureFormat;
 

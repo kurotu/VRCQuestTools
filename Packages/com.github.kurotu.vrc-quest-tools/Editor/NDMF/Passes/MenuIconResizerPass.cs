@@ -90,8 +90,8 @@ namespace KRT.VRCQuestTools.Ndmf
             avatarDescriptor.expressionsMenu = newMenu;
             objectRegistry.RegisterReplacedObject(menu, newMenu);
 
-            // For in-code compression when DontOverride is selected, use ASTC_6x6
-            var mobileTextureFormatForCompression = resizer.mobileTextureFormat == MobileTextureFormat.DontOverride
+            // For in-code compression when NoOverride is selected, use ASTC_6x6
+            var mobileTextureFormatForCompression = resizer.mobileTextureFormat == MobileTextureFormat.NoOverride
                 ? TextureFormat.ASTC_6x6
                 : (TextureFormat)resizer.mobileTextureFormat;
 
