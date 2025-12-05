@@ -18,8 +18,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// </summary>
     internal class AAOMergePhysBoneProvider : VRCPhysBoneProviderBase
     {
+        private const string PhysBonesFieldName = "physBones";
+        private const BindingFlags MemberBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
         private readonly Component mergePhysBoneComponent;
         private readonly Type mergePhysBoneType;
+        private readonly FieldInfo physBonesField;
+        private readonly PropertyInfo physBonesProperty;
         private VRCPhysBone[] cachedPhysBones;
 
         /// <summary>
@@ -36,9 +41,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             mergePhysBoneComponent = component;
             mergePhysBoneType = component.GetType();
 
-            // Verify this is an AAO MergePhysBone component by checking for the physBones field
-            var physBonesField = mergePhysBoneType.GetField("physBones", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            var physBonesProperty = mergePhysBoneType.GetProperty("physBones", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            // Cache reflection members and verify this is an AAO MergePhysBone component
+            physBonesField = mergePhysBoneType.GetField(PhysBonesFieldName, MemberBindingFlags);
+            physBonesProperty = mergePhysBoneType.GetProperty(PhysBonesFieldName, MemberBindingFlags);
             if (physBonesField == null && physBonesProperty == null)
             {
                 throw new ArgumentException("Component does not have a 'physBones' field or property", nameof(component));
@@ -117,9 +122,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 var allColliders = new List<Component>();
                 foreach (var pb in physBones.Where(pb => pb != null))
                 {
-                    allColliders.AddRange(pb.colliders.Cast<Component>());
+                    foreach (var collider in pb.colliders)
+                    {
+                        if (collider != null)
+                        {
+                            allColliders.Add(collider);
+                        }
+                    }
                 }
-                return allColliders.Distinct().Where(c => c != null).ToList();
+                return allColliders.Distinct().ToList();
             }
         }
 
@@ -168,39 +179,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             try
             {
-                // Try to access the physBones field/property using reflection
-                var physBonesField = mergePhysBoneType.GetField("physBones", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                // Try to access the physBones field/property using cached reflection members
+                object value = null;
                 if (physBonesField != null)
                 {
-                    var value = physBonesField.GetValue(mergePhysBoneComponent);
-                    if (value is VRCPhysBone[] physBonesArray)
-                    {
-                        cachedPhysBones = physBonesArray.Where(pb => pb != null).ToArray();
-                        return cachedPhysBones;
-                    }
-                    else if (value is List<VRCPhysBone> physBonesList)
-                    {
-                        cachedPhysBones = physBonesList.Where(pb => pb != null).ToArray();
-                        return cachedPhysBones;
-                    }
+                    value = physBonesField.GetValue(mergePhysBoneComponent);
+                }
+                else if (physBonesProperty != null)
+                {
+                    value = physBonesProperty.GetValue(mergePhysBoneComponent);
                 }
 
-                // Try property access
-                var physBonesProperty = mergePhysBoneType.GetProperty("physBones", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                if (physBonesProperty != null)
-                {
-                    var value = physBonesProperty.GetValue(mergePhysBoneComponent);
-                    if (value is VRCPhysBone[] physBonesArray)
-                    {
-                        cachedPhysBones = physBonesArray.Where(pb => pb != null).ToArray();
-                        return cachedPhysBones;
-                    }
-                    else if (value is List<VRCPhysBone> physBonesList)
-                    {
-                        cachedPhysBones = physBonesList.Where(pb => pb != null).ToArray();
-                        return cachedPhysBones;
-                    }
-                }
+                cachedPhysBones = ConvertToPhysBonesArray(value);
+                return cachedPhysBones;
             }
             catch (ArgumentException ex)
             {
@@ -213,6 +204,26 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             cachedPhysBones = Array.Empty<VRCPhysBone>();
             return cachedPhysBones;
+        }
+
+        private static VRCPhysBone[] ConvertToPhysBonesArray(object value)
+        {
+            if (value == null)
+            {
+                return Array.Empty<VRCPhysBone>();
+            }
+
+            if (value is VRCPhysBone[] physBonesArray)
+            {
+                return physBonesArray.Where(pb => pb != null).ToArray();
+            }
+
+            if (value is List<VRCPhysBone> physBonesList)
+            {
+                return physBonesList.Where(pb => pb != null).ToArray();
+            }
+
+            return Array.Empty<VRCPhysBone>();
         }
     }
 }
