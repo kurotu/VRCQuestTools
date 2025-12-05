@@ -72,7 +72,8 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         public void TestAAOMergePhysBoneProvider_WithMockComponent()
         {
             var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
-            mockComponent.physBones = new List<VRCPhysBone> { testPhysBone1, testPhysBone2 };
+            mockComponent.componentsSet.Add(testPhysBone1);
+            mockComponent.componentsSet.Add(testPhysBone2);
 
             var provider = new AAOMergePhysBoneProvider(mockComponent);
 
@@ -95,7 +96,8 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
             testPhysBone1.colliders.Add(testCollider2);
             testPhysBone2.colliders.Add(testCollider1); // Duplicate collider
             
-            mockComponent.physBones = new List<VRCPhysBone> { testPhysBone1, testPhysBone2 };
+            mockComponent.componentsSet.Add(testPhysBone1);
+            mockComponent.componentsSet.Add(testPhysBone2);
 
             var provider = new AAOMergePhysBoneProvider(mockComponent);
             var colliders = provider.Colliders;
@@ -123,7 +125,8 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
             testPhysBone1.ignoreTransforms.Add(ignoreTransform2);
             testPhysBone2.ignoreTransforms.Add(ignoreTransform1); // Duplicate
             
-            mockComponent.physBones = new List<VRCPhysBone> { testPhysBone1, testPhysBone2 };
+            mockComponent.componentsSet.Add(testPhysBone1);
+            mockComponent.componentsSet.Add(testPhysBone2);
 
             var provider = new AAOMergePhysBoneProvider(mockComponent);
             var ignoreTransforms = provider.IgnoreTransforms;
@@ -143,7 +146,6 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         public void TestAAOMergePhysBoneProvider_EmptyPhysBonesArray()
         {
             var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
-            mockComponent.physBones = new List<VRCPhysBone>();
 
             var provider = new AAOMergePhysBoneProvider(mockComponent);
 
@@ -163,7 +165,9 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         public void TestAAOMergePhysBoneProvider_FiltersNullPhysBones()
         {
             var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
-            mockComponent.physBones = new List<VRCPhysBone> { testPhysBone1, null, testPhysBone2 };
+            mockComponent.componentsSet.Add(testPhysBone1);
+            mockComponent.componentsSet.Add(null);
+            mockComponent.componentsSet.Add(testPhysBone2);
 
             var provider = new AAOMergePhysBoneProvider(mockComponent);
             var physBones = provider.GetPhysBones();
@@ -180,7 +184,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         public void TestAAOMergePhysBoneProvider_ClearColliderDoesNotThrow()
         {
             var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
-            mockComponent.physBones = new List<VRCPhysBone> { testPhysBone1 };
+            mockComponent.componentsSet.Add(testPhysBone1);
 
             var provider = new AAOMergePhysBoneProvider(mockComponent);
 
@@ -199,7 +203,8 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
             testPhysBone1.radius = 0.5f;
             testPhysBone1.radiusCurve = AnimationCurve.Linear(0, 0, 1, 1);
             
-            mockComponent.physBones = new List<VRCPhysBone> { testPhysBone1, testPhysBone2 };
+            mockComponent.componentsSet.Add(testPhysBone1);
+            mockComponent.componentsSet.Add(testPhysBone2);
 
             var provider = new AAOMergePhysBoneProvider(mockComponent);
 
@@ -214,7 +219,25 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         /// </summary>
         private class MockAAOMergePhysBone : MonoBehaviour
         {
-            public List<VRCPhysBone> physBones = new List<VRCPhysBone>();
+            public MockPrefabSafeSet componentsSet = new MockPrefabSafeSet();
+        }
+
+        /// <summary>
+        /// Mock PrefabSafeSet to simulate AAO's PrefabSafeSet structure.
+        /// </summary>
+        private class MockPrefabSafeSet : System.Collections.IEnumerable
+        {
+            private List<VRCPhysBone> items = new List<VRCPhysBone>();
+
+            public void Add(VRCPhysBone item)
+            {
+                items.Add(item);
+            }
+
+            public System.Collections.IEnumerator GetEnumerator()
+            {
+                return items.GetEnumerator();
+            }
         }
     }
 }

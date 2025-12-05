@@ -18,14 +18,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// </summary>
     internal class AAOMergePhysBoneProvider : VRCPhysBoneProviderBase
     {
-        private const string PhysBonesFieldName = "physBones";
+        private const string ComponentsSetFieldName = "componentsSet";
+        private const string MergePhysBoneTypeName = "Anatawa12.AvatarOptimizer.MergePhysBone";
         private const BindingFlags MemberBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
         private readonly Component mergePhysBoneComponent;
-        private readonly Type mergePhysBoneType;
-        private readonly FieldInfo physBonesField;
-        private readonly PropertyInfo physBonesProperty;
-        private VRCPhysBone[] cachedPhysBones;
+        private readonly FieldInfo componentsSetField;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AAOMergePhysBoneProvider"/> class.
@@ -39,14 +37,18 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             mergePhysBoneComponent = component;
-            mergePhysBoneType = component.GetType();
+            var mergePhysBoneType = Utils.SystemUtility.GetTypeByName(MergePhysBoneTypeName);
+
+            if (mergePhysBoneType == null || !mergePhysBoneType.IsInstanceOfType(component))
+            {
+                throw new ArgumentException($"Component is not an instance of {MergePhysBoneTypeName}", nameof(component));
+            }
 
             // Cache reflection members and verify this is an AAO MergePhysBone component
-            physBonesField = mergePhysBoneType.GetField(PhysBonesFieldName, MemberBindingFlags);
-            physBonesProperty = mergePhysBoneType.GetProperty(PhysBonesFieldName, MemberBindingFlags);
-            if (physBonesField == null && physBonesProperty == null)
+            componentsSetField = mergePhysBoneType.GetField(ComponentsSetFieldName, MemberBindingFlags);
+            if (componentsSetField == null)
             {
-                throw new ArgumentException("Component does not have a 'physBones' field or property", nameof(component));
+                throw new ArgumentException($"Component does not have a '{ComponentsSetFieldName}' field", nameof(component));
             }
         }
 
@@ -57,18 +59,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         public override GameObject GameObject => mergePhysBoneComponent.gameObject;
 
         /// <inheritdoc/>
-        public override Transform RootTransform
-        {
-            get
-            {
-                var physBones = GetPhysBones();
-                if (physBones.Length > 0 && physBones[0] != null)
-                {
-                    return physBones[0].rootTransform == null ? physBones[0].transform : physBones[0].rootTransform;
-                }
-                return mergePhysBoneComponent.transform;
-            }
-        }
+        public override Transform RootTransform => mergePhysBoneComponent.transform;
 
         /// <inheritdoc/>
         public override List<Transform> IgnoreTransforms
@@ -100,18 +91,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
         /// <inheritdoc/>
-        public override MultiChildType MultiChildType
-        {
-            get
-            {
-                var physBones = GetPhysBones();
-                if (physBones.Length > 0 && physBones[0] != null)
-                {
-                    return (MultiChildType)(int)physBones[0].multiChildType;
-                }
-                return MultiChildType.Ignore;
-            }
-        }
+        public override MultiChildType MultiChildType => MultiChildType.Ignore;
 
         /// <inheritdoc/>
         public override List<Component> Colliders
@@ -172,55 +152,47 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <inheritdoc/>
         public override VRCPhysBone[] GetPhysBones()
         {
-            if (cachedPhysBones != null)
-            {
-                return cachedPhysBones;
-            }
-
             try
             {
-                // Try to access the physBones field/property using cached reflection members
-                object value = null;
-                if (physBonesField != null)
+                // Access the componentsSet field using reflection
+                var componentsSet = componentsSetField.GetValue(mergePhysBoneComponent);
+                if (componentsSet == null)
                 {
-                    value = physBonesField.GetValue(mergePhysBoneComponent);
-                }
-                else if (physBonesProperty != null)
-                {
-                    value = physBonesProperty.GetValue(mergePhysBoneComponent);
+                    return Array.Empty<VRCPhysBone>();
                 }
 
-                cachedPhysBones = ConvertToPhysBonesArray(value);
-                return cachedPhysBones;
+                // Try to get the GetEnumerator method to iterate through the set
+                var getEnumeratorMethod = componentsSet.GetType().GetMethod("GetEnumerator");
+                if (getEnumeratorMethod == null)
+                {
+                    return Array.Empty<VRCPhysBone>();
+                }
+
+                var enumerator = getEnumeratorMethod.Invoke(componentsSet, null) as System.Collections.IEnumerator;
+                if (enumerator == null)
+                {
+                    return Array.Empty<VRCPhysBone>();
+                }
+
+                var result = new List<VRCPhysBone>();
+                while (enumerator.MoveNext())
+                {
+                    var current = enumerator.Current;
+                    if (current is VRCPhysBone physBone && physBone != null)
+                    {
+                        result.Add(physBone);
+                    }
+                }
+
+                return result.ToArray();
             }
             catch (ArgumentException ex)
             {
-                Debug.LogWarning($"Failed to access physBones from AAO MergePhysBone component: {ex.Message}");
+                Debug.LogWarning($"Failed to access componentsSet from AAO MergePhysBone component: {ex.Message}");
             }
             catch (TargetException ex)
             {
-                Debug.LogWarning($"Failed to access physBones from AAO MergePhysBone component: {ex.Message}");
-            }
-
-            cachedPhysBones = Array.Empty<VRCPhysBone>();
-            return cachedPhysBones;
-        }
-
-        private static VRCPhysBone[] ConvertToPhysBonesArray(object value)
-        {
-            if (value == null)
-            {
-                return Array.Empty<VRCPhysBone>();
-            }
-
-            if (value is VRCPhysBone[] physBonesArray)
-            {
-                return physBonesArray.Where(pb => pb != null).ToArray();
-            }
-
-            if (value is List<VRCPhysBone> physBonesList)
-            {
-                return physBonesList.Where(pb => pb != null).ToArray();
+                Debug.LogWarning($"Failed to access componentsSet from AAO MergePhysBone component: {ex.Message}");
             }
 
             return Array.Empty<VRCPhysBone>();
