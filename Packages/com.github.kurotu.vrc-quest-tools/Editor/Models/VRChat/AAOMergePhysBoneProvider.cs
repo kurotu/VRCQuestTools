@@ -169,7 +169,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
 
                 var enumeratorObj = getEnumeratorMethod.Invoke(componentsSet, null);
-                if (!(enumeratorObj is System.Collections.IEnumerator enumerator))
+                if (enumeratorObj is not System.Collections.IEnumerator enumerator)
                 {
                     return Array.Empty<VRCPhysBone>();
                 }
