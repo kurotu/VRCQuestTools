@@ -168,8 +168,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     return Array.Empty<VRCPhysBone>();
                 }
 
-                var enumerator = getEnumeratorMethod.Invoke(componentsSet, null) as System.Collections.IEnumerator;
-                if (enumerator == null)
+                var enumeratorObj = getEnumeratorMethod.Invoke(componentsSet, null);
+                if (!(enumeratorObj is System.Collections.IEnumerator enumerator))
                 {
                     return Array.Empty<VRCPhysBone>();
                 }
@@ -178,7 +178,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 while (enumerator.MoveNext())
                 {
                     var current = enumerator.Current;
-                    if (current is VRCPhysBone physBone && physBone != null)
+                    if (current is VRCPhysBone physBone)
                     {
                         result.Add(physBone);
                     }
@@ -186,11 +186,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
                 return result.ToArray();
             }
-            catch (ArgumentException ex)
-            {
-                Debug.LogWarning($"Failed to access componentsSet from AAO MergePhysBone component: {ex.Message}");
-            }
-            catch (TargetException ex)
+            catch (Exception ex) when (ex is ArgumentException || ex is TargetException || ex is FieldAccessException || ex is NotSupportedException)
             {
                 Debug.LogWarning($"Failed to access componentsSet from AAO MergePhysBone component: {ex.Message}");
             }
