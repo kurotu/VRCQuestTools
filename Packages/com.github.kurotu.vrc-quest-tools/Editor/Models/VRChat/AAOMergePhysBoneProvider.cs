@@ -36,10 +36,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
             mergePhysBoneComponent = component;
             mergePhysBoneType = component.GetType();
 
-            // Verify this is an AAO MergePhysBone component
-            if (!mergePhysBoneType.FullName.Contains("MergePhysBone"))
+            // Verify this is an AAO MergePhysBone component by checking for the physBones field
+            var physBonesField = mergePhysBoneType.GetField("physBones", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var physBonesProperty = mergePhysBoneType.GetProperty("physBones", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (physBonesField == null && physBonesProperty == null)
             {
-                throw new ArgumentException("Component is not an AAO MergePhysBone component", nameof(component));
+                throw new ArgumentException("Component does not have a 'physBones' field or property", nameof(component));
             }
         }
 
@@ -200,12 +202,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                 }
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
+            {
+                Debug.LogWarning($"Failed to access physBones from AAO MergePhysBone component: {ex.Message}");
+            }
+            catch (TargetException ex)
             {
                 Debug.LogWarning($"Failed to access physBones from AAO MergePhysBone component: {ex.Message}");
             }
 
-            cachedPhysBones = new VRCPhysBone[] { };
+            cachedPhysBones = Array.Empty<VRCPhysBone>();
             return cachedPhysBones;
         }
     }

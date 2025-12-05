@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 
-namespace KRT.VRCQuestTools.Models.VRChat
+namespace KRT.VRCQuestTools.Models.VRChat.Tests
 {
     /// <summary>
     /// Tests for AAOMergePhysBoneProvider class.
