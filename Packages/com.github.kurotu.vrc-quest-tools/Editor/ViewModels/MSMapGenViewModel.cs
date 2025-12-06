@@ -50,7 +50,6 @@ namespace KRT.VRCQuestTools.ViewModels
                 var width = Math.Max(metallic.Object?.width ?? 4, smoothness.Object?.width ?? 4);
                 var height = Math.Max(metallic.Object?.height ?? 4, smoothness.Object?.height ?? 4);
 
-                var dstTexture = new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
                 baker.Object.SetTexture("_MetallicMap", metallic.Object);
                 baker.Object.SetInt("_InvertMetallic", 0);
                 baker.Object.SetTexture("_SmoothnessMap", smoothness.Object);
