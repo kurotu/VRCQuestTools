@@ -19,11 +19,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
     internal class AAOMergePhysBoneProvider : VRCPhysBoneProviderBase
     {
         private const string ComponentsSetFieldName = "componentsSet";
+        private const string GetAsListMethodName = "GetAsList";
         private const string MergePhysBoneTypeName = "Anatawa12.AvatarOptimizer.MergePhysBone";
         private const BindingFlags MemberBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
+        // Static caches for reflection results to improve performance
+        private static Type cachedMergePhysBoneType;
+        private static FieldInfo cachedComponentsSetField;
+        private static MethodInfo cachedGetAsListMethod;
+
         private readonly Component mergePhysBoneComponent;
-        private readonly FieldInfo componentsSetField;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AAOMergePhysBoneProvider"/> class.
@@ -37,18 +42,26 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             mergePhysBoneComponent = component;
-            var mergePhysBoneType = Utils.SystemUtility.GetTypeByName(MergePhysBoneTypeName);
 
-            if (mergePhysBoneType == null || !mergePhysBoneType.IsInstanceOfType(component))
+            // Initialize static caches if not already done
+            if (cachedMergePhysBoneType == null)
+            {
+                cachedMergePhysBoneType = Utils.SystemUtility.GetTypeByName(MergePhysBoneTypeName);
+            }
+
+            if (cachedMergePhysBoneType == null || !cachedMergePhysBoneType.IsInstanceOfType(component))
             {
                 throw new ArgumentException($"Component is not an instance of {MergePhysBoneTypeName}", nameof(component));
             }
 
-            // Cache reflection members and verify this is an AAO MergePhysBone component
-            componentsSetField = mergePhysBoneType.GetField(ComponentsSetFieldName, MemberBindingFlags);
-            if (componentsSetField == null)
+            // Cache componentsSet field if not already cached
+            if (cachedComponentsSetField == null)
             {
-                throw new ArgumentException($"Component does not have a '{ComponentsSetFieldName}' field", nameof(component));
+                cachedComponentsSetField = cachedMergePhysBoneType.GetField(ComponentsSetFieldName, MemberBindingFlags);
+                if (cachedComponentsSetField == null)
+                {
+                    throw new ArgumentException($"Component does not have a '{ComponentsSetFieldName}' field", nameof(component));
+                }
             }
         }
 
@@ -154,21 +167,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             try
             {
-                // Access the componentsSet field using reflection
-                var componentsSet = componentsSetField.GetValue(mergePhysBoneComponent);
+                // Access the componentsSet field using cached reflection
+                var componentsSet = cachedComponentsSetField.GetValue(mergePhysBoneComponent);
                 if (componentsSet == null)
                 {
                     return Array.Empty<VRCPhysBone>();
                 }
 
-                // Get the GetAsList method to access the components
-                var getAsListMethod = componentsSet.GetType().GetMethod("GetAsList");
-                if (getAsListMethod == null)
+                // Cache GetAsList method if not already cached
+                if (cachedGetAsListMethod == null)
                 {
-                    return Array.Empty<VRCPhysBone>();
+                    cachedGetAsListMethod = componentsSet.GetType().GetMethod(GetAsListMethodName);
+                    if (cachedGetAsListMethod == null)
+                    {
+                        return Array.Empty<VRCPhysBone>();
+                    }
                 }
 
-                var listObj = getAsListMethod.Invoke(componentsSet, null);
+                var listObj = cachedGetAsListMethod.Invoke(componentsSet, null);
                 if (listObj == null)
                 {
                     return Array.Empty<VRCPhysBone>();
