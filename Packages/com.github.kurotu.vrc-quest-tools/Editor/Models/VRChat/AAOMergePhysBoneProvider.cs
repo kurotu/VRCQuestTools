@@ -161,26 +161,29 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     return Array.Empty<VRCPhysBone>();
                 }
 
-                // Try to get the GetEnumerator method to iterate through the set
-                var getEnumeratorMethod = componentsSet.GetType().GetMethod("GetEnumerator");
-                if (getEnumeratorMethod == null)
+                // Get the GetAsList method to access the components
+                var getAsListMethod = componentsSet.GetType().GetMethod("GetAsList");
+                if (getAsListMethod == null)
                 {
                     return Array.Empty<VRCPhysBone>();
                 }
 
-                var enumeratorObj = getEnumeratorMethod.Invoke(componentsSet, null);
-                if (enumeratorObj is not System.Collections.IEnumerator enumerator)
+                var listObj = getAsListMethod.Invoke(componentsSet, null);
+                if (listObj == null)
                 {
                     return Array.Empty<VRCPhysBone>();
                 }
 
+                // The list contains VRCPhysBoneBase, we need to filter to VRCPhysBone only
                 var result = new List<VRCPhysBone>();
-                while (enumerator.MoveNext())
+                if (listObj is System.Collections.IEnumerable enumerable)
                 {
-                    var current = enumerator.Current;
-                    if (current is VRCPhysBone physBone)
+                    foreach (var item in enumerable)
                     {
-                        result.Add(physBone);
+                        if (item is VRCPhysBone physBone)
+                        {
+                            result.Add(physBone);
+                        }
                     }
                 }
 

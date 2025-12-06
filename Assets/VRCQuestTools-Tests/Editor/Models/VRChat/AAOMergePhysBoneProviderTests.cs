@@ -234,6 +234,11 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
                 items.Add(item);
             }
 
+            public List<VRCPhysBone> GetAsList()
+            {
+                return items;
+            }
+
             public System.Collections.IEnumerator GetEnumerator()
             {
                 return items.GetEnumerator();
