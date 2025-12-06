@@ -14,6 +14,11 @@ namespace KRT.VRCQuestTools.Models
         ASTC_8x8 = TextureFormat.ASTC_8x8,
         ASTC_10x10 = TextureFormat.ASTC_10x10,
         ASTC_12x12 = TextureFormat.ASTC_12x12,
+
+        /// <summary>
+        /// Don't set platform-specific override for texture import settings.
+        /// </summary>
+        NoOverride = -1,
 #pragma warning restore SA1602
     }
 }
