@@ -418,6 +418,14 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
         }
 
+        private static void DestroyNonAssetTexture(Texture texture)
+        {
+            if (texture != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(texture)))
+            {
+                Object.DestroyImmediate(texture);
+            }
+        }
+
         /// <summary>
         /// Reused codes from lilInspector.cs v1.2.12 with some modification.
         /// </summary>
@@ -631,26 +639,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                 {
                     RenderTexture.active = activeRT;
                     Object.DestroyImmediate(hsvgMaterial);
-                    if (srcTexture != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(srcTexture)))
-                    {
-                        Object.DestroyImmediate(srcTexture);
-                    }
-                    if (srcMain2 != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(srcMain2)))
-                    {
-                        Object.DestroyImmediate(srcMain2);
-                    }
-                    if (srcMain3 != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(srcMain3)))
-                    {
-                        Object.DestroyImmediate(srcMain3);
-                    }
-                    if (srcMask2 != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(srcMask2)))
-                    {
-                        Object.DestroyImmediate(srcMask2);
-                    }
-                    if (srcMask3 != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(srcMask3)))
-                    {
-                        Object.DestroyImmediate(srcMask3);
-                    }
+                    DestroyNonAssetTexture(srcTexture);
+                    DestroyNonAssetTexture(srcMain2);
+                    DestroyNonAssetTexture(srcMain3);
+                    DestroyNonAssetTexture(srcMask2);
+                    DestroyNonAssetTexture(srcMask3);
                 }
             }
         }
