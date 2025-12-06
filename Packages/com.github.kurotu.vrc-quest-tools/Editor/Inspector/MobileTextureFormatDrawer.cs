@@ -20,11 +20,12 @@ namespace KRT.VRCQuestTools.Inspector
                 using (var ccs = new EditorGUI.ChangeCheckScope())
                 {
                     var labels = GetPopupLabels();
-                    var values = GetPopupValues();
+                    var displayToEnumIndex = GetDisplayToEnumIndexMapping();
                     
-                    // Find the current value's display index
-                    var currentValue = (MobileTextureFormat)property.enumValueIndex;
-                    var currentDisplayIndex = Array.IndexOf(values, currentValue);
+                    // property.enumValueIndex is the index in Enum.GetValues() array, not the enum value
+                    // Find which display index corresponds to the current enum index
+                    var currentEnumIndex = property.enumValueIndex;
+                    var currentDisplayIndex = Array.IndexOf(displayToEnumIndex, currentEnumIndex);
                     if (currentDisplayIndex < 0)
                     {
                         currentDisplayIndex = 0;
@@ -33,9 +34,8 @@ namespace KRT.VRCQuestTools.Inspector
                     var newDisplayIndex = EditorGUI.Popup(position, label, currentDisplayIndex, labels);
                     if (ccs.changed)
                     {
-                        // Convert display index back to enum value index
-                        var newValue = values[newDisplayIndex];
-                        property.enumValueIndex = (int)newValue;
+                        // Convert display index back to enum index (not enum value!)
+                        property.enumValueIndex = displayToEnumIndex[newDisplayIndex];
                     }
                 }
             }
@@ -73,12 +73,15 @@ namespace KRT.VRCQuestTools.Inspector
                 .ToArray();
         }
 
-        private MobileTextureFormat[] GetPopupValues()
+        private int[] GetDisplayToEnumIndexMapping()
         {
             var allValues = (MobileTextureFormat[])Enum.GetValues(typeof(MobileTextureFormat));
             
             // Reorder: NoOverride first, then ASTC formats
-            return allValues.OrderBy(v => v == MobileTextureFormat.NoOverride ? 0 : 1).ToArray();
+            var orderedValues = allValues.OrderBy(v => v == MobileTextureFormat.NoOverride ? 0 : 1).ToArray();
+            
+            // Map each display index to the corresponding enum index in the original Enum.GetValues() array
+            return orderedValues.Select(v => Array.IndexOf(allValues, v)).ToArray();
         }
     }
 }
