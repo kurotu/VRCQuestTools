@@ -630,6 +630,27 @@ namespace KRT.VRCQuestTools.Models.Unity
                 finally
                 {
                     RenderTexture.active = activeRT;
+                    Object.DestroyImmediate(hsvgMaterial);
+                    if (srcTexture != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(srcTexture)))
+                    {
+                        Object.DestroyImmediate(srcTexture);
+                    }
+                    if (srcMain2 != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(srcMain2)))
+                    {
+                        Object.DestroyImmediate(srcMain2);
+                    }
+                    if (srcMain3 != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(srcMain3)))
+                    {
+                        Object.DestroyImmediate(srcMain3);
+                    }
+                    if (srcMask2 != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(srcMask2)))
+                    {
+                        Object.DestroyImmediate(srcMask2);
+                    }
+                    if (srcMask3 != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(srcMask3)))
+                    {
+                        Object.DestroyImmediate(srcMask3);
+                    }
                 }
             }
         }
