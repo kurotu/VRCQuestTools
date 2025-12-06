@@ -174,10 +174,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     return Array.Empty<VRCPhysBone>();
                 }
 
-                // Cache GetAsList method if not already cached
-                if (cachedGetAsListMethod == null)
+                // Cache GetAsList method if not already cached or if type doesn't match
+                var componentsSetType = componentsSet.GetType();
+                if (cachedGetAsListMethod == null || cachedGetAsListMethod.DeclaringType != componentsSetType)
                 {
-                    cachedGetAsListMethod = componentsSet.GetType().GetMethod(GetAsListMethodName);
+                    cachedGetAsListMethod = componentsSetType.GetMethod(GetAsListMethodName);
                     if (cachedGetAsListMethod == null)
                     {
                         return Array.Empty<VRCPhysBone>();
