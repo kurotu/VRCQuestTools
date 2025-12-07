@@ -182,6 +182,22 @@ namespace KRT.VRCQuestTools.Utils
                 importer.SetPlatformTextureSettings(androidSettings);
                 importer.SetPlatformTextureSettings(iosSettings);
             }
+            else
+            {
+                // Remove platform overrides when format is null
+                var androidSettings = new TextureImporterPlatformSettings
+                {
+                    name = "Android",
+                    overridden = false,
+                };
+                var iosSettings = new TextureImporterPlatformSettings
+                {
+                    name = "iPhone",
+                    overridden = false,
+                };
+                importer.SetPlatformTextureSettings(androidSettings);
+                importer.SetPlatformTextureSettings(iosSettings);
+            }
             importer.SaveAndReimport();
         }
 
@@ -212,6 +228,22 @@ namespace KRT.VRCQuestTools.Utils
                     overridden = androidSettings.overridden,
                     maxTextureSize = androidSettings.maxTextureSize,
                     format = androidSettings.format,
+                };
+                importer.SetPlatformTextureSettings(androidSettings);
+                importer.SetPlatformTextureSettings(iosSettings);
+            }
+            else
+            {
+                // Remove platform overrides when format is null
+                var androidSettings = new TextureImporterPlatformSettings
+                {
+                    name = "Android",
+                    overridden = false,
+                };
+                var iosSettings = new TextureImporterPlatformSettings
+                {
+                    name = "iPhone",
+                    overridden = false,
                 };
                 importer.SetPlatformTextureSettings(androidSettings);
                 importer.SetPlatformTextureSettings(iosSettings);
