@@ -7,6 +7,10 @@ namespace KRT.VRCQuestTools.Models
     /// </summary>
     public enum MobileTextureFormat
     {
+        /// <summary>
+        /// Don't set platform-specific override for texture import settings.
+        /// </summary>
+        NoOverride = 0,
 #pragma warning disable SA1602 // Disable SA1602 for enum documentation
         ASTC_4x4 = TextureFormat.ASTC_4x4,
         ASTC_5x5 = TextureFormat.ASTC_5x5,
@@ -14,11 +18,6 @@ namespace KRT.VRCQuestTools.Models
         ASTC_8x8 = TextureFormat.ASTC_8x8,
         ASTC_10x10 = TextureFormat.ASTC_10x10,
         ASTC_12x12 = TextureFormat.ASTC_12x12,
-
-        /// <summary>
-        /// Don't set platform-specific override for texture import settings.
-        /// </summary>
-        NoOverride = -1,
 #pragma warning restore SA1602
     }
 }
