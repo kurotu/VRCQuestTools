@@ -12,6 +12,16 @@ namespace KRT.VRCQuestTools.Models
     internal static class MaterialGeneratorUtility
     {
         /// <summary>
+        /// Convert MobileTextureFormat to nullable TextureFormat, handling NoOverride case.
+        /// </summary>
+        /// <param name="format">Mobile texture format to convert.</param>
+        /// <returns>Nullable TextureFormat, or null if NoOverride.</returns>
+        private static TextureFormat? ConvertToNullableTextureFormat(MobileTextureFormat format)
+        {
+            return format == MobileTextureFormat.NoOverride ? null : (TextureFormat?)format;
+        }
+
+        /// <summary>
         /// Generate a texture for material.
         /// </summary>
         /// <param name="material">Original material.</param>
@@ -93,9 +103,7 @@ namespace KRT.VRCQuestTools.Models
         private static Texture2D TryLoadCacheTexture(Material material, IMaterialConvertSettings settings, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile)
         {
             // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
-            TextureFormat? mobileTextureFormatNullable = settings.MobileTextureFormat == MobileTextureFormat.NoOverride
-                ? null
-                : (TextureFormat?)settings.MobileTextureFormat;
+            TextureFormat? mobileTextureFormatNullable = ConvertToNullableTextureFormat(settings.MobileTextureFormat);
 
             using (var mutex = CacheManager.Texture.CreateMutex())
             {
@@ -149,14 +157,10 @@ namespace KRT.VRCQuestTools.Models
         private static Texture2D SaveTexture(MobileTextureFormat mobileTextureFormat, bool saveAsPng, string texturesPath, TextureConfig config, Texture2D texToWrite, string cacheFile, string outFile)
         {
             // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
-            TextureFormat? mobileTextureFormatNullable = mobileTextureFormat == MobileTextureFormat.NoOverride
-                ? null
-                : (TextureFormat?)mobileTextureFormat;
+            TextureFormat? mobileTextureFormatNullable = ConvertToNullableTextureFormat(mobileTextureFormat);
 
             // For in-code compression when NoOverride is selected, use ASTC_6x6
-            TextureFormat mobileTextureFormatForCompression = mobileTextureFormat == MobileTextureFormat.NoOverride
-                ? TextureFormat.ASTC_6x6
-                : (TextureFormat)mobileTextureFormat;
+            TextureFormat mobileTextureFormatForCompression = TextureUtility.GetCompressionFormat(mobileTextureFormat);
 
             if (saveAsPng)
             {
