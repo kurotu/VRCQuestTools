@@ -92,19 +92,6 @@ namespace KRT.VRCQuestTools.Menus
             internal const string CopyBlendShapeWeights = "CONTEXT/SkinnedMeshRenderer/Copy BlendShape Weights";
         }
 
-#if !VQT_HAS_VRCSDK_BASE
-        [MenuItem(MenuPaths.MissingSDK, false, (int)MenuPriorities.MissingSDK)]
-        private static void MissingSDK()
-        {
-        }
-
-        [MenuItem(MenuPaths.MissingSDK, true)]
-        private static bool MissingSDKValidation()
-        {
-            return false;
-        }
-#endif
-
         [MenuItem(MenuPaths.Help, false, (int)MenuPriorities.Help)]
         private static void HelpMenu()
         {

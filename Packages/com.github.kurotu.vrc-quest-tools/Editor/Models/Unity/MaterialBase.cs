@@ -83,9 +83,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var disposables = new CompositeDisposable())
             using (var baker = DisposableObject.New(Object.Instantiate(Material)))
             {
-#if UNITY_2022_1_OR_NEWER
                 baker.Object.parent = null;
-#endif
                 baker.Object.shader = ToonLitBakeShader;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
                 baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);

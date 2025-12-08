@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-05-24 04:13\n"
+"PO-Revision-Date: 2025-08-20 03:44\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -266,8 +266,32 @@ msgstr "MatCap テクスチャを設定してください。"
 msgid "ToonStandardConvertSettingsFallbackShadowRampLabel"
 msgstr "影のフォールバック"
 
+msgid "ToonStandardConvertSettingsGenerateShadowRampLabel"
+msgstr "影の設定を生成する"
+
 msgid "ToonStandardConvertSettingsCustomFallbackShadowRampLabel"
 msgstr "Shadow Ramp"
+
+msgid "ToonStandardConvertSettingsFeaturesLabel"
+msgstr "機能設定"
+
+msgid "ToonStandardConvertSettingsFeaturesNormalMapLabel"
+msgstr "ノーマルマップ"
+
+msgid "ToonStandardConvertSettingsFeaturesEmissionLabel"
+msgstr "発光"
+
+msgid "ToonStandardConvertSettingsFeaturesOcclusionLabel"
+msgstr "オクルージョン"
+
+msgid "ToonStandardConvertSettingsFeaturesSpecularLabel"
+msgstr "反射"
+
+msgid "ToonStandardConvertSettingsFeaturesMatcapLabel"
+msgstr "マットキャップ"
+
+msgid "ToonStandardConvertSettingsFeaturesRimLightingLabel"
+msgstr "リムライト"
 
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
 msgstr "対象マテリアル"
@@ -325,9 +349,6 @@ msgstr "{0} に非対応コンポーネントはありません。"
 
 msgid "UnsupportedRemoverConfirmationMessage"
 msgstr "{0} から以下の非対応コンポーネントを削除します。"
-
-msgid "PhysBonesSDKRequired"
-msgstr "Avatar Dynamics に対応した VRCSDK が必要です。"
 
 msgid "SelectComponentsToKeep"
 msgstr "削除せずに残すコンポーネントを選択してください。"
@@ -656,14 +677,14 @@ msgstr "Android 用のビルド設定で Tools -> NDM Framework -> Manual bake a
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK コントロールパネルで設定してください。"
 
+msgid "LegacyPackageExceptionMessage"
+msgstr "現在のバージョンの{0}には非対応です。{0}を{1}以降に更新してください。"
+
+msgid "BreakingPackageExceptionMessage"
+msgstr "現在のバージョンの{0}には非対応です。VRCQuestToolsを更新するか{0}を{1}未満にダウングレードしてください。"
+
 msgid "FeatureRequiresNdmf"
 msgstr "Non-Destructive Modular Framework (NDMF) が必要です。"
-
-msgid "NdmfPluginRequiresNdmfUpdate"
-msgstr "Non-Destructive Modular Framework (NDMF) {0} 以降が必要です。NDMF を更新してください。"
-
-msgid "NdmfPluginRemovedUnsupportedComponent"
-msgstr "ビルド中に非対応コンポーネント {0} を \"{1}\" から削除しました。動作に問題がないか確認してください。"
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
 msgstr "非対応コンポーネントの削除"
@@ -680,6 +701,12 @@ msgstr "マテリアルの変換中にエラーが発生しました。\n\n"
 "Shader: {1}\n\n"
 "{2}: {3}\n"
 "{4}"
+
+msgid "NDMF:PackageCompatibilityErrorTitle"
+msgstr "非対応の{0}"
+
+msgid "NDMF:PackageCompatibilityErrorDescription"
+msgstr "{0}"
 
 msgid "NDMF:MaterialSwapNullErrorTitle"
 msgstr "マテリアル未設定"

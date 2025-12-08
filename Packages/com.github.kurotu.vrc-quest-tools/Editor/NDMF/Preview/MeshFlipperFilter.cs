@@ -1,5 +1,3 @@
-#if VQT_HAS_NDMF_PREVIEW
-
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -7,6 +5,7 @@ using System.Threading.Tasks;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf.preview;
+using UnityEditor;
 using UnityEngine;
 
 #pragma warning disable SA1414 // tuple element names
@@ -19,7 +18,7 @@ namespace KRT.VRCQuestTools.Ndmf
     /// </summary>
     internal class MeshFlipperFilter : IRenderFilter
     {
-        private static readonly TogglablePreviewNode PreviewNode = TogglablePreviewNode.Create(() => "Mesh Flipper", "vrc-quest-tools/MeshFlipperPreview", false);
+        private static readonly TogglablePreviewNode PreviewNode = TogglablePreviewNode.Create(() => "Mesh Flipper", "vrc-quest-tools/MeshFlipperPreview", true);
 
         private readonly MeshFlipperProcessingPhase phase;
 
@@ -51,7 +50,15 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public ImmutableList<RenderGroup> GetTargetGroups(ComputeContext context)
         {
-            return context.GetComponentsByType<MeshFlipper>()
+            var components = context.GetComponentsByType<MeshFlipper>()
+                .Where(mf => mf.processingPhase == phase);
+
+            foreach (var mf in components)
+            {
+                context.Observe(mf, mf => mf.processingPhase);
+            }
+
+            return components
                 .Select(mf => context.GetComponent<Renderer>(mf.gameObject))
                 .Where(r => r is SkinnedMeshRenderer || r is MeshRenderer)
                 .Select(r => RenderGroup.For(r))
@@ -61,13 +68,13 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public Task<IRenderFilterNode> Instantiate(RenderGroup group, IEnumerable<(Renderer, Renderer)> proxyPairs, ComputeContext context)
         {
-            var meshFlipper = group.Renderers.First().GetComponent<MeshFlipper>();
+            var meshFlipper = group.Renderers[0].GetComponent<MeshFlipper>();
             var targetRenderer = proxyPairs.First().Item2;
 
             var mesh = RendererUtility.GetSharedMesh(targetRenderer);
             if (mesh == null)
             {
-                return null;
+                return Task.FromResult<IRenderFilterNode>(null);
             }
 
             context.Observe(meshFlipper);
@@ -96,14 +103,15 @@ namespace KRT.VRCQuestTools.Ndmf
                     // do not report missing mask.
                 }
             }
-            return Task.FromResult<IRenderFilterNode>(new MeshFlipperFilterNode(result, targetRenderer));
+            return Task.FromResult<IRenderFilterNode>(new MeshFlipperFilterNode(result));
         }
 
         private class MeshFlipperFilterNode : IRenderFilterNode
         {
             private Mesh flippedMesh;
+            private bool disposedValue;
 
-            public MeshFlipperFilterNode(Mesh flippedMesh, Renderer targetRenderer)
+            public MeshFlipperFilterNode(Mesh flippedMesh)
             {
                 this.flippedMesh = flippedMesh;
             }
@@ -129,8 +137,28 @@ namespace KRT.VRCQuestTools.Ndmf
                         }
                 }
             }
+
+            public void Dispose()
+            {
+                Dispose(disposing: true);
+                System.GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!disposedValue)
+                {
+                    if (flippedMesh != null)
+                    {
+                        if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(flippedMesh)))
+                        {
+                            UnityEngine.Object.DestroyImmediate(flippedMesh);
+                        }
+                        flippedMesh = null;
+                    }
+                    disposedValue = true;
+                }
+            }
         }
     }
 }
-
-#endif

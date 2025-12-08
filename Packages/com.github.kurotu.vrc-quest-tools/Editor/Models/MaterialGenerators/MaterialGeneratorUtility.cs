@@ -128,8 +128,8 @@ namespace KRT.VRCQuestTools.Models
                         catch (Exception e)
                         {
                             // Recoverable error, just log and continue.
-                            Debug.LogException(e);
-                            Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to load cache file {cacheFile} for {material.name}");
+                            Logger.LogException(e);
+                            Logger.LogWarning($"Failed to load cache file {cacheFile} for {material.name}");
                         }
                     }
                 }
@@ -171,7 +171,7 @@ namespace KRT.VRCQuestTools.Models
                 {
                     TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget, (TextureFormat)mobileTextureFormat);
                 }
-                CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap)));
+                CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap, EditorUserBuildSettings.activeBuildTarget)));
             }
 
             return texToWrite;

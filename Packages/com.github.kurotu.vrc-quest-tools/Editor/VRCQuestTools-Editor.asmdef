@@ -1,10 +1,12 @@
 {
     "name": "VRCQuestTools-Editor",
+    "rootNamespace": "KRT.VRCQuestTools",
     "references": [
         "VRCQuestTools",
         "VRC.SDK3A.Editor",
         "VRC.SDKBase",
-        "nadena.dev.modular-avatar.core"
+        "nadena.dev.modular-avatar.core",
+        "nadena.dev.ndmf"
     ],
     "includePlatforms": [
         "Editor"
@@ -21,68 +23,48 @@
         "VRC.SDK3.Dynamics.PhysBone.dll",
         "Newtonsoft.Json.dll"
     ],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [
-        {
-            "name": "com.vrchat.base",
-            "expression": "3.6.2-constraints.3",
-            "define": "VQT_HAS_VRCSDK_CONSTRAINTS"
-        },
-        {
-            "name": "com.vrchat.avatars",
-            "expression": "3.7.5",
-            "define": "VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER"
-        },
-        {
-            "name": "com.vrchat.avatars",
-            "expression": "3.7.6-beta.1",
-            "define": "VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER"
-        },
-        {
-            "name": "com.vrchat.avatars",
-            "expression": "3.8.1-beta.1",
-            "define": "VQT_HAS_VRCSDK_NO_PRECHECK"
-        },
-        {
-            "name": "com.vrchat.avatars",
-            "expression": "3.8.1",
-            "define": "VQT_HAS_VRCSDK_TOON_STANDARD"
-        },
         {
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "VQT_HAS_NEWTONSOFT_JSON"
         },
         {
-            "name": "com.vrchat.base",
+            "name": "jp.lilxyzw.liltoon",
             "expression": "",
-            "define": "VQT_HAS_VRCSDK_BASE"
+            "define": "VQT_LILTOON"
+        },
+        {
+            "name": "jp.lilxyzw.liltoon",
+            "expression": "[0.0.0,1.10.0)",
+            "define": "VQT_LILTOON_LEGACY"
+        },
+        {
+            "name": "jp.lilxyzw.liltoon",
+            "expression": "3.0.0-a",
+            "define": "VQT_LILTOON_BREAKING"
         },
         {
             "name": "nadena.dev.ndmf",
-            "expression": "",
+            "expression": "[1.5.0,2.0.0-a)",
             "define": "VQT_HAS_NDMF"
         },
         {
             "name": "nadena.dev.modular-avatar",
-            "expression": "1.0.0",
-            "define": "VQT_HAS_MODULAR_AVATAR"
+            "expression": "",
+            "define": "VQT_MODULAR_AVATAR"
         },
         {
             "name": "nadena.dev.modular-avatar",
-            "expression": "1.8.0",
-            "define": "VQT_HAS_MODULAR_AVATAR_WFO"
+            "expression": "[0.0.0,1.12.2)",
+            "define": "VQT_MODULAR_AVATAR_LEGACY"
         },
         {
             "name": "nadena.dev.modular-avatar",
-            "expression": "1.9.0",
-            "define": "VQT_HAS_MODULAR_AVATAR_WFO_ANDROID"
-        },
-        {
-            "name": "nadena.dev.modular-avatar",
-            "expression": "1.9.14",
-            "define": "VQT_HAS_MA_CONVERT_CONSTRAINTS"
+            "expression": "2.0.0-a",
+            "define": "VQT_MODULAR_AVATAR_BREAKING"
         }
     ],
     "noEngineReferences": false

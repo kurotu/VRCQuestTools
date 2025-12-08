@@ -4,12 +4,7 @@ using System.IO;
 using System.Linq;
 using Unity.Collections;
 using UnityEditor;
-
-#if UNITY_2020_2_OR_NEWER
 using UnityEditor.AssetImporters;
-#else
-using UnityEditor.Experimental.AssetImporters;
-#endif
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
@@ -236,9 +231,15 @@ namespace KRT.VRCQuestTools.Utils
                 return null;
             }
 
-            if (texture.GetType() == typeof(RenderTexture))
+            if (texture is RenderTexture rt)
             {
-                return CreateColorTexture(Color.black);
+                Texture2D newTex = null;
+                var request = RequestReadbackRenderTexture(rt, rt.mipmapCount > 1, !rt.isDataSRGB, (result) =>
+                {
+                    newTex = result;
+                });
+                request.WaitForCompletion();
+                return newTex;
             }
 
             var path = AssetDatabase.GetAssetPath(texture);
@@ -546,7 +547,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 if (texture.width % 4 != 0 || texture.height % 4 != 0)
                 {
-                    Debug.LogWarning($"[{VRCQuestTools.Name}] Texture {texture.name} is not a multiple of 4. Not compressed to DXT5.", texture);
+                    Logger.LogWarning($"Texture {texture.name} is not a multiple of 4. Not compressed to DXT5.", texture);
                     return;
                 }
             }
@@ -720,7 +721,7 @@ namespace KRT.VRCQuestTools.Utils
             };
             var inputRGB = !raFomrats.Contains(source.format);
 
-            // ì¸óÕÇ∆èoóÕÇÃRenderTexture
+            // Input and output are RenderTextures
             var d = new RenderTextureDescriptor(source.width, source.height, RenderTextureFormat.ARGB32)
             {
                 useMipMap = false,
@@ -753,7 +754,7 @@ namespace KRT.VRCQuestTools.Utils
             int threadGroupsY = Mathf.CeilToInt(targetHeight / 8.0f);
             computeShader.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
 
-            // åãâ ÇTexture2DÇ…ïœä∑
+            // Convert result to Texture2D
             var prevActive = RenderTexture.active;
             RenderTexture.active = dstRT;
             Texture2D result = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false, true);
@@ -786,13 +787,188 @@ namespace KRT.VRCQuestTools.Utils
             return ((int)newWidth, (int)newHeight);
         }
 
+        /// <summary>
+        /// Requests the image content hash of a texture.
+        /// </summary>
+        /// <param name="texture">The texture to compute the content hash for.</param>
+        /// <returns>Contents Hash.</returns>
+        internal static Hash128 GetImageContentsHash(Texture texture)
+        {
+            switch (texture)
+            {
+                case null:
+                    return default;
+                case RenderTexture:
+                    // RenderTexture's imageContentsHash is 0, so we generate a random hash.
+                    return Hash128.Compute(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
+                default:
+                    return texture.imageContentsHash;
+            }
+        }
+
+        /// <summary>
+        /// Gets platform-specific texture override settings from multiple textures and returns the optimal resolution and compression format.
+        /// Analyzes Android and iOS platform overrides from texture importers.
+        /// Only ASTC compression formats are considered, as per VRCQuestTools mobile texture format requirements.
+        /// Non-ASTC override formats will be ignored.
+        /// HDR ASTC formats are mapped to their non-HDR equivalents.
+        /// </summary>
+        /// <param name="textures">Source textures to analyze.</param>
+        /// <returns>A tuple containing the maximum resolution and the mobile texture format from the overrides, or null if no overrides exist or if no ASTC formats are found.</returns>
+        internal static (int MaxTextureSize, TextureFormat Format)? GetPlatformOverrideSettings(params Texture[] textures)
+        {
+            if (textures == null || textures.Length == 0)
+            {
+                return null;
+            }
+
+            int? maxResolution = null;
+            TextureFormat? bestFormat = null;
+
+            foreach (var texture in textures)
+            {
+                if (texture == null)
+                {
+                    continue;
+                }
+
+                var path = AssetDatabase.GetAssetPath(texture);
+                if (string.IsNullOrEmpty(path))
+                {
+                    continue;
+                }
+
+                var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                if (importer == null)
+                {
+                    continue;
+                }
+
+                // Check Android and iOS overrides
+                var androidSettings = importer.GetPlatformTextureSettings("Android");
+                var iosSettings = importer.GetPlatformTextureSettings("iPhone");
+
+                // Process Android override if it exists
+                if (androidSettings.overridden)
+                {
+                    var resolution = androidSettings.maxTextureSize;
+                    var format = GetMobileTextureFormatFromImporterFormat(androidSettings.format);
+
+                    if (format.HasValue)
+                    {
+                        maxResolution = maxResolution.HasValue ? Math.Max(maxResolution.Value, resolution) : resolution;
+                        bestFormat = GetBetterASTCFormat(bestFormat, format.Value);
+                    }
+                }
+
+                // Process iOS override if it exists
+                if (iosSettings.overridden)
+                {
+                    var resolution = iosSettings.maxTextureSize;
+                    var format = GetMobileTextureFormatFromImporterFormat(iosSettings.format);
+
+                    if (format.HasValue)
+                    {
+                        maxResolution = maxResolution.HasValue ? Math.Max(maxResolution.Value, resolution) : resolution;
+                        bestFormat = GetBetterASTCFormat(bestFormat, format.Value);
+                    }
+                }
+            }
+
+            if (maxResolution.HasValue && bestFormat.HasValue)
+            {
+                return (maxResolution.Value, bestFormat.Value);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Converts TextureImporterFormat to TextureFormat.
+        /// HDR ASTC formats are mapped to their non-HDR equivalents.
+        /// </summary>
+        /// <param name="importerFormat">The TextureImporterFormat to convert.</param>
+        /// <returns>The corresponding TextureFormat, or null if the format is not a supported ASTC format.</returns>
+        private static TextureFormat? GetMobileTextureFormatFromImporterFormat(TextureImporterFormat importerFormat)
+        {
+            // Only handle ASTC formats as per requirements
+            // HDR ASTC formats are mapped to their non-HDR equivalents
+            switch (importerFormat)
+            {
+                case TextureImporterFormat.ASTC_4x4:
+                case TextureImporterFormat.ASTC_HDR_4x4:
+                    return TextureFormat.ASTC_4x4;
+                case TextureImporterFormat.ASTC_5x5:
+                case TextureImporterFormat.ASTC_HDR_5x5:
+                    return TextureFormat.ASTC_5x5;
+                case TextureImporterFormat.ASTC_6x6:
+                case TextureImporterFormat.ASTC_HDR_6x6:
+                    return TextureFormat.ASTC_6x6;
+                case TextureImporterFormat.ASTC_8x8:
+                case TextureImporterFormat.ASTC_HDR_8x8:
+                    return TextureFormat.ASTC_8x8;
+                case TextureImporterFormat.ASTC_10x10:
+                case TextureImporterFormat.ASTC_HDR_10x10:
+                    return TextureFormat.ASTC_10x10;
+                case TextureImporterFormat.ASTC_12x12:
+                case TextureImporterFormat.ASTC_HDR_12x12:
+                    return TextureFormat.ASTC_12x12;
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Compares two ASTC formats and returns the higher quality one (smaller block size = higher quality).
+        /// </summary>
+        /// <param name="current">The current best format, or null.</param>
+        /// <param name="candidate">The candidate format to compare.</param>
+        /// <returns>The higher quality ASTC format.</returns>
+        private static TextureFormat GetBetterASTCFormat(TextureFormat? current, TextureFormat candidate)
+        {
+            if (!current.HasValue)
+            {
+                return candidate;
+            }
+
+            // Get quality scores (lower block size = higher quality)
+            var currentQuality = GetASTCQualityScore(current.Value);
+            var candidateQuality = GetASTCQualityScore(candidate);
+
+            // Return the format with lower block size (higher quality)
+            return candidateQuality < currentQuality ? candidate : current.Value;
+        }
+
+        /// <summary>
+        /// Gets a quality score for an ASTC format (lower is better quality).
+        /// The score is based on the block size: 4x4 = 16, 5x5 = 25, etc.
+        /// </summary>
+        /// <param name="format">The ASTC format.</param>
+        /// <returns>Quality score (lower is better).</returns>
+        private static int GetASTCQualityScore(TextureFormat format)
+        {
+            switch (format)
+            {
+                case TextureFormat.ASTC_4x4:
+                    return 16;
+                case TextureFormat.ASTC_5x5:
+                    return 25;
+                case TextureFormat.ASTC_6x6:
+                    return 36;
+                case TextureFormat.ASTC_8x8:
+                    return 64;
+                case TextureFormat.ASTC_10x10:
+                    return 100;
+                case TextureFormat.ASTC_12x12:
+                    return 144;
+                default:
+                    return int.MaxValue;
+            }
+        }
+
         private static bool ShouldUseAsyncGPUReadback()
         {
-#if UNITY_2022_1_OR_NEWER
             return SystemInfo.supportsAsyncGPUReadback;
-#else
-            return false;
-#endif
         }
     }
 }

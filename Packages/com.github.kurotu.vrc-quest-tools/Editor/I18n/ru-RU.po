@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-05-24 04:13\n"
+"PO-Revision-Date: 2025-08-29 14:07\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -263,7 +263,31 @@ msgstr "Установите текстуру MatCap."
 msgid "ToonStandardConvertSettingsFallbackShadowRampLabel"
 msgstr ""
 
+msgid "ToonStandardConvertSettingsGenerateShadowRampLabel"
+msgstr ""
+
 msgid "ToonStandardConvertSettingsCustomFallbackShadowRampLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesNormalMapLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesEmissionLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesOcclusionLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesSpecularLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesMatcapLabel"
+msgstr ""
+
+msgid "ToonStandardConvertSettingsFeaturesRimLightingLabel"
 msgstr ""
 
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
@@ -322,9 +346,6 @@ msgstr "В {0} нет неподдерживаемых компонентов."
 
 msgid "UnsupportedRemoverConfirmationMessage"
 msgstr "Удалить следующие неподдерживаемые компоненты из {0}?"
-
-msgid "PhysBonesSDKRequired"
-msgstr "Требуется VRCSDK, поддерживающий динамику аватара."
 
 msgid "SelectComponentsToKeep"
 msgstr "Выберите компоненты для сохранения."
@@ -653,14 +674,14 @@ msgstr "Выполните меню, Инструменты -> NDM Framework -> 
 msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
 msgstr "Необходимо установить имя и миниатюру в панели управления VRChat SDK при загрузке нового аватара."
 
+msgid "LegacyPackageExceptionMessage"
+msgstr ""
+
+msgid "BreakingPackageExceptionMessage"
+msgstr ""
+
 msgid "FeatureRequiresNdmf"
 msgstr "Требуется Неразрушаемая Модульная Структура (NDMF)."
-
-msgid "NdmfPluginRequiresNdmfUpdate"
-msgstr "Требуется Неразрушаемая Модульная Структура (NDMF) {0} или более поздняя версия. Пожалуйста, обновите NDMF."
-
-msgid "NdmfPluginRemovedUnsupportedComponent"
-msgstr "Удален неподдерживаемый компонент \"{0}\" из \"{1}\". Пожалуйста, протестируйте аватар."
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
 msgstr "Удалён неподдерживаемый компонент"
@@ -677,6 +698,12 @@ msgstr "Произошла ошибка при конвертации матер
 "Шейдер: {1}\n\n"
 "{2}: {3}\n"
 "{4}"
+
+msgid "NDMF:PackageCompatibilityErrorTitle"
+msgstr ""
+
+msgid "NDMF:PackageCompatibilityErrorDescription"
+msgstr ""
 
 msgid "NDMF:MaterialSwapNullErrorTitle"
 msgstr ""

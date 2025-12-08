@@ -7,9 +7,6 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-#if !UNITY_2021_2_OR_NEWER
-using UnityEditor.Experimental.SceneManagement;
-#endif
 using UnityEngine;
 using VRC.Core;
 using VRC.SDK3A.Editor;
@@ -424,9 +421,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     var targetName = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS ? "iOS" : "Android";
                     EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingLabel(targetName), EditorStyles.largeLabel);
                     EditorGUILayout.LabelField(i18n.AvatarBuilderWindowOnlinePublishingDescription, EditorStyles.wordWrappedMiniLabel);
-#if VQT_HAS_VRCSDK_NO_PRECHECK
                     EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowSdkNoPrecheck, MessageType.Info);
-#endif
                     if (!uploadedVrcAvatar.HasValue && (string.IsNullOrEmpty(AvatarBuilderSessionState.AvatarName) || string.IsNullOrEmpty(AvatarBuilderSessionState.AvatarThumbPath)))
                     {
                         EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowRequiresAvatarNameAndThumb, MessageType.Error);
@@ -481,7 +476,6 @@ namespace KRT.VRCQuestTools.Ndmf
                 EditorGUILayout.LabelField(i18n.AvatarBuilderWindowBuildingProgressLabel, EditorStyles.largeLabel);
                 EditorGUI.ProgressBar(EditorGUILayout.GetControlRect(), progress, sdkBuildProgress);
             }
-#if VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT_2
             else
             {
                 if (sdkBuildProgress == SdkBuildProgressStartingBuild)
@@ -489,20 +483,12 @@ namespace KRT.VRCQuestTools.Ndmf
                     EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowCopyrightAgreementHelp, MessageType.Warning);
                 }
             }
-#endif
 
             if (sdkBuilder.UploadState != SdkUploadState.Idle)
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField(i18n.AvatarBuilderWindowUploadingProgressLabel, EditorStyles.largeLabel);
                 EditorGUI.ProgressBar(EditorGUILayout.GetControlRect(), sdkUploadProgress.Percentage, sdkUploadProgress.Status);
-#if VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT && !VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT_2
-                // awaiting copyright ownership agreement
-                if (sdkUploadProgress.Percentage == 0.0f && sdkUploadProgress.Status == "")
-                {
-                    EditorGUILayout.HelpBox(i18n.AvatarBuilderWindowCopyrightAgreementHelp, MessageType.Warning);
-                }
-#endif
             }
         }
 
@@ -645,7 +631,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
             catch (Exception e)
             {
-                Debug.LogException(e);
+                Logger.LogException(e);
                 lastException = e;
             }
             finally
@@ -686,13 +672,13 @@ namespace KRT.VRCQuestTools.Ndmf
                     {
                         if (!avatar.Value.Tags.Contains(VRCSDKUtility.AvatarContentTag.Fallback))
                         {
-                            Debug.Log($"[{VRCQuestTools.Name}] Setting avatar as fallback");
+                            Logger.Log($"Setting avatar as fallback");
                             uploadedVrcAvatar = await VRCApi.SetAvatarAsFallback(blueprintId, avatar.Value);
                         }
                     }
                     else
                     {
-                        Debug.LogWarning($"[{VRCQuestTools.Name}] The avatar is not allowed to be set as a fallback avatar: {overallRating}");
+                        Logger.LogWarning($"The avatar is not allowed to be set as a fallback avatar: {overallRating}");
                         EditorUtility.DisplayDialog(VRCQuestTools.Name, VRCQuestToolsSettings.I18nResource.AvatarBuilderWindowFallbackNotAllowed(overallRating.ToString()), "OK");
                     }
                 }
@@ -700,7 +686,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
             catch (Exception e)
             {
-                Debug.LogException(e);
+                Logger.LogException(e);
                 lastException = e;
             }
             finally
@@ -728,9 +714,9 @@ namespace KRT.VRCQuestTools.Ndmf
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"Failed to get VRCAvatar ({e.GetType().Name}): {e.Message}");
+                Logger.LogWarning($"Failed to get VRCAvatar ({e.GetType().Name}): {e.Message}");
 
-                // Debug.LogException(e);
+                // Logger.LogException(e);
                 return null;
             }
         }

@@ -146,8 +146,16 @@ namespace KRT.VRCQuestTools.I18n
         internal string ToonLitConvertSettingsGenerateShadowFromNormalMapLabel => GetText("ToonLitConvertSettingsGenerateShadowFromNormalMapLabel");
         internal string MatCapLitConvertSettingsMatCapTextureLabel => GetText("MatCapLitConvertSettingsMatCapTextureLabel");
         internal string MatCapLitConvertSettingsMatCapTextureWarning => GetText("MatCapLitConvertSettingsMatCapTextureWarning");
+        internal string ToonStandardConvertSettingsGenerateShadowRampLabel => GetText("ToonStandardConvertSettingsGenerateShadowRampLabel");
         internal string ToonStandardConvertSettingsFallbackShadowRampLabel => GetText("ToonStandardConvertSettingsFallbackShadowRampLabel");
         internal string ToonStandardConvertSettingsCustomFallbackShadowRampLabel => GetText("ToonStandardConvertSettingsCustomFallbackShadowRampLabel");
+        internal string ToonStandardConvertSettingsFeaturesLabel => GetText("ToonStandardConvertSettingsFeaturesLabel");
+        internal string ToonStandardConvertSettingsFeaturesNormalMapLabel => GetText("ToonStandardConvertSettingsFeaturesNormalMapLabel");
+        internal string ToonStandardConvertSettingsFeaturesEmissionLabel => GetText("ToonStandardConvertSettingsFeaturesEmissionLabel");
+        internal string ToonStandardConvertSettingsFeaturesOcclusionLabel => GetText("ToonStandardConvertSettingsFeaturesOcclusionLabel");
+        internal string ToonStandardConvertSettingsFeaturesSpecularLabel => GetText("ToonStandardConvertSettingsFeaturesSpecularLabel");
+        internal string ToonStandardConvertSettingsFeaturesMatcapLabel => GetText("ToonStandardConvertSettingsFeaturesMatcapLabel");
+        internal string ToonStandardConvertSettingsFeaturesRimLightingLabel => GetText("ToonStandardConvertSettingsFeaturesRimLightingLabel");
         internal string AdditionalMaterialConvertSettingsTargetMaterialLabel => GetText("AdditionalMaterialConvertSettingsTargetMaterialLabel");
         internal string AdditionalMaterialConvertSettingsSelectMaterialLabel => GetText("AdditionalMaterialConvertSettingsSelectMaterialLabel");
         internal string MaterialConvertTypePopupLabelToonLit => GetText("MaterialConvertTypePopupLabelToonLit");
@@ -175,7 +183,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string UnsupportedRemoverConfirmationMessage(string objectName) => GetText("UnsupportedRemoverConfirmationMessage", objectName);
 
         // Remove PhysBones
-        internal string PhysBonesSDKRequired => GetText("PhysBonesSDKRequired");
         internal string SelectComponentsToKeep => GetText("SelectComponentsToKeep");
         internal string PhysBonesListTooltip => GetText("PhysBonesListTooltip");
         internal string KeepAll => GetText("KeepAll");
@@ -319,9 +326,11 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarBuilderWindowNdmfManualBakingDescription => GetText("AvatarBuilderWindowNdmfManualBakingDescription");
         internal string AvatarBuilderWindowRequiresAvatarNameAndThumb => GetText("AvatarBuilderWindowRequiresAvatarNameAndThumb");
 
+        // Compatibility Exceptions
+        internal string LegacyPackageExceptionMessage(string packageName, string requiredVersion) => GetText("LegacyPackageExceptionMessage", packageName, requiredVersion);
+        internal string BreakingPackageExceptionMessage(string packageName, string breakingVersion) => GetText("BreakingPackageExceptionMessage", packageName, breakingVersion);
+
         // NDMF
         internal string FeatureRequiresNdmf => GetText("FeatureRequiresNdmf");
-        internal string NdmfPluginRequiresNdmfUpdate(string requiredVersion) => GetText("NdmfPluginRequiresNdmfUpdate", requiredVersion);
-        internal string NdmfPluginRemovedUnsupportedComponent(string typeName, string objectName) => GetText("NdmfPluginRemovedUnsupportedComponent", typeName, objectName);
     }
 }

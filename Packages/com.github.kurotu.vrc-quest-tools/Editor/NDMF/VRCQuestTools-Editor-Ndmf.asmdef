@@ -1,5 +1,6 @@
 {
     "name": "VRCQuestTools-Editor-Ndmf",
+    "rootNamespace": "KRT.VRCQuestTools.Ndmf",
     "references": [
         "VRCQuestTools",
         "VRCQuestTools-Editor",
@@ -12,42 +13,23 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "System.Collections.Immutable.dll",
+        "VRCCore-Editor.dll",
+        "VRCSDK3A.dll",
+        "VRCSDKBase.dll",
+        "VRCSDKBase-Editor.dll"
+    ],
+    "autoReferenced": false,
     "defineConstraints": [
         "VQT_HAS_NDMF"
     ],
     "versionDefines": [
         {
-            "name": "com.vrchat.avatars",
-            "expression": "3.8.0",
-            "define": "VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT"
-        },
-        {
-            "name": "com.vrchat.avatars",
-            "expression": "3.8.1-beta.1",
-            "define": "VQT_HAS_VRCSDK_NO_PRECHECK"
-        },
-        {
-            "name": "com.vrchat.avatars",
-            "expression": "3.8.1-beta.2",
-            "define": "VQT_HAS_VRCSDK_COPYRIGHT_AGREEMENT_2"
-        },
-        {
             "name": "nadena.dev.ndmf",
-            "expression": "",
+            "expression": "[1.5.0,2.0.0-a)",
             "define": "VQT_HAS_NDMF"
-        },
-        {
-            "name": "nadena.dev.ndmf",
-            "expression": "1.3.0",
-            "define": "VQT_HAS_NDMF_ERROR_REPORT"
-        },
-        {
-            "name": "nadena.dev.ndmf",
-            "expression": "1.5.0",
-            "define": "VQT_HAS_NDMF_PREVIEW"
         },
         {
             "name": "jp.lilxyzw.ndmfmeshsimplifier",
