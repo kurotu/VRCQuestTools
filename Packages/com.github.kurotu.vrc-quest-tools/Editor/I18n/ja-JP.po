@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-08-20 03:44\n"
+"PO-Revision-Date: 2025-12-09 15:34\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -456,7 +456,7 @@ msgid "NewVersionHasBreakingChanges"
 msgstr "このバージョンには互換性に関する重要な変更がある可能性があります。"
 
 msgid "MissingScripts"
-msgstr "\"Missing\" 状態のコンポーネントがあります。インポートし忘れたアセットやパッケージがないか確認してください。"
+msgstr "以下のオブジェクト内には \"Missing\" 状態のコンポーネントがあります。インポートし忘れたアセットやパッケージがないか確認してください。"
 
 msgid "ExperimentalComponentWarning"
 msgstr "このコンポーネントは実験的機能です。"
