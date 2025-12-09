@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Texture format for android.
         /// </summary>
-        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_6x6;
+        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.NoOverride;
 
         /// <summary>
         /// Whether to generate shadow ramp textures.

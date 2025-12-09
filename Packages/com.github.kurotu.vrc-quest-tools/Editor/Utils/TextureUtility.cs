@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using KRT.VRCQuestTools.Models;
 using Unity.Collections;
 using UnityEditor;
 using UnityEditor.AssetImporters;
@@ -116,6 +117,16 @@ namespace KRT.VRCQuestTools.Utils
         };
 
         /// <summary>
+        /// Get the TextureFormat to use for compression, with fallback to ASTC_6x6 for NoOverride.
+        /// </summary>
+        /// <param name="format">Mobile texture format.</param>
+        /// <returns>TextureFormat to use for compression.</returns>
+        internal static TextureFormat GetCompressionFormat(MobileTextureFormat format)
+        {
+            return format == MobileTextureFormat.NoOverride ? TextureFormat.ASTC_6x6 : (TextureFormat)format;
+        }
+
+        /// <summary>
         /// Creates a minimum empty texture.
         /// </summary>
         /// <returns>Created texture object.</returns>
@@ -182,6 +193,10 @@ namespace KRT.VRCQuestTools.Utils
                 importer.SetPlatformTextureSettings(androidSettings);
                 importer.SetPlatformTextureSettings(iosSettings);
             }
+            else
+            {
+                RemovePlatformOverrides(importer);
+            }
             importer.SaveAndReimport();
         }
 
@@ -216,7 +231,31 @@ namespace KRT.VRCQuestTools.Utils
                 importer.SetPlatformTextureSettings(androidSettings);
                 importer.SetPlatformTextureSettings(iosSettings);
             }
+            else
+            {
+                RemovePlatformOverrides(importer);
+            }
             importer.SaveAndReimport();
+        }
+
+        /// <summary>
+        /// Removes platform-specific overrides from a texture importer.
+        /// </summary>
+        /// <param name="importer">The texture importer to modify.</param>
+        private static void RemovePlatformOverrides(TextureImporter importer)
+        {
+            var androidSettings = new TextureImporterPlatformSettings
+            {
+                name = "Android",
+                overridden = false,
+            };
+            var iosSettings = new TextureImporterPlatformSettings
+            {
+                name = "iPhone",
+                overridden = false,
+            };
+            importer.SetPlatformTextureSettings(androidSettings);
+            importer.SetPlatformTextureSettings(iosSettings);
         }
 
         /// <summary>

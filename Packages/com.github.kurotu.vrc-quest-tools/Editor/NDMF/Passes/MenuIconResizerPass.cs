@@ -90,9 +90,12 @@ namespace KRT.VRCQuestTools.Ndmf
             avatarDescriptor.expressionsMenu = newMenu;
             objectRegistry.RegisterReplacedObject(menu, newMenu);
 
+            // For in-code compression when NoOverride is selected, use ASTC_6x6
+            var mobileTextureFormatForCompression = TextureUtility.GetCompressionFormat(resizer.mobileTextureFormat);
+
             VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, maxSize, compressTextures, (oldTex, newTex) =>
             {
-                TextureUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget, (TextureFormat)resizer.mobileTextureFormat);
+                TextureUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression);
                 objectRegistry.RegisterReplacedObject(oldTex, newTex);
             });
         }
