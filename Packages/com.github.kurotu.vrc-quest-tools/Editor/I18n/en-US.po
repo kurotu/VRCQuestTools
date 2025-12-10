@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-12-09 15:34\n"
+"PO-Revision-Date: 2025-12-10 15:38\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -456,7 +456,7 @@ msgid "NewVersionHasBreakingChanges"
 msgstr "This version might have breaking changes about compatibility."
 
 msgid "MissingScripts"
-msgstr "There are \"missing\" scripts in following objects. Please check for assets or packages you forgot to import."
+msgstr "There are \"missing\" scripts in the following objects. Please check for assets or packages you forgot to import."
 
 msgid "ExperimentalComponentWarning"
 msgstr "This component is an experimental feature."
