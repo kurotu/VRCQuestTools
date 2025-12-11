@@ -14,7 +14,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Cache manager for textures.
         /// </summary>
-        internal static CacheManager Texture = new CacheManager("Global\\VRCQuestTools-Mutex-TextureCache", () => VRCQuestToolsSettings.TextureCacheFolder);
+        internal static CacheManager Texture = new CacheManager("Local\\VRCQuestTools-Mutex-TextureCache", () => VRCQuestToolsSettings.TextureCacheFolder);
 
         private readonly string mutexName;
         private readonly Func<string> getCachePath;
