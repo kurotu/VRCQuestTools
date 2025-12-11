@@ -12,5 +12,11 @@ namespace KRT.VRCQuestTools.Models
         /// Enable Auto Remove Vertex Colors.
         /// </summary>
         public bool AutoRemoveVertexColors = true;
+
+        /// <summary>
+        /// Texture cache size in bytes.
+        /// Default: 128MB.
+        /// </summary>
+        public ulong TextureCacheSize = 128 * 1024 * 1024;
     }
 }
