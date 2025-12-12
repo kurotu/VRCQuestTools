@@ -418,6 +418,14 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
         }
 
+        private static void DestroyNonAssetTexture(Texture texture)
+        {
+            if (texture != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(texture)))
+            {
+                Object.DestroyImmediate(texture);
+            }
+        }
+
         /// <summary>
         /// Reused codes from lilInspector.cs v1.2.12 with some modification.
         /// </summary>
@@ -649,6 +657,12 @@ namespace KRT.VRCQuestTools.Models.Unity
                 finally
                 {
                     RenderTexture.active = activeRT;
+                    Object.DestroyImmediate(hsvgMaterial);
+                    DestroyNonAssetTexture(srcTexture);
+                    DestroyNonAssetTexture(srcMain2);
+                    DestroyNonAssetTexture(srcMain3);
+                    DestroyNonAssetTexture(srcMask2);
+                    DestroyNonAssetTexture(srcMask3);
                 }
             }
         }
