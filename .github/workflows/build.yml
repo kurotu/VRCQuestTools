@@ -165,7 +165,11 @@ jobs:
 
       # See https://github.com/game-ci/documentation/issues/408#issuecomment-3211109962 for UNITY_SERIAL
       - name: Generate Solution
-        run: unity-editor -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }} -serial ${{ secrets.UNITY_SERIAL }} -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        run: ./.github/workflows/unity.sh -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
 
       - name: Add dotnet problem matcher
         run: echo "::add-matcher::.github/problem-matchers/csc.json"
