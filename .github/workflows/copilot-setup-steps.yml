@@ -65,7 +65,7 @@ jobs:
           UNITY_CHANGESET="887be4894c44"
           UNITY_PATH="$HOME/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity"
           echo "UNITY_PATH=$UNITY_PATH" >> $GITHUB_ENV
-          unityhub -- --headless install --version $UNITY_VERSION --changeset $UNITY_CHANGESET --module windows-mono
+          xvfb-run unityhub -- --headless install --version $UNITY_VERSION --changeset $UNITY_CHANGESET --module windows-mono
 
       - name: Generate solution
         env:
