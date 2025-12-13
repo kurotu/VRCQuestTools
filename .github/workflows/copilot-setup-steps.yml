@@ -68,11 +68,16 @@ jobs:
           xvfb-run unityhub -- --headless install --version $UNITY_VERSION --changeset $UNITY_CHANGESET --module windows-mono
 
       - name: Generate solution
+        uses: nick-fields/retry@v3
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-        run: ./.github/workflows/unity.sh -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
+        with:
+          timeout_minutes: 10
+          max_attempts: 5
+          retry_wait_seconds: 60
+          command: ./.github/workflows/unity.sh -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
