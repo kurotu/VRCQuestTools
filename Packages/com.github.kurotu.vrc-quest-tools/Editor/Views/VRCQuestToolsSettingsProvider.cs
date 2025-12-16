@@ -13,9 +13,9 @@ namespace KRT.VRCQuestTools.Views
         private const ulong MegaBytes = 1024 * 1024;
 
         [SettingsProvider]
-        private static SettingsProvider CreatePreferencesProvider()
+        private static SettingsProvider CreateProjectSettingsProvider()
         {
-            var provider = new SettingsProvider("Preferences/VRCQuestTools", SettingsScope.User)
+            var provider = new SettingsProvider("Project/VRCQuestTools", SettingsScope.Project)
             {
                 label = "VRCQuestTools",
                 guiHandler = (searchContext) =>

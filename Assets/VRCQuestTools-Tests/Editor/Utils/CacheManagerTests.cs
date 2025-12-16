@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Utils
                 Directory.Delete(testCacheFolder, true);
             }
             Directory.CreateDirectory(testCacheFolder);
-            testCacheManager = new CacheManager("Local\\VRCQuestTools-Test-Mutex", () => testCacheFolder);
+            testCacheManager = new CacheManager(() => testCacheFolder);
         }
 
         /// <summary>
@@ -77,10 +77,10 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Test that cache uses mutex for thread-safety.
+        /// Test that cache uses lock for thread-safety.
         /// </summary>
         [Test]
-        public void MutexIsThreadSafe()
+        public void LockIsThreadSafe()
         {
             var testFileName = "thread_test.txt";
             var writeCount = 10;
@@ -112,16 +112,12 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Test that texture cache manager uses project-specific mutex.
+        /// Test that texture cache manager exists and is accessible.
         /// </summary>
         [Test]
-        public void TextureCacheManagerUsesLocalMutex()
+        public void TextureCacheManagerExists()
         {
-            var mutex = CacheManager.Texture.CreateMutex();
-            Assert.IsNotNull(mutex);
-            
-            // The mutex should be creatable without throwing an exception
-            mutex.Dispose();
+            Assert.IsNotNull(CacheManager.Texture);
         }
     }
 }

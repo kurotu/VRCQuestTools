@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using KRT.VRCQuestTools.Models;
 
 namespace KRT.VRCQuestTools.Utils
@@ -14,19 +13,17 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Cache manager for textures.
         /// </summary>
-        internal static CacheManager Texture = new CacheManager("Local\\VRCQuestTools-Mutex-TextureCache", () => VRCQuestToolsSettings.TextureCacheFolder);
+        internal static CacheManager Texture = new CacheManager(() => VRCQuestToolsSettings.TextureCacheFolder);
 
-        private readonly string mutexName;
+        private readonly object lockObject = new object();
         private readonly Func<string> getCachePath;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheManager"/> class.
         /// </summary>
-        /// <param name="mutexName">Mutex name.</param>
         /// <param name="cachePathFunc">Function to get cache path.</param>
-        public CacheManager(string mutexName, Func<string> cachePathFunc)
+        public CacheManager(Func<string> cachePathFunc)
         {
-            this.mutexName = mutexName;
             getCachePath = cachePathFunc;
         }
 
@@ -39,18 +36,10 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="data">Data to save.</param>
         internal void Save(string fileName, string data)
         {
-            using (var mutex = CreateMutex())
+            lock (lockObject)
             {
-                mutex.WaitOne();
-                try
-                {
-                    Directory.CreateDirectory(CachePath);
-                    File.WriteAllText(Path.Combine(CachePath, fileName), data);
-                }
-                finally
-                {
-                    mutex.ReleaseMutex();
-                }
+                Directory.CreateDirectory(CachePath);
+                File.WriteAllText(Path.Combine(CachePath, fileName), data);
             }
         }
 
@@ -61,20 +50,12 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Loaded string.</returns>
         internal string LoadString(string fileName)
         {
-            using (var mutex = CreateMutex())
+            lock (lockObject)
             {
-                mutex.WaitOne();
-                try
-                {
-                    var file = Path.Combine(CachePath, fileName);
-                    var data = File.ReadAllText(file);
-                    File.SetLastAccessTimeUtc(file, System.DateTime.UtcNow);
-                    return data;
-                }
-                finally
-                {
-                    mutex.ReleaseMutex();
-                }
+                var file = Path.Combine(CachePath, fileName);
+                var data = File.ReadAllText(file);
+                File.SetLastAccessTimeUtc(file, System.DateTime.UtcNow);
+                return data;
             }
         }
 
@@ -85,18 +66,10 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="fileName">File name to copy.</param>
         internal void CopyToCache(string srcPath, string fileName)
         {
-            using (var mutex = CreateMutex())
+            lock (lockObject)
             {
-                mutex.WaitOne();
-                try
-                {
-                    Directory.CreateDirectory(CachePath);
-                    File.Copy(srcPath, Path.Combine(CachePath, fileName), true);
-                }
-                finally
-                {
-                    mutex.ReleaseMutex();
-                }
+                Directory.CreateDirectory(CachePath);
+                File.Copy(srcPath, Path.Combine(CachePath, fileName), true);
             }
         }
 
@@ -107,19 +80,11 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="destPath">Destination path.</param>
         internal void CopyFromCache(string fileName, string destPath)
         {
-            using (var mutex = CreateMutex())
+            lock (lockObject)
             {
-                mutex.WaitOne();
-                try
-                {
-                    var file = Path.Combine(CachePath, fileName);
-                    File.Copy(file, destPath, true);
-                    File.SetLastAccessTimeUtc(file, System.DateTime.UtcNow);
-                }
-                finally
-                {
-                    mutex.ReleaseMutex();
-                }
+                var file = Path.Combine(CachePath, fileName);
+                File.Copy(file, destPath, true);
+                File.SetLastAccessTimeUtc(file, System.DateTime.UtcNow);
             }
         }
 
@@ -138,21 +103,13 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         internal void Clear()
         {
-            using (var mutex = CreateMutex())
+            lock (lockObject)
             {
-                mutex.WaitOne();
-                try
+                if (!Directory.Exists(CachePath))
                 {
-                    if (!Directory.Exists(CachePath))
-                    {
-                        return;
-                    }
-                    Directory.GetFiles(CachePath).ToList().ForEach(File.Delete);
+                    return;
                 }
-                finally
-                {
-                    mutex.ReleaseMutex();
-                }
+                Directory.GetFiles(CachePath).ToList().ForEach(File.Delete);
             }
         }
 
@@ -163,43 +120,26 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="totalSize">Total size to fit.</param>
         internal void Clear(ulong totalSize)
         {
-            using (var mutex = CreateMutex())
+            lock (lockObject)
             {
-                mutex.WaitOne();
-                try
+                if (!Directory.Exists(CachePath))
                 {
-                    if (!Directory.Exists(CachePath))
-                    {
-                        return;
-                    }
-                    var files = new DirectoryInfo(CachePath).GetFiles()
-                        .OrderBy(f => f.LastAccessTime)
-                        .Reverse()
-                        .ToArray();
-                    ulong size = 0;
-                    foreach (var file in files)
-                    {
-                        size += (ulong)file.Length;
-                        if (size > totalSize)
-                        {
-                            file.Delete();
-                        }
-                    }
+                    return;
                 }
-                finally
+                var files = new DirectoryInfo(CachePath).GetFiles()
+                    .OrderBy(f => f.LastAccessTime)
+                    .Reverse()
+                    .ToArray();
+                ulong size = 0;
+                foreach (var file in files)
                 {
-                    mutex.ReleaseMutex();
+                    size += (ulong)file.Length;
+                    if (size > totalSize)
+                    {
+                        file.Delete();
+                    }
                 }
             }
-        }
-
-        /// <summary>
-        /// Create a mutex.
-        /// </summary>
-        /// <returns>Created mutex, not owned.</returns>
-        internal Mutex CreateMutex()
-        {
-            return new Mutex(false, mutexName);
         }
     }
 }

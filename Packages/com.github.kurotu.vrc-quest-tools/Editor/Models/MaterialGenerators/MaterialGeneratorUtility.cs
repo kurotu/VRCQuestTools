@@ -105,50 +105,39 @@ namespace KRT.VRCQuestTools.Models
             // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
             TextureFormat? mobileTextureFormatNullable = ConvertToNullableTextureFormat(settings.MobileTextureFormat);
 
-            using (var mutex = CacheManager.Texture.CreateMutex())
+            if (CacheManager.Texture.Exists(cacheFile))
             {
-                mutex.WaitOne();
                 try
                 {
-                    if (CacheManager.Texture.Exists(cacheFile))
+                    if (saveAsPng)
                     {
-                        try
+                        Directory.CreateDirectory(texturesPath);
+                        CacheManager.Texture.CopyFromCache(cacheFile, outFile);
+                        AssetDatabase.ImportAsset(outFile);
+                        if (config.isNormalMap)
                         {
-                            if (saveAsPng)
-                            {
-                                Directory.CreateDirectory(texturesPath);
-                                CacheManager.Texture.CopyFromCache(cacheFile, outFile);
-                                AssetDatabase.ImportAsset(outFile);
-                                if (config.isNormalMap)
-                                {
-                                    TextureUtility.ConfigureNormalMapImporter(outFile, mobileTextureFormatNullable);
-                                }
-                                else
-                                {
-                                    TextureUtility.ConfigureTextureImporter(outFile, mobileTextureFormatNullable, config.isSRGB);
-                                }
-                                var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
-                                return tex;
-                            }
-                            else
-                            {
-                                var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
-                                var tex = cache.ToTexture2D();
-                                TextureUtility.SetStreamingMipMaps(tex, true);
-                                return tex;
-                            }
+                            TextureUtility.ConfigureNormalMapImporter(outFile, mobileTextureFormatNullable);
                         }
-                        catch (Exception e)
+                        else
                         {
-                            // Recoverable error, just log and continue.
-                            Logger.LogException(e);
-                            Logger.LogWarning($"Failed to load cache file {cacheFile} for {material.name}");
+                            TextureUtility.ConfigureTextureImporter(outFile, mobileTextureFormatNullable, config.isSRGB);
                         }
+                        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
+                        return tex;
+                    }
+                    else
+                    {
+                        var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
+                        var tex = cache.ToTexture2D();
+                        TextureUtility.SetStreamingMipMaps(tex, true);
+                        return tex;
                     }
                 }
-                finally
+                catch (Exception e)
                 {
-                    mutex.ReleaseMutex();
+                    // Recoverable error, just log and continue.
+                    Logger.LogException(e);
+                    Logger.LogWarning($"Failed to load cache file {cacheFile} for {material.name}");
                 }
             }
             return null;
