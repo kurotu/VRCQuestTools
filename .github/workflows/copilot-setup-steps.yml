@@ -59,8 +59,9 @@ jobs:
           sudo apt update
           sudo apt-get -y install unityhub
 
-      - name: Cache Unity Editor
-        uses: actions/cache@v4
+      - name: Restore Unity Editor cache
+        id: cache-unity-editor
+        uses: actions/cache/restore@v4
         with:
           path: ~/Unity/Hub/Editor
           key: Unity-Editor-2022.3.22f1-${{ github.ref }}
@@ -74,6 +75,13 @@ jobs:
           UNITY_PATH="$HOME/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity"
           echo "UNITY_PATH=$UNITY_PATH" >> $GITHUB_ENV
           xvfb-run unityhub -- --headless install --version $UNITY_VERSION --changeset $UNITY_CHANGESET --module windows-mono
+
+      - name: Save Unity Editor cache
+        uses: actions/cache/save@v4
+        if: steps.cache-unity-editor.outputs.cache-hit != 'true'
+        with:
+          path: ~/Unity/Hub/Editor
+          key: Unity-Editor-2022.3.22f1-${{ github.ref }}
 
       - name: Generate solution
         env:
