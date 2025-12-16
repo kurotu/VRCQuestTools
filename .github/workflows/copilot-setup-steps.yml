@@ -52,7 +52,27 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
-      # TODO: Install unity
+      - name: Setup Unity Hub
+        run: |
+          wget -qO - https://hub.unity3d.com/linux/keys/public | gpg --dearmor | sudo tee /usr/share/keyrings/Unity_Technologies_ApS.gpg > /dev/null
+          sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/Unity_Technologies_ApS.gpg] https://hub.unity3d.com/linux/repos/deb stable main" > /etc/apt/sources.list.d/unityhub.list'
+          sudo apt update
+          sudo apt-get -y install unityhub
+
+      - name: Install Unity Editor
+        run: |
+          UNITY_VERSION="2022.3.22f1"
+          UNITY_CHANGESET="887be4894c44"
+          UNITY_PATH="$HOME/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity"
+          echo "UNITY_PATH=$UNITY_PATH" >> $GITHUB_ENV
+          xvfb-run unityhub -- --headless install --version $UNITY_VERSION --changeset $UNITY_CHANGESET --module windows-mono
+
+      - name: Generate solution
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        run: UNITY_COMMAND=${UNITY_PATH} xvfb-run ./.github/workflows/unity.sh -batchmode -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
