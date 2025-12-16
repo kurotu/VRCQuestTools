@@ -59,6 +59,14 @@ jobs:
           sudo apt update
           sudo apt-get -y install unityhub
 
+      - name: Cache Unity Editor
+        uses: actions/cache@v4
+        with:
+          path: ~/Unity/Hub/Editor
+          key: Unity-Editor-2022.3.22f1-${{ github.ref }}
+          restore-keys: |
+            Unity-Editor-2022.3.22f1-
+
       - name: Install Unity Editor
         run: |
           UNITY_VERSION="2022.3.22f1"
