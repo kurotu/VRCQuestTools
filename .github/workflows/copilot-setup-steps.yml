@@ -78,9 +78,12 @@ jobs:
           echo "UNITY_PATH=$UNITY_PATH" >> $GITHUB_ENV
 
       - name: Install Unity Editor
-        if: steps.cache-unity-editor.outputs.cache-hit != 'true'
         run: |
-          xvfb-run unityhub -- --headless install --version ${{ env.UNITY_VERSION }} --changeset ${{ env.UNITY_CHANGESET }} --module windows-mono
+          if [ ! -f "$HOME/Unity/Hub/Editor/${{ env.UNITY_VERSION }}/Editor/Unity" ]; then
+            xvfb-run unityhub -- --headless install --version ${{ env.UNITY_VERSION }} --changeset ${{ env.UNITY_CHANGESET }} --module windows-mono
+          else
+            echo "Unity Editor already installed, skipping installation"
+          fi
 
       - name: Generate solution
         env:
