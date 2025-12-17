@@ -63,9 +63,9 @@ jobs:
           sudo apt update
           sudo apt-get -y install unityhub
 
-      - name: Restore Unity Editor cache
+      - name: Cache Unity Editor
         id: cache-unity-editor
-        uses: actions/cache/restore@v4
+        uses: actions/cache@v4
         with:
           path: ~/Unity/Hub/Editor
           key: Unity-Editor-${{ env.UNITY_VERSION }}-${{ github.head_ref || github.ref }}
@@ -81,13 +81,6 @@ jobs:
         if: steps.cache-unity-editor.outputs.cache-hit != 'true'
         run: |
           xvfb-run unityhub -- --headless install --version ${{ env.UNITY_VERSION }} --changeset ${{ env.UNITY_CHANGESET }} --module windows-mono
-
-      - name: Save Unity Editor cache
-        uses: actions/cache/save@v4
-        if: steps.cache-unity-editor.outputs.cache-hit != 'true'
-        with:
-          path: ~/Unity/Hub/Editor
-          key: Unity-Editor-${{ env.UNITY_VERSION }}-${{ github.head_ref || github.ref }}
 
       - name: Generate solution
         env:
