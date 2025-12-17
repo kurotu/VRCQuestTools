@@ -22,6 +22,10 @@ jobs:
       # If you want to clone the repository as part of your setup steps, for example to install dependencies, you'll need the `contents: read` permission. If you don't clone the repository in your setup steps, Copilot will do this for you automatically after the steps complete.
       contents: read
 
+    env:
+      UNITY_VERSION: 2022.3.22f1
+      UNITY_CHANGESET: 887be4894c44
+
     # You can define any steps you want, and they will run before the agent starts.
     # If you do not check out your code, Copilot will do this for you.
     steps:
@@ -64,24 +68,26 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ~/Unity/Hub/Editor
-          key: Unity-Editor-2022.3.22f1-${{ github.ref }}
+          key: Unity-Editor-${{ env.UNITY_VERSION }}-${{ github.head_ref || github.ref }}
           restore-keys: |
-            Unity-Editor-2022.3.22f1-
+            Unity-Editor-${{ env.UNITY_VERSION }}-
+
+      - name: Set Unity Editor path
+        run: |
+          UNITY_PATH="$HOME/Unity/Hub/Editor/${{ env.UNITY_VERSION }}/Editor/Unity"
+          echo "UNITY_PATH=$UNITY_PATH" >> $GITHUB_ENV
 
       - name: Install Unity Editor
+        if: steps.cache-unity-editor.outputs.cache-hit != 'true'
         run: |
-          UNITY_VERSION="2022.3.22f1"
-          UNITY_CHANGESET="887be4894c44"
-          UNITY_PATH="$HOME/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity"
-          echo "UNITY_PATH=$UNITY_PATH" >> $GITHUB_ENV
-          xvfb-run unityhub -- --headless install --version $UNITY_VERSION --changeset $UNITY_CHANGESET --module windows-mono
+          xvfb-run unityhub -- --headless install --version ${{ env.UNITY_VERSION }} --changeset ${{ env.UNITY_CHANGESET }} --module windows-mono
 
       - name: Save Unity Editor cache
         uses: actions/cache/save@v4
         if: steps.cache-unity-editor.outputs.cache-hit != 'true'
         with:
           path: ~/Unity/Hub/Editor
-          key: Unity-Editor-2022.3.22f1-${{ github.ref }}
+          key: Unity-Editor-${{ env.UNITY_VERSION }}-${{ github.head_ref || github.ref }}
 
       - name: Generate solution
         env:
