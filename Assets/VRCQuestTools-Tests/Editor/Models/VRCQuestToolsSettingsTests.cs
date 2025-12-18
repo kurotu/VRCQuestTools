@@ -45,11 +45,20 @@ namespace KRT.VRCQuestTools.Models
         [Test]
         public void DefaultTextureCacheSizeIs128MB()
         {
-            // Reset to defaults
-            VRCQuestToolsSettings.ResetPreferences();
-            
-            var expectedSize = 128UL * 1024 * 1024;
-            Assert.AreEqual(expectedSize, VRCQuestToolsSettings.TextureCacheSize);
+            var originalSize = VRCQuestToolsSettings.TextureCacheSize;
+
+            try
+            {
+                // Reset to defaults
+                VRCQuestToolsSettings.ResetPreferences();
+
+                var expectedSize = 128UL * 1024 * 1024;
+                Assert.AreEqual(expectedSize, VRCQuestToolsSettings.TextureCacheSize);
+            }
+            finally
+            {
+                VRCQuestToolsSettings.TextureCacheSize = originalSize;
+            }
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Cache manager for textures.
         /// </summary>
-        internal static CacheManager Texture = new CacheManager(() => VRCQuestToolsSettings.TextureCacheFolder);
+        internal static readonly CacheManager Texture = new CacheManager(() => VRCQuestToolsSettings.TextureCacheFolder);
 
         private readonly object lockObject = new object();
         private readonly Func<string> getCachePath;
