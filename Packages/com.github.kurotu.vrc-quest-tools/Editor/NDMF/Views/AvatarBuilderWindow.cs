@@ -665,12 +665,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     thumbPath = AvatarBuilderSessionState.AvatarThumbPath;
                 }
                 await sdkBuilder.BuildAndUpload(avatarObject, avatar.Value, thumbPath);
-
-                // Check if FallbackAvatar component is present
-                var hasFallbackComponent = avatarObject.GetComponent<Components.FallbackAvatar>() != null;
-                var shouldSetFallback = tryToSetFallbackFlag || hasFallbackComponent;
-
-                if (shouldSetFallback)
+                if (tryToSetFallbackFlag)
                 {
                     var overallRating = NdmfSessionState.LastActualPerformanceRating[blueprintId];
                     if (VRCSDKUtility.IsAllowedForFallbackAvatar(overallRating))
@@ -684,10 +679,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     else
                     {
                         Logger.LogWarning($"The avatar is not allowed to be set as a fallback avatar: {overallRating}");
-                        if (tryToSetFallbackFlag)
-                        {
-                            EditorUtility.DisplayDialog(VRCQuestTools.Name, VRCQuestToolsSettings.I18nResource.AvatarBuilderWindowFallbackNotAllowed(overallRating.ToString()), "OK");
-                        }
+                        EditorUtility.DisplayDialog(VRCQuestTools.Name, VRCQuestToolsSettings.I18nResource.AvatarBuilderWindowFallbackNotAllowed(overallRating.ToString()), "OK");
                     }
                 }
                 uploadSecceeded = true;

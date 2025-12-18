@@ -13,7 +13,7 @@ namespace KRT.VRCQuestTools.Components
     [AddComponentMenu("VRCQuestTools/VQT Fallback Avatar")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/fallback-avatar?lang=auto")]
     [DisallowMultipleComponent]
-    public class FallbackAvatar : VRCQuestToolsEditorOnly
+    public class FallbackAvatar : VRCQuestToolsEditorOnly, IAvatarRootComponent
     {
     }
 }
