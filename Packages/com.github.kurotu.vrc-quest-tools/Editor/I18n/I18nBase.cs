@@ -298,6 +298,9 @@ namespace KRT.VRCQuestTools.I18n
         internal string MenuIconResizerEditorDescription => GetText("MenuIconResizerEditorDescription");
         internal string MenuIconResizerEditorResizeModePCLabel => GetText("MenuIconResizerEditorResizeModePCLabel");
         internal string MenuIconResizerEditorResizeModeAndroidLabel => GetText("MenuIconResizerEditorResizeModeAndroidLabel");
+
+        // Fallback Avatar
+        internal string FallbackAvatarEditorDescription => GetText("FallbackAvatarEditorDescription");
         internal string MenuIconResizerEditorCompressTexturesLabel => GetText("MenuIconResizerEditorCompressTexturesLabel");
         internal string MenuIconResizerEditorMobileTextureFormatLabel => GetText("MenuIconResizerEditorMobileTextureFormatLabel");
 

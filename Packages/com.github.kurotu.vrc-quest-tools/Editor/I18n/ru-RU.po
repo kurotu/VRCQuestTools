@@ -763,3 +763,6 @@ msgstr ""
 msgid "NDMF:ReplacementMaterialErrorDescription"
 msgstr ""
 
+
+msgid "FallbackAvatarEditorDescription"
+msgstr "Automatically sets this avatar as a fallback avatar after upload if both PC and Android versions meet performance requirements (Good or better)."
