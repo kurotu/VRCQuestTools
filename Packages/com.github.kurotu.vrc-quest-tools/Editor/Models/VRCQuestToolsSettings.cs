@@ -20,8 +20,8 @@ namespace KRT.VRCQuestTools.Models
         private const string FALSE = "FALSE";
         private const string TRUE = "TRUE";
         private const string ProjectSettingsFile = "ProjectSettings/VRCQuestToolsSettings.json";
-        private const ulong DefaultTextureCacheSize = 1024 * 1024 * 1024; // 1GB
-        private static readonly string DefaultTextureCacheDirectory = Path.Combine(SystemUtility.GetAppLocalCachePath(VRCQuestTools.Name), "TextureCache");
+        private const ulong DefaultTextureCacheSize = 128 * 1024 * 1024; // 128MB
+        private static readonly string DefaultTextureCacheDirectory = Path.Combine("Library", "VRCQuestTools", "Cache", "TextureCache");
 
         private static I18nBase i18n = null;
 
@@ -132,40 +132,26 @@ namespace KRT.VRCQuestTools.Models
         {
             get
             {
-                var value = EditorPrefs.GetString(Keys.TextureCacheSize);
-                if (ulong.TryParse(value, out ulong size))
-                {
-                    return size;
-                }
-
-                TextureCacheSize = DefaultTextureCacheSize;
-                return DefaultTextureCacheSize;
+                var settings = GetProjectSettings();
+                return settings.TextureCacheSize;
             }
 
             set
             {
-                EditorPrefs.SetString(Keys.TextureCacheSize, value.ToString());
+                var settings = GetProjectSettings();
+                settings.TextureCacheSize = value;
+                SaveProjectSettings(settings);
             }
         }
 
         /// <summary>
-        /// Gets or sets the directory path of texture cache.
+        /// Gets the directory path of texture cache.
         /// </summary>
         internal static string TextureCacheFolder
         {
             get
             {
-                var path = EditorPrefs.GetString(Keys.TextureCacheDirectory).Trim();
-                if (string.IsNullOrEmpty(path))
-                {
-                    return DefaultTextureCacheDirectory;
-                }
-                return path;
-            }
-
-            set
-            {
-                EditorPrefs.SetString(Keys.TextureCacheDirectory, value.Trim());
+                return DefaultTextureCacheDirectory;
             }
         }
 
@@ -194,8 +180,9 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         internal static void ResetPreferences()
         {
-            TextureCacheSize = DefaultTextureCacheSize;
-            TextureCacheFolder = DefaultTextureCacheDirectory;
+            var settings = GetProjectSettings();
+            settings.TextureCacheSize = DefaultTextureCacheSize;
+            SaveProjectSettings(settings);
         }
 
         private static void SetBooleanConfigValue(string name, bool value)
