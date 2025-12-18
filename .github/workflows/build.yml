@@ -163,22 +163,14 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
-      # https://github.com/game-ci/unity-builder/issues/497#issuecomment-1407712495
-      - name: Locate LICENSE
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        run: |
-          FILE_PATH=$(mktemp).ulf
-          echo "$UNITY_LICENSE" > $FILE_PATH
-          unity-editor -batchmode -nographics -logFile /dev/stdout -quit -manualLicenseFile $FILE_PATH
-          rm $FILE_PATH
-
+      # See https://github.com/game-ci/documentation/issues/408#issuecomment-3211109962 for UNITY_SERIAL
       - name: Generate Solution
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-        run: unity-editor -nographics -logFile /dev/stdout -customBuildName Card-Game-Simulator -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
+          UNITY_COMMAND: unity-editor
+        run: ./.github/workflows/unity.sh -batchmode -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
 
       - name: Add dotnet problem matcher
         run: echo "::add-matcher::.github/problem-matchers/csc.json"
@@ -263,3 +255,4 @@ jobs:
             Packages/com.github.kurotu.vrc-quest-tools/package.json
             *.zip
             ${{ steps.artifact.outputs.artifact-name }}/${{ steps.artifact.outputs.artifact-name }}.unitypackage
+
