@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using KRT.VRCQuestTools.Components;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -14,10 +15,10 @@ using VRC.SDKBase.Editor;
 using VRC.SDKBase.Editor.Api;
 using VRC.SDKBase.Editor.BuildPipeline;
 
-namespace KRT.VRCQuestTools.Ndmf
+namespace KRT.VRCQuestTools.NonDestructive
 {
     /// <summary>
-    /// Callback to set avatar as fallback after upload.
+    /// Callback to detect FallbackAvatar component and set avatar as fallback after upload.
     /// </summary>
     [InitializeOnLoad]
     internal class FallbackAvatarCallback : IVRCSDKPreprocessAvatarCallback
@@ -27,9 +28,9 @@ namespace KRT.VRCQuestTools.Ndmf
 
 #pragma warning disable SA1300
         /// <summary>
-        /// Gets execution order for preprocessing.
+        /// Gets execution order for preprocessing before NDMF optimizations.
         /// </summary>
-        public int callbackOrder => int.MaxValue - 1;
+        public int callbackOrder => -100000;
 #pragma warning restore SA1300
 
         static FallbackAvatarCallback()
@@ -94,13 +95,13 @@ namespace KRT.VRCQuestTools.Ndmf
             try
             {
                 // Check performance rating
-                if (!NdmfSessionState.LastActualPerformanceRating.ContainsKey(blueprintId))
+                if (!VRCQuestToolsSessionState.LastActualPerformanceRating.ContainsKey(blueprintId))
                 {
                     Logger.LogWarning($"Performance rating not found for {blueprintId}");
                     return;
                 }
 
-                var overallRating = NdmfSessionState.LastActualPerformanceRating[blueprintId];
+                var overallRating = VRCQuestToolsSessionState.LastActualPerformanceRating[blueprintId];
                 if (!VRCSDKUtility.IsAllowedForFallbackAvatar(overallRating))
                 {
                     Logger.LogWarning($"The avatar is not allowed to be set as a fallback avatar: {overallRating}");

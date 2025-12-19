@@ -1,3 +1,4 @@
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace KRT.VRCQuestTools.Ndmf
 {
     /// <summary>
     /// Callback to calculate actual performance.
+    /// This runs with NDMF after optimizations are applied.
     /// </summary>
     internal class VRCQuestToolsActualPerformanceCallback : IVRCSDKPreprocessAvatarCallback
     {
@@ -39,7 +41,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var isMobile = EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS;
             var stats = VRCSDKUtility.CalculatePerformanceStats(avatarGameObject, isMobile);
             var rating = stats.GetPerformanceRatingForCategory(VRC.SDKBase.Validation.Performance.AvatarPerformanceCategory.Overall);
-            NdmfSessionState.LastActualPerformanceRating[pipelineManager.blueprintId] = rating;
+            VRCQuestToolsSessionState.LastActualPerformanceRating[pipelineManager.blueprintId] = rating;
             return true;
         }
     }

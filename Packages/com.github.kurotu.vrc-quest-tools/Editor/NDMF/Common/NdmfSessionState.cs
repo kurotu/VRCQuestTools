@@ -11,9 +11,10 @@ namespace KRT.VRCQuestTools.Ndmf
     internal static class NdmfSessionState
     {
         /// <summary>
-        /// Gets or sets the last actual performance rating.
+        /// Gets the last actual performance rating.
+        /// This is now a reference to the shared session state.
         /// </summary>
-        internal static readonly Dictionary<string, PerformanceRating> LastActualPerformanceRating = new Dictionary<string, PerformanceRating>();
+        internal static Dictionary<string, PerformanceRating> LastActualPerformanceRating => Models.VRCQuestToolsSessionState.LastActualPerformanceRating;
 
         private const string BaseKey = "KRT.VRCQuestTools.Ndmf.";
         private const string BuildTargetKey = BaseKey + "BuildTarget";
