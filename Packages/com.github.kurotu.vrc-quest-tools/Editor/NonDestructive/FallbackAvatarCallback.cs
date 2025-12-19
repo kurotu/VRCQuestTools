@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using KRT.VRCQuestTools.Components;
-using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -85,6 +84,13 @@ namespace KRT.VRCQuestTools.NonDestructive
 
         private static async void OnSdkUploadSuccess(object sender, string blueprintId)
         {
+            // Only process for mobile builds
+            var isMobile = EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS;
+            if (!isMobile)
+            {
+                return;
+            }
+
             if (!PendingFallbackAvatars.ContainsKey(blueprintId))
             {
                 return;
@@ -95,13 +101,13 @@ namespace KRT.VRCQuestTools.NonDestructive
             try
             {
                 // Check performance rating
-                if (!VRCQuestToolsSessionState.LastActualPerformanceRating.ContainsKey(blueprintId))
+                if (!ActualPerformanceCallback.LastActualPerformanceRating.ContainsKey(blueprintId))
                 {
                     Logger.LogWarning($"Performance rating not found for {blueprintId}");
                     return;
                 }
 
-                var overallRating = VRCQuestToolsSessionState.LastActualPerformanceRating[blueprintId];
+                var overallRating = ActualPerformanceCallback.LastActualPerformanceRating[blueprintId];
                 if (!VRCSDKUtility.IsAllowedForFallbackAvatar(overallRating))
                 {
                     Logger.LogWarning($"The avatar is not allowed to be set as a fallback avatar: {overallRating}");

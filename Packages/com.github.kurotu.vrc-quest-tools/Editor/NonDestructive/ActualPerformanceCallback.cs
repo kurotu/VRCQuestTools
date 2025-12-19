@@ -3,12 +3,13 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using KRT.VRCQuestTools.Models;
+using System.Collections.Generic;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 using VRC.Core;
 using VRC.SDKBase.Editor.BuildPipeline;
+using VRC.SDKBase.Validation.Performance;
 
 namespace KRT.VRCQuestTools.NonDestructive
 {
@@ -17,11 +18,17 @@ namespace KRT.VRCQuestTools.NonDestructive
     /// </summary>
     internal class ActualPerformanceCallback : IVRCSDKPreprocessAvatarCallback
     {
+        /// <summary>
+        /// Gets the last actual performance rating dictionary.
+        /// Key: Blueprint ID, Value: Performance rating.
+        /// </summary>
+        internal static readonly Dictionary<string, PerformanceRating> LastActualPerformanceRating = new Dictionary<string, PerformanceRating>();
+
 #pragma warning disable SA1300
         /// <summary>
-        /// Gets execution order for last processing before NDMF.
+        /// Gets execution order for last processing.
         /// </summary>
-        public int callbackOrder => int.MaxValue - 10000;
+        public int callbackOrder => int.MaxValue;
 #pragma warning restore SA1300
 
         /// <summary>
@@ -46,7 +53,7 @@ namespace KRT.VRCQuestTools.NonDestructive
             var isMobile = EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS;
             var stats = VRCSDKUtility.CalculatePerformanceStats(avatarGameObject, isMobile);
             var rating = stats.GetPerformanceRatingForCategory(VRC.SDKBase.Validation.Performance.AvatarPerformanceCategory.Overall);
-            VRCQuestToolsSessionState.LastActualPerformanceRating[pipelineManager.blueprintId] = rating;
+            LastActualPerformanceRating[pipelineManager.blueprintId] = rating;
 
             return true;
         }
