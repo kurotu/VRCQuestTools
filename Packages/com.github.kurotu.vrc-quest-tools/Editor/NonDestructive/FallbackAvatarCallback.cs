@@ -79,35 +79,41 @@ namespace KRT.VRCQuestTools.NonDestructive
             if (VRCSdkControlPanel.TryGetBuilder(out sdkBuilder))
             {
                 sdkBuilder.OnSdkUploadSuccess += OnSdkUploadSuccess;
+                sdkBuilder.OnSdkUploadError += OnSdkUploadError;
             }
+        }
+
+        private static void OnSdkUploadError(object sender, string error)
+        {
+            // Clear pending fallback avatars on upload error to prevent memory leaks
+            PendingFallbackAvatars.Clear();
         }
 
         private static async void OnSdkUploadSuccess(object sender, string blueprintId)
         {
-            // Only process for mobile builds
-            var isMobile = EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS;
-            if (!isMobile)
-            {
-                return;
-            }
-
-            if (!PendingFallbackAvatars.ContainsKey(blueprintId))
-            {
-                return;
-            }
-
-            PendingFallbackAvatars.Remove(blueprintId);
-
             try
             {
+                // Only process for mobile builds
+                var isMobile = EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS;
+                if (!isMobile)
+                {
+                    return;
+                }
+
+                if (!PendingFallbackAvatars.ContainsKey(blueprintId))
+                {
+                    return;
+                }
+
+                PendingFallbackAvatars.Remove(blueprintId);
+
                 // Check performance rating
-                if (!ActualPerformanceCallback.LastActualPerformanceRating.ContainsKey(blueprintId))
+                if (!ActualPerformanceCallback.LastActualPerformanceRating.TryGetValue(blueprintId, out var overallRating))
                 {
                     Logger.LogWarning($"Performance rating not found for {blueprintId}");
                     return;
                 }
 
-                var overallRating = ActualPerformanceCallback.LastActualPerformanceRating[blueprintId];
                 if (!VRCSDKUtility.IsAllowedForFallbackAvatar(overallRating))
                 {
                     Logger.LogWarning($"The avatar is not allowed to be set as a fallback avatar: {overallRating}");
