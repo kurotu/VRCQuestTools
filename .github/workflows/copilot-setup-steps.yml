@@ -22,9 +22,9 @@ jobs:
       # If you want to clone the repository as part of your setup steps, for example to install dependencies, you'll need the `contents: read` permission. If you don't clone the repository in your setup steps, Copilot will do this for you automatically after the steps complete.
       contents: read
 
-    env:
-      UNITY_VERSION: 2022.3.22f1
-      UNITY_CHANGESET: 887be4894c44
+    # NOTE: Unity version and changeset are embedded directly in the steps instead of using env variables
+    # because Copilot coding agent doesn't properly use env parameters when setting up the environment.
+    # Unity Version: 2022.3.22f1, Changeset: 887be4894c44
 
     # You can define any steps you want, and they will run before the agent starts.
     # If you do not check out your code, Copilot will do this for you.
@@ -68,19 +68,19 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/Unity/Hub/Editor
-          key: Unity-Editor-${{ env.UNITY_VERSION }}-${{ github.head_ref || github.ref }}
+          key: Unity-Editor-2022.3.22f1-${{ github.head_ref || github.ref }}
           restore-keys: |
-            Unity-Editor-${{ env.UNITY_VERSION }}-
+            Unity-Editor-2022.3.22f1-
 
       - name: Set Unity Editor path
         run: |
-          UNITY_PATH="$HOME/Unity/Hub/Editor/${{ env.UNITY_VERSION }}/Editor/Unity"
+          UNITY_PATH="$HOME/Unity/Hub/Editor/2022.3.22f1/Editor/Unity"
           echo "UNITY_PATH=$UNITY_PATH" >> $GITHUB_ENV
 
       - name: Install Unity Editor
         run: |
-          if [ ! -f "$HOME/Unity/Hub/Editor/${{ env.UNITY_VERSION }}/Editor/Unity" ]; then
-            xvfb-run unityhub -- --headless install --version ${{ env.UNITY_VERSION }} --changeset ${{ env.UNITY_CHANGESET }} --module windows-mono
+          if [ ! -f "$HOME/Unity/Hub/Editor/2022.3.22f1/Editor/Unity" ]; then
+            xvfb-run unityhub -- --headless install --version 2022.3.22f1 --changeset 887be4894c44 --module windows-mono
           else
             echo "Unity Editor already installed, skipping installation"
           fi
