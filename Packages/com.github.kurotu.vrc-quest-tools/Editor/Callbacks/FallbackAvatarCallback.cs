@@ -79,14 +79,7 @@ namespace KRT.VRCQuestTools.NonDestructive
             if (VRCSdkControlPanel.TryGetBuilder(out sdkBuilder))
             {
                 sdkBuilder.OnSdkUploadSuccess += OnSdkUploadSuccess;
-                sdkBuilder.OnSdkUploadError += OnSdkUploadError;
             }
-        }
-
-        private static void OnSdkUploadError(object sender, string error)
-        {
-            // Clear pending fallback avatars on upload error to prevent memory leaks
-            PendingFallbackAvatars.Clear();
         }
 
         private static async void OnSdkUploadSuccess(object sender, string blueprintId)
