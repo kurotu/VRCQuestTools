@@ -36,6 +36,8 @@ Android Build Supportがインストールされていない場合、プラッ�
 
 ### Android Build Supportのインストール
 
+#### Unity Hubを使用する場合
+
 1. Unity Hubを起動します。
 2. 横のメニューから**インストール**を選択します。
 3. Android Build SupportをインストールしたいUnityのバージョンを右クリックします。
@@ -49,6 +51,24 @@ Android Build Supportがインストールされていない場合、プラッ�
     ![Add Modules](/img/unity-hub_add-modules.png)
 6. **インストール**をクリックします。
 7. インストールが完了するまで待ちます。
+
+#### Unity Hubを使用しない場合
+
+Unity Hubを使わずにUnityをインストールした場合は、Unityのインストーラーを再度実行することでAndroid Build Supportを追加できます。
+
+1. [Unity Download Archive](https://unity.com/releases/editor/archive)から使用しているUnityバージョンのインストーラーをダウンロードします。
+    :::tip
+    現在使用しているUnityと同じバージョンをダウンロードしてください。
+    Unityのバージョンは、Unity Editorのメニューバーから**Help** > **About Unity**で確認できます。
+    :::
+2. Unityのインストーラーを実行します。
+3. コンポーネント選択画面で**Android Build Support**を選択します。
+    :::note
+    **OpenJDK**を選択する必要はありません。
+    **Android SDK & NDK Tools**も必須ではありませんが、アップロードせずにAndroid端末で「Build & Test」(ローカルテスト)をするために必要です。
+    :::
+4. インストーラーの指示に従ってインストールを完了します。
+5. Unity Editorが起動している場合は再起動します。
 
 ## VRCQuestToolsのインストール
 
