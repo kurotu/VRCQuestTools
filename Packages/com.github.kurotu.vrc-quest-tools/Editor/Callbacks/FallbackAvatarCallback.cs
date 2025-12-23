@@ -103,7 +103,7 @@ namespace KRT.VRCQuestTools.NonDestructive
                 // Check performance rating
                 if (!ActualPerformanceCallback.LastActualPerformanceRating.TryGetValue(blueprintId, out var overallRating))
                 {
-                    Logger.LogWarning($"Performance rating not found for {blueprintId}");
+                    Logger.LogError($"Performance rating not found for {blueprintId}");
                     return;
                 }
 
@@ -120,6 +120,11 @@ namespace KRT.VRCQuestTools.NonDestructive
                     Logger.Log($"Setting {avatar.Name} as fallback");
                     avatar.Tags.Add(VRCSDKUtility.AvatarContentTag.Fallback);
                     await VRCApi.UpdateAvatarInfo(blueprintId, avatar);
+                    Logger.Log($"Avatar {avatar.Name} is now ready to be used as fallback");
+                }
+                else
+                {
+                    Logger.Log($"Avatar {avatar.Name} is already configured for fallback");
                 }
             }
             catch (Exception ex)
