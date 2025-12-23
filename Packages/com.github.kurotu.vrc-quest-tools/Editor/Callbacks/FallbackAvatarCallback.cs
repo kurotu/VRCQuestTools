@@ -117,8 +117,9 @@ namespace KRT.VRCQuestTools.NonDestructive
                 var avatar = await VRCApi.GetAvatar(blueprintId, forceRefresh: true);
                 if (!avatar.Tags.Contains(VRCSDKUtility.AvatarContentTag.Fallback))
                 {
-                    Logger.Log($"Setting avatar as fallback");
-                    await VRCApi.SetAvatarAsFallback(blueprintId, avatar);
+                    Logger.Log($"Setting {avatar.Name} as fallback");
+                    avatar.Tags.Add(VRCSDKUtility.AvatarContentTag.Fallback);
+                    await VRCApi.UpdateAvatarInfo(blueprintId, avatar);
                 }
             }
             catch (Exception ex)
