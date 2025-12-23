@@ -107,6 +107,9 @@ namespace KRT.VRCQuestTools.NonDestructive
                     return;
                 }
 
+                // Originally, we should check performance rating for all platforms,
+                // but VRCApi does not provide performance rating in VRCAvatar class.
+                // So, we only check for mobile builds here as well as SDK Control Panel.
                 if (!VRCSDKUtility.IsAllowedForFallbackAvatar(overallRating))
                 {
                     Logger.LogWarning($"The avatar is not allowed to be set as a fallback avatar: {overallRating}");
