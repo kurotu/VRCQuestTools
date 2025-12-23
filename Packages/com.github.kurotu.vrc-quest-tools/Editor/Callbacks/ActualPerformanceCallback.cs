@@ -22,6 +22,14 @@ namespace KRT.VRCQuestTools.NonDestructive
         /// Gets the last actual performance rating dictionary.
         /// Key: Blueprint ID, Value: Performance rating.
         /// </summary>
+        /// <remarks>
+        /// This dictionary is accessed from the Unity main thread only.
+        /// The OnPreprocessAvatar callback runs synchronously on the main thread,
+        /// and the async OnSdkUploadSuccess handler in FallbackAvatarCallback
+        /// continues execution on the Unity synchronization context (main thread)
+        /// due to Unity's async/await implementation.
+        /// Therefore, no additional thread synchronization is required.
+        /// </remarks>
         internal static readonly Dictionary<string, PerformanceRating> LastActualPerformanceRating = new Dictionary<string, PerformanceRating>();
 
 #pragma warning disable SA1300

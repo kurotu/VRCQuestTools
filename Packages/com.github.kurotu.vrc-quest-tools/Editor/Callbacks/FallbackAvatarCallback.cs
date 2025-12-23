@@ -98,12 +98,12 @@ namespace KRT.VRCQuestTools.NonDestructive
                     return;
                 }
 
-                PendingFallbackAvatars.Remove(blueprintId);
-
-                // Check performance rating
+                // Check performance rating before removing from pending list
+                // so that if validation fails, we can retry on subsequent uploads
                 if (!ActualPerformanceCallback.LastActualPerformanceRating.TryGetValue(blueprintId, out var overallRating))
                 {
                     Logger.LogError($"Performance rating not found for {blueprintId}");
+                    // Don't remove from pending list - might be calculated later
                     return;
                 }
 
@@ -113,6 +113,8 @@ namespace KRT.VRCQuestTools.NonDestructive
                 if (!VRCSDKUtility.IsAllowedForFallbackAvatar(overallRating))
                 {
                     Logger.LogWarning($"The avatar is not allowed to be set as a fallback avatar: {overallRating}");
+                    // Remove from pending list - performance requirement not met
+                    PendingFallbackAvatars.Remove(blueprintId);
                     return;
                 }
 
@@ -129,10 +131,15 @@ namespace KRT.VRCQuestTools.NonDestructive
                 {
                     Logger.Log($"Avatar {avatar.Name} is already configured for fallback");
                 }
+
+                // Remove from pending list only after successful processing
+                PendingFallbackAvatars.Remove(blueprintId);
             }
             catch (Exception ex)
             {
                 Logger.LogException(ex);
+                // Note: Exception in async void can't be caught by caller
+                // but we log it here to ensure visibility in Unity console
             }
         }
     }
