@@ -768,3 +768,6 @@ msgstr "不正な置換先マテリアル"
 msgid "NDMF:ReplacementMaterialErrorDescription"
 msgstr "置換先マテリアル {0} は Mobile アバターで使用できないシェーダー {1} を使用しています。"
 
+
+msgid "FallbackAvatarEditorDescription"
+msgstr "アップロード後、PCとAndroidの両方がパフォーマンス要件（Good以上）を満たしている場合、このアバターを自動的にフォールバックアバターとして設定します。"

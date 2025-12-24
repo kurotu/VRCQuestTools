@@ -5,6 +5,7 @@
         "VRCQuestTools",
         "VRC.SDK3A.Editor",
         "VRC.SDKBase",
+        "VRC.SDKBase.Editor",
         "nadena.dev.modular-avatar.core",
         "nadena.dev.ndmf"
     ],
