@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-08-29 14:07\n"
+"PO-Revision-Date: 2025-12-24 16:21\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -761,5 +761,8 @@ msgid "NDMF:ReplacementMaterialErrorTitle"
 msgstr ""
 
 msgid "NDMF:ReplacementMaterialErrorDescription"
+msgstr ""
+
+msgid "FallbackAvatarEditorDescription"
 msgstr ""
 
