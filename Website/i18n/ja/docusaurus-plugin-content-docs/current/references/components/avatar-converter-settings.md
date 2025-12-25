@@ -147,7 +147,7 @@ VirtualLensSettings コンポーネントの `Remote Only Mode` を `Force Enabl
 ## NDMF
 
 Non-Destructive Modular Framework (NDMF) が導入されているプロジェクトではVRCQuestToolsプラグインによって以下の処理を実行します。
-VRChat SDKのバリデーションを回避するために、Android向けにビルドするときはAvatar Builderウィンドウを使用してアバターをビルドしてください。
+VRChat SDK 3.8.1以降では、Android向けの要件を満たしていなくてもアバターのアップロードを開始できるため、VRChat SDKコントロールパネルから直接アップロードできます。
 
 ### Resolving Phase
 
