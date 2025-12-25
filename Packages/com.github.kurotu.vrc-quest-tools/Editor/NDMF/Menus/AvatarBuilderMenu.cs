@@ -3,6 +3,7 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;
+using VRC.SDKBase.Editor;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
