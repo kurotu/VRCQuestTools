@@ -1,6 +1,6 @@
 # VQT Fallback Avatar
 
-When the performance rank on Mobile (Android or iOS) is Good or better, VRCQuestTools automatically enables the avatar to be used as a fallback avatar after upload.
+When the performance rank on Mobile (Android or iOS) is Good or better, VRCQuestTools automatically enables the avatar to be used as a fallback avatar after a Mobile upload.
 
 ## Behavior
 

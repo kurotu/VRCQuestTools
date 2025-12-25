@@ -1,6 +1,6 @@
 # VQT Fallback Avatar
 
-Mobile(AndroidまたはiOS)でパフォーマンスランクがGood以上の場合、VRCQuestToolsはアップロード後に自動的にアバターをフォールバックアバターとして使用可能に設定します。
+Mobile(AndroidまたはiOS)へのアップロード時、パフォーマンスランクがGood以上の場合、VRCQuestToolsはアップロード後に自動的にアバターをフォールバックアバターとして使用可能に設定します。
 
 ## 動作
 
