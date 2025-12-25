@@ -770,4 +770,4 @@ msgstr "置換先マテリアル {0} は Mobile アバターで使用できな�
 
 
 msgid "FallbackAvatarEditorDescription"
-msgstr "アップロード後、PCとAndroidの両方がパフォーマンス要件（Good以上）を満たしている場合、このアバターを自動的にフォールバックアバターとして設定します。"
+msgstr "Mobile(AndroidまたはiOS)へのアップロード時、パフォーマンスランクがGood以上の場合、このアバターを自動的にフォールバックアバターとして使用可能に設定します。"
