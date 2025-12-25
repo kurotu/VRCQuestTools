@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-12-24 16:21\n"
+"PO-Revision-Date: 2025-12-25 20:33\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -769,5 +769,5 @@ msgid "NDMF:ReplacementMaterialErrorDescription"
 msgstr "置換先マテリアル {0} は Mobile アバターで使用できないシェーダー {1} を使用しています。"
 
 msgid "FallbackAvatarEditorDescription"
-msgstr "アップロード後、PCとAndroidの両方がパフォーマンス要件（Good以上）を満たしている場合、このアバターを自動的にフォールバックアバターとして設定します。"
+msgstr "Mobile(AndroidまたはiOS)へのアップロード時、パフォーマンスランクがGood以上の場合、このアバターを自動的にフォールバックアバターとして使用可能に設定します。"
 
