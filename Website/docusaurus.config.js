@@ -59,6 +59,7 @@ const config = {
     ({
       metadata: [
         {name: 'google-site-verification', content: 'iHat4XFlFF2SfNgjFM-hqhqAdP7KxL_s0WEFRySldpo'},
+        {name: 'algolia-site-verification', content: '2DC43CBAE38141BC'},
       ],
       // Replace with your project's social card
       image: 'img/social-card.png',
