@@ -40,7 +40,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 if (VRCSdkControlPanel.TryGetBuilder<IVRCSdkAvatarBuilderApi>(out var sdkBuilder))
                 {
                     await sdkBuilder.BuildAndTest(avatar);
-                    EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.BuildAndTestSucceeded, "OK");
+                    EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.BuildAndTestSucceeded(avatar.name), "OK");
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 return false;
             }
-            if (EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS)
+            if (EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android)
             {
                 return false;
             }

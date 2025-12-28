@@ -306,7 +306,7 @@ namespace KRT.VRCQuestTools.I18n
         // Build and Test
         internal string BuildAndTestRequiresSdkControlPanel => GetText("BuildAndTestRequiresSdkControlPanel");
         internal string BuildAndTestFailed(string message) => GetText("BuildAndTestFailed", message);
-        internal string BuildAndTestSucceeded => GetText("BuildAndTestSucceeded");
+        internal string BuildAndTestSucceeded(string avatarName) => GetText("BuildAndTestSucceeded", avatarName);
 
         // Compatibility Exceptions
         internal string LegacyPackageExceptionMessage(string packageName, string requiredVersion) => GetText("LegacyPackageExceptionMessage", packageName, requiredVersion);

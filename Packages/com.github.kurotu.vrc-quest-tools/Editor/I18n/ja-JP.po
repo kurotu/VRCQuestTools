@@ -609,10 +609,10 @@ msgid "BuildAndTestRequiresSdkControlPanel"
 msgstr "VRChat SDKコントロールパネルが利用できません。先に開いてください。"
 
 msgid "BuildAndTestFailed"
-msgstr "アバターのビルドとテストに失敗しました: {0}"
+msgstr "アバターのビルドに失敗しました: {0}"
 
 msgid "BuildAndTestSucceeded"
-msgstr "アバターのビルドとテストに成功しました。"
+msgstr "アバター {0} のローカルテスト用ビルドに成功しました。"
 
 msgid "LegacyPackageExceptionMessage"
 msgstr "現在のバージョンの{0}には非対応です。{0}を{1}以降に更新してください。"
