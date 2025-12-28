@@ -605,6 +605,15 @@ msgstr "未圧縮のテクスチャを圧縮"
 msgid "MenuIconResizerEditorMobileTextureFormatLabel"
 msgstr "圧縮形式"
 
+msgid "BuildAndTestRequiresSdkControlPanel"
+msgstr "VRChat SDKコントロールパネルが利用できません。先に開いてください。"
+
+msgid "BuildAndTestFailed"
+msgstr "アバターのビルドとテストに失敗しました: {0}"
+
+msgid "BuildAndTestSucceeded"
+msgstr "アバターのビルドとテストに成功しました。"
+
 msgid "LegacyPackageExceptionMessage"
 msgstr "現在のバージョンの{0}には非対応です。{0}を{1}以降に更新してください。"
 

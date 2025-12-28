@@ -1,4 +1,6 @@
 ﻿using KRT.VRCQuestTools.Menus;
+using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3A.Editor;
@@ -30,6 +32,7 @@ namespace KRT.VRCQuestTools.Ndmf
         [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfBuildAndTestWithAndroidSettings, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfBuildAndTestWithAndroidSettings)]
         private static async void BuildAndTest()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var avatar = Selection.activeGameObject;
             NdmfSessionState.BuildTarget = Models.BuildTarget.Android;
             try
@@ -37,17 +40,18 @@ namespace KRT.VRCQuestTools.Ndmf
                 if (VRCSdkControlPanel.TryGetBuilder<IVRCSdkAvatarBuilderApi>(out var sdkBuilder))
                 {
                     await sdkBuilder.BuildAndTest(avatar);
+                    EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.BuildAndTestSucceeded, "OK");
                 }
                 else
                 {
-                    Logger.LogError("VRChat SDK Control Panel is not available. Please open it first.");
-                    EditorUtility.DisplayDialog(VRCQuestTools.Name, "VRChat SDK Control Panel is not available. Please open it first.", "OK");
+                    Logger.LogError(i18n.BuildAndTestRequiresSdkControlPanel);
+                    EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.BuildAndTestRequiresSdkControlPanel, "OK");
                 }
             }
             catch (System.Exception e)
             {
                 Logger.LogException(e);
-                EditorUtility.DisplayDialog(VRCQuestTools.Name, $"Failed to build and test avatar: {e.Message}", "OK");
+                EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.BuildAndTestFailed(e.Message), "OK");
             }
             finally
             {
@@ -59,6 +63,10 @@ namespace KRT.VRCQuestTools.Ndmf
         private static bool BuildAndTestValidate()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                return false;
+            }
+            if (EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS)
             {
                 return false;
             }

@@ -303,6 +303,11 @@ namespace KRT.VRCQuestTools.I18n
         // Fallback Avatar
         internal string FallbackAvatarEditorDescription => GetText("FallbackAvatarEditorDescription");
 
+        // Build and Test
+        internal string BuildAndTestRequiresSdkControlPanel => GetText("BuildAndTestRequiresSdkControlPanel");
+        internal string BuildAndTestFailed(string message) => GetText("BuildAndTestFailed", message);
+        internal string BuildAndTestSucceeded => GetText("BuildAndTestSucceeded");
+
         // Compatibility Exceptions
         internal string LegacyPackageExceptionMessage(string packageName, string requiredVersion) => GetText("LegacyPackageExceptionMessage", packageName, requiredVersion);
         internal string BreakingPackageExceptionMessage(string packageName, string breakingVersion) => GetText("BreakingPackageExceptionMessage", packageName, breakingVersion);

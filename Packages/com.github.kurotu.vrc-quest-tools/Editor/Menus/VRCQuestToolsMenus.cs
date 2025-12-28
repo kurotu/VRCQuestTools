@@ -69,7 +69,7 @@ namespace KRT.VRCQuestTools.Menus
             private const string MenuPrefix = "GameObject/VRCQuestTools/";
             internal const string ConvertAvatarForQuest = MenuPrefix + "Convert Avatar for Android";
             internal const string NdmfManualBakeWithAndroidSettings = MenuPrefix + "[NDMF] Manual Bake with Android Settings";
-            internal const string NdmfBuildAndTestWithAndroidSettings = MenuPrefix + "[NDMF] Build & Test for PC with Android Settings";
+            internal const string NdmfBuildAndTestWithAndroidSettings = MenuPrefix + "[NDMF] Build and Test for PC with Android Settings";
             internal const string RemovePhysBones = MenuPrefix + "Remove PhysBones";
             internal const string RemoveMissingComponents = MenuPrefix + "Remove Missing Components";
             internal const string RemoveUnsupportedComponents = MenuPrefix + "Remove Unsupported Components";

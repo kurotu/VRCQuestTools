@@ -605,6 +605,15 @@ msgstr "Compress Uncompressed Textures"
 msgid "MenuIconResizerEditorMobileTextureFormatLabel"
 msgstr "Compression Format"
 
+msgid "BuildAndTestRequiresSdkControlPanel"
+msgstr "VRChat SDK Control Panel is not available. Please open it first."
+
+msgid "BuildAndTestFailed"
+msgstr "Failed to build and test avatar: {0}"
+
+msgid "BuildAndTestSucceeded"
+msgstr "Succeeded to build and test the avatar."
+
 msgid "LegacyPackageExceptionMessage"
 msgstr "Current version of {0} is not supported. Update {0} to {1} or later."
 
