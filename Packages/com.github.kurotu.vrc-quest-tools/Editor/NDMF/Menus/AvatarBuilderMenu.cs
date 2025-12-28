@@ -1,9 +1,7 @@
 ﻿using KRT.VRCQuestTools.Menus;
-using KRT.VRCQuestTools.Models;
-using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;
-using VRC.SDKBase.Editor;
+using VRC.SDK3A.Editor;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -33,10 +31,10 @@ namespace KRT.VRCQuestTools.Ndmf
         private static async void BuildAndTest()
         {
             var avatar = Selection.activeGameObject;
-            NdmfSessionState.BuildTarget = BuildTarget.Android;
+            NdmfSessionState.BuildTarget = Models.BuildTarget.Android;
             try
             {
-                if (VRCSdkControlPanel.TryGetBuilder(out var sdkBuilder))
+                if (VRCSdkControlPanel.TryGetBuilder<IVRCSdkAvatarBuilderApi>(out var sdkBuilder))
                 {
                     await sdkBuilder.BuildAndTest(avatar);
                 }
@@ -53,7 +51,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
             finally
             {
-                NdmfSessionState.BuildTarget = BuildTarget.Auto;
+                NdmfSessionState.BuildTarget = Models.BuildTarget.Auto;
             }
         }
 
