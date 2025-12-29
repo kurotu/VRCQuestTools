@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2025-12-25 20:33\n"
+"PO-Revision-Date: 2025-12-29 07:52\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -226,9 +226,6 @@ msgstr "変換時に残しておく PhysBoneCollider を選択します。"
 
 msgid "AvatarConverterContactsTooltip"
 msgstr "変換時に残しておく ContactSender と ContactReceiver を選択します。"
-
-msgid "OpenAvatarBuilder"
-msgstr "非破壊的に変換する"
 
 msgid "ManualConversionWarning"
 msgstr "手動で変換する場合 MA Merge Animator 以外の非破壊コンポーネントを考慮しません。組み合わせた後の動作に予期せぬ問題があるかもしれません。"
@@ -608,74 +605,14 @@ msgstr "未圧縮のテクスチャを圧縮"
 msgid "MenuIconResizerEditorMobileTextureFormatLabel"
 msgstr "圧縮形式"
 
-msgid "AvatarBuilderWindowExitPlayMode"
-msgstr "アバターをビルドするには Play モードを終了してください。"
+msgid "BuildAndTestRequiresSdkControlPanel"
+msgstr "VRChat SDKコントロールパネルが利用できません。先に開いてください。"
 
-msgid "AvatarBuilderWindowExitPrefabStage"
-msgstr "アバターをビルドするには Prefab ステージを終了してください。"
+msgid "BuildAndTestFailed"
+msgstr "アバターのビルドに失敗しました: {0}"
 
-msgid "AvatarBuilderWindowNoActiveAvatarsFound"
-msgstr "シーン内にアクティブなアバターがありません。"
-
-msgid "AvatarBuilderWindowSelectAvatar"
-msgstr "VRChat SDK コントロールパネルでアバターを選択してください。"
-
-msgid "AvatarBuilderWindowNoNdmfComponentsFound"
-msgstr "アバターに VRCQuestTools のコンポーネントがありません。"
-
-msgid "AvatarBuilderWindowSucceededBuild"
-msgstr "ビルドに成功しました。"
-
-msgid "AvatarBuilderWindowSucceededUpload"
-msgstr "アップロードに成功しました。"
-
-msgid "AvatarBuilderWindowFailedBuild"
-msgstr "ビルドに失敗しました。コンソールログを確認してください。"
-
-msgid "AvatarBuilderWindowRequiresControlPanel"
-msgstr "アバターをビルドするには VRChat SDK コントロールパネルを開く必要があります。"
-
-msgid "AvatarBuilderWindowBuildingProgressLabel"
-msgstr "アバターをビルド中"
-
-msgid "AvatarBuilderWindowUploadingProgressLabel"
-msgstr "アバターをアップロード中"
-
-msgid "AvatarBuilderWindowCopyrightAgreementHelp"
-msgstr "VRChat SDK コントロールパネルの \"Copyright ownership agreement\" を確認してください。"
-
-msgid "AvatarBuilderWindowOfflineTestingLabel"
-msgstr "オフラインテスト ({0})"
-
-msgid "AvatarBuilderWindowOfflineTestingDescription"
-msgstr "Android 用のビルド設定でアバターをビルドしてテストします。アバターはアバターメニューの「その他」カテゴリに「SDK: {0}」として表示されます。"
-
-msgid "AvatarBuilderWindowOnlinePublishingLabel"
-msgstr "アップロード ({0})"
-
-msgid "AvatarBuilderWindowOnlinePublishingDescription"
-msgstr "Android 用のビルド設定でアバターを VRChat にアップロードします。アバターが Android 用のアップロード条件を満たしていなくても VRChat SDK コントロールパネルによる検証をスキップしてビルドを開始します。"
-
-msgid "AvatarBuilderWindowSdkNoPrecheck"
-msgstr "VRChat SDK コントロールパネルから直接アップロードすることもできます。"
-
-msgid "AvatarBuilderWindowSetAsFallbackIfPossible"
-msgstr "可能な場合はフォールバックアバターにする"
-
-msgid "AvatarBuilderWindowSetAsFallbackIfPossibleTooltip"
-msgstr "ビルド後の最終的なパフォーマンスランクがGood以上である必要があります。"
-
-msgid "AvatarBuilderWindowFallbackNotAllowed"
-msgstr "ビルド後のパフォーマンスランクが {0} のためフォールバックアバターに設定できません。"
-
-msgid "AvatarBuilderWindowNdmfManualBakingLabel"
-msgstr "NDMF マニュアルベイク"
-
-msgid "AvatarBuilderWindowNdmfManualBakingDescription"
-msgstr "Android 用のビルド設定で Tools -> NDM Framework -> Manual bake avatar メニューを実行します。"
-
-msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
-msgstr "新しいアバターをアップロードするときは名前とサムネイルを VRChat SDK コントロールパネルで設定してください。"
+msgid "BuildAndTestSucceeded"
+msgstr "アバター {0} のローカルテスト用ビルドに成功しました。"
 
 msgid "LegacyPackageExceptionMessage"
 msgstr "現在のバージョンの{0}には非対応です。{0}を{1}以降に更新してください。"
