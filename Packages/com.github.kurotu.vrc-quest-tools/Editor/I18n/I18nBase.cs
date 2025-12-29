@@ -132,7 +132,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarConverterPhysBonesTooltip => GetText("AvatarConverterPhysBonesTooltip");
         internal string AvatarConverterPhysBoneCollidersTooltip => GetText("AvatarConverterPhysBoneCollidersTooltip");
         internal string AvatarConverterContactsTooltip => GetText("AvatarConverterContactsTooltip");
-        internal string OpenAvatarBuilder => GetText("OpenAvatarBuilder");
         internal string ManualConversionWarning => GetText("ManualConversionWarning");
         internal string ManualConvertButtonLabel => GetText("ManualConvertButtonLabel");
         internal string ConfirmationForUnityConstraints => GetText("ConfirmationForUnityConstraints");
@@ -304,30 +303,10 @@ namespace KRT.VRCQuestTools.I18n
         // Fallback Avatar
         internal string FallbackAvatarEditorDescription => GetText("FallbackAvatarEditorDescription");
 
-        // Avatar Builder
-        internal string AvatarBuilderWindowExitPlayMode => GetText("AvatarBuilderWindowExitPlayMode");
-        internal string AvatarBuilderWindowExitPrefabStage => GetText("AvatarBuilderWindowExitPrefabStage");
-        internal string AvatarBuilderWindowNoActiveAvatarsFound => GetText("AvatarBuilderWindowNoActiveAvatarsFound");
-        internal string AvatarBuilderWindowSelectAvatar => GetText("AvatarBuilderWindowSelectAvatar");
-        internal string AvatarBuilderWindowNoNdmfComponentsFound => GetText("AvatarBuilderWindowNoNdmfComponentsFound");
-        internal string AvatarBuilderWindowSucceededBuild => GetText("AvatarBuilderWindowSucceededBuild");
-        internal string AvatarBuilderWindowSucceededUpload => GetText("AvatarBuilderWindowSucceededUpload");
-        internal string AvatarBuilderWindowFailedBuild => GetText("AvatarBuilderWindowFailedBuild");
-        internal string AvatarBuilderWindowRequiresControlPanel => GetText("AvatarBuilderWindowRequiresControlPanel");
-        internal string AvatarBuilderWindowBuildingProgressLabel => GetText("AvatarBuilderWindowBuildingProgressLabel");
-        internal string AvatarBuilderWindowUploadingProgressLabel => GetText("AvatarBuilderWindowUploadingProgressLabel");
-        internal string AvatarBuilderWindowCopyrightAgreementHelp => GetText("AvatarBuilderWindowCopyrightAgreementHelp");
-        internal string AvatarBuilderWindowOfflineTestingLabel(string platformName) => GetText("AvatarBuilderWindowOfflineTestingLabel", platformName);
-        internal string AvatarBuilderWindowOfflineTestingDescription(string name) => GetText("AvatarBuilderWindowOfflineTestingDescription", name);
-        internal string AvatarBuilderWindowOnlinePublishingLabel(string platformName) => GetText("AvatarBuilderWindowOnlinePublishingLabel", platformName);
-        internal string AvatarBuilderWindowOnlinePublishingDescription => GetText("AvatarBuilderWindowOnlinePublishingDescription");
-        internal string AvatarBuilderWindowSdkNoPrecheck => GetText("AvatarBuilderWindowSdkNoPrecheck");
-        internal string AvatarBuilderWindowSetAsFallbackIfPossible => GetText("AvatarBuilderWindowSetAsFallbackIfPossible");
-        internal string AvatarBuilderWindowSetAsFallbackIfPossibleTooltip => GetText("AvatarBuilderWindowSetAsFallbackIfPossibleTooltip");
-        internal string AvatarBuilderWindowFallbackNotAllowed(string rating) => GetText("AvatarBuilderWindowFallbackNotAllowed", rating);
-        internal string AvatarBuilderWindowNdmfManualBakingLabel => GetText("AvatarBuilderWindowNdmfManualBakingLabel");
-        internal string AvatarBuilderWindowNdmfManualBakingDescription => GetText("AvatarBuilderWindowNdmfManualBakingDescription");
-        internal string AvatarBuilderWindowRequiresAvatarNameAndThumb => GetText("AvatarBuilderWindowRequiresAvatarNameAndThumb");
+        // Build and Test
+        internal string BuildAndTestRequiresSdkControlPanel => GetText("BuildAndTestRequiresSdkControlPanel");
+        internal string BuildAndTestFailed(string message) => GetText("BuildAndTestFailed", message);
+        internal string BuildAndTestSucceeded(string avatarName) => GetText("BuildAndTestSucceeded", avatarName);
 
         // Compatibility Exceptions
         internal string LegacyPackageExceptionMessage(string packageName, string requiredVersion) => GetText("LegacyPackageExceptionMessage", packageName, requiredVersion);

@@ -58,14 +58,14 @@ Android端末でテストする場合、USBケーブルでPCに接続してデ�
 - [Build and Test for Android Mobile](https://creators.vrchat.com/platforms/android/build-test-mobile/)
 :::
 
-1. VRChat SDKコントロールパネルを開き、テストするアバターを**Builder**タブで選択します。
-2. メニューバーの**Tools** > **VRCQuestTools** > **Show Avatar Builder**を選択します。
-3. **VQT Avatar Builder**ウィンドウが表示されます。
-4. **Build & Test on PC/Android**ボタンをクリックします。
-5. Android用の設定でアバターがビルドされます。
+### PCでAndroid設定でテストする
 
-ビルドしたアバターはVRChatのアバター一覧の**Others**セクションに表示されます。
-VRChatを起動し、アバターをテストしましょう。
+ヒエラルキーの右クリックメニューを使って、PCでAndroid用の設定でアバターをテストすることができます。
+
+1. ヒエラルキーでテストしたいアバターを選択します。
+2. アバターを右クリックして**VRCQuestTools** > **[NDMF] Build & Test for PC with Android Settings**を選択します。
+3. Android用の設定でアバターがビルドされ、VRChatのアバター一覧の**Others**セクションに表示されます。
+4. VRChatを起動し、アバターをテストしましょう。
 
 ## アバターのアップロード
 
@@ -74,7 +74,6 @@ VRChatを起動し、アバターをテストしましょう。
 
 - [通常のアップロード](#通常のアップロード) (VRChat SDK)
 - [Multi-Platform Build](#multi-platform-build) (VRChat SDK)
-- [VQT Avatar Builder](#vqt-avatar-builder) (VRCQuestTools)
 - [ContinuousAvatarUploader](https://github.com/anatawa12/ContinuousAvatarUploader)
 
 ### 通常のアップロード
@@ -93,17 +92,5 @@ VRChat SDK 3.7.6以降の**Multi-Platform Build**を使用するとPCとAndroid�
 4. **Multi-Platform Build & Publish**ボタンをクリックします。
 5. PCとAndroidの両方にアバターがアップロードされます。
 
-### VQT Avatar Builder
-
-[VQT Avatar Builder]を使用すると、ビルド前のチェックを無視してアバターをアップロードできます。
-
-1. Unityのビルド設定をAndroidに変更します。
-2. VRChat SDKコントロールパネルを開き、アップロードするアバターを**Builder**タブで選択します。
-3. メニューバーの**Tools** > **VRCQuestTools** > **Show Avatar Builder**を選択します。
-4. **VQT Avatar Builder**ウィンドウが表示されます。
-5. **Build & Publish for Android**ボタンをクリックします。
-6. アップロードが完了すると、アバターのサムネイルに緑色のMobileアイコンが表示されます。
-
 [Modular Avatar]: https://modular-avatar.nadena.dev/ja
 [Anatawa12's AvatarOptimizer]: https://vpm.anatawa12.com/avatar-optimizer/ja/
-[VQT Avatar Builder]: ../references/main-menu/show-avatar-builder.md
