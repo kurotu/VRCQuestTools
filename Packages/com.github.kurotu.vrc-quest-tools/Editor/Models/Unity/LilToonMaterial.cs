@@ -418,6 +418,14 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
         }
 
+        private static void DestroyNonAssetTexture(Texture texture)
+        {
+            if (texture != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(texture)))
+            {
+                Object.DestroyImmediate(texture);
+            }
+        }
+
         /// <summary>
         /// Reused codes from lilInspector.cs v1.2.12 with some modification.
         /// </summary>
@@ -442,6 +450,9 @@ namespace KRT.VRCQuestTools.Models.Unity
             var mainColor2nd = MaterialEditor.GetMaterialProperty(mats, "_Color2nd");
             var main2ndTex = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTex");
             var main2ndTexAngle = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexAngle");
+            var main2ndTexUVMode = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTex_UVMode");
+            var main2ndTexDecalAnimation = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexDecalAnimation");
+            var main2ndTexDecalSubParam = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexDecalSubParam");
             var main2ndTexIsDecal = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexIsDecal");
             var main2ndTexIsLeftOnly = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexIsLeftOnly");
             var main2ndTexIsRightOnly = MaterialEditor.GetMaterialProperty(mats, "_Main2ndTexIsRightOnly");
@@ -456,6 +467,9 @@ namespace KRT.VRCQuestTools.Models.Unity
             var mainColor3rd = MaterialEditor.GetMaterialProperty(mats, "_Color3rd");
             var main3rdTex = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTex");
             var main3rdTexAngle = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexAngle");
+            var main3rdTexUVMode = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTex_UVMode");
+            var main3rdTexDecalAnimation = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexDecalAnimation");
+            var main3rdTexDecalSubParam = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexDecalSubParam");
             var main3rdTexIsDecal = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexIsDecal");
             var main3rdTexIsLeftOnly = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexIsLeftOnly");
             var main3rdTexIsRightOnly = MaterialEditor.GetMaterialProperty(mats, "_Main3rdTexIsRightOnly");
@@ -503,7 +517,16 @@ namespace KRT.VRCQuestTools.Models.Unity
             else
             {
                 bool bake2nd = (bakeType == 0 || bakeType == 2 || bakeType == 5) && useMain2ndTex.floatValue != 0.0;
+                if (main2ndTexUVMode.floatValue > 0.0f && main2ndTex.textureValue != null)
+                {
+                    bake2nd = false;
+                }
+
                 bool bake3rd = (bakeType == 0 || bakeType == 3 || bakeType == 6) && useMain3rdTex.floatValue != 0.0;
+                if (main3rdTexUVMode.floatValue > 0.0f && main3rdTex.textureValue != null)
+                {
+                    bake3rd = false;
+                }
 
                 // run bake
                 // Texture bufMainTexture = mainTex.textureValue;
@@ -539,6 +562,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                     CopyMaterialProperty(hsvgMaterial, material, useMain2ndTex);
                     CopyMaterialProperty(hsvgMaterial, material, mainColor2nd);
                     CopyMaterialProperty(hsvgMaterial, material, main2ndTexAngle);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexDecalAnimation);
+                    CopyMaterialProperty(hsvgMaterial, material, main2ndTexDecalSubParam);
                     CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsDecal);
                     CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsLeftOnly);
                     CopyMaterialProperty(hsvgMaterial, material, main2ndTexIsRightOnly);
@@ -582,6 +607,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                     CopyMaterialProperty(hsvgMaterial, material, useMain3rdTex);
                     CopyMaterialProperty(hsvgMaterial, material, mainColor3rd);
                     CopyMaterialProperty(hsvgMaterial, material, main3rdTexAngle);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexDecalAnimation);
+                    CopyMaterialProperty(hsvgMaterial, material, main3rdTexDecalSubParam);
                     CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsDecal);
                     CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsLeftOnly);
                     CopyMaterialProperty(hsvgMaterial, material, main3rdTexIsRightOnly);
@@ -630,6 +657,12 @@ namespace KRT.VRCQuestTools.Models.Unity
                 finally
                 {
                     RenderTexture.active = activeRT;
+                    Object.DestroyImmediate(hsvgMaterial);
+                    DestroyNonAssetTexture(srcTexture);
+                    DestroyNonAssetTexture(srcMain2);
+                    DestroyNonAssetTexture(srcMain3);
+                    DestroyNonAssetTexture(srcMask2);
+                    DestroyNonAssetTexture(srcMask3);
                 }
             }
         }

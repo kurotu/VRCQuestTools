@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-08-29 14:07\n"
+"PO-Revision-Date: 2025-12-10 15:38\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -226,9 +226,6 @@ msgstr "Set PhysBoneColliders to keep while conversion."
 
 msgid "AvatarConverterContactsTooltip"
 msgstr "Set ContactSenders and ContactReceivers to keep while conversion."
-
-msgid "OpenAvatarBuilder"
-msgstr "Convert Non-Destructively"
 
 msgid "ManualConversionWarning"
 msgstr "When converting manually, non-destructive components other than MA Merge Animator are not considered. Unexpected issues may arise in the behavior after combining."
@@ -456,7 +453,7 @@ msgid "NewVersionHasBreakingChanges"
 msgstr "This version might have breaking changes about compatibility."
 
 msgid "MissingScripts"
-msgstr "There are \"missing\" scripts. Please check for assets or packages you forgot to import."
+msgstr "There are \"missing\" scripts in the following objects. Please check for assets or packages you forgot to import."
 
 msgid "ExperimentalComponentWarning"
 msgstr "This component is an experimental feature."
@@ -608,74 +605,14 @@ msgstr "Compress Uncompressed Textures"
 msgid "MenuIconResizerEditorMobileTextureFormatLabel"
 msgstr "Compression Format"
 
-msgid "AvatarBuilderWindowExitPlayMode"
-msgstr "Exit play mode to build the avatar."
+msgid "BuildAndTestRequiresSdkControlPanel"
+msgstr "VRChat SDK Control Panel is not available. Please open it first."
 
-msgid "AvatarBuilderWindowExitPrefabStage"
-msgstr "Exit prefab stage to build the avatar."
+msgid "BuildAndTestFailed"
+msgstr "Failed to build avatar: {0}"
 
-msgid "AvatarBuilderWindowNoActiveAvatarsFound"
-msgstr "No active avatars in the scene."
-
-msgid "AvatarBuilderWindowSelectAvatar"
-msgstr "Select an avatar to build in VRChat SDK Control Panel."
-
-msgid "AvatarBuilderWindowNoNdmfComponentsFound"
-msgstr "No VRCQuestTools components found in the avatar."
-
-msgid "AvatarBuilderWindowSucceededBuild"
-msgstr "Succeeded to build the avatar."
-
-msgid "AvatarBuilderWindowSucceededUpload"
-msgstr "Succeeded to upload the avatar."
-
-msgid "AvatarBuilderWindowFailedBuild"
-msgstr "Failed to build the avatar. See console logs."
-
-msgid "AvatarBuilderWindowRequiresControlPanel"
-msgstr "Need to open VRChat SDK Control Panel to build the avatar."
-
-msgid "AvatarBuilderWindowBuildingProgressLabel"
-msgstr "Building the Avatar"
-
-msgid "AvatarBuilderWindowUploadingProgressLabel"
-msgstr "Uploading the Avatar"
-
-msgid "AvatarBuilderWindowCopyrightAgreementHelp"
-msgstr "Confirm \"Copyright ownership agreement\" in VRChat SDK Control Panel."
-
-msgid "AvatarBuilderWindowOfflineTestingLabel"
-msgstr "Offline Testing ({0})"
-
-msgid "AvatarBuilderWindowOfflineTestingDescription"
-msgstr "Build this avatar with Android build setting to test it. The avatar will appear as \"SDK {0}\" in the Other category of the avatars menu."
-
-msgid "AvatarBuilderWindowOnlinePublishingLabel"
-msgstr "Online Publishing ({0})"
-
-msgid "AvatarBuilderWindowOnlinePublishingDescription"
-msgstr "Upload this avatar to VRChat with Android build setting. The pre-build validation of VRChat SDK Control Panel will be skipped even if the avatar doesn't satisfy Android limitation."
-
-msgid "AvatarBuilderWindowSdkNoPrecheck"
-msgstr "Now you can also upload the avatar directly from VRChat SDK Control Panel."
-
-msgid "AvatarBuilderWindowSetAsFallbackIfPossible"
-msgstr "Set as a fallback avatar if possible"
-
-msgid "AvatarBuilderWindowSetAsFallbackIfPossibleTooltip"
-msgstr "Performance rank must be Good or better after building the avatar."
-
-msgid "AvatarBuilderWindowFallbackNotAllowed"
-msgstr "Could not set as a fallback avatar because the performance rank is {0}."
-
-msgid "AvatarBuilderWindowNdmfManualBakingLabel"
-msgstr "NDMF Manual Baking"
-
-msgid "AvatarBuilderWindowNdmfManualBakingDescription"
-msgstr "Execute the menu, Tools -> NDM Framework -> Manual bake avatar with Android build setting."
-
-msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
-msgstr "Need to set name and thumbnail in VRChat SDK Control Panel when uploading a new avatar."
+msgid "BuildAndTestSucceeded"
+msgstr "Succeeded to build the avatar {0} for local testing."
 
 msgid "LegacyPackageExceptionMessage"
 msgstr "Current version of {0} is not supported. Update {0} to {1} or later."
@@ -768,3 +705,6 @@ msgstr "Invalid Replacement Material"
 msgid "NDMF:ReplacementMaterialErrorDescription"
 msgstr "The replacement material {0} uses a shader {1} which is not allowed for mobile avatars."
 
+
+msgid "FallbackAvatarEditorDescription"
+msgstr "Automatically enables this avatar to be used as a fallback avatar after a Mobile upload if the performance rank is Good or better."

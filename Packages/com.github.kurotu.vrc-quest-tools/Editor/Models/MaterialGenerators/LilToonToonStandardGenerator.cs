@@ -208,9 +208,11 @@ namespace KRT.VRCQuestTools.Models
             return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
             {
                 RenderTexture.ReleaseTemporary(alphaGlossMap);
+                RenderTexture.ReleaseTemporary(reflectionGrayscaleTex);
                 RenderTexture.ReleaseTemporary(rt1);
                 RenderTexture.ReleaseTemporary(rt2);
                 UnityEngine.Object.DestroyImmediate(mat);
+                UnityEngine.Object.DestroyImmediate(mat0);
                 UnityEngine.Object.DestroyImmediate(mat1);
                 completion?.Invoke(tex);
             });
@@ -344,6 +346,7 @@ namespace KRT.VRCQuestTools.Models
                 RenderTexture.ReleaseTemporary(reflectionGrayscaleTex);
                 RenderTexture.ReleaseTemporary(rt);
                 RenderTexture.ReleaseTemporary(rt2);
+                UnityEngine.Object.DestroyImmediate(mat0);
                 UnityEngine.Object.DestroyImmediate(mat);
                 completion?.Invoke(tex);
             });

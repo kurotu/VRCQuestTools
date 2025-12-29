@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `Features` to select features to apply to the converted material.
 - Preview wireframe when selecting PhysBones to keep.
 - [NDMF] Preview for material conversion and removal of vertex color.
+- Added "No Override" option to texture compression format settings, allowing Unity's default ASTC compression settings to control texture format instead of forcing platform-specific overrides. The default texture compression format for `Avatar Converter Settings` component is now "No Override".
+- Added `VQT Fallback Avatar` component that automatically sets an avatar as a fallback avatar after upload when performance requirements are met (Good or better rating for mobile platforms).
 
 ### Changed
 - Changed the initial value of default material conversion settings to Toon Standard.
@@ -26,12 +28,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
+- Fixed RenderTexture and Material memory leaks in texture generation pipeline during avatar conversion.
 
 ### Removed
 - Removed support for Unity 2019.
 - Removed support for VRCSDK earlier than 3.9.0.
 - Removed support for lilToon earlier than 1.10.0.
 - Removed support for NDMF earlier than 1.5.0.
+- Removed VQT Avatar Builder window. Use VRChat SDK Control Panel to build and upload avatars directly, or use the "[NDMF] Build and Test for PC with Android Settings" context menu for local testing.
+
+## [2.11.4] - 2025-10-10
+
+### Fixed
+- Fixed so that lilToon Main Color 2nd/3rd textures are not baked into the main texture when they use UVs other than UV0.
+- Fixed an issue where lilToon Main Color 2nd/3rd, when used as decal and animated, were not correctly baked into the main texture. (Requires lilToon 2.3.0 or later)
 
 ## [2.11.3] - 2025-08-17
 
