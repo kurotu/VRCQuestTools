@@ -33,12 +33,12 @@ namespace KRT.VRCQuestTools.Ndmf
 
                     if (buildTarget == Models.BuildTarget.PC && settings.removeOnPC)
                     {
-                        Debug.Log($"Remove {settings.component.GetType().Name} for PC platform", settings.component.gameObject);
+                        Logger.Log($"Remove {settings.component.GetType().Name} for PC platform", settings.component.gameObject);
                         Object.DestroyImmediate(settings.component);
                     }
                     if (buildTarget == Models.BuildTarget.Android && settings.removeOnAndroid)
                     {
-                        Debug.Log($"Remove {settings.component.GetType().Name} for Android platform", settings.component.gameObject);
+                        Logger.Log($"Remove {settings.component.GetType().Name} for Android platform", settings.component.gameObject);
                         Object.DestroyImmediate(settings.component);
                     }
                 }

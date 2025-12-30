@@ -1,0 +1,43 @@
+name: "Task / タスク"
+description: "Plan and execute tasks effectively. (ONLY FOR INTERNAL USE)"
+
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: タスク概要
+      description: 実現したい処理や機能を一文で簡潔に書いてください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: background
+    attributes:
+      label: 背景・目的
+      description: このタスクを必要とする理由や課題を説明してください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirements
+    attributes:
+      label: 技術要件
+      description: 実装時に守ってほしい制約や前提条件を明確にしてください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: 補足情報
+      description: 参考になる既存の実装や検討中の方法があれば記載してください。
+    validations:
+      required: false
+
+  - type: textarea
+    id: done
+    attributes:
+      label: 完了条件
+      description: このタスクが完了と判断できる条件を記載してください。
+    validations:
+      required: true

@@ -42,7 +42,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: StandaloneWindows
-          unityVersion: 2019.4.31f1
+          unityVersion: 2022.3.22f1
           buildMethod: KRT.VRCQuestTools.VRCQuestTools.Export
           allowDirtyBuild: true
           versioning: None
@@ -53,51 +53,40 @@ jobs:
           path: VRCQuestTools.unitypackage
 
   test:
+    name: test (${{matrix.sdk.unityVersion}}, sdk-${{matrix.sdk.name}}, deps-${{matrix.dependencies.name}})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         sdk:
-          # First public APIs
-          - unityVersion: 2019.4.31f1
-            vrcsdkVersion: 3.3.0
-          # Unity 2019 last SDK
-          - unityVersion: 2019.4.31f1
-            vrcsdkVersion: 3.4.2
-          # Unity 2022 first SDK
-          - unityVersion: 2022.3.6f1
-            vrcsdkVersion: 3.5.0
-          # VRC Constraints
-          - unityVersion: 2022.3.22f1
-            vrcsdkVersion: 3.6.2-constraints.3
-          # Local-only Contact Receiver
-          - unityVersion: 2022.3.22f1
-            vrcsdkVersion: 3.7.5
-          # Toon Standard
-          - unityVersion: 2022.3.22f1
-            vrcsdkVersion: 3.8.1
-        ndmfVersion:
-          - ''
-          - 1.2.5 # Befor Error report
-          - 1.3.0 # Error report
-          - 1.5.0 # Preview
-          - latest
-        exclude:
-          - sdk:
-              unityVersion: 2019.4.31f1
-            ndmfVersion: 1.5.0 # Unity 2019 not supported
-          - sdk:
-              unityVersion: 2022.3.6f1
-            ndmfVersion: 1.2.5 # Tested with Unity 2019
-          - sdk:
-              unityVersion: 2022.3.6f1
-            ndmfVersion: 1.3.0 # Tested with Unity 2019
-          - sdk:
-              unityVersion: 2022.3.22f1
-            ndmfVersion: 1.2.5 # Tested with Unity 2019
-          - sdk:
-              unityVersion: 2022.3.22f1
-            ndmfVersion: 1.3.0 # Tested with Unity 2019
+          - name: minimum
+            unityVersion: 2022.3.22f1
+            vrcsdkVersion: 3.9.0 # required for new avatars
+          - name: latest
+            unityVersion: 2022.3.22f1
+            vrcsdkVersion: latest
+        dependencies:
+          - name: nothing
+            packages: []
+          - name: unsupported
+            packages:
+              - { name: nadena.dev.ndmf, version: '1.4.1' }
+              - { name: jp.lilxyzw.liltoon, version: '1.9.0' }
+          - name: minimum
+            packages:
+              - { name: nadena.dev.ndmf, version: '1.5.0' } # ndmf-preview
+              - { name: jp.lilxyzw.liltoon, version: '1.10.0' } # shadow ramp
+          - name: latest
+            packages:
+              - { name: nadena.dev.modular-avatar, version: 'latest' }
+              - { name: nadena.dev.ndmf, version: 'latest' }
+              - { name: jp.lilxyzw.liltoon, version: 'latest' }
+          - name: ma-unsupported
+            packages:
+              - { name: nadena.dev.modular-avatar, version: '1.11.7' }
+          - name: ma-minimum
+            packages:
+              - { name: nadena.dev.modular-avatar, version: '1.12.2' } # world fixed object without error
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -115,11 +104,24 @@ jobs:
           retry_wait_seconds: 60
           command: vrc-get resolve
       - run: rm -r Packages/vpm-manifest.json Packages/com.vrchat.avatars Packages/com.vrchat.base
-      - run: vrc-get install -y com.vrchat.base ${{ matrix.sdk.vrcsdkVersion }}
-      - run: vrc-get install -y com.vrchat.avatars ${{ matrix.sdk.vrcsdkVersion }}
 
-      - run: vrc-get repo add https://vpm.nadena.dev/vpm-prerelease.json
-      - run: if [ -n "${{ matrix.ndmfVersion}}" ]; then scripts/vrc-get-install.sh nadena.dev.ndmf ${{ matrix.ndmfVersion }}; fi
+      - name: Install VRChat SDK
+        run: |
+          scripts/vrc-get-install.sh com.vrchat.base ${{ matrix.sdk.vrcsdkVersion }}
+          scripts/vrc-get-install.sh com.vrchat.avatars ${{ matrix.sdk.vrcsdkVersion }}
+
+      - name: Add VPM repositories
+        run: |
+          vrc-get repo add https://vpm.nadena.dev/vpm.json
+          vrc-get repo add https://lilxyzw.github.io/vpm-repos/vpm.json
+
+      - name: Install dependencies
+        run: |
+          for pkg in $(echo '${{ toJson(matrix.dependencies.packages) }}' | jq -c '.[]'); do
+            name=$(echo "$pkg" | jq -r '.name')
+            version=$(echo "$pkg" | jq -r '.version')
+            scripts/vrc-get-install.sh "$name" "$version"
+          done
 
       - run: vrc-get info project
 
@@ -131,22 +133,59 @@ jobs:
         with:
           unityVersion: ${{ matrix.sdk.unityVersion }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          checkName: "Test Results: ${{ matrix.sdk.unityVersion }}, vrcsdk-${{ matrix.sdk.vrcsdkVersion }}, ndmf-${{ matrix.ndmfVersion }}"
+          checkName: "Test Results: ${{matrix.sdk.unityVersion}}, sdk-${{matrix.sdk.name}}, deps-${{matrix.dependencies.name}}"
 
   lint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container: unityci/editor:ubuntu-2022.3.22f1-windows-mono-3
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-build-${{ github.ref }}
+          restore-keys: |
+            Library-build-
+
+      - uses: anatawa12/sh-actions/setup-vrc-get@master
+      - uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 5
+          retry_wait_seconds: 60
+          command: vrc-get resolve
+      - run: vrc-get info project
+      - run: vrc-get repo add https://vpm.nadena.dev/vpm-prerelease.json
+      - run: scripts/vrc-get-install.sh nadena.dev.modular-avatar latest
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 3.1.x
-      - name: Restore dependencies
-        run: dotnet tool restore
+          dotnet-version: 9.0.x
+
+      # See https://github.com/game-ci/documentation/issues/408#issuecomment-3211109962 for UNITY_SERIAL
+      - name: Generate Solution
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_COMMAND: unity-editor
+        run: ./.github/workflows/unity.sh -batchmode -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
+
+      - name: Add dotnet problem matcher
+        run: echo "::add-matcher::.github/problem-matchers/csc.json"
+
       - name: Check style
-        run: dotnet style check -r stylecop.ruleset -j stylecop.json . > result.txt
-      - name: Report result
-        run: if [ "$(wc -l < result.txt)" = "0" ]; then true; else cat result.txt && false; fi
+        run: ./scripts/lint.sh | tee lint.log
+        env:
+          DOTNET_CLI_UI_LANGUAGE: en
+
+      - name: Upload lint log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lint
+          path: lint.log
 
   vpm:
     runs-on: ubuntu-latest
@@ -167,12 +206,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - uses: actions/setup-node@v4
         with:
-          cache: 'npm'
-          cache-dependency-path: Website/package-lock.json
-      - run: cd Website && npm ci
-      - run: cd Website && npm run build
+          cache: 'pnpm'
+          cache-dependency-path: Website/pnpm-lock.yaml
+      - run: cd Website && pnpm install --frozen-lockfile
+      - run: cd Website && pnpm run build
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
@@ -213,3 +255,4 @@ jobs:
             Packages/com.github.kurotu.vrc-quest-tools/package.json
             *.zip
             ${{ steps.artifact.outputs.artifact-name }}/${{ steps.artifact.outputs.artifact-name }}.unitypackage
+

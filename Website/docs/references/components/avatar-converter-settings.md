@@ -47,7 +47,9 @@ The following shaders are supported for material conversion. For unsupported sha
 | Compression Format | Select the compression format of the generated textures. DXT5 is used for PC platform. | Toon Lit, MatCap Lit, Toon Standard |
 | Generate shadows from normal map | Generate pseudo shadows from normal maps and reflect them in textures. | Toon Lit, MatCap Lit |
 | MatCap Texture | Set the MatCap texture used by the MatCap Lit shader. | MatCap Lit |
+| Generate shadow ramp | Generate a ramp texture for shadow settings. | Toon Standard |
 | Fallback Shading | Select the Ramp texture used when converting unsupported materials. | Toon Standard |
+| Features | | Select features to apply to the converted material. | Toon Standard |
 | Replaced Material | Set the material used in Material Replacement mode. | Material Replacement |
 
 ### Additional Material Conversion Settings
@@ -146,7 +148,7 @@ If you are using VirtualLens2 with the destructive setup, set `EditorOnly` tag t
 ## NDMF
 
 The VRCQuestTools plugin performs the following processes in the project which have Non-Destructive Modular Framework (NDMF).
-To avoid VRChat SDK validation, use the Avatar Builder window to build the avatar when building for Android.
+Since VRChat SDK 3.8.1 or later, you can start uploading avatars even if they don't meet Android requirements, so you can directly upload from the VRChat SDK Control Panel.
 
 ### Resolving Phase
 

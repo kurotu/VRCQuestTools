@@ -31,7 +31,7 @@ namespace KRT.VRCQuestTools.Models
             var type = GetTypeByName("VF.Component.VRCFuryComponent") ?? GetTypeByName("VF.Model.VRCFuryComponent");
             if (type == null)
             {
-                Debug.LogError("[VRCQuestTools] VRCFuryComponent type not found. VRCFury may have made breaking changes.");
+                Logger.LogError("VRCFuryComponent type not found. VRCFury may have made breaking changes.");
             }
             return type;
         });

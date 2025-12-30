@@ -9,16 +9,14 @@ using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-#if !UNITY_2021_2_OR_NEWER
-using UnityEditor.Experimental.SceneManagement;
-#endif
 using UnityEditorInternal;
 using UnityEngine;
+using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 using static KRT.VRCQuestTools.Models.VRChat.AvatarConverter;
-using static KRT.VRCQuestTools.Utils.VRCSDKUtility.Reflection;
 
 namespace KRT.VRCQuestTools.Inspector
 {
@@ -88,29 +86,30 @@ namespace KRT.VRCQuestTools.Inspector
                         }
                     }
 
-#if VQT_HAS_VRCSDK_CONSTRAINTS
                     if (avatar.HasUnityConstraints)
                     {
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
-                        if (avatar.GameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
+                        if (ModularAvatarUtility.IsModularAvatarImported())
                         {
-                            using (var horizontal = new EditorGUILayout.HorizontalScope())
+                            if (!ModularAvatarUtility.HasConvertConstraintsComponent(avatar.GameObject))
                             {
-                                EditorGUILayout.HelpBox(i18n.AlertForMAConvertConstraints, MessageType.Warning);
-                                if (GUILayout.Button(i18n.AddLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                                using (var horizontal = new EditorGUILayout.HorizontalScope())
                                 {
-                                    OnClickAddConvertConstraintsButton(descriptor);
+                                    EditorGUILayout.HelpBox(i18n.AlertForMAConvertConstraints, MessageType.Warning);
+                                    if (GUILayout.Button(i18n.AddLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                                    {
+                                        OnClickAddConvertConstraintsButton(descriptor);
+                                    }
                                 }
                             }
                         }
-#else
-                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        else
                         {
-                            EditorGUILayout.HelpBox(i18n.AlertForUnityConstraintsConversion, MessageType.Warning);
+                            using (var horizontal = new EditorGUILayout.HorizontalScope())
+                            {
+                                EditorGUILayout.HelpBox(i18n.AlertForUnityConstraintsConversion, MessageType.Warning);
+                            }
                         }
-#endif
                     }
-#endif
 
                     if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor) && avatar.GameObject.GetComponent<NetworkIDAssigner>() == null)
                     {
@@ -124,10 +123,10 @@ namespace KRT.VRCQuestTools.Inspector
                         }
                     }
 
-                    var pbs = descriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
+                    var pbs = descriptor.GetComponentsInChildren<VRCPhysBone>(true);
                     var multiPbObjs = pbs
                         .Select(pb => pb.gameObject)
-                        .Where(go => go.GetComponents(VRCSDKUtility.PhysBoneType).Count() >= 2)
+                        .Where(go => go.GetComponents<VRCPhysBone>().Count() >= 2)
                         .Distinct()
                         .ToArray();
                     if (multiPbObjs.Length > 0)
@@ -171,6 +170,7 @@ namespace KRT.VRCQuestTools.Inspector
                 editorState.foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingsLabel, editorState.foldOutMaterialSettings);
                 if (editorState.foldOutMaterialSettings)
                 {
+                    additionalMaterialConvertSettingsReorderableList ??= MaterialConversionGUI.CreateAdditionalMaterialConvertSettingsList(so, so.FindProperty(nameof(AvatarConverterSettings.additionalMaterialConvertSettings)));
                     editorState.foldOutAdditionalMaterialSettings = MaterialConversionGUI.Draw(so, editorState.foldOutAdditionalMaterialSettings, additionalMaterialConvertSettingsReorderableList);
 
                     EditorGUILayout.Space();
@@ -236,12 +236,10 @@ namespace KRT.VRCQuestTools.Inspector
                     }
 
                     var componentsToBeAlearted = VRCQuestTools.ComponentRemover.GetUnsupportedComponentsInChildren(descriptor.gameObject, true);
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
-                    if (descriptor.gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() != null)
+                    if (ModularAvatarUtility.IsModularAvatarImported() && ModularAvatarUtility.HasConvertConstraintsComponent(descriptor.gameObject))
                     {
                         componentsToBeAlearted = componentsToBeAlearted.Where(c => !(c is UnityEngine.Animations.IConstraint)).ToArray();
                     }
-#endif
                     if (componentsToBeAlearted.Count() > 0)
                     {
                         Views.EditorGUIUtility.HelpBoxGUI(MessageType.Warning, () =>
@@ -308,19 +306,7 @@ namespace KRT.VRCQuestTools.Inspector
                 }
                 else
                 {
-#if VQT_HAS_VRCSDK_NO_PRECHECK
                     EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion2, MessageType.Info);
-#else
-                    EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion, MessageType.Info);
-#endif
-#if VQT_HAS_NDMF
-                    if (GUILayout.Button(i18n.OpenAvatarBuilder, GUILayout.Height(38)))
-                    {
-                        var typeName = "KRT.VRCQuestTools.Ndmf.AvatarBuilderWindow";
-                        var type = SystemUtility.GetTypeByName(typeName) ?? throw new System.InvalidProgramException($"Type not found: {typeName}");
-                        EditorWindow.GetWindow(type).Show();
-                    }
-#endif
 
                     EditorGUILayout.Space();
 
@@ -361,9 +347,9 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 return null;
             }
-            var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).Select(pb => new PhysBone(pb)).ToArray();
-            var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).Select(pbc => new PhysBoneCollider(pbc)).ToArray();
-            var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).Select(c => new ContactBase(c)).ToArray();
+            var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).ToArray();
+            var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).ToArray();
+            var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).ToArray();
             var avatar = new VRChatAvatar(original);
             return avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, contactsToKeep);
         }
@@ -399,12 +385,10 @@ namespace KRT.VRCQuestTools.Inspector
             EditorApplication.ExecuteMenuItem("VRChat SDK/Utilities/Convert DynamicBones To PhysBones");
         }
 
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
         private void OnClickAddConvertConstraintsButton(VRC_AvatarDescriptor avatar)
         {
-            Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(avatar.gameObject);
+            ModularAvatarUtility.AddConvertConstraintsComponent(avatar.gameObject);
         }
-#endif
 
         private void OnClickAssignNetIdsButton(VRC_AvatarDescriptor avatar)
         {
@@ -454,7 +438,7 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var window = EditorWindow.GetWindow<AvatarDynamicsSelectorWindow>();
             window.converterSettings = converterSettings;
-            window.physBonesToKeep = converterSettings.physBonesToKeep;
+            window.physBoneProvidersToKeep = converterSettings.physBonesToKeep.Select(p => new VRCPhysBoneProvider(p)).ToArray();
             window.physBoneCollidersToKeep = converterSettings.physBoneCollidersToKeep;
             window.contactsToKeep = converterSettings.contactsToKeep;
             window.Show();
@@ -468,25 +452,13 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickConvertButton(VRC_AvatarDescriptor avatar)
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
-    #if VQT_HAS_VRCSDK_NO_PRECHECK
-            if (new VRChatAvatar(avatar).HasUnityConstraints && avatar.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
+            if (ModularAvatarUtility.IsModularAvatarImported() && new VRChatAvatar(avatar).HasUnityConstraints && !ModularAvatarUtility.HasConvertConstraintsComponent(avatar.gameObject))
             {
                 if (EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForMAConvertConstraints, i18n.YesLabel, i18n.NoLabel))
                 {
-                    Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(avatar.gameObject);
+                    ModularAvatarUtility.AddConvertConstraintsComponent(avatar.gameObject);
                 }
             }
-    #else
-            if (new VRChatAvatar(avatar).HasUnityConstraints)
-            {
-                if (!EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.ConfirmationForUnityConstraints, i18n.YesLabel, i18n.NoLabel))
-                {
-                    return;
-                }
-            }
-    #endif
-#endif
 
             var progressCallback = new ProgressCallback
             {
@@ -514,7 +486,7 @@ namespace KRT.VRCQuestTools.Inspector
                 sw.Start();
                 questAvatar = VRCQuestTools.AvatarConverter.ConvertForQuest(converterSettings, VRCQuestTools.ComponentRemover, true, GetOutputPath(avatar), progressCallback);
                 sw.Stop();
-                Debug.Log($"[{VRCQuestTools.Name}] Converted avatar for Android in {sw.ElapsedMilliseconds}ms");
+                Logger.Log($"Converted avatar for Android in {sw.ElapsedMilliseconds}ms");
             }
             catch (System.Exception exception)
             {
@@ -562,42 +534,53 @@ namespace KRT.VRCQuestTools.Inspector
             Object context = null;
             switch (exception)
             {
+                case PackageCompatibilityException e:
+                    message = e.LocalizedMessage;
+                    dialogException = e;
+                    break;
                 case MaterialConversionException e:
-                    message = $"{i18n.MaterialExceptionDialogMessage}\n" +
-                        "\n" +
-                        $"Material: {AssetDatabase.GetAssetPath(e.source)}\n" +
-                        $"Shader: {e.source.shader.name}";
+                    if (e.InnerException is PackageCompatibilityException packageException)
+                    {
+                        message = packageException.LocalizedMessage;
+                    }
+                    else
+                    {
+                        message = $"{i18n.MaterialExceptionDialogMessage}\n" +
+                            "\n" +
+                            $"Material: {AssetDatabase.GetAssetPath(e.SourceObject)}\n" +
+                            $"Shader: {e.SourceObject.shader.name}";
+                    }
                     dialogException = e.InnerException;
-                    context = e.source;
+                    context = e.SourceObject;
                     break;
                 case AnimationClipConversionException e:
                     message = $"{i18n.AnimationClipExceptionDialogMessage}\n" +
                         $"\n" +
-                        $"AnimationClip: {e.source.name}";
+                        $"AnimationClip: {e.SourceObject.name}";
                     dialogException = e.InnerException;
-                    context = e.source;
+                    context = e.SourceObject;
                     break;
                 case AnimatorControllerConversionException e:
                     message = $"{i18n.AnimatorControllerExceptionDialogMessage}\n" +
                         $"\n" +
-                        $"AnimatorController: {e.source.name}";
+                        $"AnimatorController: {e.SourceObject.name}";
                     dialogException = e.InnerException;
-                    context = e.source;
+                    context = e.SourceObject;
                     break;
                 case InvalidReplacementMaterialException e:
                     message = $"{i18n.InvalidReplacementMaterialExceptionDialogMessage}\n" +
                         $"\n" +
-                        $"Material: {e.replacementMaterial.name}\n" +
-                        $"Shader: {e.replacementMaterial.shader.name}";
+                        $"Material: {e.ReplacementMaterial.name}\n" +
+                        $"Shader: {e.ReplacementMaterial.shader.name}";
                     dialogException = e;
-                    context = e.component;
+                    context = e.Component;
                     break;
             }
             if (exception.InnerException != null)
             {
-                Debug.LogException(exception.InnerException, context);
+                Logger.LogException(exception.InnerException, context);
             }
-            Debug.LogException(exception, context);
+            Logger.LogException(exception, context);
             DisplayErrorDialog(message, dialogException);
         }
 

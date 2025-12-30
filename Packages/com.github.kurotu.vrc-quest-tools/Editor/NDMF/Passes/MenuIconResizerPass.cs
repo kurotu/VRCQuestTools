@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
             if (avatarDescriptor == null)
             {
-                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping menu icon resizing.");
+                Logger.LogWarning($"No VRCAvatarDescriptor found in the avatar root object. Skipping menu icon resizing.");
                 return;
             }
 
@@ -90,9 +90,12 @@ namespace KRT.VRCQuestTools.Ndmf
             avatarDescriptor.expressionsMenu = newMenu;
             objectRegistry.RegisterReplacedObject(menu, newMenu);
 
+            // For in-code compression when NoOverride is selected, use ASTC_6x6
+            var mobileTextureFormatForCompression = TextureUtility.GetCompressionFormat(resizer.mobileTextureFormat);
+
             VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, maxSize, compressTextures, (oldTex, newTex) =>
             {
-                TextureUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget, (TextureFormat)resizer.mobileTextureFormat);
+                TextureUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression);
                 objectRegistry.RegisterReplacedObject(oldTex, newTex);
             });
         }
