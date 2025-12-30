@@ -59,6 +59,7 @@ const config = {
     ({
       metadata: [
         {name: 'google-site-verification', content: 'iHat4XFlFF2SfNgjFM-hqhqAdP7KxL_s0WEFRySldpo'},
+        {name: 'algolia-site-verification', content: '2DC43CBAE38141BC'},
       ],
       // Replace with your project's social card
       image: 'img/social-card.png',
@@ -117,6 +118,41 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
         additionalLanguages: ['bash', 'diff', 'json'],
+      },
+      algolia: {
+        // The application ID provided by Algolia
+        appId: '0I3QRXID8E',
+
+        // Public API key: it is safe to commit it
+        apiKey: '47f8fb49101477f633796a8ed3d3f506',
+
+        indexName: 'Documentation',
+
+        // Optional: see doc section below
+        contextualSearch: true,
+
+        // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
+        externalUrlRegex: 'external\\.com|domain\\.com',
+
+        // Optional: Replace parts of the item URLs from Algolia. Useful when using the same search index for multiple deployments using a different baseUrl. You can use regexp or string in the `from` param. For example: localhost:3000 vs myCompany.com/docs
+        // replaceSearchResultPathname: {
+        //   from: '/docs/', // or as RegExp: /\/docs\//
+        //   to: '/',
+        // },
+
+        // Optional: Algolia search parameters
+        searchParameters: {},
+
+        // Optional: path for search page that enabled by default (`false` to disable it)
+        searchPagePath: 'search',
+
+        // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+        insights: false,
+
+        // Optional: whether you want to use the new Ask AI feature (undefined by default)
+        // askAi: 'YOUR_ALGOLIA_ASK_AI_ASSISTANT_ID',
+
+        //... other Algolia params
       },
     }),
 };
