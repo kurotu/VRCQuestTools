@@ -18,50 +18,79 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// </summary>
     internal class AAOMergePhysBoneProvider : VRCPhysBoneProviderBase
     {
-        private const string ComponentsSetFieldName = "componentsSet";
-        private const string GetAsListMethodName = "GetAsList";
-        private const string MergePhysBoneTypeName = "Anatawa12.AvatarOptimizer.MergePhysBone";
-        private const BindingFlags MemberBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-
-        // Static caches for reflection results to improve performance
-        private static Type cachedMergePhysBoneType;
-        private static FieldInfo cachedComponentsSetField;
-        private static MethodInfo cachedGetAsListMethod;
-
+        private readonly AAOMergePhysBoneReflectionInfo reflectionInfo;
         private readonly Component mergePhysBoneComponent;
+        private MethodInfo cachedGetAsListMethod;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AAOMergePhysBoneProvider"/> class.
         /// </summary>
         /// <param name="component">The AAO MergePhysBone component.</param>
-        internal AAOMergePhysBoneProvider(Component component)
+        /// <param name="reflectionInfo">Reflection info for AAO MergePhysBone. Uses defaults when null.</param>
+        internal AAOMergePhysBoneProvider(Component component, AAOMergePhysBoneReflectionInfo reflectionInfo = null)
         {
             if (component == null)
             {
                 throw new ArgumentNullException(nameof(component));
             }
 
+            this.reflectionInfo = reflectionInfo ?? AAOMergePhysBoneReflectionInfo.Default;
+            if (this.reflectionInfo == null)
+            {
+                throw new ArgumentException("AAO MergePhysBone reflection info is not available.", nameof(component));
+            }
+
             mergePhysBoneComponent = component;
 
-            // Initialize static caches if not already done
-            if (cachedMergePhysBoneType == null)
+            if (this.reflectionInfo.MergePhysBoneType == null || !this.reflectionInfo.MergePhysBoneType.IsInstanceOfType(component))
             {
-                cachedMergePhysBoneType = Utils.SystemUtility.GetTypeByName(MergePhysBoneTypeName);
+                throw new ArgumentException($"Component is not an instance of {this.reflectionInfo.MergePhysBoneTypeName}", nameof(component));
+            }
+        }
+
+        /// <summary>
+        /// Reflection cache for AAO MergePhysBone members.
+        /// </summary>
+        internal sealed class AAOMergePhysBoneReflectionInfo
+        {
+            private const string ComponentsSetFieldName = "componentsSet";
+            private const string GetAsListMethodNameValue = "GetAsList";
+            private const string MergePhysBoneTypeNameValue = "Anatawa12.AvatarOptimizer.MergePhysBone";
+            private const BindingFlags MemberBindingFlagsValue = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+            internal static readonly AAOMergePhysBoneReflectionInfo Default = CreateDefault();
+
+            internal AAOMergePhysBoneReflectionInfo(Type mergePhysBoneType, FieldInfo componentsSetField, string getAsListMethodName, string mergePhysBoneTypeName)
+            {
+                MergePhysBoneType = mergePhysBoneType ?? throw new ArgumentNullException(nameof(mergePhysBoneType));
+                ComponentsSetField = componentsSetField ?? throw new ArgumentNullException(nameof(componentsSetField));
+                GetAsListMethodName = getAsListMethodName ?? throw new ArgumentNullException(nameof(getAsListMethodName));
+                MergePhysBoneTypeName = mergePhysBoneTypeName ?? throw new ArgumentNullException(nameof(mergePhysBoneTypeName));
             }
 
-            if (cachedMergePhysBoneType == null || !cachedMergePhysBoneType.IsInstanceOfType(component))
-            {
-                throw new ArgumentException($"Component is not an instance of {MergePhysBoneTypeName}", nameof(component));
-            }
+            internal Type MergePhysBoneType { get; }
 
-            // Cache componentsSet field if not already cached
-            if (cachedComponentsSetField == null)
+            internal FieldInfo ComponentsSetField { get; }
+
+            internal string GetAsListMethodName { get; }
+
+            internal string MergePhysBoneTypeName { get; }
+
+            private static AAOMergePhysBoneReflectionInfo CreateDefault()
             {
-                cachedComponentsSetField = cachedMergePhysBoneType.GetField(ComponentsSetFieldName, MemberBindingFlags);
-                if (cachedComponentsSetField == null)
+                var mergePhysBoneType = Utils.SystemUtility.GetTypeByName(MergePhysBoneTypeNameValue);
+                if (mergePhysBoneType == null)
                 {
-                    throw new ArgumentException($"Component does not have a '{ComponentsSetFieldName}' field", nameof(component));
+                    return null;
                 }
+
+                var componentsSetField = mergePhysBoneType.GetField(ComponentsSetFieldName, MemberBindingFlagsValue);
+                if (componentsSetField == null)
+                {
+                    return null;
+                }
+
+                return new AAOMergePhysBoneReflectionInfo(mergePhysBoneType, componentsSetField, GetAsListMethodNameValue, MergePhysBoneTypeNameValue);
             }
         }
 
@@ -167,8 +196,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             try
             {
-                // Access the componentsSet field using cached reflection
-                var componentsSet = cachedComponentsSetField.GetValue(mergePhysBoneComponent);
+                // Access the componentsSet field using injected reflection info
+                var componentsSet = reflectionInfo.ComponentsSetField.GetValue(mergePhysBoneComponent);
                 if (componentsSet == null)
                 {
                     return Array.Empty<VRCPhysBone>();
@@ -178,7 +207,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 var componentsSetType = componentsSet.GetType();
                 if (cachedGetAsListMethod == null || cachedGetAsListMethod.DeclaringType != componentsSetType)
                 {
-                    cachedGetAsListMethod = componentsSetType.GetMethod(GetAsListMethodName);
+                    cachedGetAsListMethod = componentsSetType.GetMethod(reflectionInfo.GetAsListMethodName);
                     if (cachedGetAsListMethod == null)
                     {
                         return Array.Empty<VRCPhysBone>();

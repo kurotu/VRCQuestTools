@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using KRT.VRCQuestTools.Models.VRChat;
 using NUnit.Framework;
 using UnityEngine;
@@ -22,26 +23,33 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         private VRCPhysBone testPhysBone2;
         private VRCPhysBoneCollider testCollider1;
         private VRCPhysBoneCollider testCollider2;
+        private AAOMergePhysBoneProvider.AAOMergePhysBoneReflectionInfo mockReflectionInfo;
 
         [SetUp]
         public void SetUp()
         {
             testGameObject = new GameObject("TestAAOMergePhysBone");
-            
+
+            mockReflectionInfo = new AAOMergePhysBoneProvider.AAOMergePhysBoneReflectionInfo(
+                typeof(MockAAOMergePhysBone),
+                typeof(MockAAOMergePhysBone).GetField("componentsSet", BindingFlags.Instance | BindingFlags.Public),
+                nameof(MockPrefabSafeSet.GetAsList),
+                typeof(MockAAOMergePhysBone).FullName);
+
             // Create test PhysBones
             var pb1Object = new GameObject("PhysBone1");
             pb1Object.transform.SetParent(testGameObject.transform);
             testPhysBone1 = pb1Object.AddComponent<VRCPhysBone>();
-            
+
             var pb2Object = new GameObject("PhysBone2");
             pb2Object.transform.SetParent(testGameObject.transform);
             testPhysBone2 = pb2Object.AddComponent<VRCPhysBone>();
-            
+
             // Create test colliders
             var collider1Object = new GameObject("Collider1");
             collider1Object.transform.SetParent(testGameObject.transform);
             testCollider1 = collider1Object.AddComponent<VRCPhysBoneCollider>();
-            
+
             var collider2Object = new GameObject("Collider2");
             collider2Object.transform.SetParent(testGameObject.transform);
             testCollider2 = collider2Object.AddComponent<VRCPhysBoneCollider>();
@@ -75,7 +83,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
             mockComponent.componentsSet.Add(testPhysBone1);
             mockComponent.componentsSet.Add(testPhysBone2);
 
-            var provider = new AAOMergePhysBoneProvider(mockComponent);
+            var provider = new AAOMergePhysBoneProvider(mockComponent, mockReflectionInfo);
 
             Assert.AreEqual(mockComponent, provider.Component);
             Assert.AreEqual(testGameObject, provider.GameObject);
@@ -90,16 +98,16 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         public void TestAAOMergePhysBoneProvider_MergesCollidersWithoutDuplicates()
         {
             var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
-            
+
             // Set up PhysBones with overlapping colliders
             testPhysBone1.colliders.Add(testCollider1);
             testPhysBone1.colliders.Add(testCollider2);
             testPhysBone2.colliders.Add(testCollider1); // Duplicate collider
-            
+
             mockComponent.componentsSet.Add(testPhysBone1);
             mockComponent.componentsSet.Add(testPhysBone2);
 
-            var provider = new AAOMergePhysBoneProvider(mockComponent);
+            var provider = new AAOMergePhysBoneProvider(mockComponent, mockReflectionInfo);
             var colliders = provider.Colliders;
 
             Assert.AreEqual(2, colliders.Count);
@@ -114,21 +122,21 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         public void TestAAOMergePhysBoneProvider_MergesIgnoreTransformsWithoutDuplicates()
         {
             var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
-            
+
             var ignoreTransform1 = new GameObject("Ignore1").transform;
             var ignoreTransform2 = new GameObject("Ignore2").transform;
             ignoreTransform1.SetParent(testGameObject.transform);
             ignoreTransform2.SetParent(testGameObject.transform);
-            
+
             // Set up PhysBones with overlapping ignore transforms
             testPhysBone1.ignoreTransforms.Add(ignoreTransform1);
             testPhysBone1.ignoreTransforms.Add(ignoreTransform2);
             testPhysBone2.ignoreTransforms.Add(ignoreTransform1); // Duplicate
-            
+
             mockComponent.componentsSet.Add(testPhysBone1);
             mockComponent.componentsSet.Add(testPhysBone2);
 
-            var provider = new AAOMergePhysBoneProvider(mockComponent);
+            var provider = new AAOMergePhysBoneProvider(mockComponent, mockReflectionInfo);
             var ignoreTransforms = provider.IgnoreTransforms;
 
             Assert.AreEqual(2, ignoreTransforms.Count);
@@ -147,7 +155,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         {
             var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
 
-            var provider = new AAOMergePhysBoneProvider(mockComponent);
+            var provider = new AAOMergePhysBoneProvider(mockComponent, mockReflectionInfo);
 
             Assert.AreEqual(0, provider.GetPhysBones().Length);
             Assert.AreEqual(Vector3.zero, provider.EndpointPosition);
@@ -169,7 +177,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
             mockComponent.componentsSet.Add(null);
             mockComponent.componentsSet.Add(testPhysBone2);
 
-            var provider = new AAOMergePhysBoneProvider(mockComponent);
+            var provider = new AAOMergePhysBoneProvider(mockComponent, mockReflectionInfo);
             var physBones = provider.GetPhysBones();
 
             Assert.AreEqual(2, physBones.Length);
@@ -186,7 +194,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
             var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
             mockComponent.componentsSet.Add(testPhysBone1);
 
-            var provider = new AAOMergePhysBoneProvider(mockComponent);
+            var provider = new AAOMergePhysBoneProvider(mockComponent, mockReflectionInfo);
 
             Assert.DoesNotThrow(() => provider.ClearCollider(0));
         }
@@ -198,15 +206,15 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         public void TestAAOMergePhysBoneProvider_UsesFirstPhysBoneProperties()
         {
             var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
-            
+
             testPhysBone1.endpointPosition = new Vector3(1, 2, 3);
             testPhysBone1.radius = 0.5f;
             testPhysBone1.radiusCurve = AnimationCurve.Linear(0, 0, 1, 1);
-            
+
             mockComponent.componentsSet.Add(testPhysBone1);
             mockComponent.componentsSet.Add(testPhysBone2);
 
-            var provider = new AAOMergePhysBoneProvider(mockComponent);
+            var provider = new AAOMergePhysBoneProvider(mockComponent, mockReflectionInfo);
 
             Assert.AreEqual(new Vector3(1, 2, 3), provider.EndpointPosition);
             Assert.AreEqual(0.5f, provider.Radius);
