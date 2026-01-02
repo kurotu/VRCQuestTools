@@ -16,6 +16,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// </summary>
     public class AAOMergePhysBoneProviderTests
     {
+#if !VQT_AVATAR_OPTIMIZER
+        private const string IgnoreMessage = "Requires VQT_AVATAR_OPTIMIZER symbol.";
+#endif
+
+#if !VQT_AVATAR_OPTIMIZER
+        [Ignore(IgnoreMessage)]
+#endif
         [Test]
         public void SimpleCase_MatchesManualBakePerformance()
         {
