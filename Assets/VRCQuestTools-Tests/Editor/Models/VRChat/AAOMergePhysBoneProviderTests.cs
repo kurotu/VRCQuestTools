@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using KRT.VRCQuestTools.Models.VRChat;
 using NUnit.Framework;
 using UnityEngine;
@@ -31,10 +30,9 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
             testGameObject = new GameObject("TestAAOMergePhysBone");
 
             mockReflectionInfo = new AAOMergePhysBoneProvider.AAOMergePhysBoneReflectionInfo(
-                typeof(MockAAOMergePhysBone),
-                typeof(MockAAOMergePhysBone).GetField("componentsSet", BindingFlags.Instance | BindingFlags.Public),
-                nameof(MockPrefabSafeSet.GetAsList),
-                typeof(MockAAOMergePhysBone).FullName);
+                typeof(MockAaoMergePhysBone).FullName,
+                nameof(MockAaoMergePhysBone.componentsSet),
+                nameof(MockPrefabSafeSet.GetAsList));
 
             // Create test PhysBones
             var pb1Object = new GameObject("PhysBone1");
@@ -79,7 +77,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         [Test]
         public void TestAAOMergePhysBoneProvider_WithMockComponent()
         {
-            var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
+            var mockComponent = testGameObject.AddComponent<MockAaoMergePhysBone>();
             mockComponent.componentsSet.Add(testPhysBone1);
             mockComponent.componentsSet.Add(testPhysBone2);
 
@@ -97,7 +95,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         [Test]
         public void TestAAOMergePhysBoneProvider_MergesCollidersWithoutDuplicates()
         {
-            var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
+            var mockComponent = testGameObject.AddComponent<MockAaoMergePhysBone>();
 
             // Set up PhysBones with overlapping colliders
             testPhysBone1.colliders.Add(testCollider1);
@@ -121,7 +119,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         [Test]
         public void TestAAOMergePhysBoneProvider_MergesIgnoreTransformsWithoutDuplicates()
         {
-            var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
+            var mockComponent = testGameObject.AddComponent<MockAaoMergePhysBone>();
 
             var ignoreTransform1 = new GameObject("Ignore1").transform;
             var ignoreTransform2 = new GameObject("Ignore2").transform;
@@ -153,7 +151,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         [Test]
         public void TestAAOMergePhysBoneProvider_EmptyPhysBonesArray()
         {
-            var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
+            var mockComponent = testGameObject.AddComponent<MockAaoMergePhysBone>();
 
             var provider = new AAOMergePhysBoneProvider(mockComponent, mockReflectionInfo);
 
@@ -172,7 +170,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         [Test]
         public void TestAAOMergePhysBoneProvider_FiltersNullPhysBones()
         {
-            var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
+            var mockComponent = testGameObject.AddComponent<MockAaoMergePhysBone>();
             mockComponent.componentsSet.Add(testPhysBone1);
             mockComponent.componentsSet.Add(null);
             mockComponent.componentsSet.Add(testPhysBone2);
@@ -191,7 +189,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         [Test]
         public void TestAAOMergePhysBoneProvider_ClearColliderDoesNotThrow()
         {
-            var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
+            var mockComponent = testGameObject.AddComponent<MockAaoMergePhysBone>();
             mockComponent.componentsSet.Add(testPhysBone1);
 
             var provider = new AAOMergePhysBoneProvider(mockComponent, mockReflectionInfo);
@@ -205,7 +203,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         [Test]
         public void TestAAOMergePhysBoneProvider_UsesFirstPhysBoneProperties()
         {
-            var mockComponent = testGameObject.AddComponent<MockAAOMergePhysBone>();
+            var mockComponent = testGameObject.AddComponent<MockAaoMergePhysBone>();
 
             testPhysBone1.endpointPosition = new Vector3(1, 2, 3);
             testPhysBone1.radius = 0.5f;
@@ -225,7 +223,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         /// Mock AAO MergePhysBone component for testing.
         /// This simulates the structure of AAO's internal MergePhysBone component.
         /// </summary>
-        private class MockAAOMergePhysBone : MonoBehaviour
+        private class MockAaoMergePhysBone : MonoBehaviour
         {
             public MockPrefabSafeSet componentsSet = new MockPrefabSafeSet();
         }
@@ -235,7 +233,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         /// </summary>
         private class MockPrefabSafeSet : System.Collections.IEnumerable
         {
-            private List<VRCPhysBone> items = new List<VRCPhysBone>();
+            private readonly List<VRCPhysBone> items = new List<VRCPhysBone>();
 
             public void Add(VRCPhysBone item)
             {
