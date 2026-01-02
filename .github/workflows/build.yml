@@ -87,6 +87,12 @@ jobs:
           - name: ma-minimum
             packages:
               - { name: nadena.dev.modular-avatar, version: '1.12.2' } # world fixed object without error
+          - name: aao-minimum
+            packages:
+              - { name: com.anatawa12.avatar-optimizer, version: '1.8.14' } # compatible with SDK 3.9.0
+          - name: aao-latest
+            packages:
+              - { name: com.anatawa12.avatar-optimizer, version: 'latest' }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -114,6 +120,7 @@ jobs:
         run: |
           vrc-get repo add https://vpm.nadena.dev/vpm.json
           vrc-get repo add https://lilxyzw.github.io/vpm-repos/vpm.json
+          vrc-get repo add https://vpm.anatawa12.com/vpm.json
 
       - name: Install dependencies
         run: |
