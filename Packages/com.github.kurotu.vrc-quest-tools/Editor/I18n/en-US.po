@@ -707,4 +707,3 @@ msgstr "The replacement material {0} uses a shader {1} which is not allowed for 
 
 msgid "FallbackAvatarEditorDescription"
 msgstr "Automatically enables this avatar to be used as a fallback avatar after a Mobile upload if the performance rank is Good or better."
-
