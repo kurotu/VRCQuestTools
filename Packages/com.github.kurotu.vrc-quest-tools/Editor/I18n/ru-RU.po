@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-08-29 14:07\n"
+"PO-Revision-Date: 2025-12-29 07:52\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -602,6 +602,15 @@ msgstr ""
 msgid "MenuIconResizerEditorMobileTextureFormatLabel"
 msgstr ""
 
+msgid "BuildAndTestRequiresSdkControlPanel"
+msgstr ""
+
+msgid "BuildAndTestFailed"
+msgstr ""
+
+msgid "BuildAndTestSucceeded"
+msgstr ""
+
 msgid "LegacyPackageExceptionMessage"
 msgstr ""
 
@@ -689,5 +698,8 @@ msgid "NDMF:ReplacementMaterialErrorTitle"
 msgstr ""
 
 msgid "NDMF:ReplacementMaterialErrorDescription"
+msgstr ""
+
+msgid "FallbackAvatarEditorDescription"
 msgstr ""
 

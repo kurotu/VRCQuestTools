@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-12-10 15:38\n"
+"PO-Revision-Date: 2025-12-29 07:52\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -704,7 +704,6 @@ msgstr "Invalid Replacement Material"
 
 msgid "NDMF:ReplacementMaterialErrorDescription"
 msgstr "The replacement material {0} uses a shader {1} which is not allowed for mobile avatars."
-
 
 msgid "FallbackAvatarEditorDescription"
 msgstr "Automatically enables this avatar to be used as a fallback avatar after a Mobile upload if the performance rank is Good or better."
