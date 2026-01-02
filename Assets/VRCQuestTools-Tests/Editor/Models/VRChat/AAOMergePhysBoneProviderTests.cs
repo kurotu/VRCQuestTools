@@ -225,7 +225,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
         /// </summary>
         private class MockAaoMergePhysBone : MonoBehaviour
         {
-            public MockPrefabSafeSet componentsSet = new MockPrefabSafeSet();
+            public readonly MockPrefabSafeSet componentsSet = new MockPrefabSafeSet();
         }
 
         /// <summary>

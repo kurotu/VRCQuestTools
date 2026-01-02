@@ -177,7 +177,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
                 return result.ToArray();
             }
-            catch (Exception ex) when (ex is ArgumentException || ex is TargetException || ex is FieldAccessException || ex is NotSupportedException)
+            catch (Exception ex) when (ex is ArgumentException || ex is TargetException || ex is FieldAccessException || ex is NotSupportedException || ex is TargetInvocationException)
             {
                 Debug.LogWarning($"Failed to access componentsSet from AAO MergePhysBone component: {ex.Message}");
             }
@@ -205,19 +205,34 @@ namespace KRT.VRCQuestTools.Models.VRChat
             /// <param name="getAsListMethodName">Method name that converts the components set to a list.</param>
             internal AAOMergePhysBoneReflectionInfo(string mergePhysBoneTypeName, string componentsSetFieldName, string getAsListMethodName)
             {
-                if (string.IsNullOrEmpty(mergePhysBoneTypeName))
+                if (mergePhysBoneTypeName is null)
                 {
                     throw new ArgumentNullException(nameof(mergePhysBoneTypeName));
                 }
 
-                if (string.IsNullOrEmpty(componentsSetFieldName))
+                if (mergePhysBoneTypeName.Length == 0)
+                {
+                    throw new ArgumentException("Type name cannot be empty.", nameof(mergePhysBoneTypeName));
+                }
+
+                if (componentsSetFieldName is null)
                 {
                     throw new ArgumentNullException(nameof(componentsSetFieldName));
                 }
 
-                if (string.IsNullOrEmpty(getAsListMethodName))
+                if (componentsSetFieldName.Length == 0)
+                {
+                    throw new ArgumentException("Field name cannot be empty.", nameof(componentsSetFieldName));
+                }
+
+                if (getAsListMethodName is null)
                 {
                     throw new ArgumentNullException(nameof(getAsListMethodName));
+                }
+
+                if (getAsListMethodName.Length == 0)
+                {
+                    throw new ArgumentException("Method name cannot be empty.", nameof(getAsListMethodName));
                 }
 
                 MergePhysBoneType = Utils.SystemUtility.GetTypeByName(mergePhysBoneTypeName) ?? throw new ArgumentException($"Type {mergePhysBoneTypeName} not found.", nameof(mergePhysBoneTypeName));
