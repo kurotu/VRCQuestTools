@@ -35,7 +35,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var provider = new AAOMergePhysBoneProvider(mergePhysBone);
             var estimatedStats = EstimateMergePhysBonePerformance(root, provider);
 
-            var bakedRoot = nadena.dev.ndmf.AvatarProcessor.ProcessAvatarUI(root);
+            var bakedRoot = ManualBake(root);
             Assert.NotNull(bakedRoot, "Manual bake failed to produce an avatar.");
 
             try
@@ -73,6 +73,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     Object.DestroyImmediate(bakedRoot);
                 }
             }
+        }
+
+        private static GameObject ManualBake(GameObject root)
+        {
+#if VQT_AVATAR_OPTIMIZER
+            return nadena.dev.ndmf.AvatarProcessor.ProcessAvatarUI(root);
+#else
+            return Object.Instanciate(root);
+#endif
         }
 
         private static AvatarDynamics.PerformanceStats EstimateMergePhysBonePerformance(GameObject avatarRoot, AAOMergePhysBoneProvider provider)
