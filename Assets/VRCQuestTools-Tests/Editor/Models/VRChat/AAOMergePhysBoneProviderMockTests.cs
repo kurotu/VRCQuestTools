@@ -15,7 +15,7 @@ namespace KRT.VRCQuestTools.Models.VRChat.Tests
     /// <summary>
     /// Tests for AAOMergePhysBoneProvider class.
     /// </summary>
-    public class AAOMergePhysBoneProviderTests
+    public class AAOMergePhysBoneProviderMockTests
     {
         private GameObject testGameObject;
         private VRCPhysBone testPhysBone1;
