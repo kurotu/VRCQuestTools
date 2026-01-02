@@ -80,7 +80,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 #if VQT_AVATAR_OPTIMIZER
             return nadena.dev.ndmf.AvatarProcessor.ProcessAvatarUI(root);
 #else
-            return Object.Instanciate(root);
+            return Object.Instantiate(root);
 #endif
         }
 
