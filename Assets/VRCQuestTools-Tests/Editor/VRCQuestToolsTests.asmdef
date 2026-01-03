@@ -4,6 +4,7 @@
     "references": [
         "VRCQuestTools",
         "VRCQuestTools-Editor",
+        "nadena.dev.ndmf",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
@@ -30,6 +31,11 @@
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "",
             "define": "VQT_HAS_NEWTONSOFT_JSON"
+        },
+        {
+            "name": "com.anatawa12.avatar-optimizer",
+            "expression": "",
+            "define": "VQT_AVATAR_OPTIMIZER"
         }
     ],
     "noEngineReferences": false
