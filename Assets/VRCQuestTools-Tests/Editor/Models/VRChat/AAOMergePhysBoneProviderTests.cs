@@ -75,6 +75,61 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
         }
 
+#if !VQT_AVATAR_OPTIMIZER
+        [Ignore(IgnoreMessage)]
+#endif
+        [Test]
+        public void MultiChildCase_MatchesManualBakePerformance()
+        {
+            var scene = OpenTestScene();
+            var root = scene.GetRootGameObjects().First(obj => obj.name == "MultiChildCase");
+
+            var mergePhysBone = FindMergePhysBoneComponent(root);
+            Assert.NotNull(mergePhysBone, "MergePhysBone component is missing in the test scene.");
+
+            var provider = new AAOMergePhysBoneProvider(mergePhysBone);
+            var estimatedStats = EstimateMergePhysBonePerformance(root, provider);
+
+            var bakedRoot = ManualBake(root);
+            Assert.NotNull(bakedRoot, "Manual bake failed to produce an avatar.");
+
+            try
+            {
+                var bakedPerformance = CalculatePerformanceStats(bakedRoot);
+                var bakedDynamicsStats = new AvatarDynamics.PerformanceStats
+                {
+                    PhysBonesCount = bakedPerformance.physBone?.componentCount ?? 0,
+                    PhysBonesTransformCount = bakedPerformance.physBone?.transformCount ?? 0,
+                    PhysBonesColliderCount = bakedPerformance.physBone?.colliderCount ?? 0,
+                    PhysBonesCollisionCheckCount = bakedPerformance.physBone?.collisionCheckCount ?? 0,
+                    ContactsCount = bakedPerformance.contactCount ?? 0,
+                };
+
+                Assert.AreEqual(1, bakedDynamicsStats.PhysBonesCount, "Manual bake PhysBone count differs from expectation.");
+                Assert.AreEqual(11, bakedDynamicsStats.PhysBonesTransformCount, "Manual bake PhysBone transform count differs from expectation.");
+
+                Assert.AreEqual(bakedDynamicsStats.PhysBonesCount, estimatedStats.PhysBonesCount, "Provider estimate should match baked PhysBone count.");
+                Assert.AreEqual(bakedDynamicsStats.PhysBonesTransformCount, estimatedStats.PhysBonesTransformCount, "Provider estimate should match baked PhysBone transform count.");
+
+                var questLevelSet = LoadQuestStatsLevelSet();
+                Assert.AreEqual(
+                    AvatarPerformanceCalculator.GetPerformanceRating(estimatedStats, questLevelSet, AvatarPerformanceCategory.PhysBoneComponentCount),
+                    AvatarPerformanceCalculator.GetPerformanceRating(bakedDynamicsStats, questLevelSet, AvatarPerformanceCategory.PhysBoneComponentCount),
+                    "PhysBone component count rating should match manual bake.");
+                Assert.AreEqual(
+                    AvatarPerformanceCalculator.GetPerformanceRating(estimatedStats, questLevelSet, AvatarPerformanceCategory.PhysBoneTransformCount),
+                    AvatarPerformanceCalculator.GetPerformanceRating(bakedDynamicsStats, questLevelSet, AvatarPerformanceCategory.PhysBoneTransformCount),
+                    "PhysBone transform count rating should match manual bake.");
+            }
+            finally
+            {
+                if (bakedRoot != null)
+                {
+                    Object.DestroyImmediate(bakedRoot);
+                }
+            }
+        }
+
         private static GameObject ManualBake(GameObject root)
         {
 #if VQT_AVATAR_OPTIMIZER
