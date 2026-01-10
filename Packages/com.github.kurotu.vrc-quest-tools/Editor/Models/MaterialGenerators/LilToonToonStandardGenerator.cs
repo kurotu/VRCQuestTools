@@ -157,7 +157,15 @@ namespace KRT.VRCQuestTools.Models
                 lilMaterial.Emission2ndMap ? lilMaterial.Emission2ndMap.height : 4,
                 lilMaterial.Emission2ndBlendMask ? lilMaterial.Emission2ndBlendMask.height : 4);
 
-            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, (int)Settings.maxTextureSize);
+            // Check platform override settings from source textures used in emission shader
+            var platformOverride = TextureUtility.GetPlatformOverrideSettings(
+                lilMaterial.EmissionMap,
+                lilMaterial.EmissionBlendMask,
+                lilMaterial.Emission2ndMap,
+                lilMaterial.Emission2ndBlendMask);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, maxTextureSize);
             var rt = RenderTexture.GetTemporary(targetWidth, targetHeight, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(lilMaterial.EmissionMap, rt, bakeMat);
             return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
@@ -177,7 +185,12 @@ namespace KRT.VRCQuestTools.Models
             var reflectionColorTexHeight = reflectionColorTex ? reflectionColorTex.height : 4;
             var sourceWidth = Math.Max(gloss ? gloss.width : 4, reflectionColorTexWidth);
             var sourceHeight = Math.Max(gloss ? gloss.height : 4, reflectionColorTexHeight);
-            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, (int)Settings.maxTextureSize);
+
+            // Check platform override settings from source textures
+            var platformOverride = TextureUtility.GetPlatformOverrideSettings(gloss, reflectionColorTex);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, maxTextureSize);
 
             var alphaGlossMap = RenderTexture.GetTemporary(sourceWidth, sourceHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -270,7 +283,12 @@ namespace KRT.VRCQuestTools.Models
 
             var matcapWidth = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.width : 4;
             var matcapHeight = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.height : 4;
-            var (width, height) = TextureUtility.AspectFitReduction(matcapWidth, matcapHeight, (int)Settings.maxTextureSize);
+
+            // Check platform override settings from source texture
+            var platformOverride = TextureUtility.GetPlatformOverrideSettings(lilMaterial.MatCapTex);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (width, height) = TextureUtility.AspectFitReduction(matcapWidth, matcapHeight, maxTextureSize);
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(null, rt, mat);
 
@@ -286,7 +304,12 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateMatcapMask(Action<Texture2D> completion)
         {
             var matcapMask = (Texture2D)lilMaterial.MatCapMask;
-            var (width, height) = TextureUtility.AspectFitReduction(matcapMask.width, matcapMask.height, (int)Settings.maxTextureSize);
+
+            // Check platform override settings from source texture
+            var platformOverride = TextureUtility.GetPlatformOverrideSettings(matcapMask);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (width, height) = TextureUtility.AspectFitReduction(matcapMask.width, matcapMask.height, maxTextureSize);
 
             var rt = RenderTexture.GetTemporary(matcapMask.width, matcapMask.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -320,7 +343,12 @@ namespace KRT.VRCQuestTools.Models
 
             var originalWidth = Math.Max(metallicWidth, reflectionColorWidth);
             var originalHeight = Math.Max(metallicHeight, reflectionColorHeight);
-            var (width, height) = TextureUtility.AspectFitReduction(originalWidth, originalHeight, (int)Settings.maxTextureSize);
+
+            // Check platform override settings from source textures
+            var platformOverride = TextureUtility.GetPlatformOverrideSettings(metallic, reflectionColorTex);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (width, height) = TextureUtility.AspectFitReduction(originalWidth, originalHeight, maxTextureSize);
 
             var reflectionGrayscaleTex = RenderTexture.GetTemporary(reflectionColorWidth, reflectionColorHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat0 = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -356,7 +384,12 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion)
         {
             var normal = (Texture2D)lilMaterial.NormalMap;
-            var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, (int)Settings.maxTextureSize);
+
+            // Check platform override settings from source texture
+            var platformOverride = TextureUtility.GetPlatformOverrideSettings(normal);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, maxTextureSize);
             var newTex = TextureUtility.DownscaleNormalMap(normal, outputRGB, width, height);
             return new ResultRequest<Texture2D>(newTex, completion);
         }
@@ -365,7 +398,12 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateOcclusionMap(Action<Texture2D> completion)
         {
             var aoMap = (Texture2D)lilMaterial.AOMap;
-            var (width, height) = TextureUtility.AspectFitReduction(aoMap.width, aoMap.height, (int)Settings.maxTextureSize);
+
+            // Check platform override settings from source texture
+            var platformOverride = TextureUtility.GetPlatformOverrideSettings(aoMap);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (width, height) = TextureUtility.AspectFitReduction(aoMap.width, aoMap.height, maxTextureSize);
 
             var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
             swizzleMat.SetTexture("_Texture0", aoMap);
@@ -404,6 +442,8 @@ namespace KRT.VRCQuestTools.Models
 
             int maxWidth = 0;
             int maxHeight = 0;
+            var sourceTextures = new System.Collections.Generic.List<Texture>();
+
             foreach (var (mask, index) in pack.GetMasks().Select((mask, index) => (mask, index)))
             {
                 switch (mask.MaskType)
@@ -413,6 +453,10 @@ namespace KRT.VRCQuestTools.Models
                     case MaskType.DetailMask:
                         break;
                     case MaskType.MetallicMap:
+                        // Collect source textures for platform override
+                        if (lilMaterial.MetallicMap) sourceTextures.Add(lilMaterial.MetallicMap);
+                        if (lilMaterial.ReflectionColorTex) sourceTextures.Add(lilMaterial.ReflectionColorTex);
+
                         GenerateMetallicMap((tex) =>
                         {
                             if (tex)
@@ -426,6 +470,9 @@ namespace KRT.VRCQuestTools.Models
                         }).WaitForCompletion();
                         break;
                     case MaskType.MatcapMask:
+                        // Collect source textures for platform override
+                        if (lilMaterial.MatCapMask) sourceTextures.Add(lilMaterial.MatCapMask);
+
                         GenerateMatcapMask((tex) =>
                         {
                             if (tex)
@@ -439,6 +486,9 @@ namespace KRT.VRCQuestTools.Models
                         }).WaitForCompletion();
                         break;
                     case MaskType.OcculusionMap:
+                        // Collect source textures for platform override
+                        if (lilMaterial.AOMap) sourceTextures.Add(lilMaterial.AOMap);
+
                         GenerateOcclusionMap((tex) =>
                         {
                             if (tex)
@@ -452,6 +502,10 @@ namespace KRT.VRCQuestTools.Models
                         }).WaitForCompletion();
                         break;
                     case MaskType.GlossMap:
+                        // Collect source textures for platform override
+                        if (lilMaterial.SmoothnessTex) sourceTextures.Add(lilMaterial.SmoothnessTex);
+                        if (lilMaterial.ReflectionColorTex) sourceTextures.Add(lilMaterial.ReflectionColorTex);
+
                         GenerateGlossMap((tex) =>
                         {
                             if (tex)
@@ -467,8 +521,12 @@ namespace KRT.VRCQuestTools.Models
                 }
             }
 
-            var width = Math.Min(maxWidth, (int)Settings.maxTextureSize);
-            var height = Math.Min(maxHeight, (int)Settings.maxTextureSize);
+            // Check platform override settings from source textures
+            var platformOverride = TextureUtility.GetPlatformOverrideSettings(sourceTextures.ToArray());
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var width = Math.Min(maxWidth, maxTextureSize);
+            var height = Math.Min(maxHeight, maxTextureSize);
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             Graphics.Blit(null, rt, swizzleMat);
             return TextureUtility.RequestReadbackRenderTexture(rt, true, true, (tex) =>
