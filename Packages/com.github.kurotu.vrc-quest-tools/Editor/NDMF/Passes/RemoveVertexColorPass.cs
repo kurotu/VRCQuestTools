@@ -43,6 +43,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     continue;
                 }
                 var newMesh = Object.Instantiate(smr.sharedMesh);
+                newMesh.colors = null;
                 newMesh.colors32 = null;
                 objectRegistry.RegisterReplacedObject(smr.sharedMesh, newMesh);
                 smr.sharedMesh = newMesh;
@@ -57,6 +58,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     continue;
                 }
                 var newMesh = Object.Instantiate(mf.sharedMesh);
+                newMesh.colors = null;
                 newMesh.colors32 = null;
                 objectRegistry.RegisterReplacedObject(mf.sharedMesh, newMesh);
                 mf.sharedMesh = newMesh;
