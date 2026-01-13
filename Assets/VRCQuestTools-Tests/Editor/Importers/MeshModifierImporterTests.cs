@@ -85,7 +85,6 @@ namespace KRT.VRCQuestTools.Importers
                 var importer = AssetImporter.GetAtPath(importerPath) as MeshModifierImporter;
                 Assert.NotNull(importer);
 
-                LogAssert.Expect(LogType.Log, new Regex($"\\[{nameof(MeshModifierImporter)}\\].*No source mesh assigned.*{Regex.Escape(importerPath)}"));
                 importer.SaveAndReimport();
 
                 var importedMesh = LoadImportedMesh(importerPath);

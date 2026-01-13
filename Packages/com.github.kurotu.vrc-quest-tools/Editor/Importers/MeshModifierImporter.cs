@@ -1,3 +1,8 @@
+// <copyright file="MeshModifierImporter.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using UnityEditor;
 using UnityEditor.AssetImporters;
 using UnityEngine;
@@ -18,7 +23,7 @@ namespace KRT.VRCQuestTools.Importers
         /// <summary>
         /// If true, vertex colors will be removed from the imported mesh.
         /// </summary>
-        public bool removeVertexColor = false;
+        public bool removeVertexColor;
 
         /// <inheritdoc/>
         public override void OnImportAsset(AssetImportContext ctx)
@@ -39,7 +44,6 @@ namespace KRT.VRCQuestTools.Importers
 
             if (removeVertexColor)
             {
-                modifiedMesh.colors = null;
                 modifiedMesh.colors32 = null;
             }
 
