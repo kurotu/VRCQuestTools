@@ -454,8 +454,14 @@ namespace KRT.VRCQuestTools.Models
                         break;
                     case MaskType.MetallicMap:
                         // Collect source textures for platform override
-                        if (lilMaterial.MetallicMap) sourceTextures.Add(lilMaterial.MetallicMap);
-                        if (lilMaterial.ReflectionColorTex) sourceTextures.Add(lilMaterial.ReflectionColorTex);
+                        if (lilMaterial.MetallicMap)
+                        {
+                            sourceTextures.Add(lilMaterial.MetallicMap);
+                        }
+                        if (lilMaterial.ReflectionColorTex)
+                        {
+                            sourceTextures.Add(lilMaterial.ReflectionColorTex);
+                        }
 
                         GenerateMetallicMap((tex) =>
                         {
@@ -471,7 +477,10 @@ namespace KRT.VRCQuestTools.Models
                         break;
                     case MaskType.MatcapMask:
                         // Collect source textures for platform override
-                        if (lilMaterial.MatCapMask) sourceTextures.Add(lilMaterial.MatCapMask);
+                        if (lilMaterial.MatCapMask)
+                        {
+                            sourceTextures.Add(lilMaterial.MatCapMask);
+                        }
 
                         GenerateMatcapMask((tex) =>
                         {
@@ -487,7 +496,10 @@ namespace KRT.VRCQuestTools.Models
                         break;
                     case MaskType.OcculusionMap:
                         // Collect source textures for platform override
-                        if (lilMaterial.AOMap) sourceTextures.Add(lilMaterial.AOMap);
+                        if (lilMaterial.AOMap)
+                        {
+                            sourceTextures.Add(lilMaterial.AOMap);
+                        }
 
                         GenerateOcclusionMap((tex) =>
                         {
@@ -503,8 +515,14 @@ namespace KRT.VRCQuestTools.Models
                         break;
                     case MaskType.GlossMap:
                         // Collect source textures for platform override
-                        if (lilMaterial.SmoothnessTex) sourceTextures.Add(lilMaterial.SmoothnessTex);
-                        if (lilMaterial.ReflectionColorTex) sourceTextures.Add(lilMaterial.ReflectionColorTex);
+                        if (lilMaterial.SmoothnessTex)
+                        {
+                            sourceTextures.Add(lilMaterial.SmoothnessTex);
+                        }
+                        if (lilMaterial.ReflectionColorTex)
+                        {
+                            sourceTextures.Add(lilMaterial.ReflectionColorTex);
+                        }
 
                         GenerateGlossMap((tex) =>
                         {
