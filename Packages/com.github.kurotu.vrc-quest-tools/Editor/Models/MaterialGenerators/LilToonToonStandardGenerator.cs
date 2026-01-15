@@ -158,7 +158,7 @@ namespace KRT.VRCQuestTools.Models
                 lilMaterial.Emission2ndBlendMask ? lilMaterial.Emission2ndBlendMask.height : 4);
 
             // Check platform override settings from source textures used in emission shader
-            var platformOverride = TextureUtility.GetPlatformOverrideSettings(
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(
                 lilMaterial.EmissionMap,
                 lilMaterial.EmissionBlendMask,
                 lilMaterial.Emission2ndMap,
@@ -187,7 +187,7 @@ namespace KRT.VRCQuestTools.Models
             var sourceHeight = Math.Max(gloss ? gloss.height : 4, reflectionColorTexHeight);
 
             // Check platform override settings from source textures
-            var platformOverride = TextureUtility.GetPlatformOverrideSettings(gloss, reflectionColorTex);
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(gloss, reflectionColorTex);
             var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
 
             var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, maxTextureSize);
@@ -285,7 +285,7 @@ namespace KRT.VRCQuestTools.Models
             var matcapHeight = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.height : 4;
 
             // Check platform override settings from source texture
-            var platformOverride = TextureUtility.GetPlatformOverrideSettings(lilMaterial.MatCapTex);
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MatCapTex);
             var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
 
             var (width, height) = TextureUtility.AspectFitReduction(matcapWidth, matcapHeight, maxTextureSize);
@@ -306,7 +306,7 @@ namespace KRT.VRCQuestTools.Models
             var matcapMask = (Texture2D)lilMaterial.MatCapMask;
 
             // Check platform override settings from source texture
-            var platformOverride = TextureUtility.GetPlatformOverrideSettings(matcapMask);
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(matcapMask);
             var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
 
             var (width, height) = TextureUtility.AspectFitReduction(matcapMask.width, matcapMask.height, maxTextureSize);
@@ -345,7 +345,7 @@ namespace KRT.VRCQuestTools.Models
             var originalHeight = Math.Max(metallicHeight, reflectionColorHeight);
 
             // Check platform override settings from source textures
-            var platformOverride = TextureUtility.GetPlatformOverrideSettings(metallic, reflectionColorTex);
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(metallic, reflectionColorTex);
             var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
 
             var (width, height) = TextureUtility.AspectFitReduction(originalWidth, originalHeight, maxTextureSize);
@@ -386,7 +386,7 @@ namespace KRT.VRCQuestTools.Models
             var normal = (Texture2D)lilMaterial.NormalMap;
 
             // Check platform override settings from source texture
-            var platformOverride = TextureUtility.GetPlatformOverrideSettings(normal);
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(normal);
             var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
 
             var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, maxTextureSize);
@@ -400,7 +400,7 @@ namespace KRT.VRCQuestTools.Models
             var aoMap = (Texture2D)lilMaterial.AOMap;
 
             // Check platform override settings from source texture
-            var platformOverride = TextureUtility.GetPlatformOverrideSettings(aoMap);
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(aoMap);
             var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
 
             var (width, height) = TextureUtility.AspectFitReduction(aoMap.width, aoMap.height, maxTextureSize);
@@ -540,7 +540,7 @@ namespace KRT.VRCQuestTools.Models
             }
 
             // Check platform override settings from source textures
-            var platformOverride = TextureUtility.GetPlatformOverrideSettings(sourceTextures.ToArray());
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(sourceTextures.ToArray());
             var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
 
             var width = Math.Min(maxWidth, maxTextureSize);

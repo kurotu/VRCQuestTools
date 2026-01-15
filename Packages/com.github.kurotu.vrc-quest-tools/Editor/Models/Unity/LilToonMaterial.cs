@@ -683,7 +683,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             var emission2ndGradTex = MaterialEditor.GetMaterialProperty(mats, "_Emission2ndGradTex");
 
             // Check platform override settings from source textures used in baking
-            var platformOverride = TextureUtility.GetPlatformOverrideSettings(
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(
                 emissionMap.textureValue,
                 emissionBlendMask.textureValue,
                 emissionGradTex.textureValue,

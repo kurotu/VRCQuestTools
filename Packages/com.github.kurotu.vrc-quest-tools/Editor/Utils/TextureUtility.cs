@@ -846,15 +846,15 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Gets platform-specific texture override settings from multiple textures and returns the optimal resolution and compression format.
-        /// Analyzes Android and iOS platform overrides from texture importers.
+        /// Gets the best platform-specific texture override settings from multiple textures and returns the optimal resolution and compression format.
+        /// Analyzes Android and iOS platform overrides from texture importers and selects the maximum resolution and highest quality ASTC format.
         /// Only ASTC compression formats are considered, as per VRCQuestTools mobile texture format requirements.
         /// Non-ASTC override formats will be ignored.
         /// HDR ASTC formats are mapped to their non-HDR equivalents.
         /// </summary>
         /// <param name="textures">Source textures to analyze.</param>
-        /// <returns>A tuple containing the maximum resolution and the mobile texture format from the overrides, or null if no overrides exist or if no ASTC formats are found.</returns>
-        internal static (int MaxTextureSize, TextureFormat Format)? GetPlatformOverrideSettings(params Texture[] textures)
+        /// <returns>A tuple containing the maximum resolution and the best mobile texture format from the overrides, or null if no overrides exist or if no ASTC formats are found.</returns>
+        internal static (int MaxTextureSize, TextureFormat Format)? GetBestPlatformOverrideSettings(params Texture[] textures)
         {
             if (textures == null || textures.Length == 0)
             {

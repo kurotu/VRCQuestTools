@@ -43,39 +43,39 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Test that GetPlatformOverrideSettings returns null when no textures are provided.
+        /// Test that GetBestPlatformOverrideSettings returns null when no textures are provided.
         /// </summary>
         [Test]
-        public void GetPlatformOverrideSettings_WithNoTextures_ReturnsNull()
+        public void GetBestPlatformOverrideSettings_WithNoTextures_ReturnsNull()
         {
-            var result = TextureUtility.GetPlatformOverrideSettings();
+            var result = TextureUtility.GetBestPlatformOverrideSettings();
             Assert.IsNull(result);
         }
 
         /// <summary>
-        /// Test that GetPlatformOverrideSettings returns null when textures have no overrides.
+        /// Test that GetBestPlatformOverrideSettings returns null when textures have no overrides.
         /// </summary>
         [Test]
-        public void GetPlatformOverrideSettings_WithNoOverrides_ReturnsNull()
+        public void GetBestPlatformOverrideSettings_WithNoOverrides_ReturnsNull()
         {
             // Create a test texture without platform overrides
             // Format doesn't matter since hasOverride=false, but using valid TextureFormat for consistency
             var texture = CreateTestTexture("test_no_override.png", 512, 512, false, 0, TextureFormat.ASTC_6x6);
 
-            var result = TextureUtility.GetPlatformOverrideSettings(texture);
+            var result = TextureUtility.GetBestPlatformOverrideSettings(texture);
             Assert.IsNull(result);
         }
 
         /// <summary>
-        /// Test that GetPlatformOverrideSettings returns Android override settings.
+        /// Test that GetBestPlatformOverrideSettings returns Android override settings.
         /// </summary>
         [Test]
-        public void GetPlatformOverrideSettings_WithAndroidOverride_ReturnsCorrectSettings()
+        public void GetBestPlatformOverrideSettings_WithAndroidOverride_ReturnsCorrectSettings()
         {
             // Create a test texture with Android override
             var texture = CreateTestTexture("test_android_override.png", 512, 512, true, 256, TextureFormat.ASTC_6x6);
 
-            var result = TextureUtility.GetPlatformOverrideSettings(texture);
+            var result = TextureUtility.GetBestPlatformOverrideSettings(texture);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(256, result.Value.MaxTextureSize);
@@ -83,50 +83,50 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Test that GetPlatformOverrideSettings selects maximum resolution from multiple textures.
+        /// Test that GetBestPlatformOverrideSettings selects maximum resolution from multiple textures.
         /// </summary>
         [Test]
-        public void GetPlatformOverrideSettings_WithMultipleTextures_SelectsMaxResolution()
+        public void GetBestPlatformOverrideSettings_WithMultipleTextures_SelectsMaxResolution()
         {
             // Create textures with different resolutions
             var texture1 = CreateTestTexture("test_256.png", 512, 512, true, 256, TextureFormat.ASTC_6x6);
             var texture2 = CreateTestTexture("test_512.png", 1024, 1024, true, 512, TextureFormat.ASTC_6x6);
             var texture3 = CreateTestTexture("test_1024.png", 2048, 2048, true, 1024, TextureFormat.ASTC_6x6);
 
-            var result = TextureUtility.GetPlatformOverrideSettings(texture1, texture2, texture3);
+            var result = TextureUtility.GetBestPlatformOverrideSettings(texture1, texture2, texture3);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1024, result.Value.MaxTextureSize);
         }
 
         /// <summary>
-        /// Test that GetPlatformOverrideSettings selects highest quality ASTC format.
+        /// Test that GetBestPlatformOverrideSettings selects highest quality ASTC format.
         /// </summary>
         [Test]
-        public void GetPlatformOverrideSettings_WithDifferentFormats_SelectsHighestQuality()
+        public void GetBestPlatformOverrideSettings_WithDifferentFormats_SelectsHighestQuality()
         {
             // Create textures with different ASTC formats (4x4 is highest quality)
             var texture1 = CreateTestTexture("test_12x12.png", 512, 512, true, 512, TextureFormat.ASTC_12x12);
             var texture2 = CreateTestTexture("test_6x6.png", 512, 512, true, 512, TextureFormat.ASTC_6x6);
             var texture3 = CreateTestTexture("test_4x4.png", 512, 512, true, 512, TextureFormat.ASTC_4x4);
 
-            var result = TextureUtility.GetPlatformOverrideSettings(texture1, texture2, texture3);
+            var result = TextureUtility.GetBestPlatformOverrideSettings(texture1, texture2, texture3);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(TextureFormat.ASTC_4x4, result.Value.Format);
         }
 
         /// <summary>
-        /// Test that GetPlatformOverrideSettings handles mixed override and non-override textures.
+        /// Test that GetBestPlatformOverrideSettings handles mixed override and non-override textures.
         /// </summary>
         [Test]
-        public void GetPlatformOverrideSettings_WithMixedTextures_UsesOnlyOverrides()
+        public void GetBestPlatformOverrideSettings_WithMixedTextures_UsesOnlyOverrides()
         {
             // Create one texture with override and one without
             var textureWithOverride = CreateTestTexture("test_with_override.png", 512, 512, true, 256, TextureFormat.ASTC_6x6);
             var textureWithoutOverride = CreateTestTexture("test_without_override.png", 1024, 1024, false, 0, TextureFormat.ASTC_6x6);
 
-            var result = TextureUtility.GetPlatformOverrideSettings(textureWithOverride, textureWithoutOverride);
+            var result = TextureUtility.GetBestPlatformOverrideSettings(textureWithOverride, textureWithoutOverride);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(256, result.Value.MaxTextureSize);
@@ -134,14 +134,14 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Test that GetPlatformOverrideSettings handles null textures in array.
+        /// Test that GetBestPlatformOverrideSettings handles null textures in array.
         /// </summary>
         [Test]
-        public void GetPlatformOverrideSettings_WithNullTextures_IgnoresNulls()
+        public void GetBestPlatformOverrideSettings_WithNullTextures_IgnoresNulls()
         {
             var texture = CreateTestTexture("test_with_null.png", 512, 512, true, 256, TextureFormat.ASTC_6x6);
 
-            var result = TextureUtility.GetPlatformOverrideSettings(null, texture, null);
+            var result = TextureUtility.GetBestPlatformOverrideSettings(null, texture, null);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(256, result.Value.MaxTextureSize);
@@ -149,15 +149,15 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Test that GetPlatformOverrideSettings works with iOS overrides.
+        /// Test that GetBestPlatformOverrideSettings works with iOS overrides.
         /// </summary>
         [Test]
-        public void GetPlatformOverrideSettings_WithIosOverride_ReturnsCorrectSettings()
+        public void GetBestPlatformOverrideSettings_WithIosOverride_ReturnsCorrectSettings()
         {
             // Create a test texture with iOS override
             var texture = CreateTestTexture("test_ios_override.png", 512, 512, true, 512, TextureFormat.ASTC_8x8, platformName: "iPhone");
 
-            var result = TextureUtility.GetPlatformOverrideSettings(texture);
+            var result = TextureUtility.GetBestPlatformOverrideSettings(texture);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(512, result.Value.MaxTextureSize);
@@ -165,10 +165,10 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Test that GetPlatformOverrideSettings combines Android and iOS overrides correctly.
+        /// Test that GetBestPlatformOverrideSettings combines Android and iOS overrides correctly.
         /// </summary>
         [Test]
-        public void GetPlatformOverrideSettings_WithBothPlatforms_CombinesCorrectly()
+        public void GetBestPlatformOverrideSettings_WithBothPlatforms_CombinesCorrectly()
         {
             // Create texture with Android override (256, ASTC_6x6)
             var textureAndroid = CreateTestTexture("test_android.png", 512, 512, true, 256, TextureFormat.ASTC_6x6, platformName: "Android");
@@ -176,7 +176,7 @@ namespace KRT.VRCQuestTools.Utils
             // Create texture with iOS override (512, ASTC_4x4)
             var textureIos = CreateTestTexture("test_ios.png", 512, 512, true, 512, TextureFormat.ASTC_4x4, platformName: "iPhone");
 
-            var result = TextureUtility.GetPlatformOverrideSettings(textureAndroid, textureIos);
+            var result = TextureUtility.GetBestPlatformOverrideSettings(textureAndroid, textureIos);
 
             Assert.IsNotNull(result);
 
