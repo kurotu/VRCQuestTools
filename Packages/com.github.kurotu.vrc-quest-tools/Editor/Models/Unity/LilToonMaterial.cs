@@ -674,15 +674,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <param name="material">Material to bake.</param>
         private AsyncCallbackRequest EmissionBake(RenderTexture main, Material material, IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
-            var maxTextureSize = (int)settings.MaxTextureSize;
-            var width = main.width;
-            var height = main.height;
-            if (maxTextureSize > 0)
-            {
-                width = System.Math.Min(maxTextureSize, width);
-                height = System.Math.Min(maxTextureSize, height);
-            }
-
             var mats = new[] { material };
             var emissionMap = MaterialEditor.GetMaterialProperty(mats, "_EmissionMap");
             var emissionBlendMask = MaterialEditor.GetMaterialProperty(mats, "_EmissionBlendMask");
@@ -690,6 +681,24 @@ namespace KRT.VRCQuestTools.Models.Unity
             var emission2ndMap = MaterialEditor.GetMaterialProperty(mats, "_Emission2ndMap");
             var emission2ndBlendMask = MaterialEditor.GetMaterialProperty(mats, "_Emission2ndBlendMask");
             var emission2ndGradTex = MaterialEditor.GetMaterialProperty(mats, "_Emission2ndGradTex");
+
+            // Check platform override settings from source textures used in baking
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(
+                emissionMap.textureValue,
+                emissionBlendMask.textureValue,
+                emissionGradTex.textureValue,
+                emission2ndMap.textureValue,
+                emission2ndBlendMask.textureValue,
+                emission2ndGradTex.textureValue);
+
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)settings.MaxTextureSize;
+            var width = main.width;
+            var height = main.height;
+            if (maxTextureSize > 0)
+            {
+                width = System.Math.Min(maxTextureSize, width);
+                height = System.Math.Min(maxTextureSize, height);
+            }
 
             using (var baker = DisposableObject.New(Object.Instantiate(material)))
             using (var srcEmissionMap = DisposableObject.New(TextureUtility.LoadUncompressedTexture(emissionMap.textureValue)))
