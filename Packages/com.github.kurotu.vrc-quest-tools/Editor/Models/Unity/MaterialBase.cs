@@ -70,15 +70,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <returns>Request to wait.</returns>
         internal virtual AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
-            var maxTextureSize = (int)settings.MaxTextureSize;
             var mainTexture = Material.mainTexture ?? Texture2D.whiteTexture;
-            var width = mainTexture.width;
-            var height = mainTexture.height;
-            if (maxTextureSize > 0)
-            {
-                width = System.Math.Min(maxTextureSize, width);
-                height = System.Math.Min(maxTextureSize, height);
-            }
 
             using (var disposables = new CompositeDisposable())
             using (var baker = DisposableObject.New(Object.Instantiate(Material)))
@@ -87,6 +79,9 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.shader = ToonLitBakeShader;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
                 baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);
+
+                // Collect textures for platform override analysis
+                var texturesForOverride = new System.Collections.Generic.List<Texture>();
                 foreach (var name in Material.GetTexturePropertyNames())
                 {
                     var t = Material.GetTexture(name);
@@ -98,9 +93,22 @@ namespace KRT.VRCQuestTools.Models.Unity
                     {
                         continue;
                     }
+                    texturesForOverride.Add(t);
                     var tex = TextureUtility.LoadUncompressedTexture(t);
                     disposables.Add(DisposableObject.New(tex));
                     baker.Object.SetTexture(name, tex);
+                }
+
+                // Check platform override settings from source textures used in baking
+                var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(texturesForOverride.ToArray());
+                var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)settings.MaxTextureSize;
+
+                var width = mainTexture.width;
+                var height = mainTexture.height;
+                if (maxTextureSize > 0)
+                {
+                    width = System.Math.Min(maxTextureSize, width);
+                    height = System.Math.Min(maxTextureSize, height);
                 }
 
                 return TextureUtility.BakeTexture(mainTexture, true, width, height, true, baker.Object, completion);
