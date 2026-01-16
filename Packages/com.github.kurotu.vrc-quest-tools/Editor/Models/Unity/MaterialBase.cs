@@ -85,6 +85,10 @@ namespace KRT.VRCQuestTools.Models.Unity
                 foreach (var name in Material.GetTexturePropertyNames())
                 {
                     var t = Material.GetTexture(name);
+                    if (t == null)
+                    {
+                        continue;
+                    }
                     if (t is Cubemap)
                     {
                         continue;
