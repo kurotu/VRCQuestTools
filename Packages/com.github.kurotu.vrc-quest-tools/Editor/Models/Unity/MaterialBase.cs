@@ -97,13 +97,6 @@ namespace KRT.VRCQuestTools.Models.Unity
                     {
                         continue;
                     }
-                    
-                    // Only collect textures that exist in the bake shader
-                    if (!baker.Object.HasProperty(name))
-                    {
-                        continue;
-                    }
-                    
                     texturesForOverride.Add(t);
                     var tex = TextureUtility.LoadUncompressedTexture(t);
                     disposables.Add(DisposableObject.New(tex));
