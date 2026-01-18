@@ -294,13 +294,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 AssetDatabase.Refresh();
             }
 
-            var sharedBlackTexture = TextureUtility.CreateColorTexture(Color.black, 4, 4);
-            sharedBlackTexture.name = "VQT_Shared_Black";
-            if (saveAsPng)
-            {
-                var pngPath = Path.Combine(saveDirectory, $"{sharedBlackTexture.name}.png");
-                sharedBlackTexture = TextureUtility.SaveUncompressedTexture(pngPath, sharedBlackTexture, TextureFormat.ASTC_12x12);
-            }
+            var sharedBlackTexture = CreateSharedBlackTexture(saveAsPng, saveDirectory);
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedTextures = new Dictionary<Material, Texture2D>();
 
@@ -584,13 +578,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
             var texturesPath = $"{assetsDirectory}/Textures";
 
-            var sharedBlackTexture = TextureUtility.CreateColorTexture(Color.black, 4, 4);
-            sharedBlackTexture.name = "VQT_Shared_Black";
-            if (saveAsFile)
-            {
-                var pngPath = Path.Combine(texturesPath, $"{sharedBlackTexture.name}.png");
-                sharedBlackTexture = TextureUtility.SaveUncompressedTexture(pngPath, sharedBlackTexture, TextureFormat.ASTC_12x12);
-            }
+            var sharedBlackTexture = CreateSharedBlackTexture(saveAsFile, texturesPath);
 
             switch (settings)
             {
@@ -901,6 +889,22 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     origin.SetActive(false);
                 }
             }
+        }
+
+        private Texture2D CreateSharedBlackTexture(bool saveAsFile, string texturesPath)
+        {
+            var sharedBlackTexture = TextureUtility.CreateColorTexture(Color.black, 4, 4);
+            sharedBlackTexture.name = "VQT_Shared_Black";
+            if (saveAsFile)
+            {
+                var pngPath = Path.Combine(texturesPath, $"{sharedBlackTexture.name}.png");
+                sharedBlackTexture = TextureUtility.SaveUncompressedTexture(pngPath, sharedBlackTexture, TextureFormat.ASTC_12x12);
+            }
+            else
+            {
+                TextureUtility.SetStreamingMipMaps(sharedBlackTexture, true);
+            }
+            return sharedBlackTexture;
         }
 
         private GameObject FindDescendant(GameObject gameObject, string name)
