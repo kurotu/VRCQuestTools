@@ -356,6 +356,26 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal float RimLightBlur => Material.GetFloat("_RimBlur");
 
         /// <inheritdoc/>
+        internal override (int MaxTextureSize, TextureFormat Format)? GetToonLitPlatformOverride()
+        {
+            // For LilToon ToonLit, we use the emission-related textures (same as EmissionBake)
+            var emissionMap = MaterialEditor.GetMaterialProperty(new Material[] { Material }, "_EmissionMap");
+            var emissionBlendMask = MaterialEditor.GetMaterialProperty(new Material[] { Material }, "_EmissionBlendMask");
+            var emissionGradTex = MaterialEditor.GetMaterialProperty(new Material[] { Material }, "_EmissionGradTex");
+            var emission2ndMap = MaterialEditor.GetMaterialProperty(new Material[] { Material }, "_Emission2ndMap");
+            var emission2ndBlendMask = MaterialEditor.GetMaterialProperty(new Material[] { Material }, "_Emission2ndBlendMask");
+            var emission2ndGradTex = MaterialEditor.GetMaterialProperty(new Material[] { Material }, "_Emission2ndGradTex");
+
+            return TextureUtility.GetBestPlatformOverrideSettings(
+                emissionMap?.textureValue,
+                emissionBlendMask?.textureValue,
+                emissionGradTex?.textureValue,
+                emission2ndMap?.textureValue,
+                emission2ndBlendMask?.textureValue,
+                emission2ndGradTex?.textureValue);
+        }
+
+        /// <inheritdoc/>
         internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
             var main = DisposableObject.New(MainBake(Material, 0));
