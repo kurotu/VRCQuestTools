@@ -129,6 +129,16 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
+        /// Gets the platform override settings for main texture.
+        /// </summary>
+        /// <returns>Platform override settings, or null if none.</returns>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
+        {
+            // Main texture uses the same sources as ToonLit
+            return GetToonLitPlatformOverride();
+        }
+
+        /// <summary>
         /// Gets the platform override settings for emission map textures.
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
