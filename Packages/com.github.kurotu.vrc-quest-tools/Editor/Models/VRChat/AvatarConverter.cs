@@ -38,6 +38,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal readonly MaterialWrapperBuilder MaterialWrapperBuilder;
 
         /// <summary>
+        /// Cache for shared black texture to avoid duplication.
+        /// Key format: "saveAsFile_texturesPath".
+        /// </summary>
+        private readonly Dictionary<string, Texture2D> sharedBlackTextureCache = new Dictionary<string, Texture2D>();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AvatarConverter"/> class.
         /// </summary>
         /// <param name="materialWrapperBuilder">MaterialWrapperBuilder to use.</param>
@@ -294,7 +300,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 AssetDatabase.Refresh();
             }
 
-            var sharedBlackTexture = CreateSharedBlackTexture(saveAsPng, saveDirectory);
+            var sharedBlackTexture = GetOrCreateSharedBlackTexture(saveAsPng, saveDirectory);
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedTextures = new Dictionary<Material, Texture2D>();
 
@@ -578,7 +584,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
             var texturesPath = $"{assetsDirectory}/Textures";
 
-            var sharedBlackTexture = CreateSharedBlackTexture(saveAsFile, texturesPath);
+            var sharedBlackTexture = GetOrCreateSharedBlackTexture(saveAsFile, texturesPath);
 
             switch (settings)
             {
@@ -889,6 +895,25 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     origin.SetActive(false);
                 }
             }
+        }
+
+        private Texture2D GetOrCreateSharedBlackTexture(bool saveAsFile, string texturesPath)
+        {
+            var cacheKey = $"{saveAsFile}_{texturesPath}";
+            if (sharedBlackTextureCache.TryGetValue(cacheKey, out var cachedTexture))
+            {
+                var exists = cachedTexture != null;
+                if (exists && (!saveAsFile || AssetDatabase.Contains(cachedTexture)))
+                {
+                    return cachedTexture;
+                }
+
+                sharedBlackTextureCache.Remove(cacheKey);
+            }
+
+            var sharedBlackTexture = CreateSharedBlackTexture(saveAsFile, texturesPath);
+            sharedBlackTextureCache[cacheKey] = sharedBlackTexture;
+            return sharedBlackTexture;
         }
 
         private Texture2D CreateSharedBlackTexture(bool saveAsFile, string texturesPath)

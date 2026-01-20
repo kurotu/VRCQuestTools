@@ -8,6 +8,7 @@
 
 ### 修正
 - [NDMF] VQT_Shared_Black テクスチャに Streaming Mip Maps が設定されていない問題を修正。
+- [NDMF] VQT_Shared_Black テクスチャが複数のマテリアルから共有されない問題を修正。
 
 ## [2.11.4] - 2025-10-10
 
