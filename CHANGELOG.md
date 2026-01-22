@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - [NDMF] Fixed missing "Streaming Mip Maps" configuration for VQT_Shared_Black textures.
-- [NDMF] Fixed VQT_Shared_Black not shared from multiple materials.
+- [NDMF] Fixed VQT_Shared_Black texture not being shared across multiple materials.
 
 ## [2.11.4] - 2025-10-10
 
