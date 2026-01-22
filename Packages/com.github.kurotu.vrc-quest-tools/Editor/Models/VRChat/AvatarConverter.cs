@@ -115,6 +115,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="progressCallback">Callback to show progress.</param>
         internal void ConvertForQuestInPlace(VRChatAvatar avatar, ComponentRemover remover, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
         {
+            // Clear cache to ensure each avatar gets its own VQT_Shared_Black texture
+            ClearSharedBlackTextureCache();
+
             var questAvatarObject = avatar.GameObject;
             questAvatarObject.SetActive(true);
             var converterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();
@@ -293,6 +296,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="progressCallback">Callback to show progress.</param>
         internal void GenerateAndroidTextures(Material[] materials, bool saveAsPng, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
         {
+            // Clear cache to ensure each texture generation gets its own VQT_Shared_Black texture
+            ClearSharedBlackTextureCache();
+
             var saveDirectory = $"{assetsDirectory}/Textures";
             if (saveAsPng)
             {
@@ -895,6 +901,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     origin.SetActive(false);
                 }
             }
+        }
+
+        private void ClearSharedBlackTextureCache()
+        {
+            sharedBlackTextureCache.Clear();
         }
 
         private Texture2D GetOrCreateSharedBlackTexture(bool saveAsFile, string texturesPath)
