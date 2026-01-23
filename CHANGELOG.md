@@ -37,6 +37,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed support for NDMF earlier than 1.5.0.
 - Removed VQT Avatar Builder window. Use VRChat SDK Control Panel to build and upload avatars directly, or use the "[NDMF] Build and Test for PC with Android Settings" context menu for local testing.
 
+## [2.11.5] - 2026-01-23
+
+### Fixed
+- [NDMF] Fixed missing "Streaming Mip Maps" configuration for VQT_Shared_Black textures.
+- [NDMF] Fixed VQT_Shared_Black texture not being shared across multiple materials.
+
 ## [2.11.4] - 2025-10-10
 
 ### Fixed

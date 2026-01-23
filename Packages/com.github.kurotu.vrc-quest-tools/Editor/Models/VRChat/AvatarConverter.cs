@@ -30,6 +30,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal readonly MaterialWrapperBuilder MaterialWrapperBuilder;
 
         /// <summary>
+        /// Cache for shared black texture to avoid duplication.
+        /// Key format: "saveAsFile_texturesPath".
+        /// </summary>
+        private readonly Dictionary<string, Texture2D> sharedBlackTextureCache = new Dictionary<string, Texture2D>();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AvatarConverter"/> class.
         /// </summary>
         /// <param name="materialWrapperBuilder">MaterialWrapperBuilder to use.</param>
@@ -110,6 +116,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 throw new BreakingPackageException(ModularAvatarUtility.PackageDisplayName, ModularAvatarUtility.BreakingVersion);
             }
+
+            // Clear cache to ensure each avatar gets its own VQT_Shared_Black texture
+            ClearSharedBlackTextureCache();
 
             var questAvatarObject = avatar.GameObject;
             questAvatarObject.SetActive(true);
@@ -281,6 +290,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="progressCallback">Callback to show progress.</param>
         internal void GenerateAndroidTextures(Material[] materials, bool saveAsPng, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
         {
+            // Clear cache to ensure each texture generation gets its own VQT_Shared_Black texture
+            ClearSharedBlackTextureCache();
+
             var saveDirectory = $"{assetsDirectory}/Textures";
             if (saveAsPng)
             {
@@ -288,13 +300,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 AssetDatabase.Refresh();
             }
 
-            var sharedBlackTexture = TextureUtility.CreateColorTexture(Color.black, 4, 4);
-            sharedBlackTexture.name = "VQT_Shared_Black";
-            if (saveAsPng)
-            {
-                var pngPath = Path.Combine(saveDirectory, $"{sharedBlackTexture.name}.png");
-                sharedBlackTexture = TextureUtility.SaveUncompressedTexture(pngPath, sharedBlackTexture, TextureFormat.ASTC_12x12);
-            }
+            var sharedBlackTexture = GetOrCreateSharedBlackTexture(saveAsPng, saveDirectory);
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var convertedTextures = new Dictionary<Material, Texture2D>();
 
@@ -587,13 +593,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
             var texturesPath = $"{assetsDirectory}/Textures";
 
-            var sharedBlackTexture = TextureUtility.CreateColorTexture(Color.black, 4, 4);
-            sharedBlackTexture.name = "VQT_Shared_Black";
-            if (saveAsFile)
-            {
-                var pngPath = Path.Combine(texturesPath, $"{sharedBlackTexture.name}.png");
-                sharedBlackTexture = TextureUtility.SaveUncompressedTexture(pngPath, sharedBlackTexture, TextureFormat.ASTC_12x12);
-            }
+            var sharedBlackTexture = GetOrCreateSharedBlackTexture(saveAsFile, texturesPath);
 
             switch (settings)
             {
@@ -648,15 +648,22 @@ namespace KRT.VRCQuestTools.Models.VRChat
         private Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Motion, Motion> convertedMotions, RuntimeAnimatorProgressCallback progressCallback)
         {
             var convertedControllers = new Dictionary<RuntimeAnimatorController, RuntimeAnimatorController>();
-            for (var index = 0; index < controllers.Length; index++)
+
+            // Process AnimatorControllers first, then AnimatorOverrideControllers
+            // This ensures that base controllers are available when processing override controllers
+            var sortedControllers = controllers
+                .OrderBy(c => c is AnimatorOverrideController ? 1 : 0)
+                .ToArray();
+
+            for (var index = 0; index < sortedControllers.Length; index++)
             {
-                var controller = controllers[index];
+                var controller = sortedControllers[index];
                 if (controller.animationClips.Where(c => c != null).Count(clip => convertedMotions.ContainsKey(clip) && convertedMotions[clip] != null) == 0)
                 {
                     continue;
                 }
 
-                progressCallback(controllers.Length, index, controller, null);
+                progressCallback(sortedControllers.Length, index, controller, null);
                 try
                 {
                     RuntimeAnimatorController cloneController = null;
@@ -667,7 +674,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             break;
                         case AnimatorOverrideController overrideController:
                             cloneController = UnityAnimationUtility.ReplaceAnimationClips(overrideController, saveAsAsset, assetsDirectory, convertedMotions);
-                            if (overrideController.runtimeAnimatorController)
+                            if (overrideController.runtimeAnimatorController && convertedControllers.ContainsKey(overrideController.runtimeAnimatorController))
                             {
                                 ((AnimatorOverrideController)cloneController).runtimeAnimatorController = convertedControllers[overrideController.runtimeAnimatorController];
                             }
@@ -679,7 +686,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     if (cloneController)
                     {
                         convertedControllers.Add(controller, cloneController);
-                        progressCallback(controllers.Length, index, controller, cloneController);
+                        progressCallback(sortedControllers.Length, index, controller, cloneController);
                     }
                 }
                 catch (Exception e)
@@ -902,6 +909,46 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     origin.SetActive(false);
                 }
             }
+        }
+
+        private void ClearSharedBlackTextureCache()
+        {
+            sharedBlackTextureCache.Clear();
+        }
+
+        private Texture2D GetOrCreateSharedBlackTexture(bool saveAsFile, string texturesPath)
+        {
+            var cacheKey = $"{saveAsFile}_{texturesPath}";
+            if (sharedBlackTextureCache.TryGetValue(cacheKey, out var cachedTexture))
+            {
+                var exists = cachedTexture != null;
+                if (exists && (!saveAsFile || AssetDatabase.Contains(cachedTexture)))
+                {
+                    return cachedTexture;
+                }
+
+                sharedBlackTextureCache.Remove(cacheKey);
+            }
+
+            var sharedBlackTexture = CreateSharedBlackTexture(saveAsFile, texturesPath);
+            sharedBlackTextureCache[cacheKey] = sharedBlackTexture;
+            return sharedBlackTexture;
+        }
+
+        private Texture2D CreateSharedBlackTexture(bool saveAsFile, string texturesPath)
+        {
+            var sharedBlackTexture = TextureUtility.CreateColorTexture(Color.black, 4, 4);
+            sharedBlackTexture.name = "VQT_Shared_Black";
+            if (saveAsFile)
+            {
+                var pngPath = Path.Combine(texturesPath, $"{sharedBlackTexture.name}.png");
+                sharedBlackTexture = TextureUtility.SaveUncompressedTexture(pngPath, sharedBlackTexture, TextureFormat.ASTC_12x12);
+            }
+            else
+            {
+                TextureUtility.SetStreamingMipMaps(sharedBlackTexture, true);
+            }
+            return sharedBlackTexture;
         }
 
         private GameObject FindDescendant(GameObject gameObject, string name)

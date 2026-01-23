@@ -36,6 +36,12 @@
 - NDMF 1.5.0 未満のサポートを終了。
 - VQT Avatar Builder ウィンドウを削除。アバターのビルドとアップロードには VRChat SDK コントロールパネルを直接使用するか、ローカルテストには「[NDMF] Build and Test for PC with Android Settings」コンテキストメニューを使用してください。
 
+## [2.11.5] - 2026-01-23
+
+### 修正
+- [NDMF] VQT_Shared_Black テクスチャに Streaming Mip Maps が設定されていない問題を修正。
+- [NDMF] VQT_Shared_Black テクスチャが複数のマテリアルから共有されない問題を修正。
+
 ## [2.11.4] - 2025-10-10
 
 ### 修正
