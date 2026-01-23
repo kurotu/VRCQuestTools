@@ -645,15 +645,22 @@ namespace KRT.VRCQuestTools.Models.VRChat
         private Dictionary<RuntimeAnimatorController, RuntimeAnimatorController> ConvertAnimatorControllersForQuest(RuntimeAnimatorController[] controllers, bool saveAsAsset, string assetsDirectory, Dictionary<Motion, Motion> convertedMotions, RuntimeAnimatorProgressCallback progressCallback)
         {
             var convertedControllers = new Dictionary<RuntimeAnimatorController, RuntimeAnimatorController>();
-            for (var index = 0; index < controllers.Length; index++)
+
+            // Process AnimatorControllers first, then AnimatorOverrideControllers
+            // This ensures that base controllers are available when processing override controllers
+            var sortedControllers = controllers
+                .OrderBy(c => c is AnimatorOverrideController ? 1 : 0)
+                .ToArray();
+
+            for (var index = 0; index < sortedControllers.Length; index++)
             {
-                var controller = controllers[index];
+                var controller = sortedControllers[index];
                 if (controller.animationClips.Where(c => c != null).Count(clip => convertedMotions.ContainsKey(clip) && convertedMotions[clip] != null) == 0)
                 {
                     continue;
                 }
 
-                progressCallback(controllers.Length, index, controller, null);
+                progressCallback(sortedControllers.Length, index, controller, null);
                 try
                 {
                     RuntimeAnimatorController cloneController = null;
@@ -664,7 +671,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             break;
                         case AnimatorOverrideController overrideController:
                             cloneController = UnityAnimationUtility.ReplaceAnimationClips(overrideController, saveAsAsset, assetsDirectory, convertedMotions);
-                            if (overrideController.runtimeAnimatorController)
+                            if (overrideController.runtimeAnimatorController && convertedControllers.ContainsKey(overrideController.runtimeAnimatorController))
                             {
                                 ((AnimatorOverrideController)cloneController).runtimeAnimatorController = convertedControllers[overrideController.runtimeAnimatorController];
                             }
@@ -676,7 +683,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     if (cloneController)
                     {
                         convertedControllers.Add(controller, cloneController);
-                        progressCallback(controllers.Length, index, controller, cloneController);
+                        progressCallback(sortedControllers.Length, index, controller, cloneController);
                     }
                 }
                 catch (Exception e)
