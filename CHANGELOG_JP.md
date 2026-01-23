@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.11.5] - 2026-01-23
 
 ### 修正
 - [NDMF] VQT_Shared_Black テクスチャに Streaming Mip Maps が設定されていない問題を修正。
