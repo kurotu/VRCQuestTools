@@ -3,6 +3,7 @@ using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEngine;
@@ -33,7 +34,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <returns>NDMF Phase.</returns>
         internal static AvatarConverterNdmfPhase ResolveAvatarConverterNdmfPhase(GameObject avatarRoot)
         {
-            var primaryRoot = avatarRoot.GetComponents<IMaterialConversionComponent>().FirstOrDefault(c => c.IsPrimaryRoot);
+            var primaryRoot = ComponentUtility.GetPrimaryMaterialConversionComponent(avatarRoot);
             if (primaryRoot != null)
             {
                 return primaryRoot.NdmfPhase.Resolve(avatarRoot);
@@ -51,7 +52,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
             if (avatarDescriptor == null)
             {
-                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping avatar conversion.");
+                Logger.LogWarning($"No VRCAvatarDescriptor found in the avatar root object. Skipping avatar conversion.");
                 return;
             }
 

@@ -4,6 +4,38 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 追加
+- Toon Standard の変換設定に項目を追加
+    - `影の設定を生成する`: 影の設定用のRampテクスチャを生成します。
+    - `機能設定`: 変換されたマテリアルに適用する機能を選択します。
+- 残しておく PhysBone を選択するときにワイヤーフレームによるプレビューを追加。
+- [NDMF] マテリアル変換と頂点カラー削除のプレビューを追加。
+- テクスチャ圧縮形式の設定に「No Override」オプションを追加し、プラットフォーム別オーバーライドを設定せずにUnityのデフォルト設定でASTC圧縮を制御できるようにしました。`Avatar Converter Settings` コンポーネントのテクスチャ圧縮形式のデフォルト値は「No Override」になりました。
+- `VQT Fallback Avatar` コンポーネントを追加。モバイルプラットフォームのパフォーマンス要件（Good以上）を満たした場合、アップロード後に自動的にアバターをフォールバックアバターとして設定します。
+
+### 変更
+- デフォルトのマテリアル変換設定の初期値を Toon Standard に変更。
+- lilToon の通常モードの MatCap を Toon Standard に変換するときの見た目を改善。
+- 処理対象の非対応マテリアルは `Avatar Converter Settings` と `Material Conversion Settings` で警告されないように変更。
+- asmdefの Auto Referenced をオフに変更。
+- 非対応の lilToon のマテリアルを変換するときのエラーメッセージを改善。
+- 非対応の Modular Avatar を使用しているときアバターの変換時にエラーとなるよう変更。
+- [NDMF] 非対応のバージョンを使用しているときビルド時にエラーダイアログを表示してビルドを中止するように変更。
+- [NDMF] `Mesh Flipper` のプレビューをデフォルトで有効化。
+
+### 修正
+- `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。
+- アバター変換時のテクスチャ生成処理における RenderTexture と Material のメモリリークを修正。
+
+### 削除
+- Unity 2019 のサポートを終了。
+- VRCSDK 3.9.0 未満のサポートを終了。
+- lilToon 1.10.0 未満のサポートを終了。
+- NDMF 1.5.0 未満のサポートを終了。
+- VQT Avatar Builder ウィンドウを削除。アバターのビルドとアップロードには VRChat SDK コントロールパネルを直接使用するか、ローカルテストには「[NDMF] Build and Test for PC with Android Settings」コンテキストメニューを使用してください。
+
 ## [2.11.5] - 2026-01-23
 
 ### 修正

@@ -1,8 +1,10 @@
 {
     "name": "VRCQuestTools-EditorTests",
+    "rootNamespace": "KRT.VRCQuestTools",
     "references": [
         "VRCQuestTools",
         "VRCQuestTools-Editor",
+        "nadena.dev.ndmf",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
@@ -31,14 +33,9 @@
             "define": "VQT_HAS_NEWTONSOFT_JSON"
         },
         {
-            "name": "com.vrchat.base",
-            "expression": "3.3.0",
-            "define": "VQT_HAS_VRCSDK"
-        },
-        {
-            "name": "com.vrchat.base",
-            "expression": "3.7.6",
-            "define": "VQT_HAS_VRCSDK_LOCAL_CONTACTS"
+            "name": "com.anatawa12.avatar-optimizer",
+            "expression": "",
+            "define": "VQT_AVATAR_OPTIMIZER"
         }
     ],
     "noEngineReferences": false

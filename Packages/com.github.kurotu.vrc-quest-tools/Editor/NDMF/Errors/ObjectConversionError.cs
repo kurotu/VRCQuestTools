@@ -1,12 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using nadena.dev.ndmf;
-#if VQT_HAS_NDMF_ERROR_REPORT
 using nadena.dev.ndmf.localization;
 using UnityEngine;
-#else
-using KRT.VRCQuestTools.Ndmf.Dummy;
-#endif
 
 namespace KRT.VRCQuestTools.Ndmf
 {

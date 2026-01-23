@@ -11,6 +11,22 @@ namespace KRT.VRCQuestTools.Debug
     internal static class DebugMenu
     {
         private const string DebugMenuRoot = VRCQuestToolsMenus.MenuPaths.RootMenu + "Debug/";
+        private const string UseDebugKey = "KRT.VRCQuestTools.UseDebug";
+
+        [InitializeOnLoadMethod]
+        private static void Init()
+        {
+            Logger.UseDebug = SessionState.GetBool(UseDebugKey, true);
+            Menu.SetChecked(DebugMenuRoot + "Use Debug", Logger.UseDebug);
+        }
+
+        [MenuItem(DebugMenuRoot + "Use Debug")]
+        private static void ToggleDebug()
+        {
+            Logger.UseDebug = !Logger.UseDebug;
+            SessionState.SetBool(UseDebugKey, Logger.UseDebug);
+            Menu.SetChecked(DebugMenuRoot + "Use Debug", Logger.UseDebug);
+        }
 
         [MenuItem(DebugMenuRoot + "Clear Skipped Version")]
         private static void ClearSkippedVersion()

@@ -12,6 +12,16 @@ namespace KRT.VRCQuestTools.Models
     internal static class MaterialGeneratorUtility
     {
         /// <summary>
+        /// Convert MobileTextureFormat to nullable TextureFormat, handling NoOverride case.
+        /// </summary>
+        /// <param name="format">Mobile texture format to convert.</param>
+        /// <returns>Nullable TextureFormat, or null if NoOverride.</returns>
+        private static TextureFormat? ConvertToNullableTextureFormat(MobileTextureFormat format)
+        {
+            return format == MobileTextureFormat.NoOverride ? null : (TextureFormat?)format;
+        }
+
+        /// <summary>
         /// Generate a texture for material.
         /// </summary>
         /// <param name="material">Original material.</param>
@@ -92,50 +102,42 @@ namespace KRT.VRCQuestTools.Models
 
         private static Texture2D TryLoadCacheTexture(Material material, IMaterialConvertSettings settings, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile)
         {
-            using (var mutex = CacheManager.Texture.CreateMutex())
+            // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
+            TextureFormat? mobileTextureFormatNullable = ConvertToNullableTextureFormat(settings.MobileTextureFormat);
+
+            if (CacheManager.Texture.Exists(cacheFile))
             {
-                mutex.WaitOne();
                 try
                 {
-                    if (CacheManager.Texture.Exists(cacheFile))
+                    if (saveAsPng)
                     {
-                        try
+                        Directory.CreateDirectory(texturesPath);
+                        CacheManager.Texture.CopyFromCache(cacheFile, outFile);
+                        AssetDatabase.ImportAsset(outFile);
+                        if (config.isNormalMap)
                         {
-                            if (saveAsPng)
-                            {
-                                Directory.CreateDirectory(texturesPath);
-                                CacheManager.Texture.CopyFromCache(cacheFile, outFile);
-                                AssetDatabase.ImportAsset(outFile);
-                                if (config.isNormalMap)
-                                {
-                                    TextureUtility.ConfigureNormalMapImporter(outFile, (TextureFormat)settings.MobileTextureFormat);
-                                }
-                                else
-                                {
-                                    TextureUtility.ConfigureTextureImporter(outFile, (TextureFormat)settings.MobileTextureFormat, config.isSRGB);
-                                }
-                                var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
-                                return tex;
-                            }
-                            else
-                            {
-                                var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
-                                var tex = cache.ToTexture2D();
-                                TextureUtility.SetStreamingMipMaps(tex, true);
-                                return tex;
-                            }
+                            TextureUtility.ConfigureNormalMapImporter(outFile, mobileTextureFormatNullable);
                         }
-                        catch (Exception e)
+                        else
                         {
-                            // Recoverable error, just log and continue.
-                            Debug.LogException(e);
-                            Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to load cache file {cacheFile} for {material.name}");
+                            TextureUtility.ConfigureTextureImporter(outFile, mobileTextureFormatNullable, config.isSRGB);
                         }
+                        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
+                        return tex;
+                    }
+                    else
+                    {
+                        var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
+                        var tex = cache.ToTexture2D();
+                        TextureUtility.SetStreamingMipMaps(tex, true);
+                        return tex;
                     }
                 }
-                finally
+                catch (Exception e)
                 {
-                    mutex.ReleaseMutex();
+                    // Recoverable error, just log and continue.
+                    Logger.LogException(e);
+                    Logger.LogWarning($"Failed to load cache file {cacheFile} for {material.name}");
                 }
             }
             return null;
@@ -143,6 +145,12 @@ namespace KRT.VRCQuestTools.Models
 
         private static Texture2D SaveTexture(MobileTextureFormat mobileTextureFormat, bool saveAsPng, string texturesPath, TextureConfig config, Texture2D texToWrite, string cacheFile, string outFile)
         {
+            // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
+            TextureFormat? mobileTextureFormatNullable = ConvertToNullableTextureFormat(mobileTextureFormat);
+
+            // For in-code compression when NoOverride is selected, use ASTC_6x6
+            TextureFormat mobileTextureFormatForCompression = TextureUtility.GetCompressionFormat(mobileTextureFormat);
+
             if (saveAsPng)
             {
                 Directory.CreateDirectory(texturesPath);
@@ -153,10 +161,10 @@ namespace KRT.VRCQuestTools.Models
                     var dir = Path.GetDirectoryName(outFile);
                     Directory.CreateDirectory(dir);
                 }
-                texToWrite = TextureUtility.SaveUncompressedTexture(outFile, texToWrite, (TextureFormat)mobileTextureFormat, config.isSRGB);
+                texToWrite = TextureUtility.SaveUncompressedTexture(outFile, texToWrite, mobileTextureFormatNullable, config.isSRGB);
                 if (config.isNormalMap)
                 {
-                    TextureUtility.ConfigureNormalMapImporter(outFile, (TextureFormat)mobileTextureFormat);
+                    TextureUtility.ConfigureNormalMapImporter(outFile, mobileTextureFormatNullable);
                 }
                 CacheManager.Texture.CopyToCache(outFile, cacheFile);
             }
@@ -165,13 +173,13 @@ namespace KRT.VRCQuestTools.Models
                 TextureUtility.SetStreamingMipMaps(texToWrite, true);
                 if (config.isNormalMap)
                 {
-                    texToWrite = TextureUtility.CompressNormalMap(texToWrite, EditorUserBuildSettings.activeBuildTarget, (TextureFormat)mobileTextureFormat);
+                    texToWrite = TextureUtility.CompressNormalMap(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression);
                 }
                 else
                 {
-                    TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget, (TextureFormat)mobileTextureFormat);
+                    TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression);
                 }
-                CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap)));
+                CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap, EditorUserBuildSettings.activeBuildTarget)));
             }
 
             return texToWrite;

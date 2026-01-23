@@ -27,17 +27,82 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Texture format for android.
         /// </summary>
-        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_6x6;
+        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.NoOverride;
+
+        /// <summary>
+        /// Whether to generate shadow ramp textures.
+        /// </summary>
+        public bool generateShadowRamp = true;
 
         /// <summary>
         /// Shadow fallback type.
         /// </summary>
         public Texture2D fallbackShadowRamp;
 
+        /// <summary>
+        /// Whether to use normal map.
+        /// </summary>
+        public bool useNormalMap = true;
+
+        /// <summary>
+        /// Whether to use emission texture.
+        /// </summary>
+        public bool useEmission = true;
+
+        /// <summary>
+        /// Whether to use occlusion texture.
+        /// </summary>
+        public bool useOcclusion = true;
+
+        /// <summary>
+        /// Whether to use specular features.
+        /// </summary>
+        public bool useSpecular = true;
+
+        /// <summary>
+        /// Whether to use matcap texture.
+        /// </summary>
+        public bool useMatcap = true;
+
+        /// <summary>
+        /// Whether to use rim lighting.
+        /// </summary>
+        public bool useRimLighting = true;
+
         private static Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() => GetUnitySerializableFields(typeof(ToonStandardConvertSettings)));
+
+        /// <summary>
+        /// Gets a default instance of <see cref="ToonStandardConvertSettings"/> with all features disabled.
+        /// </summary>
+        public static ToonStandardConvertSettings SimpleFeatures
+        {
+            get
+            {
+                var settings = new ToonStandardConvertSettings
+                {
+                    generateShadowRamp = true,
+                };
+                settings.SetAllFeatures(false);
+                return settings;
+            }
+        }
 
         /// <inheritdoc/>
         public MobileTextureFormat MobileTextureFormat => mobileTextureFormat;
+
+        /// <summary>
+        /// Enables or disables all features of the settings.
+        /// </summary>
+        /// <param name="value">true or false.</param>
+        public void SetAllFeatures(bool value)
+        {
+            useNormalMap = value;
+            useEmission = value;
+            useOcclusion = value;
+            useSpecular = value;
+            useMatcap = value;
+            useRimLighting = value;
+        }
 
         /// <inheritdoc/>
         public string GetCacheKey()
@@ -74,6 +139,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public void LoadDefaultAssets()
         {
+            SetAllFeatures(false);
 #if UNITY_EDITOR
             // RealisticVerySoft shadow
             var path = AssetDatabase.GUIDToAssetPath("5f304bf7a07313d43b8562d9eabce646");

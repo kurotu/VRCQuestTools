@@ -4,7 +4,7 @@ using static UnityEngine.AudioSettings;
 
 namespace KRT.VRCQuestTools.Mocks
 {
-    internal class Mock_AvatarPerformance
+    internal static class Mock_AvatarPerformance
     {
         public static void CalculatePerformanceStats(string name, UnityEngine.GameObject obj, Mock_AvatarPerformanceStats stats, bool isMobile)
         {

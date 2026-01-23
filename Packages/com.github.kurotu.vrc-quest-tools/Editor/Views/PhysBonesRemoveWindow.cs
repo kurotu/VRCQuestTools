@@ -9,21 +9,15 @@ using System.Linq;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Services;
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
 using UnityEngine;
-
-#if VQT_HAS_VRCSDK_BASE
+using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase.Validation.Performance;
-
 using AvatarPerformanceStatsLevelSet = VRC.SDKBase.Validation.Performance.Stats.AvatarPerformanceStatsLevelSet;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
-#else
-using AvatarPerformanceCategory = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceCategory;
-using AvatarPerformanceStatsLevelSet = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceStatsLevelSet;
-using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
-#endif
 
 namespace KRT.VRCQuestTools.Views
 {
@@ -77,16 +71,17 @@ namespace KRT.VRCQuestTools.Views
                 },
             };
             statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(true);
+            AvatarDynamicsPreviewService.Initialize();
+        }
+
+        private void OnDisable()
+        {
+            AvatarDynamicsPreviewService.Cleanup();
         }
 
         private void OnGUI()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-            if (!VRCSDKUtility.IsPhysBonesImported())
-            {
-                EditorGUILayout.LabelField(i18n.PhysBonesSDKRequired);
-                return;
-            }
 
             var selectedAvatar = (VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, model.Avatar?.AvatarDescriptor, typeof(VRC_AvatarDescriptor), true);
             if (model.Avatar?.AvatarDescriptor != selectedAvatar)
@@ -111,23 +106,24 @@ namespace KRT.VRCQuestTools.Views
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
                     {
-                        var physBones = model.Avatar.GetPhysBones().OrderBy(p => VRCSDKUtility.GetFullPathInHierarchy(p.gameObject)).ToArray();
+                        var physBones = model.Avatar.GetPhysBoneProviders().OrderBy(p => VRCSDKUtility.GetFullPathInHierarchy(p.GameObject)).ToArray();
                         if (physBones.Length > 0)
                         {
                             using (var horizontal = new EditorGUILayout.HorizontalScope())
                             {
                                 if (GUILayout.Button(i18n.SelectAllButtonLabel))
                                 {
-                                    model.SelectAllPhysBones(true);
+                                    model.SelectAllPhysBoneProviders(true);
                                 }
                                 if (GUILayout.Button(i18n.DeselectAllButtonLabel))
                                 {
-                                    model.SelectAllPhysBones(false);
+                                    model.SelectAllPhysBoneProviders(false);
                                 }
                             }
-                            var selected = model.PhysBonesToKeep.ToArray();
-                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(model.Avatar.GetPhysBones(), selected);
-                            model.SetSelectedPhysBones(selected);
+                            var selected = model.PhysBoneProvidersToKeep.ToArray();
+                            var physBoneComponents = physBones;
+                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(physBoneComponents, selected);
+                            model.SetSelectedPhysBoneProviders(selected);
                         }
                         else
                         {
@@ -156,9 +152,9 @@ namespace KRT.VRCQuestTools.Views
                                     model.SelectAllPhysBoneColliders(false);
                                 }
                             }
-                            var selected = model.PhysBoneCollidersToKeep.ToArray();
-                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(model.Avatar.GetPhysBoneColliders(), selected);
-                            model.SetSelectedPhysBoneColliders(selected);
+                            var selected = model.PhysBoneCollidersToKeep.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray();
+                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(colliders.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray(), selected);
+                            model.SetSelectedPhysBoneColliders(selected.Select(provider => provider.Component).Cast<VRCPhysBoneCollider>());
                         }
                         else
                         {
@@ -169,13 +165,7 @@ namespace KRT.VRCQuestTools.Views
                 }
                 EditorGUILayout.EndFoldoutHeaderGroup();
 
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
                 var contactsHeader = "Non-Local Contact Senders & Non-Local Contact Receivers";
-#elif VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
-                var contactsHeader = "Contact Senders & Non-Local Contact Receivers";
-#else
-                var contactsHeader = "Contact Senders & Contact Receivers";
-#endif
                 if (showContacts = EditorGUILayout.BeginFoldoutHeaderGroup(showContacts, new GUIContent(contactsHeader, i18n.PhysBonesListTooltip)))
                 {
                     using (var vertical = new EditorGUILayout.VerticalScope(foldedContentPanel))
@@ -194,9 +184,9 @@ namespace KRT.VRCQuestTools.Views
                                     model.SelectAllContacts(false);
                                 }
                             }
-                            var selected = model.ContactsToKeep.ToArray();
-                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(contacts, selected);
-                            model.SetSelectedContacts(selected);
+                            var selected = model.ContactsToKeep.Select(c => new VRCContactBaseProvider(c)).ToArray();
+                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(contacts.Select(c => new VRCContactBaseProvider(c)).ToArray(), selected);
+                            model.SetSelectedContacts(selected.Select(provider => provider.Component).Cast<VRC.Dynamics.ContactBase>());
                         }
                         else
                         {
@@ -218,9 +208,9 @@ namespace KRT.VRCQuestTools.Views
             EditorGUILayout.Space();
 
             var stats = model.Avatar.EstimatePerformanceStats(
-                model.PhysBonesToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBone(c)).ToArray(),
-                model.PhysBoneCollidersToKeep.Select(c => new VRCSDKUtility.Reflection.PhysBoneCollider(c)).ToArray(),
-                model.ContactsToKeep.Select(c => new VRCSDKUtility.Reflection.ContactBase(c)).ToArray(),
+                model.PhysBoneProvidersToKeep.ToArray(),
+                model.PhysBoneCollidersToKeep.ToArray(),
+                model.ContactsToKeep.ToArray(),
                 true);
             EditorGUILayout.LabelField(i18n.EstimatedPerformanceStats, EditorStyles.boldLabel);
             foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)

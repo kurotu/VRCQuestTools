@@ -7,6 +7,7 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("VRCQuestTools-Editor-Ndmf")]
+[assembly: InternalsVisibleTo("VRCQuestTools-Editor-Ndmf-Unsupported")]
 [assembly: InternalsVisibleTo("VRCQuestTools-Editor-NonDestructive")]
 [assembly: InternalsVisibleTo("VRCQuestTools-DebugUtil-Editor")]
 [assembly: InternalsVisibleTo("VRCQuestTools-EditorTests")]
