@@ -89,6 +89,60 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetNormalMapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMatcapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMatcapMaskPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMetallicMapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetGlossMapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetOcclusionMapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetPackedMaskPlatformOverride(TexturePack pack)
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
         protected override CullMode GetCulling()
         {
             throw new NotImplementedException();
