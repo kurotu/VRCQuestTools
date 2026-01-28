@@ -38,92 +38,56 @@ namespace KRT.VRCQuestTools.Models
         /// Gets the platform override settings for main texture.
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
-        protected virtual (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
-        {
-            return null;
-        }
+        protected abstract (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for normal map.
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
-        protected virtual (int MaxTextureSize, TextureFormat Format)? GetNormalMapPlatformOverride()
-        {
-            return null;
-        }
+        protected abstract (int MaxTextureSize, TextureFormat Format)? GetNormalMapPlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for emission map.
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
-        protected virtual (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the platform override settings for shadow ramp.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        protected virtual (int MaxTextureSize, TextureFormat Format)? GetShadowRampPlatformOverride()
-        {
-            return null;
-        }
+        protected abstract (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for matcap.
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
-        protected virtual (int MaxTextureSize, TextureFormat Format)? GetMatcapPlatformOverride()
-        {
-            return null;
-        }
+        protected abstract (int MaxTextureSize, TextureFormat Format)? GetMatcapPlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for matcap mask.
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
-        protected virtual (int MaxTextureSize, TextureFormat Format)? GetMatcapMaskPlatformOverride()
-        {
-            return null;
-        }
+        protected abstract (int MaxTextureSize, TextureFormat Format)? GetMatcapMaskPlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for metallic map.
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
-        protected virtual (int MaxTextureSize, TextureFormat Format)? GetMetallicMapPlatformOverride()
-        {
-            return null;
-        }
+        protected abstract (int MaxTextureSize, TextureFormat Format)? GetMetallicMapPlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for gloss map.
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
-        protected virtual (int MaxTextureSize, TextureFormat Format)? GetGlossMapPlatformOverride()
-        {
-            return null;
-        }
+        protected abstract (int MaxTextureSize, TextureFormat Format)? GetGlossMapPlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for occlusion map.
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
-        protected virtual (int MaxTextureSize, TextureFormat Format)? GetOcclusionMapPlatformOverride()
-        {
-            return null;
-        }
+        protected abstract (int MaxTextureSize, TextureFormat Format)? GetOcclusionMapPlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for packed mask.
         /// </summary>
         /// <param name="pack">The texture pack for which to get overrides.</param>
         /// <returns>Platform override settings, or null if none.</returns>
-        protected virtual (int MaxTextureSize, TextureFormat Format)? GetPackedMaskPlatformOverride(TexturePack pack)
-        {
-            return null;
-        }
+        protected abstract (int MaxTextureSize, TextureFormat Format)? GetPackedMaskPlatformOverride(TexturePack pack);
 
         /// <summary>
         /// Mask types for the texture pack.
@@ -225,13 +189,12 @@ namespace KRT.VRCQuestTools.Models
                 {
                     if (Settings.generateShadowRamp)
                     {
-                        var shadowRampOverrideFormat = GetShadowRampPlatformOverride()?.Format;
                         MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "shadowRamp", saveTextureAsPng, texturesPath, (compl) => GenerateShadowRamp(compl), (t) =>
                         {
                             newMaterial.ShadowRamp = t;
                             newMaterial.ShadowBoost = 0.0f;
                             newMaterial.ShadowTint = 0.0f;
-                        }, shadowRampOverrideFormat).WaitForCompletion();
+                        }).WaitForCompletion();
                     }
                     else
                     {

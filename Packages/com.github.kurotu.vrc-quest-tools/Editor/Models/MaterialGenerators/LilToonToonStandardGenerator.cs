@@ -134,8 +134,15 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Platform override settings, or null if none.</returns>
         protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
         {
-            // Main texture uses the same sources as ToonLit
-            return GetToonLitPlatformOverride();
+            // Main texture for Toon Standard uses main textures and their blend masks
+            return TextureUtility.GetBestPlatformOverrideSettings(
+                lilMaterial.Material.mainTexture,
+                lilMaterial.Main2ndTex,
+                lilMaterial.Main2ndBlendMask,
+                lilMaterial.Main3rdTex,
+                lilMaterial.Main3rdBlendMask,
+                lilMaterial.MainColorAdjustMask,
+                lilMaterial.MainGradationTex);
         }
 
         /// <summary>
@@ -147,8 +154,10 @@ namespace KRT.VRCQuestTools.Models
             return TextureUtility.GetBestPlatformOverrideSettings(
                 lilMaterial.EmissionMap,
                 lilMaterial.EmissionBlendMask,
+                lilMaterial.EmissionGradTex,
                 lilMaterial.Emission2ndMap,
-                lilMaterial.Emission2ndBlendMask);
+                lilMaterial.Emission2ndBlendMask,
+                lilMaterial.Emission2ndGradTex);
         }
 
         /// <summary>
@@ -177,8 +186,7 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Platform override settings, or null if none.</returns>
         protected override (int MaxTextureSize, TextureFormat Format)? GetMatcapMaskPlatformOverride()
         {
-            var matcapMask = (Texture2D)lilMaterial.MatCapBlendMask;
-            return TextureUtility.GetBestPlatformOverrideSettings(matcapMask);
+            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MatCapMask);
         }
 
         /// <summary>
@@ -187,9 +195,7 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Platform override settings, or null if none.</returns>
         protected override (int MaxTextureSize, TextureFormat Format)? GetMetallicMapPlatformOverride()
         {
-            var metallic = (Texture2D)lilMaterial.MetallicGlossMap;
-            var reflectionColorTex = (Texture2D)lilMaterial.ReflectionColorTex;
-            return TextureUtility.GetBestPlatformOverrideSettings(metallic, reflectionColorTex);
+            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MetallicMap, lilMaterial.ReflectionColorTex);
         }
 
         /// <summary>
@@ -198,8 +204,7 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Platform override settings, or null if none.</returns>
         protected override (int MaxTextureSize, TextureFormat Format)? GetNormalMapPlatformOverride()
         {
-            var normal = (Texture2D)lilMaterial.NormalMap;
-            return TextureUtility.GetBestPlatformOverrideSettings(normal);
+            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.NormalMap);
         }
 
         /// <summary>
@@ -208,8 +213,7 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Platform override settings, or null if none.</returns>
         protected override (int MaxTextureSize, TextureFormat Format)? GetOcclusionMapPlatformOverride()
         {
-            var aoMap = (Texture2D)lilMaterial.OcclusionMap;
-            return TextureUtility.GetBestPlatformOverrideSettings(aoMap);
+            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.AOMap);
         }
 
         /// <summary>
@@ -228,13 +232,13 @@ namespace KRT.VRCQuestTools.Models
                     case MaskType.DetailMask:
                         break; // lilToon doesn't have detail mask
                     case MaskType.MetallicMap:
-                        tex = lilMaterial.MetallicGlossMap;
+                        tex = lilMaterial.MetallicMap;
                         break;
                     case MaskType.MatcapMask:
-                        tex = lilMaterial.MatCapBlendMask;
+                        tex = lilMaterial.MatCapMask;
                         break;
                     case MaskType.OcculusionMap:
-                        tex = lilMaterial.OcclusionMap;
+                        tex = lilMaterial.AOMap;
                         break;
                     case MaskType.GlossMap:
                         tex = lilMaterial.SmoothnessTex;
