@@ -97,7 +97,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <summary>
         /// Gets a value indicating whether to use 3rd shadow.
         /// </summary>
-        internal bool UseShadow3rd => UseShadow && Material.GetColor("_Shadow3rdColor").a > 0.5f;
+        internal bool UseShadow3rd => UseShadow && Material.GetColor("_Shadow3rdColor").a > 0.0f;
 
         /// <summary>
         /// Gets the main 2nd texture.
