@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Components;
+using KRT.VRCQuestTools.Importers;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
@@ -149,6 +150,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
                 }
                 ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
+
+                if (saveAssetsAsFile && converterSettings.removeVertexColor)
+                {
+                    RemoveVertexColor(questAvatarObject, assetsDirectory);
+                }
 
                 ApplyVRCQuestToolsComponents(converterSettings, questAvatarObject);
 
@@ -845,21 +851,45 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return convertedAnimationClips;
         }
 
+        private void RemoveVertexColor(GameObject questAvatarObject, string assetsDirectory)
+        {
+            var renderers = questAvatarObject.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                .Cast<Renderer>()
+                .Concat(questAvatarObject.GetComponentsInChildren<MeshRenderer>(true));
+            foreach (var renderer in renderers)
+            {
+                var mesh = RendererUtility.GetSharedMesh(renderer);
+                if (mesh == null || mesh.colors == null || mesh.colors.Length == 0)
+                {
+                    continue;
+                }
+
+                var saveDirectory = $"{assetsDirectory}/Meshes";
+                Directory.CreateDirectory(saveDirectory);
+
+                var originalName = mesh.name;
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(mesh, out string guid, out long localId);
+                var outFile = $"{saveDirectory}/{originalName}_from_{guid}.vqtmesh";
+
+                // When the mesh is added into another asset, "/" is acceptable as name.
+                if (originalName.Contains("/"))
+                {
+                    var dir = Path.GetDirectoryName(outFile);
+                    Directory.CreateDirectory(dir);
+                }
+
+                MeshModifierImporter.CreateAsset(mesh, outFile, true);
+                var newMesh = AssetDatabase.LoadAssetAtPath<Mesh>(outFile);
+
+                RendererUtility.SetSharedMesh(renderer, newMesh);
+            }
+        }
+
         private void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
         {
             if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
             {
                 questAvatarObject.AddComponent<ConvertedAvatar>();
-            }
-            if (setting.removeVertexColor)
-            {
-                var vcr = questAvatarObject.GetComponent<VertexColorRemover>();
-                if (vcr == null)
-                {
-                    vcr = questAvatarObject.AddComponent<VertexColorRemover>();
-                }
-                vcr.includeChildren = true;
-                vcr.enabled = true;
             }
 
 #if VQT_HAS_NDMF
