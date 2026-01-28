@@ -81,7 +81,9 @@ namespace KRT.VRCQuestTools.Importers
             var tempFolder = CreateTempFolder();
             try
             {
-                var importerPath = CreateImporterAsset(tempFolder);
+                var importerPath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(tempFolder, "meshToModify.vqtmesh").Replace("\\", "/"));
+                File.WriteAllText(importerPath, string.Empty);
+                AssetDatabase.ImportAsset(importerPath);
                 var importer = AssetImporter.GetAtPath(importerPath) as MeshModifierImporter;
                 Assert.NotNull(importer);
 
@@ -114,26 +116,12 @@ namespace KRT.VRCQuestTools.Importers
             return path;
         }
 
-        private static string CreateImporterAsset(string folder)
-        {
-            var path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(folder, "meshToModify.vqtmesh").Replace("\\", "/"));
-            File.WriteAllText(path, string.Empty);
-            AssetDatabase.ImportAsset(path);
-            return path;
-        }
+
 
         private static Mesh ImportMesh(string folder, Mesh sourceMesh, bool removeVertexColor)
         {
-            var importerPath = CreateImporterAsset(folder);
-            var importer = AssetImporter.GetAtPath(importerPath) as MeshModifierImporter;
-            Assert.NotNull(importer);
-
-            // Use SerializedObject to ensure importer settings are persisted before reimport.
-            var serializedImporter = new SerializedObject(importer);
-            serializedImporter.FindProperty("source").objectReferenceValue = sourceMesh;
-            serializedImporter.FindProperty("removeVertexColor").boolValue = removeVertexColor;
-            serializedImporter.ApplyModifiedPropertiesWithoutUndo();
-            importer.SaveAndReimport();
+            var importerPath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(folder, "meshToModify.vqtmesh").Replace("\\", "/"));
+            MeshModifierImporter.CreateAsset(sourceMesh, importerPath, removeVertexColor);
 
             return LoadImportedMesh(importerPath);
         }

@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Turned off Auto Referenced in asmdef.
 - Improved error messages when converting unsupported lilToon materials.
 - Changed to show an error when converting an avatar that uses an unsupported Modular Avatar.
+- Changed to use `.vqtmesh` asset to remove vertex color in avatar conversion instead of using `Vertex Color Remover` component.
 - [NDMF] Show an error dialog then abort the build when using unsupported version of NDMF.
 - [NDMF] Enabled preview for `Mesh Flipper` by default.
 
