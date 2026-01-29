@@ -93,6 +93,11 @@ jobs:
           - name: aao-latest
             packages:
               - { name: com.anatawa12.avatar-optimizer, version: 'latest' }
+        exclude:
+          - sdk:
+              name: latest
+            dependencies:
+              name: aao-minimum
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
