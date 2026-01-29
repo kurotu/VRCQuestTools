@@ -855,20 +855,35 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             var renderers = questAvatarObject.GetComponentsInChildren<SkinnedMeshRenderer>(true)
                 .Cast<Renderer>()
-                .Concat(questAvatarObject.GetComponentsInChildren<MeshRenderer>(true));
+                .Concat(questAvatarObject.GetComponentsInChildren<MeshRenderer>(true))
+                .Where(r =>
+                {
+                    var mesh = RendererUtility.GetSharedMesh(r);
+                    return mesh != null && mesh.colors != null && mesh.colors.Length > 0;
+                });
+
+            if (!renderers.Any())
+            {
+                return;
+            }
+
+            var saveDirectory = $"{assetsDirectory}/Meshes";
+            Directory.CreateDirectory(saveDirectory);
+
+            var convertedMeshes = new Dictionary<Mesh, Mesh>();
+
             foreach (var renderer in renderers)
             {
                 var mesh = RendererUtility.GetSharedMesh(renderer);
-                if (mesh == null || mesh.colors == null || mesh.colors.Length == 0)
+
+                if (convertedMeshes.ContainsKey(mesh))
                 {
+                    RendererUtility.SetSharedMesh(renderer, convertedMeshes[mesh]);
                     continue;
                 }
 
-                var saveDirectory = $"{assetsDirectory}/Meshes";
-                Directory.CreateDirectory(saveDirectory);
-
                 var originalName = mesh.name;
-                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(mesh, out string guid, out long localId);
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(mesh, out string guid, out long _);
                 var outFile = $"{saveDirectory}/{originalName}_from_{guid}.vqtmesh";
 
                 // When the mesh is added into another asset, "/" is acceptable as name.
@@ -880,7 +895,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
                 MeshModifierImporter.CreateAsset(mesh, outFile, true);
                 var newMesh = AssetDatabase.LoadAssetAtPath<Mesh>(outFile);
-
+                if (newMesh == null)
+                {
+                    Logger.LogError($"Failed to load generated mesh asset at path '{outFile}' for renderer '{renderer.name}'.");
+                    continue;
+                }
+                convertedMeshes[mesh] = newMesh;
                 RendererUtility.SetSharedMesh(renderer, newMesh);
             }
         }
