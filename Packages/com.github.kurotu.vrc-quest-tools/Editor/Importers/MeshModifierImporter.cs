@@ -47,7 +47,12 @@ namespace KRT.VRCQuestTools.Importers
             File.Create(path).Dispose();
             AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
 
-            var importer = GetAtPath(path) as MeshModifierImporter;
+            var importer = GetAtPath(path);
+            if (importer is not MeshModifierImporter)
+            {
+                throw new System.InvalidOperationException($"Importer at path is not MeshModifierImporter: {path}");
+            }
+
             var serializedImporter = new SerializedObject(importer);
             serializedImporter.FindProperty(nameof(source)).objectReferenceValue = sourceMesh;
             serializedImporter.FindProperty(nameof(removeVertexColor)).boolValue = removeVertexColor;
