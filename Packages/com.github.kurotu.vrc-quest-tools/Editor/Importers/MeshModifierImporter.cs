@@ -58,8 +58,7 @@ namespace KRT.VRCQuestTools.Importers
             serializedImporter.FindProperty(nameof(removeVertexColor)).boolValue = removeVertexColor;
             serializedImporter.ApplyModifiedPropertiesWithoutUndo();
             importer.SaveAndReimport();
-
-            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
         }
 
         /// <inheritdoc/>

@@ -859,7 +859,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 .Where(r =>
                 {
                     var mesh = RendererUtility.GetSharedMesh(r);
-                    return mesh != null && mesh.colors != null && mesh.colors.Length > 0;
+                    return mesh != null && mesh.colors32 != null && mesh.colors32.Length > 0;
                 });
 
             if (!renderers.Any())
