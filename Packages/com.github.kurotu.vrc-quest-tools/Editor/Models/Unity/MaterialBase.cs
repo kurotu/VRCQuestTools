@@ -63,6 +63,35 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Gets the platform override settings for Toon Lit texture.
+        /// </summary>
+        /// <returns>Platform override settings, or null if none.</returns>
+        internal virtual (int MaxTextureSize, TextureFormat Format)? GetToonLitPlatformOverride()
+        {
+            // Collect all textures from the material (same logic as GenerateToonLitImage)
+            var texturesForOverride = new System.Collections.Generic.List<Texture>();
+            foreach (var name in Material.GetTexturePropertyNames())
+            {
+                var t = Material.GetTexture(name);
+                if (t == null)
+                {
+                    continue;
+                }
+                if (t is Cubemap)
+                {
+                    continue;
+                }
+                if (TextureUtility.IsNormalMapAsset(t))
+                {
+                    continue;
+                }
+                texturesForOverride.Add(t);
+            }
+
+            return TextureUtility.GetBestPlatformOverrideSettings(texturesForOverride.ToArray());
+        }
+
+        /// <summary>
         /// Generates an image for Toon Lit main texture.
         /// </summary>
         /// <param name="settings">Setting object.</param>
