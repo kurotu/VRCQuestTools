@@ -51,6 +51,7 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("removeExtraMaterialSlots"), new GUIContent(i18n.RemoveExtraMaterialSlotsLabel, i18n.RemoveExtraMaterialSlotsTooltip));
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("ndmfPhase"), new GUIContent(i18n.NdmfPhaseLabel, i18n.NdmfPhaseTooltip));
                 }
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("enableMaterialPreview"), new GUIContent("Enable Material Preview", "Enable material preview in the editor. When enabled, converted materials will be previewed in the scene view."));
             }
 
             serializedObject.ApplyModifiedProperties();

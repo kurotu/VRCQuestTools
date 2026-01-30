@@ -83,6 +83,12 @@ namespace KRT.VRCQuestTools.Components
         public AvatarConverterNdmfPhase ndmfPhase = AvatarConverterNdmfPhase.Auto;
 
         /// <summary>
+        /// Whether to enable material preview in the editor.
+        /// </summary>
+        [SerializeField]
+        public bool enableMaterialPreview = true;
+
+        /// <summary>
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
@@ -105,6 +111,9 @@ namespace KRT.VRCQuestTools.Components
 
         /// <inheritdoc/>
         public bool IsPrimaryRoot => true;
+
+        /// <inheritdoc/>
+        public bool EnableMaterialPreview => enableMaterialPreview;
 
         /// <summary>
         /// Gets the material convert settings for the specified material.
