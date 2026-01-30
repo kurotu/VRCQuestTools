@@ -47,32 +47,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public bool IsEnabled(ComputeContext context)
         {
-            if (!context.Observe(PreviewNode.IsEnabled))
-            {
-                return false;
-            }
-
-            // Check if any avatar root has the preview enabled
-            var avatarRoots = context.GetAvatarRoots();
-            foreach (var root in avatarRoots)
-            {
-                IMaterialConversionComponent settings = root.GetComponent<AvatarConverterSettings>();
-                if (settings == null)
-                {
-                    settings = root.GetComponent<MaterialConversionSettings>();
-                }
-
-                if (settings != null)
-                {
-                    var enabled = context.Observe(settings as Object, s => (s as IMaterialConversionComponent).EnableMaterialPreview);
-                    if (enabled)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return context.Observe(PreviewNode.IsEnabled);
         }
 
         /// <inheritdoc/>
@@ -88,7 +63,18 @@ namespace KRT.VRCQuestTools.Ndmf
                     {
                         return false;
                     }
-                    return AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(component.gameObject) == phase;
+                    if (AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(component.gameObject) != phase)
+                    {
+                        return false;
+                    }
+                    // Filter out avatars with preview disabled
+                    var materialComponent = component as IMaterialConversionComponent;
+                    if (materialComponent != null)
+                    {
+                        var previewEnabled = context.Observe(component, c => (c as IMaterialConversionComponent).EnableMaterialPreview);
+                        return previewEnabled;
+                    }
+                    return true;
                 })
                 .ToArray();
 
@@ -130,12 +116,6 @@ namespace KRT.VRCQuestTools.Ndmf
             if (!isTargetMobile)
             {
                 // If the target is not mobile, we do not process this filter.
-                return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(new Dictionary<Material, Material>(), false));
-            }
-
-            if (!settings.EnableMaterialPreview)
-            {
-                // If the preview is disabled, we do not process this filter.
                 return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(new Dictionary<Material, Material>(), false));
             }
 

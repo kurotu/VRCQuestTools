@@ -137,6 +137,12 @@ msgstr "NDMF変換フェーズ"
 msgid "NdmfPhaseTooltip"
 msgstr "選択したNDMFフェーズでアバターを変換します。"
 
+msgid "EnableMaterialPreviewLabel"
+msgstr "Enable Material Preview"
+
+msgid "EnableMaterialPreviewTooltip"
+msgstr "Enable material preview in the editor. When enabled, converted materials will be previewed in the scene view."
+
 msgid "GeneratingTexturesDialogMessage"
 msgstr "テクスチャを生成中"
 

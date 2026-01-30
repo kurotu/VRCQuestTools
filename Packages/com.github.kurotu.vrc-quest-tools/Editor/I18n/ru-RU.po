@@ -136,6 +136,12 @@ msgstr "Этап NDMF для конвертации"
 msgid "NdmfPhaseTooltip"
 msgstr "Конвертировать аватар на выбранном этапе NDMF."
 
+msgid "EnableMaterialPreviewLabel"
+msgstr "Enable Material Preview"
+
+msgid "EnableMaterialPreviewTooltip"
+msgstr "Enable material preview in the editor. When enabled, converted materials will be previewed in the scene view."
+
 msgid "GeneratingTexturesDialogMessage"
 msgstr "Создание текстур..."
 
