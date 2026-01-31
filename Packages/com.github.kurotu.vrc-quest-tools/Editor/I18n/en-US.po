@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2025-12-29 07:52\n"
+"PO-Revision-Date: 2026-01-31 13:35\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -713,3 +713,4 @@ msgstr "The replacement material {0} uses a shader {1} which is not allowed for 
 
 msgid "FallbackAvatarEditorDescription"
 msgstr "Automatically enables this avatar to be used as a fallback avatar after a Mobile upload if the performance rank is Good or better."
+
