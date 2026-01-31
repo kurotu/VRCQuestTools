@@ -99,6 +99,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string AnimationOverrideTooltip => GetText("AnimationOverrideTooltip");
         internal string NdmfPhaseLabel => GetText("NdmfPhaseLabel");
         internal string NdmfPhaseTooltip => GetText("NdmfPhaseTooltip");
+        internal string EnableMaterialPreviewLabel => GetText("EnableMaterialPreviewLabel");
+        internal string EnableMaterialPreviewTooltip => GetText("EnableMaterialPreviewTooltip");
         internal string GeneratingTexturesDialogMessage => GetText("GeneratingTexturesDialogMessage");
         internal string AvatarConverterFailedDialogMessage => GetText("AvatarConverterFailedDialogMessage");
         internal string MaterialExceptionDialogMessage => GetText("MaterialExceptionDialogMessage");

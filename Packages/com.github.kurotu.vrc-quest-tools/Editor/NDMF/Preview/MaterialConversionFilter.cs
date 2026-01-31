@@ -63,7 +63,18 @@ namespace KRT.VRCQuestTools.Ndmf
                     {
                         return false;
                     }
-                    return AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(component.gameObject) == phase;
+                    if (AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(component.gameObject) != phase)
+                    {
+                        return false;
+                    }
+                    // Filter out avatars with preview disabled
+                    var materialComponent = component as IMaterialConversionComponent;
+                    if (materialComponent != null)
+                    {
+                        var previewEnabled = context.Observe(component, c => (c as IMaterialConversionComponent).EnableMaterialPreview);
+                        return previewEnabled;
+                    }
+                    return true;
                 })
                 .ToArray();
 

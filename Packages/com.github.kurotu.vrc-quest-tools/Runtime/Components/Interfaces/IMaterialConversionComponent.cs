@@ -34,6 +34,11 @@ namespace KRT.VRCQuestTools.Components
         bool IsPrimaryRoot { get; }
 
         /// <summary>
+        /// Gets a value indicating whether to enable material preview in the editor.
+        /// </summary>
+        bool EnableMaterialPreview { get; }
+
+        /// <summary>
         /// Gets the cache key for the material conversion component.
         /// </summary>
         /// <returns>Cache key.</returns>
@@ -41,7 +46,8 @@ namespace KRT.VRCQuestTools.Components
         {
             return $"{DefaultMaterialConvertSettings.GetCacheKey()}_" +
                    $"{string.Join("_", AdditionalMaterialConvertSettings.Select(s => s.GetCacheKey()))}_" +
-                   $"{RemoveExtraMaterialSlots}";
+                   $"{RemoveExtraMaterialSlots}_" +
+                   $"{EnableMaterialPreview}";
         }
     }
 }

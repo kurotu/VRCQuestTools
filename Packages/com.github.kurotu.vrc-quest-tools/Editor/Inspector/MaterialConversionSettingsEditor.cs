@@ -50,6 +50,7 @@ namespace KRT.VRCQuestTools.Inspector
                 {
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("removeExtraMaterialSlots"), new GUIContent(i18n.RemoveExtraMaterialSlotsLabel, i18n.RemoveExtraMaterialSlotsTooltip));
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("ndmfPhase"), new GUIContent(i18n.NdmfPhaseLabel, i18n.NdmfPhaseTooltip));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("enableMaterialPreview"), new GUIContent(i18n.EnableMaterialPreviewLabel, i18n.EnableMaterialPreviewTooltip));
                 }
             }
 
