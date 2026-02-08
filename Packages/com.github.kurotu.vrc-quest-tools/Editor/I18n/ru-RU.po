@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2025-12-29 07:52\n"
+"PO-Revision-Date: 2026-02-08 12:40\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -137,10 +137,10 @@ msgid "NdmfPhaseTooltip"
 msgstr "Конвертировать аватар на выбранном этапе NDMF."
 
 msgid "EnableMaterialPreviewLabel"
-msgstr "Enable Material Preview"
+msgstr ""
 
 msgid "EnableMaterialPreviewTooltip"
-msgstr "Enable material preview in the editor. When enabled, converted materials will be previewed in the scene view."
+msgstr ""
 
 msgid "GeneratingTexturesDialogMessage"
 msgstr "Создание текстур..."
