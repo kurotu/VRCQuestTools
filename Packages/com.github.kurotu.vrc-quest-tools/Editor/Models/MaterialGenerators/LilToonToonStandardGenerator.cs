@@ -135,15 +135,11 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Platform override settings, or null if none.</returns>
         protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
         {
-            // Main texture for Toon Standard uses main textures and their blend masks
+            // Only use color textures, not mask textures
             return TextureUtility.GetBestPlatformOverrideSettings(
                 lilMaterial.Material.mainTexture,
                 lilMaterial.Main2ndTex,
-                lilMaterial.Main2ndBlendMask,
-                lilMaterial.Main3rdTex,
-                lilMaterial.Main3rdBlendMask,
-                lilMaterial.MainColorAdjustMask,
-                lilMaterial.MainGradationTex);
+                lilMaterial.Main3rdTex);
         }
 
         /// <summary>
@@ -152,13 +148,10 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Platform override settings, or null if none.</returns>
         protected override (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride()
         {
+            // Only use color textures, not mask textures
             return TextureUtility.GetBestPlatformOverrideSettings(
                 lilMaterial.EmissionMap,
-                lilMaterial.EmissionBlendMask,
-                lilMaterial.EmissionGradTex,
-                lilMaterial.Emission2ndMap,
-                lilMaterial.Emission2ndBlendMask,
-                lilMaterial.Emission2ndGradTex);
+                lilMaterial.Emission2ndMap);
         }
 
         /// <summary>
