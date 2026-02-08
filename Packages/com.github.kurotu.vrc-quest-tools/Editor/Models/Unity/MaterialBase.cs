@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
@@ -70,7 +71,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal virtual (int MaxTextureSize, TextureFormat Format)? GetToonLitPlatformOverride()
         {
             // Collect textures that are actually used by the baker shader
-            var texturesForOverride = new System.Collections.Generic.List<Texture>();
+            var texturesForOverride = new List<Texture>();
             
             // Use baker shader's texture property names, not all original material textures
             if (ToonLitBakeShader == null)
@@ -78,7 +79,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 return null;
             }
             
-            var bakerPropertyNames = new System.Collections.Generic.HashSet<string>();
+            var bakerPropertyNames = new HashSet<string>();
             for (int i = 0; i < ShaderUtil.GetPropertyCount(ToonLitBakeShader); i++)
             {
                 if (ShaderUtil.GetPropertyType(ToonLitBakeShader, i) == ShaderUtil.ShaderPropertyType.TexEnv)
