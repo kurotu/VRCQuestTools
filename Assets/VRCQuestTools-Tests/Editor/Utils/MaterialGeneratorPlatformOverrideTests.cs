@@ -52,14 +52,14 @@ namespace KRT.VRCQuestTools.Utils
         {
             // Create a test material
             var material = new Material(Shader.Find("Standard"));
-            
+
             // Create a mock settings object
             var settings = CreateMockSettings();
 
             // Generate a texture with a specific override format
             var overrideFormat = TextureFormat.ASTC_4x4;
             Texture2D generatedTexture = null;
-            
+
             MaterialGeneratorUtility.GenerateTexture(
                 material,
                 settings,
@@ -110,12 +110,12 @@ namespace KRT.VRCQuestTools.Utils
         {
             // Create a test material
             var material = new Material(Shader.Find("Standard"));
-            
+
             // Create a mock settings object with ASTC_6x6
             var settings = CreateMockSettings(MobileTextureFormat.ASTC_6x6);
 
             Texture2D generatedTexture = null;
-            
+
             MaterialGeneratorUtility.GenerateTexture(
                 material,
                 settings,
@@ -166,14 +166,14 @@ namespace KRT.VRCQuestTools.Utils
         {
             // Create a test material
             var material = new Material(Shader.Find("Standard"));
-            
+
             // Create a mock settings object with ASTC_12x12
             var settings = CreateMockSettings(MobileTextureFormat.ASTC_12x12);
 
             // But provide ASTC_4x4 as override (should take precedence)
             var overrideFormat = TextureFormat.ASTC_4x4;
             Texture2D generatedTexture = null;
-            
+
             MaterialGeneratorUtility.GenerateTexture(
                 material,
                 settings,
@@ -232,6 +232,11 @@ namespace KRT.VRCQuestTools.Utils
             public string GetCacheKey()
             {
                 return "mock_cache_key";
+            }
+
+            public void LoadDefaultAssets()
+            {
+                // No-op for mock
             }
         }
     }
