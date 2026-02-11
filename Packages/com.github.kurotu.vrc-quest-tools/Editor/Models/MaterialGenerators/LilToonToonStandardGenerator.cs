@@ -148,10 +148,22 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Platform override settings, or null if none.</returns>
         protected override (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride()
         {
-            // Only use color textures, not mask textures
-            return TextureUtility.GetBestPlatformOverrideSettings(
-                lilMaterial.EmissionMap,
-                lilMaterial.Emission2ndMap);
+            // Only use color textures, and only if the feature is actually enabled
+            var textures = new List<Texture>();
+            
+            if (lilMaterial.UseEmission && lilMaterial.EmissionMap != null)
+            {
+                textures.Add(lilMaterial.EmissionMap);
+            }
+            
+            if (lilMaterial.UseEmission2nd && lilMaterial.Emission2ndMap != null)
+            {
+                textures.Add(lilMaterial.Emission2ndMap);
+            }
+            
+            return textures.Count > 0 
+                ? TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray())
+                : null;
         }
 
         /// <summary>
