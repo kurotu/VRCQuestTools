@@ -70,43 +70,8 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <returns>Platform override settings, or null if none.</returns>
         internal virtual (int MaxTextureSize, TextureFormat Format)? GetToonLitPlatformOverride()
         {
-            // Collect textures that are actually used by the baker shader
-            var texturesForOverride = new List<Texture>();
-            
-            // Use baker shader's texture property names, not all original material textures
-            if (ToonLitBakeShader == null)
-            {
-                return null;
-            }
-            
-            var bakerPropertyNames = new HashSet<string>();
-            for (int i = 0; i < ShaderUtil.GetPropertyCount(ToonLitBakeShader); i++)
-            {
-                if (ShaderUtil.GetPropertyType(ToonLitBakeShader, i) == ShaderUtil.ShaderPropertyType.TexEnv)
-                {
-                    bakerPropertyNames.Add(ShaderUtil.GetPropertyName(ToonLitBakeShader, i));
-                }
-            }
-            
-            foreach (var name in bakerPropertyNames)
-            {
-                var t = Material.GetTexture(name);
-                if (t == null)
-                {
-                    continue;
-                }
-                if (t is Cubemap)
-                {
-                    continue;
-                }
-                if (TextureUtility.IsNormalMapAsset(t))
-                {
-                    continue;
-                }
-                texturesForOverride.Add(t);
-            }
-
-            return TextureUtility.GetBestPlatformOverrideSettings(texturesForOverride.ToArray());
+            // Just use the platform override from main texture
+            return TextureUtility.GetBestPlatformOverrideSettings(Material.mainTexture);
         }
 
         /// <summary>

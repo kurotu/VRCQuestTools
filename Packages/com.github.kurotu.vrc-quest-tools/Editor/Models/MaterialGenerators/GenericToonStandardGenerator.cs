@@ -11,14 +11,18 @@ namespace KRT.VRCQuestTools.Models
     /// </summary>
     internal class GenericToonStandardGenerator : ToonStandardGenerator
     {
+        private readonly MaterialBase material;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericToonStandardGenerator"/> class.
         /// </summary>
+        /// <param name="material">Material to convert.</param>
         /// <param name="settings">Convert settings.</param>
         /// <param name="sharedBlackTexture">Shared black texture to disable emission.</param>
-        public GenericToonStandardGenerator(ToonStandardConvertSettings settings, Texture2D sharedBlackTexture)
+        public GenericToonStandardGenerator(MaterialBase material, ToonStandardConvertSettings settings, Texture2D sharedBlackTexture)
             : base(settings, sharedBlackTexture)
         {
+            this.material = material;
         }
 
         /// <inheritdoc/>
@@ -91,7 +95,8 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
         {
-            return null;
+            // Return the platform override from main texture
+            return TextureUtility.GetBestPlatformOverrideSettings(material.Material.mainTexture);
         }
 
         /// <inheritdoc/>

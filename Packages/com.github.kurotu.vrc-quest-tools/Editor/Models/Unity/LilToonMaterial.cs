@@ -398,14 +398,13 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <inheritdoc/>
         internal override (int MaxTextureSize, TextureFormat Format)? GetToonLitPlatformOverride()
         {
-            // For LilToon ToonLit, we use the emission-related textures (same as EmissionBake)
+            // Use main textures as well (like Toon Standard main texture override)
             return TextureUtility.GetBestPlatformOverrideSettings(
+                Material.mainTexture,
+                Main2ndTex,
+                Main3rdTex,
                 EmissionMap,
-                EmissionBlendMask,
-                EmissionGradTex,
-                Emission2ndMap,
-                Emission2ndBlendMask,
-                Emission2ndGradTex);
+                Emission2ndMap);
         }
 
         /// <inheritdoc/>
