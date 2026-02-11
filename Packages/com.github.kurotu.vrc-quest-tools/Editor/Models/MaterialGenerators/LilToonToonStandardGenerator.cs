@@ -161,9 +161,12 @@ namespace KRT.VRCQuestTools.Models
                 textures.Add(lilMaterial.Emission2ndMap);
             }
             
-            return textures.Count > 0 
-                ? TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray())
-                : null;
+            if (textures.Count > 0)
+            {
+                return TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray());
+            }
+            
+            return null;
         }
 
         /// <summary>
