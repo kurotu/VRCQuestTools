@@ -70,7 +70,7 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Gets unsupported MA components for Android.
+        /// Gets unsupported MA components for Mobile.
         /// </summary>
         /// <param name="gameObject">GameObject to inspect.</param>
         /// <param name="includeInactive">Whether to include inactive objects.</param>
@@ -81,7 +81,7 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Remove unsupported MA components for Android.
+        /// Remove unsupported MA components for Mobile.
         /// </summary>
         /// <param name="gameObject">GameObject to inspect.</param>
         /// <param name="includeInactive">Whether to include inactive objects.</param>

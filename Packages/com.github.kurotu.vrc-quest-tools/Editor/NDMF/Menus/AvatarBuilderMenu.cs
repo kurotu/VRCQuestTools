@@ -15,7 +15,7 @@ namespace KRT.VRCQuestTools.Ndmf
         [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithAndroidSettings, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfManualBakeWithAndroidSettings)]
         private static void ManualBake()
         {
-            NdmfPluginUtility.ManualBakeWithAndroidSettings(Selection.activeGameObject);
+            NdmfPluginUtility.ManualBakeWithMobileSettings(Selection.activeGameObject);
         }
 
         [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithAndroidSettings, true)]

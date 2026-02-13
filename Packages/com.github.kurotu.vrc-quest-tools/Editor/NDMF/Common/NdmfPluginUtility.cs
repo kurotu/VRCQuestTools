@@ -17,7 +17,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// </summary>
         /// <param name="avatar">Target avatar.</param>
         /// <returns>Baked avatar.</returns>
-        internal static GameObject ManualBakeWithAndroidSettings(GameObject avatar)
+        internal static GameObject ManualBakeWithMobileSettings(GameObject avatar)
         {
             SetBuildTarget(Models.BuildTarget.Android);
             try
