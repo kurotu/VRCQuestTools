@@ -382,7 +382,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
         /// <summary>
-        /// Converts materials and generate textures for Android.
+        /// Converts materials and generate textures for Mobile.
         /// </summary>
         /// <param name="convertSettingsMap">Materials convert settings map.</param>
         /// <param name="saveAsFile">Whether to save materials as file.</param>

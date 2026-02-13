@@ -142,7 +142,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
             var converter = new AvatarConverter(new MaterialWrapperBuilder());
             var settingsMap = converter.CreateMaterialConvertSettingsMap(avatarRoot, avatarMaterials.ToArray());
-            var materialMap = converter.ConvertMaterialsForAndroid(settingsMap, false, string.Empty, null);
+            var materialMap = converter.ConvertMaterialsForMobile(settingsMap, false, string.Empty, null);
             return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(materialMap, removeExtraMaterialSlots));
         }
 

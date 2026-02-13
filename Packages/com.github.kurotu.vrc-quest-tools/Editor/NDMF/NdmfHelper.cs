@@ -14,7 +14,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// Resolve the build target from the avatar root object.
         /// </summary>
         /// <param name="avatarRootObject">Avatar root object.</param>
-        /// <returns>Resolved build target, PC or Android.</returns>
+        /// <returns>Resolved build target, PC or Mobile.</returns>
         public static Models.BuildTarget ResolveBuildTarget(GameObject avatarRootObject)
         {
             var targetSettings = avatarRootObject.GetComponent<PlatformTargetSettings>();

@@ -38,7 +38,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     }
                     if (buildTarget == Models.BuildTarget.Android && settings.removeOnAndroid)
                     {
-                        Logger.Log($"Remove {settings.component.GetType().Name} for Android platform", settings.component.gameObject);
+                        Logger.Log($"Remove {settings.component.GetType().Name} for Mobile platform", settings.component.gameObject);
                         Object.DestroyImmediate(settings.component);
                     }
                 }

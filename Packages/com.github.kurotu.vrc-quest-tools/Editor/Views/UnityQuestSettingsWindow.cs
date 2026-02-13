@@ -98,7 +98,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnClickTextureCompressionButton()
         {
-            model.ApplyRecommendedAndroidTextureCompression();
+            model.ApplyRecommendedMobileTextureCompression();
         }
 
         private string GetYesNoString(bool value)
