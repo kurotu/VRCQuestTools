@@ -23,7 +23,7 @@ namespace KRT.VRCQuestTools.Inspector
             so.Update();
 
             EditorGUILayout.PropertyField(so.FindProperty("resizeModePC"), new GUIContent(i18n.MenuIconResizerEditorResizeModePCLabel));
-            EditorGUILayout.PropertyField(so.FindProperty("resizeModeAndroid"), new GUIContent(i18n.MenuIconResizerEditorResizeModeAndroidLabel));
+            EditorGUILayout.PropertyField(so.FindProperty("resizeModeAndroid"), new GUIContent(i18n.MenuIconResizerEditorResizeModeMobileLabel));
             EditorGUILayout.PropertyField(so.FindProperty("compressTextures"), new GUIContent(i18n.MenuIconResizerEditorCompressTexturesLabel));
             EditorGUILayout.PropertyField(so.FindProperty("mobileTextureFormat"), new GUIContent(i18n.MenuIconResizerEditorMobileTextureFormatLabel));
 

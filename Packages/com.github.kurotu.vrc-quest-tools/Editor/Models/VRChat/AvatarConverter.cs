@@ -134,7 +134,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             // Convert materials and generate textures.
             var convertSettingsMap = CreateMaterialConvertSettingsMap(avatar);
-            var convertedMaterials = ConvertMaterialsForAndroid(convertSettingsMap, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
+            var convertedMaterials = ConvertMaterialsForMobile(convertSettingsMap, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
             CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
 
             ApplyConvertedMaterials(questAvatarObject, convertedMaterials, saveAssetsAsFile, assetsDirectory, progressCallback);
@@ -294,7 +294,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="settings">Avatar converter settings component.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
-        internal void GenerateAndroidTextures(Material[] materials, bool saveAsPng, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
+        internal void GenerateMobileTextures(Material[] materials, bool saveAsPng, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
         {
             // Clear cache to ensure each texture generation gets its own VQT_Shared_Black texture
             ClearSharedBlackTextureCache();
@@ -389,7 +389,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
         /// <returns>Converted materials (key: original material).</returns>
-        internal Dictionary<Material, Material> ConvertMaterialsForAndroid(
+        internal Dictionary<Material, Material> ConvertMaterialsForMobile(
             Dictionary<Material, IMaterialConvertSettings> convertSettingsMap,
             bool saveAsFile,
             string assetsDirectory,

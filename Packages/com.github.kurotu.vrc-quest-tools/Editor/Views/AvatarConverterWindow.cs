@@ -49,7 +49,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnEnable()
         {
-            titleContent.text = "Convert Avatar for Android";
+            titleContent.text = "Convert Avatar for Mobile";
         }
 
         private void OnGUI()

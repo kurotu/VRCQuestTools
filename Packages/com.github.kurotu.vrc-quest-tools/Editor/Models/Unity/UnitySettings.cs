@@ -13,9 +13,9 @@ namespace KRT.VRCQuestTools.Models.Unity
     internal static partial class UnitySettings
     {
         /// <summary>
-        /// Gets a value indicating whether the Android build support is installed.
+        /// Gets a value indicating whether the Mobile build support is installed.
         /// </summary>
-        internal static bool HasAndroidBuildSupport
+        internal static bool HasMobileBuildSupport
         {
             get
             {
@@ -24,9 +24,9 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
-        /// Gets or sets default texture compression method for Android.
+        /// Gets or sets default texture compression method for Mobile.
         /// </summary>
-        internal static MobileTextureSubtarget DefaultAndroidTextureCompression
+        internal static MobileTextureSubtarget DefaultMobileTextureCompression
         {
             get => EditorUserBuildSettings.androidBuildSubtarget;
             set

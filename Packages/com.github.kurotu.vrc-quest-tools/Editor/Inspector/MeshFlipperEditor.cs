@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools.Inspector
 
             if (direction.enumValueIndex == (int)MeshFlipperMeshDirection.BothSides)
             {
-                EditorGUILayout.HelpBox(i18n.MeshFlipperEditorEnabledOnAndroidWarning, MessageType.Warning);
+                EditorGUILayout.HelpBox(i18n.MeshFlipperEditorEnabledOnMobileWarning, MessageType.Warning);
             }
 
             var useMask = so.FindProperty("useMask");
@@ -74,7 +74,7 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
             var enabledOnAndroid = so.FindProperty("enabledOnAndroid");
-            EditorGUILayout.PropertyField(enabledOnAndroid, new GUIContent(i18n.MeshFlipperEditorEnabledOnAndroidLabel));
+            EditorGUILayout.PropertyField(enabledOnAndroid, new GUIContent(i18n.MeshFlipperEditorEnabledOnMobileLabel));
 
             so.ApplyModifiedProperties();
         }

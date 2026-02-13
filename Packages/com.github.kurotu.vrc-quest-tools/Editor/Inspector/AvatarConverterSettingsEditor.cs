@@ -423,7 +423,7 @@ namespace KRT.VRCQuestTools.Inspector
             };
             try
             {
-                VRCQuestTools.AvatarConverter.GenerateAndroidTextures(targetAvatar.Materials, true, outputPath, converterSettings, progressCallback);
+                VRCQuestTools.AvatarConverter.GenerateMobileTextures(targetAvatar.Materials, true, outputPath, converterSettings, progressCallback);
             }
             catch (System.Exception exception)
             {

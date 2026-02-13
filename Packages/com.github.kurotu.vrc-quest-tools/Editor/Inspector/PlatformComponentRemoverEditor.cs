@@ -12,7 +12,7 @@ namespace KRT.VRCQuestTools.Inspector
     internal class PlatformComponentRemoverEditor : VRCQuestToolsEditorOnlyEditorBase<PlatformComponentRemover>
     {
         private const float PCCheckboxWidth = 20f;
-        private const float AndroidCheckboxWidth = 50f;
+        private const float MobileCheckboxWidth = 50f;
 
         /// <inheritdoc/>
         protected override string Description => VRCQuestToolsSettings.I18nResource.PlatformComponentRemoverEditorDescription;
@@ -43,7 +43,7 @@ namespace KRT.VRCQuestTools.Inspector
                     using (new EditorGUI.IndentLevelScope(-1))
                     {
                         EditorGUILayout.LabelField(new GUIContent("PC", i18n.PlatformComponentRemoverEditorCheckboxPCTooltip), GUILayout.Width(PCCheckboxWidth));
-                        EditorGUILayout.LabelField(new GUIContent("Android", i18n.PlatformComponentRemoverEditorCheckboxAndroidTooltip), GUILayout.Width(AndroidCheckboxWidth));
+                        EditorGUILayout.LabelField(new GUIContent("Mobile", i18n.PlatformComponentRemoverEditorCheckboxMobileTooltip), GUILayout.Width(MobileCheckboxWidth));
                     }
                 }
                 var count = componentSettings.arraySize;
@@ -63,7 +63,7 @@ namespace KRT.VRCQuestTools.Inspector
                             var removeOnPC = element.FindPropertyRelative("removeOnPC");
                             Views.EditorGUIUtility.InvertedBoolPropertyField(removeOnPC, GUIContent.none, GUILayout.Width(PCCheckboxWidth));
                             var removeOnAndroid = element.FindPropertyRelative("removeOnAndroid");
-                            Views.EditorGUIUtility.InvertedBoolPropertyField(removeOnAndroid, GUIContent.none, GUILayout.Width(AndroidCheckboxWidth));
+                            Views.EditorGUIUtility.InvertedBoolPropertyField(removeOnAndroid, GUIContent.none, GUILayout.Width(MobileCheckboxWidth));
                         }
                     }
                 }

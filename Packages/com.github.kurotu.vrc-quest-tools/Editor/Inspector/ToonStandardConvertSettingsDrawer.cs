@@ -58,7 +58,7 @@ namespace KRT.VRCQuestTools.Inspector
             EditorGUI.indentLevel++;
 
             var generateQuestTextures = property.FindPropertyRelative("generateQuestTextures");
-            EditorGUI.PropertyField(fieldRect, generateQuestTextures, new GUIContent(i18n.GenerateAndroidTexturesLabel, i18n.GenerateAndroidTexturesTooltip));
+            EditorGUI.PropertyField(fieldRect, generateQuestTextures, new GUIContent(i18n.GenerateMobileTexturesLabel, i18n.GenerateMobileTexturesTooltip));
             fieldRect.y += EditorGUIUtility.singleLineHeight;
             fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
 
