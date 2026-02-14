@@ -194,7 +194,7 @@ namespace KRT.VRCQuestTools.Models
                             newMaterial.ShadowRamp = t;
                             newMaterial.ShadowBoost = 0.0f;
                             newMaterial.ShadowTint = 0.0f;
-                        }).WaitForCompletion();
+                        }, null).WaitForCompletion();
                     }
                     else
                     {
