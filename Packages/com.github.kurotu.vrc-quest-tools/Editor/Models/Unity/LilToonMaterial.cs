@@ -116,29 +116,9 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Texture Main2ndTex => Material.GetTexture("_Main2ndTex");
 
         /// <summary>
-        /// Gets the main 2nd blend mask texture.
-        /// </summary>
-        internal Texture Main2ndBlendMask => Material.GetTexture("_Main2ndBlendMask");
-
-        /// <summary>
         /// Gets the main 3rd texture.
         /// </summary>
         internal Texture Main3rdTex => Material.GetTexture("_Main3rdTex");
-
-        /// <summary>
-        /// Gets the main 3rd blend mask texture.
-        /// </summary>
-        internal Texture Main3rdBlendMask => Material.GetTexture("_Main3rdBlendMask");
-
-        /// <summary>
-        /// Gets the main color adjust mask texture.
-        /// </summary>
-        internal Texture MainColorAdjustMask => Material.GetTexture("_MainColorAdjustMask");
-
-        /// <summary>
-        /// Gets the main gradation texture.
-        /// </summary>
-        internal Texture MainGradationTex => Material.GetTexture("_MainGradationTex");
 
         /// <summary>
         /// Gets the ao map texture.
@@ -224,11 +204,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal float EmissionBlend => Material.GetFloat("_EmissionBlend");
 
         /// <summary>
-        /// Gets the emission grad texture.
-        /// </summary>
-        internal Texture EmissionGradTex => Material.GetTexture("_EmissionGradTex");
-
-        /// <summary>
         /// Gets or sets a value indicating whether to use 2nd emission.
         /// </summary>
         internal bool UseEmission2nd
@@ -260,11 +235,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Gets the 2nd emission blend mask texture scale.
         /// </summary>
         internal float Emission2ndBlend => Material.GetFloat("_Emission2ndBlend");
-
-        /// <summary>
-        /// Gets the 2nd emission grad texture.
-        /// </summary>
-        internal Texture Emission2ndGradTex => Material.GetTexture("_Emission2ndGradTex");
 
         /// <summary>
         /// Gets a value indicating whether to use reflection.
