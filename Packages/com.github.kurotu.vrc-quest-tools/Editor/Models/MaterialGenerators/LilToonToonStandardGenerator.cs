@@ -135,11 +135,30 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Platform override settings, or null if none.</returns>
         protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
         {
-            // Only use color textures, not mask textures
-            return TextureUtility.GetBestPlatformOverrideSettings(
-                lilMaterial.Material.mainTexture,
-                lilMaterial.Main2ndTex,
-                lilMaterial.Main3rdTex);
+            // Only use color textures, not mask textures, and only from enabled features
+            var textures = new List<Texture>();
+
+            if (lilMaterial.Material.mainTexture != null)
+            {
+                textures.Add(lilMaterial.Material.mainTexture);
+            }
+
+            if (lilMaterial.UseMain2ndTex && lilMaterial.Main2ndTex != null)
+            {
+                textures.Add(lilMaterial.Main2ndTex);
+            }
+
+            if (lilMaterial.UseMain3rdTex && lilMaterial.Main3rdTex != null)
+            {
+                textures.Add(lilMaterial.Main3rdTex);
+            }
+
+            if (textures.Count > 0)
+            {
+                return TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray());
+            }
+
+            return null;
         }
 
         /// <summary>
