@@ -410,7 +410,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal override (int MaxTextureSize, TextureFormat Format)? GetToonLitPlatformOverride()
         {
             // Use main textures and emission textures, but only if features are actually enabled
-            var textures = new List<Texture>();
+            var textures = new List<Texture>(5);
             
             // Always include main texture if it exists
             if (Material.mainTexture != null)

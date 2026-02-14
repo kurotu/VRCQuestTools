@@ -136,7 +136,7 @@ namespace KRT.VRCQuestTools.Models
         protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
         {
             // Only use color textures, not mask textures, and only from enabled features
-            var textures = new List<Texture>();
+            var textures = new List<Texture>(3);
 
             if (lilMaterial.Material.mainTexture != null)
             {
@@ -168,7 +168,7 @@ namespace KRT.VRCQuestTools.Models
         protected override (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride()
         {
             // Only use color textures, and only if the feature is actually enabled
-            var textures = new List<Texture>();
+            var textures = new List<Texture>(2);
             
             if (lilMaterial.UseEmission && lilMaterial.EmissionMap != null)
             {
