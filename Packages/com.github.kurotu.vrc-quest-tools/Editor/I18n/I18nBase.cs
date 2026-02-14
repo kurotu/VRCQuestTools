@@ -211,9 +211,9 @@ namespace KRT.VRCQuestTools.I18n
         internal string GenerateButtonLabel => GetText("GenerateButtonLabel");
 
         // Unity Settings
-        internal string RecommendedUnitySettingsForMobile => GetText("RecommendedUnitySettingsForMobile");
-        internal string MobileBuildSupportButtonLabel => GetText("MobileBuildSupportButtonLabel");
-        internal string MobileBuildSupportHelp => GetText("MobileBuildSupportHelp");
+        internal string RecommendedUnitySettingsForAndroid => GetText("RecommendedUnitySettingsForAndroid");
+        internal string AndroidBuildSupportButtonLabel => GetText("AndroidBuildSupportButtonLabel");
+        internal string AndroidBuildSupportHelp => GetText("AndroidBuildSupportHelp");
         internal string TextureCompressionLabel => GetText("TextureCompressionLabel");
         internal string TextureCompressionHelp => GetText("TextureCompressionHelp");
         internal string TextureCompressionButtonLabel => GetText("TextureCompressionButtonLabel");

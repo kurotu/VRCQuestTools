@@ -16,12 +16,12 @@ namespace KRT.VRCQuestTools.ViewModels
     [Serializable]
     internal class UnityQuestSettingsViewModel
     {
-        private const MobileTextureSubtarget RecommendedMobileTextureCompression = MobileTextureSubtarget.ASTC;
+        private const MobileTextureSubtarget RecommendedAndroidTextureCompression = MobileTextureSubtarget.ASTC;
 
         /// <summary>
-        /// Gets default texture compression for Mobile.
+        /// Gets default texture compression for Android.
         /// </summary>
-        internal MobileTextureSubtarget DefaultMobileTextureCompression => UnitySettings.DefaultMobileTextureCompression;
+        internal MobileTextureSubtarget DefaultAndroidTextureCompression => UnitySettings.DefaultAndroidTextureCompression;
 
         /// <summary>
         /// Gets or sets a value indicating whether a window appears on editor loaded.
@@ -43,26 +43,26 @@ namespace KRT.VRCQuestTools.ViewModels
             get
             {
                 // Do not check cache server on Unity 2019 (Asset Pipeline v2)
-                return HasValidMobileTextureCompression && HasMobileBuildSupport;
+                return HasValidAndroidTextureCompression && HasAndroidBuildSupport;
             }
         }
 
         /// <summary>
         /// Gets a value indicating whether texture compression is valid.
         /// </summary>
-        internal bool HasValidMobileTextureCompression => DefaultMobileTextureCompression == RecommendedMobileTextureCompression;
+        internal bool HasValidAndroidTextureCompression => DefaultAndroidTextureCompression == RecommendedAndroidTextureCompression;
 
         /// <summary>
-        /// Gets a value indicating whether Mobile build support is installed.
+        /// Gets a value indicating whether Android build support is installed.
         /// </summary>
-        internal bool HasMobileBuildSupport => UnitySettings.HasMobileBuildSupport;
+        internal bool HasAndroidBuildSupport => UnitySettings.HasAndroidBuildSupport;
 
         /// <summary>
-        /// Apply recommended texture compression for Mobile.
+        /// Apply recommended texture compression for Android.
         /// </summary>
-        internal void ApplyRecommendedMobileTextureCompression()
+        internal void ApplyRecommendedAndroidTextureCompression()
         {
-            UnitySettings.DefaultMobileTextureCompression = RecommendedMobileTextureCompression;
+            UnitySettings.DefaultAndroidTextureCompression = RecommendedAndroidTextureCompression;
         }
     }
 }

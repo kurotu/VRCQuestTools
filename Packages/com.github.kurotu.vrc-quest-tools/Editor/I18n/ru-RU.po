@@ -59,10 +59,10 @@ msgid "TextureFormatHighCompression"
 msgstr ""
 
 msgid "AvatarConverterSettingsEditorDescription"
-msgstr "Конвертировать этот аватар для загрузки на платформу Mobile."
+msgstr "Конвертировать этот аватар для загрузки на платформу Mobile (Android, iOS)."
 
 msgid "AvatarConverterSettingsEditorDescriptionNDMF"
-msgstr "Конвертировать этот аватар для загрузки на платформу Mobile, когда целевая платформа - Mobile."
+msgstr "Конвертировать этот аватар для загрузки на платформу Mobile (Android, iOS), когда целевая платформа - Mobile (Android, iOS)."
 
 msgid "ExitPlayModeToEdit"
 msgstr "Выйдите из игрового режима для редактирования."

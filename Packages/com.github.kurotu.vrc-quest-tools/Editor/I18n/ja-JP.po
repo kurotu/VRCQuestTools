@@ -59,10 +59,10 @@ msgid "TextureFormatHighCompression"
 msgstr "高圧縮"
 
 msgid "AvatarConverterSettingsEditorDescription"
-msgstr "このアバターを Mobile プラットフォームにアップロードできるように変換します。"
+msgstr "このアバターを Mobile (Android, iOS) プラットフォームにアップロードできるように変換します。"
 
 msgid "AvatarConverterSettingsEditorDescriptionNDMF"
-msgstr "ビルドターゲットが Mobile の場合、このアバターを Mobile プラットフォームにアップロードできるように変換します。"
+msgstr "ビルドターゲットが Mobile (Android, iOS) の場合、このアバターを Mobile (Android, iOS) プラットフォームにアップロードできるように変換します。"
 
 msgid "ExitPlayModeToEdit"
 msgstr "編集するには再生モードを終了してください。"
@@ -416,20 +416,20 @@ msgstr "テクスチャの保存先を選択してください"
 msgid "GenerateButtonLabel"
 msgstr "Metallic Smoothness を生成"
 
-msgid "RecommendedUnitySettingsForMobile"
-msgstr "Mobile 用の推奨設定"
+msgid "RecommendedUnitySettingsForAndroid"
+msgstr "Android 用の推奨設定"
 
-msgid "MobileBuildSupportHelp"
-msgstr "Mobile 向けにアバターをアップロードするには Android Build Support が必要です。"
+msgid "AndroidBuildSupportHelp"
+msgstr "Android 向けにアバターをアップロードするには Android Build Support が必要です。"
 
-msgid "MobileBuildSupportButtonLabel"
+msgid "AndroidBuildSupportButtonLabel"
 msgstr "インストール方法"
 
 msgid "TextureCompressionLabel"
-msgstr "Mobile テクスチャ圧縮"
+msgstr "Android テクスチャ圧縮"
 
 msgid "TextureCompressionHelp"
-msgstr "ASTCを使用するとMobile用のテクスチャ圧縮に時間がかかる代わりに画質が向上します。"
+msgstr "ASTCを使用するとAndroid用のテクスチャ圧縮に時間がかかる代わりに画質が向上します。"
 
 msgid "TextureCompressionButtonLabel"
 msgstr "ASTCでテクスチャを圧縮"

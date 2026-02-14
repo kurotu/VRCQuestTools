@@ -31,7 +31,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnEnable()
         {
-            titleContent.text = "Unity Settings for Mobile";
+            titleContent.text = "Unity Settings for Android";
         }
 
         private void OnGUI()
@@ -39,25 +39,25 @@ namespace KRT.VRCQuestTools.Views
             var i18n = VRCQuestToolsSettings.I18nResource;
             var allActions = new List<Action>();
 
-            EditorGUILayout.LabelField(i18n.RecommendedUnitySettingsForMobile, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(i18n.RecommendedUnitySettingsForAndroid, EditorStyles.boldLabel);
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("Build Settings", EditorStyles.boldLabel);
 
-            EditorGUILayout.LabelField($"Mobile Build Support: {GetYesNoString(model.HasMobileBuildSupport)}");
-            if (!model.HasMobileBuildSupport)
+            EditorGUILayout.LabelField($"Android Build Support: {GetYesNoString(model.HasAndroidBuildSupport)}");
+            if (!model.HasAndroidBuildSupport)
             {
-                EditorGUILayout.HelpBox(i18n.MobileBuildSupportHelp, MessageType.Error);
-                if (GUILayout.Button(i18n.MobileBuildSupportButtonLabel))
+                EditorGUILayout.HelpBox(i18n.AndroidBuildSupportHelp, MessageType.Error);
+                if (GUILayout.Button(i18n.AndroidBuildSupportButtonLabel))
                 {
-                    OnClickMobileBuildSupportButton();
+                    OnClickAndroidBuildSupportButton();
                 }
             }
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField($"{i18n.TextureCompressionLabel}: {model.DefaultMobileTextureCompression}");
-            if (!model.HasValidMobileTextureCompression)
+            EditorGUILayout.LabelField($"{i18n.TextureCompressionLabel}: {model.DefaultAndroidTextureCompression}");
+            if (!model.HasValidAndroidTextureCompression)
             {
                 EditorGUILayout.HelpBox(i18n.TextureCompressionHelp, MessageType.Info);
                 allActions.Add(OnClickTextureCompressionButton);
@@ -90,7 +90,7 @@ namespace KRT.VRCQuestTools.Views
             model.ShowWindowOnLoad = EditorGUILayout.Toggle(i18n.ShowOnStartupLabel, model.ShowWindowOnLoad);
         }
 
-        private void OnClickMobileBuildSupportButton()
+        private void OnClickAndroidBuildSupportButton()
         {
             var url = "https://kurotu.github.io/VRCQuestTools/docs/tutorial/set-up-environment/?lang=auto";
             Application.OpenURL(url);
@@ -98,7 +98,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnClickTextureCompressionButton()
         {
-            model.ApplyRecommendedMobileTextureCompression();
+            model.ApplyRecommendedAndroidTextureCompression();
         }
 
         private string GetYesNoString(bool value)

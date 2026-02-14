@@ -59,10 +59,10 @@ msgid "TextureFormatHighCompression"
 msgstr "High Compression"
 
 msgid "AvatarConverterSettingsEditorDescription"
-msgstr "Convert this avatar uploadable for Mobile platform."
+msgstr "Convert this avatar uploadable for Mobile (Android, iOS) platform."
 
 msgid "AvatarConverterSettingsEditorDescriptionNDMF"
-msgstr "Convert this avatar uploadable for Mobile platform when the target platform is Mobile."
+msgstr "Convert this avatar uploadable for Mobile (Android, iOS) platform when the target platform is Mobile (Android, iOS)."
 
 msgid "ExitPlayModeToEdit"
 msgstr "Exit play mode to edit."
@@ -416,20 +416,20 @@ msgstr "Please enter a file name to save the texture to"
 msgid "GenerateButtonLabel"
 msgstr "Generate Metallic Smoothness"
 
-msgid "RecommendedUnitySettingsForMobile"
-msgstr "Recommended Settings for Mobile"
+msgid "RecommendedUnitySettingsForAndroid"
+msgstr "Recommended Settings for Android"
 
-msgid "MobileBuildSupportHelp"
-msgstr "Android Build Support is required to upload avatars for Mobile platform."
+msgid "AndroidBuildSupportHelp"
+msgstr "Android Build Support is required to upload avatars for Android platform."
 
-msgid "MobileBuildSupportButtonLabel"
+msgid "AndroidBuildSupportButtonLabel"
 msgstr "How to Install"
 
 msgid "TextureCompressionLabel"
-msgstr "Mobile Texture Compression"
+msgstr "Android Texture Compression"
 
 msgid "TextureCompressionHelp"
-msgstr "ASTC improves Mobile texture quality in exchange for long compression time"
+msgstr "ASTC improves Android texture quality in exchange for long compression time"
 
 msgid "TextureCompressionButtonLabel"
 msgstr "Set texture compression to ASTC"
