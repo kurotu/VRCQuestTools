@@ -58,7 +58,7 @@ namespace KRT.VRCQuestTools.Utils
 
         // https://docs.unity3d.com/2022.3/Documentation/Manual/class-TextureImporterOverride.html
         // Contains "partial" formats to simplify.
-        private static readonly HashSet<TextureFormat> MobileFormats = new HashSet<TextureFormat>
+        private static readonly HashSet<TextureFormat> AndroidFormats = new HashSet<TextureFormat>
         {
             TextureFormat.ASTC_4x4,
             TextureFormat.ASTC_5x5,
@@ -647,7 +647,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when the format is known by the tool.</returns>
         internal static bool IsKnownTextureFormat(TextureFormat format)
         {
-            return UncompressedFormats.Contains(format) || WindowsFormats.Contains(format) || MobileFormats.Contains(format) || IosFormats.Contains(format);
+            return UncompressedFormats.Contains(format) || WindowsFormats.Contains(format) || AndroidFormats.Contains(format) || IosFormats.Contains(format);
         }
 
         /// <summary>
@@ -664,7 +664,7 @@ namespace KRT.VRCQuestTools.Utils
                 case UnityEditor.BuildTarget.StandaloneWindows64:
                     return UncompressedFormats.Contains(format) || WindowsFormats.Contains(format);
                 case UnityEditor.BuildTarget.Android:
-                    return UncompressedFormats.Contains(format) || MobileFormats.Contains(format);
+                    return UncompressedFormats.Contains(format) || AndroidFormats.Contains(format);
                 case UnityEditor.BuildTarget.iOS:
                     return UncompressedFormats.Contains(format) || IosFormats.Contains(format);
                 default:

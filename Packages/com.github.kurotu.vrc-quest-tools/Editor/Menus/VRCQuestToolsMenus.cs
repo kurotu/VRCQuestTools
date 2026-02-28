@@ -18,14 +18,14 @@ namespace KRT.VRCQuestTools.Menus
         internal static class MenuPaths
         {
             internal const string RootMenu = "Tools/" + VRCQuestTools.Name + "/";
-            internal const string ConvertAvatarForAndroid = RootMenu + "Convert Avatar for Mobile";
+            internal const string ConvertAvatarForMobile = RootMenu + "Convert Avatar for Mobile";
             internal const string RemoveUnsupportedComponents = RootMenu + "Remove Unsupported Components";
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
             internal const string RemoveAllVertexColors = RootMenu + "Remove All Vertex Colors";
             internal const string RemovePhysBones = RootMenu + "Remove PhysBones";
             internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
             internal const string MSMapGenerator = RootMenu + "Metallic Smoothness Map";
-            internal const string UnitySettings = RootMenu + "Unity Settings for Mobile";
+            internal const string UnitySettings = RootMenu + "Unity Settings for Android";
             internal const string ClearTextureCache = RootMenu + "Clear Texture Cache";
             private const string SettingsMenu = RootMenu + "Settings/";
             internal const string EnableValidationAutomator = SettingsMenu + "Enable Validation Automator";
@@ -43,7 +43,7 @@ namespace KRT.VRCQuestTools.Menus
 
         internal enum MenuPriorities : int
         {
-            ConvertAvatarForQuest = 600, // VRChat SDK/Splash Screen: 500
+            ConvertAvatarForMobile = 600, // VRChat SDK/Splash Screen: 500
             RemovePhysBones = 700,
             RemoveMissingComponents,
             RemoveUnsupportedComponents,
@@ -67,9 +67,9 @@ namespace KRT.VRCQuestTools.Menus
         internal static class GameObjectMenuPaths
         {
             private const string MenuPrefix = "GameObject/VRCQuestTools/";
-            internal const string ConvertAvatarForQuest = MenuPrefix + "Convert Avatar for Mobile";
-            internal const string NdmfManualBakeWithAndroidSettings = MenuPrefix + "[NDMF] Manual Bake with Mobile Settings";
-            internal const string NdmfBuildAndTestWithAndroidSettings = MenuPrefix + "[NDMF] Build and Test for PC with Mobile Settings";
+            internal const string ConvertAvatarForMobile = MenuPrefix + "Convert Avatar for Mobile";
+            internal const string NdmfManualBakeWithMobileSettings = MenuPrefix + "[NDMF] Manual Bake with Mobile Settings";
+            internal const string NdmfBuildAndTestWithMobileSettings = MenuPrefix + "[NDMF] Build and Test for PC with Mobile Settings";
             internal const string RemovePhysBones = MenuPrefix + "Remove PhysBones";
             internal const string RemoveMissingComponents = MenuPrefix + "Remove Missing Components";
             internal const string RemoveUnsupportedComponents = MenuPrefix + "Remove Unsupported Components";
@@ -78,9 +78,9 @@ namespace KRT.VRCQuestTools.Menus
 
         internal enum GameObjectMenuPriorities : int
         {
-            GameObjectConvertAvatarForQuest = 30,
-            GameObjectNdmfManualBakeWithAndroidSettings,
-            GameObjectNdmfBuildAndTestWithAndroidSettings,
+            GameObjectConvertAvatarForMobile = 30,
+            GameObjectNdmfManualBakeWithMobileSettings,
+            GameObjectNdmfBuildAndTestWithMobileSettings,
             GameObjectRemovePhysBones = 130,
             GameObjectRemoveMissingComponents,
             GameObjectRemoveUnsupportedComponents,

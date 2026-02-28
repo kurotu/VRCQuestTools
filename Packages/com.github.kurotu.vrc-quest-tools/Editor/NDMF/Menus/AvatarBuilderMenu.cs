@@ -12,13 +12,13 @@ namespace KRT.VRCQuestTools.Ndmf
     /// </summary>
     internal static class AvatarBuilderMenu
     {
-        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithAndroidSettings, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfManualBakeWithAndroidSettings)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithMobileSettings, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfManualBakeWithMobileSettings)]
         private static void ManualBake()
         {
             NdmfPluginUtility.ManualBakeWithMobileSettings(Selection.activeGameObject);
         }
 
-        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithAndroidSettings, true)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithMobileSettings, true)]
         private static bool ManualBakeValidate()
         {
             var target = Selection.activeGameObject;
@@ -29,7 +29,7 @@ namespace KRT.VRCQuestTools.Ndmf
             return target.GetComponent<VRCAvatarDescriptor>() != null;
         }
 
-        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfBuildAndTestWithAndroidSettings, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfBuildAndTestWithAndroidSettings)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfBuildAndTestWithMobileSettings, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfBuildAndTestWithMobileSettings)]
         private static async void BuildAndTest()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
@@ -59,7 +59,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
         }
 
-        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfBuildAndTestWithAndroidSettings, true)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfBuildAndTestWithMobileSettings, true)]
         private static bool BuildAndTestValidate()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

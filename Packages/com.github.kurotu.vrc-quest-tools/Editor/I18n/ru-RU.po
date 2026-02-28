@@ -76,10 +76,10 @@ msgstr ""
 msgid "AvatarLabel"
 msgstr "Аватар"
 
-msgid "GenerateAndroidTexturesLabel"
-msgstr "Создать текстуры для Android"
+msgid "GenerateMobileTexturesLabel"
+msgstr "Создать текстуры для Mobile"
 
-msgid "GenerateAndroidTexturesTooltip"
+msgid "GenerateMobileTexturesTooltip"
 msgstr "Создавая новые текстуры с применением параметров материалов, а не только основных текстур, приближайтесь к версии аватара для ПК"
 
 msgid "SupportedShadersLabel"
