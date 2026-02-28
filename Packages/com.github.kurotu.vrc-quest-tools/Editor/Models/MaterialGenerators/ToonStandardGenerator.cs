@@ -157,12 +157,12 @@ namespace KRT.VRCQuestTools.Models
 
                 if (GetUseMainTexture())
                 {
-                    var mainOverrideFormat = GetMainTexturePlatformOverride()?.Format;
+                    var mainPlatformOverride = GetMainTexturePlatformOverride();
                     MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "main", saveTextureAsPng, texturesPath, (compl) => GenerateMainTexture(compl), (t) =>
                     {
                         newMaterial.MainTexture = t;
                         newMaterial.MainColor = new Color(1, 1, 1, 1);
-                    }, mainOverrideFormat).WaitForCompletion();
+                    }, mainPlatformOverride).WaitForCompletion();
                 }
                 else
                 {
@@ -174,13 +174,13 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.UseNormalMap = true;
                     var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
                     var outputRGB = saveTextureAsPng || isMobile;
-                    var normalOverrideFormat = GetNormalMapPlatformOverride()?.Format;
+                    var normalPlatformOverride = GetNormalMapPlatformOverride();
                     MaterialGeneratorUtility.GenerateNormalMap(material.Material, Settings, "normal", saveTextureAsPng, texturesPath, (compl) => GenerateNormalMap(outputRGB, compl), (t) =>
                     {
                         newMaterial.NormalMap = t;
                         (newMaterial.NormalMapTextureScale, newMaterial.NormalMapTextureOffset) = GetNormalMapST();
                         newMaterial.NormalMapScale = GetNormalMapScale();
-                    }, normalOverrideFormat).WaitForCompletion();
+                    }, normalPlatformOverride).WaitForCompletion();
                 }
 
                 newMaterial.Culling = GetCulling();
@@ -214,12 +214,12 @@ namespace KRT.VRCQuestTools.Models
                 {
                     if (GetUseEmissionMap())
                     {
-                        var emissionOverrideFormat = GetEmissionMapPlatformOverride()?.Format;
+                        var emissionPlatformOverride = GetEmissionMapPlatformOverride();
                         MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "emission", saveTextureAsPng, texturesPath, (compl) => GenerateEmissionMap(compl), (t) =>
                         {
                             newMaterial.EmissionMap = t;
                             newMaterial.EmissionColor = new Color(1, 1, 1, 1);
-                        }, emissionOverrideFormat).WaitForCompletion();
+                        }, emissionPlatformOverride).WaitForCompletion();
                     }
                     else
                     {
@@ -260,11 +260,11 @@ namespace KRT.VRCQuestTools.Models
                 if (GetUseMatcap() && Settings.useMatcap)
                 {
                     newMaterial.UseMatcap = true;
-                    var matcapOverrideFormat = GetMatcapPlatformOverride()?.Format;
+                    var matcapPlatformOverride = GetMatcapPlatformOverride();
                     MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "matcap", saveTextureAsPng, texturesPath, (compl) => GenerateMatcap(compl), (t) =>
                     {
                         newMaterial.Matcap = t;
-                    }, matcapOverrideFormat).WaitForCompletion();
+                    }, matcapPlatformOverride).WaitForCompletion();
 
                     if (GetUseMatcapMask())
                     {
@@ -306,7 +306,7 @@ namespace KRT.VRCQuestTools.Models
                     foreach (var pack in texturePacks)
                     {
                         var name = $"mask_{pack.R}_{pack.G}_{pack.B}_{pack.A}";
-                        var packedMaskOverrideFormat = GetPackedMaskPlatformOverride(pack)?.Format;
+                        var packedMaskPlatformOverride = GetPackedMaskPlatformOverride(pack);
                         MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, name, saveTextureAsPng, texturesPath, (compl) => GeneratePackedMask(pack, compl), (t) =>
                         {
                             foreach (var mask in pack.GetMasks())
@@ -345,7 +345,7 @@ namespace KRT.VRCQuestTools.Models
                                         throw new InvalidProgramException($"Unhandled mask type: {mask.MaskType}");
                                 }
                             }
-                        }, packedMaskOverrideFormat).WaitForCompletion();
+                        }, packedMaskPlatformOverride).WaitForCompletion();
                     }
                 }
             }

@@ -143,7 +143,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="mobileFormat">Texture format for mobile build target.</param>
         /// <param name="isSRGB">Texture is sRGB.</param>
         /// <returns>Saved texture asset.</returns>
-        internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, TextureFormat? mobileFormat, bool isSRGB = true)
+        internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, TextureFormat? mobileFormat, bool isSRGB = true, int? maxTextureSize = null)
         {
             var src = texture.isReadable ? texture : CopyAsReadable(texture, isSRGB);
             var png = src.EncodeToPNG();
@@ -154,7 +154,7 @@ namespace KRT.VRCQuestTools.Utils
             }
             File.WriteAllBytes(path, png);
             AssetDatabase.ImportAsset(path);
-            ConfigureTextureImporter(path, mobileFormat, isSRGB);
+            ConfigureTextureImporter(path, mobileFormat, isSRGB, maxTextureSize);
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
@@ -164,7 +164,8 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="path">Texture path.</param>
         /// <param name="mobileFormat">Texture format for mobile build target.</param>
         /// <param name="isSRGB">Texture is sRGB.</param>
-        internal static void ConfigureTextureImporter(string path, TextureFormat? mobileFormat, bool isSRGB = true)
+        /// <param name="maxTextureSize">Optional max texture size override for platform settings.</param>
+        internal static void ConfigureTextureImporter(string path, TextureFormat? mobileFormat, bool isSRGB = true, int? maxTextureSize = null)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.alphaSource = TextureImporterAlphaSource.FromInput;
@@ -180,7 +181,7 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     name = "Android",
                     overridden = true,
-                    maxTextureSize = importer.maxTextureSize,
+                    maxTextureSize = maxTextureSize ?? importer.maxTextureSize,
                     format = (TextureImporterFormat)mobileFormat.Value,
                 };
                 var iosSettings = new TextureImporterPlatformSettings
@@ -205,7 +206,8 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="path">Texture path.</param>
         /// <param name="mobileFormat">Texture format for mobile build target.</param>
-        internal static void ConfigureNormalMapImporter(string path, TextureFormat? mobileFormat)
+        /// <param name="maxTextureSize">Optional max texture size override for platform settings.</param>
+        internal static void ConfigureNormalMapImporter(string path, TextureFormat? mobileFormat, int? maxTextureSize = null)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.textureType = TextureImporterType.NormalMap;
@@ -218,7 +220,7 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     name = "Android",
                     overridden = true,
-                    maxTextureSize = importer.maxTextureSize,
+                    maxTextureSize = maxTextureSize ?? importer.maxTextureSize,
                     format = (TextureImporterFormat)mobileFormat.Value,
                 };
                 var iosSettings = new TextureImporterPlatformSettings

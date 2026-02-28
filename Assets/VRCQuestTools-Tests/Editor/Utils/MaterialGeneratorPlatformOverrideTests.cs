@@ -58,6 +58,7 @@ namespace KRT.VRCQuestTools.Utils
 
             // Generate a texture with a specific override format
             var overrideFormat = TextureFormat.ASTC_4x4;
+            var platformOverride = (MaxTextureSize: 512, Format: overrideFormat);
             Texture2D generatedTexture = null;
 
             MaterialGeneratorUtility.GenerateTexture(
@@ -81,7 +82,7 @@ namespace KRT.VRCQuestTools.Utils
                     return new ResultRequest<Texture2D>(tex, completion);
                 },
                 (tex) => generatedTexture = tex,
-                overrideFormat
+                platformOverride
             ).WaitForCompletion();
 
             Assert.IsNotNull(generatedTexture);
@@ -172,6 +173,7 @@ namespace KRT.VRCQuestTools.Utils
 
             // But provide ASTC_4x4 as override (should take precedence)
             var overrideFormat = TextureFormat.ASTC_4x4;
+            var platformOverride = (MaxTextureSize: 512, Format: overrideFormat);
             Texture2D generatedTexture = null;
 
             MaterialGeneratorUtility.GenerateTexture(
@@ -195,7 +197,7 @@ namespace KRT.VRCQuestTools.Utils
                     return new ResultRequest<Texture2D>(tex, completion);
                 },
                 (tex) => generatedTexture = tex,
-                overrideFormat
+                platformOverride
             ).WaitForCompletion();
 
             Assert.IsNotNull(generatedTexture);
