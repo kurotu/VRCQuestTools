@@ -194,9 +194,24 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Platform override settings, or null if none.</returns>
         protected override (int MaxTextureSize, TextureFormat Format)? GetGlossMapPlatformOverride()
         {
-            var gloss = (Texture2D)lilMaterial.SmoothnessTex;
-            var reflectionColorTex = (Texture2D)lilMaterial.ReflectionColorTex;
-            return TextureUtility.GetBestPlatformOverrideSettings(gloss, reflectionColorTex);
+            var textures = new List<Texture>(2);
+
+            if (lilMaterial.SmoothnessTex != null)
+            {
+                textures.Add(lilMaterial.SmoothnessTex);
+            }
+
+            if (lilMaterial.ReflectionColorTex != null)
+            {
+                textures.Add(lilMaterial.ReflectionColorTex);
+            }
+
+            if (textures.Count > 0)
+            {
+                return TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray());
+            }
+
+            return null;
         }
 
         /// <summary>

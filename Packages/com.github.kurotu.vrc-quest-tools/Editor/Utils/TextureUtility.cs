@@ -852,7 +852,7 @@ namespace KRT.VRCQuestTools.Utils
         private static Texture2D ResizeTextureImmediate(Texture2D texture, int width, int height)
         {
             var desc = new RenderTextureDescriptor(width, height, RenderTextureFormat.ARGB32, 0);
-            desc.sRGB = !PlayerSettings.colorSpace.Equals(ColorSpace.Linear) || texture.isDataSRGB;
+            desc.sRGB = texture.isDataSRGB;
             var rt = RenderTexture.GetTemporary(desc);
             var prev = RenderTexture.active;
             try

@@ -78,7 +78,6 @@ namespace KRT.VRCQuestTools.Utils
                     }
                     tex.SetPixels(pixels);
                     tex.Apply();
-                    completion?.Invoke(tex);
                     return new ResultRequest<Texture2D>(tex, completion);
                 },
                 (tex) => generatedTexture = tex,
@@ -134,7 +133,6 @@ namespace KRT.VRCQuestTools.Utils
                     }
                     tex.SetPixels(pixels);
                     tex.Apply();
-                    completion?.Invoke(tex);
                     return new ResultRequest<Texture2D>(tex, completion);
                 },
                 (tex) => generatedTexture = tex,
@@ -193,7 +191,6 @@ namespace KRT.VRCQuestTools.Utils
                     }
                     tex.SetPixels(pixels);
                     tex.Apply();
-                    completion?.Invoke(tex);
                     return new ResultRequest<Texture2D>(tex, completion);
                 },
                 (tex) => generatedTexture = tex,
