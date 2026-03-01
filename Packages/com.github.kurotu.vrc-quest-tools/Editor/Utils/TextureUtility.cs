@@ -580,8 +580,19 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="texture">Texture to compress.</param>
         /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
         /// <param name="mobileFormat">Format for mobile build target.</param>
-        internal static void CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat)
+        /// <param name="maxTextureSize">Optional max texture size. When provided, the texture is resized before compression.</param>
+        /// <returns>Compressed texture. May be a new texture if resized.</returns>
+        internal static Texture2D CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, int? maxTextureSize = null)
         {
+            if (maxTextureSize.HasValue)
+            {
+                var (w, h) = AspectFitReduction(texture.width, texture.height, maxTextureSize.Value);
+                if (w != texture.width || h != texture.height)
+                {
+                    texture = ResizeTextureImmediate(texture, w, h);
+                }
+            }
+
             var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
             var format = isMobile ? mobileFormat : TextureFormat.DXT5;
             if (format == TextureFormat.DXT5)
@@ -589,10 +600,11 @@ namespace KRT.VRCQuestTools.Utils
                 if (texture.width % 4 != 0 || texture.height % 4 != 0)
                 {
                     Logger.LogWarning($"Texture {texture.name} is not a multiple of 4. Not compressed to DXT5.", texture);
-                    return;
+                    return texture;
                 }
             }
             EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);
+            return texture;
         }
 
         /// <summary>
@@ -602,8 +614,9 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
         /// <param name="mobileFormat">Format for mobile build target.</param>
         /// <param name="readable">Whether to make output texture readable.</param>
+        /// <param name="maxTextureSize">Optional max texture size override.</param>
         /// <returns>Compressed normal map.</returns>
-        internal static Texture2D CompressNormalMap(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool readable = false)
+        internal static Texture2D CompressNormalMap(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool readable = false, int? maxTextureSize = null)
         {
             var pixels = texture.GetPixels32(0);
             var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
@@ -616,7 +629,8 @@ namespace KRT.VRCQuestTools.Utils
                 settings.textureImporterSettings.wrapMode = texture.wrapMode;
                 settings.textureImporterSettings.filterMode = texture.filterMode;
                 settings.textureImporterSettings.aniso = texture.anisoLevel;
-                settings.platformSettings.maxTextureSize = Math.Max(texture.width, texture.height);
+                var currentMaxSize = Math.Max(texture.width, texture.height);
+                settings.platformSettings.maxTextureSize = maxTextureSize.HasValue ? Math.Min(maxTextureSize.Value, currentMaxSize) : currentMaxSize;
                 settings.sourceTextureInformation.width = texture.width;
                 settings.sourceTextureInformation.height = texture.height;
                 settings.sourceTextureInformation.containsAlpha = true;
@@ -826,6 +840,36 @@ namespace KRT.VRCQuestTools.Utils
             var newWidth = Math.Round(width * scale);
             var newHeight = Math.Round(height * scale);
             return ((int)newWidth, (int)newHeight);
+        }
+
+        /// <summary>
+        /// Resizes a texture immediately (synchronously) using GPU blit.
+        /// </summary>
+        /// <param name="texture">Texture to resize.</param>
+        /// <param name="width">Target width.</param>
+        /// <param name="height">Target height.</param>
+        /// <returns>Resized texture.</returns>
+        private static Texture2D ResizeTextureImmediate(Texture2D texture, int width, int height)
+        {
+            var desc = new RenderTextureDescriptor(width, height, RenderTextureFormat.ARGB32, 0);
+            desc.sRGB = !PlayerSettings.colorSpace.Equals(ColorSpace.Linear) || texture.isDataSRGB;
+            var rt = RenderTexture.GetTemporary(desc);
+            var prev = RenderTexture.active;
+            try
+            {
+                Graphics.Blit(texture, rt);
+                RenderTexture.active = rt;
+                var result = new Texture2D(width, height, TextureFormat.RGBA32, texture.mipmapCount > 1, !desc.sRGB);
+                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                result.Apply();
+                result.name = texture.name;
+                return result;
+            }
+            finally
+            {
+                RenderTexture.active = prev;
+                RenderTexture.ReleaseTemporary(rt);
+            }
         }
 
         /// <summary>

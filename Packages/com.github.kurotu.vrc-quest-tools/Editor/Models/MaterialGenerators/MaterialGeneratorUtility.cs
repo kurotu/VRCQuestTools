@@ -180,11 +180,11 @@ namespace KRT.VRCQuestTools.Models
                 TextureUtility.SetStreamingMipMaps(texToWrite, true);
                 if (config.isNormalMap)
                 {
-                    texToWrite = TextureUtility.CompressNormalMap(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression);
+                    texToWrite = TextureUtility.CompressNormalMap(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression, maxTextureSize: overrideMaxTextureSize);
                 }
                 else
                 {
-                    TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression);
+                    texToWrite = TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression, overrideMaxTextureSize);
                 }
                 CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap, EditorUserBuildSettings.activeBuildTarget)));
             }
