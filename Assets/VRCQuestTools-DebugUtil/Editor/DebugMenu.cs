@@ -34,11 +34,11 @@ namespace KRT.VRCQuestTools.Debug
             VRCQuestToolsSettings.SkippedVersion = new SemVer(0, 0, 0);
         }
 
-        [MenuItem("GameObject/VRCQuestTools/[NDMF] Manual Bake without Cache", false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfManualBakeWithAndroidSettings + 1)]
+        [MenuItem("GameObject/VRCQuestTools/[NDMF] Manual Bake without Cache", false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfManualBakeWithMobileSettings + 1)]
         private static void ClearCacheThenManualBake()
         {
             CacheManager.Texture.Clear();
-            EditorApplication.ExecuteMenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithAndroidSettings);
+            EditorApplication.ExecuteMenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithMobileSettings);
         }
     }
 }
