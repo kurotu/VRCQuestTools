@@ -31,7 +31,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnEnable()
         {
-            titleContent.text = "Unity Settings for Android";
+            titleContent.text = "Unity Settings for Mobile";
         }
 
         private void OnGUI()
