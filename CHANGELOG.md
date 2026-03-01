@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Apply platform-specific texture override settings (compression format and max texture size) from source textures to generated textures.
 - Added options to Toon Standard conversion settings.
     - `Generate shadow ramp` to generate shadow ramp texture.
     - `Features` to select features to apply to the converted material.
