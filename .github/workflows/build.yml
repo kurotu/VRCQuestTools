@@ -182,7 +182,17 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_COMMAND: unity-editor
-        run: ./.github/workflows/unity.sh -batchmode -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
+        run: |
+          for i in $(seq 1 10); do
+            if ./.github/workflows/unity.sh -batchmode -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit; then
+              exit 0
+            fi
+            if [ "$i" -lt 10 ]; then
+              echo "Attempt $i failed. Retrying in 5 minutes..."
+              sleep 300
+            fi
+          done
+          exit 1
 
       - name: Add dotnet problem matcher
         run: echo "::add-matcher::.github/problem-matchers/csc.json"
