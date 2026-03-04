@@ -140,14 +140,45 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
         /// <summary>
         /// Gets PhysBones as providers for abstraction layer.
+        /// Includes AAO MergePhysBone providers and excludes PhysBones targeted by MergePhysBone.
         /// </summary>
         /// <returns>All attached PhysBones as providers.</returns>
         internal VRCPhysBoneProviderBase[] GetPhysBoneProviders()
         {
-            return AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true)
+            var mergeProviders = new List<AAOMergePhysBoneProvider>();
+            var mergedPhysBones = new HashSet<VRCPhysBone>();
+
+            var reflectionInfo = AAOMergePhysBoneProvider.AAOMergePhysBoneReflectionInfo.Default;
+            if (reflectionInfo != null)
+            {
+                var mergeComponents = AvatarDescriptor.GetComponentsInChildren(reflectionInfo.MergePhysBoneType, true);
+                foreach (var comp in mergeComponents)
+                {
+                    try
+                    {
+                        var provider = new AAOMergePhysBoneProvider(comp);
+                        mergeProviders.Add(provider);
+                        foreach (var pb in provider.GetPhysBones())
+                        {
+                            if (pb != null)
+                            {
+                                mergedPhysBones.Add(pb);
+                            }
+                        }
+                    }
+                    catch (ArgumentException)
+                    {
+                        // Skip invalid components
+                    }
+                }
+            }
+
+            var regularProviders = AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true)
+                .Where(pb => !mergedPhysBones.Contains(pb))
                 .Select(pb => new VRCPhysBoneProvider(pb))
-                .Cast<VRCPhysBoneProviderBase>()
-                .ToArray();
+                .Cast<VRCPhysBoneProviderBase>();
+
+            return regularProviders.Concat(mergeProviders).ToArray();
         }
 
         /// <summary>
@@ -213,8 +244,33 @@ namespace KRT.VRCQuestTools.Models.VRChat
             ContactBase[] contacts,
             bool isMobile = true)
         {
-            var vrcPhysBones = physbones.SelectMany(pb => pb.GetPhysBones()).ToArray();
-            return EstimatePerformanceStats(vrcPhysBones, colliders, contacts, isMobile);
+            var stats = VRCSDKUtility.CalculatePerformanceStats(AvatarDescriptor.gameObject, isMobile);
+            var dynamicsStats = AvatarDynamics.CalculatePerformanceStats(AvatarDescriptor.gameObject, physbones, colliders, contacts);
+            stats.physBone = new AvatarPerformanceStats.PhysBoneStats
+            {
+                componentCount = dynamicsStats.PhysBonesCount,
+                transformCount = dynamicsStats.PhysBonesTransformCount,
+                colliderCount = dynamicsStats.PhysBonesColliderCount,
+                collisionCheckCount = dynamicsStats.PhysBonesCollisionCheckCount,
+            };
+            stats.contactCount = dynamicsStats.ContactsCount;
+
+            if (isMobile)
+            {
+                stats.audioSourceCount = null;
+                stats.clothCount = null;
+                stats.clothMaxVertices = null;
+                stats.constraintsCount = null;
+                stats.downloadSizeBytes = null;
+                stats.lightCount = null;
+                stats.physicsColliderCount = null;
+                stats.physicsRigidbodyCount = null;
+                stats.textureMegabytes = null;
+                stats.uncompressedSizeBytes = null;
+            }
+
+            stats.CalculateAllPerformanceRatings(isMobile);
+            return stats;
         }
 
         /// <summary>

@@ -13,6 +13,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
     {
         /// <summary>
         /// Calculate performance stats for Avatar Dynamics.
+        /// Each provider counts as 1 PhysBone component (e.g., MergePhysBone counts as 1).
         /// </summary>
         /// <param name="root">Avatar root object (VRCAvatarDescriptor).</param>
         /// <param name="physbones">PhysBone providers.</param>
@@ -25,8 +26,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
             VRCPhysBoneCollider[] colliders,
             ContactBase[] contacts)
         {
-            var vrcPhysBones = physbones.Select(pb => pb.Component as VRCPhysBone).Where(pb => pb != null).ToArray();
-            return CalculatePerformanceStats(root, vrcPhysBones, colliders, contacts);
+            var vrcPhysBones = physbones.SelectMany(pb => pb.GetPhysBones()).Where(pb => pb != null).ToArray();
+            var stats = CalculatePerformanceStats(root, vrcPhysBones, colliders, contacts);
+
+            // Override PhysBonesCount: each provider counts as 1 post-build component
+            stats.PhysBonesCount = physbones.Count(p => !IsFinallyEditorOnly(root, p.GameObject));
+
+            return stats;
         }
 
         /// <summary>

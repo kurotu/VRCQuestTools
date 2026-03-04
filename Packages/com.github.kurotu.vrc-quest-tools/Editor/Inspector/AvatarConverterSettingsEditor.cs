@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Components;
@@ -348,11 +349,17 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 return null;
             }
-            var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).ToArray();
+            var avatar = new VRChatAvatar(original);
+
+            // Map saved PhysBones to providers to properly account for MergePhysBone
+            var allProviders = avatar.GetPhysBoneProviders();
+            var savedPbs = new HashSet<VRCPhysBone>(converterSettings.physBonesToKeep.Where(x => x != null));
+            var providersToKeep = allProviders.Where(p =>
+                p.GetPhysBones().Any(pb => savedPbs.Contains(pb))).ToArray();
+
             var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).ToArray();
             var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).ToArray();
-            var avatar = new VRChatAvatar(original);
-            return avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, contactsToKeep);
+            return avatar.EstimatePerformanceStats(providersToKeep, pbcToKeep, contactsToKeep);
         }
 
         private void AvatarDynamicsPerformanceGUI(AvatarPerformanceStats stats)
@@ -439,7 +446,14 @@ namespace KRT.VRCQuestTools.Inspector
         {
             var window = EditorWindow.GetWindow<AvatarDynamicsSelectorWindow>();
             window.converterSettings = converterSettings;
-            window.physBoneProvidersToKeep = converterSettings.physBonesToKeep.Select(p => new VRCPhysBoneProvider(p)).ToArray();
+
+            // Map saved PhysBones to current providers to properly handle MergePhysBone
+            var avatarObj = new VRChatAvatar(avatar);
+            var allProviders = avatarObj.GetPhysBoneProviders();
+            var savedPbs = new HashSet<VRCPhysBone>(converterSettings.physBonesToKeep.Where(p => p != null));
+            window.physBoneProvidersToKeep = allProviders.Where(p =>
+                p.GetPhysBones().Any(pb => savedPbs.Contains(pb))).ToArray();
+
             window.physBoneCollidersToKeep = converterSettings.physBoneCollidersToKeep;
             window.contactsToKeep = converterSettings.contactsToKeep;
             window.Show();
