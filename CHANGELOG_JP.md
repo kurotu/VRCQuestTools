@@ -25,6 +25,7 @@
 - アバター変換時の頂点カラー削除を `Vertex Color Remover` コンポーネントの代わりに `.vqtmesh` アセットを使用するように変更。
 - [NDMF] 非対応のバージョンを使用しているときビルド時にエラーダイアログを表示してビルドを中止するように変更。
 - [NDMF] `Mesh Flipper` のプレビューをデフォルトで有効化。
+- ユーザーが目にする文言とUI要素において、Android/iOSの表記を「Mobile」に統一。Unity Build Supportの設定と内部APIではAndroid固有の用語を維持。
 
 ### 修正
 - `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。

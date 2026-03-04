@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed to use `.vqtmesh` asset to remove vertex color in avatar conversion instead of using `Vertex Color Remover` component.
 - [NDMF] Show an error dialog then abort the build when using unsupported version of NDMF.
 - [NDMF] Enabled preview for `Mesh Flipper` by default.
+- Unified Android/iOS terminology to "Mobile" in user-facing strings and UI elements. Android-specific terminology is retained for Unity Build Support settings and internal APIs.
 
 ### Fixed
 - `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
