@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2026-01-31 13:35\n"
+"PO-Revision-Date: 2026-03-06 14:18\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -59,10 +59,10 @@ msgid "TextureFormatHighCompression"
 msgstr "High Compression"
 
 msgid "AvatarConverterSettingsEditorDescription"
-msgstr "Convert this avatar to be uploadable to the Mobile (Android, iOS) platform."
+msgstr "Convert this avatar uploadable for Android platform."
 
 msgid "AvatarConverterSettingsEditorDescriptionNDMF"
-msgstr "Convert this avatar to be uploadable to the Mobile (Android, iOS) platform when the target platform is Mobile (Android, iOS)."
+msgstr "Convert this avatar uploadable for Android platform when the target platform is Android."
 
 msgid "ExitPlayModeToEdit"
 msgstr "Exit play mode to edit."
@@ -101,7 +101,7 @@ msgid "AttachButtonLabel"
 msgstr "Attach"
 
 msgid "UpdateTexturesLabel"
-msgstr "Update Converted Mobile Textures"
+msgstr "Update Converted Android Textures"
 
 msgid "AdvancedConverterSettingsLabel"
 msgstr "Advanced Converter Settings"
@@ -171,10 +171,10 @@ msgid "InfoForNetworkIdAssigner"
 msgstr "You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again to apply IDs after attaching the component."
 
 msgid "NetworkIdAssignerAttached"
-msgstr "Network ID Assigner has been attached to the avatar. Please upload the non-converted avatar to PC platform to synchronize PhysBones between PC and Mobile."
+msgstr "Network ID Assigner has been attached to the avatar. Please upload the non-converted avatar to PC platform to synchronize PhysBones between PC and Android."
 
 msgid "WarningForPerformance"
-msgstr "Estimated performance rating is Very Poor, but you can upload the converted avatar for Mobile platform.\n"
+msgstr "Estimated performance rating is Very Poor, but you can upload the converted avatar for Android platform.\n"
 "Mobile users will see its imposter or fallback avatar by default. However, they can see the avatar by changing \"Avatar Display\" setting (as known as \"Show Avatar\")."
 
 msgid "WarningForAppearance"
@@ -183,7 +183,7 @@ msgstr "Texture's transparency doesn't make any effects, so this will be an issu
 
 msgid "WarningForUnsupportedShaders"
 msgstr "Following materials are using unsupported shaders. Textures might not properly be generated.\n"
-"Disabling \"Generate Textures for Mobile\" option changes only shader."
+"Disabling \"Generate Textures for Android\" option changes only shader."
 
 msgid "AlertForComponents"
 msgstr "Following unsupported components will be removed. Check avatar features after conversion."
@@ -192,13 +192,13 @@ msgid "AlertForDynamicBoneConversion"
 msgstr "VRCQuestTools doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar."
 
 msgid "AlertForMAConvertConstraints"
-msgstr "Unity Constraints cannot be used on Mobile. You can non-destructively convert Unity Constraints to VRChat Constraints by adding a MA Convert Constraints component to the avatar."
+msgstr "Unity Constraints cannot be used on Android. You can non-destructively convert Unity Constraints to VRChat Constraints by adding a MA Convert Constraints component to the avatar."
 
 msgid "AlertForUnityConstraintsConversion"
 msgstr "VRCQuestTools doesn't convert Unity constraints to VRChat constraints. Please set up VRChat constraints before converting the avatar."
 
 msgid "AlertForAvatarDynamicsPerformance"
-msgstr "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not be able to upload to Mobile. Please keep \"Poor\" rating in avatar dynamics categories."
+msgstr "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not able to upload for Android.  Please keep \"Poor\" rating in avatar dynamics categories."
 
 msgid "ErrorForPrefabStage"
 msgstr "Can't convert the avatar in prefab mode. Please go back to a scene from prefab mode."
@@ -363,28 +363,28 @@ msgid "KeepAll"
 msgstr "Keep All"
 
 msgid "AvatarDynamicsPreventsUpload"
-msgstr "You can't upload this avatar for Mobile. At least Avatar Dynamics must keep \"Poor\" rating."
+msgstr "You can't upload this avatar for Android. At least Avatar Dynamics must keep \"Poor\" rating."
 
 msgid "PhysBonesWillBeRemovedAtRunTime"
-msgstr "You can't upload this avatar for Mobile. Please reduce PhysBone components."
+msgstr "You can't upload this avatar for Android. Please reduce PhysBone components."
 
 msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
-msgstr "All PhysBone colliders will be removed at runtime on Mobile. Please reduce PhysBoneCollider components."
+msgstr "All PhysBone colliders will be removed at runtime on Android. Please reduce PhysBoneCollider components."
 
 msgid "ContactsWillBeRemovedAtRunTime"
-msgstr "You can't upload this avatar for Mobile. Please reduce VRCContact components."
+msgstr "You can't upload this avatar for Android. Please reduce VRCContact components."
 
 msgid "PhysBonesTransformsShouldBeReduced"
-msgstr "You can't upload this avatar for Mobile. Please reduce VRCPhysBone components or number of transforms in hierarchy under VRCPhysBone components."
+msgstr "You can't upload this avatar for Android. Please reduce VRCPhysBone components or number of transforms in hierarchy under VRCPhysBone components."
 
 msgid "PhysBonesCollisionCheckCountShouldBeReduced"
-msgstr "You can't upload this avatar for Mobile. Please reduce collision check count between VRCPhysBone components and VRCPhysBoneCollider components."
+msgstr "You can't upload this avatar for Android. Please reduce collision check count between VRCPhysBone components and VRCPhysBoneCollider components."
 
 msgid "PhysBonesShouldHaveNetworkID"
-msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Mobile. Please assign Network IDs to both of PC version and Mobile version with Network ID Utility of VRCSDK, then re-upload both."
+msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Android. Please assign Network IDs to both of PC version and Android version with Network ID Utility of VRCSDK, then re-upload both."
 
 msgid "AlertForMultiplePhysBones"
-msgstr "There are multiple PhysBones in a single GameObject. They may not be properly synchronized between PC and Mobile after removing PhysBones."
+msgstr "There are multiple PhysBones in a single GameObject. They may not be properly synchronized between PC and Android after removing PhysBones."
 
 msgid "EstimatedPerformanceStats"
 msgstr "Estimated Performance Stats"
@@ -480,7 +480,7 @@ msgid "ConvertedAvatarEditorMessage"
 msgstr "This component indicates the avatar was converted by VRCQuestTools."
 
 msgid "ConvertedAvatarEditorNDMFMessage"
-msgstr "Components which are not supported on Mobile will be removed in NDMF optimization phase."
+msgstr "Components which are not supported on Android will be removed in NDMF optimization phase."
 
 msgid "NetworkIDAssignerEditorDescription"
 msgstr "Assign Network IDs to the avatar's components such as PhysBones in build process. IDs are determined by hash values of hierarchy paths from the avatar root."
@@ -690,7 +690,7 @@ msgid "NDMF:MissingNetworkIDAssignerTitle"
 msgstr "Network ID Assignment"
 
 msgid "NDMF:MissingNetworkIDAssignerDescription"
-msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Mobile.\n"
+msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Android.\n"
 "You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again for each platform to apply IDs after attaching the component."
 
 msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
