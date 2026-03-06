@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2026-03-06 14:38\n"
+"PO-Revision-Date: 2026-03-06 14:49\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -59,10 +59,10 @@ msgid "TextureFormatHighCompression"
 msgstr ""
 
 msgid "AvatarConverterSettingsEditorDescription"
-msgstr "Конвертировать этот аватар для загрузки на платформу Android."
+msgstr "Конвертировать этот аватар для загрузки на платформу Mobile (Android, iOS)."
 
 msgid "AvatarConverterSettingsEditorDescriptionNDMF"
-msgstr "Конвертировать этот аватар для загрузки на платформу Android, когда целевая платформа - Android."
+msgstr "Конвертировать этот аватар для загрузки на платформу Mobile (Android, iOS), когда целевая платформа - Mobile (Android, iOS)."
 
 msgid "ExitPlayModeToEdit"
 msgstr "Выйдите из игрового режима для редактирования."
@@ -101,7 +101,7 @@ msgid "AttachButtonLabel"
 msgstr "Прикрепить"
 
 msgid "UpdateTexturesLabel"
-msgstr "Обновить конвертированные текстуры для Android"
+msgstr "Обновить конвертированные текстуры для Mobile"
 
 msgid "AdvancedConverterSettingsLabel"
 msgstr "Расширенные настройки конвертера"
@@ -170,10 +170,10 @@ msgid "InfoForNetworkIdAssigner"
 msgstr "Вы можете неразрушающе назначить сетевые ID, прикрепив компонент назначателя сетевых ID к корневому объекту аватара. Пожалуйста, загрузите снова, чтобы применить ID после прикрепления компонента."
 
 msgid "NetworkIdAssignerAttached"
-msgstr "Network ID Assigner был прикреплен к аватару. Пожалуйста, загрузите неконвертированный аватар на платформу ПК для синхронизации PhysBones между ПК и Android."
+msgstr "Network ID Assigner был прикреплен к аватару. Пожалуйста, загрузите неконвертированный аватар на платформу ПК для синхронизации PhysBones между ПК и Mobile."
 
 msgid "WarningForPerformance"
-msgstr "Оценочная оценка производительности — «Очень плохо», но вы можете загрузить преобразованный аватар для платформы Android.\n"
+msgstr "Оценочная оценка производительности — «Очень плохо», но вы можете загрузить преобразованный аватар для платформы Mobile.\n"
 "Мобильные пользователи по умолчанию увидят его импостер или резервный аватар. Однако они могут увидеть аватар, изменив настройку «Отображение аватара» (также известную как «Показать аватар»)."
 
 msgid "WarningForAppearance"
@@ -189,13 +189,13 @@ msgid "AlertForDynamicBoneConversion"
 msgstr "Не конвертируйте динамические кости(PhysBone) в физические кости(DynamicBone). Пожалуйста, настройте физические кости перед конвертацией аватара."
 
 msgid "AlertForMAConvertConstraints"
-msgstr "Unity Constraints нельзя использовать на Android. Вы можете без разрушения преобразовать Unity Constraints в VRChat Constraints, добавив компонент MA Convert Constraints к аватару."
+msgstr "Unity Constraints нельзя использовать на Mobile. Вы можете без разрушения преобразовать Unity Constraints в VRChat Constraints, добавив компонент MA Convert Constraints к аватару."
 
 msgid "AlertForUnityConstraintsConversion"
 msgstr "Не конвертируйте ограничения Unity в ограничения VRChat. Пожалуйста, настройте ограничения VRChat перед конвертацией аватара."
 
 msgid "AlertForAvatarDynamicsPerformance"
-msgstr "Оценка производительности динамики аватара (физические кости и контакты) будет \"Очень Плохо\", поэтому вы не сможете загрузить для Android."
+msgstr "Оценка производительности динамики аватара (физические кости и контакты) будет \"Очень Плохо\", поэтому вы не сможете загрузить для Mobile."
 
 msgid "ErrorForPrefabStage"
 msgstr "Невозможно конвертировать аватар в режиме префаба. Пожалуйста, вернитесь к сцене из режима префаба."
@@ -360,28 +360,28 @@ msgid "KeepAll"
 msgstr "Сохранить все"
 
 msgid "AvatarDynamicsPreventsUpload"
-msgstr "Вы не можете загрузить этот аватар для Android. По крайней мере, динамика аватара должна иметь оценку \"Плохо\"."
+msgstr "Вы не можете загрузить этот аватар для Mobile. По крайней мере, динамика аватара должна иметь оценку \"Плохо\"."
 
 msgid "PhysBonesWillBeRemovedAtRunTime"
-msgstr "Вы не можете загрузить этот аватар для Android. Пожалуйста, уменьшите количество компонентов PhysBone."
+msgstr "Вы не можете загрузить этот аватар для Mobile. Пожалуйста, уменьшите количество компонентов PhysBone."
 
 msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
-msgstr "Все коллайдеры PhysBone будут удалены во время выполнения на Android. Пожалуйста, уменьшите количество компонентов PhysBoneCollider."
+msgstr "Все коллайдеры PhysBone будут удалены во время выполнения на Mobile. Пожалуйста, уменьшите количество компонентов PhysBoneCollider."
 
 msgid "ContactsWillBeRemovedAtRunTime"
-msgstr "Вы не можете загрузить этот аватар для Android. Пожалуйста, уменьшите количество компонентов VRCContact."
+msgstr "Вы не можете загрузить этот аватар для Mobile. Пожалуйста, уменьшите количество компонентов VRCContact."
 
 msgid "PhysBonesTransformsShouldBeReduced"
-msgstr "Вы не можете загрузить этот аватар для Android. Пожалуйста, уменьшите количество компонентов VRCPhysBone или количество трансформаций в иерархии под компонентами VRCPhysBone."
+msgstr "Вы не можете загрузить этот аватар для Mobile. Пожалуйста, уменьшите количество компонентов VRCPhysBone или количество трансформаций в иерархии под компонентами VRCPhysBone."
 
 msgid "PhysBonesCollisionCheckCountShouldBeReduced"
-msgstr "Вы не можете загрузить этот аватар для Android. Пожалуйста, уменьшите количество проверок столкновений между компонентами VRCPhysBone и VRCPhysBoneCollider."
+msgstr "Вы не можете загрузить этот аватар для Mobile. Пожалуйста, уменьшите количество проверок столкновений между компонентами VRCPhysBone и VRCPhysBoneCollider."
 
 msgid "PhysBonesShouldHaveNetworkID"
-msgstr "Чтобы правильно синхронизировать физические кости, физические кости должны иметь одинаковый сетевой ID между ПК и Android."
+msgstr "Чтобы правильно синхронизировать физические кости, физические кости должны иметь одинаковый сетевой ID между ПК и Mobile."
 
 msgid "AlertForMultiplePhysBones"
-msgstr "В одном GameObject есть несколько физических костей. Они могут быть неправильно синхронизированы между ПК и Android после удаления физических костей."
+msgstr "В одном GameObject есть несколько физических костей. Они могут быть неправильно синхронизированы между ПК и Mobile после удаления физических костей."
 
 msgid "EstimatedPerformanceStats"
 msgstr "Оценка производительности"
@@ -477,7 +477,7 @@ msgid "ConvertedAvatarEditorMessage"
 msgstr "Этот компонент указывает на то, что аватар был конвертирован с помощью VRCQuestTools."
 
 msgid "ConvertedAvatarEditorNDMFMessage"
-msgstr "Компоненты, которые не поддерживаются на Android, будут удалены на этапе оптимизации NDMF."
+msgstr "Компоненты, которые не поддерживаются на Mobile, будут удалены на этапе оптимизации NDMF."
 
 msgid "NetworkIDAssignerEditorDescription"
 msgstr "Назначьте сетевые ID компонентам аватара, таким как физические кости. ID определяются хеш-значениями иерархических путей от корня аватара."
@@ -685,7 +685,7 @@ msgid "NDMF:MissingNetworkIDAssignerTitle"
 msgstr "Назначение идентификатора сети"
 
 msgid "NDMF:MissingNetworkIDAssignerDescription"
-msgstr "Чтобы правильно синхронизировать физические кости, физические кости должны иметь одинаковый сетевой ID между ПК и Android.\n"
+msgstr "Чтобы правильно синхронизировать физические кости, физические кости должны иметь одинаковый сетевой ID между ПК и Mobile.\n"
 "Вы можете неразрушающе назначить сетевые ID, прикрепив компонент назначателя сетевых ID к корневому объекту аватара. Пожалуйста, загрузите снова, чтобы применить ID после прикрепления компонента."
 
 msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
