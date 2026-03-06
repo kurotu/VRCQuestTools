@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2026-03-06 14:18\n"
+"PO-Revision-Date: 2026-03-06 14:49\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -59,10 +59,10 @@ msgid "TextureFormatHighCompression"
 msgstr "高圧縮"
 
 msgid "AvatarConverterSettingsEditorDescription"
-msgstr "このアバターを Android プラットフォームにアップロードできるように変換します。"
+msgstr "このアバターを Mobile (Android, iOS) プラットフォームにアップロードできるように変換します。"
 
 msgid "AvatarConverterSettingsEditorDescriptionNDMF"
-msgstr "ビルドターゲットが Android の場合、このアバターを Android プラットフォームにアップロードできるように変換します。"
+msgstr "ビルドターゲットが Mobile (Android, iOS) の場合、このアバターを Mobile (Android, iOS) プラットフォームにアップロードできるように変換します。"
 
 msgid "ExitPlayModeToEdit"
 msgstr "編集するには再生モードを終了してください。"
@@ -101,7 +101,7 @@ msgid "AttachButtonLabel"
 msgstr "追加"
 
 msgid "UpdateTexturesLabel"
-msgstr "変換後のAndroid用テクスチャを更新"
+msgstr "変換後のMobile用テクスチャを更新"
 
 msgid "AdvancedConverterSettingsLabel"
 msgstr "高度な変換設定"
@@ -171,10 +171,10 @@ msgid "InfoForNetworkIdAssigner"
 msgstr "アバターに Network ID Assigner コンポーネントを追加することで非破壊的にネットワークIDを割り当てることができます。コンポーネントを追加した後、IDを反映するために再度アップロードしてください。"
 
 msgid "NetworkIdAssignerAttached"
-msgstr "Network ID Assignerがアバターに追加されました。PCとAndroidでPhysBoneを同期させるために、変換前のアバターをPC向けにアップロードしてください。"
+msgstr "Network ID Assignerがアバターに追加されました。PCとMobileでPhysBoneを同期させるために、変換前のアバターをPC向けにアップロードしてください。"
 
 msgid "WarningForPerformance"
-msgstr "変換後のアバターの推定パフォーマンスランクは Very Poor ですが、Android 用にアップロードできます。\n"
+msgstr "変換後のアバターの推定パフォーマンスランクは Very Poor ですが、Mobile 用にアップロードできます。\n"
 "デフォルトではインポスターまたはフォールバックアバターが表示されますが、見る側が「アバターの表示」設定を個別に変更することで表示できます。 (Show Avatar 操作)"
 
 msgid "WarningForAppearance"
@@ -183,7 +183,7 @@ msgstr "テクスチャの透過が反映されないため、頬染めなどの
 
 msgid "WarningForUnsupportedShaders"
 msgstr "以下のマテリアルは非対応のシェーダーを使用しており、テクスチャが正しく生成されない可能性があります。\n"
-"「Android用のテクスチャを生成する」をオフにするとシェーダーのみを変更します。"
+"「Mobile用のテクスチャを生成する」をオフにするとシェーダーのみを変更します。"
 
 msgid "AlertForComponents"
 msgstr "以下の非対応コンポーネントを削除します。変換後、アバターの機能に支障がないか確認してください。"
@@ -192,13 +192,13 @@ msgid "AlertForDynamicBoneConversion"
 msgstr "VRCQuestTools は Dynamic Bone を PhysBone に変換しません。アバターを変換する前に PhysBone を設定してください。"
 
 msgid "AlertForMAConvertConstraints"
-msgstr "Android では Unity Constraints を使用できません。アバターに MA Convert Constraints コンポーネントを追加することで非破壊的に Unity Constraints を VRChat Constraints に変換することができます。"
+msgstr "Mobile では Unity Constraints を使用できません。アバターに MA Convert Constraints コンポーネントを追加することで非破壊的に Unity Constraints を VRChat Constraints に変換することができます。"
 
 msgid "AlertForUnityConstraintsConversion"
 msgstr "VRCQuestTools は Unity Constraints を VRChat Constraints に変換しません。アバターを変換する前に VRChat Constraints を設定してください。"
 
 msgid "AlertForAvatarDynamicsPerformance"
-msgstr "Avatar Dynamics (PhysBones, Contacts) のパフォーマンスランクが Very Poor になっており Android 用にアップロードできません。 Avatar Dynamics のパフォーマンスランクが Poor に収まるようコンポーネントを削減してください。"
+msgstr "Avatar Dynamics (PhysBones, Contacts) のパフォーマンスランクが Very Poor になっており Mobile 用にアップロードできません。 Avatar Dynamics のパフォーマンスランクが Poor に収まるようコンポーネントを削減してください。"
 
 msgid "ErrorForPrefabStage"
 msgstr "Prefab モードではアバターを変換できません。Prefab モードを抜けてシーンに戻ってください。"
@@ -363,28 +363,28 @@ msgid "KeepAll"
 msgstr "すべて残す"
 
 msgid "AvatarDynamicsPreventsUpload"
-msgstr "Android用にアップロードできません。 Avatar Dynamics のランクは少なくとも Poor にしてください。"
+msgstr "Mobile用にアップロードできません。 Avatar Dynamics のランクは少なくとも Poor にしてください。"
 
 msgid "PhysBonesWillBeRemovedAtRunTime"
-msgstr "Android用にアップロードできません。 PhysBone の数を減らしてください。"
+msgstr "Mobile用にアップロードできません。 PhysBone の数を減らしてください。"
 
 msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
-msgstr "Android用にアップロードしても PhysBoneCollider は動作しません。 PhysBoneCollider の数を減らしてください。"
+msgstr "Mobile用にアップロードしても PhysBoneCollider は動作しません。 PhysBoneCollider の数を減らしてください。"
 
 msgid "ContactsWillBeRemovedAtRunTime"
-msgstr "Android用にアップロードできません。 ContactReceiver と ContactSender の数を減らしてください。"
+msgstr "Mobile用にアップロードできません。 ContactReceiver と ContactSender の数を減らしてください。"
 
 msgid "PhysBonesTransformsShouldBeReduced"
-msgstr "Android用にアップロードできません。 PhysBone の数を減らすか、PhysBone の子オブジェクトの数を減らしてください。"
+msgstr "Mobile用にアップロードできません。 PhysBone の数を減らすか、PhysBone の子オブジェクトの数を減らしてください。"
 
 msgid "PhysBonesCollisionCheckCountShouldBeReduced"
-msgstr "Android用にアップロードできません。 PhysBone と PhysBoneCollider の衝突判定の数を減らしてください。"
+msgstr "Mobile用にアップロードできません。 PhysBone と PhysBoneCollider の衝突判定の数を減らしてください。"
 
 msgid "PhysBonesShouldHaveNetworkID"
-msgstr "PhysBone を正しく同期させるには PhysBone のネットワーク ID をPC版と一致させる必要があります。VRCSDK の Network ID Utility を使用してPC用とAndroid用で同じネットワーク ID を割り当てた後、両方を再アップロードしてください。"
+msgstr "PhysBone を正しく同期させるには PhysBone のネットワーク ID をPC版と一致させる必要があります。VRCSDK の Network ID Utility を使用してPC用とMobile用で同じネットワーク ID を割り当てた後、両方を再アップロードしてください。"
 
 msgid "AlertForMultiplePhysBones"
-msgstr "1つの GameObject に複数の PhysBone があります。Android 用に PhysBone を削除した場合、PC と Android で正しく同期しない可能性があります。"
+msgstr "1つの GameObject に複数の PhysBone があります。Mobile 用に PhysBone を削除した場合、PC と Mobile で正しく同期しない可能性があります。"
 
 msgid "EstimatedPerformanceStats"
 msgstr "推定パフォーマンスランク"
@@ -480,7 +480,7 @@ msgid "ConvertedAvatarEditorMessage"
 msgstr "このコンポーネントはアバターが VRCQuestTools で変換されたことを示します。"
 
 msgid "ConvertedAvatarEditorNDMFMessage"
-msgstr "Android 非対応コンポーネントは NDMF の Optimization Phase で削除されます。"
+msgstr "Mobile 非対応コンポーネントは NDMF の Optimization Phase で削除されます。"
 
 msgid "NetworkIDAssignerEditorDescription"
 msgstr "アバターのビルド時にコンポーネント (PhysBoneなど) にネットワーク ID を割り当てます。ID はアバタールートからのヒエラルキーパスのハッシュ値をもとに決定します。"
