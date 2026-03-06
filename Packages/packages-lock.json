@@ -207,6 +207,15 @@
         "com.unity.ugui": "1.0.0"
       }
     },
+    "io.github.hatayama.uloopmcp": {
+      "version": "0.69.6",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
+      },
+      "url": "https://package.openupm.com"
+    },
     "org.nuget.roslynator.analyzers": {
       "version": "4.14.0",
       "depth": 0,
