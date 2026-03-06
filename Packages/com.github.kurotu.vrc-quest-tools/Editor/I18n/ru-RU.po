@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2026-03-06 14:49\n"
+"PO-Revision-Date: 2026-03-06 14:54\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -318,7 +318,7 @@ msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "Целевой материал будет заменен этим материалом."
 
 msgid "MaterialReplaceSettingsMaterialWarning"
-msgstr "\n"
+msgstr ""
 
 msgid "NoMissingComponentsMessage"
 msgstr "В {0} нет \"недостающих\" компонентов."
