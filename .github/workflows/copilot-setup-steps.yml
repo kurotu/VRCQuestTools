@@ -117,3 +117,9 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: Website/pnpm-lock.yaml
       - run: cd Website && pnpm install --frozen-lockfile
+
+      - name: Install uloop-cli
+        run: pnpm install -g uloop-cli
+
+      - name: Update uLoopMCP skills
+        run: uloop skills install --claude
