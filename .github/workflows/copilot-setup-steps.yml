@@ -91,13 +91,16 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         run: |
-          for i in $(seq 1 10); do
+          max_attempts=5
+          base_delay=30
+          for i in $(seq 1 "$max_attempts"); do
             if UNITY_COMMAND=${UNITY_PATH} xvfb-run ./.github/workflows/unity.sh -batchmode -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit; then
               exit 0
             fi
-            if [ "$i" -lt 10 ]; then
-              echo "Attempt $i failed. Retrying in 5 minutes..."
-              sleep 300
+            if [ "$i" -lt "$max_attempts" ]; then
+              delay=$((base_delay * 2 ** (i - 1)))
+              echo "Attempt $i failed. Retrying in ${delay} seconds..."
+              sleep "$delay"
             fi
           done
           exit 1
