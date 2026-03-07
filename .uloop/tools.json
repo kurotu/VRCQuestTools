@@ -1,0 +1,475 @@
+{
+  "version": "0.69.6",
+  "serverVersion": "0.69.6",
+  "updatedAt": "2026-03-07T00:16:26.496Z",
+  "tools": [
+    {
+      "name": "clear-console",
+      "description": "Clear Unity console logs",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "AddConfirmationMessage": {
+            "type": "boolean",
+            "description": "Whether to add a confirmation log message after clearing",
+            "default": false
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "compile",
+      "description": "Execute Unity project compilation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ForceRecompile": {
+            "type": "boolean",
+            "description": "Whether to perform forced recompilation. Note: Force compilation results do not include error/warning messages in the response. Use get-logs tool after execution to retrieve compilation messages.",
+            "default": false
+          },
+          "WaitForDomainReload": {
+            "type": "boolean",
+            "description": "Whether to wait for domain reload completion before returning.",
+            "default": false
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "control-play-mode",
+      "description": "Control Unity Editor play mode (play/stop/pause)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "Action": {
+            "type": "string",
+            "description": "Action to perform: Play(0) - Start play mode, Stop(1) - Stop play mode, Pause(2) - Pause play mode",
+            "default": 0,
+            "enum": [
+              "Play",
+              "Stop",
+              "Pause"
+            ]
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "execute-dynamic-code",
+      "description": "Execute C# code dynamically in Unity Editor for editor automation.\n\nDirect statements only (no classes/namespaces/methods); return is optional (auto 'return null;' if omitted).\n\nYou may include using directives at the top; they are hoisted above the wrapper.\nExample:\n  using UnityEngine;\n  var x = Mathf.PI;\n  return x;\n\nDo:\n- Prefab/material wiring (PrefabUtility)\n- AddComponent + reference wiring (SerializedObject)\n- Scene/hierarchy edits\n\nDon't:\n- System.IO.* (File/Directory/Path)\n- AssetDatabase.CreateFolder / file writes\n- Create/edit .cs/.asmdef (use Terminal/IDE instead)\n\nNeed files/dirs? Run terminal commands.\n\nSee examples at {project_root}/.claude/skills/uloop-execute-dynamic-code/examples/",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "Code": {
+            "type": "string",
+            "description": "Editor automation only — no file I/O, no script authoring.\n\nDirect statements only (no classes/namespaces/methods); return is optional (auto 'return null;' if omitted).\n\nYou may include using directives at the top; they are hoisted above the wrapper.\nExample:\n  using UnityEngine;\n  var x = Mathf.PI;\n  return x;\n\nDo:\n- Prefab/material wiring (PrefabUtility)\n- AddComponent + reference wiring (SerializedObject)\n- Scene/hierarchy edits\n\nDon’t:\n- System.IO.* (File/Directory/Path)\n- AssetDatabase.CreateFolder / file writes\n- Create/edit .cs/.asmdef (use Terminal/IDE instead)\n\nNeed files/dirs? Run terminal commands.",
+            "default": ""
+          },
+          "Parameters": {
+            "type": "object",
+            "description": "Advanced, optional parameters passed to the snippet.\n\n- For throwaway snippets, prefer defining locals directly in code\n- Keys are not preserved; values map to parameters[\"param0\"], parameters[\"param1\"], ...\n- Use when injecting UnityEngine.Object or sensitive values, or reusing a snippet with varying data\n- Use object values supported by the Editor; prefer fully-qualified type names for ambiguous refs (e.g., UnityEngine.Object)\n\n- Input type must be an OBJECT. Strings like \"{}\" are invalid.\n- Do: omit 'Parameters' entirely, or use {}\n- Don't: \"{}\" (string), \"{\"a\":1}\" (string)\n\nExamples:\nOK:   \"Parameters\": {}\nOK:   (omit the 'Parameters' property)\nNG:   \"Parameters\": \"{}\"",
+            "default": {}
+          },
+          "CompileOnly": {
+            "type": "boolean",
+            "description": "Compile only (no execution).\n\n- Uses Roslyn validation to surface diagnostics\n- For new MonoBehaviours: create .cs → compile (mcp__uLoopMCP__compile with ForceRecompile=false) → ensure ErrorCount=0 → AddComponent",
+            "default": false
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "execute-menu-item",
+      "description": "[BLOCKED] Execute Unity MenuItem by path - Blocked by security settings",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "MenuItemPath": {
+            "type": "string",
+            "description": "The menu item path to execute (e.g., \"GameObject/Create Empty\")",
+            "default": ""
+          },
+          "UseReflectionFallback": {
+            "type": "boolean",
+            "description": "Whether to use reflection as fallback if EditorApplication.ExecuteMenuItem fails",
+            "default": true
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "find-game-objects",
+      "description": "Find multiple GameObjects with advanced search criteria (component type, tag, layer, etc.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "NamePattern": {
+            "type": "string",
+            "description": "Parameter: NamePattern",
+            "default": ""
+          },
+          "SearchMode": {
+            "type": "string",
+            "description": "Search mode (Exact(0), Path(1), Regex(2), Contains(3), Selected(4))",
+            "default": 0,
+            "enum": [
+              "Exact",
+              "Path",
+              "Regex",
+              "Contains",
+              "Selected"
+            ]
+          },
+          "RequiredComponents": {
+            "type": "array",
+            "description": "Parameter: RequiredComponents",
+            "default": []
+          },
+          "Tag": {
+            "type": "string",
+            "description": "Parameter: Tag",
+            "default": ""
+          },
+          "Layer": {
+            "type": "number",
+            "description": "Parameter: Layer",
+            "default": null
+          },
+          "IncludeInactive": {
+            "type": "boolean",
+            "description": "Parameter: IncludeInactive",
+            "default": false
+          },
+          "MaxResults": {
+            "type": "number",
+            "description": "Parameter: MaxResults",
+            "default": 20
+          },
+          "IncludeInheritedProperties": {
+            "type": "boolean",
+            "description": "Parameter: IncludeInheritedProperties",
+            "default": false
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "focus-window",
+      "description": "Bring Unity Editor window to front using OS-level commands. Works even when Unity is busy (compiling, domain reload).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get-hierarchy",
+      "description": "Get Unity Hierarchy structure in AI-friendly format",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "IncludeInactive": {
+            "type": "boolean",
+            "description": "Whether to include inactive GameObjects in the hierarchy result",
+            "default": true
+          },
+          "MaxDepth": {
+            "type": "number",
+            "description": "Maximum depth to traverse the hierarchy (-1 for unlimited depth)",
+            "default": -1
+          },
+          "RootPath": {
+            "type": "string",
+            "description": "Root GameObject path to start hierarchy traversal from (empty/null for all root objects)",
+            "default": null
+          },
+          "IncludeComponents": {
+            "type": "boolean",
+            "description": "Whether to include component information for each GameObject in the hierarchy",
+            "default": true
+          },
+          "IncludePaths": {
+            "type": "boolean",
+            "description": "Whether to include path information for nodes (default: false)",
+            "default": false
+          },
+          "UseComponentsLut": {
+            "type": "string",
+            "description": "Use LUT for components (auto|true|false)",
+            "default": "auto"
+          },
+          "UseSelection": {
+            "type": "boolean",
+            "description": "Whether to use currently selected GameObject(s) as root(s) for hierarchy traversal. When true, RootPath is ignored.",
+            "default": false
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get-logs",
+      "description": "Retrieve logs from Unity Console",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "LogType": {
+            "type": "string",
+            "description": "Log type to filter (Error, Warning, Log, All)",
+            "default": "All"
+          },
+          "MaxCount": {
+            "type": "number",
+            "description": "Maximum number of logs to retrieve",
+            "default": 100
+          },
+          "SearchText": {
+            "type": "string",
+            "description": "Text to search within log messages (retrieve all if empty)",
+            "default": ""
+          },
+          "UseRegex": {
+            "type": "boolean",
+            "description": "Whether to use regular expression for search",
+            "default": false
+          },
+          "SearchInStackTrace": {
+            "type": "boolean",
+            "description": "Whether to search within stack trace as well",
+            "default": false
+          },
+          "IncludeStackTrace": {
+            "type": "boolean",
+            "description": "Whether to display stack trace",
+            "default": false
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get-menu-items",
+      "description": "Retrieve Unity MenuItems with detailed metadata for programmatic execution. Unlike Unity Search menu provider, this provides implementation details (method names, assemblies, execution compatibility) needed for automation and debugging.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "FilterText": {
+            "type": "string",
+            "description": "Text to filter MenuItem paths (empty for all items)",
+            "default": ""
+          },
+          "FilterType": {
+            "type": "string",
+            "description": "Type of filter to apply (contains(0), exact(1), startswith(2))",
+            "default": 0,
+            "enum": [
+              "contains",
+              "exact",
+              "startswith"
+            ]
+          },
+          "IncludeValidation": {
+            "type": "boolean",
+            "description": "Include validation functions in the results",
+            "default": false
+          },
+          "MaxCount": {
+            "type": "number",
+            "description": "Maximum number of menu items to retrieve",
+            "default": 200
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "run-tests",
+      "description": "[BLOCKED] Execute Unity Test Runner with advanced filtering options - exact test methods, regex patterns for classes/namespaces, assembly filtering - Blocked by security settings",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "TestMode": {
+            "type": "string",
+            "description": "Test mode - EditMode(0), PlayMode(1)",
+            "default": 1,
+            "enum": [
+              "EditMode",
+              "PlayMode"
+            ]
+          },
+          "FilterType": {
+            "type": "string",
+            "description": "Type of test filter - all(0), exact(1), regex(2), assembly(3)",
+            "default": 0,
+            "enum": [
+              "all",
+              "exact",
+              "regex",
+              "assembly"
+            ]
+          },
+          "FilterValue": {
+            "type": "string",
+            "description": "Filter value (specify when filterType is not all)\n• exact: Individual test method name (e.g.: io.github.hatayama.uLoopMCP.ConsoleLogRetrieverTests.GetAllLogs_WithMaskAllOff_StillReturnsAllLogs)\n• regex: Class name or namespace (e.g.: io.github.hatayama.uLoopMCP.ConsoleLogRetrieverTests, io.github.hatayama.uLoopMCP)\n• assembly: Assembly name (e.g.: uLoopMCP.Tests.Editor)",
+            "default": ""
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "screenshot",
+      "description": "Take a screenshot of Unity EditorWindow and save as PNG",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "WindowName": {
+            "type": "string",
+            "description": "Window name to capture (e.g., 'Game', 'Scene', 'Console', 'Inspector', 'Project', 'Hierarchy', or any EditorWindow title)",
+            "default": "Game"
+          },
+          "ResolutionScale": {
+            "type": "number",
+            "description": "Resolution scale multiplier (0.1 to 1.0, where 1.0 is original size)",
+            "default": 1
+          },
+          "MatchMode": {
+            "type": "string",
+            "description": "Window name matching mode: exact(0)=exact match, prefix(1)=starts with, contains(2)=partial match. All modes are case-insensitive.",
+            "default": 0,
+            "enum": [
+              "exact",
+              "prefix",
+              "contains"
+            ]
+          },
+          "OutputDirectory": {
+            "type": "string",
+            "description": "Output directory path for saving screenshots. When empty, uses default path (.uloop/outputs/Screenshots/). Accepts absolute paths.",
+            "default": ""
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "unity-search",
+      "description": "Search Unity project using Unity Search API with comprehensive filtering and export options",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "SearchQuery": {
+            "type": "string",
+            "description": "Search query string (supports Unity Search syntax). Examples: '*.cs', 't:Texture2D', 'ref:MyScript', 'p:MyPackage'. For detailed Unity Search documentation see: https://docs.unity3d.com/6000.1/Documentation/Manual/search-expressions.html and https://docs.unity3d.com/6000.0/Documentation/Manual/search-query-operators.html. Common queries: '*.cs' (all C# files), 't:Texture2D' (Texture2D assets), 'ref:MyScript' (assets referencing MyScript), 'p:MyPackage' (search in package), 't:MonoScript *.cs' (C# scripts only), 'Assets/Scripts/*.cs' (C# files in specific folder). Japanese guide: https://light11.hatenadiary.com/entry/2022/12/12/193119",
+            "default": ""
+          },
+          "Providers": {
+            "type": "array",
+            "description": "(Optional) Specific search providers to use (empty = all active providers). Common providers: 'asset', 'scene', 'menu', 'settings', 'packages'",
+            "default": []
+          },
+          "MaxResults": {
+            "type": "number",
+            "description": "(Optional) Maximum number of search results to return (default: 50)",
+            "default": 50
+          },
+          "IncludeDescription": {
+            "type": "boolean",
+            "description": "(Optional) Whether to include detailed descriptions in results (default: true)",
+            "default": true
+          },
+          "IncludeMetadata": {
+            "type": "boolean",
+            "description": "(Optional) Whether to include file metadata like file size and last modified date (default: false)",
+            "default": false
+          },
+          "SearchFlags": {
+            "type": "string",
+            "description": "(Optional) Search flags for controlling Unity Search behavior (default: Default(0), Synchronous(1), WantsMore(2), Packages(4), Sorted(8))",
+            "default": 0,
+            "enum": [
+              "Default",
+              "Synchronous",
+              "WantsMore",
+              "Packages",
+              "Sorted"
+            ]
+          },
+          "SaveToFile": {
+            "type": "boolean",
+            "description": "(Optional) Whether to save search results to external file to avoid massive token consumption when dealing with large result sets. Results are saved as JSON/CSV files for external reading (default: false)",
+            "default": false
+          },
+          "OutputFormat": {
+            "type": "string",
+            "description": "(Optional) Output file format when SaveToFile is enabled (default: JSON(0), CSV(1), TSV(2))",
+            "default": 0,
+            "enum": [
+              "JSON",
+              "CSV",
+              "TSV"
+            ]
+          },
+          "AutoSaveThreshold": {
+            "type": "number",
+            "description": "(Optional) Threshold for automatic file saving (if result count exceeds this, automatically save to file). Set to 0 to disable automatic file saving (default: 100)",
+            "default": 100
+          },
+          "FileExtensions": {
+            "type": "array",
+            "description": "(Optional) Filter results by file extension (e.g., 'cs', 'prefab', 'mat')",
+            "default": []
+          },
+          "AssetTypes": {
+            "type": "array",
+            "description": "(Optional) Filter results by asset type (e.g., 'Texture2D', 'GameObject', 'MonoScript')",
+            "default": []
+          },
+          "PathFilter": {
+            "type": "string",
+            "description": "(Optional) Filter results by path pattern (supports wildcards)",
+            "default": ""
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get-unity-search-providers",
+      "description": "Get detailed information about Unity Search providers including display names, descriptions, active status, and capabilities",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ProviderId": {
+            "type": "string",
+            "description": "Specific provider ID to get details for (empty = all providers). Examples: 'asset', 'scene', 'menu', 'settings'",
+            "default": ""
+          },
+          "ActiveOnly": {
+            "type": "boolean",
+            "description": "Whether to include only active providers",
+            "default": false
+          },
+          "SortByPriority": {
+            "type": "boolean",
+            "description": "Sort providers by priority (lower number = higher priority)",
+            "default": true
+          },
+          "IncludeDescriptions": {
+            "type": "boolean",
+            "description": "Include detailed descriptions for each provider",
+            "default": true
+          }
+        },
+        "required": []
+      }
+    }
+  ]
+}
