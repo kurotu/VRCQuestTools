@@ -155,7 +155,10 @@ namespace KRT.VRCQuestTools.Utils
             int width = renderTexture.width;
             int height = renderTexture.height;
             var result = new Texture2D(width, height, TextureFormat.RGBA32, useMipmap, linear);
+            var prev = RenderTexture.active;
+            RenderTexture.active = renderTexture;
             result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+            RenderTexture.active = prev;
             result.Apply(true, true);
             completion?.Invoke(result);
         }
