@@ -184,6 +184,9 @@ namespace KRT.VRCQuestTools
             LogAssert.ignoreFailingMessages = true;
 #endif
             wrapper.GenerateToonLitImage(setting, (t) => { texObj = t; }).WaitForCompletion();
+#if !UNITY_EDITOR_WIN
+            LogAssert.ignoreFailingMessages = false;
+#endif
 #if UNITY_EDITOR_WIN
             var expectedColor = new Color32(0, 0, 0, 0);
 #else
