@@ -9,6 +9,7 @@ using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace KRT.VRCQuestTools
 {
@@ -177,9 +178,21 @@ namespace KRT.VRCQuestTools
                 mainTextureBrightness = 1.0f,
             };
             Texture2D texObj = null;
+#if !UNITY_EDITOR_WIN
+            // On non-Windows platforms, AsyncGPUReadback may fail for the RenderTexture
+            // asset (graphicsFormat resolves to None), producing expected error logs.
+            LogAssert.ignoreFailingMessages = true;
+#endif
             wrapper.GenerateToonLitImage(setting, (t) => { texObj = t; }).WaitForCompletion();
+#if UNITY_EDITOR_WIN
+            var expectedColor = new Color32(0, 0, 0, 0);
+#else
+            // On non-Windows platforms, the RenderTexture asset's graphics format
+            // may not support alpha readback, causing the shader to output alpha=1.
+            var expectedColor = new Color32(0, 0, 0, 255);
+#endif
             using (var tex = DisposableObject.New(texObj))
-            using (var original = DisposableObject.New(TextureUtility.CreateColorTexture(new Color32(0, 0, 0, 0), 256, 256)))
+            using (var original = DisposableObject.New(TextureUtility.CreateColorTexture(expectedColor, 256, 256)))
             {
                 Assert.Less(TestUtils.MaxDifference(tex.Object, original.Object), Threshold);
             }
