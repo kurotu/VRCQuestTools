@@ -274,17 +274,37 @@ namespace KRT.VRCQuestTools.Utils
 
             if (texture is RenderTexture rt)
             {
+                var createdByThisMethod = false;
                 if (!rt.IsCreated())
                 {
-                    rt.Create();
+                    var created = rt.Create();
+                    if (!created || !rt.IsCreated())
+                    {
+                        var width = rt.width > 0 ? rt.width : 1;
+                        var height = rt.height > 0 ? rt.height : 1;
+                        var fallbackTex = new Texture2D(width, height, TextureFormat.RGBA32, rt.mipmapCount > 1, !rt.isDataSRGB);
+                        fallbackTex.Apply();
+                        return fallbackTex;
+                    }
+                    createdByThisMethod = true;
                 }
-                Texture2D newTex = null;
-                var request = RequestReadbackRenderTexture(rt, rt.mipmapCount > 1, !rt.isDataSRGB, (result) =>
+                try
                 {
-                    newTex = result;
-                });
-                request.WaitForCompletion();
-                return newTex;
+                    Texture2D newTex = null;
+                    var request = RequestReadbackRenderTexture(rt, rt.mipmapCount > 1, !rt.isDataSRGB, (result) =>
+                    {
+                        newTex = result;
+                    });
+                    request.WaitForCompletion();
+                    return newTex;
+                }
+                finally
+                {
+                    if (createdByThisMethod)
+                    {
+                        rt.Release();
+                    }
+                }
             }
 
             var path = AssetDatabase.GetAssetPath(texture);
