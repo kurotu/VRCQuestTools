@@ -280,8 +280,8 @@ namespace KRT.VRCQuestTools.Utils
                     var created = rt.Create();
                     if (!created || !rt.IsCreated())
                     {
-                        var width = rt.width > 0 ? rt.width : 1;
-                        var height = rt.height > 0 ? rt.height : 1;
+                        var width = rt.width > 0 ? rt.width : 4;
+                        var height = rt.height > 0 ? rt.height : 4;
                         var fallbackTex = new Texture2D(width, height, TextureFormat.RGBA32, rt.mipmapCount > 1, !rt.isDataSRGB);
                         fallbackTex.Apply();
                         return fallbackTex;
