@@ -41,7 +41,7 @@ Packages/com.github.kurotu.vrc-quest-tools/   # Main VPM package
   Runtime/                                     # Runtime components (on avatars)
     Components/        # MonoBehaviour components (AvatarConverterSettings, etc.)
     Models/            # Runtime data models (BuildTarget, TextureFormat)
-  Shader/              # Custom shaders for material baking (13 shaders)
+  Shader/              # Custom shaders for material baking
     cginc/             # Shared shader includes
   ComputeShader/       # Compute shaders (normal map downsampling)
   Assets/              # Precomputed resources (blank normal maps)
@@ -72,7 +72,7 @@ scripts/               # CI/automation scripts (bump, lint, release)
 
 - **Namespaces:** `KRT.VRCQuestTools.<Feature>` (e.g., `KRT.VRCQuestTools.Models`, `KRT.VRCQuestTools.Utils`)
 - **Access modifiers:** All types are `internal` unless they must be public
-- **File headers:** Every `.cs` file has a copyright header: `// <copyright file="..." company="kurotu">`
+- **File headers:** C# source files in the main packages should include a copyright header (`// <copyright file="..." company="kurotu">`); new or modified files must follow this pattern, though some older files may not yet be updated.
 - **Indentation:** 4 spaces for C# (`.editorconfig`)
 - **XML docs:** `///` on all public/internal members with `<summary>`, `<param>`, `<returns>`
 - **StyleCop:** Enforced via analyzers with project-specific suppressions (SA1101, SA1200, SA1307, SA1401, SA1407, SA1513, SA1633, SA1639)
