@@ -160,6 +160,7 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat)) { }
                 Object.DestroyImmediate(sourceMaterial);
             }
         }
@@ -224,6 +225,7 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat)) { }
                 Object.DestroyImmediate(sourceMaterial);
             }
         }
@@ -296,6 +298,8 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat?.mainTexture)) { }
+                using (DisposableObject.New(resultMat)) { }
                 Object.DestroyImmediate(dummyTexture);
                 Object.DestroyImmediate(sourceMaterial);
             }
@@ -498,6 +502,7 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat)) { }
                 Object.DestroyImmediate(sourceMaterial);
             }
         }
@@ -574,6 +579,8 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(result11)) { }
+                using (DisposableObject.New(result22)) { }
                 Object.DestroyImmediate(mat11);
                 Object.DestroyImmediate(mat22);
             }
@@ -680,6 +687,10 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat11?.mainTexture)) { }
+                using (DisposableObject.New(resultMat11)) { }
+                using (DisposableObject.New(resultMat22?.mainTexture)) { }
+                using (DisposableObject.New(resultMat22)) { }
                 Object.DestroyImmediate(mat11);
                 Object.DestroyImmediate(mat22);
             }
@@ -757,6 +768,7 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat)) { }
                 Object.DestroyImmediate(sourceMaterial);
             }
         }

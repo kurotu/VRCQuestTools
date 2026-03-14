@@ -143,6 +143,8 @@ namespace KRT.VRCQuestTools.Models
                     var newMaterial = new ToonStandardMaterialWrapper();
                     newMaterial.Name = material.Material.name;
                     newMaterial.MainTexture = newMat.mainTexture;
+                    newMaterial.MainTextureScale = newMat.mainTextureScale;
+                    newMaterial.MainTextureOffset = newMat.mainTextureOffset;
                     newMaterial.ShadowRamp = Settings.fallbackShadowRamp;
                     completion?.Invoke(newMaterial);
                 });

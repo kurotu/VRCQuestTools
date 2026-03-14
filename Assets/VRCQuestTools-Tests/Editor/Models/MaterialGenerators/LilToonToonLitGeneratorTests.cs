@@ -71,6 +71,7 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat)) { }
                 Object.DestroyImmediate(sourceMaterial);
             }
         }
@@ -126,6 +127,7 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat)) { }
                 Object.DestroyImmediate(sourceMaterial);
             }
         }
@@ -197,6 +199,8 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat?.mainTexture)) { }
+                using (DisposableObject.New(resultMat)) { }
                 Object.DestroyImmediate(sourceMaterial);
             }
         }
@@ -290,6 +294,10 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat11?.mainTexture)) { }
+                using (DisposableObject.New(resultMat11)) { }
+                using (DisposableObject.New(resultMat22?.mainTexture)) { }
+                using (DisposableObject.New(resultMat22)) { }
                 Object.DestroyImmediate(mat11);
                 Object.DestroyImmediate(mat22);
             }
@@ -397,6 +405,10 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
+                using (DisposableObject.New(resultMat1?.mainTexture)) { }
+                using (DisposableObject.New(resultMat1)) { }
+                using (DisposableObject.New(resultMat2?.mainTexture)) { }
+                using (DisposableObject.New(resultMat2)) { }
                 Object.DestroyImmediate(mat1);
                 Object.DestroyImmediate(mat2);
             }
