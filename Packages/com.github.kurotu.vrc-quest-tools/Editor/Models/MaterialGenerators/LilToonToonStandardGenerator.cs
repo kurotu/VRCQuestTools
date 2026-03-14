@@ -64,6 +64,8 @@ namespace KRT.VRCQuestTools.Models
             if (lilMaterial.UseEmission && Settings.useEmission)
             {
                 newMaterial.EmissionMap = lilMaterial.EmissionMap;
+                newMaterial.EmissionMapTextureScale = lilMaterial.EmissionMapTextureScale;
+                newMaterial.EmissionMapTextureOffset = lilMaterial.EmissionMapTextureOffset;
                 newMaterial.EmissionColor = Utils.ColorUtility.HdrToLdr(lilMaterial.EmissionColor);
             }
             else
@@ -76,6 +78,8 @@ namespace KRT.VRCQuestTools.Models
             {
                 newMaterial.UseOcclusion = true;
                 newMaterial.OcclusionMap = lilMaterial.AOMap;
+                newMaterial.OcclusionMapTextureScale = lilMaterial.AOMapTextureScale;
+                newMaterial.OcclusionMapTextureOffset = lilMaterial.AOMapTextureOffset;
             }
 
             if (lilMaterial.UseReflection && Settings.useSpecular)

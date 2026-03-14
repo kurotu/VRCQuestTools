@@ -258,6 +258,24 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Gets or sets the emission map texture scale.
+        /// </summary>
+        internal Vector2 EmissionMapTextureScale
+        {
+            get => material.GetTextureScale("_EmissionMap");
+            set => material.SetTextureScale("_EmissionMap", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the emission map texture offset.
+        /// </summary>
+        internal Vector2 EmissionMapTextureOffset
+        {
+            get => material.GetTextureOffset("_EmissionMap");
+            set => material.SetTextureOffset("_EmissionMap", value);
+        }
+
+        /// <summary>
         /// Gets or sets the emission color.
         /// </summary>
         internal Color EmissionColor
