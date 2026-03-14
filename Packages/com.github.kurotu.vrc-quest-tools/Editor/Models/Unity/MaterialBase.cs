@@ -35,6 +35,16 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal abstract Shader ToonLitBakeShader { get; }
 
         /// <summary>
+        /// Gets the main texture scale. Override to extract UV tiling from shader-specific properties.
+        /// </summary>
+        internal virtual Vector2 MainTextureScale => Material.mainTextureScale;
+
+        /// <summary>
+        /// Gets the main texture offset. Override to extract UV tiling from shader-specific properties.
+        /// </summary>
+        internal virtual Vector2 MainTextureOffset => Material.mainTextureOffset;
+
+        /// <summary>
         /// Convert internal material to Toon Lit.
         /// </summary>
         /// <returns>Converted material.</returns>
@@ -56,8 +66,8 @@ namespace KRT.VRCQuestTools.Models.Unity
             if (hasMainTexProp)
             {
                 newMat.mainTexture = Material.mainTexture;
-                newMat.mainTextureOffset = Material.mainTextureOffset;
-                newMat.mainTextureScale = Material.mainTextureScale;
+                newMat.mainTextureOffset = MainTextureOffset;
+                newMat.mainTextureScale = MainTextureScale;
             }
             return newMat;
         }
@@ -89,6 +99,10 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.shader = ToonLitBakeShader;
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
                 baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);
+
+                // Explicitly set UV tiling on the baker to preserve scale/offset after shader swap
+                baker.Object.SetTextureScale("_MainTex", MainTextureScale);
+                baker.Object.SetTextureOffset("_MainTex", MainTextureOffset);
 
                 // Collect textures for platform override analysis
                 var texturesForOverride = new List<Texture>();
