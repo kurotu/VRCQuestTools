@@ -132,6 +132,24 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Gets or sets the main texture scale.
+        /// </summary>
+        internal Vector2 MainTextureScale
+        {
+            get => material.GetTextureScale("_MainTex");
+            set => material.SetTextureScale("_MainTex", value);
+        }
+
+        /// <summary>
+        /// Gets or sets the main texture offset.
+        /// </summary>
+        internal Vector2 MainTextureOffset
+        {
+            get => material.GetTextureOffset("_MainTex");
+            set => material.SetTextureOffset("_MainTex", value);
+        }
+
+        /// <summary>
         /// Gets or sets the albedo color.
         /// </summary>
         internal Color MainColor

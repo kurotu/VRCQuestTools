@@ -35,6 +35,8 @@ namespace KRT.VRCQuestTools.Models
             newMaterial.Name = lilMaterial.Material.name;
 
             newMaterial.MainTexture = lilMaterial.Material.mainTexture;
+            newMaterial.MainTextureScale = lilMaterial.MainTextureScale;
+            newMaterial.MainTextureOffset = lilMaterial.MainTextureOffset;
             newMaterial.MainColor = Utils.ColorUtility.HdrToLdr(lilMaterial.Material.color);
 
             if (lilMaterial.UseNormalMap && Settings.useNormalMap)
@@ -798,6 +800,12 @@ namespace KRT.VRCQuestTools.Models
                 }
             }
             return lilMaterial.Material.color;
+        }
+
+        /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetMainTextureST()
+        {
+            return (lilMaterial.MainTextureScale, lilMaterial.MainTextureOffset);
         }
 
         /// <inheritdoc/>

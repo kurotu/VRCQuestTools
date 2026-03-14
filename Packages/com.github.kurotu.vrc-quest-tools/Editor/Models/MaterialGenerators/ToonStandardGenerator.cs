@@ -162,6 +162,7 @@ namespace KRT.VRCQuestTools.Models
                     {
                         newMaterial.MainTexture = t;
                         newMaterial.MainColor = new Color(1, 1, 1, 1);
+                        (newMaterial.MainTextureScale, newMaterial.MainTextureOffset) = GetMainTextureST();
                     }, mainPlatformOverride).WaitForCompletion();
                 }
                 else
@@ -383,6 +384,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Main color.</returns>
         protected abstract Color GetMainColor();
+
+        /// <summary>
+        /// Gets the main texture scale and offset of the material.
+        /// </summary>
+        /// <returns>Scale and offset.</returns>
+        protected abstract (Vector2 Scale, Vector2 Offset) GetMainTextureST();
 
         /// <summary>
         /// Gets the material should use normal map.
