@@ -71,7 +71,7 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
-                using (DisposableObject.New(resultMat)) { }
+                Object.DestroyImmediate(resultMat);
                 Object.DestroyImmediate(sourceMaterial);
             }
         }
@@ -127,7 +127,7 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
-                using (DisposableObject.New(resultMat)) { }
+                Object.DestroyImmediate(resultMat);
                 Object.DestroyImmediate(sourceMaterial);
             }
         }
@@ -199,8 +199,12 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
-                using (DisposableObject.New(resultMat?.mainTexture)) { }
-                using (DisposableObject.New(resultMat)) { }
+                if (resultMat != null)
+                {
+                    Object.DestroyImmediate(resultMat.mainTexture);
+                    Object.DestroyImmediate(resultMat);
+                }
+
                 Object.DestroyImmediate(sourceMaterial);
             }
         }
@@ -294,10 +298,18 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
-                using (DisposableObject.New(resultMat11?.mainTexture)) { }
-                using (DisposableObject.New(resultMat11)) { }
-                using (DisposableObject.New(resultMat22?.mainTexture)) { }
-                using (DisposableObject.New(resultMat22)) { }
+                if (resultMat11 != null)
+                {
+                    Object.DestroyImmediate(resultMat11.mainTexture);
+                    Object.DestroyImmediate(resultMat11);
+                }
+
+                if (resultMat22 != null)
+                {
+                    Object.DestroyImmediate(resultMat22.mainTexture);
+                    Object.DestroyImmediate(resultMat22);
+                }
+
                 Object.DestroyImmediate(mat11);
                 Object.DestroyImmediate(mat22);
             }
@@ -405,10 +417,18 @@ namespace KRT.VRCQuestTools.Models
             }
             finally
             {
-                using (DisposableObject.New(resultMat1?.mainTexture)) { }
-                using (DisposableObject.New(resultMat1)) { }
-                using (DisposableObject.New(resultMat2?.mainTexture)) { }
-                using (DisposableObject.New(resultMat2)) { }
+                if (resultMat1 != null)
+                {
+                    Object.DestroyImmediate(resultMat1.mainTexture);
+                    Object.DestroyImmediate(resultMat1);
+                }
+
+                if (resultMat2 != null)
+                {
+                    Object.DestroyImmediate(resultMat2.mainTexture);
+                    Object.DestroyImmediate(resultMat2);
+                }
+
                 Object.DestroyImmediate(mat1);
                 Object.DestroyImmediate(mat2);
             }
