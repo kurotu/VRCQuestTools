@@ -294,5 +294,112 @@ namespace KRT.VRCQuestTools.Models
                 Object.DestroyImmediate(mat22);
             }
         }
+
+        /// <summary>
+        /// Test that emission UV tiling is correctly adjusted relative to main UV tiling during baking.
+        /// Two materials with the same emission-to-main UV ratio (es/ms) must produce identical baked textures:
+        /// mat1 has main scale (1,1) and emission scale (0.5,0.5) => adjusted emission bake scale = (0.5, 0.5).
+        /// mat2 has main scale (2,2) and emission scale (1,1)     => adjusted emission bake scale = (0.5, 0.5).
+        /// After the fix both baked textures must be nearly identical.
+        /// </summary>
+        [Test]
+        public void ConvertToToonLit_WithBake_EmissionUVIsAdjustedRelativeToMainUV()
+        {
+            if (!AssetUtility.IsLilToonImported())
+            {
+                Assert.Ignore("lilToon is not installed.");
+                return;
+            }
+
+            var lilToonVersion = AssetUtility.LilToonVersion;
+            var requiredVersion = new SemVer(1, 10, 0);
+            var breakingVersion = new SemVer(3, 0, 0);
+            if (lilToonVersion < requiredVersion || lilToonVersion >= breakingVersion)
+            {
+                Assert.Ignore($"lilToon version {lilToonVersion} is not supported.");
+                return;
+            }
+
+            var lilToonShader = Shader.Find("lilToon");
+            if (lilToonShader == null)
+            {
+                Assert.Ignore("lilToon shader not available.");
+                return;
+            }
+
+            // Use an AssetDatabase asset so LoadUncompressedTexture creates a fresh copy each time,
+            // preventing the shared emission texture from being destroyed during the first bake.
+            var emissionTexture = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>(TestUtils.TexturesFolder + "/albedo_1024px_png.png");
+            if (emissionTexture == null)
+            {
+                Assert.Ignore("albedo_1024px_png.png fixture not found.");
+                return;
+            }
+
+            var mat1 = new Material(lilToonShader);
+            var mat2 = new Material(lilToonShader);
+            try
+            {
+                // mat1: main (1,1), emission (0.5,0.5) => adjusted emission bake scale = 0.5/1 = (0.5, 0.5)
+                mat1.SetTextureScale("_MainTex", Vector2.one);
+                mat1.SetTextureOffset("_MainTex", Vector2.zero);
+                mat1.SetFloat("_UseEmission", 1f);
+                mat1.SetTexture("_EmissionMap", emissionTexture);
+                mat1.SetTextureScale("_EmissionMap", new Vector2(0.5f, 0.5f));
+                mat1.SetTextureOffset("_EmissionMap", Vector2.zero);
+                mat1.SetColor("_EmissionColor", Color.white);
+                mat1.SetFloat("_EmissionBlend", 1f);
+                mat1.SetFloat("_EmissionMainStrength", 0f);
+                mat1.SetFloat("_EmissionBlendMode", 1f);
+                mat1.SetFloat("_UseEmission2nd", 0f);
+
+                // mat2: main (2,2), emission (1,1) => adjusted emission bake scale = 1/2 = (0.5, 0.5) (same as mat1)
+                mat2.SetTextureScale("_MainTex", new Vector2(2f, 2f));
+                mat2.SetTextureOffset("_MainTex", Vector2.zero);
+                mat2.SetFloat("_UseEmission", 1f);
+                mat2.SetTexture("_EmissionMap", emissionTexture);
+                mat2.SetTextureScale("_EmissionMap", Vector2.one);
+                mat2.SetTextureOffset("_EmissionMap", Vector2.zero);
+                mat2.SetColor("_EmissionColor", Color.white);
+                mat2.SetFloat("_EmissionBlend", 1f);
+                mat2.SetFloat("_EmissionMainStrength", 0f);
+                mat2.SetFloat("_EmissionBlendMode", 1f);
+                mat2.SetFloat("_UseEmission2nd", 0f);
+
+                var settings = new ToonLitConvertSettings { generateQuestTextures = true };
+                var lilMat1 = new LilToonMaterial(mat1);
+                var gen1 = new ToonLitGenerator(settings);
+                var lilMat2 = new LilToonMaterial(mat2);
+                var gen2 = new ToonLitGenerator(settings);
+
+                Material resultMat1 = null;
+                Material resultMat2 = null;
+                gen1.GenerateMaterial(lilMat1, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat1 = mat; }).WaitForCompletion();
+                gen2.GenerateMaterial(lilMat2, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat2 = mat; }).WaitForCompletion();
+
+                Assert.IsNotNull(resultMat1, "Baked result for mat1 should not be null.");
+                Assert.IsNotNull(resultMat2, "Baked result for mat2 should not be null.");
+
+                var bakedTex1 = resultMat1.mainTexture as Texture2D;
+                var bakedTex2 = resultMat2.mainTexture as Texture2D;
+
+                if (bakedTex1 == null || bakedTex2 == null)
+                {
+                    Assert.Ignore("Baked textures are not available as Texture2D on this platform.");
+                    return;
+                }
+
+                var diff = TestUtils.MaxDifference(bakedTex1, bakedTex2);
+                Assert.Less(diff, 0.01f,
+                    $"Baked textures for materials with the same es/ms emission ratio should be nearly identical. " +
+                    $"Actual max difference: {diff:F4}. " +
+                    $"This indicates emission UV is not being adjusted relative to main UV tiling during baking.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(mat1);
+                Object.DestroyImmediate(mat2);
+            }
+        }
     }
 }
