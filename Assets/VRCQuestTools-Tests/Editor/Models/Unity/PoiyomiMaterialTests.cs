@@ -79,6 +79,41 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Test that ConvertToToonLit preserves default (identity) UV when _MainTex_ST is not set.
+        /// </summary>
+        [Test]
+        public void ConvertToToonLit_PreservesDefaultUVTiling()
+        {
+            var toonLitShader = Shader.Find("VRChat/Mobile/Toon Lit");
+            if (toonLitShader == null)
+            {
+                Assert.Ignore("VRChat/Mobile/Toon Lit shader not found");
+            }
+
+            var shader = Shader.Find("Hidden/VRCQuestTools/Poiyomi");
+            Assert.NotNull(shader, "Bake shader not found");
+            var material = new Material(shader);
+            try
+            {
+                var poiMaterial = new PoiyomiMaterial(material);
+                var toonLitMaterial = poiMaterial.ConvertToToonLit();
+                try
+                {
+                    Assert.AreEqual(Vector2.one, toonLitMaterial.mainTextureScale, "Default scale should be (1,1).");
+                    Assert.AreEqual(Vector2.zero, toonLitMaterial.mainTextureOffset, "Default offset should be (0,0).");
+                }
+                finally
+                {
+                    Object.DestroyImmediate(toonLitMaterial);
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(material);
+            }
+        }
+
+        /// <summary>
         /// Test that non-uniform UV tiling values are correctly extracted.
         /// </summary>
         [Test]

@@ -100,9 +100,12 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
                 baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);
 
-                // Explicitly set UV tiling on the baker to preserve scale/offset after shader swap
-                baker.Object.SetTextureScale("_MainTex", MainTextureScale);
-                baker.Object.SetTextureOffset("_MainTex", MainTextureOffset);
+                // Reset _MainTex UV tiling on the baker so the bake produces the raw texture appearance
+                // (no embedded tiling). UV tiling is applied at runtime via mainTextureScale/Offset on
+                // the output Toon Lit material set by ConvertToToonLit(). Embedding tiling here and also
+                // setting mainTextureScale would cause double-tiling at runtime.
+                baker.Object.SetTextureScale("_MainTex", Vector2.one);
+                baker.Object.SetTextureOffset("_MainTex", Vector2.zero);
 
                 // Collect textures for platform override analysis
                 var texturesForOverride = new List<Texture>();
