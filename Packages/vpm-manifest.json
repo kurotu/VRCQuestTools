@@ -5,9 +5,6 @@
     },
     "com.vrchat.base": {
       "version": "3.8.2"
-    },
-    "com.poiyomi.toon": {
-      "version": "9.3.64"
     }
   },
   "locked": {
@@ -19,10 +16,6 @@
     },
     "com.vrchat.base": {
       "version": "3.9.0",
-      "dependencies": {}
-    },
-    "com.poiyomi.toon": {
-      "version": "9.3.64",
       "dependencies": {}
     }
   }
