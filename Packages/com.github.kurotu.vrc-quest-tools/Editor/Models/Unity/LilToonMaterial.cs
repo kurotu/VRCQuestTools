@@ -77,15 +77,11 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </summary>
         internal float Metallic => Material.GetFloat("_Metallic");
 
-        /// <summary>
-        /// Gets the main texture scale.
-        /// </summary>
-        internal Vector2 MainTextureScale => Material.GetTextureScale("_MainTex");
+        /// <inheritdoc/>
+        internal override Vector2 MainTextureScale => Material.GetTextureScale("_MainTex");
 
-        /// <summary>
-        /// Gets the main texture offset.
-        /// </summary>
-        internal Vector2 MainTextureOffset => Material.GetTextureOffset("_MainTex");
+        /// <inheritdoc/>
+        internal override Vector2 MainTextureOffset => Material.GetTextureOffset("_MainTex");
 
         /// <summary>
         /// Gets minimum brightness.
