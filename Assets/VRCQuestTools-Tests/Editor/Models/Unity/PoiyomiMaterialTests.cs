@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -13,14 +14,22 @@ namespace KRT.VRCQuestTools.Models.Unity
     /// </summary>
     public class PoiyomiMaterialTests
     {
+        private const string PoiyomiShaderName = ".poiyomi/Poiyomi Toon";
+
         /// <summary>
         /// Test that MainTextureScale reads from _MainTex_ST Vector4 property.
         /// </summary>
         [Test]
         public void MainTextureScale_ReadsFromMainTexST()
         {
-            var shader = Shader.Find("Hidden/VRCQuestTools/Poiyomi");
-            Assert.NotNull(shader, "Bake shader not found");
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found");
             var material = new Material(shader);
             try
             {
@@ -45,14 +54,20 @@ namespace KRT.VRCQuestTools.Models.Unity
         [Test]
         public void ConvertToToonLit_PreservesUVTiling()
         {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
             var toonLitShader = Shader.Find("VRChat/Mobile/Toon Lit");
             if (toonLitShader == null)
             {
                 Assert.Ignore("VRChat/Mobile/Toon Lit shader not found");
             }
 
-            var shader = Shader.Find("Hidden/VRCQuestTools/Poiyomi");
-            Assert.NotNull(shader, "Bake shader not found");
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found");
             var material = new Material(shader);
             try
             {
@@ -84,14 +99,20 @@ namespace KRT.VRCQuestTools.Models.Unity
         [Test]
         public void ConvertToToonLit_PreservesDefaultUVTiling()
         {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
             var toonLitShader = Shader.Find("VRChat/Mobile/Toon Lit");
             if (toonLitShader == null)
             {
                 Assert.Ignore("VRChat/Mobile/Toon Lit shader not found");
             }
 
-            var shader = Shader.Find("Hidden/VRCQuestTools/Poiyomi");
-            Assert.NotNull(shader, "Bake shader not found");
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found");
             var material = new Material(shader);
             try
             {
@@ -119,8 +140,14 @@ namespace KRT.VRCQuestTools.Models.Unity
         [Test]
         public void MainTextureScale_NonUniformTiling()
         {
-            var shader = Shader.Find("Hidden/VRCQuestTools/Poiyomi");
-            Assert.NotNull(shader, "Bake shader not found");
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found");
             var material = new Material(shader);
             try
             {

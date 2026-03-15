@@ -12,12 +12,11 @@ namespace KRT.VRCQuestTools.Models
 {
     /// <summary>
     /// Tests for main texture UV tiling preservation in Poiyomi ToonLit conversion.
-    /// Uses Hidden/VRCQuestTools/Poiyomi as the source shader proxy since the actual
-    /// Poiyomi shader is an optional external dependency.
+    /// Requires Poiyomi Toon (com.poiyomi.toon) to be installed; tests are skipped otherwise.
     /// </summary>
     public class PoiyomiToonLitGeneratorTests
     {
-        private const string PoiyomiBakeShaderName = "Hidden/VRCQuestTools/Poiyomi";
+        private const string PoiyomiShaderName = ".poiyomi/Poiyomi Toon";
 
         /// <summary>
         /// Test that ToonLitGenerator without baking preserves main texture UV scale and offset
@@ -26,10 +25,16 @@ namespace KRT.VRCQuestTools.Models
         [Test]
         public void ConvertToToonLit_NonBake_PreservesMainTextureScaleAndOffset()
         {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
             TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Lit");
 
-            var shader = Shader.Find(PoiyomiBakeShaderName);
-            Assert.NotNull(shader, $"{PoiyomiBakeShaderName} shader not found.");
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
 
             using var sourceMaterial = DisposableObject.New(new Material(shader));
             var expectedScale = new Vector2(2.5f, 3.0f);
@@ -62,10 +67,16 @@ namespace KRT.VRCQuestTools.Models
         [Test]
         public void ConvertToToonLit_NonBake_PreservesDefaultMainTextureST()
         {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
             TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Lit");
 
-            var shader = Shader.Find(PoiyomiBakeShaderName);
-            Assert.NotNull(shader, $"{PoiyomiBakeShaderName} shader not found.");
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
 
             using var sourceMaterial = DisposableObject.New(new Material(shader));
 
@@ -91,16 +102,22 @@ namespace KRT.VRCQuestTools.Models
 
         /// <summary>
         /// Test that ToonLitGenerator with baking preserves main texture UV scale and offset
-        /// on the output material. The baked texture should capture the raw texture appearance
+        /// on the output material. The baked texture captures the raw texture appearance
         /// while the UV tiling is carried by the output material's mainTextureScale/Offset.
         /// </summary>
         [Test]
         public void ConvertToToonLit_WithBake_PreservesMainTextureScaleAndOffset()
         {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
             TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Lit");
 
-            var shader = Shader.Find(PoiyomiBakeShaderName);
-            Assert.NotNull(shader, $"{PoiyomiBakeShaderName} shader not found.");
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
 
             var mainTexture = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>(TestUtils.TexturesFolder + "/albedo_1024px_png.png");
             if (mainTexture == null)
@@ -146,10 +163,16 @@ namespace KRT.VRCQuestTools.Models
         [Test]
         public void ConvertToToonLit_WithBake_BakedTextureDoesNotEmbedUVTiling()
         {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
             TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Lit");
 
-            var shader = Shader.Find(PoiyomiBakeShaderName);
-            Assert.NotNull(shader, $"{PoiyomiBakeShaderName} shader not found.");
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
 
             var mainTexture = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>(TestUtils.TexturesFolder + "/albedo_1024px_png.png");
             if (mainTexture == null)
