@@ -89,6 +89,22 @@ jobs:
             echo "Unity Editor already installed, skipping installation"
           fi
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          cache-dependency-path: Website/pnpm-lock.yaml
+      - run: cd Website && pnpm install --frozen-lockfile
+
+      - name: Install uloop-cli
+        run: pnpm install -g uloop-cli
+
       - name: Generate solution
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -108,22 +124,6 @@ jobs:
             fi
           done
           exit 1
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-          cache-dependency-path: Website/pnpm-lock.yaml
-      - run: cd Website && pnpm install --frozen-lockfile
-
-      - name: Install uloop-cli
-        run: pnpm install -g uloop-cli
 
       - name: Update uLoopMCP skills
         run: uloop skills install --claude
