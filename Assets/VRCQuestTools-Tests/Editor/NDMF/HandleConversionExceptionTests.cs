@@ -2,11 +2,13 @@
 
 using System;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace KRT.VRCQuestTools.Tests.NDMF
 {
@@ -154,6 +156,7 @@ namespace KRT.VRCQuestTools.Tests.NDMF
             {
                 var inner = new LegacyPackageException("TestPackage", "2.0.0");
                 var exception = new MaterialConversionException("test", mat, inner);
+                LogAssert.Expect(LogType.Exception, new Regex("LegacyPackageException"));
                 try
                 {
                     handleMethod.Invoke(null, new object[] { exception });
@@ -220,6 +223,7 @@ namespace KRT.VRCQuestTools.Tests.NDMF
         {
             var inner = new ArgumentException("inner");
             var exception = new InvalidOperationException("outer", inner);
+            LogAssert.Expect(LogType.Exception, new Regex("ArgumentException"));
             var ex = Assert.Throws<TargetInvocationException>(() =>
             {
                 handleMethod.Invoke(null, new object[] { exception });

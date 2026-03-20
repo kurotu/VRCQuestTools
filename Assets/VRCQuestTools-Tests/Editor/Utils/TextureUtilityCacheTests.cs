@@ -1,4 +1,5 @@
-// Tests for TextureUtility, CacheUtility - using System;
+// Tests for TextureUtility, CacheUtility
+using System;
 using System.Reflection;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
