@@ -1,4 +1,4 @@
-// Batch 34: Platform override methods, LilToonMaterial additional properties,
+// Platform override methods, LilToonMaterial additional properties,
 // FallbackAvatarCallback, ActualPerformanceCallback, MissingScriptsRule,
 // GenerateMaterial non-texture path, AvatarConverter testable methods.
 
@@ -22,7 +22,7 @@ namespace KRT.VRCQuestTools.Tests
     // LilToonToonStandardGenerator Platform Override Methods
     // =========================================================
     [TestFixture]
-    public class LilToonGenerator_PlatformOverride_Batch34Tests
+    public class LilToonGenerator_PlatformOverrideTests
     {
         private Material mat;
         private LilToonMaterial lilMat;
@@ -384,7 +384,7 @@ namespace KRT.VRCQuestTools.Tests
     // LilToonMaterial Additional Property Tests
     // =========================================================
     [TestFixture]
-    public class LilToonMaterial_AdditionalProperties_Batch34Tests
+    public class LilToonMaterial_AdditionalPropertiesTests
     {
         private Material mat;
         private Texture2D testTex;
@@ -755,7 +755,7 @@ namespace KRT.VRCQuestTools.Tests
     // ToonStandardGenerator.GenerateMaterial paths
     // =========================================================
     [TestFixture]
-    public class ToonStandardGenerator_GenerateMaterial_Batch34Tests
+    public class ToonStandardGenerator_GenerateMaterialTests
     {
         private List<UObject> toCleanup;
 
@@ -881,7 +881,7 @@ namespace KRT.VRCQuestTools.Tests
     // FallbackAvatarCallback.OnPreprocessAvatar
     // =========================================================
     [TestFixture]
-    public class FallbackAvatarCallback_Batch34Tests
+    public class FallbackAvatarCallback_PlatformOverrideTests
     {
         private static readonly Type FallbackCallbackType =
             typeof(KRT.VRCQuestTools.VRCQuestTools).Assembly.GetType("KRT.VRCQuestTools.NonDestructive.FallbackAvatarCallback");
@@ -974,7 +974,7 @@ namespace KRT.VRCQuestTools.Tests
     // ActualPerformanceCallback.OnPreprocessAvatar
     // =========================================================
     [TestFixture]
-    public class ActualPerformanceCallback_Batch34Tests
+    public class ActualPerformanceCallback_PlatformOverrideTests
     {
         private static readonly Type ActualPerfType =
             typeof(KRT.VRCQuestTools.VRCQuestTools).Assembly.GetType("KRT.VRCQuestTools.NonDestructive.ActualPerformanceCallback");
@@ -1062,7 +1062,7 @@ namespace KRT.VRCQuestTools.Tests
     // MissingScriptsRule.Validate
     // =========================================================
     [TestFixture]
-    public class MissingScriptsRule_Batch34Tests
+    public class MissingScriptsRule_PlatformOverrideTests
     {
         private List<UObject> toCleanup;
 
@@ -1113,7 +1113,7 @@ namespace KRT.VRCQuestTools.Tests
     // ToonStandardMaterialWrapper Additional Properties
     // =========================================================
     [TestFixture]
-    public class ToonStandardMaterialWrapper_Batch34Tests
+    public class ToonStandardMaterialWrapper_PlatformOverrideTests
     {
         private List<UObject> toCleanup;
 
@@ -1295,7 +1295,7 @@ namespace KRT.VRCQuestTools.Tests
     // MaterialWrapperBuilder - DetectShaderCategory for lilToon
     // =========================================================
     [TestFixture]
-    public class MaterialWrapperBuilder_LilToon_Batch34Tests
+    public class MaterialWrapperBuilder_LilToonTests
     {
         private List<UObject> toCleanup;
 
@@ -1344,7 +1344,7 @@ namespace KRT.VRCQuestTools.Tests
     // AssetUtility additional tests
     // =========================================================
     [TestFixture]
-    public class AssetUtility_Batch34Tests
+    public class AssetUtility_PlatformOverrideTests
     {
         [Test]
         public void IsLilToonImported_ReturnsTrue()
@@ -1362,10 +1362,10 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     // =========================================================
-    // VRCQuestToolsSettings additional coverage
+    // VRCQuestToolsSettings additional tests
     // =========================================================
     [TestFixture]
-    public class VRCQuestToolsSettings_Batch34Tests
+    public class VRCQuestToolsSettings_PlatformOverrideTests
     {
         [Test]
         public void I18nResource_ReturnsNonNull()
@@ -1394,7 +1394,7 @@ namespace KRT.VRCQuestTools.Tests
     // ComponentRemover additional tests
     // =========================================================
     [TestFixture]
-    public class ComponentRemover_Batch34Tests
+    public class ComponentRemover_PlatformOverrideTests
     {
         private List<UObject> toCleanup;
 
@@ -1436,7 +1436,7 @@ namespace KRT.VRCQuestTools.Tests
     // VPMService test
     // =========================================================
     [TestFixture]
-    public class VPMService_Batch34Tests
+    public class VPMService_PlatformOverrideTests
     {
         [Test]
         public void IsProjectUsingVPM_ReturnsTrue()
@@ -1455,10 +1455,10 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     // =========================================================
-    // VRChatAvatar additional coverage
+    // VRChatAvatar additional tests
     // =========================================================
     [TestFixture]
-    public class VRChatAvatar_Batch34Tests
+    public class VRChatAvatar_PlatformOverrideTests
     {
         private List<UObject> toCleanup;
 
@@ -1494,7 +1494,7 @@ namespace KRT.VRCQuestTools.Tests
             }
             catch (System.Exception)
             {
-                // Some VRC SDK setups may throw; that's OK for this coverage test
+                // Some VRC SDK setups may throw; that's OK for this test
                 Assert.Pass("Materials threw exception - expected in test environment");
             }
             Assert.IsNotNull(materials);
@@ -1533,7 +1533,7 @@ namespace KRT.VRCQuestTools.Tests
     // UpdateCheckerAutomator test
     // =========================================================
     [TestFixture]
-    public class UpdateCheckerAutomator_Batch34Tests
+    public class UpdateCheckerAutomator_PlatformOverrideTests
     {
         [Test]
         public void GetLatestVersionUrl_ReturnsNonNull()
@@ -1559,7 +1559,7 @@ namespace KRT.VRCQuestTools.Tests
     // ValidationAutomator test
     // =========================================================
     [TestFixture]
-    public class ValidationAutomator_Batch34Tests
+    public class ValidationAutomator_PlatformOverrideTests
     {
         [Test]
         public void AutomatorType_Exists()
@@ -1573,7 +1573,7 @@ namespace KRT.VRCQuestTools.Tests
     // LilToonMaterial - CopyMaterialProperty, GenerateToonLitImage paths
     // =========================================================
     [TestFixture]
-    public class LilToonMaterial_ToonLitPlatformOverride_Batch34Tests
+    public class LilToonMaterial_ToonLitPlatformOverrideTests
     {
         private List<UObject> toCleanup;
 
@@ -1637,10 +1637,10 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     // =========================================================
-    // UnityAnimationUtility additional coverage
+    // UnityAnimationUtility additional tests
     // =========================================================
     [TestFixture]
-    public class UnityAnimationUtility_Batch34Tests
+    public class UnityAnimationUtility_PlatformOverrideTests
     {
         private List<UObject> toCleanup;
 
@@ -1719,10 +1719,10 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     // =========================================================
-    // CacheManager additional coverage
+    // CacheManager additional tests
     // =========================================================
     [TestFixture]
-    public class CacheManager_Batch34Tests
+    public class CacheManager_PlatformOverrideTests
     {
         [Test]
         public void GetProjectCachePath_ReturnsNonEmpty()

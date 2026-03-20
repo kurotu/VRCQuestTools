@@ -1,4 +1,4 @@
-// Tests for VRCSDKUtility - Batch 12: covering remaining uncovered methods
+// Tests for VRCSDKUtility - covering remaining uncovered methods
 
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,4 @@
-// Tests for TextureUtility, CacheUtility - Batch 15
-using System;
+// Tests for TextureUtility, CacheUtility - using System;
 using System.Reflection;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
@@ -12,7 +11,7 @@ using VQTBuildTarget = KRT.VRCQuestTools.Models.BuildTarget;
 namespace KRT.VRCQuestTools.Tests
 {
     [TestFixture]
-    public class TextureUtilityTests_TexCache
+    public class TextureUtilityCacheIntegrationTests
     {
         [Test]
         public void CompressTextureForBuildTarget_Mobile_ASTC()
@@ -528,7 +527,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class CacheUtilityTests_TexCache
+    public class CacheUtilityCacheIntegrationTests
     {
         [Test]
         public void GetContentCacheKey_NonNull()

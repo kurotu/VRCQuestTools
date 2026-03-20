@@ -1,4 +1,4 @@
-// Batch 21 - Coverage tests for VRCSDKUtility, TextureUtility, UnityAnimationUtility, FallbackAvatarCallback
+// Tests for VRCSDKUtility, TextureUtility, UnityAnimationUtility, FallbackAvatarCallback
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -22,7 +22,7 @@ using UBuildTarget = UnityEditor.BuildTarget;
 namespace KRT.VRCQuestTools.Tests
 {
     [TestFixture]
-    public class VRCSDKUtilityTests_UtilFunc
+    public class VRCSDKUtilityFunctionalTests
     {
         [Test]
         public void IsAvatarRoot_NullObject_ReturnsFalse()
@@ -825,7 +825,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class TextureUtilityTests_UtilFunc
+    public class TextureUtilityFunctionalTests
     {
         [Test]
         public void GetCompressionFormat_NoOverride_ReturnsASTC6x6()
@@ -1302,7 +1302,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class UnityAnimationUtilityTests_UtilFunc
+    public class UnityAnimationUtilityFunctionalTests
     {
         [Test]
         public void GetMaterials_EmptyController_ReturnsEmpty()
@@ -1480,7 +1480,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class FallbackAvatarCallbackTests_UtilFunc
+    public class FallbackAvatarCallbackFunctionalTests
     {
         private static Type GetFallbackCallbackType()
         {

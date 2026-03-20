@@ -1,4 +1,4 @@
-// Batch 37: Surgical tests targeting exact uncovered lines identified from coverage XML
+// Edge case tests for versioning, serialization, and utility methods
 // Targets: SemVer.CompareTo, I18n.ResolveAutoLanguage, VertexColorRemover.OnAfterDeserialize,
 // AnimatorControllerDuplicator null paths, VRCSDKUtility.IsProxyAnimationClip,
 // VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet, VRCQuestToolsSettings.DisplayLanguage,
@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.Tests
     // SemVer.CompareTo(object) — 4 uncovered lines (172-178)
     // =========================================================
     [TestFixture]
-    public class SemVer_CompareTo_Batch37Tests
+    public class SemVer_CompareToTests
     {
         [Test]
         public void CompareTo_Null_Returns1()
@@ -71,7 +71,7 @@ namespace KRT.VRCQuestTools.Tests
     // I18n — ResolveAutoLanguage (4 uncov lines 43-47) + GetI18n (1 line)
     // =========================================================
     [TestFixture]
-    public class I18n_Language_Batch37Tests
+    public class I18n_LanguageTests
     {
         [Test]
         public void GetI18n_English_ReturnsI18nEnglish()
@@ -226,7 +226,7 @@ namespace KRT.VRCQuestTools.Tests
     // I18nBase.GetText — 2 uncovered lines (43-44)
     // =========================================================
     [TestFixture]
-    public class I18nBase_GetText_Batch37Tests
+    public class I18nBase_GetTextTests
     {
         [Test]
         public void GetText_KnownKey_ReturnsNonEmptyString()
@@ -264,7 +264,7 @@ namespace KRT.VRCQuestTools.Tests
     // VertexColorRemover.OnAfterDeserialize — 4 uncovered lines (95-100)
     // =========================================================
     [TestFixture]
-    public class VertexColorRemover_Deserialize_Batch37Tests
+    public class VertexColorRemover_DeserializeTests
     {
         private List<Object> toCleanup = new List<Object>();
 
@@ -333,7 +333,7 @@ namespace KRT.VRCQuestTools.Tests
     // AnimatorControllerDuplicator — null input paths (8 lines)
     // =========================================================
     [TestFixture]
-    public class AnimatorControllerDuplicator_NullPaths_Batch37Tests
+    public class AnimatorControllerDuplicator_NullPathsTests
     {
         private List<Object> toCleanup = new List<Object>();
 
@@ -444,7 +444,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.IsProxyAnimationClip — 8 uncov lines (137-156)
     // =========================================================
     [TestFixture]
-    public class VRCSDKUtility_ProxyClip_Batch37Tests
+    public class VRCSDKUtility_ProxyClipTests
     {
         [Test]
         public void IsProxyAnimationClip_NonAssetClip_ReturnsFalse()
@@ -521,7 +521,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet — 6 uncov lines (561-570)
     // =========================================================
     [TestFixture]
-    public class VRCSDKUtility_PerfStats_Batch37Tests
+    public class VRCSDKUtility_PerfStatsTests
     {
         [Test]
         public void LoadAvatarPerformanceStatsLevelSet_Mobile_ReturnsNonNull()
@@ -565,7 +565,7 @@ namespace KRT.VRCQuestTools.Tests
     // + GetProjectSettings — 8 uncov lines (203-213)
     // =========================================================
     [TestFixture]
-    public class VRCQuestToolsSettings_Batch37Tests
+    public class VRCQuestToolsSettings_VersioningTests
     {
         [Test]
         public void DisplayLanguage_GetAndSet_RoundTrips()
@@ -621,7 +621,7 @@ namespace KRT.VRCQuestTools.Tests
     // + GetRuntimeAnimatorControllers — 3 uncov lines (302-307)
     // =========================================================
     [TestFixture]
-    public class VRChatAvatar_Props_Batch37Tests
+    public class VRChatAvatar_PropsTests
     {
         private List<Object> toCleanup = new List<Object>();
 
@@ -686,7 +686,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarPerformanceCalculator — GetRatingValue + GetStatsLevel
     // =========================================================
     [TestFixture]
-    public class AvatarPerformanceCalculator_Batch37Tests
+    public class AvatarPerformanceCalculator_EdgeCaseTests
     {
         [Test]
         public void GetRatingValue_DefaultCategory_ThrowsNotImplemented()
@@ -801,7 +801,7 @@ namespace KRT.VRCQuestTools.Tests
     // MeshFlipper — edge cases (5 uncov lines)
     // =========================================================
     [TestFixture]
-    public class MeshFlipper_EdgeCases_Batch37Tests
+    public class MeshFlipper_EdgeCasesTests
     {
         private List<Object> toCleanup = new List<Object>();
 
@@ -934,7 +934,7 @@ namespace KRT.VRCQuestTools.Tests
     // ModularAvatarUtility.RemoveUnsupportedComponents — 7 uncov lines (91-97)
     // =========================================================
     [TestFixture]
-    public class ModularAvatarUtility_Remove_Batch37Tests
+    public class ModularAvatarUtility_RemoveTests
     {
         private List<Object> toCleanup = new List<Object>();
 
@@ -988,7 +988,7 @@ namespace KRT.VRCQuestTools.Tests
     // CacheUtility — GetContentCacheKey Int property (2 uncov lines)
     // =========================================================
     [TestFixture]
-    public class CacheUtility_CacheKey_Batch37Tests
+    public class CacheUtility_CacheKeyTests
     {
         [Test]
         public void GetContentCacheKey_MaterialWithIntProperty_IncludesInt()
@@ -1044,7 +1044,7 @@ namespace KRT.VRCQuestTools.Tests
     // TextureUtility.DestroyTexture — 7 uncov lines (755-762)
     // =========================================================
     [TestFixture]
-    public class TextureUtility_DestroyTexture_Batch37Tests
+    public class TextureUtility_DestroyTextureTests
     {
         [Test]
         public void DestroyTexture_RuntimeTexture_DestroysSuccessfully()
@@ -1099,7 +1099,7 @@ namespace KRT.VRCQuestTools.Tests
     // LilToonMaterial.CopyMaterialProperty — 12 uncov lines (465-501)
     // =========================================================
     [TestFixture]
-    public class LilToonMaterial_CopyProperty_Batch37Tests
+    public class LilToonMaterial_CopyPropertyTests
     {
         [Test]
         public void CopyMaterialProperty_CopiesPropertiesBetweenMaterials()
@@ -1151,7 +1151,7 @@ namespace KRT.VRCQuestTools.Tests
     // LilToonMaterial.GetToonLitPlatformOverride — 3 uncov lines (430-432)
     // =========================================================
     [TestFixture]
-    public class LilToonMaterial_ToonLitOverride_Batch37Tests
+    public class LilToonMaterial_ToonLitOverrideTests
     {
         [Test]
         public void GetToonLitPlatformOverride_ReturnsValue()
@@ -1195,7 +1195,7 @@ namespace KRT.VRCQuestTools.Tests
     // ValidationAutomator — Update method (5 uncov lines 53-67)
     // =========================================================
     [TestFixture]
-    public class ValidationAutomator_Batch37Tests
+    public class ValidationAutomator_EdgeCaseTests
     {
         [Test]
         public void Update_CanBeInvoked()
@@ -1224,7 +1224,7 @@ namespace KRT.VRCQuestTools.Tests
     // LilToonMaterial.AdjustEmissionTextureST — 2 uncov lines (518-519)
     // =========================================================
     [TestFixture]
-    public class LilToonMaterial_EmissionST_Batch37Tests
+    public class LilToonMaterial_EmissionSTTests
     {
         [Test]
         public void AdjustEmissionTextureST_InvokesWithoutError()

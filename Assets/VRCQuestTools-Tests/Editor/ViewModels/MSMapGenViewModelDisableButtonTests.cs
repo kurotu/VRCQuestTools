@@ -1,4 +1,4 @@
-// Tests for MSMapGenViewModel property and additional ViewModel coverage.
+// Tests for MSMapGenViewModel DisableGenerateButton property.
 
 using KRT.VRCQuestTools.ViewModels;
 using NUnit.Framework;

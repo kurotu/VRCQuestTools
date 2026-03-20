@@ -18,7 +18,7 @@ using UnityEngine;
 namespace KRT.VRCQuestTools.Models
 {
     [TestFixture]
-    public class LilToonGetterBranchCoverageTests
+    public class LilToonGetterBranchTests
     {
         private static readonly string LilToonShaderName = "Hidden/lilToonOutline";
         private Shader shader;

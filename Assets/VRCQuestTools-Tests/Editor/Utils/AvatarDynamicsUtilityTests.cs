@@ -1,4 +1,4 @@
-// Batch 23: Coverage tests for AvatarConverter deep paths, VRChatAvatar, NdmfPhaseExtension, validators
+// Tests for AvatarConverter deep paths, VRChatAvatar, NdmfPhaseExtension, validators
 // Targets: AvatarConverter (400 uncovered), VRChatAvatar (21), AvatarConverterNdmfPhaseExtension (10),
 //          MissingScriptsRule (25), various remaining gaps
 

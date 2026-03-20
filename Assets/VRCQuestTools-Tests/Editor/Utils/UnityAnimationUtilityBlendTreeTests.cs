@@ -1,4 +1,4 @@
-// Tests for UnityAnimationUtility - Batch 12: covering remaining uncovered methods
+// Tests for UnityAnimationUtility - covering remaining uncovered methods
 
 using System.Collections.Generic;
 using System.Linq;

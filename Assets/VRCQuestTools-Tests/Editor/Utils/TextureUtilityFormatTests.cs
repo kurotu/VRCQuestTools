@@ -1,4 +1,4 @@
-// Tests for TextureUtility - Batch 13: uncovered pure-logic methods
+// Tests for TextureUtility - uncovered pure-logic methods
 
 using System;
 using KRT.VRCQuestTools.Models;

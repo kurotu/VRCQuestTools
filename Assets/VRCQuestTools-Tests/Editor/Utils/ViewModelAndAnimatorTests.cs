@@ -1,6 +1,4 @@
-// Tests for MSMapGenViewModel, AnimatorControllerDuplicator, MaterialWrapperBuilder additional - Batch 13
-
-using System;
+// Tests for MSMapGenViewModel, AnimatorControllerDuplicator, MaterialWrapperBuilder additional - using System;
 using System.Linq;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
@@ -16,7 +14,7 @@ namespace KRT.VRCQuestTools.Tests
     // --- MSMapGenViewModel Tests ---
 
     [TestFixture]
-    public class MSMapGenViewModelBatch13Tests
+    public class MSMapGenViewModelAdditionalTests
     {
         [Test]
         public void DisableGenerateButton_BothNull_ReturnsTrue()
@@ -94,7 +92,7 @@ namespace KRT.VRCQuestTools.Tests
     // --- AnimatorControllerDuplicator Additional Tests ---
 
     [TestFixture]
-    public class AnimatorControllerDuplicatorBatch13Tests
+    public class AnimatorControllerDuplicatorAdditionalTests
     {
         [Test]
         public void Duplicate_EmptyController_CreatesNewInstance()
@@ -314,7 +312,7 @@ namespace KRT.VRCQuestTools.Tests
     // --- MaterialWrapperBuilder Additional Tests ---
 
     [TestFixture]
-    public class MaterialWrapperBuilderBatch13Tests
+    public class MaterialWrapperBuilderAdditionalTests
     {
         private MaterialWrapperBuilder builder;
 
@@ -405,7 +403,7 @@ namespace KRT.VRCQuestTools.Tests
     // --- UnityAnimationUtility Additional Tests ---
 
     [TestFixture]
-    public class UnityAnimationUtilityBatch13Tests
+    public class UnityAnimationUtilityAdditionalTests
     {
         [Test]
         public void GetMaterials_EmptyAnimatorController_ReturnsEmpty()

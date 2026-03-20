@@ -1,4 +1,4 @@
-// Batch 52: Deep coverage tests targeting remaining testable gaps
+// Tests for package compatibility, exceptions, and validation
 // Targets: LegacyPackageException, BreakingPackageException, MissingScriptsRule, VRCSDKUtility network IDs,
 // AvatarConverter RemoveExtraMaterialSlots/exception paths, LilToonMaterial remaining getters,
 // VRCQuestToolsAvatarProcessor, MaterialGeneratorUtility, VirtualLens2Material

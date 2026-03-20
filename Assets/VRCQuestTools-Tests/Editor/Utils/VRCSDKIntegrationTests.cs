@@ -1,4 +1,4 @@
-// Batch 27: Coverage tests targeting remaining uncovered utility methods
+// Integration tests for VRCSDK utility methods and avatar operations
 // VRCSDKUtility (GetFullPathInHierarchy, IsAllowedForFallbackAvatar, GetContentTagLabel,
 //   IsUnsupportedComponentType, GetRootTransform, GetTexturesFromMenu, DuplicateExpressionsMenu,
 //   HasMissingNetworkIds, AssignNetworkIdsToPhysBones, StripeUnusedNetworkIds, IsMaterialAllowedForQuestAvatar,

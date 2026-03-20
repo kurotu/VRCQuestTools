@@ -1,4 +1,4 @@
-// <copyright file="DeepCoverageTests_DeepBoost.cs" company="kurotu">
+// <copyright file="AvatarConverterApplyTests.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -23,10 +23,10 @@ using VRC.SDK3.Avatars.ScriptableObjects;
 namespace KRT.VRCQuestTools.Tests
 {
     /// <summary>
-    /// Batch 44: AvatarConverter.ApplyConvertedMaterials, ConvertAnimationClips, more resize paths.
+    /// Tests for AvatarConverter.ApplyConvertedMaterials, ConvertAnimationClips, and resize paths.
     /// </summary>
     [TestFixture]
-    public class DeepCoverageTests_DeepBoost
+    public class AvatarConverterApplyTests
     {
         private readonly List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 
@@ -75,19 +75,19 @@ namespace KRT.VRCQuestTools.Tests
             {
                 pcType.GetField("onTextureProgress", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
                     ?.SetValue(pc, Delegate.CreateDelegate(texDelegateType,
-                        typeof(DeepCoverageTests_DeepBoost).GetMethod("DummyTextureProgress", BindingFlags.Static | BindingFlags.NonPublic)));
+                        typeof(AvatarConverterApplyTests).GetMethod("DummyTextureProgress", BindingFlags.Static | BindingFlags.NonPublic)));
             }
             if (animDelegateType != null)
             {
                 pcType.GetField("onAnimationClipProgress", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
                     ?.SetValue(pc, Delegate.CreateDelegate(animDelegateType,
-                        typeof(DeepCoverageTests_DeepBoost).GetMethod("DummyAnimClipProgress", BindingFlags.Static | BindingFlags.NonPublic)));
+                        typeof(AvatarConverterApplyTests).GetMethod("DummyAnimClipProgress", BindingFlags.Static | BindingFlags.NonPublic)));
             }
             if (rtDelegateType != null)
             {
                 pcType.GetField("onRuntimeAnimatorProgress", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
                     ?.SetValue(pc, Delegate.CreateDelegate(rtDelegateType,
-                        typeof(DeepCoverageTests_DeepBoost).GetMethod("DummyRTAnimProgress", BindingFlags.Static | BindingFlags.NonPublic)));
+                        typeof(AvatarConverterApplyTests).GetMethod("DummyRTAnimProgress", BindingFlags.Static | BindingFlags.NonPublic)));
             }
 
             return pc;
@@ -387,7 +387,7 @@ namespace KRT.VRCQuestTools.Tests
             var delegateType = typeof(AvatarConverter).GetNestedType("AnimationClipProgressCallback",
                 BindingFlags.NonPublic | BindingFlags.Public);
             var callback = Delegate.CreateDelegate(delegateType,
-                typeof(DeepCoverageTests_DeepBoost).GetMethod("DummyAnimClipProgress",
+                typeof(AvatarConverterApplyTests).GetMethod("DummyAnimClipProgress",
                     BindingFlags.Static | BindingFlags.NonPublic));
 
             LogAssert.ignoreFailingMessages = true;
@@ -457,7 +457,7 @@ namespace KRT.VRCQuestTools.Tests
             var delegateType = typeof(AvatarConverter).GetNestedType("RuntimeAnimatorProgressCallback",
                 BindingFlags.NonPublic | BindingFlags.Public);
             var callback = Delegate.CreateDelegate(delegateType,
-                typeof(DeepCoverageTests_DeepBoost).GetMethod("DummyRTAnimProgress",
+                typeof(AvatarConverterApplyTests).GetMethod("DummyRTAnimProgress",
                     BindingFlags.Static | BindingFlags.NonPublic));
 
             LogAssert.ignoreFailingMessages = true;
@@ -649,7 +649,7 @@ namespace KRT.VRCQuestTools.Tests
             tex.name = "TestTexForSave";
             toCleanup.Add(tex);
 
-            var cacheFile = "test_cache_batch44_" + Guid.NewGuid().ToString("N");
+            var cacheFile = "test_cache__" + Guid.NewGuid().ToString("N");
 
             // TextureConfig is a struct/class in MaterialGeneratorUtility
             var configType = mgType.GetNestedType("TextureConfig", BindingFlags.NonPublic);
@@ -671,11 +671,11 @@ namespace KRT.VRCQuestTools.Tests
                 {
                     MobileTextureFormat.ASTC_6x6,
                     false,
-                    "Assets/VRCQuestTools-Tests/Temp_Batch44",
+                    "Assets/VRCQuestTools-Tests/Temp_",
                     config,
                     tex,
                     cacheFile,
-                    "Assets/VRCQuestTools-Tests/Temp_Batch44/test.png",
+                    "Assets/VRCQuestTools-Tests/Temp_/test.png",
                     null,
                 });
                 if (result != null)

@@ -493,7 +493,7 @@ namespace KRT.VRCQuestTools
     }
 
     [TestFixture]
-    internal class NdmfErrorClassFullCoverageTests
+    internal class NdmfErrorClassTests
     {
         private System.Collections.Generic.List<UnityEngine.Object> objectsToCleanup = new System.Collections.Generic.List<UnityEngine.Object>();
 
@@ -507,7 +507,7 @@ namespace KRT.VRCQuestTools
             objectsToCleanup.Clear();
         }
 
-        // --- PackageCompatibilityError full property coverage ---
+        // --- PackageCompatibilityError full property tests ---
 
         [Test]
         public void PackageCompatibilityError_Localizer_IsNotNull()
@@ -548,7 +548,7 @@ namespace KRT.VRCQuestTools
             Assert.IsNotNull(subst[0]);
         }
 
-        // --- MaterialConversionError full property coverage ---
+        // --- MaterialConversionError full property tests ---
 
         [Test]
         public void MaterialConversionError_Localizer_IsNotNull()
@@ -634,7 +634,7 @@ namespace KRT.VRCQuestTools
             Assert.AreEqual("MaterialConversionException", details[2]);
         }
 
-        // --- ObjectConversionError full property coverage ---
+        // --- ObjectConversionError full property tests ---
 
         [Test]
         public void ObjectConversionError_Localizer_IsNotNull()
@@ -681,7 +681,7 @@ namespace KRT.VRCQuestTools
             Assert.IsFalse(string.IsNullOrEmpty((string)NdmfTestHelper.GetProperty(error, "DetailsKey")));
         }
 
-        // --- TargetMaterialNullError full coverage ---
+        // --- TargetMaterialNullError full tests ---
 
         [Test]
         public void TargetMaterialNullError_Localizer_IsNotNull()
@@ -707,7 +707,7 @@ namespace KRT.VRCQuestTools
             Assert.IsFalse(string.IsNullOrEmpty((string)NdmfTestHelper.GetProperty(error, "TitleKey")));
         }
 
-        // --- ReplacementMaterialError full coverage ---
+        // --- ReplacementMaterialError full tests ---
 
         [Test]
         public void ReplacementMaterialError_Localizer_IsNotNull()
@@ -751,7 +751,7 @@ namespace KRT.VRCQuestTools
             Assert.IsFalse(string.IsNullOrEmpty((string)NdmfTestHelper.GetProperty(error, "DetailsKey")));
         }
 
-        // --- UnsupportedTextureFormatError full coverage ---
+        // --- UnsupportedTextureFormatError full tests ---
 
         [Test]
         public void UnsupportedTextureFormatError_Localizer_IsNotNull()
@@ -786,7 +786,7 @@ namespace KRT.VRCQuestTools
             Assert.IsFalse(string.IsNullOrEmpty((string)NdmfTestHelper.GetProperty(error, "DetailsKey")));
         }
 
-        // --- UnknownTextureFormatError full coverage ---
+        // --- UnknownTextureFormatError full tests ---
 
         [Test]
         public void UnknownTextureFormatError_Localizer_IsNotNull()
@@ -821,7 +821,7 @@ namespace KRT.VRCQuestTools
             Assert.IsFalse(string.IsNullOrEmpty((string)NdmfTestHelper.GetProperty(error, "DetailsKey")));
         }
 
-        // --- MaterialSwapNullError full coverage ---
+        // --- MaterialSwapNullError full tests ---
 
         [Test]
         public void MaterialSwapNullError_Localizer_IsNotNull()
@@ -862,7 +862,7 @@ namespace KRT.VRCQuestTools
             Assert.IsFalse(string.IsNullOrEmpty((string)NdmfTestHelper.GetProperty(error, "DetailsKey")));
         }
 
-        // --- MeshFlipperMaskMissingError full coverage ---
+        // --- MeshFlipperMaskMissingError full tests ---
 
         [Test]
         public void MeshFlipperMaskMissingError_Localizer_IsNotNull()
@@ -900,7 +900,7 @@ namespace KRT.VRCQuestTools
             Assert.IsFalse(string.IsNullOrEmpty((string)NdmfTestHelper.GetProperty(error, "DetailsKey")));
         }
 
-        // --- MeshFlipperMaskNotReadableError full coverage ---
+        // --- MeshFlipperMaskNotReadableError full tests ---
 
         [Test]
         public void MeshFlipperMaskNotReadableError_Localizer_IsNotNull()
@@ -947,7 +947,7 @@ namespace KRT.VRCQuestTools
             Assert.IsFalse(string.IsNullOrEmpty((string)NdmfTestHelper.GetProperty(error, "DetailsKey")));
         }
 
-        // --- NdmfComponentRemoverWarning full coverage ---
+        // --- NdmfComponentRemoverWarning full tests ---
 
         [Test]
         public void NdmfComponentRemoverWarning_Localizer_IsNotNull()

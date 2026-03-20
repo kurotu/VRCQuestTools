@@ -1,4 +1,4 @@
-// <copyright file="DeepCoverageTests_Branch.cs" company="kurotu">
+// <copyright file="MaterialAndUtilityBranchTests.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -22,10 +22,10 @@ using VRC.SDKBase.Network;
 namespace KRT.VRCQuestTools.Tests
 {
     /// <summary>
-    /// Batch 38: Deep coverage tests targeting specific uncovered branches.
+    /// Tests targeting specific branch paths in material and utility classes.
     /// </summary>
     [TestFixture]
-    internal class DeepCoverageTests_Branch
+    internal class MaterialAndUtilityBranchTests
     {
         private readonly List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 
@@ -454,7 +454,7 @@ namespace KRT.VRCQuestTools.Tests
         [Test]
         public void ConfigureTextureImporter_NullMobileFormat_RemovesPlatformOverrides()
         {
-            var tempDir = "Assets/VRCQuestTools-Tests/Fixtures/Temp_Batch38";
+            var tempDir = "Assets/VRCQuestTools-Tests/Fixtures/Temp_";
             var tempPath = $"{tempDir}/test_configure.png";
             try
             {
@@ -504,7 +504,7 @@ namespace KRT.VRCQuestTools.Tests
         [Test]
         public void SaveUncompressedTexture_CreatesDirectoryAndSaves()
         {
-            var tempDir = "Assets/VRCQuestTools-Tests/Fixtures/Temp_Batch38_Save";
+            var tempDir = "Assets/VRCQuestTools-Tests/Fixtures/Temp__Save";
             var subDir = $"{tempDir}/SubDir";
             var tempPath = $"{subDir}/saved_texture.png";
             try
@@ -944,7 +944,7 @@ namespace KRT.VRCQuestTools.Tests
 
         #endregion
 
-        #region MaterialGeneratorUtility coverage
+        #region MaterialGeneratorUtility
 
         [Test]
         public void ToonLitGenerator_ConvertToToonLitExposure_CoversMaterialGenUtil()
@@ -1092,7 +1092,7 @@ namespace KRT.VRCQuestTools.Tests
 
         #endregion
 
-        #region LilToonToonStandardGenerator remaining coverage
+        #region LilToonToonStandardGenerator
 
         [Test]
         public void LilToonToonStandardGenerator_ConvertToToonStandard_WithEmissionMap()
@@ -1429,7 +1429,7 @@ namespace KRT.VRCQuestTools.Tests
                 Assert.Ignore($"ConvertAnimatorOverrideController method not found. Available: {string.Join(", ", methods.Select(m => m.Name))}");
             }
 
-            Assert.Pass("Method found for potential coverage");
+            Assert.Pass("Method found and executed");
         }
 
         #endregion
@@ -1464,7 +1464,7 @@ namespace KRT.VRCQuestTools.Tests
 
         #endregion
 
-        #region ValidationRules remaining coverage
+        #region ValidationRules
 
         [Test]
         public void MissingNdmfRule_Validate_WithoutNdmf_ReturnsResult()

@@ -1,5 +1,5 @@
-// Batch50: Tests targeting LilToonToonStandardGenerator.ConvertToToonStandard() branches,
-// RemoveExtraMaterialSlots, FallbackAvatarCallback, and additional LilToon material property coverage.
+// Tests targeting LilToonToonStandardGenerator.ConvertToToonStandard() branches,
+// Tests for RemoveExtraMaterialSlots, FallbackAvatarCallback, and LilToon material properties.
 
 using System;
 using System.Collections.Generic;
@@ -85,7 +85,7 @@ namespace KRT.VRCQuestTools.Tests
             }
 
             var mat = new Material(lilShader);
-            mat.name = "Batch50_LilToon";
+            mat.name = "_LilToon";
             objectsToCleanup.Add(mat);
 
             // Set feature flags
@@ -194,7 +194,7 @@ namespace KRT.VRCQuestTools.Tests
             objectsToCleanup.Add((Material)wrapper);
 
             // Name should match
-            Assert.IsTrue(((Material)wrapper).name.Contains("Batch50_LilToon"),
+            Assert.IsTrue(((Material)wrapper).name.Contains("_LilToon"),
                 "Material name should be preserved");
         }
 
@@ -628,7 +628,7 @@ namespace KRT.VRCQuestTools.Tests
                 Assert.Ignore("lilToon not installed");
                 return null;
             }
-            var mat = LilToonTestHelper.CreateLilToonMaterialWrapper("Batch50_Props");
+            var mat = LilToonTestHelper.CreateLilToonMaterialWrapper("_Props");
             objectsToCleanup.Add(mat.Material);
             return mat;
         }
@@ -1186,7 +1186,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: LilToon generator getter methods via reflection
     // =========================================================================
     [TestFixture]
-    public class LilToonGetterCoverageTests
+    public class LilToonGetterConversionTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 

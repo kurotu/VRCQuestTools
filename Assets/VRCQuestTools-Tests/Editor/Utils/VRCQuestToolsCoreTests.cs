@@ -1,4 +1,4 @@
-// Batch 32: High-impact coverage tests targeting TextureUtility, VRCQuestTools entry point,
+// Core tests for TextureUtility, VRCQuestTools entry point,
 // AvatarConverter private methods, and FallbackAvatarCallback branches.
 
 using System;
@@ -1025,7 +1025,7 @@ namespace KRT.VRCQuestTools.Tests
     // MaterialWrapperBuilder - Build with lilToon shader
     // =========================================================
     [TestFixture]
-    public class MaterialWrapperBuilder_Build_Batch32Tests
+    public class MaterialWrapperBuilder_BuildTests
     {
         private MaterialWrapperBuilder builder;
 
@@ -1189,7 +1189,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     // =========================================================
-    // VRCSDKUtility - Additional Coverage Tests
+    // VRCSDKUtility - Additional Tests
     // =========================================================
     [TestFixture]
     public class VRCSDKUtility_ExtendedTests

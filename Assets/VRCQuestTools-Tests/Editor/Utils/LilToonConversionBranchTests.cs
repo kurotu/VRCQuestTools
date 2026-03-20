@@ -1,4 +1,4 @@
-// <copyright file="LilToonGeneratorCoverageTests.cs" company="kurotu">
+// <copyright file="LilToonConversionBranchTests.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -15,10 +15,10 @@ using UnityEngine;
 namespace KRT.VRCQuestTools.Tests
 {
     /// <summary>
-    /// Batch 39: Thorough LilToonToonStandardGenerator ConvertToToonStandard coverage.
+    /// Tests for LilToonToonStandardGenerator ConvertToToonStandard branch paths.
     /// </summary>
     [TestFixture]
-    internal class LilToonGeneratorCoverageTests
+    internal class LilToonConversionBranchTests
     {
         private readonly List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 
@@ -690,7 +690,7 @@ namespace KRT.VRCQuestTools.Tests
 
         #endregion
 
-        #region LilToonMaterial property coverage for ConvertToToonStandard inputs
+        #region LilToonMaterial properties for ConvertToToonStandard inputs
 
         [Test]
         public void LilToonMaterial_EmissionMapTextureScale_ReturnsValue()
