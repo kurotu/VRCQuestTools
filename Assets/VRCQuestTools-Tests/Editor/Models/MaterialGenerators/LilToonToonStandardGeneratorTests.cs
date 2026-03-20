@@ -241,7 +241,6 @@ namespace KRT.VRCQuestTools.Models
             {
                 generateQuestTextures = true,
             };
-            settings.SetAllFeatures(false);
 
             var lilMat = new LilToonMaterial(sourceMaterial.Object);
             var generator = new LilToonToonStandardGenerator(lilMat, settings, null);
@@ -414,7 +413,6 @@ namespace KRT.VRCQuestTools.Models
             var settings = new ToonStandardConvertSettings
             {
                 generateQuestTextures = false,
-                useEmission = true,
             };
 
             var lilMat = new LilToonMaterial(sourceMaterial.Object);
@@ -569,7 +567,6 @@ namespace KRT.VRCQuestTools.Models
             {
                 generateQuestTextures = true,
             };
-            settings.SetAllFeatures(false);
 
             var lilMat11 = new LilToonMaterial(mat11.Object);
             var gen11 = new LilToonToonStandardGenerator(lilMat11, settings, null);
@@ -658,7 +655,6 @@ namespace KRT.VRCQuestTools.Models
             var settings = new ToonStandardConvertSettings
             {
                 generateQuestTextures = false,
-                useOcclusion = true,
             };
 
             var lilMat = new LilToonMaterial(sourceMaterial.Object);
