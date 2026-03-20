@@ -89,6 +89,8 @@ namespace KRT.VRCQuestTools.Models
                     var newMaterial = new ToonStandardMaterialWrapper();
                     newMaterial.Name = material.Material.name;
                     newMaterial.MainTexture = newMat.mainTexture;
+                    newMaterial.MainTextureScale = newMat.mainTextureScale;
+                    newMaterial.MainTextureOffset = newMat.mainTextureOffset;
                     newMaterial.ShadowRamp = settings.fallbackShadowRamp;
                     completion?.Invoke(newMaterial);
                 });
@@ -107,6 +109,7 @@ namespace KRT.VRCQuestTools.Models
                     {
                         newMaterial.MainTexture = t;
                         newMaterial.MainColor = new Color(1, 1, 1, 1);
+                        (newMaterial.MainTextureScale, newMaterial.MainTextureOffset) = GetMainTextureST();
                     }).WaitForCompletion();
                 }
                 else
@@ -313,6 +316,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Main color.</returns>
         protected abstract Color GetMainColor();
+
+        /// <summary>
+        /// Gets the main texture scale and offset of the material.
+        /// </summary>
+        /// <returns>Scale and offset.</returns>
+        protected abstract (Vector2 Scale, Vector2 Offset) GetMainTextureST();
 
         /// <summary>
         /// Gets the material should use normal map.

@@ -119,6 +119,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetMainTextureST()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override ToonStandardMaterialWrapper.MatcapTypeMode GetMapcapType()
         {
             throw new NotImplementedException();

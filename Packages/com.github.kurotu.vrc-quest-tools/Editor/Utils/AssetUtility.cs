@@ -83,6 +83,17 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Gets whether Poiyomi is imported.
+        /// </summary>
+        /// <returns>true when Poiyomi Toon shader and Poi.Tools editor type are imported.</returns>
+        internal static bool IsPoiyomiImported()
+        {
+            var shader = Shader.Find(".poiyomi/Poiyomi Toon");
+            var poiType = SystemUtility.GetTypeByName("Poi.Tools.PoiImportExportChecker");
+            return (shader != null) && (poiType != null);
+        }
+
+        /// <summary>
         /// Gets whether lilToon supports shadow ramp baking.
         /// </summary>
         /// <returns>true for lilToon 1.10.0 or later.</returns>

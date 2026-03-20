@@ -56,6 +56,12 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </summary>
         internal float Metallic => Material.GetFloat("_Metallic");
 
+        /// <inheritdoc/>
+        internal override Vector2 MainTextureScale => Material.GetTextureScale("_MainTex");
+
+        /// <inheritdoc/>
+        internal override Vector2 MainTextureOffset => Material.GetTextureOffset("_MainTex");
+
         /// <summary>
         /// Gets minimum brightness.
         /// </summary>
@@ -138,6 +144,16 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Gets the emission map.
         /// </summary>
         internal Texture EmissionMap => Material.GetTexture("_EmissionMap");
+
+        /// <summary>
+        /// Gets the emission map texture scale.
+        /// </summary>
+        internal Vector2 EmissionMapTextureScale => Material.GetTextureScale("_EmissionMap");
+
+        /// <summary>
+        /// Gets the emission map texture offset.
+        /// </summary>
+        internal Vector2 EmissionMapTextureOffset => Material.GetTextureOffset("_EmissionMap");
 
         /// <summary>
         /// Gets or sets the emission color.
@@ -639,6 +655,23 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
         }
 
+        private static void AdjustEmissionTextureST(Material baker, string texName, Material source)
+        {
+            var mainScale = source.mainTextureScale;
+            var mainOffset = source.mainTextureOffset;
+            if (Mathf.Approximately(mainScale.x, 0f) || Mathf.Approximately(mainScale.y, 0f))
+            {
+                return;
+            }
+
+            var emScale = source.GetTextureScale(texName);
+            var emOffset = source.GetTextureOffset(texName);
+            var adjScale = new Vector2(emScale.x / mainScale.x, emScale.y / mainScale.y);
+            var adjOffset = new Vector2(emOffset.x - (mainOffset.x * adjScale.x), emOffset.y - (mainOffset.y * adjScale.y));
+            baker.SetTextureScale(texName, adjScale);
+            baker.SetTextureOffset(texName, adjOffset);
+        }
+
         /// <summary>
         /// Additional step for emission.
         /// </summary>
@@ -705,6 +738,17 @@ namespace KRT.VRCQuestTools.Models.Unity
                 baker.Object.SetTexture(emission2ndMap.name, srcEmission2ndMap.Object);
                 baker.Object.SetTexture(emission2ndBlendMask.name, srcEmission2ndBlendMask.Object);
                 baker.Object.SetTexture(emission2ndGradTex.name, srcEmission2ndGradTex.Object);
+
+                // Adjust emission UV tiling relative to main UV tiling.
+                // The baked texture is rendered at runtime by Toon Lit using the original
+                // mainTextureScale and mainTextureOffset. Emission ST must be pre-adjusted
+                // so it samples from the correct UV coordinates:
+                //   adjScale  = emScale / mainScale
+                //   adjOffset = emOffset - mainOffset * adjScale
+                AdjustEmissionTextureST(baker.Object, emissionMap.name, material);
+                AdjustEmissionTextureST(baker.Object, emissionBlendMask.name, material);
+                AdjustEmissionTextureST(baker.Object, emission2ndMap.name, material);
+                AdjustEmissionTextureST(baker.Object, emission2ndBlendMask.name, material);
 
                 return TextureUtility.BakeTexture(main, true, width, height, true, baker.Object, completion);
             }

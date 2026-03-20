@@ -119,6 +119,7 @@ jobs:
       - run: vrc-get install -y com.vrchat.avatars ${{ matrix.sdk.vrcsdkVersion }}
 
       - run: vrc-get repo add https://vpm.nadena.dev/vpm-prerelease.json
+      - run: vrc-get repo add https://poiyomi.github.io/vpm/index.json
       - run: if [ -n "${{ matrix.ndmfVersion}}" ]; then scripts/vrc-get-install.sh nadena.dev.ndmf ${{ matrix.ndmfVersion }}; fi
 
       - run: vrc-get info project
