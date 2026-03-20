@@ -88,7 +88,7 @@ namespace KRT.VRCQuestTools.Tests.NDMF
             try
             {
                 var swap = go.AddComponent<MaterialSwap>();
-                swap.materialMappings = new MaterialSwap.MaterialMapping[]
+                swap.materialMappings = new System.Collections.Generic.List<MaterialSwap.MaterialMapping>
                 {
                     new MaterialSwap.MaterialMapping(),
                 };
