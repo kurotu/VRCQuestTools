@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Tests
 {
     // ========== LilToonMaterial Rim/Outline Properties ==========
     [TestFixture]
-    public class Batch53_LilToonRimOutlineTests
+    public class LilToonRimOutlineTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -149,7 +149,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== VirtualLens2Material Tests ==========
     [TestFixture]
-    public class Batch53_VirtualLens2MaterialTests
+    public class VirtualLens2MaterialTests_LilProperty
     {
         [Test]
         public void GenerateToonLitImage_UnlitPreview_ReturnsBlackTexture()
@@ -225,7 +225,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== VRCSDKUtility Additional Path Tests ==========
     [TestFixture]
-    public class Batch53_VRCSDKUtilityPathTests
+    public class VRCSDKUtilityPathTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -316,7 +316,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== PhysBonesRemoveViewModel Tests ==========
     [TestFixture]
-    public class Batch53_PhysBonesRemoveViewModelTests
+    public class PhysBonesRemoveViewModelTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -615,7 +615,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== ActualPerformanceCallback Tests ==========
     [TestFixture]
-    public class Batch53_ActualPerformanceCallbackTests
+    public class ActualPerformanceCallbackTests_LilProperty
     {
         [Test]
         public void CallbackOrder_IsMaxValue()
@@ -650,7 +650,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== VRChatAvatar Additional Property Tests ==========
     [TestFixture]
-    public class Batch53_VRChatAvatarPropertyTests
+    public class VRChatAvatarPropertyTests_LilProperty
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -781,7 +781,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== VRCQuestToolsSettings Tests ==========
     [TestFixture]
-    public class Batch53_SettingsTests
+    public class SettingsTests
     {
         [Test]
         public void DisplayLanguage_GetSet()
@@ -845,7 +845,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== AssetUtility LoadAssetByGUID Tests ==========
     [TestFixture]
-    public class Batch53_AssetUtilityLoadTests
+    public class AssetUtilityLoadTests
     {
         [Test]
         public void LoadAssetByGUID_InvalidGUID_ReturnsNull()
@@ -889,7 +889,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== AvatarConverter ConvertForQuestInPlace Tests ==========
     [TestFixture]
-    public class Batch53_AvatarConverterInPlaceTests
+    public class AvatarConverterInPlaceTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -949,7 +949,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== ClearSharedBlackTextureCache via reflection ==========
     [TestFixture]
-    public class Batch53_AvatarConverterCacheTests
+    public class AvatarConverterCacheTests_LilProperty
     {
         [Test]
         public void ClearSharedBlackTextureCache_DoesNotThrow()
@@ -963,7 +963,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== MaterialConvertSettingsTypes Additional Tests ==========
     [TestFixture]
-    public class Batch53_MaterialConvertSettingsTypesTests
+    public class MaterialConvertSettingsTypesTests_LilProperty
     {
         [Test]
         public void GetDefaultConvertTypePopups_ForDefault_ExcludesMaterialReplace()
@@ -999,7 +999,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== NotificationItem Tests ==========
     [TestFixture]
-    public class Batch53_NotificationItemTests
+    public class NotificationItemTests_LilProperty
     {
         [Test]
         public void NotificationItem_Callback_CanBeInvoked()

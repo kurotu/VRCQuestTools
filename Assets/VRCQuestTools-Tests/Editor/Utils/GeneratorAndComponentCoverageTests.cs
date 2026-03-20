@@ -21,7 +21,7 @@ namespace KRT.VRCQuestTools.Tests
     // GenericToonStandardGenerator - all protected methods
     // ====================================================
     [TestFixture]
-    public class Batch18_GenericToonStandardGeneratorTests
+    public class GenericToonStandardGeneratorTests_GenComponent
     {
         private Type generatorType;
         private object generator;
@@ -276,7 +276,7 @@ namespace KRT.VRCQuestTools.Tests
     // CacheUtility.TextureCache tests
     // ====================================================
     [TestFixture]
-    public class Batch18_TextureCacheTests
+    public class TextureCacheTests_GenComponent
     {
         [Test]
         public void TextureCache_Constructor_SetsFields()
@@ -394,7 +394,7 @@ namespace KRT.VRCQuestTools.Tests
     // ResultRequest (non-generic) tests
     // ====================================================
     [TestFixture]
-    public class Batch18_ResultRequestTests
+    public class ResultRequestTests_GenComponent
     {
         [Test]
         public void ResultRequest_Constructor_InvokesCompletion()
@@ -432,7 +432,7 @@ namespace KRT.VRCQuestTools.Tests
     // TextureCPUReadbackRequest tests
     // ====================================================
     [TestFixture]
-    public class Batch18_TextureCPUReadbackRequestTests
+    public class TextureCPUReadbackRequestTests_GenComponent
     {
         [Test]
         public void TextureCPUReadbackRequest_ReadsPixels()
@@ -533,7 +533,7 @@ namespace KRT.VRCQuestTools.Tests
     // MSMapGenViewModel tests
     // ====================================================
     [TestFixture]
-    public class Batch18_MSMapGenViewModelTests
+    public class MSMapGenViewModelTests_GenComponent
     {
         [Test]
         public void DisableGenerateButton_BothNull_ReturnsTrue()
@@ -609,7 +609,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCQuestTools main entry tests
     // ====================================================
     [TestFixture]
-    public class Batch18_VRCQuestToolsEntryTests
+    public class VRCQuestToolsEntryTests_GenComponent
     {
         [Test]
         public void Version_IsNotEmpty()
@@ -651,7 +651,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverterNdmfPhaseExtension tests
     // ====================================================
     [TestFixture]
-    public class Batch18_AvatarConverterNdmfPhaseExtensionTests
+    public class AvatarConverterNdmfPhaseExtensionTests_GenComponent
     {
         [Test]
         public void AvatarConverterNdmfPhaseExtension_CanBeInstantiated()
@@ -671,7 +671,7 @@ namespace KRT.VRCQuestTools.Tests
     // Mock_AvatarPerformanceStatsLevelSet tests
     // ====================================================
     [TestFixture]
-    public class Batch18_MockPerformanceStatsLevelSetTests
+    public class MockPerformanceStatsLevelSetTests
     {
         [Test]
         public void MockAvatarPerformanceStatsLevelSet_CanBeCreated()
@@ -693,7 +693,7 @@ namespace KRT.VRCQuestTools.Tests
     // Additional ComponentRemover gap tests
     // ====================================================
     [TestFixture]
-    public class Batch18_ComponentRemoverGapTests
+    public class ComponentRemoverGapTests
     {
         [Test]
         public void ComponentRemover_RemoveUnsupportedComponentsInChildren_EmptyAvatar()
@@ -716,7 +716,7 @@ namespace KRT.VRCQuestTools.Tests
     // MeshFlipperMaskNotReadableException test
     // ====================================================
     [TestFixture]
-    public class Batch18_MeshFlipperExceptionTests
+    public class MeshFlipperExceptionTests
     {
         [Test]
         public void MeshFlipperMaskNotReadableException_CanBeCreated()
@@ -754,7 +754,7 @@ namespace KRT.VRCQuestTools.Tests
     // IMaterialConversionComponent interface coverage
     // ====================================================
     [TestFixture]
-    public class Batch18_IMaterialConversionComponentTests
+    public class IMaterialConversionComponentTests
     {
         [Test]
         public void IMaterialConversionComponent_InterfaceExists()
@@ -768,7 +768,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCPhysBoneProviderBase uncovered method
     // ====================================================
     [TestFixture]
-    public class Batch18_VRCPhysBoneProviderBaseTests
+    public class VRCPhysBoneProviderBaseTests_GenComponent
     {
         [Test]
         public void VRCPhysBoneProviderBase_TypeExists()
@@ -782,7 +782,7 @@ namespace KRT.VRCQuestTools.Tests
     // MenuIconResizer component tests
     // ====================================================
     [TestFixture]
-    public class Batch18_MenuIconResizerTests
+    public class MenuIconResizerTests_GenComponent
     {
         [Test]
         public void MenuIconResizer_CanBeAdded()
@@ -811,7 +811,7 @@ namespace KRT.VRCQuestTools.Tests
     // NdmfUtility tests
     // ====================================================
     [TestFixture]
-    public class Batch18_NdmfUtilityTests
+    public class NdmfUtilityTests_GenComponent
     {
         [Test]
         public void NdmfUtility_TypeExists()
@@ -828,7 +828,7 @@ namespace KRT.VRCQuestTools.Tests
     // ValidationAutomator additional tests
     // ====================================================
     [TestFixture]
-    public class Batch18_ValidationAutomatorTests
+    public class ValidationAutomatorTests_GenComponent
     {
         [Test]
         public void ValidationAutomator_TypeExists()
@@ -842,7 +842,7 @@ namespace KRT.VRCQuestTools.Tests
     // MaterialConversionGUI more coverage
     // ====================================================
     [TestFixture]
-    public class Batch18_MaterialConversionGUITests
+    public class MaterialConversionGUITests_GenComponent
     {
         [Test]
         public void MaterialConversionGUI_TypeExists()
@@ -856,7 +856,7 @@ namespace KRT.VRCQuestTools.Tests
     // I18n coverage (6 uncovered lines)
     // ====================================================
     [TestFixture]
-    public class Batch18_I18nTests
+    public class I18nTests
     {
         [Test]
         public void I18n_SupportsMultipleLanguages()
@@ -878,7 +878,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverterSettings uncovered lines
     // ====================================================
     [TestFixture]
-    public class Batch18_AvatarConverterSettingsGapTests
+    public class AvatarConverterSettingsGapTests
     {
         [Test]
         public void AvatarConverterSettings_DefaultSettings()
@@ -903,7 +903,7 @@ namespace KRT.VRCQuestTools.Tests
     // VPMService tests
     // ====================================================
     [TestFixture]
-    public class Batch18_VPMServiceTests
+    public class VPMServiceTests_GenComponent
     {
         [Test]
         public void VPMService_TypeExists()
@@ -917,7 +917,7 @@ namespace KRT.VRCQuestTools.Tests
     // Additional VRCQuestToolsSettings coverage
     // ====================================================
     [TestFixture]
-    public class Batch18_VRCQuestToolsSettingsTests
+    public class VRCQuestToolsSettingsTests_GenComponent
     {
         [Test]
         public void Settings_SetValues_Persist()

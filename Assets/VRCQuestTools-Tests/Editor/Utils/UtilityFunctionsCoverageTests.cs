@@ -22,7 +22,7 @@ using UBuildTarget = UnityEditor.BuildTarget;
 namespace KRT.VRCQuestTools.Tests
 {
     [TestFixture]
-    public class Batch21_VRCSDKUtilityTests
+    public class VRCSDKUtilityTests_UtilFunc
     {
         [Test]
         public void IsAvatarRoot_NullObject_ReturnsFalse()
@@ -825,7 +825,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch21_TextureUtilityTests
+    public class TextureUtilityTests_UtilFunc
     {
         [Test]
         public void GetCompressionFormat_NoOverride_ReturnsASTC6x6()
@@ -1302,7 +1302,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch21_UnityAnimationUtilityTests
+    public class UnityAnimationUtilityTests_UtilFunc
     {
         [Test]
         public void GetMaterials_EmptyController_ReturnsEmpty()
@@ -1480,7 +1480,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch21_FallbackAvatarCallbackTests
+    public class FallbackAvatarCallbackTests_UtilFunc
     {
         private static Type GetFallbackCallbackType()
         {
@@ -1625,7 +1625,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch21_IsProxyAnimationClipTests
+    public class IsProxyAnimationClipTests
     {
         [Test]
         public void IsProxyAnimationClip_UnsavedClip_ReturnsFalse()
@@ -1643,7 +1643,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch21_ExtraTextureTests
+    public class ExtraTextureTests
     {
         [Test]
         public void IsKnownTextureFormat_AllUncompressed()

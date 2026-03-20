@@ -19,7 +19,7 @@ namespace KRT.VRCQuestTools.Tests
 {
     // ========== PlatformOverride method tests ==========
     [TestFixture]
-    public class Batch57_PlatformOverrideTests
+    public class PlatformOverrideTests
     {
         private static readonly Type GeneratorType = SystemUtility.GetTypeByName("KRT.VRCQuestTools.Models.LilToonToonStandardGenerator");
         private static readonly Type SettingsType = typeof(ToonStandardConvertSettings);
@@ -314,7 +314,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== Complex branch coverage for Get* methods ==========
     [TestFixture]
-    public class Batch57_ComplexBranchTests
+    public class ComplexBranchTests
     {
         private static readonly Type GeneratorType = SystemUtility.GetTypeByName("KRT.VRCQuestTools.Models.LilToonToonStandardGenerator");
 
@@ -849,7 +849,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== AssetUtility tests ==========
     [TestFixture]
-    public class Batch57_AssetUtilityTests
+    public class AssetUtilityTests_PlatOverride
     {
         [Test]
         public void IsDynamicBoneImported_ReturnsBool()
@@ -912,7 +912,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== FallbackAvatarCallback tests ==========
     [TestFixture]
-    public class Batch57_FallbackAvatarCallbackTests
+    public class FallbackAvatarCallbackTests_PlatOverride
     {
         private static readonly Type CallbackType = SystemUtility.GetTypeByName("KRT.VRCQuestTools.NonDestructive.FallbackAvatarCallback");
 
@@ -1050,7 +1050,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== MissingScriptsRule / MissingNdmfRule tests ==========
     [TestFixture]
-    public class Batch57_ValidationRuleTests
+    public class ValidationRuleTests_PlatOverride
     {
         [Test]
         public void MissingScriptsRule_Validate_InactiveAvatar_ReturnsNull()
@@ -1142,7 +1142,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== LilToonMaterial remaining property tests ==========
     [TestFixture]
-    public class Batch57_LilToonMaterialRemainingProps
+    public class LilToonMaterialRemainingProps
     {
         private LilToonMaterial CreateLilToon()
         {

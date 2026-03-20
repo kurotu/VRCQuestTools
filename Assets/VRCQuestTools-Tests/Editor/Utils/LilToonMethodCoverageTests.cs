@@ -20,7 +20,7 @@ namespace KRT.VRCQuestTools.Tests
 {
     // ========== LilToonToonStandardGenerator Get*() Additional Methods ==========
     [TestFixture]
-    public class Batch55_LilToonGeneratorGetMethodsTests
+    public class LilToonGeneratorGetMethodsTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -569,7 +569,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== LilToonMaterial Static Utility Tests ==========
     [TestFixture]
-    public class Batch55_LilToonMaterialUtilityTests
+    public class LilToonMaterialUtilityTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -725,7 +725,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== VRCQuestToolsSettings Additional Property Tests ==========
     [TestFixture]
-    public class Batch55_VRCQuestToolsSettingsTests
+    public class VRCQuestToolsSettingsTests_LilMethod
     {
         [Test]
         public void SkippedVersion_GetSet_RoundTrips()
@@ -815,7 +815,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== MissingScriptsRule with Missing Components ==========
     [TestFixture]
-    public class Batch55_MissingScriptsRuleTests
+    public class MissingScriptsRuleTests_LilMethod
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -871,7 +871,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== FallbackAvatarCallback Additional Branches ==========
     [TestFixture]
-    public class Batch55_FallbackAvatarCallbackTests
+    public class FallbackAvatarCallbackTests_LilMethod
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
         private System.Type pipelineManagerType;
@@ -978,7 +978,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== LilToonToonStandardGenerator GetMainTexturePlatformOverride ==========
     [TestFixture]
-    public class Batch55_LilToonGeneratorPlatformOverrideTests
+    public class LilToonGeneratorPlatformOverrideTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 

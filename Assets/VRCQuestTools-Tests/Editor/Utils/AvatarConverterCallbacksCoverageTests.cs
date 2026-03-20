@@ -20,7 +20,7 @@ namespace KRT.VRCQuestTools.Tests
 {
     // ========== AvatarConverter Tests ==========
     [TestFixture]
-    public class Batch16_AvatarConverterTests
+    public class AvatarConverterTests
     {
         private AvatarConverter CreateConverter()
         {
@@ -511,7 +511,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== GenericToonStandardGenerator Tests ==========
     [TestFixture]
-    public class Batch16_GenericToonStandardGeneratorTests
+    public class GenericToonStandardGeneratorTests_Callbacks
     {
         private GenericToonStandardGenerator CreateGenerator(Material sourceMaterial = null)
         {
@@ -759,7 +759,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== FallbackAvatarCallback Tests ==========
     [TestFixture]
-    public class Batch16_FallbackAvatarCallbackTests
+    public class FallbackAvatarCallbackTests_Callbacks
     {
         [Test]
         public void CallbackOrder_IsNegative100000()
@@ -824,7 +824,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== ActualPerformanceCallback Tests ==========
     [TestFixture]
-    public class Batch16_ActualPerformanceCallbackTests
+    public class ActualPerformanceCallbackTests_Callbacks
     {
         [Test]
         public void CallbackOrder_IsIntMaxValue()
@@ -850,7 +850,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== ComponentUtility Tests ==========
     [TestFixture]
-    public class Batch16_ComponentUtilityTests
+    public class ComponentUtilityTests_Callbacks
     {
         [Test]
         public void GetPrimaryMaterialConversionComponent_WithAvatarConverterSettings_ReturnsIt()
@@ -950,7 +950,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== MaterialConversionSettings Component Tests ==========
     [TestFixture]
-    public class Batch16_MaterialConversionSettingsTests
+    public class MaterialConversionSettingsTests_Callbacks
     {
         [Test]
         public void DefaultValues_AreCorrect()
@@ -1042,7 +1042,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== AdditionalMaterialConvertSettings Tests ==========
     [TestFixture]
-    public class Batch16_AdditionalMaterialConvertSettingsTests
+    public class AdditionalMaterialConvertSettingsTests
     {
         [Test]
         public void DefaultValues()
@@ -1090,7 +1090,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== Exceptions Tests ==========
     [TestFixture]
-    public class Batch16_ExceptionTests
+    public class ExceptionTests
     {
         [Test]
         public void TargetMaterialNullException_HasMessage()

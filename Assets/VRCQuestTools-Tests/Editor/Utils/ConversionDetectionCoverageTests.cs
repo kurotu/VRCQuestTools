@@ -21,7 +21,7 @@ namespace KRT.VRCQuestTools.Tests
 {
     // ========== ConvertToToonStandard via GenerateMaterial (non-GPU path) ==========
     [TestFixture]
-    public class Batch56_ConvertToToonStandardTests
+    public class ConvertToToonStandardTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -498,7 +498,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== LilToonMaterial remaining uncovered properties ==========
     [TestFixture]
-    public class Batch56_LilToonMaterialPropertyTests
+    public class LilToonMaterialPropertyTests_Detection
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -797,7 +797,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== MissingScriptsRule with actual missing scripts ==========
     [TestFixture]
-    public class Batch56_MissingScriptsDetectionTests
+    public class MissingScriptsDetectionTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -833,7 +833,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== Additional Generator Get*() tests for remaining branches ==========
     [TestFixture]
-    public class Batch56_GeneratorGetBranchTests
+    public class GeneratorGetBranchTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 

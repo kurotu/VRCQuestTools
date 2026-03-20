@@ -23,7 +23,7 @@ namespace KRT.VRCQuestTools.Tests
     // AssetUtility coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_AssetUtilityTests
+    public class AssetUtilityTests_GapFiller
     {
         [Test]
         public void IsLilToonImported_WithLilToonInstalled_ReturnsTrue()
@@ -82,7 +82,7 @@ namespace KRT.VRCQuestTools.Tests
     // MissingScriptsRule coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_MissingScriptsRuleTests
+    public class MissingScriptsRuleTests_GapFiller
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -130,7 +130,7 @@ namespace KRT.VRCQuestTools.Tests
     // MissingNdmfRule coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_MissingNdmfRuleTests
+    public class MissingNdmfRuleTests_GapFiller
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -165,7 +165,7 @@ namespace KRT.VRCQuestTools.Tests
     // MaterialGeneratorUtility coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_MaterialGeneratorUtilityTests
+    public class MaterialGeneratorUtilityTests_GapFiller
     {
         [Test]
         public void ConvertToNullableTextureFormat_ASTC6x6_ReturnsASTC()
@@ -199,7 +199,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCQuestToolsAvatarProcessor coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_AvatarProcessorTests
+    public class AvatarProcessorTests_GapFiller
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
         private Type processorType;
@@ -250,7 +250,7 @@ namespace KRT.VRCQuestTools.Tests
     // LilToonMaterial additional getter coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_LilToonMaterialExtraTests
+    public class LilToonMaterialExtraTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -552,7 +552,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRChatAvatar additional path coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_VRChatAvatarExtraTests
+    public class VRChatAvatarExtraTests_GapFiller
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -698,7 +698,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarValidationRules additional coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_AvatarValidationRulesExtraTests
+    public class AvatarValidationRulesExtraTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -754,7 +754,7 @@ namespace KRT.VRCQuestTools.Tests
     // ModularAvatarUtility coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_ModularAvatarUtilityTests
+    public class ModularAvatarUtilityTests_GapFiller
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -808,7 +808,7 @@ namespace KRT.VRCQuestTools.Tests
     // LilToon generator platform overrides - deeper coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_LilToonPlatformOverrideDeepTests
+    public class LilToonPlatformOverrideDeepTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -1002,7 +1002,7 @@ namespace KRT.VRCQuestTools.Tests
     // ComponentRemover remaining coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_ComponentRemoverExtraTests
+    public class ComponentRemoverExtraTests_GapFiller
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -1053,7 +1053,7 @@ namespace KRT.VRCQuestTools.Tests
     // SystemUtility coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_SystemUtilityTests
+    public class SystemUtilityTests_GapFiller
     {
         [Test]
         public void GetTypeByName_ExistingType_ReturnsType()
@@ -1081,7 +1081,7 @@ namespace KRT.VRCQuestTools.Tests
     // VPMService coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_VPMServiceTests
+    public class VPMServiceTests_GapFiller
     {
         [Test]
         public void VPMService_Type_Exists()
@@ -1097,7 +1097,7 @@ namespace KRT.VRCQuestTools.Tests
     // UpdateCheckerAutomator coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_UpdateCheckerTests
+    public class UpdateCheckerTests
     {
         [Test]
         public void UpdateCheckerAutomator_Type_Exists()
@@ -1126,7 +1126,7 @@ namespace KRT.VRCQuestTools.Tests
     // FinalIKUtility extra coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_FinalIKUtilityTests
+    public class FinalIKUtilityTests_GapFiller
     {
         [Test]
         public void IsFinalIKComponent_NullType_ReturnsFalse()
@@ -1154,7 +1154,7 @@ namespace KRT.VRCQuestTools.Tests
     // VirtualLensUtility coverage
     // =========================================================================
     [TestFixture]
-    public class Batch51_VirtualLensUtilityTests
+    public class VirtualLensUtilityTests_GapFiller
     {
         [Test]
         public void VirtualLensSettingsType_IsNullWhenNotImported()

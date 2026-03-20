@@ -61,5 +61,174 @@ namespace KRT.VRCQuestTools.Utils
 
             Assert.DoesNotThrow(() => UnityAnimationUtility.ReplaceAnimationClips(controller, false, null, new Dictionary<Motion, Motion> { }));
         }
+
+        /// <summary>
+        /// Test GetMaterials with empty AnimationClip returns empty.
+        /// </summary>
+        [Test]
+        public void GetMaterials_EmptyClip_ReturnsEmpty()
+        {
+            var clip = new AnimationClip();
+            try
+            {
+                var materials = UnityAnimationUtility.GetMaterials(clip);
+                Assert.IsNotNull(materials);
+                Assert.AreEqual(0, materials.Length);
+            }
+            finally
+            {
+                Object.DestroyImmediate(clip);
+            }
+        }
+
+        /// <summary>
+        /// Test GetMaterials with empty RuntimeAnimatorController returns empty.
+        /// </summary>
+        [Test]
+        public void GetMaterials_EmptyController_ReturnsEmpty()
+        {
+            var controller = new AnimatorController();
+            controller.AddLayer("TestLayer");
+            try
+            {
+                var materials = UnityAnimationUtility.GetMaterials((RuntimeAnimatorController)controller);
+                Assert.IsNotNull(materials);
+                Assert.AreEqual(0, materials.Length);
+            }
+            finally
+            {
+                Object.DestroyImmediate(controller);
+            }
+        }
+
+        /// <summary>
+        /// Test GetBlendTrees with empty controller returns empty.
+        /// </summary>
+        [Test]
+        public void GetBlendTrees_EmptyController_ReturnsEmpty()
+        {
+            var controller = new AnimatorController();
+            controller.AddLayer("TestLayer");
+            try
+            {
+                var trees = UnityAnimationUtility.GetBlendTrees(controller);
+                Assert.IsNotNull(trees);
+                Assert.AreEqual(0, trees.Length);
+            }
+            finally
+            {
+                Object.DestroyImmediate(controller);
+            }
+        }
+
+        /// <summary>
+        /// Test GetBlendTrees finds blend tree in controller.
+        /// </summary>
+        [Test]
+        public void GetBlendTrees_ControllerWithBlendTree_ReturnsTree()
+        {
+            var controller = new AnimatorController();
+            controller.AddLayer("TestLayer");
+            controller.AddParameter("blend", AnimatorControllerParameterType.Float);
+            var tree = new BlendTree();
+            tree.blendParameter = "blend";
+            var state = controller.layers[0].stateMachine.AddState("BlendState");
+            state.motion = tree;
+            try
+            {
+                var trees = UnityAnimationUtility.GetBlendTrees(controller);
+                Assert.IsNotNull(trees);
+                Assert.AreEqual(1, trees.Length);
+            }
+            finally
+            {
+                Object.DestroyImmediate(tree);
+                Object.DestroyImmediate(controller);
+            }
+        }
+
+        /// <summary>
+        /// Test DoesMotionExistInBlendTreeDescendants returns false for empty tree.
+        /// </summary>
+        [Test]
+        public void DoesMotionExistInBlendTreeDescendants_EmptyTree_ReturnsFalse()
+        {
+            var tree = new BlendTree();
+            var clip = new AnimationClip();
+            try
+            {
+                var result = UnityAnimationUtility.DoesMotionExistInBlendTreeDescendants(tree, clip);
+                Assert.IsFalse(result);
+            }
+            finally
+            {
+                Object.DestroyImmediate(clip);
+                Object.DestroyImmediate(tree);
+            }
+        }
+
+        /// <summary>
+        /// Test DoesMotionExistInBlendTreeDescendants returns true when motion present.
+        /// </summary>
+        [Test]
+        public void DoesMotionExistInBlendTreeDescendants_MotionPresent_ReturnsTrue()
+        {
+            var clip = new AnimationClip();
+            var tree = new BlendTree();
+            tree.AddChild(clip);
+            try
+            {
+                var result = UnityAnimationUtility.DoesMotionExistInBlendTreeDescendants(tree, clip);
+                Assert.IsTrue(result);
+            }
+            finally
+            {
+                Object.DestroyImmediate(clip);
+                Object.DestroyImmediate(tree);
+            }
+        }
+
+        /// <summary>
+        /// Test DeepCopyBlendTree creates a new copy.
+        /// </summary>
+        [Test]
+        public void DeepCopyBlendTree_CopiesTree()
+        {
+            var tree = new BlendTree();
+            tree.name = "OriginalTree";
+            try
+            {
+                var copy = UnityAnimationUtility.DeepCopyBlendTree(tree);
+                Assert.IsNotNull(copy);
+                Assert.AreNotSame(tree, copy);
+                Object.DestroyImmediate(copy);
+            }
+            finally
+            {
+                Object.DestroyImmediate(tree);
+            }
+        }
+
+        /// <summary>
+        /// Test ReplaceAnimationClipMaterials returns a clone.
+        /// </summary>
+        [Test]
+        public void ReplaceAnimationClipMaterials_EmptyClip_ReturnsClone()
+        {
+            var clip = new AnimationClip();
+            clip.name = "TestClip";
+            try
+            {
+                var newMaterials = new Dictionary<Material, Material>();
+                var result = UnityAnimationUtility.ReplaceAnimationClipMaterials(clip, newMaterials);
+                Assert.IsNotNull(result);
+                Assert.AreNotSame(clip, result);
+                Object.DestroyImmediate(result);
+            }
+            finally
+            {
+                Object.DestroyImmediate(clip);
+            }
+        }
     }
 }

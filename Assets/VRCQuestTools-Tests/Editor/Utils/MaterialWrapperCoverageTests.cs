@@ -18,7 +18,7 @@ using Object = UnityEngine.Object;
 namespace KRT.VRCQuestTools.Tests
 {
     [TestFixture]
-    public class Batch15_MaterialWrapperBuilderTests
+    public class MaterialWrapperBuilderTests_MatWrapper
     {
         private MaterialWrapperBuilder builder;
 
@@ -247,7 +247,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_ToonLitGeneratorTests
+    public class ToonLitGeneratorTests_MatWrapper
     {
         [Test]
         public void Constructor_DoesNotThrow()
@@ -283,7 +283,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_MatCapLitGeneratorTests
+    public class MatCapLitGeneratorTests_MatWrapper
     {
         [Test]
         public void Constructor_DoesNotThrow()
@@ -295,7 +295,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_MissingScriptsRuleTests
+    public class MissingScriptsRuleTests_MatWrapper
     {
         [Test]
         public void Validate_ActiveAvatar_NoMissingScripts_ReturnsNull()
@@ -339,7 +339,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_MissingNdmfRuleTests
+    public class MissingNdmfRuleTests_MatWrapper
     {
         [Test]
         public void Validate_NoNdmfComponents_ReturnsNull()
@@ -386,7 +386,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_AssetUtilityTests
+    public class AssetUtilityTests_MatWrapper
     {
         [Test]
         public void GetAllObjectReferences_ReturnsNonNull()
@@ -446,7 +446,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_VRCQuestToolsSettingsExtraTests
+    public class VRCQuestToolsSettingsExtraTests
     {
         [Test]
         public void I18nResource_IsNotNull()
@@ -457,7 +457,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_AvatarValidationRulesTests
+    public class AvatarValidationRulesTests_MatWrapper
     {
         [Test]
         public void Rules_ContainsRules()
@@ -501,7 +501,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_VertexColorRemoverExtraTests
+    public class VertexColorRemoverExtraTests
     {
         [Test]
         public void RemoveVertexColor_SkinnedMeshWithVertexColors()
@@ -574,7 +574,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_AvatarConverterSettingsExtraTests
+    public class AvatarConverterSettingsExtraTests
     {
         [Test]
         public void GetMaterialConvertSettings_DefaultReturnsDefault()
@@ -686,7 +686,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_MaterialGeneratorUtilityTests
+    public class MaterialGeneratorUtilityTests_MatWrapper
     {
         [Test]
         public void ConvertToNullableTextureFormat_NoOverride_ReturnsNull()
@@ -754,7 +754,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_ModularAvatarUtilityExtraTests
+    public class ModularAvatarUtilityExtraTests
     {
         [Test]
         public void IsModularAvatarImported_ReturnsBool()
@@ -765,7 +765,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_SystemUtilityTests
+    public class SystemUtilityTests_MatWrapper
     {
         [Test]
         public void GetAvailableLocales_HasKnownMethod()
@@ -776,7 +776,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_AnimatorControllerDuplicatorExtraTests
+    public class AnimatorControllerDuplicatorExtraTests
     {
         private AnimatorControllerDuplicator duplicator;
 
@@ -884,7 +884,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_VRCQuestToolsEntryTests
+    public class VRCQuestToolsEntryTests_MatWrapper
     {
         [Test]
         public void Name_IsNotEmpty()

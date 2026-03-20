@@ -20,7 +20,7 @@ using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
 namespace KRT.VRCQuestTools.Tests
 {
     [TestFixture]
-    public class Batch14_VRChatAvatarTests
+    public class VRChatAvatarTests
     {
         [Test]
         public void GetRuntimeAnimatorControllers_WithAnimator()
@@ -304,7 +304,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch14_VRCQuestToolsSettingsTests
+    public class VRCQuestToolsSettingsTests_Misc
     {
         [Test]
         public void I18nResource_IsNotNull()
@@ -475,7 +475,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch14_UnityQuestSettingsViewModelTests
+    public class UnityQuestSettingsViewModelTests_Misc
     {
         [Test]
         public void DefaultAndroidTextureCompression_IsSet()
@@ -531,7 +531,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch14_MissingScriptsRuleTests
+    public class MissingScriptsRuleTests_Misc
     {
         [Test]
         public void Validate_InactiveAvatar_ReturnsNull()
@@ -572,7 +572,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch14_MissingNdmfRuleTests
+    public class MissingNdmfRuleTests_Misc
     {
         [Test]
         public void Validate_NoNdmfComponents_ReturnsNull()
@@ -596,7 +596,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch14_MSMapGenViewModelTests
+    public class MSMapGenViewModelTests_Misc
     {
         [Test]
         public void DisableGenerateButton_BothNull_ReturnsTrue()
@@ -662,7 +662,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch14_AvatarValidationRulesTests
+    public class AvatarValidationRulesTests_Misc
     {
         [Test]
         public void Rules_ContainsMissingScriptsRule()
@@ -698,7 +698,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch14_ComponentTests
+    public class ComponentTests
     {
         [Test]
         public void AvatarConverterSettings_DefaultValues()

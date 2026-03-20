@@ -1,4 +1,4 @@
-// <copyright file="Batch40_FinalCoverageTests.cs" company="kurotu">
+// <copyright file="FinalCoverageTests_Final.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -20,7 +20,7 @@ namespace KRT.VRCQuestTools.Tests
     /// Batch 40: Final coverage tests targeting remaining testable uncovered code.
     /// </summary>
     [TestFixture]
-    public class Batch40_FinalCoverageTests
+    public class FinalCoverageTests_Final
     {
         private List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 

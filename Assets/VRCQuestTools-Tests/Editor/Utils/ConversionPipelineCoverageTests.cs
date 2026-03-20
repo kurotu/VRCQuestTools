@@ -30,7 +30,7 @@ namespace KRT.VRCQuestTools.Tests
     #region MaterialWrapperBuilder Tests
 
     [TestFixture]
-    public class Batch22_MaterialWrapperBuilderTests
+    public class MaterialWrapperBuilderTests_Pipeline
     {
         private MaterialWrapperBuilder builder;
 
@@ -191,7 +191,7 @@ namespace KRT.VRCQuestTools.Tests
     #region CacheUtility TextureCache Tests
 
     [TestFixture]
-    public class Batch22_CacheUtilityTextureCacheTests
+    public class CacheUtilityTextureCacheTests
     {
         [Test]
         public void TextureCache_RoundTrip_NonNormalMap()
@@ -338,7 +338,7 @@ namespace KRT.VRCQuestTools.Tests
     #region MSMapGenViewModel Tests
 
     [TestFixture]
-    public class Batch22_MSMapGenViewModelTests
+    public class MSMapGenViewModelTests_Pipeline
     {
         [Test]
         public void DisableGenerateButton_BothNull_ReturnsTrue()
@@ -417,7 +417,7 @@ namespace KRT.VRCQuestTools.Tests
     #region VRCQuestTools Entry Tests
 
     [TestFixture]
-    public class Batch22_VRCQuestToolsEntryTests
+    public class VRCQuestToolsEntryTests_Pipeline
     {
         [Test]
         public void Name_IsVRCQuestTools()
@@ -529,7 +529,7 @@ namespace KRT.VRCQuestTools.Tests
     #region AvatarConverter CreateMaterialConvertSettingsMap Tests
 
     [TestFixture]
-    public class Batch22_AvatarConverterSettingsMapTests
+    public class AvatarConverterSettingsMapTests
     {
         private AvatarConverter converter;
 
@@ -867,7 +867,7 @@ namespace KRT.VRCQuestTools.Tests
     #region AvatarConverter RemoveExtraMaterialSlots Tests
 
     [TestFixture]
-    public class Batch22_AvatarConverterRemoveExtraMaterialSlotsTests
+    public class AvatarConverterRemoveExtraMaterialSlotsTests
     {
         [Test]
         public void RemoveExtraMaterialSlots_TrimsExcessMaterials()
@@ -995,7 +995,7 @@ namespace KRT.VRCQuestTools.Tests
     #region AvatarConverter PrepareConvertForQuestInPlace Tests
 
     [TestFixture]
-    public class Batch22_AvatarConverterPrepareTests
+    public class AvatarConverterPrepareTests_Pipeline
     {
         [Test]
         public void PrepareConvertForQuestInPlace_DoesNotThrow()
@@ -1043,7 +1043,7 @@ namespace KRT.VRCQuestTools.Tests
     #region AvatarConverter ApplyConvertedMaterials Tests
 
     [TestFixture]
-    public class Batch22_AvatarConverterApplyConvertedMaterialsTests
+    public class AvatarConverterApplyConvertedMaterialsTests
     {
         [Test]
         public void ApplyConvertedMaterials_ReplacesRendererMaterials()
@@ -1157,7 +1157,7 @@ namespace KRT.VRCQuestTools.Tests
     #region MissingScriptsRule Tests
 
     [TestFixture]
-    public class Batch22_MissingScriptsRuleTests
+    public class MissingScriptsRuleTests_Pipeline
     {
         [Test]
         public void Validate_ActiveAvatarNoMissingScripts_ReturnsNull()
@@ -1203,7 +1203,7 @@ namespace KRT.VRCQuestTools.Tests
     #region MissingNdmfRule Tests
 
     [TestFixture]
-    public class Batch22_MissingNdmfRuleTests
+    public class MissingNdmfRuleTests_Pipeline
     {
         [Test]
         public void Validate_NoNdmfComponents_ReturnsNull()
@@ -1251,7 +1251,7 @@ namespace KRT.VRCQuestTools.Tests
     #region AvatarConverter ProgressCallback Tests
 
     [TestFixture]
-    public class Batch22_ProgressCallbackTests
+    public class ProgressCallbackTests_Pipeline
     {
         [Test]
         public void ProgressCallback_CanBeCreated()
@@ -1298,7 +1298,7 @@ namespace KRT.VRCQuestTools.Tests
     #region AvatarConverter SharedBlackTextureCache Tests
 
     [TestFixture]
-    public class Batch22_SharedBlackTextureCacheTests
+    public class SharedBlackTextureCacheTests_Pipeline
     {
         [Test]
         public void ClearSharedBlackTextureCache_DoesNotThrow()
@@ -1353,7 +1353,7 @@ namespace KRT.VRCQuestTools.Tests
     #region MaterialGeneratorUtility TextureConfig Tests
 
     [TestFixture]
-    public class Batch22_MaterialGeneratorUtilityTests
+    public class MaterialGeneratorUtilityTests_Pipeline
     {
         [Test]
         public void ConvertToNullableTextureFormat_NoOverride_ReturnsNull()
@@ -1462,7 +1462,7 @@ namespace KRT.VRCQuestTools.Tests
     #region AvatarConverter ConvertForQuestInPlace Validation Tests
 
     [TestFixture]
-    public class Batch22_AvatarConverterConvertForQuestValidationTests
+    public class AvatarConverterConvertForQuestValidationTests
     {
         [Test]
         public void ConvertForQuestInPlace_WithLegacyMA_ThrowsLegacyPackageException()
@@ -1512,7 +1512,7 @@ namespace KRT.VRCQuestTools.Tests
     #region AvatarConverter GenerateConvertedMaterial Tests
 
     [TestFixture]
-    public class Batch22_AvatarConverterGenerateConvertedMaterialTests
+    public class AvatarConverterGenerateConvertedMaterialTests
     {
         [Test]
         public void GenerateConvertedMaterial_MaterialReplaceSettings_NullMaterial_Throws()
@@ -1583,7 +1583,7 @@ namespace KRT.VRCQuestTools.Tests
     #region AvatarConverter ApplyVRCQuestToolsComponents Tests
 
     [TestFixture]
-    public class Batch22_ApplyVRCQuestToolsComponentsTests
+    public class ApplyVRCQuestToolsComponentsTests_Pipeline
     {
         [Test]
         public void ApplyVRCQuestToolsComponents_AddsConvertedAvatar()
@@ -1644,7 +1644,7 @@ namespace KRT.VRCQuestTools.Tests
     #region AvatarConverter ConvertMaterialsForMobile Tests
 
     [TestFixture]
-    public class Batch22_ConvertMaterialsForMobileTests
+    public class ConvertMaterialsForMobileTests_Pipeline
     {
         [Test]
         public void ConvertMaterialsForMobile_EmptyMap_ReturnsEmpty()

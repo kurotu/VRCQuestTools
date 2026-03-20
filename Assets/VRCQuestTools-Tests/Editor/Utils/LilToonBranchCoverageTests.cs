@@ -1,4 +1,4 @@
-// <copyright file="Batch39_LilToonGeneratorCoverageTests.cs" company="kurotu">
+// <copyright file="LilToonGeneratorCoverageTests.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -18,7 +18,7 @@ namespace KRT.VRCQuestTools.Tests
     /// Batch 39: Thorough LilToonToonStandardGenerator ConvertToToonStandard coverage.
     /// </summary>
     [TestFixture]
-    internal class Batch39_LilToonGeneratorCoverageTests
+    internal class LilToonGeneratorCoverageTests
     {
         private readonly List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 

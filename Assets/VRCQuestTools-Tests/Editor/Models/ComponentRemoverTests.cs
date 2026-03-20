@@ -85,5 +85,76 @@ namespace KRT.VRCQuestTools.Models
             Assert.NotNull(type);
             Assert.False(remover.IsUnsupportedComponent(type));
         }
+
+        /// <summary>
+        /// Test IsUnsupportedComponent with a component instance.
+        /// </summary>
+        [Test]
+        public void IsUnsupportedComponent_SupportedComponent_ReturnsFalse()
+        {
+            var go = new GameObject("TestRemover");
+            try
+            {
+                var transform = go.GetComponent<Transform>();
+                Assert.IsFalse(remover.IsUnsupportedComponent(transform));
+            }
+            finally
+            {
+                Object.DestroyImmediate(go);
+            }
+        }
+
+        /// <summary>
+        /// Test GetUnsupportedComponentsInChildren with empty object.
+        /// </summary>
+        [Test]
+        public void GetUnsupportedComponents_EmptyObject_ReturnsEmpty()
+        {
+            var go = new GameObject("TestRemover");
+            try
+            {
+                var components = remover.GetUnsupportedComponentsInChildren(go, true);
+                Assert.IsNotNull(components);
+                Assert.AreEqual(0, components.Length);
+            }
+            finally
+            {
+                Object.DestroyImmediate(go);
+            }
+        }
+
+        /// <summary>
+        /// Test RemoveUnsupportedComponentsInChildren with allowed types.
+        /// </summary>
+        [Test]
+        public void RemoveUnsupportedComponents_WithAllowedTypes_DoesNotThrow()
+        {
+            var go = new GameObject("TestRemover");
+            try
+            {
+                Assert.DoesNotThrow(() => remover.RemoveUnsupportedComponentsInChildren(go, true, false, new System.Type[] { typeof(Transform) }));
+            }
+            finally
+            {
+                Object.DestroyImmediate(go);
+            }
+        }
+
+        /// <summary>
+        /// Test RemoveUnsupportedComponentsInChildren without canUndo.
+        /// </summary>
+        [Test]
+        public void RemoveUnsupportedComponents_DefaultParams_DoesNotThrow()
+        {
+            var go = new GameObject("TestRemover");
+            try
+            {
+                Assert.DoesNotThrow(() => remover.RemoveUnsupportedComponentsInChildren(go, false));
+            }
+            finally
+            {
+                Object.DestroyImmediate(go);
+            }
+        }
     }
 }

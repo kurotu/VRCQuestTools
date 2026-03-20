@@ -1,4 +1,4 @@
-// <copyright file="Batch41_TextureAndSDKCoverageTests.cs" company="kurotu">
+// <copyright file="TextureAndSDKCoverageTests.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -21,7 +21,7 @@ namespace KRT.VRCQuestTools.Tests
     /// Batch 41: TextureUtility and VRCSDKUtility uncovered paths.
     /// </summary>
     [TestFixture]
-    public class Batch41_TextureAndSDKCoverageTests
+    public class TextureAndSDKCoverageTests
     {
         private List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 

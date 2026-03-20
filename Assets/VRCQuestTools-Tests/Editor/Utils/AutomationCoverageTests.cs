@@ -34,7 +34,7 @@ using MaterialMapping = KRT.VRCQuestTools.Components.MaterialSwap.MaterialMappin
 namespace KRT.VRCQuestTools.Tests
 {
     [TestFixture]
-    public class Batch28_MaterialConversionGUI_Tests
+    public class MaterialConversionGUI_Tests
     {
         // Access MaterialConversionGUI's private static methods via reflection
         private static Type MaterialConversionGUIType
@@ -446,7 +446,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_PhysBonesRemoveViewModel_FalseBranches
+    public class PhysBonesRemoveViewModel_FalseBranches
     {
         private PhysBonesRemoveViewModel CreateVM(VRC_AvatarDescriptor desc)
         {
@@ -713,7 +713,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_VRChatAvatar_VertexColor_Tests
+    public class VRChatAvatar_VertexColor_Tests
     {
         [Test]
         public void HasVertexColor_WithVertexColors_ReturnsTrue()
@@ -868,7 +868,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_ValidationAutomator_Tests
+    public class ValidationAutomator_Tests
     {
         private static Type GetAutomatorType(string name)
         {
@@ -980,7 +980,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_MissingScriptsRule_Tests
+    public class MissingScriptsRule_Tests
     {
         [Test]
         public void Validate_InactiveAvatar_ReturnsNull()
@@ -1028,7 +1028,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_VRCQuestToolsStatic_Tests
+    public class VRCQuestToolsStatic_Tests
     {
         [Test]
         public void Name_IsVRCQuestTools()
@@ -1108,7 +1108,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_MockPerformanceStatsLevelSet_Tests
+    public class MockPerformanceStatsLevelSet_Tests
     {
         [Test]
         public void Properties_ReturnDefault()
@@ -1149,7 +1149,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_AdditionalMaterialConvertSettings_Tests
+    public class AdditionalMaterialConvertSettings_Tests
     {
         [Test]
         public void GetCacheKey_WithNullMaterial_ContainsNull()
@@ -1191,7 +1191,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_IMaterialConversionComponent_GetCacheKey_Tests
+    public class IMaterialConversionComponent_GetCacheKey_Tests
     {
         [Test]
         public void AvatarConverterSettings_GetCacheKey_ReturnsValue()
@@ -1261,7 +1261,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_AvatarValidationRules_Tests
+    public class AvatarValidationRules_Tests
     {
         [Test]
         public void Rules_IsNotNull()
@@ -1291,7 +1291,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_UpdateCheckerAutomator_CheckForUpdates_Tests
+    public class UpdateCheckerAutomator_CheckForUpdates_Tests
     {
         [Test]
         public void CheckForUpdates_WithIgnoreCache_ReturnsResult()
@@ -1333,7 +1333,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_VRCQuestToolsAvatarProcessor_Tests
+    public class VRCQuestToolsAvatarProcessor_Tests
     {
         [Test]
         public void CallbackOrder_IsNegative12000()
@@ -1537,7 +1537,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_ActualPerformanceCallback_Tests
+    public class ActualPerformanceCallback_Tests
     {
         [Test]
         public void CallbackOrder_IsIntMaxValue()
@@ -1582,7 +1582,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_FallbackAvatarCallback_Tests
+    public class FallbackAvatarCallback_Tests
     {
         [Test]
         public void CallbackOrder_IsNegative100000()
@@ -1607,7 +1607,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_MaterialConversionSettings_CacheKey_Tests
+    public class MaterialConversionSettings_CacheKey_Tests
     {
         [Test]
         public void RemoveExtraMaterialSlots_DefaultValue()
@@ -1679,7 +1679,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_I18n_Remaining_Tests
+    public class I18n_Remaining_Tests
     {
         [Test]
         public void SetLanguage_English_Works()
@@ -1719,7 +1719,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_ComponentRemover_RemainingPaths
+    public class ComponentRemover_RemainingPaths
     {
         [Test]
         public void RemoveUnsupportedComponents_WithMissingScripts_NoThrow()
@@ -1743,7 +1743,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_VRChatAvatar_HasDynamicBone_Tests
+    public class VRChatAvatar_HasDynamicBone_Tests
     {
         [Test]
         public void HasDynamicBoneComponents_NoDynamicBone_ReturnsFalse()
@@ -1767,7 +1767,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch28_AnimatorControllerDuplicator_DeepPaths
+    public class AnimatorControllerDuplicator_DeepPaths
     {
         [Test]
         public void Duplicate_ControllerWithSubStateMachine()

@@ -31,7 +31,7 @@ namespace KRT.VRCQuestTools.Tests
     // MaterialWrapperBuilder.DetectShaderCategory Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_MaterialWrapperBuilderTests
+    public class MaterialWrapperBuilderTests_MatFeatures
     {
         private MaterialWrapperBuilder builder;
 
@@ -177,7 +177,7 @@ namespace KRT.VRCQuestTools.Tests
     // MSMapGenViewModel Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_MSMapGenViewModelTests
+    public class MSMapGenViewModelTests_MatFeatures
     {
         [Test]
         public void DisableGenerateButton_BothNull_ReturnsTrue()
@@ -247,7 +247,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRChatAvatar Contact/PhysBone Methods Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_VRChatAvatarContactTests
+    public class VRChatAvatarContactTests_MatFeatures
     {
         private GameObject CreateAvatarWithContacts(int senderCount = 0, int receiverCount = 0)
         {
@@ -518,7 +518,7 @@ namespace KRT.VRCQuestTools.Tests
     // CacheUtility Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_CacheUtilityTests
+    public class CacheUtilityTests_MatFeatures
     {
         [Test]
         public void GetContentCacheKey_StandardMaterial_ReturnsNonEmptyString()
@@ -642,7 +642,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverterNdmfPhaseExtension Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_NdmfPhaseExtensionTests
+    public class NdmfPhaseExtensionTests_MatFeatures
     {
         [Test]
         public void Resolve_Transforming_ReturnsSelf()
@@ -728,7 +728,7 @@ namespace KRT.VRCQuestTools.Tests
     // VPMService Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_VPMServiceTests
+    public class VPMServiceTests_MatFeatures
     {
         [Test]
         public void Constructor_DoesNotThrow()
@@ -746,7 +746,7 @@ namespace KRT.VRCQuestTools.Tests
     // ActualPerformanceCallback Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_ActualPerformanceCallbackTests
+    public class ActualPerformanceCallbackTests_MatFeatures
     {
         [Test]
         public void CallbackOrder_IsIntMaxValue()
@@ -792,7 +792,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter Additional Path Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_AvatarConverterAdditionalTests
+    public class AvatarConverterAdditionalTests_MatFeatures
     {
         [Test]
         public void RemoveExtraMaterialSlots_RendererWithExtraSlots_Trims()
@@ -882,7 +882,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRChatAvatar GetRendererMaterials Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_VRChatAvatarRendererMaterialsTests
+    public class VRChatAvatarRendererMaterialsTests
     {
         [Test]
         public void GetRendererMaterials_NoRenderers_ReturnsEmpty()
@@ -933,7 +933,7 @@ namespace KRT.VRCQuestTools.Tests
     // MaterialConvertSettingsTypes Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_MaterialConvertSettingsTypesTests
+    public class MaterialConvertSettingsTypesTests_MatFeatures
     {
         [Test]
         public void GetDefaultConvertTypePopups_ForDefault_ExcludesMaterialReplace()
@@ -981,7 +981,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCQuestToolsSettings Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_VRCQuestToolsSettingsTests
+    public class VRCQuestToolsSettingsTests_MatFeatures
     {
         [Test]
         public void SetBooleanConfigValue_GetBooleanConfigValue_Roundtrip()
@@ -1028,7 +1028,7 @@ namespace KRT.VRCQuestTools.Tests
     // ComponentRemover Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_ComponentRemoverAdditionalTests
+    public class ComponentRemoverAdditionalTests_MatFeatures
     {
         [Test]
         public void IsUnsupportedComponent_Transform_ReturnsFalse()
@@ -1078,7 +1078,7 @@ namespace KRT.VRCQuestTools.Tests
     // NdmfUtility Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_NdmfUtilityTests
+    public class NdmfUtilityTests_MatFeatures
     {
         [Test]
         public void IsNdmfImported_ReturnsBoolean()
@@ -1099,7 +1099,7 @@ namespace KRT.VRCQuestTools.Tests
     // I18n Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_I18nAdditionalTests
+    public class I18nAdditionalTests
     {
         [Test]
         public void GetI18n_ReturnsNonNull()
@@ -1129,7 +1129,7 @@ namespace KRT.VRCQuestTools.Tests
     // ModularAvatarUtility Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_ModularAvatarUtilityTests
+    public class ModularAvatarUtilityTests_MatFeatures
     {
         [Test]
         public void IsModularAvatarImported_ReturnsBoolean()
@@ -1163,7 +1163,7 @@ namespace KRT.VRCQuestTools.Tests
     // AssetUtility Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_AssetUtilityAdditionalTests
+    public class AssetUtilityAdditionalTests_MatFeatures
     {
         [Test]
         public void IsDynamicBoneImported_ReturnsFalse()
@@ -1184,7 +1184,7 @@ namespace KRT.VRCQuestTools.Tests
     // SemVer Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_SemVerAdditionalTests
+    public class SemVerAdditionalTests
     {
         [Test]
         public void CompareTo_SameVersion_ReturnsZero()
@@ -1247,7 +1247,7 @@ namespace KRT.VRCQuestTools.Tests
     // VirtualLensUtility Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_VirtualLensUtilityTests
+    public class VirtualLensUtilityTests_MatFeatures
     {
         [Test]
         public void VirtualLensSettingsType_IsNullWhenNotInstalled()
@@ -1274,7 +1274,7 @@ namespace KRT.VRCQuestTools.Tests
     // ToonStandardMaterialWrapper Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_ToonStandardMaterialWrapperTests
+    public class ToonStandardMaterialWrapperTests
     {
         [Test]
         public void Constructor_WithToonStandardShader_Works()
@@ -1312,7 +1312,7 @@ namespace KRT.VRCQuestTools.Tests
     // FinalIKUtility Tests
     // ==========================================
     [TestFixture]
-    public class Batch24_FinalIKUtilityTests
+    public class FinalIKUtilityTests_MatFeatures
     {
         [Test]
         public void IsFinalIKComponent_WithNonFinalIKType_ReturnsFalse()

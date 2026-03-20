@@ -18,7 +18,7 @@ using KRT.VRCQuestTools.Utils;
 namespace KRT.VRCQuestTools.Tests
 {
     [TestFixture]
-    public class Batch14_VRCSDKUtilityTests
+    public class VRCSDKUtilityTests_SDKUtil
     {
         [Test]
         public void GetRootTransform_PhysBone_ReturnsRootTransform()

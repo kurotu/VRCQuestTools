@@ -25,7 +25,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: LilToon Platform Override methods via reflection
     // =========================================================================
     [TestFixture]
-    public class Batch49_LilToonPlatformOverrideTests
+    public class LilToonPlatformOverrideTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -244,7 +244,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: AvatarConverter.ApplyConvertedMaterials - material substitution
     // =========================================================================
     [TestFixture]
-    public class Batch49_ApplyConvertedMaterialsTests
+    public class ApplyConvertedMaterialsTests_PlatBoost
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -422,7 +422,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: AvatarConverter.RemoveExtraMaterialSlots
     // =========================================================================
     [TestFixture]
-    public class Batch49_RemoveExtraMaterialSlotsTests
+    public class RemoveExtraMaterialSlotsTests_PlatBoost
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -566,7 +566,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: VRCSDKUtility.DeleteAvatarDynamicsComponents
     // =========================================================================
     [TestFixture]
-    public class Batch49_DeleteAvatarDynamicsTests
+    public class DeleteAvatarDynamicsTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -692,7 +692,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: TextureUtility.GetBestPlatformOverrideSettings edge cases
     // =========================================================================
     [TestFixture]
-    public class Batch49_TexturePlatformOverrideTests
+    public class TexturePlatformOverrideTests
     {
         [Test]
         public void GetBestPlatformOverrideSettings_Null_ReturnsNull()
@@ -736,7 +736,7 @@ namespace KRT.VRCQuestTools.Tests
     // validation paths
     // =========================================================================
     [TestFixture]
-    public class Batch49_AvatarConverterValidationTests
+    public class AvatarConverterValidationTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -867,7 +867,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: Validation rules - MissingScriptsRule, MissingNdmfRule, AvatarValidationRules
     // =========================================================================
     [TestFixture]
-    public class Batch49_ValidationRuleTests
+    public class ValidationRuleTests_PlatBoost
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -945,7 +945,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: VRCSDKUtility additional methods - StripeUnusedNetworkIds
     // =========================================================================
     [TestFixture]
-    public class Batch49_VRCSDKUtilityDeepTests
+    public class VRCSDKUtilityDeepTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -1049,7 +1049,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: FallbackAvatarCallback and ActualPerformanceCallback edge cases
     // =========================================================================
     [TestFixture]
-    public class Batch49_CallbackTests
+    public class CallbackTests_PlatBoost
     {
         [Test]
         public void ActualPerformanceCallback_Type_Exists()
@@ -1107,7 +1107,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: Generic ToonStandard platform override methods
     // =========================================================================
     [TestFixture]
-    public class Batch49_GenericToonStandardPlatformOverrideTests
+    public class GenericToonStandardPlatformOverrideTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 

@@ -1,4 +1,4 @@
-// <copyright file="Batch46_LilToonDeepCoverageTests.cs" company="kurotu">
+// <copyright file="LilToonDeepCoverageTests.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -20,7 +20,7 @@ namespace KRT.VRCQuestTools.Tests
     /// Batch 46: LilToonMaterial property getters, LilToonToonStandardGenerator platform overrides and helpers.
     /// </summary>
     [TestFixture]
-    public class Batch46_LilToonDeepCoverageTests
+    public class LilToonDeepCoverageTests
     {
         private readonly List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 

@@ -22,7 +22,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: LilToonToonStandardGenerator.ConvertToToonStandard() - all branches
     // =========================================================================
     [TestFixture]
-    public class Batch50_ConvertToToonStandardBranchTests
+    public class ConvertToToonStandardBranchTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -606,7 +606,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: LilToon material additional property getters
     // =========================================================================
     [TestFixture]
-    public class Batch50_LilToonMaterialPropertyTests
+    public class LilToonMaterialPropertyTests_ToonBranch
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -908,7 +908,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: AvatarConverter.RemoveExtraMaterialSlots
     // =========================================================================
     [TestFixture]
-    public class Batch50_RemoveExtraMaterialSlotsTests
+    public class RemoveExtraMaterialSlotsTests_ToonBranch
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -1096,7 +1096,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: FallbackAvatarCallback.OnPreprocessAvatar
     // =========================================================================
     [TestFixture]
-    public class Batch50_FallbackAvatarCallbackTests
+    public class FallbackAvatarCallbackTests_ToonBranch
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
         private Type callbackType;
@@ -1186,7 +1186,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: LilToon generator getter methods via reflection
     // =========================================================================
     [TestFixture]
-    public class Batch50_LilToonGetterCoverageTests
+    public class LilToonGetterCoverageTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 

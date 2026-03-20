@@ -223,5 +223,99 @@ namespace KRT.VRCQuestTools.Models.Unity
             Assert.IsTrue(new SemVer(3, 0, 0).CompareTo(BreakingVersion) == 0, "3.0.0 should equal breaking version");
             Assert.IsFalse(new SemVer(3, 0, 1).CompareTo(BreakingVersion) == 0, "3.0.1 should not equal breaking version");
         }
+
+        [Test]
+        public void PackageDisplayName_IsLilToon()
+        {
+            Assert.AreEqual("lilToon", LilToonMaterial.PackageDisplayName);
+        }
+
+        [Test]
+        public void RequiredVersion_Constant_IsCorrect()
+        {
+            Assert.AreEqual("1.10.0", LilToonMaterial.RequiredVersion);
+        }
+
+        [Test]
+        public void BreakingVersion_Constant_IsCorrect()
+        {
+            Assert.AreEqual("3.0.0", LilToonMaterial.BreakingVersion);
+        }
+
+        [Test]
+        public void MatCapBlendMode_EnumValues()
+        {
+            Assert.AreEqual(0, (int)LilToonMaterial.MatCapBlendMode.Normal);
+            Assert.AreEqual(1, (int)LilToonMaterial.MatCapBlendMode.Add);
+            Assert.AreEqual(2, (int)LilToonMaterial.MatCapBlendMode.Screen);
+            Assert.AreEqual(3, (int)LilToonMaterial.MatCapBlendMode.Multiply);
+        }
+
+        [Test]
+        public void Constructor_WithSupportedVersion_ReturnsNonNull()
+        {
+            var isInstalled = AssetUtility.IsLilToonImported();
+            var lilToonVersion = AssetUtility.LilToonVersion;
+            if (isInstalled && lilToonVersion >= RequiredVersion && lilToonVersion < BreakingVersion)
+            {
+                var lilMat = new LilToonMaterial(testMaterial);
+                Assert.IsNotNull(lilMat);
+            }
+            else
+            {
+                Assert.Ignore("lilToon supported version not available");
+            }
+        }
+
+        [Test]
+        public void MainTextureScale_ReturnsVector()
+        {
+            var isInstalled = AssetUtility.IsLilToonImported();
+            var lilToonVersion = AssetUtility.LilToonVersion;
+            if (isInstalled && lilToonVersion >= RequiredVersion && lilToonVersion < BreakingVersion)
+            {
+                var lilMat = new LilToonMaterial(testMaterial);
+                var scale = lilMat.MainTextureScale;
+                Assert.IsNotNull(scale);
+            }
+            else
+            {
+                Assert.Ignore("lilToon supported version not available");
+            }
+        }
+
+        [Test]
+        public void MainTextureOffset_ReturnsVector()
+        {
+            var isInstalled = AssetUtility.IsLilToonImported();
+            var lilToonVersion = AssetUtility.LilToonVersion;
+            if (isInstalled && lilToonVersion >= RequiredVersion && lilToonVersion < BreakingVersion)
+            {
+                var lilMat = new LilToonMaterial(testMaterial);
+                var offset = lilMat.MainTextureOffset;
+                Assert.IsNotNull(offset);
+            }
+            else
+            {
+                Assert.Ignore("lilToon supported version not available");
+            }
+        }
+
+        [Test]
+        public void GetToonLitPlatformOverride_ReturnsNullable()
+        {
+            var isInstalled = AssetUtility.IsLilToonImported();
+            var lilToonVersion = AssetUtility.LilToonVersion;
+            if (isInstalled && lilToonVersion >= RequiredVersion && lilToonVersion < BreakingVersion)
+            {
+                var lilMat = new LilToonMaterial(testMaterial);
+                var result = lilMat.GetToonLitPlatformOverride();
+                Assert.Pass();
+            }
+            else
+            {
+                Assert.Ignore("lilToon supported version not available");
+            }
+        }
     }
 }

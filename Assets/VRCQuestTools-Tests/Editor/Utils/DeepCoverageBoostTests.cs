@@ -1,4 +1,4 @@
-// <copyright file="Batch44_DeepCoverageTests.cs" company="kurotu">
+// <copyright file="DeepCoverageTests_DeepBoost.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.Tests
     /// Batch 44: AvatarConverter.ApplyConvertedMaterials, ConvertAnimationClips, more resize paths.
     /// </summary>
     [TestFixture]
-    public class Batch44_DeepCoverageTests
+    public class DeepCoverageTests_DeepBoost
     {
         private readonly List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 
@@ -75,19 +75,19 @@ namespace KRT.VRCQuestTools.Tests
             {
                 pcType.GetField("onTextureProgress", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
                     ?.SetValue(pc, Delegate.CreateDelegate(texDelegateType,
-                        typeof(Batch44_DeepCoverageTests).GetMethod("DummyTextureProgress", BindingFlags.Static | BindingFlags.NonPublic)));
+                        typeof(DeepCoverageTests_DeepBoost).GetMethod("DummyTextureProgress", BindingFlags.Static | BindingFlags.NonPublic)));
             }
             if (animDelegateType != null)
             {
                 pcType.GetField("onAnimationClipProgress", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
                     ?.SetValue(pc, Delegate.CreateDelegate(animDelegateType,
-                        typeof(Batch44_DeepCoverageTests).GetMethod("DummyAnimClipProgress", BindingFlags.Static | BindingFlags.NonPublic)));
+                        typeof(DeepCoverageTests_DeepBoost).GetMethod("DummyAnimClipProgress", BindingFlags.Static | BindingFlags.NonPublic)));
             }
             if (rtDelegateType != null)
             {
                 pcType.GetField("onRuntimeAnimatorProgress", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
                     ?.SetValue(pc, Delegate.CreateDelegate(rtDelegateType,
-                        typeof(Batch44_DeepCoverageTests).GetMethod("DummyRTAnimProgress", BindingFlags.Static | BindingFlags.NonPublic)));
+                        typeof(DeepCoverageTests_DeepBoost).GetMethod("DummyRTAnimProgress", BindingFlags.Static | BindingFlags.NonPublic)));
             }
 
             return pc;
@@ -387,7 +387,7 @@ namespace KRT.VRCQuestTools.Tests
             var delegateType = typeof(AvatarConverter).GetNestedType("AnimationClipProgressCallback",
                 BindingFlags.NonPublic | BindingFlags.Public);
             var callback = Delegate.CreateDelegate(delegateType,
-                typeof(Batch44_DeepCoverageTests).GetMethod("DummyAnimClipProgress",
+                typeof(DeepCoverageTests_DeepBoost).GetMethod("DummyAnimClipProgress",
                     BindingFlags.Static | BindingFlags.NonPublic));
 
             LogAssert.ignoreFailingMessages = true;
@@ -457,7 +457,7 @@ namespace KRT.VRCQuestTools.Tests
             var delegateType = typeof(AvatarConverter).GetNestedType("RuntimeAnimatorProgressCallback",
                 BindingFlags.NonPublic | BindingFlags.Public);
             var callback = Delegate.CreateDelegate(delegateType,
-                typeof(Batch44_DeepCoverageTests).GetMethod("DummyRTAnimProgress",
+                typeof(DeepCoverageTests_DeepBoost).GetMethod("DummyRTAnimProgress",
                     BindingFlags.Static | BindingFlags.NonPublic));
 
             LogAssert.ignoreFailingMessages = true;

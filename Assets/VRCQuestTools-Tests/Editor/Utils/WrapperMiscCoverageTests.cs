@@ -1,4 +1,4 @@
-// <copyright file="Batch42_WrapperAndMiscCoverageTests.cs" company="kurotu">
+// <copyright file="WrapperAndMiscCoverageTests.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -22,7 +22,7 @@ namespace KRT.VRCQuestTools.Tests
     /// and misc coverage improvements.
     /// </summary>
     [TestFixture]
-    public class Batch42_WrapperAndMiscCoverageTests
+    public class WrapperAndMiscCoverageTests
     {
         private readonly List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 

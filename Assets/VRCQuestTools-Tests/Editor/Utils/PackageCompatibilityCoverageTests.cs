@@ -23,7 +23,7 @@ namespace KRT.VRCQuestTools.Tests
 {
     // ========== PackageCompatibilityException Tests ==========
     [TestFixture]
-    public class Batch52_PackageCompatibilityExceptionTests
+    public class PackageCompatibilityExceptionTests
     {
         [Test]
         public void LegacyPackageException_Constructor_SetsProperties()
@@ -96,7 +96,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== MissingScriptsRule Tests ==========
     [TestFixture]
-    public class Batch52_MissingScriptsRuleTests
+    public class MissingScriptsRuleTests_PkgCompat
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -142,7 +142,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== VRCSDKUtility Network ID Tests ==========
     [TestFixture]
-    public class Batch52_VRCSDKUtilityNetworkIdTests
+    public class VRCSDKUtilityNetworkIdTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -290,7 +290,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== AvatarConverter RemoveExtraMaterialSlots Tests ==========
     [TestFixture]
-    public class Batch52_AvatarConverterExtraSlotsTests
+    public class AvatarConverterExtraSlotsTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -415,7 +415,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== AvatarConverter CreateMaterialConvertSettingsMap Exception Paths ==========
     [TestFixture]
-    public class Batch52_AvatarConverterSettingsMapExceptionTests
+    public class AvatarConverterSettingsMapExceptionTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -610,7 +610,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== LilToonMaterial Remaining Getter Tests ==========
     [TestFixture]
-    public class Batch52_LilToonMaterialRemainingGetterTests
+    public class LilToonMaterialRemainingGetterTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -898,7 +898,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== VRCQuestToolsAvatarProcessor Tests ==========
     [TestFixture]
-    public class Batch52_AvatarProcessorTests
+    public class AvatarProcessorTests_PkgCompat
     {
         [Test]
         public void AvatarProcessor_CallbackOrder_IsNegative()
@@ -923,7 +923,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== MaterialGeneratorUtility Tests ==========
     [TestFixture]
-    public class Batch52_MaterialGeneratorUtilityTests
+    public class MaterialGeneratorUtilityTests_PkgCompat
     {
         [Test]
         public void ConvertToNullableTextureFormat_NoOverride_ReturnsNull()
@@ -994,7 +994,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== ComponentRemover Additional Tests ==========
     [TestFixture]
-    public class Batch52_ComponentRemoverTests
+    public class ComponentRemoverTests_PkgCompat
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -1060,7 +1060,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== VRCQuestToolsSettings Additional Tests ==========
     [TestFixture]
-    public class Batch52_VRCQuestToolsSettingsTests
+    public class VRCQuestToolsSettingsTests_PkgCompat
     {
         [Test]
         public void I18nResource_ReturnsNonNull()
@@ -1079,7 +1079,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== MaterialSwap Exception Tests ==========
     [TestFixture]
-    public class Batch52_MaterialSwapExceptionTests
+    public class MaterialSwapExceptionTests
     {
         [Test]
         public void InvalidMaterialSwapNullException_Constructor()
@@ -1106,7 +1106,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== VirtualLens2Material Tests ==========
     [TestFixture]
-    public class Batch52_VirtualLens2MaterialTests
+    public class VirtualLens2MaterialTests_PkgCompat
     {
         [Test]
         public void VirtualLensSettingsType_CheckAvailability()
@@ -1124,7 +1124,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== AssetUtility Additional Tests ==========
     [TestFixture]
-    public class Batch52_AssetUtilityTests
+    public class AssetUtilityTests_PkgCompat
     {
         [Test]
         public void LilToonVersion_IsNotNull()
@@ -1186,7 +1186,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== ConversionException Types Tests ==========
     [TestFixture]
-    public class Batch52_ConversionExceptionTests
+    public class ConversionExceptionTests_PkgCompat
     {
         [Test]
         public void MaterialConversionException_HasMaterial()

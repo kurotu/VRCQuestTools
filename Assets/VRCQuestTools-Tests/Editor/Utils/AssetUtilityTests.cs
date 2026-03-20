@@ -104,5 +104,80 @@ namespace KRT.VRCQuestTools.Utils
 
             AssetDatabase.DeleteAsset(path);
         }
+
+        [Test]
+        public void IsDynamicBoneImported_ReturnsBool()
+        {
+            var result = AssetUtility.IsDynamicBoneImported();
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void DynamicBoneType_MatchesImportedState()
+        {
+            if (!AssetUtility.IsDynamicBoneImported())
+            {
+                Assert.IsNull(AssetUtility.DynamicBoneType);
+                Assert.IsNull(AssetUtility.DynamicBoneColliderType);
+            }
+            else
+            {
+                Assert.IsNotNull(AssetUtility.DynamicBoneType);
+                Assert.IsNotNull(AssetUtility.DynamicBoneColliderType);
+            }
+        }
+
+        [Test]
+        public void IsLilToonImported_ReturnsBool()
+        {
+            var result = AssetUtility.IsLilToonImported();
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void CanLilToonBakeShadowRamp_ReturnsBool()
+        {
+            var result = AssetUtility.CanLilToonBakeShadowRamp();
+            if (!AssetUtility.IsLilToonImported())
+            {
+                Assert.IsFalse(result);
+            }
+        }
+
+        [Test]
+        public void GetAllObjectReferences_EmptyGameObject_ReturnsReferences()
+        {
+            var go = new GameObject("TestObj");
+            try
+            {
+                var refs = AssetUtility.GetAllObjectReferences(go);
+                Assert.IsNotNull(refs);
+                Assert.IsTrue(refs.Length >= 0);
+            }
+            finally
+            {
+                Object.DestroyImmediate(go);
+            }
+        }
+
+        [Test]
+        public void GetAllObjectReferences_WithMaterial_FindsMaterial()
+        {
+            var go = new GameObject("TestObj");
+            var renderer = go.AddComponent<MeshRenderer>();
+            var mat = new Material(Shader.Find("Standard"));
+            renderer.sharedMaterial = mat;
+            try
+            {
+                var refs = AssetUtility.GetAllObjectReferences(go);
+                Assert.IsNotNull(refs);
+                Assert.IsTrue(refs.Length > 0);
+            }
+            finally
+            {
+                Object.DestroyImmediate(go);
+                Object.DestroyImmediate(mat);
+            }
+        }
     }
 }

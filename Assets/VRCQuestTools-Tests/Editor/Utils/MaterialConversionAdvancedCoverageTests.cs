@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools.Tests
     // MaterialWrapperBuilder Tests
     // ==========================================
     [TestFixture]
-    public class Batch26_MaterialWrapperBuilderTests
+    public class MaterialWrapperBuilderTests_MatAdvanced
     {
         private MaterialWrapperBuilder builder;
 
@@ -193,7 +193,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter.CreateMaterialConvertSettingsMap deep paths
     // ==========================================
     [TestFixture]
-    public class Batch26_AvatarConverterCreateSettingsMapTests
+    public class AvatarConverterCreateSettingsMapTests_MatAdvanced
     {
         private AvatarConverter converter;
 
@@ -481,7 +481,7 @@ namespace KRT.VRCQuestTools.Tests
     // CacheUtility Tests (deep paths)
     // ==========================================
     [TestFixture]
-    public class Batch26_CacheUtilityDeepTests
+    public class CacheUtilityDeepTests_MatAdvanced
     {
         [Test]
         public void GetContentCacheKey_Standard_ReturnsNonEmptyString()
@@ -624,7 +624,7 @@ namespace KRT.VRCQuestTools.Tests
     // MSMapGenViewModel Tests
     // ==========================================
     [TestFixture]
-    public class Batch26_MSMapGenViewModelTests
+    public class MSMapGenViewModelTests_MatAdvanced
     {
         [Test]
         public void DisableGenerateButton_BothNull_ReturnsTrue()
@@ -702,7 +702,7 @@ namespace KRT.VRCQuestTools.Tests
     // Validator Tests
     // ==========================================
     [TestFixture]
-    public class Batch26_ValidatorTests
+    public class ValidatorTests
     {
         private GameObject CreateTestAvatar(string name)
         {
@@ -769,7 +769,7 @@ namespace KRT.VRCQuestTools.Tests
     // VPMService Tests
     // ==========================================
     [TestFixture]
-    public class Batch26_VPMServiceTests
+    public class VPMServiceTests_MatAdvanced
     {
         [Test]
         public void Constructor_DoesNotThrow()
@@ -782,7 +782,7 @@ namespace KRT.VRCQuestTools.Tests
     // NdmfUtility Tests
     // ==========================================
     [TestFixture]
-    public class Batch26_NdmfUtilityTests
+    public class NdmfUtilityTests_MatAdvanced
     {
         [Test]
         public void NotifyObjectUpdate_NullObject_DoesNotThrow()
@@ -806,7 +806,7 @@ namespace KRT.VRCQuestTools.Tests
     // UnityQuestSettingsViewModel Tests
     // ==========================================
     [TestFixture]
-    public class Batch26_UnityQuestSettingsViewModelTests
+    public class UnityQuestSettingsViewModelTests_MatAdvanced
     {
         [Test]
         public void Constructor_DoesNotThrow()
@@ -867,7 +867,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter.RemoveExtraMaterialSlots via reflection
     // ==========================================
     [TestFixture]
-    public class Batch26_AvatarConverterRemoveExtraSlots
+    public class AvatarConverterRemoveExtraSlots
     {
         [Test]
         public void RemoveExtraMaterialSlots_MoreSlotsThanSubMeshes_Removes()
@@ -986,7 +986,7 @@ namespace KRT.VRCQuestTools.Tests
     // InvalidMaterialSwapNullException Tests
     // ==========================================
     [TestFixture]
-    public class Batch26_InvalidMaterialSwapNullExceptionTests
+    public class InvalidMaterialSwapNullExceptionTests
     {
         [Test]
         public void Constructor_SetsComponentAndIndex()
@@ -1022,7 +1022,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter ApplyVirtualLens2Support via PrepareConvertForQuestInPlace
     // ==========================================
     [TestFixture]
-    public class Batch26_AvatarConverterPrepareTests
+    public class AvatarConverterPrepareTests_MatAdvanced
     {
         [Test]
         public void PrepareConvertForQuestInPlace_EmptyAvatar_DoesNotThrow()
@@ -1061,7 +1061,7 @@ namespace KRT.VRCQuestTools.Tests
     // AssetUtility uncovered paths
     // ==========================================
     [TestFixture]
-    public class Batch26_AssetUtilityTests
+    public class AssetUtilityTests_MatAdvanced
     {
         [Test]
         public void GetTypeByName_NonExistentType_ReturnsNull()
@@ -1087,7 +1087,7 @@ namespace KRT.VRCQuestTools.Tests
     // (Tested via reflection since Inspector namespace not directly accessible)
     // ==========================================
     [TestFixture]
-    public class Batch26_MaterialConvertSettingsTypesTests
+    public class MaterialConvertSettingsTypesTests_MatAdvanced
     {
         [Test]
         public void GetDefaultConvertTypePopups_WithToonStandard_ReturnsPopups()
@@ -1128,7 +1128,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter ClearSharedBlackTextureCache
     // ==========================================
     [TestFixture]
-    public class Batch26_AvatarConverterCacheTests
+    public class AvatarConverterCacheTests_MatAdvanced
     {
         [Test]
         public void ClearSharedBlackTextureCache_DoesNotThrow()
@@ -1154,7 +1154,7 @@ namespace KRT.VRCQuestTools.Tests
     // LegacyPackageException / BreakingPackageException
     // ==========================================
     [TestFixture]
-    public class Batch26_PackageExceptionTests
+    public class PackageExceptionTests
     {
         [Test]
         public void LegacyPackageException_CanBeCreated()
@@ -1195,7 +1195,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter.ApplyConvertedMaterials (renderers only path)
     // ==========================================
     [TestFixture]
-    public class Batch26_AvatarConverterApplyMaterialsTests
+    public class AvatarConverterApplyMaterialsTests
     {
         [Test]
         public void ApplyConvertedMaterials_NoAnimators_AppliesMaterialsToRenderers()

@@ -22,7 +22,7 @@ namespace KRT.VRCQuestTools.Tests
 {
     // ========== LilToonToonStandardGenerator GetUse*() Tests ==========
     [TestFixture]
-    public class Batch54_LilToonToonStandardGeneratorTests
+    public class LilToonToonStandardGeneratorTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -429,7 +429,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== AssetUtility Coverage Tests ==========
     [TestFixture]
-    public class Batch54_AssetUtilityTests
+    public class AssetUtilityTests_LilFinal
     {
         [Test]
         public void CanLilToonBakeShadowRamp_ReturnsBoolean()
@@ -535,7 +535,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== AvatarConverter.FindDescendant Tests ==========
     [TestFixture]
-    public class Batch54_AvatarConverterFindDescendantTests
+    public class AvatarConverterFindDescendantTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -627,7 +627,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== FallbackAvatarCallback Tests ==========
     [TestFixture]
-    public class Batch54_FallbackAvatarCallbackTests
+    public class FallbackAvatarCallbackTests_LilFinal
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
         private System.Type pipelineManagerType;
@@ -776,7 +776,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== VRCQuestToolsSettings Additional Tests ==========
     [TestFixture]
-    public class Batch54_VRCQuestToolsSettingsTests
+    public class VRCQuestToolsSettingsTests_LilFinal
     {
         [Test]
         public void DisplayLanguage_GetSet_RoundTrips()
@@ -834,7 +834,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== MaterialGeneratorUtility Additional Tests ==========
     [TestFixture]
-    public class Batch54_MaterialGeneratorUtilityTests
+    public class MaterialGeneratorUtilityTests_LilFinal
     {
         [Test]
         public void ConvertToNullableTextureFormat_ASTC6x6_ReturnsASTC6x6()
@@ -886,7 +886,7 @@ namespace KRT.VRCQuestTools.Tests
 
     // ========== ConvertToToonStandard LilToon Additional Tests ==========
     [TestFixture]
-    public class Batch54_LilToonConvertToToonStandardTests
+    public class LilToonConvertToToonStandardTests_LilFinal
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 

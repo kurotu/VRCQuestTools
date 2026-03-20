@@ -29,7 +29,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverterNdmfPhaseExtension Tests
     // ==========================================
     [TestFixture]
-    public class Batch23_NdmfPhaseExtensionTests
+    public class NdmfPhaseExtensionTests_Dynamics
     {
         [Test]
         public void Resolve_Transforming_ReturnsSelf()
@@ -101,7 +101,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRChatAvatar - HasVertexColor Tests
     // ==========================================
     [TestFixture]
-    public class Batch23_VRChatAvatarVertexColorTests
+    public class VRChatAvatarVertexColorTests
     {
         private static VRChatAvatar CreateAvatar(GameObject go)
         {
@@ -237,7 +237,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRChatAvatar - GetRuntimeAnimatorControllers
     // ==========================================
     [TestFixture]
-    public class Batch23_VRChatAvatarAnimatorControllerTests
+    public class VRChatAvatarAnimatorControllerTests
     {
         [Test]
         public void GetRuntimeAnimatorControllers_NoLayers_ReturnsEmpty()
@@ -383,7 +383,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter - Deep Path Tests
     // ==========================================
     [TestFixture]
-    public class Batch23_AvatarConverterDeepPathTests
+    public class AvatarConverterDeepPathTests_Dynamics
     {
         private AvatarConverter CreateConverter()
         {
@@ -753,7 +753,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter - CreateMaterialConvertSettingsMap (overload 2)
     // ==========================================
     [TestFixture]
-    public class Batch23_CreateMaterialConvertSettingsMapTests
+    public class CreateMaterialConvertSettingsMapTests_Dynamics
     {
         private AvatarConverter CreateConverter()
         {
@@ -1167,7 +1167,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter - ApplyConvertedMaterials
     // ==========================================
     [TestFixture]
-    public class Batch23_ApplyConvertedMaterialsTests
+    public class ApplyConvertedMaterialsTests_Dynamics
     {
         [Test]
         public void ApplyConvertedMaterials_ReplacesMaterials()
@@ -1269,7 +1269,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter - GenerateConvertedMaterial switch branches
     // ==========================================
     [TestFixture]
-    public class Batch23_GenerateConvertedMaterialTests
+    public class GenerateConvertedMaterialTests
     {
         [Test]
         public void GenerateConvertedMaterial_MaterialReplaceSettings_NullMaterial_Throws()
@@ -1406,7 +1406,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter - ConvertMaterialsForMobile
     // ==========================================
     [TestFixture]
-    public class Batch23_ConvertMaterialsForMobileTests
+    public class ConvertMaterialsForMobileTests_Dynamics
     {
         [Test]
         public void ConvertMaterialsForMobile_EmptyMap_ReturnsEmpty()
@@ -1544,7 +1544,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter - SharedBlackTextureCache deeper paths
     // ==========================================
     [TestFixture]
-    public class Batch23_SharedBlackTextureCacheTests
+    public class SharedBlackTextureCacheTests_Dynamics
     {
         [Test]
         public void GetOrCreateSharedBlackTexture_CacheHit_ReturnsSame()
@@ -1619,7 +1619,7 @@ namespace KRT.VRCQuestTools.Tests
     // MissingScriptsRule - more validation paths
     // ==========================================
     [TestFixture]
-    public class Batch23_MissingScriptsRuleTests
+    public class MissingScriptsRuleTests_Dynamics
     {
         [Test]
         public void Validate_InactiveAvatar_ReturnsNull()
@@ -1661,7 +1661,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRChatAvatar - Contact methods
     // ==========================================
     [TestFixture]
-    public class Batch23_VRChatAvatarContactTests
+    public class VRChatAvatarContactTests_Dynamics
     {
         [Test]
         public void GetContacts_NoContacts_ReturnsEmpty()
@@ -1771,7 +1771,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter - GenerateMobileTextures branches
     // ==========================================
     [TestFixture]
-    public class Batch23_GenerateMobileTexturesTests
+    public class GenerateMobileTexturesTests
     {
         [Test]
         public void GenerateMobileTextures_EmptyMaterials_DoesNothing()
@@ -1863,7 +1863,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRChatAvatar - EstimatePerformanceStats
     // ==========================================
     [TestFixture]
-    public class Batch23_VRChatAvatarPerformanceTests
+    public class VRChatAvatarPerformanceTests
     {
         [Test]
         public void EstimatePerformanceStats_EmptyAvatar_DoesNotThrow()
@@ -1930,7 +1930,7 @@ namespace KRT.VRCQuestTools.Tests
     // ComponentRemover - additional paths
     // ==========================================
     [TestFixture]
-    public class Batch23_ComponentRemoverTests
+    public class ComponentRemoverTests_Dynamics
     {
         [Test]
         public void RemoveUnsupportedComponentsInChildren_WithConstraintExclusion()
@@ -1967,7 +1967,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRChatAvatar - Materials property
     // ==========================================
     [TestFixture]
-    public class Batch23_VRChatAvatarMaterialsTests
+    public class VRChatAvatarMaterialsTests
     {
         [Test]
         public void Materials_NoRenderers_ReturnsEmpty()

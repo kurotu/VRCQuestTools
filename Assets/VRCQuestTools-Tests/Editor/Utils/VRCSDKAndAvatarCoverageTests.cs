@@ -35,7 +35,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.GetFullPathInHierarchy Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_GetFullPathInHierarchyTests
+    public class GetFullPathInHierarchyTests
     {
         [Test]
         public void GetFullPathInHierarchy_RootObject_ReturnsSlashName()
@@ -78,7 +78,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.IsAllowedForFallbackAvatar Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_IsAllowedForFallbackAvatarTests
+    public class IsAllowedForFallbackAvatarTests
     {
         [Test]
         public void IsAllowedForFallbackAvatar_Excellent_ReturnsTrue()
@@ -121,7 +121,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.GetContentTagLabel Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_GetContentTagLabelTests
+    public class GetContentTagLabelTests
     {
         [Test]
         public void GetContentTagLabel_Sex_ReturnsCorrectLabel()
@@ -164,7 +164,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.IsUnsupportedComponentType Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_IsUnsupportedComponentTypeTests
+    public class IsUnsupportedComponentTypeTests
     {
         [Test]
         public void IsUnsupportedComponentType_Transform_ReturnsFalse()
@@ -220,7 +220,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.GetRootTransform Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_GetRootTransformTests
+    public class GetRootTransformTests
     {
         [Test]
         public void GetRootTransform_VRCPhysBone_ReturnsRootTransform()
@@ -311,7 +311,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.GetTexturesFromMenu Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_GetTexturesFromMenuTests
+    public class GetTexturesFromMenuTests
     {
         [Test]
         public void GetTexturesFromMenu_NullMenu_ReturnsEmpty()
@@ -414,7 +414,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.DuplicateExpressionsMenu Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_DuplicateExpressionsMenuTests
+    public class DuplicateExpressionsMenuTests
     {
         [Test]
         public void DuplicateExpressionsMenu_Null_ReturnsNull()
@@ -519,7 +519,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.HasMissingNetworkIds Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_HasMissingNetworkIdsTests
+    public class HasMissingNetworkIdsTests
     {
         [Test]
         public void HasMissingNetworkIds_NoPhysBones_ReturnsFalse()
@@ -615,7 +615,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.AssignNetworkIdsToPhysBones Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_AssignNetworkIdsToPhysBonesTests
+    public class AssignNetworkIdsToPhysBonesTests
     {
         [Test]
         public void AssignNetworkIdsToPhysBones_NoPhysBones_DoesNotThrow()
@@ -708,7 +708,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.StripeUnusedNetworkIds Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_StripeUnusedNetworkIdsTests
+    public class StripeUnusedNetworkIdsTests
     {
         [Test]
         public void StripeUnusedNetworkIds_AllValid_KeepsAll()
@@ -811,7 +811,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.IsMaterialAllowedForQuestAvatar Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_IsMaterialAllowedForQuestAvatarTests
+    public class IsMaterialAllowedForQuestAvatarTests
     {
         [Test]
         public void IsMaterialAllowedForQuestAvatar_ToonLit_ReturnsTrue()
@@ -852,7 +852,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.RemoveMissingComponentsInChildren Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_RemoveMissingComponentsTests
+    public class RemoveMissingComponentsTests
     {
         [Test]
         public void RemoveMissingComponentsInChildren_NoMissing_DoesNotThrow()
@@ -903,7 +903,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.DeleteAvatarDynamicsComponents Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_DeleteAvatarDynamicsComponentsTests
+    public class DeleteAvatarDynamicsComponentsTests
     {
         [Test]
         public void DeleteAvatarDynamicsComponents_EmptyAvatar_DoesNotThrow()
@@ -980,7 +980,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter.FindDescendant Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_FindDescendantTests
+    public class FindDescendantTests
     {
         [Test]
         public void FindDescendant_DirectChild_ReturnsChild()
@@ -1046,7 +1046,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter.RemoveExtraMaterialSlots Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_RemoveExtraMaterialSlotsTests
+    public class RemoveExtraMaterialSlotsTests_SDKAvatar
     {
         [Test]
         public void RemoveExtraMaterialSlots_NoRenderers_DoesNotThrow()
@@ -1156,7 +1156,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter.ApplyVRCQuestToolsComponents Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_ApplyVRCQuestToolsComponentsTests
+    public class ApplyVRCQuestToolsComponentsTests_SDKAvatar
     {
         [Test]
         public void ApplyVRCQuestToolsComponents_AddsConvertedAvatar()
@@ -1226,7 +1226,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter.ApplyVirtualLens2Support Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_ApplyVirtualLens2SupportTests
+    public class ApplyVirtualLens2SupportTests
     {
         [Test]
         public void ApplyVirtualLens2Support_NoVirtualLensRoot_DoesNotThrow()
@@ -1293,7 +1293,7 @@ namespace KRT.VRCQuestTools.Tests
     // MSMapGenViewModel Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_MSMapGenViewModelTests
+    public class MSMapGenViewModelTests_SDKAvatar
     {
         [Test]
         public void DisableGenerateButton_BothNull_ReturnsTrue()
@@ -1362,7 +1362,7 @@ namespace KRT.VRCQuestTools.Tests
     // AnimatorControllerDuplicator Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_AnimatorControllerDuplicatorTests
+    public class AnimatorControllerDuplicatorTests_SDKAvatar
     {
         [Test]
         public void Duplicate_EmptyController_ReturnsCopy()
@@ -1449,7 +1449,7 @@ namespace KRT.VRCQuestTools.Tests
     // MaterialGeneratorUtility.ConvertToNullableTextureFormat Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_ConvertToNullableTextureFormatTests
+    public class ConvertToNullableTextureFormatTests
     {
         [Test]
         public void ConvertToNullableTextureFormat_NoOverride_ReturnsNull()
@@ -1484,7 +1484,7 @@ namespace KRT.VRCQuestTools.Tests
     // FallbackAvatarCallback / ActualPerformanceCallback Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_CallbackTests
+    public class CallbackTests_SDKAvatar
     {
         [Test]
         public void FallbackAvatarCallback_CallbackOrder_ReturnsValue()
@@ -1543,7 +1543,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_LoadPerformanceStatsTests
+    public class LoadPerformanceStatsTests
     {
         [Test]
         public void LoadAvatarPerformanceStatsLevelSet_Mobile_ReturnsOrThrows()
@@ -1579,7 +1579,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.ResizeExpressionMenuIcons Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_ResizeExpressionMenuIconsTests
+    public class ResizeExpressionMenuIconsTests
     {
         [Test]
         public void ResizeExpressionMenuIcons_NullMenu_DoesNotThrow()
@@ -1628,7 +1628,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter.ProgressCallback Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_ProgressCallbackTests
+    public class ProgressCallbackTests_SDKAvatar
     {
         [Test]
         public void ProgressCallback_Fields_AreAccessible()
@@ -1652,7 +1652,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.GetSdkControlPanelSelectedAvatar Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_GetSdkControlPanelSelectedAvatarTests
+    public class GetSdkControlPanelSelectedAvatarTests
     {
         [Test]
         public void GetSdkControlPanelSelectedAvatar_ReturnsNullOrThrows()
@@ -1678,7 +1678,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility.AssignNetworkIdsToPhysBonesByHierarchyHash Tests
     // ==========================================
     [TestFixture]
-    public class Batch27_AssignNetworkIdsByHashTests
+    public class AssignNetworkIdsByHashTests
     {
         [Test]
         public void AssignNetworkIdsToPhysBonesByHierarchyHash_NoPhysBones_ReturnsEmpty()

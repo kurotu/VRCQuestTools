@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.Tests
     // TextureUtility Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_TextureUtilityTests
+    public class TextureUtilityTests_Validation
     {
         [Test]
         public void GetCompressionFormat_ASTC6x6_ReturnsASTCFormat()
@@ -183,7 +183,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCSDKUtility Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_VRCSDKUtilityTests
+    public class VRCSDKUtilityTests_Validation
     {
         [Test]
         public void IsAvatarRoot_NullObject_ReturnsFalse()
@@ -341,7 +341,7 @@ namespace KRT.VRCQuestTools.Tests
     // MSMapGenViewModel Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_MSMapGenViewModelTests
+    public class MSMapGenViewModelTests_Validation
     {
         [Test]
         public void DisableGenerateButton_BothNull_ReturnsTrue()
@@ -413,7 +413,7 @@ namespace KRT.VRCQuestTools.Tests
     // MaterialWrapperBuilder Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_MaterialWrapperBuilderTests
+    public class MaterialWrapperBuilderTests_Validation
     {
         [Test]
         public void DetectShaderCategory_StandardShader_ReturnsStandard()
@@ -580,7 +580,7 @@ namespace KRT.VRCQuestTools.Tests
     // UnityAnimationUtility Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_UnityAnimationUtilityTests
+    public class UnityAnimationUtilityTests_Validation
     {
         [Test]
         public void GetMaterials_NullController_ThrowsOrReturnsEmpty()
@@ -728,7 +728,7 @@ namespace KRT.VRCQuestTools.Tests
     // CacheUtility Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_CacheUtilityTests
+    public class CacheUtilityTests_Validation
     {
         [Test]
         public void GetContentCacheKey_DifferentShader_DifferentKey()
@@ -857,7 +857,7 @@ namespace KRT.VRCQuestTools.Tests
     // AvatarConverter Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_AvatarConverterAdditionalTests
+    public class AvatarConverterAdditionalTests_Validation
     {
         [Test]
         public void FindDescendant_ExistingChild_Found()
@@ -980,7 +980,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRCQuestToolsSettings Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_VRCQuestToolsSettingsTests
+    public class VRCQuestToolsSettingsTests_Validation
     {
         [Test]
         public void I18nResource_IsNotNull()
@@ -1050,7 +1050,7 @@ namespace KRT.VRCQuestTools.Tests
     // I18n Coverage Tests - exercise all language branches
     // ==========================================
     [TestFixture]
-    public class Batch25_I18nCoverageTests
+    public class I18nCoverageTests
     {
         [Test]
         public void I18n_GetI18n_AutoLanguage_ReturnsNonNull()
@@ -1128,7 +1128,7 @@ namespace KRT.VRCQuestTools.Tests
     // AssetUtility Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_AssetUtilityAdditionalTests
+    public class AssetUtilityAdditionalTests_Validation
     {
         [Test]
         public void IsLilToonImported_ReturnsTrue()
@@ -1148,7 +1148,7 @@ namespace KRT.VRCQuestTools.Tests
     // ModularAvatarUtility Additional Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_ModularAvatarUtilityTests
+    public class ModularAvatarUtilityTests_Validation
     {
         [Test]
         public void IsModularAvatarImported_ReturnsBool()
@@ -1174,7 +1174,7 @@ namespace KRT.VRCQuestTools.Tests
     // MaterialGeneratorUtility Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_MaterialGeneratorUtilityTests
+    public class MaterialGeneratorUtilityTests_Validation
     {
         [Test]
         public void ConvertToNullableTextureFormat_NoOverride_ReturnsNull()
@@ -1215,7 +1215,7 @@ namespace KRT.VRCQuestTools.Tests
     // ValidationAutomator Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_ValidationAutomatorTests
+    public class ValidationAutomatorTests_Validation
     {
         [Test]
         public void ValidationAutomatorEnabled_ToggleWorks()
@@ -1237,7 +1237,7 @@ namespace KRT.VRCQuestTools.Tests
     // SystemUtility Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_SystemUtilityTests
+    public class SystemUtilityTests_Validation
     {
         [Test]
         public void GetTypeByName_ExistingType_ReturnsType()
@@ -1259,7 +1259,7 @@ namespace KRT.VRCQuestTools.Tests
     // VRChatAvatar Additional Detailed Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_VRChatAvatarAdditionalTests
+    public class VRChatAvatarAdditionalTests
     {
         private GameObject CreateTestAvatar(string name)
         {
@@ -1361,7 +1361,7 @@ namespace KRT.VRCQuestTools.Tests
     // NotificationItem Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_NotificationItemTests
+    public class NotificationItemTests_Validation
     {
         [Test]
         public void Constructor_SetsGuiDelegate()
@@ -1376,7 +1376,7 @@ namespace KRT.VRCQuestTools.Tests
     // ConversionException Tests
     // ==========================================
     [TestFixture]
-    public class Batch25_ConversionExceptionTests
+    public class ConversionExceptionTests_Validation
     {
         [Test]
         public void AnimationClipConversionException_Message_IsNotNull()

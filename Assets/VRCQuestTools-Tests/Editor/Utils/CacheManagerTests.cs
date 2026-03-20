@@ -119,5 +119,94 @@ namespace KRT.VRCQuestTools.Utils
         {
             Assert.IsNotNull(CacheManager.Texture);
         }
+
+        /// <summary>
+        /// Test CopyToCache copies file into cache.
+        /// </summary>
+        [Test]
+        public void CopyToCache_CopiesFile()
+        {
+            var srcFile = Path.GetTempFileName();
+            try
+            {
+                File.WriteAllText(srcFile, "source data");
+                testCacheManager.CopyToCache(srcFile, "copied.txt");
+                Assert.IsTrue(testCacheManager.Exists("copied.txt"));
+                Assert.AreEqual("source data", testCacheManager.LoadString("copied.txt"));
+            }
+            finally
+            {
+                File.Delete(srcFile);
+            }
+        }
+
+        /// <summary>
+        /// Test CopyFromCache copies file from cache.
+        /// </summary>
+        [Test]
+        public void CopyFromCache_CopiesFile()
+        {
+            testCacheManager.Save("cached.txt", "cached data");
+            var destFile = Path.GetTempFileName();
+            try
+            {
+                testCacheManager.CopyFromCache("cached.txt", destFile);
+                Assert.AreEqual("cached data", File.ReadAllText(destFile));
+            }
+            finally
+            {
+                File.Delete(destFile);
+            }
+        }
+
+        /// <summary>
+        /// Test Clear with size limit removes old files.
+        /// </summary>
+        [Test]
+        public void ClearWithSize_KeepsFilesWithinLimit()
+        {
+            testCacheManager.Save("small1.txt", new string('a', 100));
+            testCacheManager.Save("small2.txt", new string('b', 100));
+            testCacheManager.Save("small3.txt", new string('c', 100));
+
+            testCacheManager.Clear(200UL);
+
+            int existCount = 0;
+            if (testCacheManager.Exists("small1.txt")) existCount++;
+            if (testCacheManager.Exists("small2.txt")) existCount++;
+            if (testCacheManager.Exists("small3.txt")) existCount++;
+            Assert.Less(existCount, 3);
+        }
+
+        /// <summary>
+        /// Test Clear when directory does not exist.
+        /// </summary>
+        [Test]
+        public void Clear_WhenDirectoryDoesNotExist_DoesNotThrow()
+        {
+            var noDir = Path.Combine(Path.GetTempPath(), "nonexistent_" + System.Guid.NewGuid().ToString("N"));
+            var mgr = new CacheManager(() => noDir);
+            Assert.DoesNotThrow(() => mgr.Clear());
+        }
+
+        /// <summary>
+        /// Test Clear with size when directory does not exist.
+        /// </summary>
+        [Test]
+        public void ClearWithSize_WhenDirectoryDoesNotExist_DoesNotThrow()
+        {
+            var noDir = Path.Combine(Path.GetTempPath(), "nonexistent_" + System.Guid.NewGuid().ToString("N"));
+            var mgr = new CacheManager(() => noDir);
+            Assert.DoesNotThrow(() => mgr.Clear(1024UL));
+        }
+
+        /// <summary>
+        /// Test Exists returns false for nonexistent file.
+        /// </summary>
+        [Test]
+        public void Exists_WhenNotSaved_ReturnsFalse()
+        {
+            Assert.IsFalse(testCacheManager.Exists("nonexistent.txt"));
+        }
     }
 }

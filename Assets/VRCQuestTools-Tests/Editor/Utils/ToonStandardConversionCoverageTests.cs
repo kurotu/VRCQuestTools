@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Tests
     // via GenerateMaterial with generateQuestTextures=false
     // =========================================================================
     [TestFixture]
-    public class Batch48_LilToonConvertToToonStandardTests
+    public class LilToonConvertToToonStandardTests_ToonConversion
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -554,7 +554,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: ToonStandardGenerator non-IToonStandardConvertable fallback
     // =========================================================================
     [TestFixture]
-    public class Batch48_ToonStandardGeneratorFallbackTests
+    public class ToonStandardGeneratorFallbackTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -656,7 +656,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: GenericToonStandardGenerator ConvertToToonStandard (generateQuestTextures=false)
     // =========================================================================
     [TestFixture]
-    public class Batch48_GenericToonStandardGeneratorTests
+    public class GenericToonStandardGeneratorTests_ToonConversion
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -768,7 +768,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: AvatarConverter deeper paths - RemoveVertexColor, CreateMaterialConvertSettingsMap exceptions
     // =========================================================================
     [TestFixture]
-    public class Batch48_AvatarConverterDeepPathTests
+    public class AvatarConverterDeepPathTests_ToonConversion
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -1051,7 +1051,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: VRChatAvatar HasVertexColor and HasAnimatedMaterials deeper paths
     // =========================================================================
     [TestFixture]
-    public class Batch48_VRChatAvatarDeepPropertyTests
+    public class VRChatAvatarDeepPropertyTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
@@ -1217,7 +1217,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: ModularAvatarUtility, SystemUtility, VPMService
     // =========================================================================
     [TestFixture]
-    public class Batch48_UtilityDeepTests
+    public class UtilityDeepTests
     {
         [Test]
         public void SystemUtility_GetTypeByName_KnownType_ReturnsType()
@@ -1319,7 +1319,7 @@ namespace KRT.VRCQuestTools.Tests
     // Test: FallbackAvatarCallback and validation callbacks
     // =========================================================================
     [TestFixture]
-    public class Batch48_NdmfCallbackTests
+    public class NdmfCallbackTests
     {
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 

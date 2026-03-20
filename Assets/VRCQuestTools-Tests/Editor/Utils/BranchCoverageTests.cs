@@ -1,4 +1,4 @@
-// <copyright file="Batch38_DeepCoverageTests.cs" company="kurotu">
+// <copyright file="DeepCoverageTests_Branch.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -25,7 +25,7 @@ namespace KRT.VRCQuestTools.Tests
     /// Batch 38: Deep coverage tests targeting specific uncovered branches.
     /// </summary>
     [TestFixture]
-    internal class Batch38_DeepCoverageTests
+    internal class DeepCoverageTests_Branch
     {
         private readonly List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 

@@ -1,4 +1,4 @@
-// <copyright file="Batch43_FinalCoverageTests.cs" company="kurotu">
+// <copyright file="FinalCoverageTests_FinalBoost.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Tests
     /// Batch 43: TexturePack.GetMasks, AvatarConverter paths, ResizeExpressionMenuIcons, misc.
     /// </summary>
     [TestFixture]
-    public class Batch43_FinalCoverageTests
+    public class FinalCoverageTests_FinalBoost
     {
         private readonly List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 
@@ -359,7 +359,7 @@ namespace KRT.VRCQuestTools.Tests
                 }
 
                 var callback = Delegate.CreateDelegate(delegateType,
-                    typeof(Batch43_FinalCoverageTests).GetMethod("DummyTextureProgressCallback",
+                    typeof(FinalCoverageTests_FinalBoost).GetMethod("DummyTextureProgressCallback",
                         BindingFlags.Static | BindingFlags.NonPublic));
 
                 var result = method.Invoke(converter, new object[] { emptyMap, false, "", callback });

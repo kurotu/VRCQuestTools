@@ -4,6 +4,7 @@
     "references": [
         "VRCQuestTools",
         "VRCQuestTools-Editor",
+        "VRCQuestTools-Editor-Ndmf",
         "nadena.dev.ndmf",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
@@ -20,6 +21,7 @@
         "VRCSDKBase.dll",
         "VRCSDK3A.dll",
         "VRC.SDK3.Dynamics.PhysBone.dll",
+        "VRC.SDK3.Dynamics.Contact.dll",
         "VRC.Dynamics.dll"
     ],
     "autoReferenced": false,

@@ -9,7 +9,7 @@ using KRT.VRCQuestTools.Utils;
 namespace KRT.VRCQuestTools.Tests
 {
     [TestFixture]
-    public class Batch14_UnityAnimationUtilityTests
+    public class UnityAnimationUtilityTests_AnimUtil
     {
         [Test]
         public void ReplaceAnimationClipMaterials_NoMaterials_ReturnsCopy()

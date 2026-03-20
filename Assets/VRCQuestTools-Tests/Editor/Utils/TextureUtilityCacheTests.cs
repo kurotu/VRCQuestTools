@@ -12,7 +12,7 @@ using VQTBuildTarget = KRT.VRCQuestTools.Models.BuildTarget;
 namespace KRT.VRCQuestTools.Tests
 {
     [TestFixture]
-    public class Batch15_TextureUtilityTests
+    public class TextureUtilityTests_TexCache
     {
         [Test]
         public void CompressTextureForBuildTarget_Mobile_ASTC()
@@ -528,7 +528,7 @@ namespace KRT.VRCQuestTools.Tests
     }
 
     [TestFixture]
-    public class Batch15_CacheUtilityTests
+    public class CacheUtilityTests_TexCache
     {
         [Test]
         public void GetContentCacheKey_NonNull()

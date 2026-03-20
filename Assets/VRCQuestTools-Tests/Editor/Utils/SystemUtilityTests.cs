@@ -43,5 +43,39 @@ namespace KRT.VRCQuestTools.Utils
             Assert.Fail("Unsupported editor platform");
 #endif
         }
+
+        /// <summary>
+        /// Test GetTypeByName finds an editor type.
+        /// </summary>
+        [Test]
+        public void GetTypeByName_FindsEditorType()
+        {
+            var type = SystemUtility.GetTypeByName("UnityEditor.Editor");
+            Assert.IsNotNull(type);
+            Assert.AreEqual(typeof(UnityEditor.Editor), type);
+        }
+
+        /// <summary>
+        /// Test GetAppLocalCachePath includes app name.
+        /// </summary>
+        [Test]
+        public void GetAppLocalCachePath_IncludesAppName()
+        {
+            var path = SystemUtility.GetAppLocalCachePath("MyTestApp");
+            Assert.IsNotEmpty(path);
+            Assert.IsTrue(path.Contains("MyTestApp"));
+        }
+
+        /// <summary>
+        /// Test OpenFolder throws for nonexistent directory.
+        /// </summary>
+        [Test]
+        public void OpenFolder_ThrowsForNonexistentDirectory()
+        {
+            Assert.Throws<System.IO.DirectoryNotFoundException>(() =>
+            {
+                SystemUtility.OpenFolder("/nonexistent/path/12345");
+            });
+        }
     }
 }
