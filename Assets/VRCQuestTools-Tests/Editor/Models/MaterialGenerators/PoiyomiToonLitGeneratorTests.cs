@@ -230,9 +230,10 @@ namespace KRT.VRCQuestTools.Models
                     if (bakedTex11 != null && bakedTex22 != null)
                     {
                         var diff = TestUtils.MaxDifference(bakedTex11, bakedTex22);
-                        Assert.Less(diff, 0.01f, "Baked textures should be nearly identical regardless of UV tiling stored in _MainTex_ST. " +
+                        var message = "Baked textures should be nearly identical regardless of UV tiling stored in _MainTex_ST. " +
                             "UV tiling must not be embedded in the baked texture to prevent double-tiling at runtime. " +
-                            $"Actual max difference: {diff:F4}.");
+                            $"Actual max difference: {diff:F4}.";
+                        Assert.Less(diff, 0.01f, message);
                     }
                     else
                     {
