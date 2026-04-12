@@ -1,3 +1,4 @@
+#if VQT_HAS_NDMF
 // Tests for NdmfPluginUtility.HandleConversionException and related NDMF utility methods.
 
 using System;
@@ -1083,3 +1084,4 @@ namespace KRT.VRCQuestTools
         }
     }
 }
+#endif

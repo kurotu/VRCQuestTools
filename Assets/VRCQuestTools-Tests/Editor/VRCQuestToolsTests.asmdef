@@ -38,6 +38,11 @@
             "name": "com.anatawa12.avatar-optimizer",
             "expression": "",
             "define": "VQT_AVATAR_OPTIMIZER"
+        },
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "[1.5.0,2.0.0-a)",
+            "define": "VQT_HAS_NDMF"
         }
     ],
     "noEngineReferences": false
