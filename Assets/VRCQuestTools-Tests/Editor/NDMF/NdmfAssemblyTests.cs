@@ -1,4 +1,3 @@
-#if VQT_HAS_NDMF
 // Tests for VRCQuestTools-Editor-Ndmf assembly classes (using reflection since types are internal).
 
 using System;
@@ -1200,4 +1199,3 @@ namespace KRT.VRCQuestTools
         }
     }
 }
-#endif

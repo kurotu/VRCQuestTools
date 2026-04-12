@@ -1,0 +1,44 @@
+{
+    "name": "VRCQuestTools-EditorTests-Ndmf",
+    "rootNamespace": "KRT.VRCQuestTools",
+    "references": [
+        "VRCQuestTools",
+        "VRCQuestTools-Editor",
+        "VRCQuestTools-Editor-Ndmf",
+        "nadena.dev.ndmf",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "VRCSDKBase.dll",
+        "VRCSDK3A.dll",
+        "VRC.SDK3.Dynamics.PhysBone.dll",
+        "VRC.SDK3.Dynamics.Contact.dll",
+        "VRC.Dynamics.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "VQT_HAS_NDMF",
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "[1.5.0,2.0.0-a)",
+            "define": "VQT_HAS_NDMF"
+        },
+        {
+            "name": "com.anatawa12.avatar-optimizer",
+            "expression": "",
+            "define": "VQT_AVATAR_OPTIMIZER"
+        }
+    ],
+    "noEngineReferences": false
+}
