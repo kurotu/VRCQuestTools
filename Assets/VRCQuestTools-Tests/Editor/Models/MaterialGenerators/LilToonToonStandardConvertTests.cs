@@ -2,6 +2,7 @@
 
 using System.Reflection;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Tests;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEngine;
@@ -15,33 +16,23 @@ namespace KRT.VRCQuestTools.Models
     [TestFixture]
     public class LilToonToonStandardConvertTests
     {
-        private static bool isLilToonAvailable;
         private static Shader lilToonShader;
         private static Shader toonStandardShader;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            if (!AssetUtility.IsLilToonImported())
-            {
-                return;
-            }
+            LilToonTestHelper.SkipIfNotImported();
 
             var lilToonVersion = AssetUtility.LilToonVersion;
             if (lilToonVersion < new SemVer(1, 10, 0) || lilToonVersion >= new SemVer(3, 0, 0))
             {
-                return;
+                Assert.Ignore($"lilToon {lilToonVersion} is not supported.");
             }
 
             lilToonShader = Shader.Find("lilToon");
             toonStandardShader = Shader.Find("VRChat/Mobile/Toon Standard");
-            isLilToonAvailable = lilToonShader != null && toonStandardShader != null;
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            if (!isLilToonAvailable)
+            if (lilToonShader == null || toonStandardShader == null)
             {
                 Assert.Ignore("lilToon or Toon Standard shader not available.");
             }
@@ -584,31 +575,24 @@ namespace KRT.VRCQuestTools.Models
     [TestFixture]
     public class LilToonToonStandardGetterTests
     {
-        private static bool isLilToonAvailable;
         private static Shader lilToonShader;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            if (!AssetUtility.IsLilToonImported())
-            {
-                return;
-            }
+            LilToonTestHelper.SkipIfNotImported();
 
             var lilToonVersion = AssetUtility.LilToonVersion;
             if (lilToonVersion < new SemVer(1, 10, 0) || lilToonVersion >= new SemVer(3, 0, 0))
             {
-                return;
+                Assert.Ignore($"lilToon {lilToonVersion} is not supported.");
             }
 
             lilToonShader = Shader.Find("lilToon");
-            isLilToonAvailable = lilToonShader != null;
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            if (!isLilToonAvailable) Assert.Ignore("lilToon not available");
+            if (lilToonShader == null)
+            {
+                Assert.Ignore("lilToon shader not available.");
+            }
         }
 
         private object InvokeProtected(LilToonToonStandardGenerator gen, string methodName, params object[] args)

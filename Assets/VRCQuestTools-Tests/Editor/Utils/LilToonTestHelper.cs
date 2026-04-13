@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Tests
@@ -40,6 +42,18 @@ namespace KRT.VRCQuestTools.Tests
         internal static Texture2D CreateTestTexture(int width = 64, int height = 64)
         {
             return new Texture2D(width, height, TextureFormat.RGBA32, false);
+        }
+
+        /// <summary>
+        /// Skips the current test or fixture if lilToon is not imported.
+        /// Call this from [OneTimeSetUp] to skip all tests in a fixture.
+        /// </summary>
+        internal static void SkipIfNotImported()
+        {
+            if (!AssetUtility.IsLilToonImported())
+            {
+                Assert.Ignore("lilToon is not imported.");
+            }
         }
     }
 }

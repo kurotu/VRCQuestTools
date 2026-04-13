@@ -4,6 +4,7 @@
 // </copyright>
 
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Tests;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEngine;
@@ -15,6 +16,12 @@ namespace KRT.VRCQuestTools.Models
     /// </summary>
     public class LilToonToonStandardGeneratorTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         /// <summary>
         /// Test that ToonStandardMaterialWrapper correctly stores and retrieves MainTextureScale.
         /// </summary>

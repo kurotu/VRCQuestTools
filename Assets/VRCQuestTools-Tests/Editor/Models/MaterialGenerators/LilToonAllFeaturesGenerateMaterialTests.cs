@@ -16,6 +16,12 @@ namespace KRT.VRCQuestTools.Tests
     [TestFixture]
     public class LilToonAllFeaturesGenerateMaterialTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         private static bool IsReady(out string reason)
         {
             if (!AssetUtility.IsLilToonImported())

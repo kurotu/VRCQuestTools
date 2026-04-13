@@ -4,6 +4,7 @@
 // </copyright>
 
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Tests;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEngine;
@@ -15,6 +16,12 @@ namespace KRT.VRCQuestTools.Models
     /// </summary>
     public class LilToonToonLitGeneratorTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         /// <summary>
         /// Test that ToonLitGenerator without baking preserves main texture UV scale and offset from lilToon source.
         /// </summary>

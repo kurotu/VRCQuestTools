@@ -5,6 +5,7 @@
 // UseRimLight, AOMap, UseNormalMap, NormalMap.
 
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Tests;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEngine;
@@ -14,31 +15,21 @@ namespace KRT.VRCQuestTools.Models
     [TestFixture]
     public class LilToonMaterialBoolAndTexturePropertyTests
     {
-        private static bool isLilToonAvailable;
         private static Shader lilToonShader;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            if (!AssetUtility.IsLilToonImported())
-            {
-                return;
-            }
+            LilToonTestHelper.SkipIfNotImported();
 
             var lilToonVersion = AssetUtility.LilToonVersion;
             if (lilToonVersion < new SemVer(1, 10, 0) || lilToonVersion >= new SemVer(3, 0, 0))
             {
-                return;
+                Assert.Ignore($"lilToon {lilToonVersion} is not supported.");
             }
 
             lilToonShader = Shader.Find("lilToon");
-            isLilToonAvailable = lilToonShader != null;
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            if (!isLilToonAvailable)
+            if (lilToonShader == null)
             {
                 Assert.Ignore("lilToon shader not available.");
             }

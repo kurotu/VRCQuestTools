@@ -22,6 +22,12 @@ namespace KRT.VRCQuestTools.Tests
     {
         private readonly List<UnityEngine.Object> toCleanup = new List<UnityEngine.Object>();
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         [TearDown]
         public void TearDown()
         {
