@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Japanese\n"
-"PO-Revision-Date: 2026-03-06 14:49\n"
+"PO-Revision-Date: 2026-04-17 16:46\n"
 
 msgid "CancelLabel"
 msgstr "キャンセル"
@@ -198,7 +198,7 @@ msgid "AlertForUnityConstraintsConversion"
 msgstr "VRCQuestTools は Unity Constraints を VRChat Constraints に変換しません。アバターを変換する前に VRChat Constraints を設定してください。"
 
 msgid "AlertForAvatarDynamicsPerformance"
-msgstr "Avatar Dynamics (PhysBones, Contacts) のパフォーマンスランクが Very Poor になっており Mobile 用にアップロードできません。 Avatar Dynamics のパフォーマンスランクが Poor に収まるようコンポーネントを削減してください。"
+msgstr "Avatar Dynamics (PhysBones, Contacts) のパフォーマンスランクが Very Poor になっており、 Mobile 用にアップロードしてもコンポーネントが削除されます。 Avatar Dynamics のパフォーマンスランクが Poor に収まるようコンポーネントを削減してください。"
 
 msgid "ErrorForPrefabStage"
 msgstr "Prefab モードではアバターを変換できません。Prefab モードを抜けてシーンに戻ってください。"
@@ -362,23 +362,20 @@ msgstr "コンポーネントと Root Transform の一覧"
 msgid "KeepAll"
 msgstr "すべて残す"
 
-msgid "AvatarDynamicsPreventsUpload"
-msgstr "Mobile用にアップロードできません。 Avatar Dynamics のランクは少なくとも Poor にしてください。"
-
 msgid "PhysBonesWillBeRemovedAtRunTime"
-msgstr "Mobile用にアップロードできません。 PhysBone の数を減らしてください。"
+msgstr "Mobile用にアップロードできますが、すべての PhysBone が削除されます。 PhysBone の数を減らしてください。"
 
 msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
-msgstr "Mobile用にアップロードしても PhysBoneCollider は動作しません。 PhysBoneCollider の数を減らしてください。"
+msgstr "Mobile用にアップロードできますが、すべての PhysBoneCollider が削除されます。 PhysBoneCollider の数を減らしてください。"
 
 msgid "ContactsWillBeRemovedAtRunTime"
-msgstr "Mobile用にアップロードできません。 ContactReceiver と ContactSender の数を減らしてください。"
+msgstr "Mobile用にアップロードできますが、すべての ContactReceiver と ContactSender が削除されます。数を減らしてください。"
 
 msgid "PhysBonesTransformsShouldBeReduced"
-msgstr "Mobile用にアップロードできません。 PhysBone の数を減らすか、PhysBone の子オブジェクトの数を減らしてください。"
+msgstr "Mobile用にアップロードできますが、すべての PhysBone が削除されます。 PhysBone の数を減らすか、PhysBone の子オブジェクトの数を減らしてください。"
 
 msgid "PhysBonesCollisionCheckCountShouldBeReduced"
-msgstr "Mobile用にアップロードできません。 PhysBone と PhysBoneCollider の衝突判定の数を減らしてください。"
+msgstr "Mobile用にアップロードできますが、すべての PhysBoneCollider が削除されます。 PhysBone と PhysBoneCollider の衝突判定の数を減らしてください。"
 
 msgid "PhysBonesShouldHaveNetworkID"
 msgstr "PhysBone を正しく同期させるには PhysBone のネットワーク ID をPC版と一致させる必要があります。VRCSDK の Network ID Utility を使用してPC用とMobile用で同じネットワーク ID を割り当てた後、両方を再アップロードしてください。"
