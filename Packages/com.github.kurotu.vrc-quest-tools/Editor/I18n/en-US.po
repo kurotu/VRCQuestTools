@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: English\n"
-"PO-Revision-Date: 2026-03-06 14:49\n"
+"PO-Revision-Date: 2026-04-17 16:46\n"
 
 msgid "CancelLabel"
 msgstr "Cancel"
@@ -198,7 +198,7 @@ msgid "AlertForUnityConstraintsConversion"
 msgstr "VRCQuestTools doesn't convert Unity constraints to VRChat constraints. Please set up VRChat constraints before converting the avatar."
 
 msgid "AlertForAvatarDynamicsPerformance"
-msgstr "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so you will not be able to upload to Mobile. Please keep \"Poor\" rating in avatar dynamics categories."
+msgstr "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so components will be removed even if you upload to Mobile. Please keep \"Poor\" rating in avatar dynamics categories."
 
 msgid "ErrorForPrefabStage"
 msgstr "Can't convert the avatar in prefab mode. Please go back to a scene from prefab mode."
@@ -362,23 +362,20 @@ msgstr "The list of components and their root transforms."
 msgid "KeepAll"
 msgstr "Keep All"
 
-msgid "AvatarDynamicsPreventsUpload"
-msgstr "You can't upload this avatar for Mobile. At least Avatar Dynamics must keep \"Poor\" rating."
-
 msgid "PhysBonesWillBeRemovedAtRunTime"
-msgstr "You can't upload this avatar for Mobile. Please reduce PhysBone components."
+msgstr "You can upload this avatar to Mobile, but all PhysBone components will be removed. Please reduce PhysBone components."
 
 msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
-msgstr "All PhysBone colliders will be removed at runtime on Mobile. Please reduce PhysBoneCollider components."
+msgstr "You can upload this avatar to Mobile, but all PhysBoneCollider components will be removed. Please reduce PhysBoneCollider components."
 
 msgid "ContactsWillBeRemovedAtRunTime"
-msgstr "You can't upload this avatar for Mobile. Please reduce VRCContact components."
+msgstr "You can upload this avatar to Mobile, but all ContactReceiver and ContactSender components will be removed. Please reduce VRCContact components."
 
 msgid "PhysBonesTransformsShouldBeReduced"
-msgstr "You can't upload this avatar for Mobile. Please reduce VRCPhysBone components or number of transforms in hierarchy under VRCPhysBone components."
+msgstr "You can upload this avatar to Mobile, but all PhysBone components will be removed. Please reduce VRCPhysBone components or number of transforms in hierarchy under VRCPhysBone components."
 
 msgid "PhysBonesCollisionCheckCountShouldBeReduced"
-msgstr "You can't upload this avatar for Mobile. Please reduce collision check count between VRCPhysBone components and VRCPhysBoneCollider components."
+msgstr "You can upload this avatar to Mobile, but all PhysBoneCollider components will be removed. Please reduce collision check count between VRCPhysBone components and VRCPhysBoneCollider components."
 
 msgid "PhysBonesShouldHaveNetworkID"
 msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Mobile. Please assign Network IDs to both of PC version and Mobile version with Network ID Utility of VRCSDK, then re-upload both."
