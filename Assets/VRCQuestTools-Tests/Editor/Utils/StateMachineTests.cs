@@ -948,6 +948,12 @@ namespace KRT.VRCQuestTools.Tests
     {
         private List<Object> toCleanup;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         [SetUp]
         public void SetUp()
         {

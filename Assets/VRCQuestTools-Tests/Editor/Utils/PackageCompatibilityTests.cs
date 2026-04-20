@@ -1149,7 +1149,7 @@ namespace KRT.VRCQuestTools.Tests
         [Test]
         public void IsLilToonImported_ReturnsTrue()
         {
-            // lilToon is installed in this project
+            LilToonTestHelper.SkipIfNotImported();
             Assert.IsTrue(AssetUtility.IsLilToonImported());
         }
 

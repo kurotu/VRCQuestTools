@@ -1370,6 +1370,12 @@ namespace KRT.VRCQuestTools.Tests
     [TestFixture]
     public class AssetUtility_PlatformOverrideTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         [Test]
         public void IsLilToonImported_ReturnsTrue()
         {
