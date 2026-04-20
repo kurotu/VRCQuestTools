@@ -24,6 +24,12 @@ namespace KRT.VRCQuestTools.Tests
     [TestFixture]
     public class ConvertToToonStandardBranchTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
         [TearDown]
@@ -608,6 +614,12 @@ namespace KRT.VRCQuestTools.Tests
     [TestFixture]
     public class LilToonMaterialPropertyTests_ToonBranch
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
         [TearDown]
@@ -1188,6 +1200,12 @@ namespace KRT.VRCQuestTools.Tests
     [TestFixture]
     public class LilToonGetterConversionTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         private List<UnityEngine.Object> objectsToCleanup = new List<UnityEngine.Object>();
 
         [TearDown]

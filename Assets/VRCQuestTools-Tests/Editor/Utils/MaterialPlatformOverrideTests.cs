@@ -24,6 +24,12 @@ namespace KRT.VRCQuestTools.Tests
     [TestFixture]
     public class LilToonGenerator_PlatformOverrideTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         private Material mat;
         private LilToonMaterial lilMat;
         private Texture2D testTex;
@@ -386,6 +392,12 @@ namespace KRT.VRCQuestTools.Tests
     [TestFixture]
     public class LilToonMaterial_AdditionalPropertiesTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         private Material mat;
         private Texture2D testTex;
         private List<UObject> toCleanup;
@@ -757,6 +769,12 @@ namespace KRT.VRCQuestTools.Tests
     [TestFixture]
     public class ToonStandardGenerator_GenerateMaterialTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         private List<UObject> toCleanup;
 
         [SetUp]
@@ -1297,6 +1315,12 @@ namespace KRT.VRCQuestTools.Tests
     [TestFixture]
     public class MaterialWrapperBuilder_LilToonTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         private List<UObject> toCleanup;
 
         [SetUp]
@@ -1575,6 +1599,12 @@ namespace KRT.VRCQuestTools.Tests
     [TestFixture]
     public class LilToonMaterial_ToonLitPlatformOverrideTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LilToonTestHelper.SkipIfNotImported();
+        }
+
         private List<UObject> toCleanup;
 
         [SetUp]
