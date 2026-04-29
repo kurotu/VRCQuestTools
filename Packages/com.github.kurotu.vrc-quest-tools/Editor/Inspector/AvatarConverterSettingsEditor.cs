@@ -360,11 +360,6 @@ namespace KRT.VRCQuestTools.Inspector
             var i18n = VRCQuestToolsSettings.I18nResource;
             editorState.foldOutEstimatedPerf = EditorGUILayout.Foldout(editorState.foldOutEstimatedPerf, i18n.EstimatedPerformanceStats, true);
             var ratings = VRCSDKUtility.AvatarDynamicsPerformanceCategories.ToDictionary(x => x, stats.GetPerformanceRatingForCategory);
-            var worst = ratings.Values.Max();
-            if (editorState.foldOutEstimatedPerf || worst > avatarDynamicsPerfLimit)
-            {
-                Views.EditorGUIUtility.PerformanceRatingPanel(worst, $"Avatar Dynamics: {worst}", worst > avatarDynamicsPerfLimit ? i18n.AvatarDynamicsPreventsUpload : null);
-            }
             foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
             {
                 if (editorState.foldOutEstimatedPerf || ratings[category] > avatarDynamicsPerfLimit)

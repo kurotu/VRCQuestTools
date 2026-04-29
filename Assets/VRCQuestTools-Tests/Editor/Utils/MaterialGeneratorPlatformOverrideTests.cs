@@ -25,11 +25,9 @@ namespace KRT.VRCQuestTools.Utils
         [SetUp]
         public void Setup()
         {
-            testTexturesPath = "Assets/VRCQuestTools-Tests/Temp";
-            if (!Directory.Exists(testTexturesPath))
-            {
-                Directory.CreateDirectory(testTexturesPath);
-            }
+            testTexturesPath = $"Assets/VRCQuestTools-Tests/Temp/{System.Guid.NewGuid():N}";
+            Directory.CreateDirectory(testTexturesPath);
+            AssetDatabase.Refresh();
         }
 
         /// <summary>

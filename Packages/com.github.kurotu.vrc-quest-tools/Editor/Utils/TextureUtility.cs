@@ -274,6 +274,10 @@ namespace KRT.VRCQuestTools.Utils
 
             if (texture is RenderTexture rt)
             {
+                if (!rt.IsCreated())
+                {
+                    rt.Create();
+                }
                 Texture2D newTex = null;
                 var request = RequestReadbackRenderTexture(rt, rt.mipmapCount > 1, !rt.isDataSRGB, (result) =>
                 {

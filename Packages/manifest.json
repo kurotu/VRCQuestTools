@@ -9,6 +9,7 @@
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.7.6",
     "com.unity.ugui": "1.0.0",
+    "io.github.hatayama.uloopmcp": "0.69.6",
     "org.nuget.roslynator.analyzers": "4.14.0",
     "org.nuget.roslynator.codeanalysis.analyzers": "4.14.0",
     "org.nuget.roslynator.formatting.analyzers": "4.14.0",
@@ -51,7 +52,8 @@
       "name": "OpenUPM",
       "url": "https://package.openupm.com",
       "scopes": [
-        "org.nuget"
+        "org.nuget",
+        "io.github.hatayama.uloopmcp"
       ]
     }
   ]

@@ -35,6 +35,8 @@ namespace KRT.VRCQuestTools.Models
             newMaterial.Name = lilMaterial.Material.name;
 
             newMaterial.MainTexture = lilMaterial.Material.mainTexture;
+            newMaterial.MainTextureScale = lilMaterial.MainTextureScale;
+            newMaterial.MainTextureOffset = lilMaterial.MainTextureOffset;
             newMaterial.MainColor = Utils.ColorUtility.HdrToLdr(lilMaterial.Material.color);
 
             if (lilMaterial.UseNormalMap && Settings.useNormalMap)
@@ -62,6 +64,8 @@ namespace KRT.VRCQuestTools.Models
             if (lilMaterial.UseEmission && Settings.useEmission)
             {
                 newMaterial.EmissionMap = lilMaterial.EmissionMap;
+                newMaterial.EmissionMapTextureScale = lilMaterial.EmissionMapTextureScale;
+                newMaterial.EmissionMapTextureOffset = lilMaterial.EmissionMapTextureOffset;
                 newMaterial.EmissionColor = Utils.ColorUtility.HdrToLdr(lilMaterial.EmissionColor);
             }
             else
@@ -74,6 +78,8 @@ namespace KRT.VRCQuestTools.Models
             {
                 newMaterial.UseOcclusion = true;
                 newMaterial.OcclusionMap = lilMaterial.AOMap;
+                newMaterial.OcclusionMapTextureScale = lilMaterial.AOMapTextureScale;
+                newMaterial.OcclusionMapTextureOffset = lilMaterial.AOMapTextureOffset;
             }
 
             if (lilMaterial.UseReflection && Settings.useSpecular)
@@ -798,6 +804,12 @@ namespace KRT.VRCQuestTools.Models
                 }
             }
             return lilMaterial.Material.color;
+        }
+
+        /// <inheritdoc/>
+        protected override (Vector2 Scale, Vector2 Offset) GetMainTextureST()
+        {
+            return (lilMaterial.MainTextureScale, lilMaterial.MainTextureOffset);
         }
 
         /// <inheritdoc/>

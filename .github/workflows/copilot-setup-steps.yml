@@ -42,6 +42,10 @@ jobs:
 
       - name: Set up vrc-get
         uses: anatawa12/sh-actions/setup-vrc-get@master
+
+      - name: Add VPM Catalog repository
+        run: vrc-get repo add https://vpm-catalog.vercel.app/index.json
+
       - name: Resolve VPM packages
         uses: nick-fields/retry@v3
         with:
@@ -85,13 +89,6 @@ jobs:
             echo "Unity Editor already installed, skipping installation"
           fi
 
-      - name: Generate solution
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-        run: UNITY_COMMAND=${UNITY_PATH} xvfb-run ./.github/workflows/unity.sh -batchmode -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit
-
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -104,3 +101,29 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: Website/pnpm-lock.yaml
       - run: cd Website && pnpm install --frozen-lockfile
+
+      - name: Install uloop-cli
+        run: pnpm install -g uloop-cli
+
+      - name: Generate solution
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        run: |
+          max_attempts=5
+          base_delay=30
+          for i in $(seq 1 "$max_attempts"); do
+            if UNITY_COMMAND=${UNITY_PATH} xvfb-run ./.github/workflows/unity.sh -batchmode -nographics -logFile /dev/stdout -projectPath . -executeMethod Packages.Rider.Editor.RiderScriptEditor.SyncSolution -quit; then
+              exit 0
+            fi
+            if [ "$i" -lt "$max_attempts" ]; then
+              delay=$((base_delay * 2 ** (i - 1)))
+              echo "Attempt $i failed. Retrying in ${delay} seconds..."
+              sleep "$delay"
+            fi
+          done
+          exit 1
+
+      - name: Update uLoopMCP skills
+        run: uloop skills install --claude

@@ -187,7 +187,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string SelectComponentsToKeep => GetText("SelectComponentsToKeep");
         internal string PhysBonesListTooltip => GetText("PhysBonesListTooltip");
         internal string KeepAll => GetText("KeepAll");
-        internal string AvatarDynamicsPreventsUpload => GetText("AvatarDynamicsPreventsUpload");
         internal string PhysBonesWillBeRemovedAtRunTime => GetText("PhysBonesWillBeRemovedAtRunTime");
         internal string PhysBoneCollidersWillBeRemovedAtRunTime => GetText("PhysBoneCollidersWillBeRemovedAtRunTime");
         internal string ContactsWillBeRemovedAtRunTime => GetText("ContactsWillBeRemovedAtRunTime");

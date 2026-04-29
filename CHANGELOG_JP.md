@@ -31,6 +31,7 @@
 ### 修正
 - `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。
 - アバター変換時のテクスチャ生成処理における RenderTexture と Material のメモリリークを修正。
+- 一度も描画されていない RenderTexture をテクスチャとして使用しているマテリアルのテクスチャ生成が失敗する問題を修正。
 
 ### 削除
 - Unity 2019 のサポートを終了。

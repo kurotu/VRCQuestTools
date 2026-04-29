@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
 - Fixed RenderTexture and Material memory leaks in texture generation pipeline during avatar conversion.
+- Fixed an issue where texture generation failed when a material used an un-rendered RenderTexture as a texture.
 
 ### Removed
 - Removed support for Unity 2019.

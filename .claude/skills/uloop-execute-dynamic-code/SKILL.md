@@ -1,0 +1,101 @@
+---
+name: uloop-execute-dynamic-code
+description: "Execute C# code dynamically in Unity Editor. Use when you need to: (1) Wire prefab/material references and AddComponent operations, (2) Edit SerializedObject properties and reference wiring, (3) Perform scene/hierarchy edits and batch operations. NOT for file I/O or script authoring."
+---
+
+# uloop execute-dynamic-code
+
+Execute C# code dynamically in Unity Editor.
+
+## Usage
+
+```bash
+uloop execute-dynamic-code --code '<c# code>'
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `--code` | string | - | C# code to execute (direct statements, no class wrapper) |
+| `--compile-only` | boolean | `false` | Compile without execution |
+| `--parameters` | object | - | Runtime parameters passed to the snippet (advanced; usually unnecessary) |
+
+## Code Format
+
+Write direct statements only (no classes/namespaces/methods). Return is optional.
+
+```csharp
+// Using directives at top are hoisted
+using UnityEngine;
+var x = Mathf.PI;
+return x;
+```
+
+## String Literals (Shell-specific)
+
+| Shell | Method |
+|-------|--------|
+| bash/zsh | `'Debug.Log("Hello!");'` |
+| PowerShell | `'Debug.Log(""Hello!"");'` |
+
+## Allowed Operations
+
+- Prefab/material wiring (PrefabUtility)
+- AddComponent + reference wiring (SerializedObject)
+- Scene/hierarchy edits
+- Inspector modifications
+
+## Forbidden Operations
+
+- System.IO.* (File/Directory/Path)
+- AssetDatabase.CreateFolder / file writes
+- Create/edit .cs/.asmdef files
+
+## Global Options
+
+| Option | Description |
+|--------|-------------|
+| `--project-path <path>` | Target a specific Unity project (mutually exclusive with `--port`) |
+| `-p, --port <port>` | Specify Unity TCP port directly (mutually exclusive with `--project-path`) |
+
+## Examples
+
+### bash / zsh
+
+```bash
+uloop execute-dynamic-code --code 'return Selection.activeGameObject?.name;'
+uloop execute-dynamic-code --code 'new GameObject("MyObject");'
+uloop execute-dynamic-code --code 'UnityEngine.Debug.Log("Hello from CLI!");'
+```
+
+### PowerShell
+
+```powershell
+uloop execute-dynamic-code --code 'return Selection.activeGameObject?.name;'
+uloop execute-dynamic-code --code 'new GameObject(""MyObject"");'
+uloop execute-dynamic-code --code 'UnityEngine.Debug.Log(""Hello from CLI!"");'
+```
+
+## Output
+
+Returns JSON with execution result or compile errors.
+
+## Notes
+
+For file/directory operations, use terminal commands instead.
+
+## Code Examples by Category
+
+For detailed code examples, refer to these files:
+
+- **Prefab operations**: See [references/prefab-operations.md](references/prefab-operations.md)
+  - Create prefabs, instantiate, add components, modify properties
+- **Material operations**: See [references/material-operations.md](references/material-operations.md)
+  - Create materials, set shaders/textures, modify properties
+- **Asset operations**: See [references/asset-operations.md](references/asset-operations.md)
+  - Find/search assets, duplicate, move, rename, load
+- **ScriptableObject**: See [references/scriptableobject.md](references/scriptableobject.md)
+  - Create ScriptableObjects, modify with SerializedObject
+- **Scene operations**: See [references/scene-operations.md](references/scene-operations.md)
+  - Create/modify GameObjects, set parents, wire references, load scenes

@@ -1,6 +1,6 @@
 name: Deploy Pages
 
-on: 
+on:
   workflow_dispatch:
   workflow_run:
     workflows: [Build]
@@ -15,12 +15,12 @@ permissions:
   contents: read
   pages: write
   id-token: write
-  
+
 # Allow one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
-  
+
 env:
   listPublishDirectory: Website
   pathToCi: ci
@@ -103,8 +103,62 @@ jobs:
           name: docs
           path: Website/build
 
+  build-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - name: Determine version
+        id: version
+        run: |
+          CURRENT_VERSION=$(jq -r .version Packages/com.github.kurotu.vrc-quest-tools/package.json)
+          MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
+          MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
+          PATCH=$(echo "$CURRENT_VERSION" | cut -d. -f3 | cut -d- -f1)
+          NEXT_PATCH=$((PATCH + 1))
+          DATE=$(date +%Y%m%d)
+          RUN_NUMBER="${GITHUB_RUN_NUMBER}"
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          VERSION="${MAJOR}.${MINOR}.${NEXT_PATCH}-master.${DATE}.${RUN_NUMBER}.${SHORT_SHA}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+      - name: Update package.json
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          PACKAGE_JSON="Packages/com.github.kurotu.vrc-quest-tools/package.json"
+          sed -i "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" "$PACKAGE_JSON"
+          sed -i "s|\"url\": \".*\"|\"url\": \"https://kurotu.github.io/VRCQuestTools/com.github.kurotu.vrc-quest-tools-${VERSION}.zip\"|" "$PACKAGE_JSON"
+          sed -i "s/string Version = \".*\"/string Version = \"${VERSION}\"/" "Packages/com.github.kurotu.vrc-quest-tools/Editor/VRCQuestTools.cs"
+      - name: Create zip package
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          cp README.md Packages/com.github.kurotu.vrc-quest-tools/
+          ZIP_NAME="com.github.kurotu.vrc-quest-tools-${VERSION}.zip"
+          cd Packages/com.github.kurotu.vrc-quest-tools
+          zip -r "../../${ZIP_NAME}" .
+      - name: Generate VPM repository JSON
+        run: |
+          jq -n --slurpfile pkg Packages/com.github.kurotu.vrc-quest-tools/package.json '{
+            name: ($pkg[0].displayName + " Latest"),
+            author: $pkg[0].author.name,
+            packages: {
+              ($pkg[0].name): {
+                versions: {
+                  ($pkg[0].version): $pkg[0]
+                }
+              }
+            }
+          }' > latest-index.json
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: latest
+          path: |
+            com.github.kurotu.vrc-quest-tools-*.zip
+            latest-index.json
+
   deploy:
-    needs: [build-repo, build-docs]
+    needs: [build-repo, build-docs, build-latest]
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -118,6 +172,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: docs
+          path: ${{env.listPublishDirectory}}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: latest
           path: ${{env.listPublishDirectory}}
 
       - name: Setup Pages
