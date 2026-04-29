@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2026-04-17 16:46\n"
+"PO-Revision-Date: 2026-04-29 10:55\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -453,7 +453,7 @@ msgid "NewVersionHasBreakingChanges"
 msgstr "Эта версия может иметь критические изменения в совместимости."
 
 msgid "MissingScripts"
-msgstr "Есть \"недостающие\" скрипты. Пожалуйста, проверьте активы или пакеты, которые вы забыли импортировать."
+msgstr "Следующие объекты содержат компоненты в состоянии \"недостающие\". Проверьте, не забыли ли вы импортировать какие-либо ассеты или пакеты."
 
 msgid "ExperimentalComponentWarning"
 msgstr "Этот компонент является экспериментальной функцией."
