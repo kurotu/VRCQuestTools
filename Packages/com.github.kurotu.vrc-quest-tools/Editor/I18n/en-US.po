@@ -369,7 +369,7 @@ msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
 msgstr "You can upload this avatar to Mobile, but all PhysBoneCollider components will be removed. Please reduce PhysBoneCollider components."
 
 msgid "ContactsWillBeRemovedAtRunTime"
-msgstr "You can upload this avatar to Mobile, but all ContactReceiver and ContactSender components will be removed. Please reduce VRCContact components."
+msgstr "You can upload this avatar to Mobile, but all ContactReceiver and ContactSender components will be removed. Please reduce ContactReceiver and ContactSender components."
 
 msgid "PhysBonesTransformsShouldBeReduced"
 msgstr "You can upload this avatar to Mobile, but all PhysBone components will be removed. Please reduce VRCPhysBone components or number of transforms in hierarchy under VRCPhysBone components."

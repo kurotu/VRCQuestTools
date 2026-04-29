@@ -366,7 +366,7 @@ msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
 msgstr "Вы можете загрузить этот аватар для Mobile, но все компоненты PhysBoneCollider будут удалены. Пожалуйста, уменьшите количество компонентов PhysBoneCollider."
 
 msgid "ContactsWillBeRemovedAtRunTime"
-msgstr "Вы можете загрузить этот аватар для Mobile, но все компоненты ContactReceiver и ContactSender будут удалены. Пожалуйста, уменьшите количество компонентов VRCContact."
+msgstr "Вы можете загрузить этот аватар для Mobile, но все компоненты ContactReceiver и ContactSender будут удалены. Пожалуйста, уменьшите количество компонентов ContactReceiver и ContactSender."
 
 msgid "PhysBonesTransformsShouldBeReduced"
 msgstr "Вы можете загрузить этот аватар для Mobile, но все компоненты PhysBone будут удалены. Пожалуйста, уменьшите количество компонентов VRCPhysBone или количество трансформаций в иерархии под компонентами VRCPhysBone."
