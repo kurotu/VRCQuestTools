@@ -216,6 +216,13 @@
       },
       "url": "https://package.openupm.com"
     },
+    "io.github.kurotu.editor-driver": {
+      "version": "https://github.com/kurotu/unity-editor-driver.git?path=Packages/io.github.kurotu.editor-driver#dev",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "130a5561742a95eacee608b0f9534b745da1d576"
+    },
     "org.nuget.roslynator.analyzers": {
       "version": "4.14.0",
       "depth": 0,
