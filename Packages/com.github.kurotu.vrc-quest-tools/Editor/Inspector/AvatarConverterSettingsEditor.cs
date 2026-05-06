@@ -197,7 +197,10 @@ namespace KRT.VRCQuestTools.Inspector
                             OnClickSelectAvatarDynamicsComponentsButton(descriptor);
                         }
 
-                        bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR;
+                        bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR &&
+                            (converterSettings.physBonesToKeep.Length > 0 ||
+                            converterSettings.physBoneCollidersToKeep.Length > 0 ||
+                            converterSettings.contactsToKeep.Length > 0);
 
                         if (isLegacyMode)
                         {
@@ -365,7 +368,10 @@ namespace KRT.VRCQuestTools.Inspector
                 return null;
             }
 
-            bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR;
+            bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR &&
+                (converterSettings.physBonesToKeep.Length > 0 ||
+                converterSettings.physBoneCollidersToKeep.Length > 0 ||
+                converterSettings.contactsToKeep.Length > 0);
 
             var avatar = new VRChatAvatar(original);
             if (isLegacyMode)
@@ -468,7 +474,10 @@ namespace KRT.VRCQuestTools.Inspector
             var window = EditorWindow.GetWindow<AvatarDynamicsSelectorWindow>();
             window.converterSettings = converterSettings;
 
-            bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR;
+            bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR &&
+                (converterSettings.physBonesToKeep.Length > 0 ||
+                converterSettings.physBoneCollidersToKeep.Length > 0 ||
+                converterSettings.contactsToKeep.Length > 0);
 
             if (isLegacyMode)
             {
