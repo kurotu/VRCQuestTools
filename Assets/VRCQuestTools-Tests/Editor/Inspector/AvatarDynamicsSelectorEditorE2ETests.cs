@@ -5,6 +5,7 @@
 
 #pragma warning disable CS0618
 
+using System.Collections;
 using System.Linq;
 using EditorDriver;
 using KRT.VRCQuestTools.Components;
@@ -13,6 +14,7 @@ using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Views;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using VRC.Dynamics;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Dynamics.PhysBone.Components;
@@ -73,12 +75,13 @@ namespace KRT.VRCQuestTools.Inspector
         /// InitializeSelectorWindow must populate physBoneProvidersToKeep
         /// from the legacy array so the selector shows the previously chosen bone.
         /// </summary>
-        [Test]
-        public void LegacyPhysBones_InitializeSelectorWindow_ProvidersMatchLegacyArray()
+        [UnityTest]
+        public IEnumerator LegacyPhysBones_InitializeSelectorWindow_ProvidersMatchLegacyArray()
         {
             converterSettings.physBonesToKeep = new[] { physBone };
 
             var handle = driver.OpenWindow<AvatarDynamicsSelectorWindow>();
+            yield return null;
             var window = (AvatarDynamicsSelectorWindow)handle.Window;
 
             AvatarConverterSettingsEditor.InitializeSelectorWindow(window, converterSettings, descriptor);
@@ -94,12 +97,13 @@ namespace KRT.VRCQuestTools.Inspector
         /// When physBoneCollidersToKeep contains a non-null entry (legacy mode),
         /// InitializeSelectorWindow must copy the legacy collider array to the window.
         /// </summary>
-        [Test]
-        public void LegacyColliders_InitializeSelectorWindow_CollidersMatchLegacyArray()
+        [UnityTest]
+        public IEnumerator LegacyColliders_InitializeSelectorWindow_CollidersMatchLegacyArray()
         {
             converterSettings.physBoneCollidersToKeep = new[] { physBoneCollider };
 
             var handle = driver.OpenWindow<AvatarDynamicsSelectorWindow>();
+            yield return null;
             var window = (AvatarDynamicsSelectorWindow)handle.Window;
 
             AvatarConverterSettingsEditor.InitializeSelectorWindow(window, converterSettings, descriptor);
@@ -113,12 +117,13 @@ namespace KRT.VRCQuestTools.Inspector
         /// When contactsToKeep contains a non-null entry (legacy mode),
         /// InitializeSelectorWindow must copy the legacy contact array to the window.
         /// </summary>
-        [Test]
-        public void LegacyContacts_InitializeSelectorWindow_ContactsMatchLegacyArray()
+        [UnityTest]
+        public IEnumerator LegacyContacts_InitializeSelectorWindow_ContactsMatchLegacyArray()
         {
             converterSettings.contactsToKeep = new ContactBase[] { contact };
 
             var handle = driver.OpenWindow<AvatarDynamicsSelectorWindow>();
+            yield return null;
             var window = (AvatarDynamicsSelectorWindow)handle.Window;
 
             AvatarConverterSettingsEditor.InitializeSelectorWindow(window, converterSettings, descriptor);
@@ -133,11 +138,12 @@ namespace KRT.VRCQuestTools.Inspector
         /// InitializeSelectorWindow selects all dynamics components by default
         /// (because no PCR marks any of them for Android removal).
         /// </summary>
-        [Test]
-        public void FreshAvatar_InitializeSelectorWindow_AllPhysBonesInitiallySelected()
+        [UnityTest]
+        public IEnumerator FreshAvatar_InitializeSelectorWindow_AllPhysBonesInitiallySelected()
         {
             // No legacy entries; no PlatformComponentRemover on the hierarchy.
             var handle = driver.OpenWindow<AvatarDynamicsSelectorWindow>();
+            yield return null;
             var window = (AvatarDynamicsSelectorWindow)handle.Window;
 
             AvatarConverterSettingsEditor.InitializeSelectorWindow(window, converterSettings, descriptor);
@@ -152,10 +158,11 @@ namespace KRT.VRCQuestTools.Inspector
         /// When all legacy arrays are empty (fresh avatar / PCR mode),
         /// InitializeSelectorWindow selects all colliders by default.
         /// </summary>
-        [Test]
-        public void FreshAvatar_InitializeSelectorWindow_AllCollidersInitiallySelected()
+        [UnityTest]
+        public IEnumerator FreshAvatar_InitializeSelectorWindow_AllCollidersInitiallySelected()
         {
             var handle = driver.OpenWindow<AvatarDynamicsSelectorWindow>();
+            yield return null;
             var window = (AvatarDynamicsSelectorWindow)handle.Window;
 
             AvatarConverterSettingsEditor.InitializeSelectorWindow(window, converterSettings, descriptor);
@@ -170,8 +177,8 @@ namespace KRT.VRCQuestTools.Inspector
         /// When a PlatformComponentRemover marks a PhysBone for Android removal (PCR mode),
         /// InitializeSelectorWindow must exclude that PhysBone from physBoneProvidersToKeep.
         /// </summary>
-        [Test]
-        public void PCRMode_PhysBoneMarkedForRemoval_NotSelectedInWindow()
+        [UnityTest]
+        public IEnumerator PCRMode_PhysBoneMarkedForRemoval_NotSelectedInWindow()
         {
             // Add a PCR that marks physBone for Android removal.
             var remover = boneObject.AddComponent<PlatformComponentRemover>();
@@ -183,6 +190,7 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
             var handle = driver.OpenWindow<AvatarDynamicsSelectorWindow>();
+            yield return null;
             var window = (AvatarDynamicsSelectorWindow)handle.Window;
 
             AvatarConverterSettingsEditor.InitializeSelectorWindow(window, converterSettings, descriptor);
