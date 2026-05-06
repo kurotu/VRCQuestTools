@@ -1,3 +1,4 @@
+using System.Linq;
 using KRT.VRCQuestTools.Models;
 using UnityEngine;
 using VRC.Dynamics;
@@ -116,6 +117,16 @@ namespace KRT.VRCQuestTools.Components
 
         /// <inheritdoc/>
         public bool EnableMaterialPreview => enableMaterialPreview;
+
+        /// <summary>
+        /// Gets a value indicating whether any legacy avatar dynamics settings (<see cref="physBonesToKeep"/>, <see cref="physBoneCollidersToKeep"/>, or <see cref="contactsToKeep"/>) contain non-null entries.
+        /// </summary>
+#pragma warning disable CS0618
+        public bool HasLegacyAvatarDynamicsSettings =>
+            physBonesToKeep.Any(x => x != null) ||
+            physBoneCollidersToKeep.Any(x => x != null) ||
+            contactsToKeep.Any(x => x != null);
+#pragma warning restore CS0618
 
         /// <summary>
         /// Gets the material convert settings for the specified material.
