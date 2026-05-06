@@ -1,7 +1,12 @@
+using System.Linq;
 using KRT.VRCQuestTools.Components;
+using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEngine;
+using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
+using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -17,30 +22,57 @@ namespace KRT.VRCQuestTools.Ndmf
         protected override void Execute(BuildContext context)
         {
             var buildTarget = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
-            var components = context.AvatarRootObject.GetComponentsInChildren<PlatformComponentRemover>(true);
-            foreach (var component in components)
-            {
-                foreach (var settings in component.componentSettings)
-                {
-                    if (settings.component == null)
-                    {
-                        continue;
-                    }
-                    if (!IsDecendant(settings.component.gameObject, context.AvatarRootObject))
-                    {
-                        continue;
-                    }
+            var pcrs = context.AvatarRootObject.GetComponentsInChildren<PlatformComponentRemover>(true);
 
-                    if (buildTarget == Models.BuildTarget.PC && settings.removeOnPC)
+            var componentsToRemove = pcrs
+                .SelectMany(pcr => pcr.componentSettings)
+                .Where(s => s.component != null)
+                .Where(s => IsDecendant(s.component.gameObject, context.AvatarRootObject))
+                .Where(s => (buildTarget == Models.BuildTarget.PC && s.removeOnPC) ||
+                            (buildTarget == Models.BuildTarget.Android && s.removeOnAndroid))
+                .Select(s => s.component)
+                .ToArray();
+
+            // Remove PhysBones first.
+            foreach (var physBone in componentsToRemove.OfType<VRCPhysBone>())
+            {
+                Logger.Log($"Remove {physBone.GetType().Name} for {buildTarget} platform", physBone.gameObject);
+                Object.DestroyImmediate(physBone);
+            }
+
+            // Remove colliders, clearing references from remaining PhysBones first.
+            var remainingPhysBones = context.AvatarRootObject.GetComponentsInChildren<VRCPhysBone>(true);
+            foreach (var collider in componentsToRemove.OfType<VRCPhysBoneCollider>())
+            {
+                foreach (var bone in remainingPhysBones)
+                {
+                    for (var i = 0; i < bone.colliders.Count; i++)
                     {
-                        Logger.Log($"Remove {settings.component.GetType().Name} for PC platform", settings.component.gameObject);
-                        Object.DestroyImmediate(settings.component);
+                        if (bone.colliders[i] == collider)
+                        {
+                            bone.colliders[i] = null;
+                        }
                     }
-                    if (buildTarget == Models.BuildTarget.Android && settings.removeOnAndroid)
-                    {
-                        Logger.Log($"Remove {settings.component.GetType().Name} for Mobile platform", settings.component.gameObject);
-                        Object.DestroyImmediate(settings.component);
-                    }
+                }
+
+                Logger.Log($"Remove {collider.GetType().Name} for {buildTarget} platform", collider.gameObject);
+                Object.DestroyImmediate(collider);
+            }
+
+            // Remove contacts and other components.
+            foreach (var component in componentsToRemove.Where(c => !(c is VRCPhysBone) && !(c is VRCPhysBoneCollider)))
+            {
+                Logger.Log($"Remove {component.GetType().Name} for {buildTarget} platform", component.gameObject);
+                Object.DestroyImmediate(component);
+            }
+
+            // Strip orphaned NetworkIDs left by removed PhysBones.
+            if (componentsToRemove.OfType<VRCPhysBone>().Any())
+            {
+                var avatarDescriptor = context.AvatarRootObject.GetComponent<VRC_AvatarDescriptor>();
+                if (avatarDescriptor != null)
+                {
+                    VRCSDKUtility.StripeUnusedNetworkIds(avatarDescriptor);
                 }
             }
         }

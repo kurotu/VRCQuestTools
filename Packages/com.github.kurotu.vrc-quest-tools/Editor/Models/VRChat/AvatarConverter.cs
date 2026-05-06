@@ -16,7 +16,10 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using VRC.Core;
+using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
+#pragma warning disable CS0618
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -166,7 +169,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
                 if (converterSettings.removeAvatarDynamics)
                 {
-                    VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSettings.physBonesToKeep, converterSettings.physBoneCollidersToKeep, contactsToKeep);
+                    bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR;
+
+                    if (isLegacyMode)
+                    {
+                        VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSettings.physBonesToKeep, converterSettings.physBoneCollidersToKeep, contactsToKeep);
+                    }
+                    else if (saveAssetsAsFile)
+                    {
+                        // New mode for manual (non-NDMF) conversion: apply PCR removal for Android.
+                        ApplyPlatformComponentRemoversForAndroid(questAvatarObject);
+                    }
+
+                    // For NDMF builds (!saveAssetsAsFile), PlatformComponentRemoverPass already handled removal.
                 }
             }
 
@@ -425,6 +440,63 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             return convertedMaterials;
+        }
+
+        /// <summary>
+        /// Applies PlatformComponentRemover settings for Android, removing components marked for removal.
+        /// This is used during manual (non-NDMF) avatar conversion in new PCR-based dynamics mode.
+        /// Collider references are cleaned up from kept PhysBones before colliders are destroyed,
+        /// and unused NetworkIDs are stripped after PhysBone removal.
+        /// </summary>
+        /// <param name="avatarObject">Avatar root object.</param>
+        private static void ApplyPlatformComponentRemoversForAndroid(GameObject avatarObject)
+        {
+            var avatarDescriptor = avatarObject.GetComponent<VRC_AvatarDescriptor>();
+            var removers = avatarObject.GetComponentsInChildren<PlatformComponentRemover>(true);
+            var componentsToRemove = removers
+                .SelectMany(r => r.componentSettings)
+                .Where(s => s.component != null && s.removeOnAndroid)
+                .Select(s => s.component)
+                .ToArray();
+
+            // Remove PhysBones first.
+            foreach (var physBone in componentsToRemove.OfType<VRCPhysBone>())
+            {
+                Logger.Log($"Remove {physBone.GetType().Name} for Android platform", physBone.gameObject);
+                UnityEngine.Object.DestroyImmediate(physBone);
+            }
+
+            // Remove colliders, clearing references from remaining PhysBones first.
+            var remainingPhysBones = avatarObject.GetComponentsInChildren<VRCPhysBone>(true);
+            foreach (var collider in componentsToRemove.OfType<VRCPhysBoneCollider>())
+            {
+                foreach (var bone in remainingPhysBones)
+                {
+                    for (var i = 0; i < bone.colliders.Count; i++)
+                    {
+                        if (bone.colliders[i] == collider)
+                        {
+                            bone.colliders[i] = null;
+                        }
+                    }
+                }
+
+                Logger.Log($"Remove {collider.GetType().Name} for Android platform", collider.gameObject);
+                UnityEngine.Object.DestroyImmediate(collider);
+            }
+
+            // Remove contacts and other components.
+            foreach (var component in componentsToRemove.Where(c => !(c is VRCPhysBone) && !(c is VRCPhysBoneCollider)))
+            {
+                Logger.Log($"Remove {component.GetType().Name} for Android platform", component.gameObject);
+                UnityEngine.Object.DestroyImmediate(component);
+            }
+
+            // Strip orphaned NetworkIDs left by removed PhysBones.
+            if (avatarDescriptor != null && componentsToRemove.OfType<VRCPhysBone>().Any())
+            {
+                VRCSDKUtility.StripeUnusedNetworkIds(avatarDescriptor);
+            }
         }
 
         private void RemoveExtraMaterialSlots(GameObject questAvatarObject)

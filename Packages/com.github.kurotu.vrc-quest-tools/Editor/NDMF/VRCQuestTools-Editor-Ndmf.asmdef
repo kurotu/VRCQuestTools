@@ -19,7 +19,9 @@
         "VRCCore-Editor.dll",
         "VRCSDK3A.dll",
         "VRCSDKBase.dll",
-        "VRCSDKBase-Editor.dll"
+        "VRCSDKBase-Editor.dll",
+        "VRC.Dynamics.dll",
+        "VRC.SDK3.Dynamics.PhysBone.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

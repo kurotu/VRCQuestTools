@@ -1,4 +1,3 @@
-using System.Linq;
 using KRT.VRCQuestTools.Models;
 using UnityEngine;
 using VRC.Dynamics;
@@ -36,18 +35,21 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// PhysBones to keep while conversion.
         /// </summary>
+        [System.Obsolete("Use PlatformComponentRemover on the avatar dynamics component's GameObject instead.")]
         [SerializeField]
         public VRCPhysBone[] physBonesToKeep = { };
 
         /// <summary>
         /// PhysBone colliders to keep while conversion.
         /// </summary>
+        [System.Obsolete("Use PlatformComponentRemover on the avatar dynamics component's GameObject instead.")]
         [SerializeField]
         public VRCPhysBoneCollider[] physBoneCollidersToKeep = { };
 
         /// <summary>
         /// Contact senders and receivers to keep while conversion.
         /// </summary>
+        [System.Obsolete("Use PlatformComponentRemover on the avatar dynamics component's GameObject instead.")]
         [SerializeField]
         public ContactBase[] contactsToKeep = { };
 
@@ -88,10 +90,23 @@ namespace KRT.VRCQuestTools.Components
         [SerializeField]
         public bool enableMaterialPreview = true;
 
+        [SerializeField]
+        private bool dynamicsSettingsConfiguredViaPCR = false;
+
         /// <summary>
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether dynamics settings are configured via PlatformComponentRemover.
+        /// When true, PCR components control which dynamics are removed instead of legacy keep-arrays.
+        /// </summary>
+        public bool DynamicsSettingsConfiguredViaPCR
+        {
+            get => dynamicsSettingsConfiguredViaPCR;
+            set => dynamicsSettingsConfiguredViaPCR = value;
+        }
 
         /// <inheritdoc/>
         public IMaterialConvertSettings DefaultMaterialConvertSettings => defaultMaterialConvertSettings;
@@ -135,25 +150,6 @@ namespace KRT.VRCQuestTools.Components
         private void Reset()
         {
             defaultMaterialConvertSettings.LoadDefaultAssets();
-
-            var descriptor = AvatarDescriptor;
-            physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>(true) : new VRCPhysBone[] { };
-            physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>(true) : new VRCPhysBoneCollider[] { };
-            contactsToKeep = descriptor ? descriptor.GetComponentsInChildren<ContactBase>(true)
-                .Where(c =>
-                {
-                    switch (c)
-                    {
-                        case ContactReceiver receiver:
-                            return !receiver.IsLocalOnly;
-                        case ContactSender sender:
-                            return !sender.IsLocalOnly;
-                        default:
-                            return true;
-                    }
-                })
-                .ToArray()
-                : new ContactBase[] { };
         }
     }
 }
