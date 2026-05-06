@@ -198,9 +198,9 @@ namespace KRT.VRCQuestTools.Inspector
                         }
 
                         bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR &&
-                            (converterSettings.physBonesToKeep.Length > 0 ||
-                            converterSettings.physBoneCollidersToKeep.Length > 0 ||
-                            converterSettings.contactsToKeep.Length > 0);
+                            (converterSettings.physBonesToKeep.Any(x => x != null) ||
+                            converterSettings.physBoneCollidersToKeep.Any(x => x != null) ||
+                            converterSettings.contactsToKeep.Any(x => x != null));
 
                         if (isLegacyMode)
                         {
@@ -369,9 +369,9 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
             bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR &&
-                (converterSettings.physBonesToKeep.Length > 0 ||
-                converterSettings.physBoneCollidersToKeep.Length > 0 ||
-                converterSettings.contactsToKeep.Length > 0);
+                (converterSettings.physBonesToKeep.Any(x => x != null) ||
+                converterSettings.physBoneCollidersToKeep.Any(x => x != null) ||
+                converterSettings.contactsToKeep.Any(x => x != null));
 
             var avatar = new VRChatAvatar(original);
             if (isLegacyMode)
@@ -475,9 +475,9 @@ namespace KRT.VRCQuestTools.Inspector
             window.converterSettings = converterSettings;
 
             bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR &&
-                (converterSettings.physBonesToKeep.Length > 0 ||
-                converterSettings.physBoneCollidersToKeep.Length > 0 ||
-                converterSettings.contactsToKeep.Length > 0);
+                (converterSettings.physBonesToKeep.Any(x => x != null) ||
+                converterSettings.physBoneCollidersToKeep.Any(x => x != null) ||
+                converterSettings.contactsToKeep.Any(x => x != null));
 
             if (isLegacyMode)
             {
