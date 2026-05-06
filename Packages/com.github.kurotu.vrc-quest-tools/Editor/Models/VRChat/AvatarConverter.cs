@@ -474,12 +474,24 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 foreach (var bone in remainingPhysBones)
                 {
+                    bool modified = false;
                     for (var i = 0; i < bone.colliders.Count; i++)
                     {
                         if (bone.colliders[i] == collider)
                         {
+                            if (!modified)
+                            {
+                                Undo.RecordObject(bone, "Apply Avatar Dynamics Settings");
+                                modified = true;
+                            }
+
                             bone.colliders[i] = null;
                         }
+                    }
+
+                    if (modified)
+                    {
+                        EditorUtility.SetDirty(bone);
                     }
                 }
 
@@ -492,6 +504,20 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 Logger.Log($"Remove {component.GetType().Name} for Android platform", component.gameObject);
                 UnityEngine.Object.DestroyImmediate(component);
+            }
+
+            // Remove PCR components that have no removal effect.
+            var allRemovers = avatarObject.GetComponentsInChildren<PlatformComponentRemover>(true);
+            foreach (var remover in allRemovers)
+            {
+                remover.UpdateComponentSettings();
+                bool hasEffect = System.Array.Exists(
+                    remover.componentSettings,
+                    s => s.component != null && (s.removeOnAndroid || s.removeOnPC));
+                if (!hasEffect)
+                {
+                    UnityEngine.Object.DestroyImmediate(remover);
+                }
             }
 
             // Strip orphaned NetworkIDs left by removed PhysBones.

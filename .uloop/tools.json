@@ -1,7 +1,7 @@
 {
-  "version": "0.69.6",
+  "version": "1.6.2",
   "serverVersion": "0.69.6",
-  "updatedAt": "2026-03-07T00:16:26.496Z",
+  "updatedAt": "2026-05-06T07:41:46.574Z",
   "tools": [
     {
       "name": "clear-console",
@@ -85,7 +85,7 @@
     },
     {
       "name": "execute-menu-item",
-      "description": "[BLOCKED] Execute Unity MenuItem by path - Blocked by security settings",
+      "description": "Execute Unity MenuItem by path",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -291,7 +291,7 @@
     },
     {
       "name": "run-tests",
-      "description": "[BLOCKED] Execute Unity Test Runner with advanced filtering options - exact test methods, regex patterns for classes/namespaces, assembly filtering - Blocked by security settings",
+      "description": "Execute Unity Test Runner with advanced filtering options - exact test methods, regex patterns for classes/namespaces, assembly filtering",
       "inputSchema": {
         "type": "object",
         "properties": {

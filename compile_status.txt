@@ -1,0 +1,18 @@
+Warning: Could not verify project identity (invalid get-version response).
+{
+笞・・Version mismatch detected!
+  "Success": true,
+  "ErrorCount": 0,
+  "WarningCount": 0,
+  "Errors": [],
+  "Warnings": [],
+  "Message": null,
+  "Ver": "0.69.6"
+}
+   uloop-cli version:    1.6.2
+   uloop server version: 0.69.6
+
+   This may cause unexpected behavior or errors.
+
+   To update server: Update uLoopMCP package to 1.6.2 via Unity Package Manager
+

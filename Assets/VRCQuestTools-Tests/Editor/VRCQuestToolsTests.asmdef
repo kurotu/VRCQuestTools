@@ -4,6 +4,7 @@
     "references": [
         "VRCQuestTools",
         "VRCQuestTools-Editor",
+        "EditorDriver.Editor",
         "nadena.dev.ndmf",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"

@@ -470,6 +470,19 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickSelectAvatarDynamicsComponentsButton(VRC_AvatarDescriptor avatar)
         {
             var window = EditorWindow.GetWindow<AvatarDynamicsSelectorWindow>();
+            InitializeSelectorWindow(window, converterSettings, avatar);
+            window.Show();
+        }
+
+        /// <summary>
+        /// Initializes the AvatarDynamicsSelectorWindow with the appropriate dynamics selection
+        /// based on whether legacy arrays or PCR (PlatformComponentRemover) data is present.
+        /// </summary>
+        /// <param name="window">The selector window to initialize.</param>
+        /// <param name="converterSettings">The AvatarConverterSettings to read from.</param>
+        /// <param name="descriptor">The VRC avatar descriptor for PCR-based initialization.</param>
+        internal static void InitializeSelectorWindow(AvatarDynamicsSelectorWindow window, AvatarConverterSettings converterSettings, VRC_AvatarDescriptor descriptor)
+        {
             window.converterSettings = converterSettings;
 
             bool isLegacyMode = converterSettings.physBonesToKeep.Any(x => x != null) ||
@@ -478,27 +491,32 @@ namespace KRT.VRCQuestTools.Inspector
 
             if (isLegacyMode)
             {
-                window.physBoneProvidersToKeep = converterSettings.physBonesToKeep.Select(p => new VRCPhysBoneProvider(p)).ToArray();
-                window.physBoneCollidersToKeep = converterSettings.physBoneCollidersToKeep;
-                window.contactsToKeep = converterSettings.contactsToKeep;
+                window.physBoneProvidersToKeep = converterSettings.physBonesToKeep
+                    .Where(p => p != null)
+                    .Select(p => new VRCPhysBoneProvider(p))
+                    .ToArray();
+                window.physBoneCollidersToKeep = converterSettings.physBoneCollidersToKeep
+                    .Where(c => c != null)
+                    .ToArray();
+                window.contactsToKeep = converterSettings.contactsToKeep
+                    .Where(c => c != null)
+                    .ToArray();
             }
             else
             {
-                var vrchatAvatar = new VRChatAvatar(avatar);
-                var pbsToRemove = GetComponentsToRemoveOnAndroid<VRCPhysBone>(avatar.gameObject);
+                var vrchatAvatar = new VRChatAvatar(descriptor);
+                var pbsToRemove = GetComponentsToRemoveOnAndroid<VRCPhysBone>(descriptor.gameObject);
                 var allPbs = vrchatAvatar.GetPhysBoneProviders();
                 window.physBoneProvidersToKeep = allPbs.Where(p => !p.GetPhysBones().Any(pb => pbsToRemove.Contains(pb))).ToArray();
 
-                var pbcsToRemove = GetComponentsToRemoveOnAndroid<VRCPhysBoneCollider>(avatar.gameObject);
-                var allPbcs = avatar.GetComponentsInChildren<VRCPhysBoneCollider>(true);
+                var pbcsToRemove = GetComponentsToRemoveOnAndroid<VRCPhysBoneCollider>(descriptor.gameObject);
+                var allPbcs = descriptor.GetComponentsInChildren<VRCPhysBoneCollider>(true);
                 window.physBoneCollidersToKeep = allPbcs.Where(c => !pbcsToRemove.Contains(c)).ToArray();
 
-                var contactsToRemoveArr = GetComponentsToRemoveOnAndroid<ContactBase>(avatar.gameObject);
+                var contactsToRemoveArr = GetComponentsToRemoveOnAndroid<ContactBase>(descriptor.gameObject);
                 var nonLocalContacts = vrchatAvatar.GetNonLocalContacts();
                 window.contactsToKeep = nonLocalContacts.Where(c => !contactsToRemoveArr.Contains(c)).ToArray();
             }
-
-            window.Show();
         }
 
         private void OnClickPrefabStageExitButton()

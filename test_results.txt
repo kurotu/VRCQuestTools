@@ -1,0 +1,4 @@
+竢ｳ Unity is compiling scripts.
+Please wait for compilation to finish and try again.
+
+If the issue persists, run: uloop fix
