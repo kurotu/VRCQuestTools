@@ -197,10 +197,9 @@ namespace KRT.VRCQuestTools.Inspector
                             OnClickSelectAvatarDynamicsComponentsButton(descriptor);
                         }
 
-                        bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR &&
-                            (converterSettings.physBonesToKeep.Any(x => x != null) ||
+                        bool isLegacyMode = converterSettings.physBonesToKeep.Any(x => x != null) ||
                             converterSettings.physBoneCollidersToKeep.Any(x => x != null) ||
-                            converterSettings.contactsToKeep.Any(x => x != null));
+                            converterSettings.contactsToKeep.Any(x => x != null);
 
                         if (isLegacyMode)
                         {
@@ -368,10 +367,9 @@ namespace KRT.VRCQuestTools.Inspector
                 return null;
             }
 
-            bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR &&
-                (converterSettings.physBonesToKeep.Any(x => x != null) ||
+            bool isLegacyMode = converterSettings.physBonesToKeep.Any(x => x != null) ||
                 converterSettings.physBoneCollidersToKeep.Any(x => x != null) ||
-                converterSettings.contactsToKeep.Any(x => x != null));
+                converterSettings.contactsToKeep.Any(x => x != null);
 
             var avatar = new VRChatAvatar(original);
             if (isLegacyMode)
@@ -474,10 +472,9 @@ namespace KRT.VRCQuestTools.Inspector
             var window = EditorWindow.GetWindow<AvatarDynamicsSelectorWindow>();
             window.converterSettings = converterSettings;
 
-            bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR &&
-                (converterSettings.physBonesToKeep.Any(x => x != null) ||
+            bool isLegacyMode = converterSettings.physBonesToKeep.Any(x => x != null) ||
                 converterSettings.physBoneCollidersToKeep.Any(x => x != null) ||
-                converterSettings.contactsToKeep.Any(x => x != null));
+                converterSettings.contactsToKeep.Any(x => x != null);
 
             if (isLegacyMode)
             {

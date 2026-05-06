@@ -169,10 +169,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
                 if (converterSettings.removeAvatarDynamics)
                 {
-                    bool isLegacyMode = !converterSettings.DynamicsSettingsConfiguredViaPCR &&
-                        (converterSettings.physBonesToKeep.Any(x => x != null) ||
+                    bool isLegacyMode = converterSettings.physBonesToKeep.Any(x => x != null) ||
                         converterSettings.physBoneCollidersToKeep.Any(x => x != null) ||
-                        converterSettings.contactsToKeep.Any(x => x != null));
+                        converterSettings.contactsToKeep.Any(x => x != null);
 
                     if (isLegacyMode)
                     {

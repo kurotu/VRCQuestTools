@@ -90,23 +90,10 @@ namespace KRT.VRCQuestTools.Components
         [SerializeField]
         public bool enableMaterialPreview = true;
 
-        [SerializeField]
-        private bool dynamicsSettingsConfiguredViaPCR = false;
-
         /// <summary>
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
-
-        /// <summary>
-        /// Gets or sets a value indicating whether dynamics settings are configured via PlatformComponentRemover.
-        /// When true, PCR components control which dynamics are removed instead of legacy keep-arrays.
-        /// </summary>
-        public bool DynamicsSettingsConfiguredViaPCR
-        {
-            get => dynamicsSettingsConfiguredViaPCR;
-            set => dynamicsSettingsConfiguredViaPCR = value;
-        }
 
         /// <inheritdoc/>
         public IMaterialConvertSettings DefaultMaterialConvertSettings => defaultMaterialConvertSettings;

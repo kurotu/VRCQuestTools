@@ -268,22 +268,5 @@ namespace KRT.VRCQuestTools.Inspector
             Object.DestroyImmediate(newSettings);
         }
 
-        /// <summary>
-        /// After ApplyDynamicsSettings, DynamicsSettingsConfiguredViaPCR should be set to true
-        /// to prevent mode detection ambiguity with empty legacy arrays.
-        /// </summary>
-        [Test]
-        public void ApplyDynamicsSettings_SetsMigrationFlag()
-        {
-            Assert.IsFalse(converterSettings.DynamicsSettingsConfiguredViaPCR, "Flag should be false before first apply");
-
-            AvatarDynamicsSelectorWindow.ApplyDynamicsSettings(
-                converterSettings,
-                new VRCPhysBoneProviderBase[0],
-                new VRCPhysBoneCollider[0],
-                new ContactBase[0]);
-
-            Assert.IsTrue(converterSettings.DynamicsSettingsConfiguredViaPCR, "Flag should be true after ApplyDynamicsSettings");
-        }
     }
 }

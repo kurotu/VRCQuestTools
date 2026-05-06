@@ -125,12 +125,11 @@ namespace KRT.VRCQuestTools.Views
                 }
             }
 
-            // Clear legacy fields and set PCR mode flag.
+            // Clear legacy fields.
             Undo.RecordObject(converterSettings, "Apply Avatar Dynamics Settings");
             converterSettings.physBonesToKeep = new VRCPhysBone[0];
             converterSettings.physBoneCollidersToKeep = new VRCPhysBoneCollider[0];
             converterSettings.contactsToKeep = new ContactBase[0];
-            converterSettings.DynamicsSettingsConfiguredViaPCR = true;
             PrefabUtility.RecordPrefabInstancePropertyModifications(converterSettings);
 
             Undo.CollapseUndoOperations(undoGroup);
