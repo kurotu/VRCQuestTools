@@ -19,7 +19,6 @@ using VRC.Core;
 using VRC.Dynamics;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
-#pragma warning disable CS0618
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {

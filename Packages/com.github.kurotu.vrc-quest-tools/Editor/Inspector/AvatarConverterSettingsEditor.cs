@@ -17,7 +17,6 @@ using VRC.SDKBase;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 using static KRT.VRCQuestTools.Models.VRChat.AvatarConverter;
-#pragma warning disable CS0618
 
 namespace KRT.VRCQuestTools.Inspector
 {
