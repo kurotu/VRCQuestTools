@@ -1,5 +1,4 @@
 using System.Linq;
-using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
@@ -23,7 +22,7 @@ namespace KRT.VRCQuestTools.Views
         /// <summary>
         /// AvatarConverterSettings to edit.
         /// </summary>
-        internal AvatarConverterSettings converterSettings;
+        internal KRT.VRCQuestTools.Components.AvatarConverterSettings converterSettings;
 
         /// <summary>
         /// PhysBone providers to keep.
@@ -63,7 +62,7 @@ namespace KRT.VRCQuestTools.Views
         /// <param name="collidersToKeep">PhysBoneColliders to keep.</param>
         /// <param name="contactsToKeep">Contacts to keep.</param>
         internal static void ApplyDynamicsSettings(
-            AvatarConverterSettings converterSettings,
+            KRT.VRCQuestTools.Components.AvatarConverterSettings converterSettings,
             VRCPhysBoneProviderBase[] providersToKeep,
             VRCPhysBoneCollider[] collidersToKeep,
             ContactBase[] contactsToKeep)
