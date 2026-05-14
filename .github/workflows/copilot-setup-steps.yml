@@ -103,7 +103,7 @@ jobs:
       - run: cd Website && pnpm install --frozen-lockfile
 
       - name: Install uloop-cli
-        run: pnpm install -g uloop-cli
+        run: pnpm install -g uloop-cli@2.1.2
 
       - name: Generate solution
         env:
