@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `VQT Fallback Avatar` component that automatically sets an avatar as a fallback avatar after upload when performance requirements are met (Good or better rating for mobile platforms).
 
 ### Changed
+- Avatar Dynamics Selector now stores keep/remove settings in `Platform Component Remover` instead of the legacy arrays in `Avatar Converter Settings`. Applying the selector migrates settings and clears the legacy arrays to avoid stale references.
 - Changed the initial value of default material conversion settings to Toon Standard.
 - Improved the appearance when converting lilToon normal mode MatCap to Toon Standard.
 - Unsupported materials to be processed are no longer warned in `Avatar Converter Settings` and `Material Conversion Settings`.

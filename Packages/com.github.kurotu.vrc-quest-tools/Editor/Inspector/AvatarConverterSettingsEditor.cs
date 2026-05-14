@@ -196,12 +196,17 @@ namespace KRT.VRCQuestTools.Inspector
                             OnClickSelectAvatarDynamicsComponentsButton(descriptor);
                         }
 
-                        var m_physBones = so.FindProperty("physBonesToKeep");
-                        EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones to Keep", i18n.AvatarConverterPhysBonesTooltip));
-                        var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
-                        EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders to Keep", i18n.AvatarConverterPhysBoneCollidersTooltip));
-                        var m_contacts = so.FindProperty("contactsToKeep");
-                        EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers to Keep", i18n.AvatarConverterContactsTooltip));
+                        bool isLegacyMode = converterSettings.HasLegacyAvatarDynamicsSettings;
+
+                        if (isLegacyMode)
+                        {
+                            var m_physBones = so.FindProperty("physBonesToKeep");
+                            EditorGUILayout.PropertyField(m_physBones, new GUIContent("PhysBones to Keep", i18n.AvatarConverterPhysBonesTooltip));
+                            var m_physBoneColliders = so.FindProperty("physBoneCollidersToKeep");
+                            EditorGUILayout.PropertyField(m_physBoneColliders, new GUIContent("PhysBone Colliders to Keep", i18n.AvatarConverterPhysBoneCollidersTooltip));
+                            var m_contacts = so.FindProperty("contactsToKeep");
+                            EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers to Keep", i18n.AvatarConverterContactsTooltip));
+                        }
                         AvatarDynamicsPerformanceGUI(stats);
                     }
 
@@ -335,6 +340,16 @@ namespace KRT.VRCQuestTools.Inspector
             so.ApplyModifiedProperties();
         }
 
+        private static T[] GetComponentsToRemoveOnAndroid<T>(GameObject avatarRoot)
+            where T : Component
+        {
+            return avatarRoot.GetComponentsInChildren<PlatformComponentRemover>(true)
+                .SelectMany(pcr => pcr.componentSettings)
+                .Where(s => s.removeOnAndroid && s.component != null && s.component is T)
+                .Select(s => (T)s.component)
+                .ToArray();
+        }
+
         private void OnEnable()
         {
             statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(true);
@@ -348,11 +363,28 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 return null;
             }
-            var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).ToArray();
-            var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).ToArray();
-            var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).ToArray();
+
+            bool isLegacyMode = converterSettings.HasLegacyAvatarDynamicsSettings;
+
             var avatar = new VRChatAvatar(original);
-            return avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, contactsToKeep);
+            if (isLegacyMode)
+            {
+                var pbToKeep = converterSettings.physBonesToKeep.Where(x => x != null).ToArray();
+                var pbcToKeep = converterSettings.physBoneCollidersToKeep.Where(x => x != null).ToArray();
+                var contactsToKeep = converterSettings.contactsToKeep.Where(x => x != null).ToArray();
+                return avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, contactsToKeep);
+            }
+            else
+            {
+                var pbsToRemove = GetComponentsToRemoveOnAndroid<VRCPhysBone>(original.gameObject);
+                var pbcsToRemove = GetComponentsToRemoveOnAndroid<VRCPhysBoneCollider>(original.gameObject);
+                var contactsToRemoveArr = GetComponentsToRemoveOnAndroid<ContactBase>(original.gameObject);
+
+                var pbToKeep = original.GetComponentsInChildren<VRCPhysBone>(true).Except(pbsToRemove).ToArray();
+                var pbcToKeep = original.GetComponentsInChildren<VRCPhysBoneCollider>(true).Except(pbcsToRemove).ToArray();
+                var cToKeep = avatar.GetNonLocalContacts().Except(contactsToRemoveArr).ToArray();
+                return avatar.EstimatePerformanceStats(pbToKeep, pbcToKeep, cToKeep);
+            }
         }
 
         private void AvatarDynamicsPerformanceGUI(AvatarPerformanceStats stats)
@@ -433,11 +465,51 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickSelectAvatarDynamicsComponentsButton(VRC_AvatarDescriptor avatar)
         {
             var window = EditorWindow.GetWindow<AvatarDynamicsSelectorWindow>();
-            window.converterSettings = converterSettings;
-            window.physBoneProvidersToKeep = converterSettings.physBonesToKeep.Select(p => new VRCPhysBoneProvider(p)).ToArray();
-            window.physBoneCollidersToKeep = converterSettings.physBoneCollidersToKeep;
-            window.contactsToKeep = converterSettings.contactsToKeep;
+            InitializeSelectorWindow(window, converterSettings, avatar);
             window.Show();
+        }
+
+        /// <summary>
+        /// Initializes the AvatarDynamicsSelectorWindow with the appropriate dynamics selection
+        /// based on whether legacy arrays or PCR (PlatformComponentRemover) data is present.
+        /// </summary>
+        /// <param name="window">The selector window to initialize.</param>
+        /// <param name="converterSettings">The AvatarConverterSettings to read from.</param>
+        /// <param name="descriptor">The VRC avatar descriptor for PCR-based initialization.</param>
+        internal static void InitializeSelectorWindow(AvatarDynamicsSelectorWindow window, AvatarConverterSettings converterSettings, VRC_AvatarDescriptor descriptor)
+        {
+            window.converterSettings = converterSettings;
+
+            bool isLegacyMode = converterSettings.HasLegacyAvatarDynamicsSettings;
+
+            if (isLegacyMode)
+            {
+                window.physBoneProvidersToKeep = converterSettings.physBonesToKeep
+                    .Where(p => p != null)
+                    .Select(p => new VRCPhysBoneProvider(p))
+                    .ToArray();
+                window.physBoneCollidersToKeep = converterSettings.physBoneCollidersToKeep
+                    .Where(c => c != null)
+                    .ToArray();
+                window.contactsToKeep = converterSettings.contactsToKeep
+                    .Where(c => c != null)
+                    .ToArray();
+            }
+            else
+            {
+                var vrchatAvatar = new VRChatAvatar(descriptor);
+                var pbsToRemove = GetComponentsToRemoveOnAndroid<VRCPhysBone>(descriptor.gameObject);
+                var allPbs = vrchatAvatar.GetPhysBoneProviders();
+                window.physBoneProvidersToKeep = allPbs.Where(p => !p.GetPhysBones().Any(pb => pbsToRemove.Contains(pb))).ToArray();
+
+                var pbcsToRemove = GetComponentsToRemoveOnAndroid<VRCPhysBoneCollider>(descriptor.gameObject);
+                var allPbcs = descriptor.GetComponentsInChildren<VRCPhysBoneCollider>(true);
+                window.physBoneCollidersToKeep = allPbcs.Where(c => !pbcsToRemove.Contains(c)).ToArray();
+
+                var contactsToRemoveArr = GetComponentsToRemoveOnAndroid<ContactBase>(descriptor.gameObject);
+                var nonLocalContacts = vrchatAvatar.GetNonLocalContacts();
+                window.contactsToKeep = nonLocalContacts.Where(c => !contactsToRemoveArr.Contains(c)).ToArray();
+            }
         }
 
         private void OnClickPrefabStageExitButton()

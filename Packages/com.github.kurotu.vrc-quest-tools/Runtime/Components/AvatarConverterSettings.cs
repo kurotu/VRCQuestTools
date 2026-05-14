@@ -36,18 +36,21 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// PhysBones to keep while conversion.
         /// </summary>
+        [System.Obsolete("Use PlatformComponentRemover on the avatar dynamics component's GameObject instead.")]
         [SerializeField]
         public VRCPhysBone[] physBonesToKeep = { };
 
         /// <summary>
         /// PhysBone colliders to keep while conversion.
         /// </summary>
+        [System.Obsolete("Use PlatformComponentRemover on the avatar dynamics component's GameObject instead.")]
         [SerializeField]
         public VRCPhysBoneCollider[] physBoneCollidersToKeep = { };
 
         /// <summary>
         /// Contact senders and receivers to keep while conversion.
         /// </summary>
+        [System.Obsolete("Use PlatformComponentRemover on the avatar dynamics component's GameObject instead.")]
         [SerializeField]
         public ContactBase[] contactsToKeep = { };
 
@@ -116,6 +119,16 @@ namespace KRT.VRCQuestTools.Components
         public bool EnableMaterialPreview => enableMaterialPreview;
 
         /// <summary>
+        /// Gets a value indicating whether any legacy avatar dynamics settings (<see cref="physBonesToKeep"/>, <see cref="physBoneCollidersToKeep"/>, or <see cref="contactsToKeep"/>) contain non-null entries.
+        /// </summary>
+#pragma warning disable CS0618
+        public bool HasLegacyAvatarDynamicsSettings =>
+            physBonesToKeep.Any(x => x != null) ||
+            physBoneCollidersToKeep.Any(x => x != null) ||
+            contactsToKeep.Any(x => x != null);
+#pragma warning restore CS0618
+
+        /// <summary>
         /// Gets the material convert settings for the specified material.
         /// </summary>
         /// <param name="material">Material to convert.</param>
@@ -135,25 +148,6 @@ namespace KRT.VRCQuestTools.Components
         private void Reset()
         {
             defaultMaterialConvertSettings.LoadDefaultAssets();
-
-            var descriptor = AvatarDescriptor;
-            physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>(true) : new VRCPhysBone[] { };
-            physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>(true) : new VRCPhysBoneCollider[] { };
-            contactsToKeep = descriptor ? descriptor.GetComponentsInChildren<ContactBase>(true)
-                .Where(c =>
-                {
-                    switch (c)
-                    {
-                        case ContactReceiver receiver:
-                            return !receiver.IsLocalOnly;
-                        case ContactSender sender:
-                            return !sender.IsLocalOnly;
-                        default:
-                            return true;
-                    }
-                })
-                .ToArray()
-                : new ContactBase[] { };
         }
     }
 }

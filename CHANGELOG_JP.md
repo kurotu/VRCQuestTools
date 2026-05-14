@@ -17,6 +17,7 @@
 - `VQT Fallback Avatar` コンポーネントを追加。モバイルプラットフォームのパフォーマンス要件（Good以上）を満たした場合、アップロード後に自動的にアバターをフォールバックアバターとして設定します。
 
 ### 変更
+- Avatar Dynamics Selector の保持/削除設定を `Avatar Converter Settings` のレガシー配列ではなく `Platform Component Remover` に保存するように変更。適用時に設定を移行し、古い参照が残らないようレガシー配列をクリアします。
 - デフォルトのマテリアル変換設定の初期値を Toon Standard に変更。
 - lilToon の通常モードの MatCap を Toon Standard に変換するときの見た目を改善。
 - 処理対象の非対応マテリアルは `Avatar Converter Settings` と `Material Conversion Settings` で警告されないように変更。
