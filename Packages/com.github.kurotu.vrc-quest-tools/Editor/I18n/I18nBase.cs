@@ -196,6 +196,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string PhysBonesShouldHaveNetworkID => GetText("PhysBonesShouldHaveNetworkID");
         internal string EstimatedPerformanceStats => GetText("EstimatedPerformanceStats");
         internal string DeleteUnselectedComponents => GetText("DeleteUnselectedComponents");
+        internal string SetPlatformComponentRemoverButtonLabel => GetText("SetPlatformComponentRemoverButtonLabel");
 
         // Avatar Dynamics Selector
         internal string SelectAllButtonLabel => GetText("SelectAllButtonLabel");

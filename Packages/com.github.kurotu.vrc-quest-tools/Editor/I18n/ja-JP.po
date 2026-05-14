@@ -389,6 +389,9 @@ msgstr "推定パフォーマンスランク"
 msgid "DeleteUnselectedComponents"
 msgstr "選択していないコンポーネントを削除"
 
+msgid "SetPlatformComponentRemoverButtonLabel"
+msgstr "Platform Component Removerを設定"
+
 msgid "SelectAllButtonLabel"
 msgstr "すべて選択"
 
