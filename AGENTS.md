@@ -4,13 +4,27 @@ Unity editor extension for converting VRChat PC avatars to Android (Quest/PICO) 
 
 ## Commands
 
+### Unity Editor Operations (via uloop skills)
+
+**Preferred** for compilation and testing when Unity Editor is running. Uses [unity-cli-loop](https://github.com/hatayama/unity-cli-loop)-based skills:
+
+| Skill | Purpose |
+|-------|---------|
+| `uloop-compile` | Compile the project and report errors/warnings |
+| `uloop-run-tests` | Run Unity Test Runner (EditMode/PlayMode) and get results |
+| `uloop-get-logs` | Retrieve Unity Console logs |
+| `uloop-clear-console` | Clear Unity Console before a fresh run |
+
+### Lint
+
 | Command | Description |
 |---------|-------------|
-| `dotnet build VRCQuestTools.sln` | Build the solution (requires Unity-generated .sln/.csproj) |
 | `pwsh scripts/lint.ps1` | Lint on Windows (builds .sln then checks VRCQuestTools*.csproj) |
 | `bash scripts/lint.sh` | Lint on Linux CI |
 
-> **Note:** Building and testing require Unity 2022.3.22f1 and Unity-generated .sln/.csproj files. Tests run via Unity Test Runner (NUnit) in CI using `game-ci/unity-test-runner`, not via CLI.
+### Fallback (no Unity Editor)
+
+> `dotnet build VRCQuestTools.sln` — build only; requires Unity-generated .sln/.csproj files (Unity 2022.3.22f1). Tests are not runnable without Unity; CI uses `game-ci/unity-test-runner`.
 
 ### Website (Documentation)
 
