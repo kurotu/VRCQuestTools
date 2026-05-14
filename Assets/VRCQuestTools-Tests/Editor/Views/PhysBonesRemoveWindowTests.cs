@@ -3,9 +3,11 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
+using KRT.VRCQuestTools.ViewModels;
 using NUnit.Framework;
 using UnityEngine;
 using VRC.Dynamics;
@@ -222,6 +224,36 @@ namespace KRT.VRCQuestTools.Views
             Assert.IsNotNull(setting);
             Assert.IsTrue(setting.removeOnPC, "removeOnPC should be preserved");
             Assert.IsFalse(setting.removeOnAndroid, "removeOnAndroid should be false");
+        }
+
+        /// <summary>
+        /// SelectAvatar should deselect components that are configured to remove on Android by PCR.
+        /// </summary>
+        [Test]
+        public void SelectAvatar_WithPcrRemoveOnAndroid_DeselectsMarkedComponents()
+        {
+            var remover = boneObject.AddComponent<PlatformComponentRemover>();
+            remover.UpdateComponentSettings();
+            foreach (var setting in remover.componentSettings)
+            {
+                if (setting.component == physBone || setting.component == physBoneCollider || setting.component == contact)
+                {
+                    setting.removeOnAndroid = true;
+                }
+            }
+
+            var model = new PhysBonesRemoveViewModel();
+            model.SelectAvatar(descriptor);
+
+            Assert.IsFalse(
+                model.PhysBoneProvidersToKeep.SelectMany(provider => provider.GetPhysBones()).Contains(physBone),
+                "PhysBone marked for Android removal should be deselected");
+            Assert.IsFalse(
+                model.PhysBoneCollidersToKeep.Contains(physBoneCollider),
+                "PhysBoneCollider marked for Android removal should be deselected");
+            Assert.IsFalse(
+                model.ContactsToKeep.Contains(contact),
+                "Contact marked for Android removal should be deselected");
         }
     }
 }

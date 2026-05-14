@@ -101,6 +101,7 @@ namespace KRT.VRCQuestTools.ViewModels
             SelectAllPhysBoneProviders(true);
             SelectAllPhysBoneColliders(true);
             SelectAllContacts(true);
+            DeselectComponentsConfiguredToRemoveOnAndroid();
         }
 
         /// <summary>
@@ -256,6 +257,33 @@ namespace KRT.VRCQuestTools.ViewModels
 
             var contacts = Avatar.GetContacts();
             contactsToKeep.RemoveAll(c => !contacts.Contains(c));
+        }
+
+        /// <summary>
+        /// Deselects components marked to remove on Android in existing PlatformComponentRemover settings.
+        /// </summary>
+        private void DeselectComponentsConfiguredToRemoveOnAndroid()
+        {
+            var settings = Avatar.AvatarDescriptor.gameObject
+                .GetComponentsInChildren<KRT.VRCQuestTools.Components.PlatformComponentRemover>(true)
+                .SelectMany(pcr => pcr.componentSettings)
+                .Where(setting => setting.removeOnAndroid && setting.component != null);
+
+            foreach (var setting in settings)
+            {
+                switch (setting.component)
+                {
+                    case VRCPhysBone physBone:
+                        physBonesToKeep.RemoveAll(provider => provider.GetPhysBones().Contains(physBone));
+                        break;
+                    case VRCPhysBoneCollider physBoneCollider:
+                        physBoneCollidersToKeep.Remove(physBoneCollider);
+                        break;
+                    case ContactBase contact:
+                        contactsToKeep.Remove(contact);
+                        break;
+                }
+            }
         }
 
         /// <summary>
