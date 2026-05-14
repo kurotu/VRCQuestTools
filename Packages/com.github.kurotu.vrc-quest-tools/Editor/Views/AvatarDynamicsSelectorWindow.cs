@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Linq;
-using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
@@ -57,6 +55,7 @@ namespace KRT.VRCQuestTools.Views
         /// <summary>
         /// Applies avatar dynamics settings to PlatformComponentRemover components.
         /// Components not in the keep lists will be configured for Android removal.
+        /// Also clears legacy physBonesToKeep fields on converterSettings.
         /// </summary>
         /// <param name="converterSettings">AvatarConverterSettings to update.</param>
         /// <param name="providersToKeep">PhysBone providers to keep.</param>
@@ -68,82 +67,24 @@ namespace KRT.VRCQuestTools.Views
             VRCPhysBoneCollider[] collidersToKeep,
             ContactBase[] contactsToKeep)
         {
-            var avatarRoot = converterSettings.AvatarDescriptor.gameObject;
-            var physBonesToKeep = providersToKeep.SelectMany(p => p.GetPhysBones()).ToArray();
-
-            var allPhysBones = avatarRoot.GetComponentsInChildren<VRCPhysBone>(true);
-            var allColliders = avatarRoot.GetComponentsInChildren<VRCPhysBoneCollider>(true);
-            var allContacts = new VRChatAvatar(converterSettings.AvatarDescriptor).GetNonLocalContacts();
-
-            var physBonesToRemove = allPhysBones.Except(physBonesToKeep).ToArray();
-            var collidersToRemove = allColliders.Except(collidersToKeep).ToArray();
-            var contactsToRemove = allContacts.Except(contactsToKeep).ToArray();
-
-            Undo.SetCurrentGroupName("Apply Avatar Dynamics Settings");
-            var undoGroup = Undo.GetCurrentGroup();
-
-            // Configure PCR for components to remove on Android.
-            foreach (var component in physBonesToRemove.Cast<Component>().Concat(collidersToRemove).Concat(contactsToRemove))
-            {
-                var remover = GetOrAddPlatformComponentRemover(component.gameObject);
-                Undo.RecordObject(remover, "Apply Avatar Dynamics Settings");
-                remover.UpdateComponentSettings();
-                var setting = System.Array.Find(remover.componentSettings, s => s.component == component);
-                if (setting != null)
-                {
-                    setting.removeOnAndroid = true;
-                }
-                EditorUtility.SetDirty(remover);
-                PrefabUtility.RecordPrefabInstancePropertyModifications(remover);
-            }
-
-            // For kept components: clear removeOnAndroid if previously set.
-            foreach (var component in physBonesToKeep.Cast<Component>().Concat(collidersToKeep).Concat(contactsToKeep))
-            {
-                var remover = component.gameObject.GetComponent<PlatformComponentRemover>();
-                if (remover != null)
-                {
-                    Undo.RecordObject(remover, "Apply Avatar Dynamics Settings");
-                    var setting = System.Array.Find(remover.componentSettings, s => s.component == component);
-                    if (setting != null)
-                    {
-                        setting.removeOnAndroid = false;
-                    }
-                    EditorUtility.SetDirty(remover);
-                    PrefabUtility.RecordPrefabInstancePropertyModifications(remover);
-                }
-            }
-
-            // Remove PCR components that have no removal effect.
-            var allRemovers = avatarRoot.GetComponentsInChildren<PlatformComponentRemover>(true);
-            foreach (var remover in allRemovers)
-            {
-                bool hasEffect = System.Array.Exists(remover.componentSettings, s => s.removeOnAndroid || s.removeOnPC);
-                if (!hasEffect)
-                {
-                    Undo.DestroyObjectImmediate(remover);
-                }
-            }
-
-            // Clear legacy fields.
-            Undo.RecordObject(converterSettings, "Apply Avatar Dynamics Settings");
-            converterSettings.physBonesToKeep = new VRCPhysBone[0];
-            converterSettings.physBoneCollidersToKeep = new VRCPhysBoneCollider[0];
-            converterSettings.contactsToKeep = new ContactBase[0];
-            PrefabUtility.RecordPrefabInstancePropertyModifications(converterSettings);
-
-            Undo.CollapseUndoOperations(undoGroup);
+            AvatarDynamicsSettingsUtility.Apply(converterSettings, providersToKeep, collidersToKeep, contactsToKeep);
         }
 
-        private static PlatformComponentRemover GetOrAddPlatformComponentRemover(GameObject go)
+        /// <summary>
+        /// Applies avatar dynamics settings to PlatformComponentRemover components.
+        /// Components not in the keep lists will be configured for Android removal.
+        /// </summary>
+        /// <param name="avatarDescriptor">Target avatar descriptor.</param>
+        /// <param name="providersToKeep">PhysBone providers to keep.</param>
+        /// <param name="collidersToKeep">PhysBoneColliders to keep.</param>
+        /// <param name="contactsToKeep">Contacts to keep.</param>
+        internal static void ApplyDynamicsSettings(
+            VRC.SDKBase.VRC_AvatarDescriptor avatarDescriptor,
+            VRCPhysBoneProviderBase[] providersToKeep,
+            VRCPhysBoneCollider[] collidersToKeep,
+            ContactBase[] contactsToKeep)
         {
-            var remover = go.GetComponent<PlatformComponentRemover>();
-            if (remover == null)
-            {
-                remover = Undo.AddComponent<PlatformComponentRemover>(go);
-            }
-
-            return remover;
+            AvatarDynamicsSettingsUtility.Apply(avatarDescriptor, providersToKeep, collidersToKeep, contactsToKeep);
         }
 
         private void OnEnable()

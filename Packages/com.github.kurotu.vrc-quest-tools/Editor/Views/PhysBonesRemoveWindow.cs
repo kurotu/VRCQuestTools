@@ -223,6 +223,11 @@ namespace KRT.VRCQuestTools.Views
                 OnClickDelete();
             }
 
+            if (GUILayout.Button(i18n.SetPlatformComponentRemoverButtonLabel))
+            {
+                OnClickSetPlatformComponentRemover();
+            }
+
             EditorGUILayout.Space();
         }
 
@@ -234,6 +239,15 @@ namespace KRT.VRCQuestTools.Views
         private void OnClickDelete()
         {
             model.DeleteComponents();
+        }
+
+        private void OnClickSetPlatformComponentRemover()
+        {
+            AvatarDynamicsSettingsUtility.Apply(
+                model.Avatar.AvatarDescriptor,
+                model.PhysBoneProvidersToKeep.ToArray(),
+                model.PhysBoneCollidersToKeep.ToArray(),
+                model.ContactsToKeep.ToArray());
         }
     }
 }

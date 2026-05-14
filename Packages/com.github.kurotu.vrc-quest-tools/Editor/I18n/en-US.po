@@ -389,6 +389,9 @@ msgstr "Estimated Performance Stats"
 msgid "DeleteUnselectedComponents"
 msgstr "Delete Unselected Components"
 
+msgid "SetPlatformComponentRemoverButtonLabel"
+msgstr "Set Platform Component Remover"
+
 msgid "SelectAllButtonLabel"
 msgstr "Select All"
 
