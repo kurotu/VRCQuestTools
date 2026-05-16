@@ -55,15 +55,19 @@ namespace KRT.VRCQuestTools.NonDestructive
             }
 
             var pipelineManager = avatarGameObject.GetComponent<PipelineManager>();
-            if (pipelineManager == null || string.IsNullOrEmpty(pipelineManager.blueprintId))
+            if (pipelineManager == null)
             {
                 return true;
             }
 
             var isMobile = EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS;
             var stats = VRCSDKUtility.CalculatePerformanceStats(avatarGameObject, isMobile);
-            var rating = stats.GetPerformanceRatingForCategory(VRC.SDKBase.Validation.Performance.AvatarPerformanceCategory.Overall);
-            LastActualPerformanceRating[pipelineManager.blueprintId] = rating;
+            if (!string.IsNullOrEmpty(pipelineManager.blueprintId))
+            {
+                var rating = stats.GetPerformanceRatingForCategory(VRC.SDKBase.Validation.Performance.AvatarPerformanceCategory.Overall);
+                LastActualPerformanceRating[pipelineManager.blueprintId] = rating;
+            }
+
             if (isMobile)
             {
                 var i18n = new I18nEnglish();
