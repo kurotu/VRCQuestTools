@@ -15,6 +15,7 @@
 - [NDMF] マテリアル変換と頂点カラー削除のプレビューを追加。
 - テクスチャ圧縮形式の設定に「No Override」オプションを追加し、プラットフォーム別オーバーライドを設定せずにUnityのデフォルト設定でASTC圧縮を制御できるようにしました。`Avatar Converter Settings` コンポーネントのテクスチャ圧縮形式のデフォルト値は「No Override」になりました。
 - `VQT Fallback Avatar` コンポーネントを追加。モバイルプラットフォームのパフォーマンス要件（Good以上）を満たした場合、アップロード後に自動的にアバターをフォールバックアバターとして設定します。
+- Mobile向けアップロード時、Avatar Dynamics のカテゴリが Very Poor の場合に警告ログを表示するよう追加。
 
 ### 変更
 - Avatar Dynamics Selector の保持/削除設定を `Avatar Converter Settings` のレガシー配列ではなく `Platform Component Remover` に保存するように変更。適用時に設定を移行し、古い参照が残らないようレガシー配列をクリアします。

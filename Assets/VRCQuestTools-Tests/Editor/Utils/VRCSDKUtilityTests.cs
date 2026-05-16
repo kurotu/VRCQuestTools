@@ -4,8 +4,10 @@
 // </copyright>
 
 using NUnit.Framework;
+using KRT.VRCQuestTools.Models;
 using UnityEngine;
 using VRC.SDK3.Avatars.ScriptableObjects;
+using VRC.SDKBase.Validation.Performance;
 
 namespace KRT.VRCQuestTools.Utils
 {
@@ -93,6 +95,21 @@ namespace KRT.VRCQuestTools.Utils
                 callbackCalled = true;
             });
             Assert.IsFalse(callbackCalled);
+        }
+
+        /// <summary>
+        /// GetAvatarDynamicsVeryPoorViolationMessage test.
+        /// </summary>
+        [Test]
+        public void GetAvatarDynamicsVeryPoorViolationMessage()
+        {
+            var i18n = VRCQuestToolsSettings.I18nResource;
+            Assert.AreEqual(i18n.PhysBonesWillBeRemovedAtRunTime, VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(AvatarPerformanceCategory.PhysBoneComponentCount, i18n));
+            Assert.AreEqual(i18n.PhysBonesTransformsShouldBeReduced, VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(AvatarPerformanceCategory.PhysBoneTransformCount, i18n));
+            Assert.AreEqual(i18n.PhysBoneCollidersWillBeRemovedAtRunTime, VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(AvatarPerformanceCategory.PhysBoneColliderCount, i18n));
+            Assert.AreEqual(i18n.PhysBonesCollisionCheckCountShouldBeReduced, VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(AvatarPerformanceCategory.PhysBoneCollisionCheckCount, i18n));
+            Assert.AreEqual(i18n.ContactsWillBeRemovedAtRunTime, VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(AvatarPerformanceCategory.ContactCount, i18n));
+            Assert.Throws<System.InvalidProgramException>(() => VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(AvatarPerformanceCategory.Overall, i18n));
         }
     }
 }

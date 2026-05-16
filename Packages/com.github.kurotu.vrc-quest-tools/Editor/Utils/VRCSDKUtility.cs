@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
 using UnityEngine;
@@ -61,6 +62,85 @@ namespace KRT.VRCQuestTools.Utils
             AvatarPerformanceCategory.PhysBoneCollisionCheckCount,
             AvatarPerformanceCategory.ContactCount,
         };
+
+        /// <summary>
+        /// Gets the warning message for Very Poor Avatar Dynamics category.
+        /// </summary>
+        /// <param name="category">Avatar Dynamics performance category.</param>
+        /// <param name="i18n">I18n resource.</param>
+        /// <returns>Warning message.</returns>
+        internal static string GetAvatarDynamicsVeryPoorViolationMessage(AvatarPerformanceCategory category, I18nBase i18n)
+        {
+            switch (category)
+            {
+                case AvatarPerformanceCategory.PhysBoneComponentCount:
+                    return i18n.PhysBonesWillBeRemovedAtRunTime;
+                case AvatarPerformanceCategory.PhysBoneTransformCount:
+                    return i18n.PhysBonesTransformsShouldBeReduced;
+                case AvatarPerformanceCategory.PhysBoneColliderCount:
+                    return i18n.PhysBoneCollidersWillBeRemovedAtRunTime;
+                case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
+                    return i18n.PhysBonesCollisionCheckCountShouldBeReduced;
+                case AvatarPerformanceCategory.ContactCount:
+                    return i18n.ContactsWillBeRemovedAtRunTime;
+                default:
+                    throw new InvalidProgramException();
+            }
+        }
+
+        /// <summary>
+        /// Gets the current performance value for Avatar Dynamics category.
+        /// </summary>
+        /// <param name="stats">Avatar performance stats.</param>
+        /// <param name="category">Avatar Dynamics performance category.</param>
+        /// <returns>Current performance value.</returns>
+        internal static int GetAvatarDynamicsCurrentPerformanceValue(
+            AvatarPerformanceStats stats,
+            AvatarPerformanceCategory category)
+        {
+            switch (category)
+            {
+                case AvatarPerformanceCategory.PhysBoneComponentCount:
+                    return stats.physBone.Value.componentCount;
+                case AvatarPerformanceCategory.PhysBoneTransformCount:
+                    return stats.physBone.Value.transformCount;
+                case AvatarPerformanceCategory.PhysBoneColliderCount:
+                    return stats.physBone.Value.colliderCount;
+                case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
+                    return stats.physBone.Value.collisionCheckCount;
+                case AvatarPerformanceCategory.ContactCount:
+                    return stats.contactCount.Value;
+                default:
+                    throw new InvalidProgramException();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Poor-rank upper limit for Avatar Dynamics category from SDK stats level set.
+        /// </summary>
+        /// <param name="statsLevelSet">Avatar performance stats level set.</param>
+        /// <param name="category">Avatar Dynamics performance category.</param>
+        /// <returns>Poor-rank upper limit.</returns>
+        internal static int GetAvatarDynamicsPoorRankLimit(
+            AvatarPerformanceStatsLevelSet statsLevelSet,
+            AvatarPerformanceCategory category)
+        {
+            switch (category)
+            {
+                case AvatarPerformanceCategory.PhysBoneComponentCount:
+                    return statsLevelSet.poor.physBone.componentCount;
+                case AvatarPerformanceCategory.PhysBoneTransformCount:
+                    return statsLevelSet.poor.physBone.transformCount;
+                case AvatarPerformanceCategory.PhysBoneColliderCount:
+                    return statsLevelSet.poor.physBone.colliderCount;
+                case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
+                    return statsLevelSet.poor.physBone.collisionCheckCount;
+                case AvatarPerformanceCategory.ContactCount:
+                    return statsLevelSet.poor.contactCount;
+                default:
+                    throw new InvalidProgramException();
+            }
+        }
 
         /// <summary>
         /// Types which is not allowed for Quest avatars. (except FinalIK).

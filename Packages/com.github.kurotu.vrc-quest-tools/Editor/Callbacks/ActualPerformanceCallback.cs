@@ -4,12 +4,14 @@
 // </copyright>
 
 using System.Collections.Generic;
+using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 using VRC.Core;
 using VRC.SDKBase.Editor.BuildPipeline;
 using VRC.SDKBase.Validation.Performance;
+using VRC.SDKBase.Validation.Performance.Stats;
 
 namespace KRT.VRCQuestTools.NonDestructive
 {
@@ -53,15 +55,48 @@ namespace KRT.VRCQuestTools.NonDestructive
             }
 
             var pipelineManager = avatarGameObject.GetComponent<PipelineManager>();
-            if (pipelineManager == null || string.IsNullOrEmpty(pipelineManager.blueprintId))
+            if (pipelineManager == null)
             {
                 return true;
             }
 
             var isMobile = EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS;
             var stats = VRCSDKUtility.CalculatePerformanceStats(avatarGameObject, isMobile);
-            var rating = stats.GetPerformanceRatingForCategory(VRC.SDKBase.Validation.Performance.AvatarPerformanceCategory.Overall);
-            LastActualPerformanceRating[pipelineManager.blueprintId] = rating;
+            if (!string.IsNullOrEmpty(pipelineManager.blueprintId))
+            {
+                var rating = stats.GetPerformanceRatingForCategory(VRC.SDKBase.Validation.Performance.AvatarPerformanceCategory.Overall);
+                LastActualPerformanceRating[pipelineManager.blueprintId] = rating;
+            }
+
+            if (isMobile)
+            {
+                var i18n = new I18nEnglish();
+                var statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(isMobile);
+                foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
+                {
+                    if (stats.GetPerformanceRatingForCategory(category) != PerformanceRating.VeryPoor)
+                    {
+                        continue;
+                    }
+
+                    var categoryDisplayName = category.ToString();
+                    try
+                    {
+                        categoryDisplayName = AvatarPerformanceStats.GetPerformanceCategoryDisplayName(category);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Logger.LogWarning($"Failed to get performance category display name for '{category}'. Using fallback name. {ex}", avatarGameObject);
+                    }
+
+                    var warning = VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(category, i18n);
+                    var currentValue = VRCSDKUtility.GetAvatarDynamicsCurrentPerformanceValue(stats, category);
+                    var poorRankLimit = VRCSDKUtility.GetAvatarDynamicsPoorRankLimit(statsLevelSet, category);
+                    Logger.LogWarning(
+                        $"Avatar '{avatarGameObject.name}' - {categoryDisplayName}: {warning} (Current: {currentValue}, Poor upper limit: {poorRankLimit})",
+                        avatarGameObject);
+                }
+            }
 
             return true;
         }

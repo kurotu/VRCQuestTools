@@ -221,31 +221,11 @@ namespace KRT.VRCQuestTools.Views
             string label = $"{categoryDisplayName}: {ratingDisplayName}";
             string veryPoorViolation = null;
 
-            switch (category)
-            {
-                case AvatarPerformanceCategory.PhysBoneComponentCount:
-                    label = $"{categoryDisplayName}: {stats.physBone.Value.componentCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.componentCount})";
-                    veryPoorViolation = i18n.PhysBonesWillBeRemovedAtRunTime;
-                    break;
-                case AvatarPerformanceCategory.PhysBoneTransformCount:
-                    label = $"{categoryDisplayName}: {stats.physBone.Value.transformCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.transformCount})";
-                    veryPoorViolation = i18n.PhysBonesTransformsShouldBeReduced;
-                    break;
-                case AvatarPerformanceCategory.PhysBoneColliderCount:
-                    label = $"{categoryDisplayName}: {stats.physBone.Value.colliderCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.colliderCount})";
-                    veryPoorViolation = i18n.PhysBoneCollidersWillBeRemovedAtRunTime;
-                    break;
-                case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
-                    label = $"{categoryDisplayName}: {stats.physBone.Value.collisionCheckCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.collisionCheckCount})";
-                    veryPoorViolation = i18n.PhysBonesCollisionCheckCountShouldBeReduced;
-                    break;
-                case AvatarPerformanceCategory.ContactCount:
-                    label = $"{categoryDisplayName}: {stats.contactCount.Value} ({i18n.Maximum}: {statsLevelSet.poor.contactCount})";
-                    veryPoorViolation = i18n.ContactsWillBeRemovedAtRunTime;
-                    break;
-                default:
-                    throw new System.InvalidProgramException();
-            }
+            var currentValue = VRCSDKUtility.GetAvatarDynamicsCurrentPerformanceValue(stats, category);
+            var poorRankLimit = VRCSDKUtility.GetAvatarDynamicsPoorRankLimit(statsLevelSet, category);
+            label = $"{categoryDisplayName}: {currentValue} ({i18n.Maximum}: {poorRankLimit})";
+
+            veryPoorViolation = VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(category, i18n);
             PerformanceRatingPanel(rating, label, rating >= PerformanceRating.VeryPoor ? veryPoorViolation : null);
         }
 
