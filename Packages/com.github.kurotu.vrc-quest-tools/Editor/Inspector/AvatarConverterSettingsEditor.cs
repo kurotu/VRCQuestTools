@@ -618,6 +618,7 @@ namespace KRT.VRCQuestTools.Inspector
             }
             if (questAvatar != null)
             {
+                questAvatar.GameObject.transform.position += Vector3.forward * 2f;
                 Selection.activeGameObject = questAvatar.GameObject;
 
                 if (TargetComponent.removeAvatarDynamics)
@@ -639,8 +640,6 @@ namespace KRT.VRCQuestTools.Inspector
                         PhysBonesRemoveWindow.ShowWindow(converted.AvatarDescriptor);
                     }
                 }
-
-                converterSettings.AvatarDescriptor.gameObject.SetActive(false);
             }
         }
 

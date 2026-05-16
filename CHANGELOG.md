@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Avatar Dynamics Selector now stores keep/remove settings in `Platform Component Remover` instead of the legacy arrays in `Avatar Converter Settings`. Applying the selector migrates settings and clears the legacy arrays to avoid stale references.
 - Added a button in PhysBones Remover to apply current keep/remove selections to `Platform Component Remover`.
 - Optimized Avatar Dynamics performance estimation timing in `Avatar Converter Settings` inspector.
+- Manual conversion from `Avatar Converter Settings` now keeps the original avatar active and places the converted avatar in front of the original avatar.
 - Changed the initial value of default material conversion settings to Toon Standard.
 - Improved the appearance when converting lilToon normal mode MatCap to Toon Standard.
 - Unsupported materials to be processed are no longer warned in `Avatar Converter Settings` and `Material Conversion Settings`.
