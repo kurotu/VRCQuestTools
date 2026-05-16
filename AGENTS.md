@@ -8,8 +8,11 @@ Unity editor extension for converting VRChat PC avatars to Android (Quest/PICO) 
 
 **Preferred** for compilation and testing when Unity Editor is running. Uses [unity-cli-loop](https://github.com/hatayama/unity-cli-loop)-based skills:
 
+> First run `uloop-launch` to start Unity, then run other `uloop-*` commands after the editor is ready.
+
 | Skill | Purpose |
 |-------|---------|
+| `uloop-launch` | Launch Unity project with matching Editor version |
 | `uloop-compile` | Compile the project and report errors/warnings |
 | `uloop-run-tests` | Run Unity Test Runner (EditMode/PlayMode) and get results |
 | `uloop-get-logs` | Retrieve Unity Console logs |
@@ -88,12 +91,14 @@ scripts/               # CI/automation scripts (bump, lint, release)
 - **Access modifiers:** All types are `internal` unless they must be public
 - **File headers:** C# source files in the main packages should include a copyright header (`// <copyright file="..." company="kurotu">`); new or modified files must follow this pattern, though some older files may not yet be updated.
 - **Indentation:** 4 spaces for C# (`.editorconfig`)
+- **Line endings:** Preserve each existing file's current line endings when editing. Only newly added files should use LF (`\n`). Do not bulk-convert existing CRLF files to LF because this repository still contains many CRLF files and mass normalization creates large, noisy diffs.
 - **XML docs:** `///` on all public/internal members with `<summary>`, `<param>`, `<returns>`
 - **StyleCop:** Enforced via analyzers with project-specific suppressions (SA1101, SA1200, SA1307, SA1401, SA1407, SA1513, SA1633, SA1639)
 - **Conditional compilation:** `#if VQT_HAS_NDMF` guards for optional NDMF features
 
 ## Testing
 
+- **Implementation changes:** Always run relevant tests after implementing code changes.
 - **Framework:** NUnit (Unity Test Runner, EditMode tests)
 - **Location:** `Assets/VRCQuestTools-Tests/Editor/`
 - **Naming:** `<TargetClass>Tests` (e.g., `StandardMaterialTests`, `AvatarDynamicsTests`)
