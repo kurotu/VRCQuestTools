@@ -4,12 +4,14 @@
 // </copyright>
 
 using System.Collections.Generic;
+using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 using VRC.Core;
 using VRC.SDKBase.Editor.BuildPipeline;
 using VRC.SDKBase.Validation.Performance;
+using VRC.SDKBase.Validation.Performance.Stats;
 
 namespace KRT.VRCQuestTools.NonDestructive
 {
@@ -62,6 +64,21 @@ namespace KRT.VRCQuestTools.NonDestructive
             var stats = VRCSDKUtility.CalculatePerformanceStats(avatarGameObject, isMobile);
             var rating = stats.GetPerformanceRatingForCategory(VRC.SDKBase.Validation.Performance.AvatarPerformanceCategory.Overall);
             LastActualPerformanceRating[pipelineManager.blueprintId] = rating;
+            if (isMobile)
+            {
+                var i18n = new I18nEnglish();
+                foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
+                {
+                    if (stats.GetPerformanceRatingForCategory(category) != PerformanceRating.VeryPoor)
+                    {
+                        continue;
+                    }
+
+                    var categoryDisplayName = AvatarPerformanceStats.GetPerformanceCategoryDisplayName(category);
+                    var warning = VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(category, i18n);
+                    Logger.LogWarning($"Avatar '{avatarGameObject.name}' - {categoryDisplayName}: {warning}", avatarGameObject);
+                }
+            }
 
             return true;
         }

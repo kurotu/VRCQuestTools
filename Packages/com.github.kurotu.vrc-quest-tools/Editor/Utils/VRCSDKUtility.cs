@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
 using UnityEngine;
@@ -61,6 +62,31 @@ namespace KRT.VRCQuestTools.Utils
             AvatarPerformanceCategory.PhysBoneCollisionCheckCount,
             AvatarPerformanceCategory.ContactCount,
         };
+
+        /// <summary>
+        /// Gets the warning message for Very Poor Avatar Dynamics category.
+        /// </summary>
+        /// <param name="category">Avatar Dynamics performance category.</param>
+        /// <param name="i18n">I18n resource.</param>
+        /// <returns>Warning message.</returns>
+        internal static string GetAvatarDynamicsVeryPoorViolationMessage(AvatarPerformanceCategory category, I18nBase i18n)
+        {
+            switch (category)
+            {
+                case AvatarPerformanceCategory.PhysBoneComponentCount:
+                    return i18n.PhysBonesWillBeRemovedAtRunTime;
+                case AvatarPerformanceCategory.PhysBoneTransformCount:
+                    return i18n.PhysBonesTransformsShouldBeReduced;
+                case AvatarPerformanceCategory.PhysBoneColliderCount:
+                    return i18n.PhysBoneCollidersWillBeRemovedAtRunTime;
+                case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
+                    return i18n.PhysBonesCollisionCheckCountShouldBeReduced;
+                case AvatarPerformanceCategory.ContactCount:
+                    return i18n.ContactsWillBeRemovedAtRunTime;
+                default:
+                    throw new InvalidProgramException();
+            }
+        }
 
         /// <summary>
         /// Types which is not allowed for Quest avatars. (except FinalIK).
