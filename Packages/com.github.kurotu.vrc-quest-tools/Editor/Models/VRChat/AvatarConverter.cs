@@ -160,6 +160,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
                 ApplyVRCQuestToolsComponents(converterSettings, questAvatarObject);
 
+                if (saveAssetsAsFile)
+                {
+                    // In manual (non-NDMF) conversion, apply platform-specific GameObject removals regardless of dynamics settings.
+                    ApplyPlatformGameObjectRemoversForAndroid(questAvatarObject);
+                }
+
                 var contactsToKeep = converterSettings.contactsToKeep
                     .Concat(avatar.GetLocalContactReceivers())
                     .Concat(avatar.GetLocalContactSenders())
@@ -176,8 +182,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                     else if (saveAssetsAsFile)
                     {
-                        // New mode for manual (non-NDMF) conversion: apply platform-specific removals for Android.
-                        ApplyPlatformGameObjectRemoversForAndroid(questAvatarObject);
+                        // New mode for manual (non-NDMF) conversion: apply platform-specific component removals for Android.
                         ApplyPlatformComponentRemoversForAndroid(questAvatarObject);
                     }
 
