@@ -79,7 +79,16 @@ namespace KRT.VRCQuestTools.NonDestructive
                         continue;
                     }
 
-                    var categoryDisplayName = AvatarPerformanceStats.GetPerformanceCategoryDisplayName(category);
+                    var categoryDisplayName = category.ToString();
+                    try
+                    {
+                        categoryDisplayName = AvatarPerformanceStats.GetPerformanceCategoryDisplayName(category);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Logger.LogWarning($"Failed to get performance category display name for '{category}'. Using fallback name. {ex}", avatarGameObject);
+                    }
+
                     var warning = VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(category, i18n);
                     var currentValue = VRCSDKUtility.GetAvatarDynamicsCurrentPerformanceValue(stats, category);
                     var poorRankLimit = VRCSDKUtility.GetAvatarDynamicsPoorRankLimit(statsLevelSet, category);
