@@ -8,8 +8,11 @@ Unity editor extension for converting VRChat PC avatars to Android (Quest/PICO) 
 
 **Preferred** for compilation and testing when Unity Editor is running. Uses [unity-cli-loop](https://github.com/hatayama/unity-cli-loop)-based skills:
 
+> First run `uloop-launch` to start Unity, then run other `uloop-*` commands after the editor is ready.
+
 | Skill | Purpose |
 |-------|---------|
+| `uloop-launch` | Launch Unity project with matching Editor version |
 | `uloop-compile` | Compile the project and report errors/warnings |
 | `uloop-run-tests` | Run Unity Test Runner (EditMode/PlayMode) and get results |
 | `uloop-get-logs` | Retrieve Unity Console logs |
