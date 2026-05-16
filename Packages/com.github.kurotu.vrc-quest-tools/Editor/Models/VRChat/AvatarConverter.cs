@@ -176,11 +176,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                     else if (saveAssetsAsFile)
                     {
-                        // New mode for manual (non-NDMF) conversion: apply PCR removal for Android.
+                        // New mode for manual (non-NDMF) conversion: apply platform-specific removals for Android.
+                        ApplyPlatformGameObjectRemoversForAndroid(questAvatarObject);
                         ApplyPlatformComponentRemoversForAndroid(questAvatarObject);
                     }
 
-                    // For NDMF builds (!saveAssetsAsFile), PlatformComponentRemoverPass already handled removal.
+                    // For NDMF builds (!saveAssetsAsFile), removal was already handled in NDMF passes.
                 }
             }
 
@@ -439,6 +440,26 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             return convertedMaterials;
+        }
+
+        /// <summary>
+        /// Applies PlatformGameObjectRemover settings for Android, removing GameObjects marked for removal.
+        /// This is used during manual (non-NDMF) avatar conversion.
+        /// </summary>
+        /// <param name="avatarObject">Avatar root object.</param>
+        private static void ApplyPlatformGameObjectRemoversForAndroid(GameObject avatarObject)
+        {
+            var removers = avatarObject.GetComponentsInChildren<PlatformGameObjectRemover>(true);
+            foreach (var remover in removers)
+            {
+                if (remover == null || remover.gameObject == null || !remover.removeOnAndroid)
+                {
+                    continue;
+                }
+
+                Logger.Log($"Remove {remover.gameObject.name} for Android platform", remover.gameObject);
+                UnityEngine.Object.DestroyImmediate(remover.gameObject);
+            }
         }
 
         /// <summary>
