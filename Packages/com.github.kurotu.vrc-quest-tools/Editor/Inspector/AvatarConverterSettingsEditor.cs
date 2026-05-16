@@ -33,6 +33,7 @@ namespace KRT.VRCQuestTools.Inspector
         private ReorderableList additionalMaterialConvertSettingsReorderableList;
         private AvatarPerformanceStatsLevelSet statsLevelSet;
         private PerformanceRating avatarDynamicsPerfLimit;
+        private AvatarPerformanceStats estimatedAvatarDynamicsStats;
 
         /// <inheritdoc/>
         protected override string Description
@@ -149,6 +150,7 @@ namespace KRT.VRCQuestTools.Inspector
                 }
                 else
                 {
+                    InvalidateEstimatedPerformanceStats();
                     canConvert = false;
                 }
 
@@ -167,6 +169,8 @@ namespace KRT.VRCQuestTools.Inspector
 
                 EditorGUILayout.Space(12);
 
+                var avatarDynamicsStats = converterSettings.removeAvatarDynamics ? GetEstimatedPerformanceStats(converterSettings) : null;
+
                 editorState.foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingsLabel, editorState.foldOutMaterialSettings);
                 if (editorState.foldOutMaterialSettings)
                 {
@@ -181,8 +185,6 @@ namespace KRT.VRCQuestTools.Inspector
                     }
                     EditorGUILayout.Space(12);
                 }
-
-                var stats = EstimatePerformanceStats(converterSettings);
 
                 editorState.foldOutAvatarDynamics = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterAvatarDynamicsSettingsLabel, editorState.foldOutAvatarDynamics);
                 if (editorState.foldOutAvatarDynamics)
@@ -207,7 +209,7 @@ namespace KRT.VRCQuestTools.Inspector
                             var m_contacts = so.FindProperty("contactsToKeep");
                             EditorGUILayout.PropertyField(m_contacts, new GUIContent("Contact Senders & Receivers to Keep", i18n.AvatarConverterContactsTooltip));
                         }
-                        AvatarDynamicsPerformanceGUI(stats);
+                        AvatarDynamicsPerformanceGUI(avatarDynamicsStats);
                     }
 
                     EditorGUILayout.Space(12);
@@ -228,7 +230,7 @@ namespace KRT.VRCQuestTools.Inspector
 
                 if (descriptor)
                 {
-                    if (GetAvatarDynamicsRating(stats) > avatarDynamicsPerfLimit)
+                    if (avatarDynamicsStats != null && GetAvatarDynamicsRating(avatarDynamicsStats) > avatarDynamicsPerfLimit)
                     {
                         Views.EditorGUIUtility.HelpBoxGUI(MessageType.Error, () =>
                         {
@@ -279,7 +281,7 @@ namespace KRT.VRCQuestTools.Inspector
                         });
                     }
 
-                    if (stats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.Overall) > PerformanceRating.Poor)
+                    if (avatarDynamicsStats != null && avatarDynamicsStats.GetPerformanceRatingForCategory(AvatarPerformanceCategory.Overall) > PerformanceRating.Poor)
                     {
                         Views.EditorGUIUtility.HelpBoxGUI(MessageType.None, () =>
                         {
@@ -337,7 +339,12 @@ namespace KRT.VRCQuestTools.Inspector
                 }
             }
 
+            var hasModifiedProperties = so.hasModifiedProperties;
             so.ApplyModifiedProperties();
+            if (hasModifiedProperties)
+            {
+                InvalidateEstimatedPerformanceStats();
+            }
         }
 
         private static T[] GetComponentsToRemoveOnAndroid<T>(GameObject avatarRoot)
@@ -354,6 +361,20 @@ namespace KRT.VRCQuestTools.Inspector
         {
             statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(true);
             avatarDynamicsPerfLimit = PerformanceRating.Poor;
+            EditorApplication.hierarchyChanged -= OnHierarchyChanged;
+            EditorApplication.hierarchyChanged += OnHierarchyChanged;
+            InvalidateEstimatedPerformanceStats();
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.hierarchyChanged -= OnHierarchyChanged;
+        }
+
+        private void OnHierarchyChanged()
+        {
+            InvalidateEstimatedPerformanceStats();
+            Repaint();
         }
 
         private AvatarPerformanceStats EstimatePerformanceStats(AvatarConverterSettings converterSettings)
@@ -387,8 +408,31 @@ namespace KRT.VRCQuestTools.Inspector
             }
         }
 
+        private AvatarPerformanceStats GetEstimatedPerformanceStats(AvatarConverterSettings converterSettings)
+        {
+            var descriptor = converterSettings.AvatarDescriptor;
+            if (descriptor == null)
+            {
+                InvalidateEstimatedPerformanceStats();
+                return null;
+            }
+
+            if (estimatedAvatarDynamicsStats != null)
+            {
+                return estimatedAvatarDynamicsStats;
+            }
+
+            estimatedAvatarDynamicsStats = EstimatePerformanceStats(converterSettings);
+            return estimatedAvatarDynamicsStats;
+        }
+
         private void AvatarDynamicsPerformanceGUI(AvatarPerformanceStats stats)
         {
+            if (stats == null)
+            {
+                return;
+            }
+
             var i18n = VRCQuestToolsSettings.I18nResource;
             editorState.foldOutEstimatedPerf = EditorGUILayout.Foldout(editorState.foldOutEstimatedPerf, i18n.EstimatedPerformanceStats, true);
             var ratings = VRCSDKUtility.AvatarDynamicsPerformanceCategories.ToDictionary(x => x, stats.GetPerformanceRatingForCategory);
@@ -464,9 +508,15 @@ namespace KRT.VRCQuestTools.Inspector
 
         private void OnClickSelectAvatarDynamicsComponentsButton(VRC_AvatarDescriptor avatar)
         {
+            InvalidateEstimatedPerformanceStats();
             var window = EditorWindow.GetWindow<AvatarDynamicsSelectorWindow>();
             InitializeSelectorWindow(window, converterSettings, avatar);
             window.Show();
+        }
+
+        private void InvalidateEstimatedPerformanceStats()
+        {
+            estimatedAvatarDynamicsStats = null;
         }
 
         /// <summary>
