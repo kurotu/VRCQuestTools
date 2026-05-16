@@ -114,18 +114,6 @@ namespace KRT.VRCQuestTools.Inspector
                         }
                     }
 
-                    if (VRCSDKUtility.HasMissingNetworkIds(avatar.AvatarDescriptor) && avatar.GameObject.GetComponent<NetworkIDAssigner>() == null)
-                    {
-                        using (var horizontal = new EditorGUILayout.HorizontalScope())
-                        {
-                            EditorGUILayout.HelpBox(i18n.InfoForNetworkIdAssigner, MessageType.Info);
-                            if (GUILayout.Button(i18n.AttachButtonLabel, GUILayout.Height(38), GUILayout.Width(60)))
-                            {
-                                OnClickAttachNetworkIDAssignerButton(descriptor);
-                            }
-                        }
-                    }
-
                     var pbs = descriptor.GetComponentsInChildren<VRCPhysBone>(true);
                     var multiPbObjs = pbs
                         .Select(pb => pb.gameObject)
@@ -224,6 +212,7 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("removeExtraMaterialSlots"), new GUIContent(i18n.RemoveExtraMaterialSlotsLabel, i18n.RemoveExtraMaterialSlotsTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("compressExpressionsMenuIcons"), new GUIContent("[NDMF] " + i18n.CompressExpressionsMenuIconsLabel, i18n.CompressExpressionsMenuIconsTooltip));
+                    EditorGUILayout.PropertyField(so.FindProperty("assignNetworkIds"), new GUIContent(i18n.AssignNetworkIdsLabel, i18n.AssignNetworkIdsTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("ndmfPhase"), new GUIContent("[NDMF] " + i18n.NdmfPhaseLabel, i18n.NdmfPhaseTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("enableMaterialPreview"), new GUIContent("[NDMF] " + i18n.EnableMaterialPreviewLabel, i18n.EnableMaterialPreviewTooltip));
                 }
@@ -467,14 +456,6 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickAssignNetIdsButton(VRC_AvatarDescriptor avatar)
         {
             VRCSDKUtility.AssignNetworkIdsToPhysBones(avatar);
-        }
-
-        private void OnClickAttachNetworkIDAssignerButton(VRC_AvatarDescriptor descriptor)
-        {
-            var i18n = VRCQuestToolsSettings.I18nResource;
-            Undo.AddComponent<NetworkIDAssigner>(descriptor.gameObject);
-            PrefabUtility.RecordPrefabInstancePropertyModifications(descriptor.gameObject);
-            EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.NetworkIdAssignerAttached, "OK");
         }
 
         private void OnClickRegenerateTexturesButton(VRC_AvatarDescriptor avatar, IMaterialConvertSettings convertSetting)

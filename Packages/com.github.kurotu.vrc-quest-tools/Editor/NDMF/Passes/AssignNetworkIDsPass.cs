@@ -25,9 +25,11 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var assigner = avatarDescriptor.GetComponent<NetworkIDAssigner>();
-            if (assigner == null)
+            var settings = avatarDescriptor.GetComponent<AvatarConverterSettings>();
+            var shouldAssignNetworkIds = assigner != null || (settings != null && settings.assignNetworkIds);
+            if (!shouldAssignNetworkIds)
             {
-                if (avatarDescriptor.GetComponent<AvatarConverterSettings>() != null && VRCSDKUtility.HasMissingNetworkIds(avatarDescriptor))
+                if (settings != null && VRCSDKUtility.HasMissingNetworkIds(avatarDescriptor))
                 {
                     NdmfErrorReport.ReportError(new MissingNetworkIDAssignerWarning());
                 }

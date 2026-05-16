@@ -72,7 +72,6 @@ namespace KRT.VRCQuestTools.Views
                     var components = new List<string>
                     {
                         "VQT Avatar Converter Settings",
-                        "VQT Network ID Assigner",
                     };
                     if (ModularAvatarUtility.IsModularAvatarImported())
                     {
@@ -105,15 +104,14 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnClickAttachAvatarConverterButton()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var group = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName("Add AvatarConverterSettings");
             var converterSettings = Undo.AddComponent<AvatarConverterSettings>(targetRoot);
             editor = Editor.CreateEditor(converterSettings);
-            if (targetRoot.gameObject.GetComponent<NetworkIDAssigner>() == null)
+            if (converterSettings.assignNetworkIds)
             {
-                var i18n = VRCQuestToolsSettings.I18nResource;
-                Undo.AddComponent<NetworkIDAssigner>(targetRoot);
-                EditorUtility.DisplayDialog("VRCQuestTools", i18n.NetworkIdAssignerAttached, "OK");
+                EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.PhysBoneSyncReminder, "OK");
             }
 
             if (ModularAvatarUtility.IsModularAvatarImported() && !ModularAvatarUtility.HasConvertConstraintsComponent(targetRoot))

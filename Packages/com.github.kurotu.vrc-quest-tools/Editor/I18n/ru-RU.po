@@ -97,9 +97,6 @@ msgstr "Конвертировать"
 msgid "AssignButtonLabel"
 msgstr "Назначить"
 
-msgid "AttachButtonLabel"
-msgstr "Прикрепить"
-
 msgid "UpdateTexturesLabel"
 msgstr "Обновить конвертированные текстуры для Mobile"
 
@@ -166,11 +163,6 @@ msgstr "Вы можете неразрушающе конвертировать 
 msgid "InfoForNdmfConversion2"
 msgstr ""
 
-msgid "InfoForNetworkIdAssigner"
-msgstr "Вы можете неразрушающе назначить сетевые ID, прикрепив компонент назначателя сетевых ID к корневому объекту аватара. Пожалуйста, загрузите снова, чтобы применить ID после прикрепления компонента."
-
-msgid "NetworkIdAssignerAttached"
-msgstr "Network ID Assigner был прикреплен к аватару. Пожалуйста, загрузите неконвертированный аватар на платформу ПК для синхронизации PhysBones между ПК и Mobile."
 
 msgid "WarningForPerformance"
 msgstr "Оценочная оценка производительности — «Очень плохо», но вы можете загрузить преобразованный аватар для платформы Mobile.\n"

@@ -80,6 +80,12 @@ namespace KRT.VRCQuestTools.Components
         public bool compressExpressionsMenuIcons = true;
 
         /// <summary>
+        /// Whether to assign network IDs to PhysBones during build.
+        /// </summary>
+        [SerializeField]
+        public bool assignNetworkIds = true;
+
+        /// <summary>
         /// NDMF phase to convert the avatar.
         /// </summary>
         [SerializeField]

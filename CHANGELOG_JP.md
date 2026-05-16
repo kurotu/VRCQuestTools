@@ -33,6 +33,7 @@
 - [NDMF] `Mesh Flipper` のプレビューをデフォルトで有効化。
 - ユーザーが目にする文言とUI要素において、Android/iOSの表記を「Mobile」に統一。Unity Build Supportの設定と内部APIではAndroid固有の用語を維持。
 - `Avatar Converter Settings` の変換ボタンによる手動変換で `Platform GameObject Remover` の設定を適用し、Android 向けに指定された GameObject を削除するよう変更。
+- `Convert Avatar for Mobile` で `VQT Network ID Assigner` を自動追加しないよう変更。代わりに `Avatar Converter Settings` の高度な設定に `Network ID を割り当てる` オプションを追加。
 
 ### 修正
 - `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。

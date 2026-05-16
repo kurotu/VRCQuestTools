@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] Enabled preview for `Mesh Flipper` by default.
 - Unified Android/iOS terminology to "Mobile" in user-facing strings and UI elements. Android-specific terminology is retained for Unity Build Support settings and internal APIs.
 - Manual conversion from `Avatar Converter Settings` now applies `Platform GameObject Remover` settings and removes marked GameObjects for Android.
+- `Convert Avatar for Mobile` no longer auto-attaches `VQT Network ID Assigner`; use the new `Assign Network IDs` option in `Avatar Converter Settings` advanced settings instead.
 
 ### Fixed
 - `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
