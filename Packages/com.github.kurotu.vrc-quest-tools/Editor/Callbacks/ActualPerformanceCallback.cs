@@ -71,6 +71,7 @@ namespace KRT.VRCQuestTools.NonDestructive
             if (isMobile)
             {
                 var i18n = new I18nEnglish();
+                var statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(isMobile);
                 foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
                 {
                     if (stats.GetPerformanceRatingForCategory(category) != PerformanceRating.VeryPoor)
@@ -80,7 +81,11 @@ namespace KRT.VRCQuestTools.NonDestructive
 
                     var categoryDisplayName = AvatarPerformanceStats.GetPerformanceCategoryDisplayName(category);
                     var warning = VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(category, i18n);
-                    Logger.LogWarning($"Avatar '{avatarGameObject.name}' - {categoryDisplayName}: {warning}", avatarGameObject);
+                    var currentValue = VRCSDKUtility.GetAvatarDynamicsCurrentPerformanceValue(stats, category);
+                    var poorRankLimit = VRCSDKUtility.GetAvatarDynamicsPoorRankLimit(statsLevelSet, category);
+                    Logger.LogWarning(
+                        $"Avatar '{avatarGameObject.name}' - {categoryDisplayName}: {warning} (Current: {currentValue}, Poor upper limit: {poorRankLimit})",
+                        avatarGameObject);
                 }
             }
 
