@@ -26,6 +26,8 @@ namespace KRT.VRCQuestTools.Inspector
     [CustomEditor(typeof(AvatarConverterSettings))]
     public class AvatarConverterSettingsEditor : VRCQuestToolsEditorOnlyEditorBase<AvatarConverterSettings>
     {
+        private const int MaxStackTraceLinesInErrorDialog = 10;
+
         private AvatarConverterSettings converterSettings;
 
         private AvatarConverterSettingsEditorState editorState;
@@ -715,12 +717,30 @@ namespace KRT.VRCQuestTools.Inspector
 
         private bool DisplayErrorDialog(string message, System.Exception exception)
         {
+            var stackTrace = GetErrorDialogStackTrace(exception);
             var m = $"{message}\n" +
                 "\n" +
                 $"{exception.GetType().Name}: {exception.Message}\n" +
                 "\n" +
-                exception.StackTrace.Replace(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar, string.Empty);
+                stackTrace;
             return EditorUtility.DisplayDialog(VRCQuestTools.Name, m, "OK");
+        }
+
+        private string GetErrorDialogStackTrace(System.Exception exception)
+        {
+            if (string.IsNullOrEmpty(exception.StackTrace))
+            {
+                return string.Empty;
+            }
+
+            var stackTrace = exception.StackTrace.Replace(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar, string.Empty);
+            var lines = stackTrace.Split(new[] { "\r\n", "\n", "\r" }, System.StringSplitOptions.RemoveEmptyEntries);
+            if (lines.Length <= MaxStackTraceLinesInErrorDialog)
+            {
+                return stackTrace;
+            }
+
+            return $"{string.Join("\n", lines.Take(MaxStackTraceLinesInErrorDialog))}\n...";
         }
     }
 }
