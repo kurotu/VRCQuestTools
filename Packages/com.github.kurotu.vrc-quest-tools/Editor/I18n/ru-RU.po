@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-File-ID: 58\n"
 "Project-Id-Version: vrc-quest-tools\n"
 "Language-Team: Russian\n"
-"PO-Revision-Date: 2026-04-29 10:55\n"
+"PO-Revision-Date: 2026-05-14 04:34\n"
 
 msgid "CancelLabel"
 msgstr "Отмена"
@@ -385,6 +385,9 @@ msgstr "Оценка производительности"
 
 msgid "DeleteUnselectedComponents"
 msgstr "Удалить невыбранные компоненты"
+
+msgid "SetPlatformComponentRemoverButtonLabel"
+msgstr ""
 
 msgid "SelectAllButtonLabel"
 msgstr "Выбрать все"
