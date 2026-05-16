@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] Show an error dialog then abort the build when using unsupported version of NDMF.
 - [NDMF] Enabled preview for `Mesh Flipper` by default.
 - Unified Android/iOS terminology to "Mobile" in user-facing strings and UI elements. Android-specific terminology is retained for Unity Build Support settings and internal APIs.
+- Manual conversion from `Avatar Converter Settings` now applies `Platform GameObject Remover` settings and removes marked GameObjects for Android.
 
 ### Fixed
 - `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
