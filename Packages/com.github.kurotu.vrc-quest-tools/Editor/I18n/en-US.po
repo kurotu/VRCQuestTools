@@ -97,9 +97,6 @@ msgstr "Convert"
 msgid "AssignButtonLabel"
 msgstr "Assign"
 
-msgid "AttachButtonLabel"
-msgstr "Attach"
-
 msgid "UpdateTexturesLabel"
 msgstr "Update Converted Mobile Textures"
 
@@ -124,6 +121,12 @@ msgstr "Compress Menu Icons"
 
 msgid "CompressExpressionsMenuIconsTooltip"
 msgstr "Compress expressions menu icons if they are not compressed."
+
+msgid "AssignNetworkIdsLabel"
+msgstr "Assign Network IDs"
+
+msgid "AssignNetworkIdsTooltip"
+msgstr "Assign network IDs to PhysBones during build."
 
 msgid "AnimationOverrideLabel"
 msgstr "Animation Override"
@@ -167,11 +170,8 @@ msgstr "You can non-destructively convert the avatar at build-time when the proj
 msgid "InfoForNdmfConversion2"
 msgstr "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Now you can also upload the avatar directly from VRChat SDK Control Panel."
 
-msgid "InfoForNetworkIdAssigner"
-msgstr "You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again to apply IDs after attaching the component."
-
-msgid "NetworkIdAssignerAttached"
-msgstr "Network ID Assigner has been attached to the avatar. Please upload the non-converted avatar to PC platform to synchronize PhysBones between PC and Mobile."
+msgid "PhysBoneSyncReminder"
+msgstr "To synchronize PhysBones between PC and Mobile, please upload the non-converted avatar for PC."
 
 msgid "WarningForPerformance"
 msgstr "Estimated performance rating is Very Poor, but you can upload the converted avatar for Mobile platform.\n"
@@ -690,8 +690,8 @@ msgid "NDMF:MissingNetworkIDAssignerTitle"
 msgstr "Network ID Assignment"
 
 msgid "NDMF:MissingNetworkIDAssignerDescription"
-msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Mobile.\n"
-"You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again for each platform to apply IDs after attaching the component."
+msgstr "To properly synchronize PhysBones, they must have the same Network ID between PC and Mobile.\n"
+"Enable Assign Network IDs in Avatar Converter Settings to assign Network IDs non-destructively during build. Upload again for each platform after enabling this option."
 
 msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
 msgstr "Missing Mask Texture"

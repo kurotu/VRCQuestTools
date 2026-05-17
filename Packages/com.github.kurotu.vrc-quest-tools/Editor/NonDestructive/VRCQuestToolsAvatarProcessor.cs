@@ -63,7 +63,8 @@ namespace KRT.VRCQuestTools.NonDestructive
         private static void AssignNetworkIDs(GameObject avatarGameObject)
         {
             var assigner = avatarGameObject.GetComponent<NetworkIDAssigner>();
-            if (assigner == null)
+            var settings = avatarGameObject.GetComponent<AvatarConverterSettings>();
+            if (assigner == null && (settings == null || !settings.assignNetworkIds))
             {
                 return;
             }

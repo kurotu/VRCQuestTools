@@ -97,9 +97,6 @@ msgstr "変換"
 msgid "AssignButtonLabel"
 msgstr "割り当て"
 
-msgid "AttachButtonLabel"
-msgstr "追加"
-
 msgid "UpdateTexturesLabel"
 msgstr "変換後のMobile用テクスチャを更新"
 
@@ -124,6 +121,12 @@ msgstr "メニューアイコンを圧縮"
 
 msgid "CompressExpressionsMenuIconsTooltip"
 msgstr "Expressions Menuのアイコンが圧縮されていなければ圧縮します。"
+
+msgid "AssignNetworkIdsLabel"
+msgstr "Network ID を割り当てる"
+
+msgid "AssignNetworkIdsTooltip"
+msgstr "ビルド時に PhysBone の Network ID を割り当てます。"
 
 msgid "AnimationOverrideLabel"
 msgstr "アニメーションオーバーライド"
@@ -167,11 +170,8 @@ msgstr "プロジェクトに Non-Destructive Modular Framework (NDMF) パッケ
 msgid "InfoForNdmfConversion2"
 msgstr "プロジェクトに Non-Destructive Modular Framework (NDMF) パッケージがある場合、アバターのビルド時に非破壊的に変換をすることができます。 VRChat SDK コントロールパネルから直接アップロードすることもできます。"
 
-msgid "InfoForNetworkIdAssigner"
-msgstr "アバターに Network ID Assigner コンポーネントを追加することで非破壊的にネットワークIDを割り当てることができます。コンポーネントを追加した後、IDを反映するために再度アップロードしてください。"
-
-msgid "NetworkIdAssignerAttached"
-msgstr "Network ID Assignerがアバターに追加されました。PCとMobileでPhysBoneを同期させるために、変換前のアバターをPC向けにアップロードしてください。"
+msgid "PhysBoneSyncReminder"
+msgstr "PCとMobileでPhysBoneを同期させるために、変換前のアバターをPC向けにアップロードしてください。"
 
 msgid "WarningForPerformance"
 msgstr "変換後のアバターの推定パフォーマンスランクは Very Poor ですが、Mobile 用にアップロードできます。\n"
@@ -690,8 +690,8 @@ msgid "NDMF:MissingNetworkIDAssignerTitle"
 msgstr "ネットワークIDの割り当て"
 
 msgid "NDMF:MissingNetworkIDAssignerDescription"
-msgstr "PhysBone を正しく同期させるには PhysBone のネットワーク ID をPC版と一致させる必要があります。\n"
-"アバターに Network ID Assigner コンポーネントを追加することで非破壊的にネットワークIDを割り当てることができます。コンポーネントを追加した後、IDを反映するために各プラットフォームに再度アップロードしてください。"
+msgstr "PhysBone を正しく同期させるには、PC版とMobile版で同じネットワークIDを持つ必要があります。\n"
+"アバターコンバーター設定の Assign Network IDs を有効化すると、ビルド時に非破壊でネットワークIDを割り当てられます。設定を有効化した後、各プラットフォームへ再アップロードしてください。"
 
 msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
 msgstr "未設定のマスクテクスチャ"

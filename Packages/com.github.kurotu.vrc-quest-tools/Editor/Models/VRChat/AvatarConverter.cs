@@ -158,7 +158,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     RemoveVertexColor(questAvatarObject, assetsDirectory);
                 }
 
-                ApplyVRCQuestToolsComponents(converterSettings, questAvatarObject);
+                ApplyVRCQuestToolsComponents(converterSettings, questAvatarObject, saveAssetsAsFile);
 
                 if (saveAssetsAsFile)
                 {
@@ -1028,11 +1028,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
         }
 
-        private void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
+        private void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject, bool saveAssetsAsFile)
         {
             if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
             {
                 questAvatarObject.AddComponent<ConvertedAvatar>();
+            }
+
+            if (saveAssetsAsFile && setting.assignNetworkIds && questAvatarObject.GetComponent<NetworkIDAssigner>() == null)
+            {
+                questAvatarObject.AddComponent<NetworkIDAssigner>();
             }
 
 #if VQT_HAS_NDMF

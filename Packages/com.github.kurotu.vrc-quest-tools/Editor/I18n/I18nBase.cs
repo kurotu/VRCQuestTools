@@ -86,7 +86,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string SelectButtonLabel => GetText("SelectButtonLabel");
         internal string ConvertButtonLabel => GetText("ConvertButtonLabel");
         internal string AssignButtonLabel => GetText("AssignButtonLabel");
-        internal string AttachButtonLabel => GetText("AttachButtonLabel");
         internal string UpdateTexturesLabel => GetText("UpdateTexturesLabel");
         internal string AdvancedConverterSettingsLabel => GetText("AdvancedConverterSettingsLabel");
         internal string RemoveVertexColorLabel => GetText("RemoveVertexColorLabel");
@@ -95,6 +94,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string RemoveExtraMaterialSlotsTooltip => GetText("RemoveExtraMaterialSlotsTooltip");
         internal string CompressExpressionsMenuIconsLabel => GetText("CompressExpressionsMenuIconsLabel");
         internal string CompressExpressionsMenuIconsTooltip => GetText("CompressExpressionsMenuIconsTooltip");
+        internal string AssignNetworkIdsLabel => GetText("AssignNetworkIdsLabel");
+        internal string AssignNetworkIdsTooltip => GetText("AssignNetworkIdsTooltip");
         internal string AnimationOverrideLabel => GetText("AnimationOverrideLabel");
         internal string AnimationOverrideTooltip => GetText("AnimationOverrideTooltip");
         internal string NdmfPhaseLabel => GetText("NdmfPhaseLabel");
@@ -109,9 +110,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string InvalidReplacementMaterialExceptionDialogMessage => GetText("InvalidReplacementMaterialExceptionDialogMessage");
         internal string InfoForNdmfConversion => GetText("InfoForNdmfConversion");
         internal string InfoForNdmfConversion2 => GetText("InfoForNdmfConversion2");
+        internal string PhysBoneSyncReminder => GetText("PhysBoneSyncReminder");
 
-        internal string InfoForNetworkIdAssigner => GetText("InfoForNetworkIdAssigner");
-        internal string NetworkIdAssignerAttached => GetText("NetworkIdAssignerAttached");
         internal string WarningForPerformance => GetText("WarningForPerformance");
         internal string WarningForAppearance => GetText("WarningForAppearance");
         internal string WarningForUnsupportedShaders => GetText("WarningForUnsupportedShaders");
