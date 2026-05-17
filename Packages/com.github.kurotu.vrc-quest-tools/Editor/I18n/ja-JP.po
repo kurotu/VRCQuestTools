@@ -690,8 +690,8 @@ msgid "NDMF:MissingNetworkIDAssignerTitle"
 msgstr "ネットワークIDの割り当て"
 
 msgid "NDMF:MissingNetworkIDAssignerDescription"
-msgstr "PhysBone を正しく同期させるには PhysBone のネットワーク ID をPC版と一致させる必要があります。\n"
-"アバターに Network ID Assigner コンポーネントを追加することで非破壊的にネットワークIDを割り当てることができます。コンポーネントを追加した後、IDを反映するために各プラットフォームに再度アップロードしてください。"
+msgstr "PhysBone を正しく同期させるには、PC版とMobile版で同じネットワークIDを持つ必要があります。\n"
+"アバターコンバーター設定の Assign Network IDs を有効化すると、ビルド時に非破壊でネットワークIDを割り当てられます。設定を有効化した後、各プラットフォームへ再アップロードしてください。"
 
 msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
 msgstr "未設定のマスクテクスチャ"

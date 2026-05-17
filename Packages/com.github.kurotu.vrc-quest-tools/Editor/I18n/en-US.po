@@ -690,8 +690,8 @@ msgid "NDMF:MissingNetworkIDAssignerTitle"
 msgstr "Network ID Assignment"
 
 msgid "NDMF:MissingNetworkIDAssignerDescription"
-msgstr "To properly synchronize PhysBones, PhysBones must have same Network ID between PC and Mobile.\n"
-"You can non-destructively assign Network IDs by attaching Network ID Assigner component to the avatar root object. Please upload again for each platform to apply IDs after attaching the component."
+msgstr "To properly synchronize PhysBones, they must have the same Network ID between PC and Mobile.\n"
+"Enable Assign Network IDs in Avatar Converter Settings to assign Network IDs non-destructively during build. Upload again for each platform after enabling this option."
 
 msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
 msgstr "Missing Mask Texture"
