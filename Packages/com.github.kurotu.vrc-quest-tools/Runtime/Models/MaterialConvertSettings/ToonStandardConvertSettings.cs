@@ -123,7 +123,12 @@ namespace KRT.VRCQuestTools.Models
         [SerializeField]
         private int serializedVersion = 0;
 
-        private static Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() => GetUnitySerializableFields(typeof(ToonStandardConvertSettings)));
+        private static readonly string[] cacheKeyExcludedFieldNames = { nameof(featureMode), nameof(serializedVersion) };
+
+        private static readonly Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() =>
+            GetUnitySerializableFields(typeof(ToonStandardConvertSettings))
+                .Where(f => !cacheKeyExcludedFieldNames.Contains(f.Name))
+                .ToArray());
 
         private static readonly Lazy<FieldInfo[]> featureFields = new Lazy<FieldInfo[]>(() =>
             typeof(ToonStandardConvertSettings)

@@ -115,11 +115,11 @@ namespace KRT.VRCQuestTools.Inspector
             };
             using (var ccs = new EditorGUI.ChangeCheckScope())
             {
-                var newModeIndex = EditorGUI.Popup(fieldRect, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesLabel), featureModeProperty.intValue, modeOptions);
+                var newModeIndex = EditorGUI.Popup(fieldRect, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesLabel), featureModeProperty.enumValueIndex, modeOptions);
                 if (ccs.changed)
                 {
-                    featureModeProperty.intValue = newModeIndex;
-                    var newMode = (ToonStandardFeaturesMode)newModeIndex;
+                    featureModeProperty.enumValueIndex = newModeIndex;
+                    var newMode = (ToonStandardFeaturesMode)featureModeProperty.enumValueIndex;
                     SetAllFeaturesSerializedProperty(property, newMode == ToonStandardFeaturesMode.OptOut);
                     property.serializedObject.ApplyModifiedProperties();
                     NdmfUtility.NotifyObjectUpdate(property.serializedObject.targetObject);
