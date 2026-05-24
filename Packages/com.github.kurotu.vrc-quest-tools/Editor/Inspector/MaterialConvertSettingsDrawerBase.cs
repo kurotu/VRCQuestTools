@@ -73,6 +73,28 @@ namespace KRT.VRCQuestTools.Inspector
         /// <returns>Updated fieldRect.</returns>
         protected abstract Rect DrawPropertyFields(Rect fieldRect, SerializedProperty property);
 
+        /// <summary>
+        /// Draws a simple group header label and moves the rect to the next line.
+        /// </summary>
+        /// <param name="fieldRect">Current rect.</param>
+        /// <param name="label">Header label.</param>
+        /// <returns>Updated rect.</returns>
+        protected Rect DrawGroupHeader(Rect fieldRect, GUIContent label)
+        {
+            EditorGUI.LabelField(fieldRect, label);
+            fieldRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+            return fieldRect;
+        }
+
+        /// <summary>
+        /// Gets the height of a group header line including its bottom spacing.
+        /// </summary>
+        /// <returns>Group header height.</returns>
+        protected float GetGroupHeaderHeight()
+        {
+            return EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+        }
+
         private bool IsArrayElement(SerializedProperty property)
         {
             var path = property.propertyPath;
