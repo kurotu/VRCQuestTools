@@ -305,6 +305,12 @@ msgstr "オプトイン"
 msgid "ToonStandardConvertSettingsFeaturesModeOptOut"
 msgstr "オプトアウト"
 
+msgid "ToonStandardConvertSettingsMaskTextureSizeLimitLabel"
+msgstr "マスクの最大サイズ"
+
+msgid "ToonStandardConvertSettingsMaskMobileTextureFormatLabel"
+msgstr "マスクの圧縮形式"
+
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
 msgstr "対象マテリアル"
 

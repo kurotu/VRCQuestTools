@@ -101,6 +101,26 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
+        /// Default maskMaxTextureSize should be Max512x512.
+        /// </summary>
+        [Test]
+        public void DefaultMaskMaxTextureSize_IsMax512x512()
+        {
+            var settings = new ToonStandardConvertSettings();
+            Assert.AreEqual(TextureSizeLimit.Max512x512, settings.maskMaxTextureSize);
+        }
+
+        /// <summary>
+        /// Default maskMobileTextureFormat should be NoOverride.
+        /// </summary>
+        [Test]
+        public void DefaultMaskMobileTextureFormat_IsNoOverride()
+        {
+            var settings = new ToonStandardConvertSettings();
+            Assert.AreEqual(MobileTextureFormat.NoOverride, settings.maskMobileTextureFormat);
+        }
+
+        /// <summary>
         /// OnAfterDeserialize with old version and OptOut mode enables new features.
         /// </summary>
         [Test]

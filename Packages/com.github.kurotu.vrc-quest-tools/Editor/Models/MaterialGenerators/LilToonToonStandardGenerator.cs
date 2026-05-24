@@ -714,7 +714,8 @@ namespace KRT.VRCQuestTools.Models
 
             // Check platform override settings from source textures
             var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(sourceTextures.ToArray());
-            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+            var maskMaxSize = Settings.maskMaxTextureSize > 0 ? (int)Settings.maskMaxTextureSize : (int)Settings.maxTextureSize;
+            var maxTextureSize = platformOverride.HasValue ? Math.Min(platformOverride.Value.MaxTextureSize, maskMaxSize) : maskMaxSize;
 
             var width = Math.Min(maxWidth, maxTextureSize);
             var height = Math.Min(maxHeight, maxTextureSize);
