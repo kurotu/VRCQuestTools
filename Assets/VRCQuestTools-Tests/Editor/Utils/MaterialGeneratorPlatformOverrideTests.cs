@@ -101,6 +101,52 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Test that platform override with NoLimit max size applies format without setting max size to zero.
+        /// </summary>
+        [Test]
+        public void GeneratedTexture_WithNoLimitOverrideMaxSize_DoesNotApplyZeroMaxSize()
+        {
+            var material = new Material(Shader.Find("Standard"));
+            var settings = CreateMockSettings();
+
+            var platformOverride = (MaxTextureSize: 0, Format: TextureFormat.ASTC_6x6);
+            Texture2D generatedTexture = null;
+
+            MaterialGeneratorUtility.GenerateTexture(
+                material,
+                settings,
+                "test_no_limit_override",
+                true,
+                testTexturesPath,
+                (completion) =>
+                {
+                    var tex = new Texture2D(256, 256);
+                    var pixels = new Color[256 * 256];
+                    for (int i = 0; i < pixels.Length; i++)
+                    {
+                        pixels[i] = Color.white;
+                    }
+                    tex.SetPixels(pixels);
+                    tex.Apply();
+                    return new ResultRequest<Texture2D>(tex, completion);
+                },
+                (tex) => generatedTexture = tex,
+                platformOverride
+            ).WaitForCompletion();
+
+            Assert.IsNotNull(generatedTexture);
+
+            var texturePath = AssetDatabase.GetAssetPath(generatedTexture);
+            var importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
+            Assert.IsNotNull(importer);
+
+            var androidSettings = importer.GetPlatformTextureSettings("Android");
+            Assert.IsTrue(androidSettings.overridden, "Android platform override should be enabled");
+            Assert.AreEqual(TextureImporterFormat.ASTC_6x6, androidSettings.format, "Android format should follow override format");
+            Assert.Greater(androidSettings.maxTextureSize, 0, "Android maxTextureSize should never be zero");
+        }
+
+        /// <summary>
         /// Test that generated texture uses settings format when no override is specified.
         /// </summary>
         [Test]

@@ -183,6 +183,47 @@ namespace KRT.VRCQuestTools.Utils
             Assert.AreEqual(TextureFormat.ASTC_4x4, result.Value.Format);
         }
 
+        /// <summary>
+        /// Test that AspectFitReduction treats maxSize=0 as no limit.
+        /// </summary>
+        [Test]
+        public void AspectFitReduction_WithNoLimit_ReturnsOriginalSize()
+        {
+            var (width, height) = TextureUtility.AspectFitReduction(1024, 512, 0);
+            Assert.AreEqual(1024, width);
+            Assert.AreEqual(512, height);
+        }
+
+        /// <summary>
+        /// Test that AspectFitReduction does not return zero dimensions with extreme aspect ratios.
+        /// </summary>
+        [Test]
+        public void AspectFitReduction_WithExtremeAspectRatio_ClampsToAtLeastOne()
+        {
+            var (width, height) = TextureUtility.AspectFitReduction(1, 4096, 256);
+            Assert.GreaterOrEqual(width, 1);
+            Assert.GreaterOrEqual(height, 1);
+        }
+
+        /// <summary>
+        /// Test that NormalizeMaxTextureSize maps NoLimit(0) to null.
+        /// </summary>
+        [Test]
+        public void NormalizeMaxTextureSize_WithNoLimit_ReturnsNull()
+        {
+            Assert.IsNull(TextureUtility.NormalizeMaxTextureSize(0));
+        }
+
+        /// <summary>
+        /// Test that MinDefinedMaxTextureSize picks the defined limit when one side is NoLimit.
+        /// </summary>
+        [Test]
+        public void MinDefinedMaxTextureSize_WithNoLimitAndLimit_ReturnsLimit()
+        {
+            var result = TextureUtility.MinDefinedMaxTextureSize(0, 1024);
+            Assert.AreEqual(1024, result);
+        }
+
         private Texture2D CreateTestTexture(string name, int width, int height, bool hasOverride, int overrideMaxSize, TextureFormat overrideFormat, string platformName = "Android")
         {
             // Create a simple texture

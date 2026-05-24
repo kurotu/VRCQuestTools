@@ -701,7 +701,11 @@ namespace KRT.VRCQuestTools.Models
             if (Settings.maskMobileTextureFormat != MobileTextureFormat.NoOverride)
             {
                 var format = (TextureFormat)(int)Settings.maskMobileTextureFormat;
-                var maxSize = sourceOverride?.MaxTextureSize ?? (int)Settings.maskMaxTextureSize;
+                var sourceMaxSize = TextureUtility.NormalizeMaxTextureSize(sourceOverride?.MaxTextureSize);
+                var maskLimit = TextureUtility.NormalizeMaxTextureSize((int)Settings.maskMaxTextureSize);
+                var mainLimit = TextureUtility.NormalizeMaxTextureSize((int)Settings.maxTextureSize);
+                var settingsMaxSize = maskLimit ?? mainLimit;
+                var maxSize = TextureUtility.MinDefinedMaxTextureSize(sourceMaxSize, settingsMaxSize) ?? 0;
                 return (maxSize, format);
             }
 

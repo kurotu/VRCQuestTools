@@ -679,5 +679,72 @@ namespace KRT.VRCQuestTools.Models
             Assert.AreEqual(expectedScale, resultWrapper.OcclusionMapTextureScale, "Occlusion map texture scale should be preserved.");
             Assert.AreEqual(expectedOffset, resultWrapper.OcclusionMapTextureOffset, "Occlusion map texture offset should be preserved.");
         }
+
+        /// <summary>
+        /// Test that NoLimit for both maxTextureSize and maskMaxTextureSize does not produce zero-sized packed mask.
+        /// </summary>
+        [Test]
+        public void GenerateMaterial_WithNoLimitMaskSizes_DoesNotCreateZeroSizedMaskTexture()
+        {
+            if (!AssetUtility.IsLilToonImported())
+            {
+                Assert.Ignore("lilToon is not installed.");
+                return;
+            }
+
+            var lilToonVersion = AssetUtility.LilToonVersion;
+            var requiredVersion = new SemVer(1, 10, 0);
+            var breakingVersion = new SemVer(3, 0, 0);
+            if (lilToonVersion < requiredVersion || lilToonVersion >= breakingVersion)
+            {
+                Assert.Ignore($"lilToon version {lilToonVersion} is not supported.");
+                return;
+            }
+
+            var lilToonShader = Shader.Find("lilToon");
+            if (lilToonShader == null)
+            {
+                Assert.Ignore("lilToon shader not available.");
+                return;
+            }
+
+            using var sourceMaterial = DisposableObject.New(new Material(lilToonShader));
+            using var mainTexture = DisposableObject.New(new Texture2D(64, 64));
+            using var occlusionMask = DisposableObject.New(new Texture2D(32, 32));
+            sourceMaterial.Object.mainTexture = mainTexture.Object;
+            sourceMaterial.Object.SetFloat("_UseShadow", 1);
+            sourceMaterial.Object.SetTexture("_ShadowBorderMask", occlusionMask.Object);
+
+            var settings = new ToonStandardConvertSettings
+            {
+                generateQuestTextures = true,
+                maxTextureSize = TextureSizeLimit.NoLimit,
+                maskMaxTextureSize = TextureSizeLimit.NoLimit,
+                useOcclusion = true,
+            };
+            settings.SetAllFeatures(false);
+            settings.useOcclusion = true;
+
+            var lilMat = new LilToonMaterial(sourceMaterial.Object);
+            var generator = new LilToonToonStandardGenerator(lilMat, settings, null);
+
+            Material resultMat = null;
+            generator.GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
+            {
+                resultMat = mat;
+            }).WaitForCompletion();
+            using var resultMaterial = DisposableObject.New(resultMat);
+
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            var resultWrapper = new ToonStandardMaterialWrapper(resultMat);
+            Assert.IsTrue(resultWrapper.UseOcclusion, "UseOcclusion should be enabled.");
+            Assert.IsNotNull(resultWrapper.OcclusionMap, "Occlusion map should be generated.");
+
+            if (resultWrapper.OcclusionMap is Texture2D texture2D)
+            {
+                Assert.Greater(texture2D.width, 0, "Generated occlusion texture width should be greater than zero.");
+                Assert.Greater(texture2D.height, 0, "Generated occlusion texture height should be greater than zero.");
+            }
+        }
     }
 }
