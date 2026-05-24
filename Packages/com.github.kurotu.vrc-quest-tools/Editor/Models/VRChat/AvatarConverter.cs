@@ -1041,14 +1041,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
 #if VQT_HAS_NDMF
-            if (setting.compressExpressionsMenuIcons)
+            if (setting.resizeExpressionsMenuIcons || setting.compressExpressionsMenuIcons)
             {
                 var resizer = questAvatarObject.GetComponentInChildren<MenuIconResizer>(true);
                 if (resizer == null)
                 {
                     resizer = questAvatarObject.AddComponent<MenuIconResizer>();
                 }
-                resizer.compressTextures = true;
+
+                resizer.resizeModeAndroid = setting.resizeExpressionsMenuIcons
+                    ? setting.expressionsMenuIconResizeMode
+                    : MenuIconResizer.TextureResizeMode.DoNotResize;
+                resizer.compressTextures = setting.compressExpressionsMenuIcons;
+                resizer.mobileTextureFormat = setting.expressionsMenuIconMobileTextureFormat;
             }
 #endif
 

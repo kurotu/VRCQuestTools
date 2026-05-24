@@ -116,6 +116,15 @@ msgstr "余分なマテリアルスロットを削除する"
 msgid "RemoveExtraMaterialSlotsTooltip"
 msgstr "各Rendererに紐づいているメッシュのサブメッシュ数より多いマテリアルスロットを削除します。"
 
+msgid "MenuIconSettingsLabel"
+msgstr "メニューアイコン設定"
+
+msgid "ResizeExpressionsMenuIconsLabel"
+msgstr "メニューのアイコンをリサイズする"
+
+msgid "ResizeExpressionsMenuIconsTooltip"
+msgstr "MobileビルドターゲットでExpressions Menuのアイコンをリサイズします。"
+
 msgid "CompressExpressionsMenuIconsLabel"
 msgstr "メニューアイコンを圧縮"
 

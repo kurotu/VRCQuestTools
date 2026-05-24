@@ -116,6 +116,15 @@ msgstr "Remove Extra Material Slots"
 msgid "RemoveExtraMaterialSlotsTooltip"
 msgstr "Remove extra material slots that are greater than the number of submeshes for each Renderer."
 
+msgid "MenuIconSettingsLabel"
+msgstr "Menu Icon Settings"
+
+msgid "ResizeExpressionsMenuIconsLabel"
+msgstr "Resize Menu Icons"
+
+msgid "ResizeExpressionsMenuIconsTooltip"
+msgstr "Resize expressions menu icons on mobile build target."
+
 msgid "CompressExpressionsMenuIconsLabel"
 msgstr "Compress Menu Icons"
 
