@@ -41,24 +41,23 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var resizer = context.AvatarRootObject.GetComponentInChildren<MenuIconResizer>(true);
+            if (resizer == null)
+            {
+                return;
+            }
 
             var target = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
 
             var maxSize = MaxActionTextureSize;
-            if (resizer != null)
+            var resizeMode = target == BuildTarget.PC ? resizer.resizeModePC : resizer.resizeModeAndroid;
+            if (resizeMode != MenuIconResizer.TextureResizeMode.DoNotResize)
             {
-                var resizeMode = target == BuildTarget.PC ? resizer.resizeModePC : resizer.resizeModeAndroid;
-                if (resizeMode != MenuIconResizer.TextureResizeMode.DoNotResize)
-                {
-                    maxSize = (int)resizeMode;
-                }
+                maxSize = (int)resizeMode;
             }
 
-            var compressTextures =
-                (resizer != null ? resizer.compressTextures : false)
-                || context.GetState<NdmfState>().compressExpressionsMenuIcons;
+            var compressTextures = resizer.compressTextures;
 
-            if (maxSize == MaxActionTextureSize && compressTextures == false)
+            if (maxSize == MaxActionTextureSize && !compressTextures)
             {
                 return;
             }
@@ -90,7 +89,6 @@ namespace KRT.VRCQuestTools.Ndmf
             avatarDescriptor.expressionsMenu = newMenu;
             objectRegistry.RegisterReplacedObject(menu, newMenu);
 
-            // For in-code compression when NoOverride is selected, use ASTC_6x6
             var mobileTextureFormatForCompression = TextureUtility.GetCompressionFormat(resizer.mobileTextureFormat);
 
             VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, maxSize, compressTextures, (oldTex, newTex) =>

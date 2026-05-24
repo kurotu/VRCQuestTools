@@ -211,7 +211,31 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent(i18n.AnimationOverrideLabel, i18n.AnimationOverrideTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("removeExtraMaterialSlots"), new GUIContent(i18n.RemoveExtraMaterialSlotsLabel, i18n.RemoveExtraMaterialSlotsTooltip));
-                    EditorGUILayout.PropertyField(so.FindProperty("compressExpressionsMenuIcons"), new GUIContent("[NDMF] " + i18n.CompressExpressionsMenuIconsLabel, i18n.CompressExpressionsMenuIconsTooltip));
+
+                    EditorGUILayout.LabelField("[NDMF] " + i18n.MenuIconSettingsLabel);
+                    using (new EditorGUI.IndentLevelScope())
+                    {
+                        var resizeExpressionsMenuIcons = so.FindProperty("resizeExpressionsMenuIcons");
+                        EditorGUILayout.PropertyField(resizeExpressionsMenuIcons, new GUIContent(i18n.ResizeExpressionsMenuIconsLabel, i18n.ResizeExpressionsMenuIconsTooltip));
+                        if (resizeExpressionsMenuIcons.boolValue)
+                        {
+                            using (new EditorGUI.IndentLevelScope())
+                            {
+                                EditorGUILayout.PropertyField(so.FindProperty("expressionsMenuIconResizeMode"), new GUIContent(i18n.MenuIconResizerEditorResizeModeMobileLabel));
+                            }
+                        }
+
+                        var compressExpressionsMenuIcons = so.FindProperty("compressExpressionsMenuIcons");
+                        EditorGUILayout.PropertyField(compressExpressionsMenuIcons, new GUIContent(i18n.MenuIconResizerEditorCompressTexturesLabel, i18n.CompressExpressionsMenuIconsTooltip));
+                        if (compressExpressionsMenuIcons.boolValue)
+                        {
+                            using (new EditorGUI.IndentLevelScope())
+                            {
+                                EditorGUILayout.PropertyField(so.FindProperty("expressionsMenuIconMobileTextureFormat"), new GUIContent(i18n.MenuIconResizerEditorMobileTextureFormatLabel));
+                            }
+                        }
+                    }
+
                     EditorGUILayout.PropertyField(so.FindProperty("assignNetworkIds"), new GUIContent(i18n.AssignNetworkIdsLabel, i18n.AssignNetworkIdsTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("ndmfPhase"), new GUIContent("[NDMF] " + i18n.NdmfPhaseLabel, i18n.NdmfPhaseTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("enableMaterialPreview"), new GUIContent("[NDMF] " + i18n.EnableMaterialPreviewLabel, i18n.EnableMaterialPreviewTooltip));

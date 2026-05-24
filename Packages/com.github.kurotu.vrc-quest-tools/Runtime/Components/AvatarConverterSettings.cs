@@ -74,10 +74,28 @@ namespace KRT.VRCQuestTools.Components
         public bool removeExtraMaterialSlots = true;
 
         /// <summary>
-        /// Whether to compress existing expressions menu icons if they'are uncompressed.
+        /// Whether to resize expressions menu icons on mobile build target.
+        /// </summary>
+        [SerializeField]
+        public bool resizeExpressionsMenuIcons = true;
+
+        /// <summary>
+        /// Resize mode for expressions menu icons on mobile build target.
+        /// </summary>
+        [SerializeField]
+        public MenuIconResizer.TextureResizeMode expressionsMenuIconResizeMode = MenuIconResizer.TextureResizeMode.Max128x128;
+
+        /// <summary>
+        /// Whether to compress existing expressions menu icons if they are uncompressed.
         /// </summary>
         [SerializeField]
         public bool compressExpressionsMenuIcons = true;
+
+        /// <summary>
+        /// Mobile texture format for expressions menu icon compression.
+        /// </summary>
+        [SerializeField]
+        public MobileTextureFormat expressionsMenuIconMobileTextureFormat = MobileTextureFormat.ASTC_8x8;
 
         /// <summary>
         /// Whether to assign network IDs to PhysBones during build.

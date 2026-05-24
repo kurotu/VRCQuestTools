@@ -63,10 +63,6 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var settings = context.AvatarRootObject.GetComponent<AvatarConverterSettings>();
-            if (settings != null)
-            {
-                context.GetState<NdmfState>().compressExpressionsMenuIcons = settings.compressExpressionsMenuIcons;
-            }
 
             try
             {
@@ -100,6 +96,8 @@ namespace KRT.VRCQuestTools.Ndmf
                         }
                     },
                 });
+
+                ConfigureMenuIconResizer(context.AvatarRootObject, settings);
             }
             catch (System.Exception exception)
             {
@@ -175,6 +173,31 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 swap.materialMappings = swap.materialMappings.Concat(newMappings).ToList();
             }
+        }
+
+        private static void ConfigureMenuIconResizer(GameObject avatarRoot, AvatarConverterSettings settings)
+        {
+            if (settings == null)
+            {
+                return;
+            }
+
+            var resizer = avatarRoot.GetComponentInChildren<MenuIconResizer>(true);
+            if (resizer == null && !settings.resizeExpressionsMenuIcons && !settings.compressExpressionsMenuIcons)
+            {
+                return;
+            }
+
+            if (resizer == null)
+            {
+                resizer = avatarRoot.AddComponent<MenuIconResizer>();
+            }
+
+            resizer.resizeModeAndroid = settings.resizeExpressionsMenuIcons
+                ? settings.expressionsMenuIconResizeMode
+                : MenuIconResizer.TextureResizeMode.DoNotResize;
+            resizer.compressTextures = settings.compressExpressionsMenuIcons;
+            resizer.mobileTextureFormat = settings.expressionsMenuIconMobileTextureFormat;
         }
     }
 }

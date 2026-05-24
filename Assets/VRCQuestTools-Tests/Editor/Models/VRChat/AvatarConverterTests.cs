@@ -5,6 +5,7 @@
 
 using System.Reflection;
 using KRT.VRCQuestTools.Components;
+using KRT.VRCQuestTools.Models;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -51,6 +52,23 @@ namespace KRT.VRCQuestTools.Models.VRChat
             InvokeApplyPlatformGameObjectRemoversForAndroid(root);
 
             Assert.IsFalse(child == null, "GameObject should remain when removeOnAndroid is false.");
+
+            Object.DestroyImmediate(root);
+        }
+
+        /// <summary>
+        /// Test default menu icon settings in AvatarConverterSettings.
+        /// </summary>
+        [Test]
+        public void AvatarConverterSettings_DefaultMenuIconSettings_AreExpectedValues()
+        {
+            var root = new GameObject("AvatarRoot");
+            var settings = root.AddComponent<AvatarConverterSettings>();
+
+            Assert.IsTrue(settings.resizeExpressionsMenuIcons);
+            Assert.AreEqual(MenuIconResizer.TextureResizeMode.Max128x128, settings.expressionsMenuIconResizeMode);
+            Assert.IsTrue(settings.compressExpressionsMenuIcons);
+            Assert.AreEqual(MobileTextureFormat.ASTC_8x8, settings.expressionsMenuIconMobileTextureFormat);
 
             Object.DestroyImmediate(root);
         }
@@ -105,6 +123,75 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.IsNull(root.GetComponent<NetworkIDAssigner>(), "NDMF conversion path should not add NetworkIDAssigner.");
             Object.DestroyImmediate(root);
         }
+
+#if VQT_HAS_NDMF
+        /// <summary>
+        /// Test that menu icon settings in AvatarConverterSettings are reflected to MenuIconResizer on manual conversion.
+        /// </summary>
+        [Test]
+        public void ApplyVRCQuestToolsComponents_ManualConversionWithMenuIconSettings_AddsAndConfiguresMenuIconResizer()
+        {
+            var root = new GameObject("AvatarRoot");
+            var settings = root.AddComponent<AvatarConverterSettings>();
+            settings.resizeExpressionsMenuIcons = true;
+            settings.expressionsMenuIconResizeMode = MenuIconResizer.TextureResizeMode.Max128x128;
+            settings.compressExpressionsMenuIcons = true;
+            settings.expressionsMenuIconMobileTextureFormat = MobileTextureFormat.ASTC_8x8;
+            var converter = new AvatarConverter(null);
+
+            InvokeApplyVRCQuestToolsComponents(converter, settings, root, true);
+
+            var resizer = root.GetComponent<MenuIconResizer>();
+            Assert.IsNotNull(resizer, "MenuIconResizer should be added when menu icon resize or compression is enabled.");
+            Assert.AreEqual(MenuIconResizer.TextureResizeMode.Max128x128, resizer.resizeModeAndroid);
+            Assert.IsTrue(resizer.compressTextures);
+            Assert.AreEqual(MobileTextureFormat.ASTC_8x8, resizer.mobileTextureFormat);
+
+            Object.DestroyImmediate(root);
+        }
+
+        /// <summary>
+        /// Test that menu icon settings can compress without resizing.
+        /// </summary>
+        [Test]
+        public void ApplyVRCQuestToolsComponents_ManualConversionWithMenuIconCompressionOnly_ConfiguresDoNotResize()
+        {
+            var root = new GameObject("AvatarRoot");
+            var settings = root.AddComponent<AvatarConverterSettings>();
+            settings.resizeExpressionsMenuIcons = false;
+            settings.compressExpressionsMenuIcons = true;
+            settings.expressionsMenuIconMobileTextureFormat = MobileTextureFormat.ASTC_8x8;
+            var converter = new AvatarConverter(null);
+
+            InvokeApplyVRCQuestToolsComponents(converter, settings, root, true);
+
+            var resizer = root.GetComponent<MenuIconResizer>();
+            Assert.IsNotNull(resizer, "MenuIconResizer should be added when menu icon compression is enabled.");
+            Assert.AreEqual(MenuIconResizer.TextureResizeMode.DoNotResize, resizer.resizeModeAndroid);
+            Assert.IsTrue(resizer.compressTextures);
+            Assert.AreEqual(MobileTextureFormat.ASTC_8x8, resizer.mobileTextureFormat);
+
+            Object.DestroyImmediate(root);
+        }
+
+        /// <summary>
+        /// Test that MenuIconResizer is not added when both resize and compression are disabled.
+        /// </summary>
+        [Test]
+        public void ApplyVRCQuestToolsComponents_ManualConversionWithMenuIconSettingsDisabled_DoesNotAddMenuIconResizer()
+        {
+            var root = new GameObject("AvatarRoot");
+            var settings = root.AddComponent<AvatarConverterSettings>();
+            settings.resizeExpressionsMenuIcons = false;
+            settings.compressExpressionsMenuIcons = false;
+            var converter = new AvatarConverter(null);
+
+            InvokeApplyVRCQuestToolsComponents(converter, settings, root, true);
+
+            Assert.IsNull(root.GetComponent<MenuIconResizer>(), "MenuIconResizer should not be added when both resize and compression are disabled.");
+            Object.DestroyImmediate(root);
+        }
+#endif
 
         /// <summary>
         /// Invokes AvatarConverter.ApplyPlatformGameObjectRemoversForAndroid by reflection.
