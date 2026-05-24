@@ -246,13 +246,19 @@ msgid "ConfirmationForMAConvertConstraints"
 msgstr "You can non-destructively convert Unity Constraints to VRChat Constraints by adding a MA Convert Constraints. Do you want to add the component before conversion?"
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
-msgstr "Textures Size Limit"
+msgstr "Max Size"
 
 msgid "IMaterialConvertSettingsMobileTextureFormatLabel"
-msgstr "Compression Format"
+msgstr "Compression"
+
+msgid "IMaterialConvertSettingsMainTextureSettingsLabel"
+msgstr "Main Texture Settings"
+
+msgid "IMaterialConvertSettingsMaskTextureSettingsLabel"
+msgstr "Mask Texture Settings"
 
 msgid "IMaterialConvertSettingsMainTextureBrightnessLabel"
-msgstr "Main Texture Brightness"
+msgstr "Brightness"
 
 msgid "IMaterialConvertSettingsMainTextureBrightnessTooltip"
 msgstr "Tweak main texture color."

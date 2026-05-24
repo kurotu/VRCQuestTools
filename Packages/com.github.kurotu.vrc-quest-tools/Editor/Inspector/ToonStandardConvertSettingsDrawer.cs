@@ -64,21 +64,29 @@ namespace KRT.VRCQuestTools.Inspector
 
             using (var disabled = new EditorGUI.DisabledScope(!generateQuestTextures.boolValue))
             {
-                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                fieldRect = DrawGroupHeader(fieldRect, new GUIContent(i18n.IMaterialConvertSettingsMainTextureSettingsLabel));
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
 
-                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("mobileTextureFormat"), new GUIContent(i18n.IMaterialConvertSettingsMobileTextureFormatLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("mobileTextureFormat"), new GUIContent(i18n.IMaterialConvertSettingsMobileTextureFormatLabel));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                }
 
-                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maskMaxTextureSize"), new GUIContent(i18n.ToonStandardConvertSettingsMaskTextureSizeLimitLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                fieldRect = DrawGroupHeader(fieldRect, new GUIContent(i18n.IMaterialConvertSettingsMaskTextureSettingsLabel));
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maskMaxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
 
-                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maskMobileTextureFormat"), new GUIContent(i18n.ToonStandardConvertSettingsMaskMobileTextureFormatLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maskMobileTextureFormat"), new GUIContent(i18n.IMaterialConvertSettingsMobileTextureFormatLabel));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                }
             }
 
             var generateShadowRamp = property.FindPropertyRelative("generateShadowRamp");
@@ -184,10 +192,12 @@ namespace KRT.VRCQuestTools.Inspector
             var height = 0.0f;
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("generateQuestTextures"));
             height += EditorGUIUtility.standardVerticalSpacing;
+            height += GetGroupHeaderHeight();
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maxTextureSize"));
             height += EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("mobileTextureFormat"));
             height += EditorGUIUtility.standardVerticalSpacing;
+            height += GetGroupHeaderHeight();
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maskMaxTextureSize"));
             height += EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maskMobileTextureFormat"));

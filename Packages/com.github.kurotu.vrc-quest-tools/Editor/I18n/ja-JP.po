@@ -246,13 +246,19 @@ msgid "ConfirmationForMAConvertConstraints"
 msgstr "MA Convert Constraints コンポーネントを追加すると Unity Constraints を VRChat Constraints に非破壊的に変換することができます。変換前にコンポーネントを追加しますか？"
 
 msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
-msgstr "最大テクスチャサイズ"
+msgstr "最大サイズ"
 
 msgid "IMaterialConvertSettingsMobileTextureFormatLabel"
 msgstr "圧縮形式"
 
+msgid "IMaterialConvertSettingsMainTextureSettingsLabel"
+msgstr "メインテクスチャ設定"
+
+msgid "IMaterialConvertSettingsMaskTextureSettingsLabel"
+msgstr "マスクテクスチャ設定"
+
 msgid "IMaterialConvertSettingsMainTextureBrightnessLabel"
-msgstr "メインテクスチャの明るさ"
+msgstr "明るさ"
 
 msgid "IMaterialConvertSettingsMainTextureBrightnessTooltip"
 msgstr "メインテクスチャの色を調整します。"
