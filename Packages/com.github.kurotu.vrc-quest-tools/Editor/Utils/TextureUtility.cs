@@ -832,8 +832,8 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="width">Original width.</param>
         /// <param name="height">Original height.</param>
-        /// <param name="maxSize">Maximum size.</param>
-        /// <returns>Reduced size or original size.</returns>
+        /// <param name="maxSize">Maximum allowed size. 0 or less means no limit.</param>
+        /// <returns>Reduced size while maintaining aspect ratio. Returned width and height are clamped to at least 1.</returns>
         internal static (int Width, int Height) AspectFitReduction(int width, int height, int maxSize)
         {
             var safeWidth = Math.Max(1, width);
