@@ -66,6 +66,16 @@ namespace KRT.VRCQuestTools.Models
         public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.NoOverride;
 
         /// <summary>
+        /// Max texture size for mask textures.
+        /// </summary>
+        public TextureSizeLimit maskMaxTextureSize = TextureSizeLimit.Max512x512;
+
+        /// <summary>
+        /// Texture format for mask textures on android.
+        /// </summary>
+        public MobileTextureFormat maskMobileTextureFormat = MobileTextureFormat.NoOverride;
+
+        /// <summary>
         /// Whether to generate shadow ramp textures.
         /// </summary>
         public bool generateShadowRamp = true;

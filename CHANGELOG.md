@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added options to Toon Standard conversion settings.
     - `Generate shadow ramp` to generate shadow ramp texture.
     - `Features` to select features to apply to the converted material.
+    - `Mask Textures Size Limit` and `Mask Compression Format` to control max resolution and compression format of mask textures independently.
 - Added opt-in/opt-out mode for Toon Standard feature selection.
 - Preview wireframe when selecting PhysBones to keep.
 - [NDMF] Preview for material conversion and removal of vertex color.

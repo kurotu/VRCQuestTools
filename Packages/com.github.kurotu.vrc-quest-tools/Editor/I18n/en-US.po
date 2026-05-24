@@ -305,6 +305,12 @@ msgstr "Opt-In"
 msgid "ToonStandardConvertSettingsFeaturesModeOptOut"
 msgstr "Opt-Out"
 
+msgid "ToonStandardConvertSettingsMaskTextureSizeLimitLabel"
+msgstr "Mask Textures Size Limit"
+
+msgid "ToonStandardConvertSettingsMaskMobileTextureFormatLabel"
+msgstr "Mask Compression Format"
+
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
 msgstr "Target Material"
 

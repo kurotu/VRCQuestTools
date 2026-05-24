@@ -309,7 +309,8 @@ namespace KRT.VRCQuestTools.Models
                     foreach (var pack in texturePacks)
                     {
                         var name = $"mask_{pack.R}_{pack.G}_{pack.B}_{pack.A}";
-                        var packedMaskPlatformOverride = GetPackedMaskPlatformOverride(pack);
+                        var sourcePackedMaskPlatformOverride = GetPackedMaskPlatformOverride(pack);
+                        var packedMaskPlatformOverride = BuildEffectiveMaskFormatOverride(sourcePackedMaskPlatformOverride);
                         MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, name, saveTextureAsPng, texturesPath, (compl) => GeneratePackedMask(pack, compl), (t) =>
                         {
                             foreach (var mask in pack.GetMasks())
@@ -689,6 +690,23 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="completion">Completion callback.</param>
         /// <returns>Async callback request.</returns>
         protected abstract AsyncCallbackRequest GeneratePackedMask(TexturePack pack, Action<Texture2D> completion);
+
+        /// <summary>
+        /// Builds the effective platform override for packed mask textures, incorporating mask format settings.
+        /// </summary>
+        /// <param name="sourceOverride">Platform override derived from source textures.</param>
+        /// <returns>Effective platform override for mask textures.</returns>
+        private (int MaxTextureSize, TextureFormat Format)? BuildEffectiveMaskFormatOverride((int MaxTextureSize, TextureFormat Format)? sourceOverride)
+        {
+            if (Settings.maskMobileTextureFormat != MobileTextureFormat.NoOverride)
+            {
+                var format = (TextureFormat)(int)Settings.maskMobileTextureFormat;
+                var maxSize = sourceOverride?.MaxTextureSize ?? (int)Settings.maskMaxTextureSize;
+                return (maxSize, format);
+            }
+
+            return sourceOverride;
+        }
 
         /// <summary>
         /// Represents a texture pack for Toon Standard materials, containing different mask types.
