@@ -108,7 +108,7 @@ namespace KRT.VRCQuestTools.Models
             // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
             // Use platform override format if provided, otherwise fall back to settings
             TextureFormat? mobileTextureFormatNullable = platformOverride?.Format ?? ConvertToNullableTextureFormat(settings.MobileTextureFormat);
-            int? overrideMaxTextureSize = platformOverride?.MaxTextureSize;
+            int? overrideMaxTextureSize = TextureUtility.NormalizeMaxTextureSize(platformOverride?.MaxTextureSize);
 
             if (CacheManager.Texture.Exists(cacheFile))
             {
@@ -153,7 +153,7 @@ namespace KRT.VRCQuestTools.Models
             // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
             // Use platform override format if provided, otherwise fall back to settings
             TextureFormat? mobileTextureFormatNullable = platformOverride?.Format ?? ConvertToNullableTextureFormat(mobileTextureFormat);
-            int? overrideMaxTextureSize = platformOverride?.MaxTextureSize;
+            int? overrideMaxTextureSize = TextureUtility.NormalizeMaxTextureSize(platformOverride?.MaxTextureSize);
 
             // For in-code compression, use override format if provided, otherwise fall back to settings
             TextureFormat mobileTextureFormatForCompression = platformOverride?.Format ?? TextureUtility.GetCompressionFormat(mobileTextureFormat);

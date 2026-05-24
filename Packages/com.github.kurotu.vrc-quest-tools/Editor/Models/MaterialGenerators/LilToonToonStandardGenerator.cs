@@ -714,11 +714,19 @@ namespace KRT.VRCQuestTools.Models
 
             // Check platform override settings from source textures
             var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(sourceTextures.ToArray());
-            var maskMaxSize = Settings.maskMaxTextureSize > 0 ? (int)Settings.maskMaxTextureSize : (int)Settings.maxTextureSize;
-            var maxTextureSize = platformOverride.HasValue ? Math.Min(platformOverride.Value.MaxTextureSize, maskMaxSize) : maskMaxSize;
+            var sourceMaxSize = TextureUtility.NormalizeMaxTextureSize(platformOverride?.MaxTextureSize);
+            var maskMaxSize = TextureUtility.NormalizeMaxTextureSize((int)Settings.maskMaxTextureSize);
+            var mainMaxSize = TextureUtility.NormalizeMaxTextureSize((int)Settings.maxTextureSize);
+            var settingsMaxSize = maskMaxSize ?? mainMaxSize;
+            var maxTextureSize = TextureUtility.MinDefinedMaxTextureSize(sourceMaxSize, settingsMaxSize);
 
-            var width = Math.Min(maxWidth, maxTextureSize);
-            var height = Math.Min(maxHeight, maxTextureSize);
+            var width = Math.Max(1, maxWidth);
+            var height = Math.Max(1, maxHeight);
+            if (maxTextureSize.HasValue)
+            {
+                width = Math.Min(width, maxTextureSize.Value);
+                height = Math.Min(height, maxTextureSize.Value);
+            }
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             Graphics.Blit(null, rt, swizzleMat);
             return TextureUtility.RequestReadbackRenderTexture(rt, true, true, (tex) =>

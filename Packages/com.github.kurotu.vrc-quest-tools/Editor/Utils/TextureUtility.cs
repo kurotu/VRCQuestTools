@@ -836,14 +836,55 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Reduced size or original size.</returns>
         internal static (int Width, int Height) AspectFitReduction(int width, int height, int maxSize)
         {
-            var scale = (float)maxSize / Math.Max(width, height);
+            var safeWidth = Math.Max(1, width);
+            var safeHeight = Math.Max(1, height);
+
+            if (maxSize <= 0)
+            {
+                return (safeWidth, safeHeight);
+            }
+
+            var scale = (float)maxSize / Math.Max(safeWidth, safeHeight);
             if (scale > 1.0f)
             {
-                return (width, height);
+                return (safeWidth, safeHeight);
             }
-            var newWidth = Math.Round(width * scale);
-            var newHeight = Math.Round(height * scale);
-            return ((int)newWidth, (int)newHeight);
+            var newWidth = Math.Max(1, (int)Math.Round(safeWidth * scale));
+            var newHeight = Math.Max(1, (int)Math.Round(safeHeight * scale));
+            return (newWidth, newHeight);
+        }
+
+        /// <summary>
+        /// Converts max texture size value to nullable valid limit.
+        /// </summary>
+        /// <param name="maxTextureSize">Max texture size value. 0 or less means no limit.</param>
+        /// <returns>Valid max texture size or null when no limit.</returns>
+        internal static int? NormalizeMaxTextureSize(int? maxTextureSize)
+        {
+            if (!maxTextureSize.HasValue || maxTextureSize.Value <= 0)
+            {
+                return null;
+            }
+
+            return maxTextureSize.Value;
+        }
+
+        /// <summary>
+        /// Gets the minimum value from valid max texture sizes.
+        /// </summary>
+        /// <param name="first">First max texture size.</param>
+        /// <param name="second">Second max texture size.</param>
+        /// <returns>Minimum of both when both are valid; otherwise the valid one; null when both are no limit.</returns>
+        internal static int? MinDefinedMaxTextureSize(int? first, int? second)
+        {
+            var a = NormalizeMaxTextureSize(first);
+            var b = NormalizeMaxTextureSize(second);
+            if (a.HasValue && b.HasValue)
+            {
+                return Math.Min(a.Value, b.Value);
+            }
+
+            return a ?? b;
         }
 
         /// <summary>
