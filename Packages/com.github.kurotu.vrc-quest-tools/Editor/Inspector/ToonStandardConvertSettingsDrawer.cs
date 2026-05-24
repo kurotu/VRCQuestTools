@@ -106,26 +106,21 @@ namespace KRT.VRCQuestTools.Inspector
                 }
             }
 
-            EditorGUI.LabelField(fieldRect, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesLabel));
-
-            var buttonRect = fieldRect;
-            buttonRect.x = fieldRect.x + EditorGUIUtility.labelWidth;
-            buttonRect.width = (fieldRect.width - EditorGUIUtility.labelWidth) / 2;
-            if (GUI.Button(buttonRect, new GUIContent(i18n.SelectAllButtonLabel)))
+            // Row 1: Features label + featureMode dropdown
+            var featureModeProperty = property.FindPropertyRelative("featureMode");
+            var modeOptions = new GUIContent[]
             {
-                if (property.managedReferenceValue is ToonStandardConvertSettings settings)
-                {
-                    settings.SetAllFeatures(true);
-                    property.serializedObject.ApplyModifiedProperties();
-                    NdmfUtility.NotifyObjectUpdate(property.serializedObject.targetObject);
-                }
-            }
-            buttonRect.x += buttonRect.width;
-            if (GUI.Button(buttonRect, new GUIContent(i18n.DeselectAllButtonLabel)))
+                new GUIContent(i18n.ToonStandardConvertSettingsFeaturesModeOptIn),
+                new GUIContent(i18n.ToonStandardConvertSettingsFeaturesModeOptOut),
+            };
+            using (var ccs = new EditorGUI.ChangeCheckScope())
             {
-                if (property.managedReferenceValue is ToonStandardConvertSettings settings)
+                var newModeIndex = EditorGUI.Popup(fieldRect, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesLabel), featureModeProperty.intValue, modeOptions);
+                if (ccs.changed)
                 {
-                    settings.SetAllFeatures(false);
+                    featureModeProperty.intValue = newModeIndex;
+                    var newMode = (ToonStandardFeaturesMode)newModeIndex;
+                    SetAllFeaturesSerializedProperty(property, newMode == ToonStandardFeaturesMode.OptOut);
                     property.serializedObject.ApplyModifiedProperties();
                     NdmfUtility.NotifyObjectUpdate(property.serializedObject.targetObject);
                 }
@@ -134,37 +129,40 @@ namespace KRT.VRCQuestTools.Inspector
             fieldRect.y += EditorGUIUtility.singleLineHeight;
             fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
 
+            // Row 2: Select All / Deselect All buttons
+            var buttonRect = fieldRect;
+            buttonRect.x = fieldRect.x + EditorGUIUtility.labelWidth;
+            buttonRect.width = (fieldRect.width - EditorGUIUtility.labelWidth) / 2;
+            if (GUI.Button(buttonRect, new GUIContent(i18n.SelectAllButtonLabel)))
+            {
+                SetAllFeaturesSerializedProperty(property, true);
+                property.serializedObject.ApplyModifiedProperties();
+                NdmfUtility.NotifyObjectUpdate(property.serializedObject.targetObject);
+            }
+
+            buttonRect.x += buttonRect.width;
+            if (GUI.Button(buttonRect, new GUIContent(i18n.DeselectAllButtonLabel)))
+            {
+                SetAllFeaturesSerializedProperty(property, false);
+                property.serializedObject.ApplyModifiedProperties();
+                NdmfUtility.NotifyObjectUpdate(property.serializedObject.targetObject);
+            }
+
+            fieldRect.y += EditorGUIUtility.singleLineHeight;
+            fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+
+            // Feature checkboxes driven by FeaturePropertyNames
             using (new EditorGUI.IndentLevelScope())
             {
-                var useNormalMap = property.FindPropertyRelative("useNormalMap");
-                EditorGUI.PropertyField(fieldRect, useNormalMap, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesNormalMapLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
-
-                var useEmission = property.FindPropertyRelative("useEmission");
-                EditorGUI.PropertyField(fieldRect, useEmission, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesEmissionLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
-
-                var useOcclusion = property.FindPropertyRelative("useOcclusion");
-                EditorGUI.PropertyField(fieldRect, useOcclusion, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesOcclusionLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
-
-                var useSpecular = property.FindPropertyRelative("useSpecular");
-                EditorGUI.PropertyField(fieldRect, useSpecular, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesSpecularLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
-
-                var useMatcap = property.FindPropertyRelative("useMatcap");
-                EditorGUI.PropertyField(fieldRect, useMatcap, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesMatcapLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
-
-                var useRim = property.FindPropertyRelative("useRimLighting");
-                EditorGUI.PropertyField(fieldRect, useRim, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesRimLightingLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                foreach (var propName in ToonStandardConvertSettings.FeaturePropertyNames)
+                {
+                    var featureProp = property.FindPropertyRelative(propName);
+                    var labelKey = GetFeatureLabelKey(propName);
+                    var label = i18n.GetText(labelKey);
+                    EditorGUI.PropertyField(fieldRect, featureProp, new GUIContent(label));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                }
             }
 
             EditorGUI.indentLevel--;
@@ -194,22 +192,33 @@ namespace KRT.VRCQuestTools.Inspector
                 height += EditorGUIUtility.standardVerticalSpacing;
             }
 
-            height += EditorGUIUtility.singleLineHeight; // Features label
+            height += EditorGUIUtility.singleLineHeight; // Features label + featureMode dropdown
             height += EditorGUIUtility.standardVerticalSpacing;
-            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("useNormalMap"));
+            height += EditorGUIUtility.singleLineHeight; // Select All / Deselect All buttons
             height += EditorGUIUtility.standardVerticalSpacing;
-            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("useEmission"));
-            height += EditorGUIUtility.standardVerticalSpacing;
-            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("useOcclusion"));
-            height += EditorGUIUtility.standardVerticalSpacing;
-            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("useSpecular"));
-            height += EditorGUIUtility.standardVerticalSpacing;
-            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("useMatcap"));
-            height += EditorGUIUtility.standardVerticalSpacing;
-            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("useRimLighting"));
+            foreach (var propName in ToonStandardConvertSettings.FeaturePropertyNames)
+            {
+                height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative(propName));
+                height += EditorGUIUtility.standardVerticalSpacing;
+            }
             height += EditorGUIUtility.standardVerticalSpacing;
 
             return height;
+        }
+
+        private static string GetFeatureLabelKey(string fieldName)
+        {
+            // "useNormalMap" -> "ToonStandardConvertSettingsFeaturesNormalMapLabel"
+            var featureName = fieldName.Substring("use".Length);
+            return "ToonStandardConvertSettingsFeatures" + featureName + "Label";
+        }
+
+        private static void SetAllFeaturesSerializedProperty(SerializedProperty property, bool value)
+        {
+            foreach (var propName in ToonStandardConvertSettings.FeaturePropertyNames)
+            {
+                property.FindPropertyRelative(propName).boolValue = value;
+            }
         }
 
         private FallbackShadow GetSelectedFallbackShadow(Texture2D texture)

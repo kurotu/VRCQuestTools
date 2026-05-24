@@ -157,6 +157,9 @@ namespace KRT.VRCQuestTools.I18n
         internal string ToonStandardConvertSettingsFeaturesSpecularLabel => GetText("ToonStandardConvertSettingsFeaturesSpecularLabel");
         internal string ToonStandardConvertSettingsFeaturesMatcapLabel => GetText("ToonStandardConvertSettingsFeaturesMatcapLabel");
         internal string ToonStandardConvertSettingsFeaturesRimLightingLabel => GetText("ToonStandardConvertSettingsFeaturesRimLightingLabel");
+        internal string ToonStandardConvertSettingsFeaturesMode => GetText("ToonStandardConvertSettingsFeaturesMode");
+        internal string ToonStandardConvertSettingsFeaturesModeOptIn => GetText("ToonStandardConvertSettingsFeaturesModeOptIn");
+        internal string ToonStandardConvertSettingsFeaturesModeOptOut => GetText("ToonStandardConvertSettingsFeaturesModeOptOut");
         internal string AdditionalMaterialConvertSettingsTargetMaterialLabel => GetText("AdditionalMaterialConvertSettingsTargetMaterialLabel");
         internal string AdditionalMaterialConvertSettingsSelectMaterialLabel => GetText("AdditionalMaterialConvertSettingsSelectMaterialLabel");
         internal string MaterialConvertTypePopupLabelToonLit => GetText("MaterialConvertTypePopupLabelToonLit");

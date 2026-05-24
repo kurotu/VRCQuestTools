@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added options to Toon Standard conversion settings.
     - `Generate shadow ramp` to generate shadow ramp texture.
     - `Features` to select features to apply to the converted material.
+- Added opt-in/opt-out mode to ToonStandard feature settings; upgrading from v2.11.6 requires manual reconfiguration of `featureMode`.
 - Preview wireframe when selecting PhysBones to keep.
 - [NDMF] Preview for material conversion and removal of vertex color.
 - Added "No Override" option to texture compression format settings, allowing Unity's default ASTC compression settings to control texture format instead of forcing platform-specific overrides. The default texture compression format for `Avatar Converter Settings` component is now "No Override".
