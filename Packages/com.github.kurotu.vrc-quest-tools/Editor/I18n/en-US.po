@@ -296,6 +296,15 @@ msgstr "Matcap"
 msgid "ToonStandardConvertSettingsFeaturesRimLightingLabel"
 msgstr "Rim Lighting"
 
+msgid "ToonStandardConvertSettingsFeaturesMode"
+msgstr "Mode"
+
+msgid "ToonStandardConvertSettingsFeaturesModeOptIn"
+msgstr "Opt-In"
+
+msgid "ToonStandardConvertSettingsFeaturesModeOptOut"
+msgstr "Opt-Out"
+
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
 msgstr "Target Material"
 

@@ -1,4 +1,4 @@
-﻿using KRT.VRCQuestTools.Components;
+using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEngine;

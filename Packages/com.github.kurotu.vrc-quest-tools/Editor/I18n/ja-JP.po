@@ -296,6 +296,15 @@ msgstr "マットキャップ"
 msgid "ToonStandardConvertSettingsFeaturesRimLightingLabel"
 msgstr "リムライト"
 
+msgid "ToonStandardConvertSettingsFeaturesMode"
+msgstr "モード"
+
+msgid "ToonStandardConvertSettingsFeaturesModeOptIn"
+msgstr "オプトイン"
+
+msgid "ToonStandardConvertSettingsFeaturesModeOptOut"
+msgstr "オプトアウト"
+
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
 msgstr "対象マテリアル"
 
