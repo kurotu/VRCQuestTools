@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Manual conversion from `Avatar Converter Settings` now applies `Platform GameObject Remover` settings and removes marked GameObjects for Android.
 - `Convert Avatar for Mobile` no longer auto-attaches `VQT Network ID Assigner`; use the new `Assign Network IDs` option in `Avatar Converter Settings` advanced settings instead.
 - Integrated menu icon settings into `Avatar Converter Settings`, and aligned NDMF icon processing with `VQT Menu Icon Resizer`.
+- Renamed `Convert Avatar for Mobile` to `Setup Avatar for Mobile` and updated setup to use availability-aware MA/AAO options with disabled already-added items and `MA Sync Parameter Sequence` defaulting `PrimaryPlatform` to `PC`.
 
 ### Fixed
 - `InvalidMaterialSwapNullException` did not properly return the invalid mapping.

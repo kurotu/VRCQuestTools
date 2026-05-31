@@ -7,7 +7,8 @@
         "VRC.SDKBase",
         "VRC.SDKBase.Editor",
         "nadena.dev.modular-avatar.core",
-        "nadena.dev.ndmf"
+        "nadena.dev.ndmf",
+        "com.anatawa12.avatar-optimizer.runtime"
     ],
     "includePlatforms": [
         "Editor"
@@ -66,6 +67,16 @@
             "name": "nadena.dev.modular-avatar",
             "expression": "2.0.0-a",
             "define": "VQT_MODULAR_AVATAR_BREAKING"
+        },
+        {
+            "name": "nadena.dev.modular-avatar",
+            "expression": "1.16.0",
+            "define": "VQT_MODULAR_AVATAR_SYNC_PARAMETER_SEQUENCE"
+        },
+        {
+            "name": "com.anatawa12.avatar-optimizer",
+            "expression": "",
+            "define": "VQT_AVATAR_OPTIMIZER"
         }
     ],
     "noEngineReferences": false

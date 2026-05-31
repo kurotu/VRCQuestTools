@@ -18,7 +18,7 @@ namespace KRT.VRCQuestTools.Menus
         internal static class MenuPaths
         {
             internal const string RootMenu = "Tools/" + VRCQuestTools.Name + "/";
-            internal const string ConvertAvatarForMobile = RootMenu + "Convert Avatar for Mobile";
+            internal const string ConvertAvatarForMobile = RootMenu + "Setup Avatar for Mobile";
             internal const string RemoveUnsupportedComponents = RootMenu + "Remove Unsupported Components";
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
             internal const string RemoveAllVertexColors = RootMenu + "Remove All Vertex Colors";
@@ -67,7 +67,7 @@ namespace KRT.VRCQuestTools.Menus
         internal static class GameObjectMenuPaths
         {
             private const string MenuPrefix = "GameObject/VRCQuestTools/";
-            internal const string ConvertAvatarForMobile = MenuPrefix + "Convert Avatar for Mobile";
+            internal const string ConvertAvatarForMobile = MenuPrefix + "Setup Avatar for Mobile";
             internal const string NdmfManualBakeWithMobileSettings = MenuPrefix + "[NDMF] Manual Bake with Mobile Settings";
             internal const string NdmfBuildAndTestWithMobileSettings = MenuPrefix + "[NDMF] Build and Test for PC with Mobile Settings";
             internal const string RemovePhysBones = MenuPrefix + "Remove PhysBones";

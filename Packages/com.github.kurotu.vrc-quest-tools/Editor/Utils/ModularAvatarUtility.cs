@@ -112,6 +112,33 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Checks if the current Modular Avatar version supports ModularAvatarSyncParameterSequence.
+        /// </summary>
+        /// <returns>True when the component is supported, false otherwise.</returns>
+        internal static bool SupportsSyncParameterSequenceComponent()
+        {
+#if VQT_MODULAR_AVATAR_SYNC_PARAMETER_SEQUENCE
+            return true;
+#else
+            return false;
+#endif
+        }
+
+        /// <summary>
+        /// Checks if a GameObject has a ModularAvatarSyncParameterSequence component.
+        /// </summary>
+        /// <param name="gameObject">GameObject to check.</param>
+        /// <returns>True if the component exists, false otherwise.</returns>
+        internal static bool HasSyncParameterSequenceComponent(GameObject gameObject)
+        {
+#if VQT_MODULAR_AVATAR_SYNC_PARAMETER_SEQUENCE
+            return gameObject.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarSyncParameterSequence>() != null;
+#else
+            return false;
+#endif
+        }
+
+        /// <summary>
         /// Adds a ModularAvatarConvertConstraints component to a GameObject.
         /// </summary>
         /// <param name="gameObject">GameObject to add the component to.</param>
@@ -121,6 +148,20 @@ namespace KRT.VRCQuestTools.Utils
             Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(gameObject);
 #else
             throw new System.InvalidProgramException("Cannot add ModularAvatarConvertConstraints component: Modular Avatar package is not installed or version is incompatible.");
+#endif
+        }
+
+        /// <summary>
+        /// Adds a ModularAvatarSyncParameterSequence component to a GameObject and sets PrimaryPlatform to PC.
+        /// </summary>
+        /// <param name="gameObject">GameObject to add the component to.</param>
+        internal static void AddSyncParameterSequenceComponent(GameObject gameObject)
+        {
+#if VQT_MODULAR_AVATAR_SYNC_PARAMETER_SEQUENCE
+            var component = Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarSyncParameterSequence>(gameObject);
+            component.PrimaryPlatform = nadena.dev.modular_avatar.core.ModularAvatarSyncParameterSequence.Platform.PC;
+#else
+            throw new System.InvalidProgramException("Cannot add ModularAvatarSyncParameterSequence component: Modular Avatar package version is incompatible.");
 #endif
         }
 
