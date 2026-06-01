@@ -165,6 +165,8 @@ namespace KRT.VRCQuestTools.Views
                 GUILayout.Space(2);
                 using var disabledScope = new EditorGUI.DisabledScope(true);
                 EditorGUILayout.ObjectField(provider.Component, typeof(Component), true);
+                GUILayout.Space(2);
+                EditorGUILayout.ObjectField(VRCSDKUtility.GetRootTransform(provider.Component), typeof(Transform), true);
                 return selected;
             }
         }
