@@ -117,7 +117,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>True when the component is supported, false otherwise.</returns>
         internal static bool SupportsSyncParameterSequenceComponent()
         {
-#if VQT_MODULAR_AVATAR_SYNC_PARAMETER_SEQUENCE
+#if VQT_MODULAR_AVATAR_SYNC_PARAMETER_SEQUENCE && !VQT_MODULAR_AVATAR_BREAKING
             return true;
 #else
             return false;
