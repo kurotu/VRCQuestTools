@@ -3,8 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System.Collections.Generic;
-using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
@@ -24,6 +22,15 @@ namespace KRT.VRCQuestTools.Views
 
         [SerializeField]
         private Vector2 scrollPosition = Vector2.zero;
+
+        [SerializeField]
+        private bool addMaConvertConstraints = true;
+
+        [SerializeField]
+        private bool addMaSyncParameterSequence = true;
+
+        [SerializeField]
+        private bool addAaoTraceAndOptimize = true;
 
         private Editor editor;
 
@@ -49,7 +56,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnEnable()
         {
-            titleContent.text = "Convert Avatar for Mobile";
+            titleContent.text = "Setup Avatar for Mobile";
         }
 
         private void OnGUI()
@@ -69,16 +76,30 @@ namespace KRT.VRCQuestTools.Views
                 var converterSettings = targetRoot.GetComponentInChildren<AvatarConverterSettings>(true);
                 if (converterSettings == null)
                 {
-                    var components = new List<string>
+                    var hasMaConvertConstraints = ModularAvatarUtility.IsModularAvatarImported();
+                    var hasMaSyncParameterSequence = ModularAvatarUtility.SupportsSyncParameterSequenceComponent();
+                    var hasAaoTraceAndOptimize = AvatarOptimizerUtility.IsAvatarOptimizerImported();
+                    var hasMaConvertConstraintsComponent = hasMaConvertConstraints && ModularAvatarUtility.HasConvertConstraintsComponent(targetRoot);
+                    var hasMaSyncParameterSequenceComponent = hasMaSyncParameterSequence && ModularAvatarUtility.HasSyncParameterSequenceComponent(targetRoot);
+                    var hasAaoTraceAndOptimizeComponent = hasAaoTraceAndOptimize && AvatarOptimizerUtility.HasTraceAndOptimizeComponent(targetRoot);
+
+                    EditorGUILayout.LabelField(i18n.BeginConvertSettingsButtonDescription, EditorStyles.wordWrappedLabel);
+                    EditorGUILayout.Space();
+
+                    if (hasMaConvertConstraints)
                     {
-                        "VQT Avatar Converter Settings",
-                    };
-                    if (ModularAvatarUtility.IsModularAvatarImported())
-                    {
-                        components.Add("MA Convert Constraints");
+                        addMaConvertConstraints = DrawOptionalComponentToggle("MA Convert Constraints", addMaConvertConstraints, hasMaConvertConstraintsComponent);
                     }
-                    var componentsText = components.Select(c => $"  - {c}").Aggregate((a, b) => $"{a}\n{b}");
-                    EditorGUILayout.HelpBox(i18n.BeginConvertSettingsButtonDescription + "\n" + componentsText, MessageType.Info);
+
+                    if (hasMaSyncParameterSequence)
+                    {
+                        addMaSyncParameterSequence = DrawOptionalComponentToggle("MA Sync Parameter Sequence", addMaSyncParameterSequence, hasMaSyncParameterSequenceComponent);
+                    }
+
+                    if (hasAaoTraceAndOptimize)
+                    {
+                        addAaoTraceAndOptimize = DrawOptionalComponentToggle("AAO Trace and Optimize", addAaoTraceAndOptimize, hasAaoTraceAndOptimizeComponent);
+                    }
 
                     editor = null;
                     if (GUILayout.Button(i18n.BeginConvertSettingsButtonLabel))
@@ -114,12 +135,33 @@ namespace KRT.VRCQuestTools.Views
                 EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.PhysBoneSyncReminder, "OK");
             }
 
-            if (ModularAvatarUtility.IsModularAvatarImported() && !ModularAvatarUtility.HasConvertConstraintsComponent(targetRoot))
+            if (addMaConvertConstraints && ModularAvatarUtility.IsModularAvatarImported() && !ModularAvatarUtility.HasConvertConstraintsComponent(targetRoot))
             {
                 ModularAvatarUtility.AddConvertConstraintsComponent(targetRoot);
             }
 
+            if (addMaSyncParameterSequence && ModularAvatarUtility.SupportsSyncParameterSequenceComponent() && !ModularAvatarUtility.HasSyncParameterSequenceComponent(targetRoot))
+            {
+                ModularAvatarUtility.AddSyncParameterSequenceComponent(targetRoot);
+            }
+
+            if (addAaoTraceAndOptimize && AvatarOptimizerUtility.IsAvatarOptimizerImported() && !AvatarOptimizerUtility.HasTraceAndOptimizeComponent(targetRoot))
+            {
+                AvatarOptimizerUtility.AddTraceAndOptimizeComponent(targetRoot);
+            }
+
             Undo.CollapseUndoOperations(group);
+        }
+
+        private static bool DrawOptionalComponentToggle(string label, bool enabledByUser, bool alreadyExists)
+        {
+            var value = alreadyExists || enabledByUser;
+            using (new EditorGUI.DisabledScope(alreadyExists))
+            {
+                value = EditorGUILayout.ToggleLeft(label, value);
+            }
+
+            return alreadyExists || value;
         }
     }
 }
