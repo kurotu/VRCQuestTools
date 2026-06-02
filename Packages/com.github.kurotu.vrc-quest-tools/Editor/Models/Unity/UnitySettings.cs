@@ -24,6 +24,17 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Gets a value indicating whether the iOS build support is installed.
+        /// </summary>
+        internal static bool HasIOSBuildSupport
+        {
+            get
+            {
+                return BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.iOS, UnityEditor.BuildTarget.iOS);
+            }
+        }
+
+        /// <summary>
         /// Gets or sets default texture compression method for Android.
         /// </summary>
         internal static MobileTextureSubtarget DefaultAndroidTextureCompression
