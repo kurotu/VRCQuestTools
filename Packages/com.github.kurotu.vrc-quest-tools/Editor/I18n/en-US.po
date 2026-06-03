@@ -455,6 +455,12 @@ msgstr "Android Build Support is required to upload avatars for Android platform
 msgid "AndroidBuildSupportButtonLabel"
 msgstr "How to Install"
 
+msgid "IOSBuildSupportHelp"
+msgstr "iOS Build Support is required to switch build target to iOS platform."
+
+msgid "IOSBuildSupportButtonLabel"
+msgstr "How to Install"
+
 msgid "TextureCompressionLabel"
 msgstr "Android Texture Compression"
 

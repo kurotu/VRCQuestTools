@@ -58,6 +58,11 @@ namespace KRT.VRCQuestTools.ViewModels
         internal bool HasAndroidBuildSupport => UnitySettings.HasAndroidBuildSupport;
 
         /// <summary>
+        /// Gets a value indicating whether iOS build support is installed.
+        /// </summary>
+        internal bool HasIOSBuildSupport => UnitySettings.HasIOSBuildSupport;
+
+        /// <summary>
         /// Apply recommended texture compression for Android.
         /// </summary>
         internal void ApplyRecommendedAndroidTextureCompression()

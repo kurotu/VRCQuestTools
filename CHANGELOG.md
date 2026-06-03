@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added iOS Build Support check in `Unity Settings for Mobile`; when missing, guidance is shown but it does not trigger startup auto-open.
 - Apply platform-specific texture override settings (compression format and max texture size) from source textures to generated textures.
 - Added options to Toon Standard conversion settings.
     - `Generate shadow ramp` to generate shadow ramp texture.

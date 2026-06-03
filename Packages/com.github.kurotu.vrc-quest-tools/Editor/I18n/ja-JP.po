@@ -455,6 +455,12 @@ msgstr "Android 向けにアバターをアップロードするには Android B
 msgid "AndroidBuildSupportButtonLabel"
 msgstr "インストール方法"
 
+msgid "IOSBuildSupportHelp"
+msgstr "iOS向けにビルドターゲットを切り替えるには iOS Build Support が必要です。"
+
+msgid "IOSBuildSupportButtonLabel"
+msgstr "インストール方法"
+
 msgid "TextureCompressionLabel"
 msgstr "Android テクスチャ圧縮"
 
