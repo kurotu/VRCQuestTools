@@ -45,9 +45,7 @@ namespace KRT.VRCQuestTools.Components
         public string GetCacheKey()
         {
             return $"{DefaultMaterialConvertSettings.GetCacheKey()}_" +
-                   $"{string.Join("_", AdditionalMaterialConvertSettings.Select(s => s.GetCacheKey()))}_" +
-                   $"{RemoveExtraMaterialSlots}_" +
-                   $"{EnableMaterialPreview}";
+                   $"{string.Join("_", AdditionalMaterialConvertSettings.Select(s => s.GetCacheKey()))}";
         }
     }
 }
