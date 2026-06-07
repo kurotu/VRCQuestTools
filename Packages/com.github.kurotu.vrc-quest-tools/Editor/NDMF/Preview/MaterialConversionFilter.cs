@@ -67,6 +67,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     {
                         return false;
                     }
+
                     // Filter out avatars with preview disabled
                     var materialComponent = component as IMaterialConversionComponent;
                     if (materialComponent != null)
@@ -109,14 +110,14 @@ namespace KRT.VRCQuestTools.Ndmf
             if (AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(avatarRoot) != phase)
             {
                 // If the phase does not match, we do not process this filter.
-                return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(new Dictionary<Material, Material>(), false));
+                return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(new Dictionary<Material, Material>(), false, null));
             }
 
             var isTargetMobile = NdmfHelper.ResolveBuildTarget(avatarRoot) == Models.BuildTarget.Android;
             if (!isTargetMobile)
             {
                 // If the target is not mobile, we do not process this filter.
-                return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(new Dictionary<Material, Material>(), false));
+                return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(new Dictionary<Material, Material>(), false, null));
             }
 
             var removeExtraMaterialSlots = settings.RemoveExtraMaterialSlots;
@@ -142,20 +143,22 @@ namespace KRT.VRCQuestTools.Ndmf
 
             var converter = new AvatarConverter(new MaterialWrapperBuilder());
             var settingsMap = converter.CreateMaterialConvertSettingsMap(avatarRoot, avatarMaterials.ToArray());
-            var materialMap = converter.ConvertMaterialsForMobile(settingsMap, false, string.Empty, null);
-            return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(materialMap, removeExtraMaterialSlots));
+            var materialLease = SharedPreviewMaterialCache.Acquire(settingsMap, m => converter.ConvertMaterialsForMobile(m, false, string.Empty, null));
+            return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(materialLease.MaterialMap, removeExtraMaterialSlots, materialLease));
         }
 
         private class MaterialConversionFilterNode : IRenderFilterNode
         {
             private readonly Dictionary<Material, Material> materialMap;
             private readonly bool removeExtraMaterialSlots;
+            private readonly SharedMaterialMapLease materialLease;
             private bool disposedValue;
 
-            public MaterialConversionFilterNode(Dictionary<Material, Material> materialMap, bool removeExtraMaterialSlots)
+            public MaterialConversionFilterNode(Dictionary<Material, Material> materialMap, bool removeExtraMaterialSlots, SharedMaterialMapLease materialLease)
             {
                 this.materialMap = materialMap;
                 this.removeExtraMaterialSlots = removeExtraMaterialSlots;
+                this.materialLease = materialLease;
             }
 
             public RenderAspects WhatChanged => RenderAspects.Material;
@@ -180,26 +183,33 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 if (!disposedValue)
                 {
-                    foreach (var material in materialMap.Values)
+                    if (materialLease != null)
                     {
-                        if (material != null)
+                        materialLease.Release();
+                    }
+                    else
+                    {
+                        foreach (var material in materialMap.Values)
                         {
-                            // destroy all on-memory objects here.
-                            foreach (var prop in material.GetTexturePropertyNames())
+                            if (material != null)
                             {
-                                var texture = material.GetTexture(prop);
-                                if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(texture)))
+                                // destroy all on-memory objects here.
+                                foreach (var prop in material.GetTexturePropertyNames())
                                 {
-                                    Object.DestroyImmediate(texture);
+                                    var texture = material.GetTexture(prop);
+                                    if (texture != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(texture)))
+                                    {
+                                        Object.DestroyImmediate(texture);
+                                    }
+                                }
+                                if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(material)))
+                                {
+                                    Object.DestroyImmediate(material);
                                 }
                             }
-                            if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(material)))
-                            {
-                                Object.DestroyImmediate(material);
-                            }
                         }
+                        materialMap.Clear();
                     }
-                    materialMap.Clear();
 
                     disposedValue = true;
                 }
