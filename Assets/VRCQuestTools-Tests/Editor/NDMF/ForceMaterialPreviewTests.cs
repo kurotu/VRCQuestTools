@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.Ndmf
         }
 
         [Test]
-        public void GetCacheKey_Includes_ForceMaterialPreviewFlag()
+        public void GetCacheKey_DoesNotInclude_ForceMaterialPreviewFlag()
         {
             var comp = new DummyMaterialConversionComponent();
             comp.EnableMaterialPreview = false;
@@ -34,7 +34,8 @@ namespace KRT.VRCQuestTools.Ndmf
 
             var key = (comp as IMaterialConversionComponent).GetCacheKey();
 
-            Assert.IsTrue(key.EndsWith($"_{comp.EnableMaterialPreview}_{comp.ForceMaterialPreview}"), $"Cache key did not include force preview flag: {key}");
+            // ForceMaterialPreview is a temporary flag and must not be included in the cache key
+            Assert.IsFalse(key.Contains($"_{comp.ForceMaterialPreview}"), $"Cache key included force preview flag: {key}");
         }
     }
 }
