@@ -52,7 +52,7 @@ namespace KRT.VRCQuestTools.Inspector
                 }
             }
 
-            // Temporary force preview toggle (non-serialized) placed under Advanced settings (outside section)
+            // Temporary force preview toggle (non-serialized), shown regardless of Advanced foldout state
             var comp2 = TargetComponent;
             var forceLabel2 = comp2.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
             var oldBg2 = GUI.backgroundColor;

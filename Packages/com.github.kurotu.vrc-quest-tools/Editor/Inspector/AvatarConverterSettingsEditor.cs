@@ -241,7 +241,7 @@ namespace KRT.VRCQuestTools.Inspector
 
                 Views.EditorGUIUtility.HorizontalDivider(2);
 
-                // Temporary force preview toggle (non-serialized) placed under Advanced settings (outside section)
+                // Temporary force preview toggle (non-serialized), shown regardless of Advanced foldout state
                 var forceLabel = converterSettings.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
                 var oldBg = GUI.backgroundColor;
                 if (converterSettings.ForceMaterialPreview)
