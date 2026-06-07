@@ -1,9 +1,7 @@
 using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Components;
-using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
-using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
@@ -240,6 +238,21 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.PropertyField(so.FindProperty("ndmfPhase"), new GUIContent("[NDMF] " + i18n.NdmfPhaseLabel, i18n.NdmfPhaseTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("enableMaterialPreview"), new GUIContent("[NDMF] " + i18n.EnableMaterialPreviewLabel, i18n.EnableMaterialPreviewTooltip));
                 }
+
+                Views.EditorGUIUtility.HorizontalDivider(2);
+
+                // Temporary force preview toggle (non-serialized) placed under Advanced settings (outside section)
+                var forceLabel = converterSettings.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
+                var oldBg = GUI.backgroundColor;
+                if (converterSettings.ForceMaterialPreview)
+                {
+                    GUI.backgroundColor = Color.green;
+                }
+                if (GUILayout.Button(new GUIContent("[NDMF] " + forceLabel, i18n.ForceMaterialPreviewTooltip)))
+                {
+                    converterSettings.forceMaterialPreview = !converterSettings.forceMaterialPreview;
+                }
+                GUI.backgroundColor = oldBg;
 
                 Views.EditorGUIUtility.HorizontalDivider(2);
 

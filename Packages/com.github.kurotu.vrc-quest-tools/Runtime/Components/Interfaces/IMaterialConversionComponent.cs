@@ -39,6 +39,11 @@ namespace KRT.VRCQuestTools.Components
         bool EnableMaterialPreview { get; }
 
         /// <summary>
+        /// Gets a value indicating whether to force-enable material preview temporarily (non-serialized).
+        /// </summary>
+        bool ForceMaterialPreview { get; }
+
+        /// <summary>
         /// Gets the cache key for the material conversion component.
         /// </summary>
         /// <returns>Cache key.</returns>

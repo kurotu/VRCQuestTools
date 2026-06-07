@@ -56,13 +56,14 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var removeVertexColor = context.Observe(settings, s => s.removeVertexColor);
+            var forcePreview = context.Observe(settings as Object, s => (s as IMaterialConversionComponent).ForceMaterialPreview);
             var isTargetMobile = NdmfHelper.ResolveBuildTarget(root) == Models.BuildTarget.Android;
 
             var proxy = proxyPairs.First().Item2;
             var mesh = RendererUtility.GetSharedMesh(proxy);
             Mesh newMesh = mesh;
 
-            var shouldRemove = removeVertexColor && isTargetMobile && mesh != null && mesh.colors32 != null && mesh.colors32.Length > 0;
+            var shouldRemove = (removeVertexColor || forcePreview) && (isTargetMobile || forcePreview) && mesh != null && mesh.colors32 != null && mesh.colors32.Length > 0;
             if (shouldRemove)
             {
                 newMesh = Mesh.Instantiate(newMesh);

@@ -116,6 +116,12 @@ namespace KRT.VRCQuestTools.Components
         public bool enableMaterialPreview = true;
 
         /// <summary>
+        /// Temporarily force enabling material preview for NDMF preview (non-serialized).
+        /// </summary>
+        [System.NonSerialized]
+        public bool forceMaterialPreview = false;
+
+        /// <summary>
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
@@ -141,6 +147,11 @@ namespace KRT.VRCQuestTools.Components
 
         /// <inheritdoc/>
         public bool EnableMaterialPreview => enableMaterialPreview;
+
+        /// <summary>
+        /// Gets a value indicating whether the temporary force preview is enabled.
+        /// </summary>
+        public bool ForceMaterialPreview => forceMaterialPreview;
 
         /// <summary>
         /// Gets a value indicating whether any legacy avatar dynamics settings (<see cref="physBonesToKeep"/>, <see cref="physBoneCollidersToKeep"/>, or <see cref="contactsToKeep"/>) contain non-null entries.

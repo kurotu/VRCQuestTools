@@ -1,5 +1,4 @@
 using KRT.VRCQuestTools.Components;
-using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEditorInternal;
@@ -29,7 +28,6 @@ namespace KRT.VRCQuestTools.Inspector
         public override void OnInspectorGUIInternal()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-            i18n = VRCQuestToolsSettings.I18nResource;
             var editorState = EditorState.instance;
 
             serializedObject.Update();
@@ -53,6 +51,20 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("enableMaterialPreview"), new GUIContent(i18n.EnableMaterialPreviewLabel, i18n.EnableMaterialPreviewTooltip));
                 }
             }
+
+            // Temporary force preview toggle (non-serialized) placed under Advanced settings (outside section)
+            var comp2 = TargetComponent;
+            var forceLabel2 = comp2.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
+            var oldBg2 = GUI.backgroundColor;
+            if (comp2.ForceMaterialPreview)
+            {
+                GUI.backgroundColor = Color.green;
+            }
+            if (GUILayout.Button(new GUIContent(forceLabel2, i18n.ForceMaterialPreviewTooltip)))
+            {
+                comp2.forceMaterialPreview = !comp2.forceMaterialPreview;
+            }
+            GUI.backgroundColor = oldBg2;
 
             serializedObject.ApplyModifiedProperties();
         }

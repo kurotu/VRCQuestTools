@@ -72,7 +72,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     var materialComponent = component as IMaterialConversionComponent;
                     if (materialComponent != null)
                     {
-                        var previewEnabled = context.Observe(component, c => (c as IMaterialConversionComponent).EnableMaterialPreview);
+                        var previewEnabled = context.Observe(component, c => (c as IMaterialConversionComponent).EnableMaterialPreview || (c as IMaterialConversionComponent).ForceMaterialPreview);
                         return previewEnabled;
                     }
                     return true;
@@ -114,9 +114,10 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var isTargetMobile = NdmfHelper.ResolveBuildTarget(avatarRoot) == Models.BuildTarget.Android;
-            if (!isTargetMobile)
+            var forcePreview = settings != null && (settings as IMaterialConversionComponent).ForceMaterialPreview;
+            if (!isTargetMobile && !forcePreview)
             {
-                // If the target is not mobile, we do not process this filter.
+                // If the target is not mobile and preview is not forced, we do not process this filter.
                 return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(new Dictionary<Material, Material>(), false, null));
             }
 
