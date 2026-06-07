@@ -155,6 +155,15 @@ msgstr "Enable Material Preview"
 msgid "EnableMaterialPreviewTooltip"
 msgstr "Enable material preview in the editor. When enabled, converted materials will be previewed in the scene view."
 
+msgid "ForceMaterialPreviewEnableLabel"
+msgstr "Enable temporary preview"
+
+msgid "ForceMaterialPreviewDisableLabel"
+msgstr "Disable temporary preview"
+
+msgid "ForceMaterialPreviewTooltip"
+msgstr "Temporarily enable material preview using NDMF preview."
+
 msgid "GeneratingTexturesDialogMessage"
 msgstr "Generating textures..."
 

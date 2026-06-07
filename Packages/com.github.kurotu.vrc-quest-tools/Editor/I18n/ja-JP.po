@@ -155,6 +155,15 @@ msgstr "マテリアルのプレビューを有効化"
 msgid "EnableMaterialPreviewTooltip"
 msgstr "エディター内でマテリアルのプレビューを有効にします。有効な場合、変換されたマテリアルがSceneビューに表示されます。"
 
+msgid "ForceMaterialPreviewEnableLabel"
+msgstr "一時的なプレビューを有効化"
+
+msgid "ForceMaterialPreviewDisableLabel"
+msgstr "一時的なプレビューを無効化"
+
+msgid "ForceMaterialPreviewTooltip"
+msgstr "NDMF プレビューによるマテリアル変換を一時的に有効化します。"
+
 msgid "GeneratingTexturesDialogMessage"
 msgstr "テクスチャを生成中"
 
