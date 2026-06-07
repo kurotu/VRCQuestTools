@@ -114,7 +114,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var isTargetMobile = NdmfHelper.ResolveBuildTarget(avatarRoot) == Models.BuildTarget.Android;
-            var forcePreview = settings != null && (settings as IMaterialConversionComponent).ForceMaterialPreview;
+            var forcePreview = settings != null && settings.ForceMaterialPreview;
             if (!isTargetMobile && !forcePreview)
             {
                 // If the target is not mobile and preview is not forced, we do not process this filter.
