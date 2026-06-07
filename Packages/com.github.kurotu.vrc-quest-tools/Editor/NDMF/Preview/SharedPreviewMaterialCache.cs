@@ -259,13 +259,45 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
+            bool IsTextureReferencedInCache(Texture texture)
+            {
+                lock (SyncRoot)
+                {
+                    foreach (var e in Entries.Values)
+                    {
+                        var m = e.Material;
+                        if (m == null)
+                        {
+                            continue;
+                        }
+                        foreach (var prop in m.GetTexturePropertyNames())
+                        {
+                            if (m.GetTexture(prop) == texture)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            var destroyedTextures = new HashSet<Texture>();
             foreach (var propertyName in material.GetTexturePropertyNames())
             {
                 var texture = material.GetTexture(propertyName);
-                if (texture != null && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(texture)))
+                if (texture == null || !string.IsNullOrEmpty(AssetDatabase.GetAssetPath(texture)) || destroyedTextures.Contains(texture))
                 {
-                    Object.DestroyImmediate(texture);
+                    continue;
                 }
+
+                if (IsTextureReferencedInCache(texture))
+                {
+                    continue;
+                }
+
+                destroyedTextures.Add(texture);
+                Object.DestroyImmediate(texture);
             }
 
             if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(material)))
