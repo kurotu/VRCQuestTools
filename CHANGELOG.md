@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added "No Override" option to texture compression format settings, allowing Unity's default ASTC compression settings to control texture format instead of forcing platform-specific overrides. The default texture compression format for `Avatar Converter Settings` component is now "No Override".
 - Added `VQT Fallback Avatar` component that automatically sets an avatar as a fallback avatar after upload when performance requirements are met (Good or better rating for mobile platforms).
 - Show warning logs during mobile upload when Avatar Dynamics categories are rated Very Poor.
+- (Experimental) Material conversion from Poiyomi to Toon Standard.
 
 ### Changed
 - Avatar Dynamics Selector now stores keep/remove settings in `Platform Component Remover` instead of the legacy arrays in `Avatar Converter Settings`. Applying the selector migrates settings and clears the legacy arrays to avoid stale references.
