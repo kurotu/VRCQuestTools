@@ -103,7 +103,11 @@ namespace KRT.VRCQuestTools.Models
                     // RenderTexture's imageContentsHash is 0, so we generate a random hash.
                     return Hash128.Compute(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
                 default:
+#if UNITY_EDITOR
                     return texture.imageContentsHash;
+#else
+                    return Hash128.Compute(texture.GetInstanceID());
+#endif
             }
         }
     }
