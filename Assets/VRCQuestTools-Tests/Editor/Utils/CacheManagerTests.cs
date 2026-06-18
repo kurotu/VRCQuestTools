@@ -119,5 +119,42 @@ namespace KRT.VRCQuestTools.Utils
         {
             Assert.IsNotNull(CacheManager.Texture);
         }
+
+        /// <summary>
+        /// Test that saving under hashing uses the hashed filename and LoadString/Exists works via hashed name.
+        /// </summary>
+        [Test]
+        public void SaveAndLoadData_WithHashing()
+        {
+            var longName = "very/long/path/that/should/be/hashes_by_the_cache_manager_for_test_purposes.txt";
+            var testData = "HashedData";
+            var hashedManager = new CacheManager(() => testCacheFolder, true);
+
+            hashedManager.Save(longName, testData);
+
+            var expectedHashed = KRT.VRCQuestTools.Utils.CacheUtility.HashFileName(longName);
+            Assert.IsTrue(File.Exists(Path.Combine(testCacheFolder, expectedHashed)), "Hashed file should exist in cache folder.");
+            Assert.IsTrue(hashedManager.Exists(longName));
+
+            var loaded = hashedManager.LoadString(longName);
+            Assert.AreEqual(testData, loaded);
+        }
+
+        /// <summary>
+        /// Test fallback: if an original non-hashed file exists (older cache), the loader should still find and load it.
+        /// </summary>
+        [Test]
+        public void LoadFallsBackToOriginalIfHashedMissing()
+        {
+            var name = "legacy_cache_name.json";
+            var legacyData = "legacy";
+            // Create original file manually to simulate old cache.
+            File.WriteAllText(Path.Combine(testCacheFolder, name), legacyData);
+
+            var hashedManager = new CacheManager(() => testCacheFolder, true);
+            Assert.IsTrue(hashedManager.Exists(name));
+            var loaded = hashedManager.LoadString(name);
+            Assert.AreEqual(legacyData, loaded);
+        }
     }
 }

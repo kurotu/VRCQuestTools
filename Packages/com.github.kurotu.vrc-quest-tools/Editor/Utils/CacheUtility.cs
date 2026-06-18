@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -57,6 +58,35 @@ namespace KRT.VRCQuestTools.Utils
                 }
             }
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Hashes a file name using MD5 and preserves the extension (if any).
+        /// Example: "very/long/name.png" -> "<md5hex>.png"
+        /// </summary>
+        /// <param name="fileName">Original file name.</param>
+        /// <returns>Hashed file name with extension.</returns>
+        internal static string HashFileName(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return fileName;
+            }
+            var ext = Path.GetExtension(fileName);
+            // Use full input (including path) to reduce collisions across different paths.
+            var input = fileName;
+            using (var md5 = MD5.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(input);
+                var hashBytes = md5.ComputeHash(bytes);
+                var sbHash = new StringBuilder(hashBytes.Length * 2);
+                foreach (var b in hashBytes)
+                {
+                    sbHash.Append(b.ToString("x2"));
+                }
+                var hashed = sbHash.ToString();
+                return string.IsNullOrEmpty(ext) ? hashed : (hashed + ext);
+            }
         }
 
         /// <summary>
