@@ -21,8 +21,9 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="material">LilToon material.</param>
         /// <param name="settings">Convert settings.</param>
         /// <param name="sharedBlackTexture">Shared black texture to disable emission.</param>
-        public LilToonToonStandardGenerator(LilToonMaterial material, ToonStandardConvertSettings settings, Texture2D sharedBlackTexture)
-            : base(settings, sharedBlackTexture)
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview.</param>
+        public LilToonToonStandardGenerator(LilToonMaterial material, ToonStandardConvertSettings settings, Texture2D sharedBlackTexture, bool forEditorPreview)
+            : base(settings, sharedBlackTexture, forEditorPreview)
         {
             this.lilMaterial = material;
         }

@@ -160,7 +160,8 @@ namespace KRT.VRCQuestTools.Utils
                     var normal = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
                     if (normal != null)
                     {
-                        return TextureUtility.CopyAsReadable(normal, false);
+                        // Restore the cached color space (normal maps are linear); CopyAsReadable's bool is the Texture2D "linear" flag.
+                        return TextureUtility.CopyAsReadable(normal, linear);
                     }
                     Logger.LogWarning($"Failed to load normal map from {path}. Creating normal map from uncompressed one.");
                 }

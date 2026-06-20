@@ -96,7 +96,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var original2 = new Material(shader);
             var replacement = new Material(shader);
             var converter = new AvatarConverter(new MaterialWrapperBuilder());
-            System.Func<Dictionary<Material, IMaterialConvertSettings>, Dictionary<Material, Material>> convertFunc = m => converter.ConvertMaterialsForMobile(m, false, string.Empty, null);
+            System.Func<Dictionary<Material, IMaterialConvertSettings>, Dictionary<Material, Material>> convertFunc = m => converter.ConvertMaterialsForMobile(m, false, string.Empty, null, false);
             
             object lease1 = null;
             object lease2 = null;

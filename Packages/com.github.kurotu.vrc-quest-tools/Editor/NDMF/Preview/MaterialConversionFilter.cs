@@ -144,7 +144,8 @@ namespace KRT.VRCQuestTools.Ndmf
 
             var converter = new AvatarConverter(new MaterialWrapperBuilder());
             var settingsMap = converter.CreateMaterialConvertSettingsMap(avatarRoot, avatarMaterials.ToArray());
-            var materialLease = SharedPreviewMaterialCache.Acquire(settingsMap, m => converter.ConvertMaterialsForMobile(m, false, string.Empty, null));
+            // forEditorPreview: true re-uploads freshly generated normal maps so they render in the editor preview.
+            var materialLease = SharedPreviewMaterialCache.Acquire(settingsMap, m => converter.ConvertMaterialsForMobile(m, false, string.Empty, null, forEditorPreview: true));
             return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(materialLease.MaterialMap, removeExtraMaterialSlots, materialLease));
         }
 

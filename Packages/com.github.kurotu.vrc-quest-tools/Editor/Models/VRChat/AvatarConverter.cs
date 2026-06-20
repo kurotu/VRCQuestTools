@@ -136,7 +136,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             // Convert materials and generate textures.
             var convertSettingsMap = CreateMaterialConvertSettingsMap(avatar);
-            var convertedMaterials = ConvertMaterialsForMobile(convertSettingsMap, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
+            var convertedMaterials = ConvertMaterialsForMobile(convertSettingsMap, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress, forEditorPreview: false);
             CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
 
             ApplyConvertedMaterials(questAvatarObject, convertedMaterials, saveAssetsAsFile, assetsDirectory, progressCallback);
@@ -373,11 +373,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                                 var m2 = MaterialWrapperBuilder.Build(m);
                                 if (m2 is LilToonMaterial lil)
                                 {
-                                    request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings, sharedBlackTexture).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
                                 }
                                 else
                                 {
-                                    request = new GenericToonStandardGenerator(m2, toonStandardConvertSettings, sharedBlackTexture).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    request = new GenericToonStandardGenerator(m2, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
                                 }
                             }
                             else
@@ -408,12 +408,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="saveAsFile">Whether to save materials as file.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview (re-uploads generated normal maps so they display in the editor).</param>
         /// <returns>Converted materials (key: original material).</returns>
         internal Dictionary<Material, Material> ConvertMaterialsForMobile(
             Dictionary<Material, IMaterialConvertSettings> convertSettingsMap,
             bool saveAsFile,
             string assetsDirectory,
-            TextureProgressCallback progressCallback)
+            TextureProgressCallback progressCallback,
+            bool forEditorPreview)
         {
             var convertedMaterials = new Dictionary<Material, Material>();
 
@@ -431,7 +433,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
                 try
                 {
-                    var request = ConvertSingleMaterial(material, convertSettingsMap[material], saveAsFile, assetsDirectory, (output) =>
+                    var request = ConvertSingleMaterial(material, convertSettingsMap[material], saveAsFile, assetsDirectory, forEditorPreview, (output) =>
                     {
                         convertedMaterials[material] = output;
                         progressCallback?.Invoke(materialsToConvert.Length, currentIndex, material, output);
@@ -684,13 +686,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
             IMaterialConvertSettings convertSettings,
             bool saveAsFile,
             string assetsDirectory,
+            bool forEditorPreview,
             Action<Material> completion)
         {
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localId);
             var materialWrapper = MaterialWrapperBuilder.Build(material);
 
             // Generate converted material based on settings
-            return GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory, convertedMaterial =>
+            return GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory, forEditorPreview, convertedMaterial =>
             {
                 // Save as asset if required
                 if (!(convertSettings is MaterialReplaceSettings))
@@ -717,6 +720,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             IMaterialConvertSettings settings,
             bool saveAsFile,
             string assetsDirectory,
+            bool forEditorPreview,
             Action<Material> completion)
         {
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
@@ -733,9 +737,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 case ToonStandardConvertSettings toonStandardSettings:
                     if (material is LilToonMaterial)
                     {
-                        return new LilToonToonStandardGenerator((LilToonMaterial)material, toonStandardSettings, sharedBlackTexture).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                        return new LilToonToonStandardGenerator((LilToonMaterial)material, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                     }
-                    return new GenericToonStandardGenerator(material, toonStandardSettings, sharedBlackTexture).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                    return new GenericToonStandardGenerator(material, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case MaterialReplaceSettings replaceSettings:
                     if (replaceSettings.material == null)
                     {
