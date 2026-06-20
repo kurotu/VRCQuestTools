@@ -13,21 +13,59 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Cache manager for textures.
         /// </summary>
-        internal static readonly CacheManager Texture = new CacheManager(() => VRCQuestToolsSettings.TextureCacheFolder);
+        internal static readonly CacheManager Texture = new CacheManager(() => VRCQuestToolsSettings.TextureCacheFolder, true);
 
         private readonly object lockObject = new object();
         private readonly Func<string> getCachePath;
+        private readonly bool hashFileNames;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheManager"/> class.
         /// </summary>
         /// <param name="cachePathFunc">Function to get cache path.</param>
         public CacheManager(Func<string> cachePathFunc)
+            : this(cachePathFunc, false)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CacheManager"/> class with option to hash filenames.
+        /// </summary>
+        /// <param name="cachePathFunc">Function to get cache path.</param>
+        /// <param name="hashFileNames">Whether to hash file names when storing/looking up files.</param>
+        public CacheManager(Func<string> cachePathFunc, bool hashFileNames = false)
         {
             getCachePath = cachePathFunc;
+            this.hashFileNames = hashFileNames;
         }
 
         private string CachePath => getCachePath();
+
+        private string MapFileNameForSave(string fileName)
+        {
+            return hashFileNames ? CacheUtility.HashFileName(fileName) : fileName;
+        }
+
+        private string ResolveExistingFileName(string fileName)
+        {
+            if (!hashFileNames)
+            {
+                return fileName;
+            }
+            var hashed = CacheUtility.HashFileName(fileName);
+            var hashedPath = Path.Combine(CachePath, hashed);
+            if (File.Exists(hashedPath))
+            {
+                return hashed;
+            }
+            var originalPath = Path.Combine(CachePath, fileName);
+            if (File.Exists(originalPath))
+            {
+                return fileName;
+            }
+            // If neither exists, return the hashed name as the preferred save target.
+            return hashed;
+        }
 
         /// <summary>
         /// Save data to cache.
@@ -39,7 +77,8 @@ namespace KRT.VRCQuestTools.Utils
             lock (lockObject)
             {
                 Directory.CreateDirectory(CachePath);
-                File.WriteAllText(Path.Combine(CachePath, fileName), data);
+                var target = MapFileNameForSave(fileName);
+                File.WriteAllText(Path.Combine(CachePath, target), data);
             }
         }
 
@@ -52,7 +91,8 @@ namespace KRT.VRCQuestTools.Utils
         {
             lock (lockObject)
             {
-                var file = Path.Combine(CachePath, fileName);
+                var resolved = ResolveExistingFileName(fileName);
+                var file = Path.Combine(CachePath, resolved);
                 var data = File.ReadAllText(file);
                 File.SetLastAccessTimeUtc(file, System.DateTime.UtcNow);
                 return data;
@@ -69,7 +109,8 @@ namespace KRT.VRCQuestTools.Utils
             lock (lockObject)
             {
                 Directory.CreateDirectory(CachePath);
-                File.Copy(srcPath, Path.Combine(CachePath, fileName), true);
+                var target = MapFileNameForSave(fileName);
+                File.Copy(srcPath, Path.Combine(CachePath, target), true);
             }
         }
 
@@ -82,7 +123,8 @@ namespace KRT.VRCQuestTools.Utils
         {
             lock (lockObject)
             {
-                var file = Path.Combine(CachePath, fileName);
+                var resolved = ResolveExistingFileName(fileName);
+                var file = Path.Combine(CachePath, resolved);
                 File.Copy(file, destPath, true);
                 File.SetLastAccessTimeUtc(file, System.DateTime.UtcNow);
             }
@@ -95,6 +137,15 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>true when the file exists.</returns>
         internal bool Exists(string fileName)
         {
+            if (!hashFileNames)
+            {
+                return File.Exists(Path.Combine(CachePath, fileName));
+            }
+            var hashed = Path.Combine(CachePath, CacheUtility.HashFileName(fileName));
+            if (File.Exists(hashed))
+            {
+                return true;
+            }
             return File.Exists(Path.Combine(CachePath, fileName));
         }
 

@@ -119,5 +119,112 @@ namespace KRT.VRCQuestTools.Utils
         {
             Assert.IsNotNull(CacheManager.Texture);
         }
+
+        /// <summary>
+        /// Test that saving under hashing stores the file under a hashed filename on disk, while Save/LoadString/Exists accept the original cache key.
+        /// </summary>
+        [Test]
+        public void SaveAndLoadData_WithHashing()
+        {
+            var longName = "very/long/path/that/should/be/hashed_by_the_cache_manager_for_test_purposes.txt";
+            var testData = "HashedData";
+            var hashedManager = new CacheManager(() => testCacheFolder, true);
+
+            hashedManager.Save(longName, testData);
+
+            var expectedHashed = KRT.VRCQuestTools.Utils.CacheUtility.HashFileName(longName);
+            Assert.IsTrue(File.Exists(Path.Combine(testCacheFolder, expectedHashed)), "Hashed file should exist in cache folder.");
+            Assert.IsTrue(hashedManager.Exists(longName));
+
+            var loaded = hashedManager.LoadString(longName);
+            Assert.AreEqual(testData, loaded);
+        }
+
+        /// <summary>
+        /// Test fallback: if an original non-hashed file exists (older cache), the loader should still find and load it.
+        /// </summary>
+        [Test]
+        public void LoadFallsBackToOriginalIfHashedMissing()
+        {
+            var name = "legacy_cache_name.json";
+            var legacyData = "legacy";
+            // Create original file manually to simulate old cache.
+            File.WriteAllText(Path.Combine(testCacheFolder, name), legacyData);
+
+            var hashedManager = new CacheManager(() => testCacheFolder, true);
+            Assert.IsTrue(hashedManager.Exists(name));
+            var loaded = hashedManager.LoadString(name);
+            Assert.AreEqual(legacyData, loaded);
+        }
+
+        /// <summary>
+        /// Test that CopyToCache stores the file under a hashed filename and CopyFromCache retrieves it using the original cache key.
+        /// </summary>
+        [Test]
+        public void CopyToCacheAndFromCache_WithHashing()
+        {
+            var cacheKey = "copy/round/trip/test_file.png";
+            var srcContent = "source file content";
+            var srcPath = Path.Combine(Path.GetTempPath(), "vqt_copy_src_test.txt");
+            var destPath = Path.Combine(Path.GetTempPath(), "vqt_copy_dest_test.txt");
+
+            try
+            {
+                File.WriteAllText(srcPath, srcContent);
+
+                var hashedManager = new CacheManager(() => testCacheFolder, true);
+                hashedManager.CopyToCache(srcPath, cacheKey);
+
+                var expectedHashed = CacheUtility.HashFileName(cacheKey);
+                Assert.IsTrue(File.Exists(Path.Combine(testCacheFolder, expectedHashed)), "Hashed file should exist in cache folder.");
+                Assert.IsTrue(hashedManager.Exists(cacheKey));
+
+                hashedManager.CopyFromCache(cacheKey, destPath);
+                Assert.IsTrue(File.Exists(destPath));
+                Assert.AreEqual(srcContent, File.ReadAllText(destPath));
+            }
+            finally
+            {
+                if (File.Exists(srcPath))
+                {
+                    File.Delete(srcPath);
+                }
+                if (File.Exists(destPath))
+                {
+                    File.Delete(destPath);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Test fallback: CopyFromCache falls back to the original non-hashed filename when the hashed file is missing.
+        /// </summary>
+        [Test]
+        public void CopyFromCacheFallsBackToOriginalIfHashedMissing()
+        {
+            var name = "legacy_copy_file.png";
+            var legacyContent = "legacy copy content";
+            var destPath = Path.Combine(Path.GetTempPath(), "vqt_legacy_copy_dest.txt");
+
+            try
+            {
+                // Create original file manually to simulate old cache.
+                File.WriteAllText(Path.Combine(testCacheFolder, name), legacyContent);
+
+                var hashedManager = new CacheManager(() => testCacheFolder, true);
+                Assert.IsTrue(hashedManager.Exists(name));
+
+                hashedManager.CopyFromCache(name, destPath);
+                Assert.IsTrue(File.Exists(destPath));
+                Assert.AreEqual(legacyContent, File.ReadAllText(destPath));
+            }
+            finally
+            {
+                if (File.Exists(destPath))
+                {
+                    File.Delete(destPath);
+                }
+            }
+        }
     }
 }
