@@ -415,11 +415,11 @@ namespace KRT.VRCQuestTools.Utils
         /// Copy a texture as readable.
         /// </summary>
         /// <param name="texture">Texture to copy.</param>
-        /// <param name="isDataSRGB">Texture is sRGB.</param>
+        /// <param name="linear">Texture is linear.</param>
         /// <returns>Readable texture.</returns>
-        internal static Texture2D CopyAsReadable(Texture2D texture, bool isDataSRGB)
+        internal static Texture2D CopyAsReadable(Texture2D texture, bool linear)
         {
-            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, isDataSRGB);
+            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, linear);
             var data = texture.GetRawTextureData();
             copy.LoadRawTextureData(data);
             copy.Apply(); // Do not use arguments to keep readable.
