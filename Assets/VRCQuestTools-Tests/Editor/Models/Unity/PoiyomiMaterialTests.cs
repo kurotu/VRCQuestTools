@@ -199,18 +199,18 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <summary>
         /// Verify that feature toggles return true based on the fallback value property when the
         /// toggle is absent (simulating a locked Poiyomi shader with that feature enabled).
-        /// The VQT emission bake shader has _EmissionStrength (and siblings) but no _EnableEmission,
+        /// A dedicated test shader has _EmissionStrength (and siblings) but no _EnableEmission,
         /// which perfectly models the locked-and-enabled scenario.
         /// </summary>
         [Test]
         public void EnableEmission_ReturnTrue_WhenToggleMissingButFallbackExists()
         {
-            // Hidden/VRCQuestTools/Poiyomi/Emission defines _EmissionStrength but NOT _EnableEmission,
+            // Hidden/VRCQuestTools/Test/EmissionStrengthOnly defines _EmissionStrength but NOT _EnableEmission,
             // matching a locked Poiyomi shader where the emission toggle was baked in as permanently on.
-            var shader = Shader.Find("Hidden/VRCQuestTools/Poiyomi/Emission");
+            var shader = Shader.Find("Hidden/VRCQuestTools/Test/EmissionStrengthOnly");
             if (shader == null)
             {
-                Assert.Ignore("VQT Poiyomi emission bake shader not found.");
+                Assert.Ignore("Test emission-strength-only shader not found.");
                 return;
             }
 
