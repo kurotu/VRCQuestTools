@@ -669,6 +669,9 @@ namespace KRT.VRCQuestTools.Utils
             copy.LoadRawTextureData(texture.GetRawTextureData());
             copy.Apply(false, true);
             copy.name = texture.name;
+            copy.wrapMode = texture.wrapMode;
+            copy.filterMode = texture.filterMode;
+            copy.anisoLevel = texture.anisoLevel;
             return copy;
         }
 
@@ -769,7 +772,7 @@ namespace KRT.VRCQuestTools.Utils
                 return;
             }
 
-            if (AssetDatabase.GetAssetPath(texture) != null)
+            if (!string.IsNullOrEmpty(AssetDatabase.GetAssetPath(texture)))
             {
                 return;
             }

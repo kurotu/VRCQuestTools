@@ -49,11 +49,14 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Removes the temporary directory and its assets.
+        /// Removes the temporary directory and its assets, and resets the global log-assert flag.
         /// </summary>
         [TearDown]
         public void TearDown()
         {
+            // Always reset the global flag so an exception mid-test cannot leave it enabled and mask
+            // failures in subsequent tests.
+            LogAssert.ignoreFailingMessages = false;
             if (AssetDatabase.IsValidFolder(tempPath))
             {
                 AssetDatabase.DeleteAsset(tempPath);
@@ -322,89 +325,106 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Rendered Texture2D containing captured pixels.</returns>
         private static Texture2D RenderWithNormalMap(Texture2D normalMap)
         {
-            // Sphere with Standard material using the normal map.
-            var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            sphere.transform.position = Vector3.zero;
-
-            var mat = new Material(Shader.Find("Standard"));
-            mat.EnableKeyword("_NORMALMAP");
-            mat.SetTexture("_BumpMap", normalMap);
-            mat.SetFloat("_BumpScale", 1f);
-            sphere.GetComponent<MeshRenderer>().sharedMaterial = mat;
-
-            // Directional light to make normal map shading visible.
-            var lightGo = new GameObject("TestLight");
-            var light = lightGo.AddComponent<Light>();
-            light.type = LightType.Directional;
-            light.transform.rotation = Quaternion.Euler(45f, 45f, 0f);
-            light.intensity = 1f;
-
-            // Camera facing the sphere from the front.
-            var camGo = new GameObject("TestCamera");
-            var cam = camGo.AddComponent<Camera>();
-            cam.transform.position = new Vector3(0f, 0f, -3f);
-            cam.transform.LookAt(sphere.transform);
-            cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = Color.black;
-
-            // Render to a 256x256 RenderTexture and read back pixels.
-            var rt = new RenderTexture(256, 256, 16, RenderTextureFormat.ARGB32);
-            cam.targetTexture = rt;
-            cam.Render();
-
+            GameObject sphere = null;
+            Material mat = null;
+            GameObject lightGo = null;
+            GameObject camGo = null;
+            RenderTexture rt = null;
             var prevRT = RenderTexture.active;
-            RenderTexture.active = rt;
-            var result = new Texture2D(256, 256, TextureFormat.RGBA32, false);
-            result.ReadPixels(new Rect(0f, 0f, 256f, 256f), 0, 0);
-            result.Apply();
-            RenderTexture.active = prevRT;
+            try
+            {
+                // Sphere with Standard material using the normal map.
+                sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere.transform.position = Vector3.zero;
 
-            cam.targetTexture = null;
-            Object.DestroyImmediate(rt);
-            Object.DestroyImmediate(mat);
-            Object.DestroyImmediate(sphere);
-            Object.DestroyImmediate(lightGo);
-            Object.DestroyImmediate(camGo);
+                mat = new Material(Shader.Find("Standard"));
+                mat.EnableKeyword("_NORMALMAP");
+                mat.SetTexture("_BumpMap", normalMap);
+                mat.SetFloat("_BumpScale", 1f);
+                sphere.GetComponent<MeshRenderer>().sharedMaterial = mat;
 
-            return result;
+                // Directional light to make normal map shading visible.
+                lightGo = new GameObject("TestLight");
+                var light = lightGo.AddComponent<Light>();
+                light.type = LightType.Directional;
+                light.transform.rotation = Quaternion.Euler(45f, 45f, 0f);
+                light.intensity = 1f;
+
+                // Camera facing the sphere from the front.
+                camGo = new GameObject("TestCamera");
+                var cam = camGo.AddComponent<Camera>();
+                cam.transform.position = new Vector3(0f, 0f, -3f);
+                cam.transform.LookAt(sphere.transform);
+                cam.clearFlags = CameraClearFlags.SolidColor;
+                cam.backgroundColor = Color.black;
+
+                // Render to a 256x256 RenderTexture and read back pixels.
+                rt = new RenderTexture(256, 256, 16, RenderTextureFormat.ARGB32);
+                cam.targetTexture = rt;
+                cam.Render();
+
+                RenderTexture.active = rt;
+                var result = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+                result.ReadPixels(new Rect(0f, 0f, 256f, 256f), 0, 0);
+                result.Apply();
+                cam.targetTexture = null;
+                return result;
+            }
+            finally
+            {
+                RenderTexture.active = prevRT;
+                if (rt != null) { Object.DestroyImmediate(rt); }
+                if (mat != null) { Object.DestroyImmediate(mat); }
+                if (sphere != null) { Object.DestroyImmediate(sphere); }
+                if (lightGo != null) { Object.DestroyImmediate(lightGo); }
+                if (camGo != null) { Object.DestroyImmediate(camGo); }
+            }
         }
 
         private static Texture2D RenderAsColorTexture(Texture2D texture)
         {
-            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            quad.transform.position = Vector3.zero;
-
-            var mat = new Material(Shader.Find("Unlit/Texture"));
-            mat.SetTexture("_MainTex", texture);
-            quad.GetComponent<MeshRenderer>().sharedMaterial = mat;
-
-            var camGo = new GameObject("RawTextureCamera");
-            var cam = camGo.AddComponent<Camera>();
-            cam.orthographic = true;
-            cam.orthographicSize = 0.5f;
-            cam.transform.position = new Vector3(0f, 0f, -3f);
-            cam.transform.LookAt(quad.transform);
-            cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = Color.black;
-
-            var rt = new RenderTexture(256, 256, 16, RenderTextureFormat.ARGB32);
-            cam.targetTexture = rt;
-            cam.Render();
-
+            GameObject quad = null;
+            Material mat = null;
+            GameObject camGo = null;
+            RenderTexture rt = null;
             var prevRT = RenderTexture.active;
-            RenderTexture.active = rt;
-            var result = new Texture2D(256, 256, TextureFormat.RGBA32, false);
-            result.ReadPixels(new Rect(0f, 0f, 256f, 256f), 0, 0);
-            result.Apply();
-            RenderTexture.active = prevRT;
+            try
+            {
+                quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                quad.transform.position = Vector3.zero;
 
-            cam.targetTexture = null;
-            Object.DestroyImmediate(rt);
-            Object.DestroyImmediate(mat);
-            Object.DestroyImmediate(quad);
-            Object.DestroyImmediate(camGo);
+                mat = new Material(Shader.Find("Unlit/Texture"));
+                mat.SetTexture("_MainTex", texture);
+                quad.GetComponent<MeshRenderer>().sharedMaterial = mat;
 
-            return result;
+                camGo = new GameObject("RawTextureCamera");
+                var cam = camGo.AddComponent<Camera>();
+                cam.orthographic = true;
+                cam.orthographicSize = 0.5f;
+                cam.transform.position = new Vector3(0f, 0f, -3f);
+                cam.transform.LookAt(quad.transform);
+                cam.clearFlags = CameraClearFlags.SolidColor;
+                cam.backgroundColor = Color.black;
+
+                rt = new RenderTexture(256, 256, 16, RenderTextureFormat.ARGB32);
+                cam.targetTexture = rt;
+                cam.Render();
+
+                RenderTexture.active = rt;
+                var result = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+                result.ReadPixels(new Rect(0f, 0f, 256f, 256f), 0, 0);
+                result.Apply();
+                cam.targetTexture = null;
+                return result;
+            }
+            finally
+            {
+                RenderTexture.active = prevRT;
+                if (rt != null) { Object.DestroyImmediate(rt); }
+                if (mat != null) { Object.DestroyImmediate(mat); }
+                if (quad != null) { Object.DestroyImmediate(quad); }
+                if (camGo != null) { Object.DestroyImmediate(camGo); }
+            }
         }
 
         private static float DecodedNormalErrorFromDownscaled(Texture2D downscaledRaw, Texture2D targetRaw, bool decodeRgb)
