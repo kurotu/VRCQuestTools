@@ -57,10 +57,19 @@ namespace KRT.VRCQuestTools.Utils
             // Always reset the global flag so an exception mid-test cannot leave it enabled and mask
             // failures in subsequent tests.
             LogAssert.ignoreFailingMessages = false;
+            if (string.IsNullOrEmpty(tempPath))
+            {
+                return;
+            }
+
             if (AssetDatabase.IsValidFolder(tempPath))
             {
                 AssetDatabase.DeleteAsset(tempPath);
             }
+            else if (Directory.Exists(tempPath))
+            {
+                Directory.Delete(tempPath, true);
+            }
         }
 
         /// <summary>
