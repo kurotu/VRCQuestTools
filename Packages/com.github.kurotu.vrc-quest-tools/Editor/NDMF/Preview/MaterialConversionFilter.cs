@@ -142,11 +142,21 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
             }
 
-            var converter = new AvatarConverter(new MaterialWrapperBuilder());
-            var settingsMap = converter.CreateMaterialConvertSettingsMap(avatarRoot, avatarMaterials.ToArray());
-            // forEditorPreview: true re-uploads freshly generated normal maps so they render in the editor preview.
-            var materialLease = SharedPreviewMaterialCache.Acquire(settingsMap, m => converter.ConvertMaterialsForMobile(m, false, string.Empty, null, forEditorPreview: true));
-            return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(materialLease.MaterialMap, removeExtraMaterialSlots, materialLease));
+            try
+            {
+                var converter = new AvatarConverter(new MaterialWrapperBuilder());
+                var settingsMap = converter.CreateMaterialConvertSettingsMap(avatarRoot, avatarMaterials.ToArray());
+                // forEditorPreview: true re-uploads freshly generated normal maps so they render in the editor preview.
+                var materialLease = SharedPreviewMaterialCache.Acquire(settingsMap, m => converter.ConvertMaterialsForMobile(m, false, string.Empty, null, forEditorPreview: true));
+                return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(materialLease.MaterialMap, removeExtraMaterialSlots, materialLease));
+            }
+            catch (System.Exception e)
+            {
+                // Log the exception and skip preview for this group instead of letting it propagate to NDMF,
+                // which would otherwise retry conversion indefinitely and destabilize the whole preview.
+                Logger.LogException(e, avatarRoot);
+                return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(new Dictionary<Material, Material>(), false, null));
+            }
         }
 
         private class MaterialConversionFilterNode : IRenderFilterNode
