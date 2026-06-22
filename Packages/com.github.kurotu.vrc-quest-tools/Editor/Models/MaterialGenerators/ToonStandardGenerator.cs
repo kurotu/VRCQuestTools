@@ -24,14 +24,22 @@ namespace KRT.VRCQuestTools.Models
         protected readonly Texture2D sharedBlackTexture;
 
         /// <summary>
+        /// Whether the conversion is for the NDMF editor preview. When true, the generated normal map is
+        /// re-uploaded so it displays correctly in the editor.
+        /// </summary>
+        protected readonly bool forEditorPreview;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ToonStandardGenerator"/> class.
         /// </summary>
         /// <param name="settings">Convert settings.</param>
         /// <param name="sharedBlackTexture">Shared black texture to disable emission.</param>
-        internal ToonStandardGenerator(ToonStandardConvertSettings settings, Texture2D sharedBlackTexture)
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview.</param>
+        internal ToonStandardGenerator(ToonStandardConvertSettings settings, Texture2D sharedBlackTexture, bool forEditorPreview)
         {
             this.Settings = settings;
             this.sharedBlackTexture = sharedBlackTexture;
+            this.forEditorPreview = forEditorPreview;
         }
 
         /// <summary>
@@ -183,7 +191,7 @@ namespace KRT.VRCQuestTools.Models
                         newMaterial.NormalMap = t;
                         (newMaterial.NormalMapTextureScale, newMaterial.NormalMapTextureOffset) = GetNormalMapST();
                         newMaterial.NormalMapScale = GetNormalMapScale();
-                    }, normalPlatformOverride).WaitForCompletion();
+                    }, normalPlatformOverride, forEditorPreview).WaitForCompletion();
                 }
 
                 newMaterial.Culling = GetCulling();

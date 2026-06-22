@@ -35,7 +35,7 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Async callback request.</returns>
         internal static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride)
         {
-            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.SRGB, requestGenerateImageFunc, completion, platformOverride);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.SRGB, requestGenerateImageFunc, completion, platformOverride, false);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>Async callback request.</returns>
         internal static AsyncCallbackRequest GenerateParameterTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride)
         {
-            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.Parameter, requestGenerateImageFunc, completion, platformOverride);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.Parameter, requestGenerateImageFunc, completion, platformOverride, false);
         }
 
         /// <summary>
@@ -66,13 +66,14 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
         /// <param name="completion">Completion callback.</param>
         /// <param name="platformOverride">Optional platform override settings (MaxTextureSize and Format) from source textures.</param>
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview; re-uploads the generated normal map so it displays.</param>
         /// <returns>Async callback request.</returns>
-        internal static AsyncCallbackRequest GenerateNormalMap(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride)
+        internal static AsyncCallbackRequest GenerateNormalMap(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride, bool forEditorPreview)
         {
-            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.NormalMap, requestGenerateImageFunc, completion, platformOverride);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.NormalMap, requestGenerateImageFunc, completion, platformOverride, forEditorPreview);
         }
 
-        private static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride)
+        private static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride, bool forEditorPreview)
         {
             var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material) + settings.GetCacheKey());
             var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}_{assetHash}" + (saveAsPng ? ".png" : ".json");
@@ -97,6 +98,15 @@ namespace KRT.VRCQuestTools.Models
                 {
                     texToWrite.name = texName;
                     texToWrite = SaveTexture(settings.MobileTextureFormat, saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile, platformOverride);
+
+                    // A freshly generated normal map is not uploaded to the GPU by TextureGenerator; re-upload it
+                    // for the NDMF preview (preview only) so it renders. See TextureUtility.ReuploadForEditorDisplay.
+                    if (config.isNormalMap && forEditorPreview)
+                    {
+                        var reuploaded = TextureUtility.ReuploadForEditorDisplay(texToWrite);
+                        TextureUtility.DestroyTexture(texToWrite);
+                        texToWrite = reuploaded;
+                    }
                 }
                 completion?.Invoke(texToWrite);
             });

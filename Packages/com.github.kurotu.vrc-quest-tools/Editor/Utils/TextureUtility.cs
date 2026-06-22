@@ -415,11 +415,11 @@ namespace KRT.VRCQuestTools.Utils
         /// Copy a texture as readable.
         /// </summary>
         /// <param name="texture">Texture to copy.</param>
-        /// <param name="isDataSRGB">Texture is sRGB.</param>
+        /// <param name="linear">Texture is linear.</param>
         /// <returns>Readable texture.</returns>
-        internal static Texture2D CopyAsReadable(Texture2D texture, bool isDataSRGB)
+        internal static Texture2D CopyAsReadable(Texture2D texture, bool linear)
         {
-            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, isDataSRGB);
+            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, linear);
             var data = texture.GetRawTextureData();
             copy.LoadRawTextureData(data);
             copy.Apply(); // Do not use arguments to keep readable.
@@ -651,6 +651,31 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Re-uploads an in-memory texture into a fresh same-format copy so that it can be displayed in the editor.
+        /// Textures produced by <see cref="UnityEditor.TextureGenerator"/> (e.g. <see cref="CompressNormalMap"/>)
+        /// are not uploaded to the GPU, so a freshly generated normal map renders incorrectly in the editor
+        /// preview until re-uploaded (the editor displays the compressed normal map correctly once uploaded).
+        /// </summary>
+        /// <param name="texture">Texture to re-upload.</param>
+        /// <returns>A newly created copy that the caller is responsible for destroying, or null when input is null.</returns>
+        internal static Texture2D ReuploadForEditorDisplay(Texture2D texture)
+        {
+            if (texture == null)
+            {
+                return null;
+            }
+
+            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, !texture.isDataSRGB);
+            copy.LoadRawTextureData(texture.GetRawTextureData());
+            copy.Apply(false, true);
+            copy.name = texture.name;
+            copy.wrapMode = texture.wrapMode;
+            copy.filterMode = texture.filterMode;
+            copy.anisoLevel = texture.anisoLevel;
+            return copy;
+        }
+
+        /// <summary>
         /// Creates a single color 4x4 texture.
         /// </summary>
         /// <param name="color">Color to use.</param>
@@ -747,7 +772,7 @@ namespace KRT.VRCQuestTools.Utils
                 return;
             }
 
-            if (AssetDatabase.GetAssetPath(texture) != null)
+            if (!string.IsNullOrEmpty(AssetDatabase.GetAssetPath(texture)))
             {
                 return;
             }
