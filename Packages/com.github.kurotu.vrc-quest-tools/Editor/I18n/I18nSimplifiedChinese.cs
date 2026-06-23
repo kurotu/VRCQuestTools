@@ -1,4 +1,4 @@
-﻿// <copyright file="I18nEnglish.cs" company="kurotu">
+// <copyright file="I18nSimplifiedChinese.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
