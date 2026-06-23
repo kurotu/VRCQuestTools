@@ -14,7 +14,7 @@ using UnityEngine;
 namespace KRT.VRCQuestTools.I18n
 {
     /// <summary>
-    /// SimplifiedChinese strings.
+    /// Simplified Chinese strings.
     /// </summary>
     internal class I18nSimplifiedChinese : I18nBase
     {

@@ -69,7 +69,7 @@ namespace KRT.VRCQuestTools.Menus
         }
 
         /// <summary>
-        /// Use SimplifiedChinese.
+        /// Use Simplified Chinese.
         /// </summary>
         [MenuItem(VRCQuestToolsMenus.MenuPaths.LanguageSimplifiedChinese, false, (int)VRCQuestToolsMenus.MenuPriorities.LanguageSimplifiedChinese)]
         private static void LanguageSimplifiedChinese()

@@ -31,7 +31,7 @@ namespace KRT.VRCQuestTools.Models
         Russian,
 
         /// <summary>
-        /// SimplifiedChinese.
+        /// Simplified Chinese.
         /// </summary>
         SimplifiedChinese,
     }
