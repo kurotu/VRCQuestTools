@@ -1,0 +1,742 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh-CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: vrc-quest-tools\n"
+"X-Crowdin-Project-ID: 712497\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /master/Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/zh-CN.po\n"
+"X-Crowdin-File-ID: 58\n"
+"Project-Id-Version: vrc-quest-tools\n"
+"Language-Team: Chinese Simplified\n"
+"PO-Revision-Date: 2025-05-24 04:13\n"
+
+msgid "CancelLabel"
+msgstr "取消"
+
+msgid "OpenLabel"
+msgstr "打开"
+
+msgid "CloseLabel"
+msgstr "关闭"
+
+msgid "DismissLabel"
+msgstr "忽略"
+
+msgid "ExitLabel"
+msgstr "退出"
+
+msgid "YesLabel"
+msgstr "是"
+
+msgid "NoLabel"
+msgstr "否"
+
+msgid "AbortLabel"
+msgstr "中止"
+
+msgid "AddLabel"
+msgstr "添加"
+
+msgid "RemoveLabel"
+msgstr "移除"
+
+msgid "FixLabel"
+msgstr "修复"
+
+msgid "Maximum"
+msgstr "最大值"
+
+msgid "IncompatibleSDK"
+msgstr "VRChat SDK 不兼容，请反馈。"
+
+msgid "TextureFormatHighQuality"
+msgstr "高质量"
+
+msgid "TextureFormatHighCompression"
+msgstr "高压缩"
+
+msgid "AvatarConverterSettingsEditorDescription"
+msgstr "将此角色转换为可上传至 Android 平台。"
+
+msgid "AvatarConverterSettingsEditorDescriptionNDMF"
+msgstr "当目标平台为 Android 时，将此角色转换为可上传至 Android 平台。"
+
+msgid "ExitPlayModeToEdit"
+msgstr "请先退出播放模式再进行编辑。"
+
+msgid "BeginConvertSettingsButtonLabel"
+msgstr "开始转换设置"
+
+msgid "BeginConvertSettingsButtonDescription"
+msgstr "这将添加以下组件。"
+
+msgid "AvatarLabel"
+msgstr "角色"
+
+msgid "GenerateAndroidTexturesLabel"
+msgstr "生成 Android 纹理"
+
+msgid "GenerateAndroidTexturesTooltip"
+msgstr "通过生成新纹理，不仅应用主纹理，还应用材质参数，从而更接近 PC 版角色的效果"
+
+msgid "SupportedShadersLabel"
+msgstr "支持的着色器"
+
+msgid "SaveToLabel"
+msgstr "保存文件夹"
+
+msgid "SelectButtonLabel"
+msgstr "选择"
+
+msgid "ConvertButtonLabel"
+msgstr "转换"
+
+msgid "AssignButtonLabel"
+msgstr "分配"
+
+msgid "AttachButtonLabel"
+msgstr "附加"
+
+msgid "UpdateTexturesLabel"
+msgstr "更新已转换的 Android 纹理"
+
+msgid "AdvancedConverterSettingsLabel"
+msgstr "高级转换设置"
+
+msgid "RemoveVertexColorLabel"
+msgstr "从网格中移除顶点色"
+
+msgid "RemoveVertexColorTooltip"
+msgstr "通常不需要禁用此选项。当你在 PC 角色中使用需要顶点色的特殊着色器时，可以禁用此选项以防止意外行为。\n"
+"如果顶点色被意外移除，可从角色的 \"VertexColorRemover\" 组件恢复。"
+
+msgid "RemoveExtraMaterialSlotsLabel"
+msgstr "移除多余的材质槽"
+
+msgid "RemoveExtraMaterialSlotsTooltip"
+msgstr "移除每个渲染器中超出子网格数量的多余材质槽。"
+
+msgid "CompressExpressionsMenuIconsLabel"
+msgstr "压缩菜单图标"
+
+msgid "CompressExpressionsMenuIconsTooltip"
+msgstr "如果表情菜单图标未被压缩，则进行压缩。"
+
+msgid "AnimationOverrideLabel"
+msgstr "动画覆盖"
+
+msgid "AnimationOverrideTooltip"
+msgstr "使用动画覆盖控制器的动画来转换 Animator 控制器。"
+
+msgid "NdmfPhaseLabel"
+msgstr "NDMF 转换阶段"
+
+msgid "NdmfPhaseTooltip"
+msgstr "在选定的 NDMF 阶段转换角色。"
+
+msgid "GeneratingTexturesDialogMessage"
+msgstr "正在生成纹理..."
+
+msgid "AvatarConverterFailedDialogMessage"
+msgstr "转换角色时发生错误，已中止。"
+
+msgid "MaterialExceptionDialogMessage"
+msgstr "转换材质时发生错误，已中止。"
+
+msgid "AnimationClipExceptionDialogMessage"
+msgstr "转换动画剪辑时发生错误，已中止。"
+
+msgid "AnimatorControllerExceptionDialogMessage"
+msgstr "转换 Animator 控制器时发生错误，已中止。"
+
+msgid "InvalidReplacementMaterialExceptionDialogMessage"
+msgstr "替换材质不允许用于移动端角色，已中止。"
+
+msgid "InfoForNdmfConversion"
+msgstr "当项目包含 Non-Destructive Modular Framework (NDMF) 包时，你可以在构建时无损地转换角色。请使用 Avatar Builder 以避免 VRChat SDK 限制。"
+
+msgid "InfoForNdmfConversion2"
+msgstr "当项目包含 Non-Destructive Modular Framework (NDMF) 包时，你可以在构建时无损地转换角色。现在你也可以直接从 VRChat SDK 控制面板上传角色。"
+
+msgid "InfoForNetworkIdAssigner"
+msgstr "你可以通过将 Network ID Assigner 组件附加到角色根对象来无损地分配 Network ID。附加组件后请重新上传以应用 ID。"
+
+msgid "NetworkIdAssignerAttached"
+msgstr "Network ID Assigner 已附加到角色。请将未转换的角色上传到 PC 平台以同步 PC 和 Android 之间的 PhysBones。"
+
+msgid "WarningForPerformance"
+msgstr "预估性能评级为 Very Poor，但你可以将转换后的角色上传至 Android 平台。\n"
+"移动端用户默认会看到该角色的 impostor 或回退角色。但他们可以通过更改 \"Avatar Display\" 设置（即 \"Show Avatar\"）来查看该角色。"
+
+msgid "WarningForAppearance"
+msgstr "纹理的透明度不会产生任何效果，因此这可能会影响面部表情。在这种情况下，请自行采取措施（例如编辑动画剪辑或删除有问题的网格）。\n"
+"你应该通过使用其他 Blueprint ID 上传或使用 Avatars 3.0 本地测试来在 PC 上检查转换后角色的外观。"
+
+msgid "WarningForUnsupportedShaders"
+msgstr "以下材质使用了不支持的着色器，纹理可能无法正确生成。\n"
+"禁用 \"生成 Android 纹理\" 选项将仅更改着色器。"
+
+msgid "AlertForComponents"
+msgstr "以下不支持的组件将被移除，请在转换后检查角色功能。"
+
+msgid "AlertForDynamicBoneConversion"
+msgstr "VRCQuestTools 不会将 Dynamic Bones 转换为 PhysBones，请在转换角色之前设置好 PhysBones。"
+
+msgid "AlertForMAConvertConstraints"
+msgstr "Unity Constraints 无法在 Android 上使用。你可以通过添加 MA Convert Constraints 组件到角色来无损地将 Unity Constraints 转换为 VRChat Constraints。"
+
+msgid "AlertForUnityConstraintsConversion"
+msgstr "VRCQuestTools 不会将 Unity Constraints 转换为 VRChat Constraints，请在转换角色之前设置好 VRChat Constraints。"
+
+msgid "AlertForAvatarDynamicsPerformance"
+msgstr "Avatar Dynamics（PhysBones 和 Contacts）的性能评级将为 \"Very Poor\"，因此你将无法上传至 Android。请将 Avatar Dynamics 类别保持在 \"Poor\" 评级。"
+
+msgid "ErrorForPrefabStage"
+msgstr "无法在 Prefab 模式下转换角色，请从 Prefab 模式返回场景。"
+
+msgid "ExitPrefabStageButtonLabel"
+msgstr "返回场景"
+
+msgid "AvatarConverterMaterialConvertSettingsLabel"
+msgstr "材质转换设置"
+
+msgid "AvatarConverterDefaultMaterialConvertSettingLabel"
+msgstr "默认材质转换设置"
+
+msgid "AvatarConverterAdditionalMaterialConvertSettingsLabel"
+msgstr "额外材质转换设置"
+
+msgid "AvatarConverterAvatarDynamicsSettingsLabel"
+msgstr "Avatar Dynamics 设置"
+
+msgid "AvatarConverterRemoveAvatarDynamicsLabel"
+msgstr "移除 Avatar Dynamics"
+
+msgid "AvatarConverterRemoveAvatarDynamicsTooltip"
+msgstr "保留在 \"Avatar Dynamics 设置\" 中选中的 Avatar Dynamics 组件，未选中的组件将在转换过程中被移除。"
+
+msgid "AvatarConverterPhysBonesTooltip"
+msgstr "设置转换时保留的 PhysBones。"
+
+msgid "AvatarConverterPhysBoneCollidersTooltip"
+msgstr "设置转换时保留的 PhysBoneColliders。"
+
+msgid "AvatarConverterContactsTooltip"
+msgstr "设置转换时保留的 ContactSenders 和 ContactReceivers。"
+
+msgid "OpenAvatarBuilder"
+msgstr "无损转换"
+
+msgid "ManualConversionWarning"
+msgstr "手动转换时，不会考虑除 MA Merge Animator 以外的无损组件。合并后可能会出现意外问题。"
+
+msgid "ManualConvertButtonLabel"
+msgstr "转换"
+
+msgid "ConfirmationForUnityConstraints"
+msgstr "手动转换将移除 Unity Constraints。你可以通过添加 MA Convert Constraints 组件到角色并使用 Avatar Builder 上传来无损地将它们转换为 VRChat Constraints。确定要继续转换吗？"
+
+msgid "ConfirmationForMAConvertConstraints"
+msgstr "你可以通过添加 MA Convert Constraints 来无损地将 Unity Constraints 转换为 VRChat Constraints。是否要在转换前添加该组件？"
+
+msgid "IMaterialConvertSettingsTexturesSizeLimitLabel"
+msgstr "纹理尺寸限制"
+
+msgid "IMaterialConvertSettingsMobileTextureFormatLabel"
+msgstr "压缩格式"
+
+msgid "IMaterialConvertSettingsMainTextureBrightnessLabel"
+msgstr "主纹理亮度"
+
+msgid "IMaterialConvertSettingsMainTextureBrightnessTooltip"
+msgstr "调整主纹理颜色。"
+
+msgid "ToonLitConvertSettingsGenerateShadowFromNormalMapLabel"
+msgstr "从法线贴图生成阴影"
+
+msgid "MatCapLitConvertSettingsMatCapTextureLabel"
+msgstr "MatCap 纹理"
+
+msgid "MatCapLitConvertSettingsMatCapTextureWarning"
+msgstr "请设置 MatCap 纹理。"
+
+msgid "ToonStandardConvertSettingsFallbackShadowRampLabel"
+msgstr "回退阴影"
+
+msgid "ToonStandardConvertSettingsCustomFallbackShadowRampLabel"
+msgstr "阴影渐变"
+
+msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
+msgstr "目标材质"
+
+msgid "AdditionalMaterialConvertSettingsSelectMaterialLabel"
+msgstr "选择材质"
+
+msgid "MaterialConvertTypePopupLabelToonLit"
+msgstr "Toon Lit"
+
+msgid "MaterialConvertTypePopupLabelMatCapLit"
+msgstr "MatCap Lit"
+
+msgid "MaterialConvertTypePopupLabelToonStandard"
+msgstr "Toon Standard"
+
+msgid "MaterialConvertTypePopupLabelMaterialReplace"
+msgstr "材质替换"
+
+msgid "MaterialReplaceSettingsMaterialLabel"
+msgstr "被替换材质"
+
+msgid "MaterialReplaceSettingsMaterialTooltip"
+msgstr "目标材质将被此材质替换。"
+
+msgid "MaterialReplaceSettingsMaterialWarning"
+msgstr "此材质的着色器不允许用于移动端角色。"
+
+msgid "NoMissingComponentsMessage"
+msgstr "{0} 中没有 \"缺失\" 的组件。"
+
+msgid "MissingRemoverConfirmationMessage"
+msgstr "从 {0} 中移除 \"缺失\" 的组件。"
+
+msgid "UnpackPrefabMessage"
+msgstr "这也将执行 \"Unpack Prefab\" 操作。"
+
+msgid "MissingRemoverOnBuildDialogMessage"
+msgstr "{0} 包含 \"缺失\" 的组件，是否要在不包含这些组件的情况下继续构建角色？"
+
+msgid "SourceMeshLabel"
+msgstr "源网格"
+
+msgid "TargetMeshLabel"
+msgstr "目标网格"
+
+msgid "CopyButtonLabel"
+msgstr "复制 BlendShape 权重"
+
+msgid "SwitchButtonLabel"
+msgstr "切换源/目标"
+
+msgid "NoUnsupportedComponentsMessage"
+msgstr "{0} 中没有不支持的组件。"
+
+msgid "UnsupportedRemoverConfirmationMessage"
+msgstr "从 {0} 中移除以下不支持的组件。"
+
+msgid "PhysBonesSDKRequired"
+msgstr "需要支持 Avatar Dynamics 的 VRCSDK。"
+
+msgid "SelectComponentsToKeep"
+msgstr "选择要保留的组件。"
+
+msgid "PhysBonesListTooltip"
+msgstr "组件列表及其根变换。"
+
+msgid "KeepAll"
+msgstr "全部保留"
+
+msgid "AvatarDynamicsPreventsUpload"
+msgstr "你无法将此角色上传至 Android。Avatar Dynamics 至少需保持 \"Poor\" 评级。"
+
+msgid "PhysBonesWillBeRemovedAtRunTime"
+msgstr "你无法将此角色上传至 Android，请减少 PhysBone 组件。"
+
+msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
+msgstr "所有 PhysBone 碰撞体将在 Android 运行时被移除，请减少 PhysBoneCollider 组件。"
+
+msgid "ContactsWillBeRemovedAtRunTime"
+msgstr "你无法将此角色上传至 Android，请减少 VRCContact 组件。"
+
+msgid "PhysBonesTransformsShouldBeReduced"
+msgstr "你无法将此角色上传至 Android，请减少 VRCPhysBone 组件或其层级下的变换数量。"
+
+msgid "PhysBonesCollisionCheckCountShouldBeReduced"
+msgstr "你无法将此角色上传至 Android，请减少 VRCPhysBone 组件与 VRCPhysBoneCollider 组件之间的碰撞检测次数。"
+
+msgid "PhysBonesShouldHaveNetworkID"
+msgstr "为了正确同步 PhysBones，PC 和 Android 上的 PhysBones 必须具有相同的 Network ID。请使用 VRCSDK 的 Network ID Utility 为 PC 版和 Android 版分配 Network ID，然后重新上传两个版本。"
+
+msgid "AlertForMultiplePhysBones"
+msgstr "单个 GameObject 中存在多个 PhysBones，移除 PhysBones 后它们在 PC 和 Android 之间可能无法正确同步。"
+
+msgid "EstimatedPerformanceStats"
+msgstr "预估性能统计"
+
+msgid "DeleteUnselectedComponents"
+msgstr "删除未选中的组件"
+
+msgid "SelectAllButtonLabel"
+msgstr "全选"
+
+msgid "DeselectAllButtonLabel"
+msgstr "取消全选"
+
+msgid "ApplyButtonLabel"
+msgstr "应用"
+
+msgid "TextureLabel"
+msgstr "纹理"
+
+msgid "InvertLabel"
+msgstr "反转"
+
+msgid "SaveFileDialogTitle"
+msgstr "保存 {0}"
+
+msgid "SaveFileDialogMessage"
+msgstr "请输入要保存纹理的文件名"
+
+msgid "GenerateButtonLabel"
+msgstr "生成金属光滑度"
+
+msgid "RecommendedUnitySettingsForAndroid"
+msgstr "Android 推荐设置"
+
+msgid "AndroidBuildSupportHelp"
+msgstr "上传 Android 平台角色需要 Android Build Support。"
+
+msgid "AndroidBuildSupportButtonLabel"
+msgstr "安装方法"
+
+msgid "TextureCompressionLabel"
+msgstr "Android 纹理压缩"
+
+msgid "TextureCompressionHelp"
+msgstr "ASTC 以提高压缩时间为代价提升 Android 纹理质量"
+
+msgid "TextureCompressionButtonLabel"
+msgstr "将纹理压缩设置为 ASTC"
+
+msgid "ApplyAllButtonLabel"
+msgstr "应用所有设置"
+
+msgid "ShowOnStartupLabel"
+msgstr "启动时显示"
+
+msgid "AllAppliedHelp"
+msgstr "好的，所有推荐设置已应用。"
+
+msgid "GetUpdate"
+msgstr "获取更新"
+
+msgid "SeeChangelog"
+msgstr "更新日志"
+
+msgid "SkipThisVersion"
+msgstr "跳过此版本"
+
+msgid "NewVersionIsAvailable"
+msgstr "新版本 {0} 可用。"
+
+msgid "NewVersionHasBreakingChanges"
+msgstr "此版本可能存在兼容性方面的重大变更。"
+
+msgid "MissingScripts"
+msgstr "以下对象包含 \"缺失\" 的组件，请检查是否忘记导入某些资源或包。"
+
+msgid "ExperimentalComponentWarning"
+msgstr "此组件为实验性功能。"
+
+msgid "AvatarRootComponentMustBeOnAvatarRoot"
+msgstr "此组件必须附加到 VRC_AvatarDescriptor 的 GameObject 上。"
+
+msgid "VertexColorRemoverEditorDescription"
+msgstr "将自动从此 GameObject 的网格中移除顶点色。"
+
+msgid "VertexColorRemoverEditorRemove"
+msgstr "移除顶点色"
+
+msgid "VertexColorRemoverEditorRestore"
+msgstr "恢复顶点色"
+
+msgid "ConvertedAvatarEditorMessage"
+msgstr "此组件表示该角色已由 VRCQuestTools 转换。"
+
+msgid "ConvertedAvatarEditorNDMFMessage"
+msgstr "不支持 Android 的组件将在 NDMF 优化阶段被移除。"
+
+msgid "NetworkIDAssignerEditorDescription"
+msgstr "在构建过程中为角色的 PhysBones 等组件分配 Network ID。ID 由从角色根节点开始的层级路径的哈希值决定。"
+
+msgid "PlatformTargetSettingsEditorDescription"
+msgstr "在 NDMF 构建过程中强制组件使用特定平台的设置。"
+
+msgid "PlatformTargetSettingsIsRequiredToEnforcePlatform"
+msgstr "需要在角色根对象上添加 PlatformTargetSettings 组件以强制使用特定平台的设置。"
+
+msgid "ComponentRequiresNdmf"
+msgstr "需要 Non-Destructive Modular Framework (NDMF)。"
+
+msgid "BuildTargetLabel"
+msgstr "构建目标"
+
+msgid "BuildTargetTooltip"
+msgstr "选择构建目标平台。选择 Auto 时使用 Unity 的目标平台。"
+
+msgid "PlatformComponentRemoverEditorDescription"
+msgstr "在构建时将移除未选中构建目标的组件。"
+
+msgid "PlatformComponentRemoverEditorComponentSettingsLabel"
+msgstr "要保留的组件"
+
+msgid "PlatformComponentRemoverEditorComponentSettingsTooltip"
+msgstr "选择要保留组件的平台。"
+
+msgid "PlatformComponentRemoverEditorCheckboxPCTooltip"
+msgstr "在 PC 构建时保留选中的组件。"
+
+msgid "PlatformComponentRemoverEditorCheckboxAndroidTooltip"
+msgstr "在 Android 构建时保留选中的组件。"
+
+msgid "ComponentLabel"
+msgstr "组件"
+
+msgid "PlatformGameObjectRemoverEditorDescription"
+msgstr "在构建时将为未选中的构建目标移除此 GameObject。"
+
+msgid "PlatformGameObjectRemoverEditorKeepOnPCLabel"
+msgstr "在 PC 上保留"
+
+msgid "PlatformGameObjectRemoverEditorKeepOnAndroidLabel"
+msgstr "在 Android 上保留"
+
+msgid "MeshFlipperEditorDescription"
+msgstr "复制网格的多边形使其成为双面，或翻转面。"
+
+msgid "MeshFlipperEditorDirectionLabel"
+msgstr "网格方向"
+
+msgid "MeshFlipperEditorEnabledOnPCLabel"
+msgstr "在 PC 上启用"
+
+msgid "MeshFlipperEditorEnabledOnAndroidLabel"
+msgstr "在 Android 上启用"
+
+msgid "MeshFlipperEditorUseMaskLabel"
+msgstr "使用遮罩"
+
+msgid "MeshFlipperEditorMaskTextureLabel"
+msgstr "遮罩纹理"
+
+msgid "MeshFlipperEditorMaskModeLabel"
+msgstr "遮罩模式"
+
+msgid "MeshFlipperEditorProcessingPhaseLabel"
+msgstr "NDMF 阶段"
+
+msgid "MeshFlipperEditorEnabledOnPCWarning"
+msgstr "可能可以通过着色器设置来实现此功能，而无需使用此组件。"
+
+msgid "MeshFlipperEditorEnabledOnAndroidWarning"
+msgstr "此网格的多边形数量将增加。"
+
+msgid "MeshFlipperEditorMaskTextureMissingError"
+msgstr "遮罩纹理缺失。"
+
+msgid "MeshFlipperEditorMaskTextureNotReadableError"
+msgstr "遮罩纹理必须为可读。"
+
+msgid "MeshFlipperMeshDirectionFlip"
+msgstr "翻转"
+
+msgid "MeshFlipperMeshDirectionDoubleSide"
+msgstr "双面"
+
+msgid "MaterialSwapEditorDescription"
+msgstr "为移动端平台构建替换此角色的材质。"
+
+msgid "MaterialSwapEditorMaterialMappingsLabel"
+msgstr "材质映射"
+
+msgid "MaterialSwapEditorOriginalMaterialLabel"
+msgstr "原始材质"
+
+msgid "MaterialSwapEditorReplacementMaterialLabel"
+msgstr "替换材质"
+
+msgid "MaterialSwapEditorSelectMaterialLabel"
+msgstr "从子级中选择"
+
+msgid "MaterialSwapEditorReplacementMaterialError"
+msgstr "此材质的着色器不允许用于移动端角色。"
+
+msgid "MaterialConversionSettingsEditorDescription"
+msgstr "为移动端平台转换材质。"
+
+msgid "MaterialConversionSettingsEditorDefaultConversionWarning"
+msgstr "将此组件放置在角色的根对象上以使用禁用的设置。但 VQT Avatar Converter Settings 优先级更高。"
+
+msgid "MaterialConversionSettingsEditorConversionSettingsLabel"
+msgstr "材质转换设置"
+
+msgid "MenuIconResizerEditorDescription"
+msgstr "调整角色表情菜单中的菜单图标大小。"
+
+msgid "MenuIconResizerEditorResizeModePCLabel"
+msgstr "调整大小模式（PC）"
+
+msgid "MenuIconResizerEditorResizeModeAndroidLabel"
+msgstr "调整大小模式（Android）"
+
+msgid "MenuIconResizerEditorCompressTexturesLabel"
+msgstr "压缩未压缩的纹理"
+
+msgid "MenuIconResizerEditorMobileTextureFormatLabel"
+msgstr "压缩格式"
+
+msgid "AvatarBuilderWindowExitPlayMode"
+msgstr "请先退出播放模式再构建角色。"
+
+msgid "AvatarBuilderWindowExitPrefabStage"
+msgstr "请先退出 Prefab 模式再构建角色。"
+
+msgid "AvatarBuilderWindowNoActiveAvatarsFound"
+msgstr "场景中没有找到激活的角色。"
+
+msgid "AvatarBuilderWindowSelectAvatar"
+msgstr "请在 VRChat SDK 控制面板中选择要构建的角色。"
+
+msgid "AvatarBuilderWindowNoNdmfComponentsFound"
+msgstr "角色中未找到 VRCQuestTools 组件。"
+
+msgid "AvatarBuilderWindowSucceededBuild"
+msgstr "角色构建成功。"
+
+msgid "AvatarBuilderWindowSucceededUpload"
+msgstr "角色上传成功。"
+
+msgid "AvatarBuilderWindowFailedBuild"
+msgstr "角色构建失败，请查看控制台日志。"
+
+msgid "AvatarBuilderWindowRequiresControlPanel"
+msgstr "需要打开 VRChat SDK 控制面板来构建角色。"
+
+msgid "AvatarBuilderWindowBuildingProgressLabel"
+msgstr "正在构建角色"
+
+msgid "AvatarBuilderWindowUploadingProgressLabel"
+msgstr "正在上传角色"
+
+msgid "AvatarBuilderWindowCopyrightAgreementHelp"
+msgstr "请在 VRChat SDK 控制面板中确认 \"Copyright ownership agreement\"。"
+
+msgid "AvatarBuilderWindowOfflineTestingLabel"
+msgstr "离线测试（{0}）"
+
+msgid "AvatarBuilderWindowOfflineTestingDescription"
+msgstr "使用 Android 构建设置构建此角色以进行测试。该角色将出现在角色菜单的 Other 分类中，名称为 \"SDK {0}\"。"
+
+msgid "AvatarBuilderWindowOnlinePublishingLabel"
+msgstr "在线发布（{0}）"
+
+msgid "AvatarBuilderWindowOnlinePublishingDescription"
+msgstr "使用 Android 构建设置将此角色上传至 VRChat。即使角色不满足 Android 限制，也将跳过 VRChat SDK 控制面板的预构建验证。"
+
+msgid "AvatarBuilderWindowSdkNoPrecheck"
+msgstr "现在你也可以直接从 VRChat SDK 控制面板上传角色。"
+
+msgid "AvatarBuilderWindowSetAsFallbackIfPossible"
+msgstr "如果可能，设置为回退角色"
+
+msgid "AvatarBuilderWindowSetAsFallbackIfPossibleTooltip"
+msgstr "构建角色后性能评级必须为 Good 或更好。"
+
+msgid "AvatarBuilderWindowFallbackNotAllowed"
+msgstr "无法设置为回退角色，因为性能评级为 {0}。"
+
+msgid "AvatarBuilderWindowNdmfManualBakingLabel"
+msgstr "NDMF 手动烘焙"
+
+msgid "AvatarBuilderWindowNdmfManualBakingDescription"
+msgstr "执行菜单：Tools -> NDM Framework -> Manual bake avatar，使用 Android 构建设置。"
+
+msgid "AvatarBuilderWindowRequiresAvatarNameAndThumb"
+msgstr "上传新角色时需要在 VRChat SDK 控制面板中设置名称和缩略图。"
+
+msgid "FeatureRequiresNdmf"
+msgstr "需要 Non-Destructive Modular Framework。"
+
+msgid "NdmfPluginRequiresNdmfUpdate"
+msgstr "需要 Non-Destructive Modular Framework (NDMF) {0} 或更高版本，请更新 NDMF。"
+
+msgid "NdmfPluginRemovedUnsupportedComponent"
+msgstr "已从 \"{1}\" 中移除不支持的组件 \"{0}\"，请测试角色。"
+
+msgid "NDMF:RemovedUnsupportedComponentTitle"
+msgstr "已移除不支持的组件"
+
+msgid "NDMF:RemovedUnsupportedComponentDescription"
+msgstr "在构建过程中从 \"{1}\" 中移除了不支持的组件 {0}，请测试角色。"
+
+msgid "NDMF:MaterialConversionErrorTitle"
+msgstr "材质转换错误"
+
+msgid "NDMF:MaterialConversionErrorDescription"
+msgstr "转换材质时发生错误。\n\n"
+"材质：{0}\n"
+"着色器：{1}\n\n"
+"{2}：{3}\n"
+"{4}"
+
+msgid "NDMF:MaterialSwapNullErrorTitle"
+msgstr "材质未设置"
+
+msgid "NDMF:MaterialSwapNullErrorDescription"
+msgstr "VQT Material Swap 组件未设置材质。\n\n"
+"原始：{0}\n"
+"替换：{1}"
+
+msgid "NDMF:ObjectConversionErrorTitle"
+msgstr "{0} 转换错误"
+
+msgid "NDMF:ObjectConversionErrorDescription"
+msgstr "转换 {0} 时发生错误。\n\n"
+"{0}：{1}\n\n"
+"{2}：{3}\n"
+"{4}"
+
+msgid "NDMF:TargetMaterialNullErrorTitle"
+msgstr "目标材质未设置"
+
+msgid "NDMF:TargetMaterialNullErrorTitle:description"
+msgstr "{0} 组件未设置目标材质。"
+
+msgid "NDMF:UnsupportedTextureFormatTitle"
+msgstr "不支持的纹理格式"
+
+msgid "NDMF:UnsupportedTextureFormatDescription"
+msgstr "{1} 使用了不支持的纹理格式 {0}。手动烘焙生成纹理时，请切换目标平台后重新执行手动烘焙。"
+
+msgid "NDMF:UnknownTextureFormatTitle"
+msgstr "未知纹理格式"
+
+msgid "NDMF:UnknownTextureFormatDescription"
+msgstr "{1} 使用了未知的纹理格式 {0}。请向工具开发者反馈以抑制此警告。"
+
+msgid "NDMF:MissingNetworkIDAssignerTitle"
+msgstr "Network ID 分配"
+
+msgid "NDMF:MissingNetworkIDAssignerDescription"
+msgstr "为了正确同步 PhysBones，PC 和 Android 上的 PhysBones 必须具有相同的 Network ID。\n"
+"你可以通过将 Network ID Assigner 组件附加到角色根对象来无损地分配 Network ID。附加组件后请为每个平台重新上传以应用 ID。"
+
+msgid "NDMF:MeshFlipperMaskMissingErrorTitle"
+msgstr "遮罩纹理缺失"
+
+msgid "NDMF:MeshFlipperMaskMissingErrorDescription"
+msgstr "遮罩纹理缺失，请设置纹理。"
+
+msgid "NDMF:MeshFlipperMaskNotReadableErrorTitle"
+msgstr "遮罩纹理不可读"
+
+msgid "NDMF:MeshFlipperMaskNotReadableErrorDescription"
+msgstr "遮罩纹理不可读，请更改纹理的导入设置。"
+
+msgid "NDMF:ReplacementMaterialErrorTitle"
+msgstr "无效的替换材质"
+
+msgid "NDMF:ReplacementMaterialErrorDescription"
+msgstr "替换材质 {0} 使用了不允许用于移动端角色的着色器 {1}。"
