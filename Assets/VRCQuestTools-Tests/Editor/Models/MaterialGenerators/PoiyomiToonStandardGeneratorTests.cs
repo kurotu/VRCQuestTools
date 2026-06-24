@@ -219,5 +219,229 @@ namespace KRT.VRCQuestTools.Models
             Assert.IsTrue(wrapper.UseNormalMap, "UseNormalMap should be true when source normal map exists.");
             Assert.AreEqual(normalMap.Object, wrapper.NormalMap, "Normal map texture should be copied.");
         }
+
+        /// <summary>
+        /// Ensure rim slot 1 is used when slot 0 is disabled but slot 1 is enabled.
+        /// </summary>
+        [Test]
+        public void ConvertToToonStandard_NonBake_RimSlot1Only_Used()
+        {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
+            TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Standard");
+
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
+
+            using var sourceMaterial = DisposableObject.New(new Material(shader));
+            sourceMaterial.Object.SetFloat("_EnableRimLighting", 0.0f);
+            sourceMaterial.Object.SetFloat("_EnableRim2Lighting", 1.0f);
+            sourceMaterial.Object.SetFloat("_Rim2Style", 0.0f); // Poiyomi style
+            sourceMaterial.Object.SetColor("_Rim2LightColor", Color.red);
+            sourceMaterial.Object.SetFloat("_Rim2Strength", 10.0f); // -> intensity 10/20 = 0.5
+            sourceMaterial.Object.SetFloat("_Rim2Width", 0.6f); // -> range 0.6
+
+            var settings = new ToonStandardConvertSettings
+            {
+                generateQuestTextures = false,
+            };
+
+            var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
+            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+
+            Material resultMat = null;
+            generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
+            using var resultMaterial = DisposableObject.New(resultMat);
+
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            var wrapper = new ToonStandardMaterialWrapper(resultMat);
+            Assert.IsTrue(wrapper.UseRimLighting, "Rim lighting should be enabled from slot 1.");
+            Assert.AreEqual(0.6f, wrapper.RimRange, 0.01f, "Rim range should come from slot 1 width.");
+            Assert.AreEqual(0.5f, wrapper.RimIntensity, 0.01f, "Rim intensity should come from slot 1 strength.");
+            Assert.AreEqual(1.0f, wrapper.RimColor.r, 0.05f, "Rim color R should come from slot 1.");
+            Assert.AreEqual(0.0f, wrapper.RimColor.g, 0.05f, "Rim color G should come from slot 1.");
+            Assert.AreEqual(0.0f, wrapper.RimColor.b, 0.05f, "Rim color B should come from slot 1.");
+        }
+
+        /// <summary>
+        /// Ensure rim lighting is disabled when both slots are off.
+        /// </summary>
+        [Test]
+        public void ConvertToToonStandard_NonBake_RimBothDisabled_NotUsed()
+        {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
+            TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Standard");
+
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
+
+            using var sourceMaterial = DisposableObject.New(new Material(shader));
+            sourceMaterial.Object.SetFloat("_EnableRimLighting", 0.0f);
+            sourceMaterial.Object.SetFloat("_EnableRim2Lighting", 0.0f);
+
+            var settings = new ToonStandardConvertSettings
+            {
+                generateQuestTextures = false,
+            };
+
+            var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
+            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+
+            Material resultMat = null;
+            generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
+            using var resultMaterial = DisposableObject.New(resultMat);
+
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            var wrapper = new ToonStandardMaterialWrapper(resultMat);
+            Assert.IsFalse(wrapper.UseRimLighting, "Rim lighting should be disabled when both slots are off.");
+        }
+
+        /// <summary>
+        /// Ensure matcap slot 1 is used when slot 0 is disabled but slot 1 is enabled.
+        /// </summary>
+        [Test]
+        public void ConvertToToonStandard_NonBake_MatcapSlot1Only_Used()
+        {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
+            TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Standard");
+
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
+
+            using var sourceMaterial = DisposableObject.New(new Material(shader));
+            using var matcapTex = DisposableObject.New(new Texture2D(4, 4));
+            sourceMaterial.Object.SetFloat("_MatcapEnable", 0.0f);
+            sourceMaterial.Object.SetFloat("_Matcap2Enable", 1.0f);
+            sourceMaterial.Object.SetTexture("_Matcap2", matcapTex.Object);
+            sourceMaterial.Object.SetFloat("_Matcap2Intensity", 2.5f); // -> strength 2.5/5 = 0.5
+            sourceMaterial.Object.SetFloat("_Matcap2Replace", 1.0f);
+
+            var settings = new ToonStandardConvertSettings
+            {
+                generateQuestTextures = false,
+            };
+
+            var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
+            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+
+            Material resultMat = null;
+            generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
+            using var resultMaterial = DisposableObject.New(resultMat);
+
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            var wrapper = new ToonStandardMaterialWrapper(resultMat);
+            Assert.IsTrue(wrapper.UseMatcap, "Matcap should be enabled from slot 1.");
+            Assert.AreEqual(matcapTex.Object, wrapper.Matcap, "Matcap texture should come from slot 1.");
+            Assert.AreEqual(0.5f, wrapper.MatcapStrength, 0.01f, "Matcap strength should come from slot 1 intensity.");
+        }
+
+        /// <summary>
+        /// Ensure Stylized Reflections (lilToon mode) takes priority over Mochie BRDF.
+        /// </summary>
+        [Test]
+        public void ConvertToToonStandard_NonBake_StylizedReflections_PriorityOverMochie()
+        {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
+            TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Standard");
+
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
+
+            using var sourceMaterial = DisposableObject.New(new Material(shader));
+
+            // Enable both Mochie BRDF and Stylized Reflections; stylized should win.
+            sourceMaterial.Object.SetFloat("_MochieBRDF", 1.0f);
+            sourceMaterial.Object.SetFloat("_MochieMetallicMultiplier", 0.1f);
+            sourceMaterial.Object.SetFloat("_MochieRoughnessMultiplier", 0.2f);
+
+            sourceMaterial.Object.SetFloat("_StylizedSpecular", 1.0f);
+            sourceMaterial.Object.SetFloat("_StylizedReflectionMode", 1.0f); // lilToon
+            sourceMaterial.Object.SetFloat("_Metallic", 0.7f);
+            sourceMaterial.Object.SetFloat("_Smoothness", 0.3f);
+            sourceMaterial.Object.SetFloat("_Reflectance", 0.9f);
+
+            var settings = new ToonStandardConvertSettings
+            {
+                generateQuestTextures = false,
+            };
+
+            var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
+            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+
+            Material resultMat = null;
+            generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
+            using var resultMaterial = DisposableObject.New(resultMat);
+
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            var wrapper = new ToonStandardMaterialWrapper(resultMat);
+            Assert.IsTrue(wrapper.UseSpecular, "Specular should be enabled.");
+            Assert.AreEqual(0.7f, wrapper.MetallicStrength, 0.01f, "Metallic should come from Stylized (lilToon), not Mochie.");
+            Assert.AreEqual(0.3f, wrapper.GlossStrength, 0.01f, "Gloss should come from Stylized (lilToon), not Mochie.");
+            Assert.AreEqual(0.9f, wrapper.Reflectance, 0.01f, "Reflectance should come from Stylized (lilToon).");
+        }
+
+        /// <summary>
+        /// Ensure Stylized Reflections UnityChan mode maps to approximate ToonStandard specular.
+        /// </summary>
+        [Test]
+        public void ConvertToToonStandard_NonBake_StylizedReflections_UnityChanMode()
+        {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
+            TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Standard");
+
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
+
+            using var sourceMaterial = DisposableObject.New(new Material(shader));
+            sourceMaterial.Object.SetFloat("_StylizedSpecular", 1.0f);
+            sourceMaterial.Object.SetFloat("_StylizedReflectionMode", 0.0f); // UnityChan
+            sourceMaterial.Object.SetFloat("_StylizedSpecularStrength", 0.8f); // -> reflectance 0.8
+            sourceMaterial.Object.SetFloat("_HighColor_Power", 0.25f); // -> gloss 1 - 0.25 = 0.75
+            sourceMaterial.Object.SetFloat("_StylizedSpecularFeather", 0.2f); // -> sharpness 1 - 0.2 = 0.8
+
+            var settings = new ToonStandardConvertSettings
+            {
+                generateQuestTextures = false,
+            };
+
+            var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
+            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+
+            Material resultMat = null;
+            generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
+            using var resultMaterial = DisposableObject.New(resultMat);
+
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            var wrapper = new ToonStandardMaterialWrapper(resultMat);
+            Assert.IsTrue(wrapper.UseSpecular, "Specular should be enabled from Stylized Reflections.");
+            Assert.AreEqual(0.0f, wrapper.MetallicStrength, 0.01f, "UnityChan mode has no metallic.");
+            Assert.AreEqual(0.75f, wrapper.GlossStrength, 0.01f, "Gloss should approximate from highlight size.");
+            Assert.AreEqual(0.8f, wrapper.Sharpness, 0.01f, "Sharpness should come from feather.");
+            Assert.AreEqual(0.8f, wrapper.Reflectance, 0.01f, "Reflectance should come from stylized strength.");
+        }
     }
 }

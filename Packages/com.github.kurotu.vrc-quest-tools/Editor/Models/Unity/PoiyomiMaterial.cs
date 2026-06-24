@@ -317,150 +317,306 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal Vector2 EmissionMaskTextureOffset3 => GetTextureOffsetProperty("_EmissionMask3");
 
         /// <summary>
+        /// Gets the index of the active matcap slot, or -1 when no matcap is enabled.
+        /// Poiyomi has two matcap slots (slot 0 = "_Matcap*", slot 1 = "_Matcap2*"), but
+        /// ToonStandard provides only one. The lowest-numbered enabled slot is selected.
+        /// </summary>
+        internal int ActiveMatcapSlot
+        {
+            get
+            {
+                if (GetBoolPropertyWithFallback("_MatcapEnable", "_Matcap"))
+                {
+                    return 0;
+                }
+
+                if (GetBoolPropertyWithFallback("_Matcap2Enable", "_Matcap2"))
+                {
+                    return 1;
+                }
+
+                return -1;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether matcap is enabled.
         /// </summary>
-        internal bool UseMatcap => GetBoolPropertyWithFallback("_MatcapEnable", "_Matcap");
+        internal bool UseMatcap => ActiveMatcapSlot >= 0;
 
         /// <summary>
         /// Gets matcap texture.
         /// </summary>
-        internal Texture MatcapTexture => GetTextureProperty("_Matcap");
+        internal Texture MatcapTexture => GetTextureProperty(MatcapProp(string.Empty));
 
         /// <summary>
         /// Gets matcap color.
         /// </summary>
-        internal Color MatcapColor => GetColorProperty("_MatcapColor");
+        internal Color MatcapColor => GetColorProperty(MatcapProp("Color"));
 
         /// <summary>
         /// Gets matcap intensity.
         /// </summary>
-        internal float MatcapIntensity => GetFloatProperty("_MatcapIntensity");
+        internal float MatcapIntensity => GetFloatProperty(MatcapProp("Intensity"));
 
         /// <summary>
         /// Gets matcap mask texture.
         /// </summary>
-        internal Texture MatcapMask => GetTextureProperty("_MatcapMask");
+        internal Texture MatcapMask => GetTextureProperty(MatcapProp("Mask"));
 
         /// <summary>
         /// Gets matcap mask texture scale.
         /// </summary>
-        internal Vector2 MatcapMaskTextureScale => GetTextureScaleProperty("_MatcapMask");
+        internal Vector2 MatcapMaskTextureScale => GetTextureScaleProperty(MatcapProp("Mask"));
 
         /// <summary>
         /// Gets matcap mask texture offset.
         /// </summary>
-        internal Vector2 MatcapMaskTextureOffset => GetTextureOffsetProperty("_MatcapMask");
+        internal Vector2 MatcapMaskTextureOffset => GetTextureOffsetProperty(MatcapProp("Mask"));
 
         /// <summary>
         /// Gets matcap mask channel.
         /// </summary>
-        internal float MatcapMaskChannel => GetFloatProperty("_MatcapMaskChannel");
+        internal float MatcapMaskChannel => GetFloatProperty(MatcapProp("MaskChannel"));
 
         /// <summary>
         /// Gets matcap replace blend weight.
         /// </summary>
-        internal float MatcapReplace => GetFloatProperty("_MatcapReplace");
+        internal float MatcapReplace => GetFloatProperty(MatcapProp("Replace"));
 
         /// <summary>
         /// Gets matcap multiply blend weight.
         /// </summary>
-        internal float MatcapMultiply => GetFloatProperty("_MatcapMultiply");
+        internal float MatcapMultiply => GetFloatProperty(MatcapProp("Multiply"));
 
         /// <summary>
         /// Gets matcap add blend weight.
         /// </summary>
-        internal float MatcapAdd => GetFloatProperty("_MatcapAdd");
+        internal float MatcapAdd => GetFloatProperty(MatcapProp("Add"));
 
         /// <summary>
         /// Gets matcap screen blend weight.
         /// </summary>
-        internal float MatcapScreen => GetFloatProperty("_MatcapScreen");
+        internal float MatcapScreen => GetFloatProperty(MatcapProp("Screen"));
+
+        /// <summary>
+        /// Gets the index of the active rim lighting slot, or -1 when no rim is enabled.
+        /// Poiyomi has two rim slots (slot 0 = "_Rim*", slot 1 = "_Rim2*"), but ToonStandard
+        /// provides only one. The lowest-numbered enabled slot is selected.
+        /// </summary>
+        internal int ActiveRimSlot
+        {
+            get
+            {
+                if (GetBoolPropertyWithFallback("_EnableRimLighting", "_RimStyle"))
+                {
+                    return 0;
+                }
+
+                if (GetBoolPropertyWithFallback("_EnableRim2Lighting", "_Rim2Style"))
+                {
+                    return 1;
+                }
+
+                return -1;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether rim lighting is enabled.
         /// </summary>
-        internal bool UseRimLighting => GetBoolPropertyWithFallback("_EnableRimLighting", "_RimStyle");
+        internal bool UseRimLighting => ActiveRimSlot >= 0;
 
         /// <summary>
         /// Gets the rim lighting style (0=Poiyomi, 1=UTS2, 2=LilToon).
         /// </summary>
-        internal int RimStyle => (int)GetFloatProperty("_RimStyle");
+        internal int RimStyle => (int)GetFloatProperty(RimProp("Style"));
 
         /// <summary>
         /// Gets rim light color (styles 0 and 1).
         /// </summary>
-        internal Color RimLightColor => GetColorProperty("_RimLightColor");
+        internal Color RimLightColor => GetColorProperty(RimProp("LightColor"));
 
         // ---- Style 0 (Poiyomi) ----
 
         /// <summary>
         /// Gets rim strength (style 0 only, Range 0-20).
         /// </summary>
-        internal float RimStrength => GetFloatProperty("_RimStrength");
+        internal float RimStrength => GetFloatProperty(RimProp("Strength"));
 
         /// <summary>
         /// Gets rim width (style 0 only, Range 0-1).
         /// </summary>
-        internal float RimWidth => GetFloatProperty("_RimWidth");
+        internal float RimWidth => GetFloatProperty(RimProp("Width"));
 
         /// <summary>
         /// Gets rim sharpness (style 0 only, Range 0-1).
         /// </summary>
-        internal float RimSharpness => GetFloatProperty("_RimSharpness");
+        internal float RimSharpness => GetFloatProperty(RimProp("Sharpness"));
 
         // ---- Style 1 (UTS2) ----
 
         /// <summary>
         /// Gets rim light power (style 1 only, Range 0-1).
         /// </summary>
-        internal float RimLightPower => GetFloatProperty("_RimLight_Power");
+        internal float RimLightPower => GetFloatProperty(RimProp("Light_Power"));
 
         /// <summary>
         /// Gets whether rim feathering is disabled (style 1 only).
         /// </summary>
-        internal bool RimLightFeatherOff => GetBoolProperty("_RimLight_FeatherOff");
+        internal bool RimLightFeatherOff => GetBoolProperty(RimProp("Light_FeatherOff"));
 
         /// <summary>
         /// Gets rim environmental lighting factor (style 1 only, Range 0-1).
         /// </summary>
-        internal float RimLightingEnvironmental => GetFloatProperty("_Is_LightColor_RimLight");
+        internal float RimLightingEnvironmental => GetFloatProperty(ActiveRimSlot == 1 ? "_Is_LightColor_Rim2Light" : "_Is_LightColor_RimLight");
 
         // ---- Style 2 (LilToon) ----
 
         /// <summary>
         /// Gets rim color for LilToon style (style 2 only, HDR).
         /// </summary>
-        internal Color RimColorLilToon => GetColorProperty("_RimColor");
+        internal Color RimColorLilToon => GetColorProperty(RimProp("Color"));
 
         /// <summary>
         /// Gets rim border (style 2 only, Range 0-1).
         /// </summary>
-        internal float RimBorder => GetFloatProperty("_RimBorder");
+        internal float RimBorder => GetFloatProperty(RimProp("Border"));
 
         /// <summary>
         /// Gets rim blur/softness (style 2 only, Range 0-1).
         /// </summary>
-        internal float RimBlur => GetFloatProperty("_RimBlur");
+        internal float RimBlur => GetFloatProperty(RimProp("Blur"));
 
         /// <summary>
         /// Gets rim Fresnel power (style 2 only, Range 0.01-50).
         /// </summary>
-        internal float RimFresnelPower => GetFloatProperty("_RimFresnelPower", 1.0f);
+        internal float RimFresnelPower => GetFloatProperty(RimProp("FresnelPower"), 1.0f);
 
         /// <summary>
         /// Gets rim enable lighting factor (style 2 only, Range 0-1).
         /// </summary>
-        internal float RimEnableLighting => GetFloatProperty("_RimEnableLighting");
+        internal float RimEnableLighting => GetFloatProperty(RimProp("EnableLighting"));
 
         /// <summary>
         /// Gets rim main color blend (style 2 albedo tint, Range 0-1).
         /// </summary>
-        internal float RimMainStrength => GetFloatProperty("_RimMainStrength");
+        internal float RimMainStrength => GetFloatProperty(RimProp("MainStrength"));
 
         /// <summary>
-        /// Gets a value indicating whether specular/reflections are enabled.
+        /// Gets a value indicating whether specular/reflections (Mochie BRDF "Reflections &amp; Specular") are enabled.
         /// </summary>
         internal bool UseSpecular => GetBoolPropertyWithFallback("_MochieBRDF", "_MochieMetallicMaps");
+
+        /// <summary>
+        /// Gets a value indicating whether Stylized Reflections are enabled.
+        /// When enabled, Stylized Reflections take priority over the Mochie BRDF reflections/specular.
+        /// </summary>
+        internal bool UseStylizedReflections => GetBoolPropertyWithFallback("_StylizedSpecular", "_StylizedReflectionMode");
+
+        /// <summary>
+        /// Gets the Stylized Reflection mode (0=UnityChan, 1=lilToon).
+        /// </summary>
+        internal int StylizedReflectionMode => (int)GetFloatProperty("_StylizedReflectionMode");
+
+        // ---- Stylized Reflections mode 0 (UnityChan toon specular) ----
+
+        /// <summary>
+        /// Gets the stylized specular tint color (mode 0).
+        /// </summary>
+        internal Color StylizedHighColor => GetColorProperty("_HighColor");
+
+        /// <summary>
+        /// Gets the stylized specular map texture (mode 0).
+        /// </summary>
+        internal Texture StylizedHighColorTex => GetTextureProperty("_HighColor_Tex");
+
+        /// <summary>
+        /// Gets the stylized specular mask texture (mode 0).
+        /// </summary>
+        internal Texture StylizedHighColorMask => GetTextureProperty("_Set_HighColorMask");
+
+        /// <summary>
+        /// Gets the stylized specular mask texture scale (mode 0).
+        /// </summary>
+        internal Vector2 StylizedHighColorMaskTextureScale => GetTextureScaleProperty("_Set_HighColorMask");
+
+        /// <summary>
+        /// Gets the stylized specular mask texture offset (mode 0).
+        /// </summary>
+        internal Vector2 StylizedHighColorMaskTextureOffset => GetTextureOffsetProperty("_Set_HighColorMask");
+
+        /// <summary>
+        /// Gets the stylized specular mask channel (mode 0).
+        /// </summary>
+        internal float StylizedHighColorMaskChannel => GetFloatProperty("_Set_HighColorMaskChannel", 1.0f);
+
+        /// <summary>
+        /// Gets the stylized specular strength (mode 0).
+        /// </summary>
+        internal float StylizedSpecularStrength => GetFloatProperty("_StylizedSpecularStrength", 1.0f);
+
+        /// <summary>
+        /// Gets the stylized specular highlight size (mode 0, Range 0-1, "_HighColor_Power").
+        /// </summary>
+        internal float StylizedSpecularSize => GetFloatProperty("_HighColor_Power");
+
+        /// <summary>
+        /// Gets the stylized specular feather (mode 0, Range 0-1).
+        /// </summary>
+        internal float StylizedSpecularFeather => GetFloatProperty("_StylizedSpecularFeather");
+
+        // ---- Stylized Reflections mode 1 (lilToon reflections) ----
+
+        /// <summary>
+        /// Gets the stylized lilToon metallic multiplier (mode 1).
+        /// </summary>
+        internal float StylizedMetallic => GetFloatProperty("_Metallic");
+
+        /// <summary>
+        /// Gets the stylized lilToon metallic map (mode 1).
+        /// </summary>
+        internal Texture StylizedMetallicMap => GetTextureProperty("_MetallicGlossMap");
+
+        /// <summary>
+        /// Gets the stylized lilToon metallic map texture scale (mode 1).
+        /// </summary>
+        internal Vector2 StylizedMetallicMapTextureScale => GetTextureScaleProperty("_MetallicGlossMap");
+
+        /// <summary>
+        /// Gets the stylized lilToon metallic map texture offset (mode 1).
+        /// </summary>
+        internal Vector2 StylizedMetallicMapTextureOffset => GetTextureOffsetProperty("_MetallicGlossMap");
+
+        /// <summary>
+        /// Gets the stylized lilToon smoothness multiplier (mode 1).
+        /// </summary>
+        internal float StylizedSmoothness => GetFloatProperty("_Smoothness", 1.0f);
+
+        /// <summary>
+        /// Gets the stylized lilToon smoothness map (mode 1).
+        /// </summary>
+        internal Texture StylizedSmoothnessTex => GetTextureProperty("_SmoothnessTex");
+
+        /// <summary>
+        /// Gets the stylized lilToon smoothness map texture scale (mode 1).
+        /// </summary>
+        internal Vector2 StylizedSmoothnessTexTextureScale => GetTextureScaleProperty("_SmoothnessTex");
+
+        /// <summary>
+        /// Gets the stylized lilToon smoothness map texture offset (mode 1).
+        /// </summary>
+        internal Vector2 StylizedSmoothnessTexTextureOffset => GetTextureOffsetProperty("_SmoothnessTex");
+
+        /// <summary>
+        /// Gets the stylized lilToon reflectance (mode 1).
+        /// </summary>
+        internal float StylizedReflectance => GetFloatProperty("_Reflectance", 0.04f);
+
+        /// <summary>
+        /// Gets the stylized lilToon specular blur (mode 1, Range 0-1).
+        /// </summary>
+        internal float StylizedSpecularBlur => GetFloatProperty("_SpecularBlur");
 
         /// <summary>
         /// Gets a value indicating whether vertex coloring should be applied.
@@ -662,6 +818,24 @@ namespace KRT.VRCQuestTools.Models.Unity
                 Material.SetFloat(name, value);
             }
         }
+
+        /// <summary>
+        /// Resolves a rim lighting property name for the active rim slot.
+        /// Slot 0 uses the "_Rim" prefix, slot 1 uses the "_Rim2" prefix.
+        /// </summary>
+        /// <param name="suffix">The property name part after the prefix (e.g. "LightColor", "Strength").</param>
+        /// <returns>The resolved property name.</returns>
+        private string RimProp(string suffix)
+            => (ActiveRimSlot == 1 ? "_Rim2" : "_Rim") + suffix;
+
+        /// <summary>
+        /// Resolves a matcap property name for the active matcap slot.
+        /// Slot 0 uses the "_Matcap" prefix, slot 1 uses the "_Matcap2" prefix.
+        /// </summary>
+        /// <param name="suffix">The property name part after the prefix (e.g. "Color", "Mask"); empty for the base texture.</param>
+        /// <returns>The resolved property name.</returns>
+        private string MatcapProp(string suffix)
+            => (ActiveMatcapSlot == 1 ? "_Matcap2" : "_Matcap") + suffix;
 
         private float GetFloatWithFallback(string primaryName, string fallbackName)
         {

@@ -33,6 +33,24 @@ namespace KRT.VRCQuestTools.Models
             this.poiyomiMaterial = material;
         }
 
+        /// <summary>
+        /// The Poiyomi feature that provides specular/reflection inputs for the conversion.
+        /// </summary>
+        private enum SpecularSource
+        {
+            /// <summary>No specular/reflection feature is enabled.</summary>
+            None,
+
+            /// <summary>Mochie BRDF "Reflections &amp; Specular" (_MochieBRDF).</summary>
+            Mochie,
+
+            /// <summary>Stylized Reflections, UnityChan mode (_StylizedSpecular, _StylizedReflectionMode==0).</summary>
+            StylizedUnityChan,
+
+            /// <summary>Stylized Reflections, lilToon mode (_StylizedSpecular, _StylizedReflectionMode==1).</summary>
+            StylizedLilToon,
+        }
+
         /// <inheritdoc/>
         protected override Material ConvertToToonStandard()
         {
@@ -116,22 +134,27 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.OcclusionStrength = aoStrength;
             }
 
+            // Specular/reflections: Stylized Reflections (_StylizedSpecular) take priority over the
+            // Mochie BRDF "Reflections & Specular" (_MochieBRDF). The active source is resolved by
+            // GetSpecularSource() and read through the unified accessors below.
             if (GetUseSpecular() && Settings.useSpecular)
             {
+                var (metallicScale, metallicOffset) = GetSpecularMetallicMapST();
+                var (glossScale, glossOffset) = GetSpecularGlossMapST();
                 newMaterial.UseSpecular = true;
-                newMaterial.MetallicMap = poiyomiMaterial.MetallicMaps;
-                newMaterial.MetallicMapTextureScale = poiyomiMaterial.MetallicMapsTextureScale;
-                newMaterial.MetallicMapTextureOffset = poiyomiMaterial.MetallicMapsTextureOffset;
-                newMaterial.MetallicMapChannel = ChannelIndexToMaskChannel(poiyomiMaterial.MetallicMapsMetallicChannel);
-                newMaterial.MetallicStrength = poiyomiMaterial.MetallicMultiplier;
+                newMaterial.MetallicMap = GetSpecularMetallicTexture();
+                newMaterial.MetallicMapTextureScale = metallicScale;
+                newMaterial.MetallicMapTextureOffset = metallicOffset;
+                newMaterial.MetallicMapChannel = ChannelIndexToMaskChannel(GetSpecularMetallicChannel());
+                newMaterial.MetallicStrength = GetMetallicStrength();
 
-                newMaterial.GlossMap = poiyomiMaterial.MetallicMaps;
-                newMaterial.GlossMapTextureScale = poiyomiMaterial.MetallicMapsTextureScale;
-                newMaterial.GlossMapTextureOffset = poiyomiMaterial.MetallicMapsTextureOffset;
-                newMaterial.GlossMapChannel = ChannelIndexToMaskChannel(poiyomiMaterial.MetallicMapsRoughnessChannel);
-                newMaterial.GlossStrength = poiyomiMaterial.RoughnessMultiplier;
-                newMaterial.Sharpness = 0.5f;
-                newMaterial.Reflectance = 0.5f;
+                newMaterial.GlossMap = GetSpecularGlossTexture();
+                newMaterial.GlossMapTextureScale = glossScale;
+                newMaterial.GlossMapTextureOffset = glossOffset;
+                newMaterial.GlossMapChannel = ChannelIndexToMaskChannel(GetSpecularGlossChannel());
+                newMaterial.GlossStrength = GetGlossStrength();
+                newMaterial.Sharpness = GetSharpness();
+                newMaterial.Reflectance = GetReflectance();
             }
 
             if (GetUseMatcap() && Settings.useMatcap)
@@ -145,8 +168,9 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.MatcapStrength = GetMatcapMaskStrength();
                 newMaterial.MatcapType = GetMapcapType();
 
-                // NOT SUPPORTED: 2nd MatCap (_Matcap2Enable, _Matcap2, _Matcap2Color, etc.)
-                // ToonStandard provides only one MatCap slot. The second MatCap layer is lost.
+                // ToonStandard provides only one MatCap slot. Poiyomi has two (_MatcapEnable / _Matcap2Enable);
+                // PoiyomiMaterial selects the lowest-numbered enabled slot (PoiyomiMaterial.ActiveMatcapSlot),
+                // so the other MatCap layer is dropped.
             }
 
             if (GetUseRimLighting() && Settings.useRimLighting)
@@ -159,8 +183,9 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.RimSoftness = GetRimSoftness();
                 newMaterial.RimEnvironmental = GetRimEnvironmental();
 
-                // NOT SUPPORTED: 2nd Rim Lighting (_EnableRim2Lighting) - ToonStandard has only
-                // one rim slot. The second rim layer is lost.
+                // ToonStandard has only one rim slot. Poiyomi has two (_EnableRimLighting / _EnableRim2Lighting);
+                // PoiyomiMaterial selects the lowest-numbered enabled slot (PoiyomiMaterial.ActiveRimSlot),
+                // so the other rim layer is dropped.
             }
 
             // NOT SUPPORTED features with no ToonStandard equivalent:
@@ -215,13 +240,13 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override (int MaxTextureSize, TextureFormat Format)? GetMetallicMapPlatformOverride()
         {
-            return TextureUtility.GetBestPlatformOverrideSettings(poiyomiMaterial.MetallicMaps);
+            return TextureUtility.GetBestPlatformOverrideSettings(GetSpecularMetallicTexture());
         }
 
         /// <inheritdoc/>
         protected override (int MaxTextureSize, TextureFormat Format)? GetGlossMapPlatformOverride()
         {
-            return TextureUtility.GetBestPlatformOverrideSettings(poiyomiMaterial.MetallicMaps);
+            return TextureUtility.GetBestPlatformOverrideSettings(GetSpecularGlossTexture());
         }
 
         /// <inheritdoc/>
@@ -239,10 +264,16 @@ namespace KRT.VRCQuestTools.Models
                 switch (mask.MaskType)
                 {
                     case MaskType.MetallicMap:
-                    case MaskType.GlossMap:
-                        if (poiyomiMaterial.MetallicMaps)
+                        if (GetSpecularMetallicTexture())
                         {
-                            textures.Add(poiyomiMaterial.MetallicMaps);
+                            textures.Add(GetSpecularMetallicTexture());
+                        }
+
+                        break;
+                    case MaskType.GlossMap:
+                        if (GetSpecularGlossTexture())
+                        {
+                            textures.Add(GetSpecularGlossTexture());
                         }
 
                         break;
@@ -306,14 +337,14 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateGlossMap(Action<Texture2D> completion)
         {
-            var packed = (Texture2D)poiyomiMaterial.MetallicMaps;
+            var packed = (Texture2D)GetSpecularGlossTexture();
             var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(packed);
             var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
             var (width, height) = TextureUtility.AspectFitReduction(packed.width, packed.height, maxTextureSize);
 
             var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
             swizzleMat.SetTexture("_Texture0", packed);
-            swizzleMat.SetFloat("_Texture0Input", poiyomiMaterial.MetallicMapsRoughnessChannel);
+            swizzleMat.SetFloat("_Texture0Input", GetSpecularGlossChannel());
             swizzleMat.SetFloat("_Texture0Output", 3); // A
 
             var rt = RenderTexture.GetTemporary(packed.width, packed.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
@@ -352,9 +383,19 @@ namespace KRT.VRCQuestTools.Models
                 toonLitBakeMat.EnableEmission3 = false;
             }
 
-            if (Settings.useMatcap && toonLitBakeMat.Material.HasProperty("_MatcapEnable"))
+            if (Settings.useMatcap)
             {
-                toonLitBakeMat.Material.SetFloat("_MatcapEnable", 0.0f);
+                // Disable both matcap slots so neither is baked into the main (ToonLit) texture,
+                // regardless of which slot is the active one.
+                if (toonLitBakeMat.Material.HasProperty("_MatcapEnable"))
+                {
+                    toonLitBakeMat.Material.SetFloat("_MatcapEnable", 0.0f);
+                }
+
+                if (toonLitBakeMat.Material.HasProperty("_Matcap2Enable"))
+                {
+                    toonLitBakeMat.Material.SetFloat("_Matcap2Enable", 0.0f);
+                }
             }
 
             return toonLitBakeMat.GenerateToonLitImage(toonLitConvertSettings, completion);
@@ -433,14 +474,14 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateMetallicMap(Action<Texture2D> completion)
         {
-            var packed = (Texture2D)poiyomiMaterial.MetallicMaps;
+            var packed = (Texture2D)GetSpecularMetallicTexture();
             var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(packed);
             var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
             var (width, height) = TextureUtility.AspectFitReduction(packed.width, packed.height, maxTextureSize);
 
             var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
             swizzleMat.SetTexture("_Texture0", packed);
-            swizzleMat.SetFloat("_Texture0Input", poiyomiMaterial.MetallicMapsMetallicChannel);
+            swizzleMat.SetFloat("_Texture0Input", GetSpecularMetallicChannel());
             swizzleMat.SetFloat("_Texture0Output", 0); // R
 
             var rt = RenderTexture.GetTemporary(packed.width, packed.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
@@ -533,9 +574,9 @@ namespace KRT.VRCQuestTools.Models
                         }).WaitForCompletion();
                         break;
                     case MaskType.MetallicMap:
-                        if (poiyomiMaterial.MetallicMaps)
+                        if (GetSpecularMetallicTexture())
                         {
-                            sourceTextures.Add(poiyomiMaterial.MetallicMaps);
+                            sourceTextures.Add(GetSpecularMetallicTexture());
                         }
 
                         GenerateMetallicMap((tex) =>
@@ -569,9 +610,9 @@ namespace KRT.VRCQuestTools.Models
                         }).WaitForCompletion();
                         break;
                     case MaskType.GlossMap:
-                        if (poiyomiMaterial.MetallicMaps)
+                        if (GetSpecularGlossTexture())
                         {
-                            sourceTextures.Add(poiyomiMaterial.MetallicMaps);
+                            sourceTextures.Add(GetSpecularGlossTexture());
                         }
 
                         GenerateGlossMap((tex) =>
@@ -658,13 +699,25 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override (Vector2 Scale, Vector2 Offset) GetGlossMapST()
         {
-            return (poiyomiMaterial.MetallicMapsTextureScale, poiyomiMaterial.MetallicMapsTextureOffset);
+            return GetSpecularGlossMapST();
         }
 
         /// <inheritdoc/>
         protected override float GetGlossStrength()
         {
-            return poiyomiMaterial.RoughnessMultiplier;
+            switch (GetSpecularSource())
+            {
+                case SpecularSource.Mochie:
+                    return poiyomiMaterial.RoughnessMultiplier;
+                case SpecularSource.StylizedLilToon:
+                    return poiyomiMaterial.StylizedSmoothness;
+                case SpecularSource.StylizedUnityChan:
+                    // UnityChan toon specular has no PBR smoothness; approximate from highlight size
+                    // (larger highlight ≈ rougher ≈ lower gloss).
+                    return Mathf.Clamp01(1.0f - poiyomiMaterial.StylizedSpecularSize);
+                default:
+                    return 1.0f;
+            }
         }
 
         /// <inheritdoc/>
@@ -724,13 +777,22 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override (Vector2 Scale, Vector2 Offset) GetMetallicMapST()
         {
-            return (poiyomiMaterial.MetallicMapsTextureScale, poiyomiMaterial.MetallicMapsTextureOffset);
+            return GetSpecularMetallicMapST();
         }
 
         /// <inheritdoc/>
         protected override float GetMetallicStrength()
         {
-            return poiyomiMaterial.MetallicMultiplier;
+            switch (GetSpecularSource())
+            {
+                case SpecularSource.Mochie:
+                    return poiyomiMaterial.MetallicMultiplier;
+                case SpecularSource.StylizedLilToon:
+                    return poiyomiMaterial.StylizedMetallic;
+                default:
+                    // UnityChan toon specular has no metallic.
+                    return 0.0f;
+            }
         }
 
         /// <inheritdoc/>
@@ -762,7 +824,15 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override float GetReflectance()
         {
-            return 0.5f;
+            switch (GetSpecularSource())
+            {
+                case SpecularSource.StylizedLilToon:
+                    return poiyomiMaterial.StylizedReflectance;
+                case SpecularSource.StylizedUnityChan:
+                    return Mathf.Clamp01(poiyomiMaterial.StylizedSpecularStrength);
+                default:
+                    return 0.5f;
+            }
         }
 
         /// <inheritdoc/>
@@ -871,7 +941,15 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override float GetSharpness()
         {
-            return 0.5f;
+            switch (GetSpecularSource())
+            {
+                case SpecularSource.StylizedLilToon:
+                    return Mathf.Clamp01(1.0f - poiyomiMaterial.StylizedSpecularBlur);
+                case SpecularSource.StylizedUnityChan:
+                    return Mathf.Clamp01(1.0f - poiyomiMaterial.StylizedSpecularFeather);
+                default:
+                    return 0.5f;
+            }
         }
 
         /// <inheritdoc/>
@@ -892,7 +970,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseGlossMap()
         {
-            return poiyomiMaterial.UseSpecular && poiyomiMaterial.MetallicMaps != null;
+            return GetUseSpecular() && GetSpecularGlossTexture() != null;
         }
 
         /// <inheritdoc/>
@@ -916,7 +994,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseMetallicMap()
         {
-            return poiyomiMaterial.UseSpecular && poiyomiMaterial.MetallicMaps != null;
+            return GetUseSpecular() && GetSpecularMetallicTexture() != null;
         }
 
         /// <inheritdoc/>
@@ -952,7 +1030,113 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseSpecular()
         {
-            return poiyomiMaterial.UseSpecular;
+            return poiyomiMaterial.UseSpecular || poiyomiMaterial.UseStylizedReflections;
+        }
+
+        /// <summary>
+        /// Resolves which Poiyomi feature provides the specular/reflection inputs.
+        /// Stylized Reflections (_StylizedSpecular) take priority over the Mochie BRDF (_MochieBRDF).
+        /// </summary>
+        /// <returns>The active specular source.</returns>
+        private SpecularSource GetSpecularSource()
+        {
+            if (poiyomiMaterial.UseStylizedReflections)
+            {
+                return poiyomiMaterial.StylizedReflectionMode == 1
+                    ? SpecularSource.StylizedLilToon
+                    : SpecularSource.StylizedUnityChan;
+            }
+
+            if (poiyomiMaterial.UseSpecular)
+            {
+                return SpecularSource.Mochie;
+            }
+
+            return SpecularSource.None;
+        }
+
+        private Texture GetSpecularMetallicTexture()
+        {
+            switch (GetSpecularSource())
+            {
+                case SpecularSource.Mochie:
+                    return poiyomiMaterial.MetallicMaps;
+                case SpecularSource.StylizedLilToon:
+                    return poiyomiMaterial.StylizedMetallicMap;
+                default:
+                    // UnityChan toon specular has no metallic map.
+                    return null;
+            }
+        }
+
+        private float GetSpecularMetallicChannel()
+        {
+            switch (GetSpecularSource())
+            {
+                case SpecularSource.Mochie:
+                    return poiyomiMaterial.MetallicMapsMetallicChannel;
+                default:
+                    // lilToon _MetallicGlossMap stores metallic in R.
+                    return 0;
+            }
+        }
+
+        private (Vector2 Scale, Vector2 Offset) GetSpecularMetallicMapST()
+        {
+            switch (GetSpecularSource())
+            {
+                case SpecularSource.Mochie:
+                    return (poiyomiMaterial.MetallicMapsTextureScale, poiyomiMaterial.MetallicMapsTextureOffset);
+                case SpecularSource.StylizedLilToon:
+                    return (poiyomiMaterial.StylizedMetallicMapTextureScale, poiyomiMaterial.StylizedMetallicMapTextureOffset);
+                default:
+                    return (Vector2.one, Vector2.zero);
+            }
+        }
+
+        private Texture GetSpecularGlossTexture()
+        {
+            switch (GetSpecularSource())
+            {
+                case SpecularSource.Mochie:
+                    return poiyomiMaterial.MetallicMaps;
+                case SpecularSource.StylizedLilToon:
+                    return poiyomiMaterial.StylizedSmoothnessTex;
+                case SpecularSource.StylizedUnityChan:
+                    // UnityChan toon specular has no PBR gloss map; approximate using the specular mask.
+                    return poiyomiMaterial.StylizedHighColorMask;
+                default:
+                    return null;
+            }
+        }
+
+        private float GetSpecularGlossChannel()
+        {
+            switch (GetSpecularSource())
+            {
+                case SpecularSource.Mochie:
+                    return poiyomiMaterial.MetallicMapsRoughnessChannel;
+                case SpecularSource.StylizedUnityChan:
+                    return poiyomiMaterial.StylizedHighColorMaskChannel;
+                default:
+                    // lilToon _SmoothnessTex stores smoothness in R.
+                    return 0;
+            }
+        }
+
+        private (Vector2 Scale, Vector2 Offset) GetSpecularGlossMapST()
+        {
+            switch (GetSpecularSource())
+            {
+                case SpecularSource.Mochie:
+                    return (poiyomiMaterial.MetallicMapsTextureScale, poiyomiMaterial.MetallicMapsTextureOffset);
+                case SpecularSource.StylizedLilToon:
+                    return (poiyomiMaterial.StylizedSmoothnessTexTextureScale, poiyomiMaterial.StylizedSmoothnessTexTextureOffset);
+                case SpecularSource.StylizedUnityChan:
+                    return (poiyomiMaterial.StylizedHighColorMaskTextureScale, poiyomiMaterial.StylizedHighColorMaskTextureOffset);
+                default:
+                    return (Vector2.one, Vector2.zero);
+            }
         }
 
         private static Color NormalizeHdrColor(Color color)
