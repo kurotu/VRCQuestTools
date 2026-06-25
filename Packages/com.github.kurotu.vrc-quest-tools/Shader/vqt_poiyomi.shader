@@ -376,7 +376,7 @@
                     float4 emi = sampleTex2D(_EmissionMap, i.uv, 0.0f);
                     float4 maskTex = sampleTex2D(_EmissionMask, i.uv, 0.0f);
                     float mask = emissionMask(maskTex, _EmissionMaskChannel);
-                    float strength = saturate(mask * _EmissionStrength3); // limit too strong emission.
+                    float strength = saturate(mask * _EmissionStrength); // limit too strong emission.
                     float3 base = lerp(1, emi.rgb, _EmissionBaseColorAsMap);
                     col.rgb += emi.rgb * _EmissionColor.rgb * _EmissionColor.a * strength * base;
                 }
@@ -385,7 +385,7 @@
                     float4 emi = sampleTex2D(_EmissionMap1, i.uv, 0.0f);
                     float4 maskTex = sampleTex2D(_EmissionMask1, i.uv, 0.0f);
                     float mask = emissionMask(maskTex, _EmissionMask1Channel);
-                    float strength = saturate(mask * _EmissionStrength3); // limit too strong emission.
+                    float strength = saturate(mask * _EmissionStrength1); // limit too strong emission.
                     float3 base = lerp(1, emi.rgb, _EmissionBaseColorAsMap1);
                     col.rgb += emi.rgb * _EmissionColor1.rgb * _EmissionColor1.a * strength * base;
                 }
@@ -394,7 +394,7 @@
                     float4 emi = sampleTex2D(_EmissionMap2, i.uv, 0.0f);
                     float4 maskTex = sampleTex2D(_EmissionMask2, i.uv, 0.0f);
                     float mask = emissionMask(maskTex, _EmissionMask2Channel);
-                    float strength = saturate(mask * _EmissionStrength3); // limit too strong emission.
+                    float strength = saturate(mask * _EmissionStrength2); // limit too strong emission.
                     float3 base = lerp(1, emi.rgb, _EmissionBaseColorAsMap2);
                     col.rgb += emi.rgb * _EmissionColor2.rgb * _EmissionColor2.a * strength * base;
                 }
