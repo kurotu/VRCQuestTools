@@ -102,9 +102,13 @@ namespace KRT.VRCQuestTools.Models
             {
                 if (GetUseEmissionMap())
                 {
-                    newMaterial.EmissionMap = GetPrimaryEmissionMap();
-                    newMaterial.EmissionMapTextureScale = poiyomiMaterial.EmissionMapTextureScale0;
-                    newMaterial.EmissionMapTextureOffset = poiyomiMaterial.EmissionMapTextureOffset0;
+                    // Use the texture scale/offset of the channel the primary map actually comes from.
+                    // Poiyomi has four emission channels; the chosen map may be from channel 1/2/3, in
+                    // which case channel 0's UV transform would sample it incorrectly.
+                    var emissionChannel = GetPrimaryEmissionChannel();
+                    newMaterial.EmissionMap = GetEmissionMapByIndex(emissionChannel);
+                    newMaterial.EmissionMapTextureScale = GetEmissionMapTextureScaleByIndex(emissionChannel);
+                    newMaterial.EmissionMapTextureOffset = GetEmissionMapTextureOffsetByIndex(emissionChannel);
                 }
 
                 newMaterial.EmissionColor = Utils.ColorUtility.HdrToLdr(GetEmissionColor());
@@ -377,10 +381,16 @@ namespace KRT.VRCQuestTools.Models
             var toonLitBakeMat = new PoiyomiMaterial(new Material(poiyomiMaterial.Material));
             if (Settings.useEmission)
             {
-                toonLitBakeMat.EnableEmission0 = false;
-                toonLitBakeMat.EnableEmission1 = false;
-                toonLitBakeMat.EnableEmission2 = false;
-                toonLitBakeMat.EnableEmission3 = false;
+                // Emission is baked separately into the emission map, so it must not be baked into the
+                // main (ToonLit) texture. The EnableEmissionN setter no-ops on locked Poiyomi shaders where
+                // the toggle property was stripped, which would leave emission enabled after the shader is
+                // swapped to the bake shader (Hidden/VRCQuestTools/Poiyomi declares _EnableEmission*),
+                // double-counting emission. Write 0 directly to the bake shader's properties instead so the
+                // value persists through the swap regardless of whether the source shader is locked.
+                toonLitBakeMat.Material.SetFloat("_EnableEmission", 0.0f);
+                toonLitBakeMat.Material.SetFloat("_EnableEmission1", 0.0f);
+                toonLitBakeMat.Material.SetFloat("_EnableEmission2", 0.0f);
+                toonLitBakeMat.Material.SetFloat("_EnableEmission3", 0.0f);
             }
 
             if (Settings.useMatcap)
@@ -658,9 +668,15 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateShadowRamp(Action<Texture2D> completion)
         {
+            var shader = Shader.Find("Hidden/VRCQuestTools/Poiyomi/ShadowRamp");
+            if (shader == null)
+            {
+                throw new InvalidOperationException("Shader not found: Hidden/VRCQuestTools/Poiyomi/ShadowRamp");
+            }
+
             var bakeMat = new Material(poiyomiMaterial.Material);
             bakeMat.parent = null;
-            bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/Poiyomi/ShadowRamp");
+            bakeMat.shader = shader;
 
             var width = 128;
             var height = 16;
@@ -1279,21 +1295,25 @@ namespace KRT.VRCQuestTools.Models
             return (width, height);
         }
 
-        private Texture GetPrimaryEmissionMap()
+        private int GetPrimaryEmissionChannel()
         {
             foreach (var idx in GetEnabledEmissionChannels())
             {
-                var map = GetEmissionMapByIndex(idx);
-                if (map != null)
+                if (GetEmissionMapByIndex(idx) != null)
                 {
-                    return map;
+                    return idx;
                 }
             }
 
-            return poiyomiMaterial.EmissionMap0
-                ?? poiyomiMaterial.EmissionMap1
-                ?? poiyomiMaterial.EmissionMap2
-                ?? poiyomiMaterial.EmissionMap3;
+            for (int idx = 0; idx <= 3; idx++)
+            {
+                if (GetEmissionMapByIndex(idx) != null)
+                {
+                    return idx;
+                }
+            }
+
+            return 0;
         }
 
         private Texture GetEmissionMapByIndex(int index)
@@ -1308,6 +1328,40 @@ namespace KRT.VRCQuestTools.Models
                     return poiyomiMaterial.EmissionMap2;
                 case 3:
                     return poiyomiMaterial.EmissionMap3;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(index));
+            }
+        }
+
+        private Vector2 GetEmissionMapTextureScaleByIndex(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return poiyomiMaterial.EmissionMapTextureScale0;
+                case 1:
+                    return poiyomiMaterial.EmissionMapTextureScale1;
+                case 2:
+                    return poiyomiMaterial.EmissionMapTextureScale2;
+                case 3:
+                    return poiyomiMaterial.EmissionMapTextureScale3;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(index));
+            }
+        }
+
+        private Vector2 GetEmissionMapTextureOffsetByIndex(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return poiyomiMaterial.EmissionMapTextureOffset0;
+                case 1:
+                    return poiyomiMaterial.EmissionMapTextureOffset1;
+                case 2:
+                    return poiyomiMaterial.EmissionMapTextureOffset2;
+                case 3:
+                    return poiyomiMaterial.EmissionMapTextureOffset3;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(index));
             }

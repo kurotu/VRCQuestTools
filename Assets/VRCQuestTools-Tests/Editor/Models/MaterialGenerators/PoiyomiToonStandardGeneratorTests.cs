@@ -182,6 +182,57 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
+        /// Ensure non-bake conversion uses the texture scale/offset of the channel the primary
+        /// emission map comes from, not always channel 0.
+        /// </summary>
+        [Test]
+        public void ConvertToToonStandard_NonBake_EmissionMapST_FromSelectedChannel()
+        {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
+            TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Standard");
+
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
+
+            using var sourceMaterial = DisposableObject.New(new Material(shader));
+            using var emissionMap1 = DisposableObject.New(new Texture2D(4, 4));
+
+            // Disable channel 0, enable only channel 1 with its own UV transform.
+            sourceMaterial.Object.SetFloat("_EnableEmission", 0.0f);
+            sourceMaterial.Object.SetFloat("_EnableEmission1", 1.0f);
+            sourceMaterial.Object.SetFloat("_EnableEmission2", 0.0f);
+            sourceMaterial.Object.SetFloat("_EnableEmission3", 0.0f);
+            sourceMaterial.Object.SetTexture("_EmissionMap1", emissionMap1.Object);
+            var expectedScale = new Vector2(2.0f, 3.0f);
+            var expectedOffset = new Vector2(0.25f, 0.5f);
+            sourceMaterial.Object.SetTextureScale("_EmissionMap1", expectedScale);
+            sourceMaterial.Object.SetTextureOffset("_EmissionMap1", expectedOffset);
+
+            var settings = new ToonStandardConvertSettings
+            {
+                generateQuestTextures = false,
+            };
+
+            var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
+            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+
+            Material resultMat = null;
+            generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
+            using var resultMaterial = DisposableObject.New(resultMat);
+
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            var wrapper = new ToonStandardMaterialWrapper(resultMat);
+            Assert.AreEqual(emissionMap1.Object, wrapper.EmissionMap, "Emission map should come from channel 1.");
+            Assert.AreEqual(expectedScale, wrapper.EmissionMapTextureScale, "Emission map scale should come from channel 1.");
+            Assert.AreEqual(expectedOffset, wrapper.EmissionMapTextureOffset, "Emission map offset should come from channel 1.");
+        }
+
+        /// <summary>
         /// Ensure non-bake conversion copies normal map when set.
         /// </summary>
         [Test]
