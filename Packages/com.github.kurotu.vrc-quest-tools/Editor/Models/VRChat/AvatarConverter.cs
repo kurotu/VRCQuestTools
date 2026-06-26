@@ -343,57 +343,67 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     AsyncCallbackRequest request;
                     var materialSetting = settings.GetMaterialConvertSettings(m);
                     var buildTarget = EditorUserBuildSettings.activeBuildTarget;
-                    switch (materialSetting)
+                    if (MaterialWrapperBuilder.DetectShaderCategory(m) == MaterialWrapperBuilder.ShaderCategory.Particle && !(materialSetting is MaterialReplaceSettings))
                     {
-                        case ToonLitConvertSettings toonLitConvertSettings:
-                            if (toonLitConvertSettings.generateQuestTextures)
-                            {
-                                var m2 = MaterialWrapperBuilder.Build(m);
-                                request = new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
-                            }
-                            else
-                            {
-                                request = new ResultRequest(Completion);
-                            }
-                            break;
-                        case MatCapLitConvertSettings matCapLitConvertSettings:
-                            if (matCapLitConvertSettings.generateQuestTextures)
-                            {
-                                var m2 = MaterialWrapperBuilder.Build(m);
-                                request = new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
-                            }
-                            else
-                            {
-                                request = new ResultRequest(Completion);
-                            }
-                            break;
-                        case ToonStandardConvertSettings toonStandardConvertSettings:
-                            if (toonStandardConvertSettings.generateQuestTextures)
-                            {
-                                var m2 = MaterialWrapperBuilder.Build(m);
-                                if (m2 is LilToonMaterial lil)
+                        // Particle shaders are converted to avatar-compatible particle shaders
+                        // regardless of the selected Toon Lit/Toon Standard setting.
+                        var m2 = MaterialWrapperBuilder.Build(m);
+                        request = new ParticleGenerator(materialSetting).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                    }
+                    else
+                    {
+                        switch (materialSetting)
+                        {
+                            case ToonLitConvertSettings toonLitConvertSettings:
+                                if (toonLitConvertSettings.generateQuestTextures)
                                 {
-                                    request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
-                                }
-                                else if (m2 is PoiyomiMaterial poi)
-                                {
-                                    request = new PoiyomiToonStandardGenerator(poi, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    var m2 = MaterialWrapperBuilder.Build(m);
+                                    request = new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
                                 }
                                 else
                                 {
-                                    request = new GenericToonStandardGenerator(m2, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    request = new ResultRequest(Completion);
                                 }
-                            }
-                            else
-                            {
+                                break;
+                            case MatCapLitConvertSettings matCapLitConvertSettings:
+                                if (matCapLitConvertSettings.generateQuestTextures)
+                                {
+                                    var m2 = MaterialWrapperBuilder.Build(m);
+                                    request = new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                }
+                                else
+                                {
+                                    request = new ResultRequest(Completion);
+                                }
+                                break;
+                            case ToonStandardConvertSettings toonStandardConvertSettings:
+                                if (toonStandardConvertSettings.generateQuestTextures)
+                                {
+                                    var m2 = MaterialWrapperBuilder.Build(m);
+                                    if (m2 is LilToonMaterial lil)
+                                    {
+                                        request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    }
+                                    else if (m2 is PoiyomiMaterial poi)
+                                    {
+                                        request = new PoiyomiToonStandardGenerator(poi, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    }
+                                    else
+                                    {
+                                        request = new GenericToonStandardGenerator(m2, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    }
+                                }
+                                else
+                                {
+                                    request = new ResultRequest(Completion);
+                                }
+                                break;
+                            case MaterialReplaceSettings materialReplaceSettings:
                                 request = new ResultRequest(Completion);
-                            }
-                            break;
-                        case MaterialReplaceSettings materialReplaceSettings:
-                            request = new ResultRequest(Completion);
-                            break;
-                        default:
-                            throw new InvalidProgramException($"Unhandled material convert setting: {materialSetting.GetType().Name}");
+                                break;
+                            default:
+                                throw new InvalidProgramException($"Unhandled material convert setting: {materialSetting.GetType().Name}");
+                        }
                     }
                     request.WaitForCompletion();
                 }
@@ -731,6 +741,13 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var texturesPath = $"{assetsDirectory}/Textures";
 
             var sharedBlackTexture = GetOrCreateSharedBlackTexture(saveAsFile, texturesPath);
+
+            // Particle shaders are converted to avatar-compatible particle shaders regardless of the
+            // selected Toon Lit/Toon Standard setting. MaterialReplaceSettings (explicit replacement) takes priority.
+            if (material is ParticleMaterial && !(settings is MaterialReplaceSettings))
+            {
+                return new ParticleGenerator(settings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+            }
 
             switch (settings)
             {
