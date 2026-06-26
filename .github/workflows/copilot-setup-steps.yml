@@ -102,9 +102,6 @@ jobs:
           cache-dependency-path: Website/pnpm-lock.yaml
       - run: cd Website && pnpm install --frozen-lockfile
 
-      - name: Install uloop-cli
-        run: pnpm install -g uloop-cli@2.1.2
-
       - name: Generate solution
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -124,6 +121,3 @@ jobs:
             fi
           done
           exit 1
-
-      - name: Update uLoopMCP skills
-        run: uloop skills install --claude
