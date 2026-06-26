@@ -1,0 +1,6 @@
+{
+    "disabledTools": [
+        "execute-dynamic-code"
+    ],
+    "skillCliInvocation": "npx"
+}

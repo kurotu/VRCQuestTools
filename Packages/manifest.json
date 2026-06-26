@@ -9,7 +9,7 @@
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.7.6",
     "com.unity.ugui": "1.0.0",
-    "io.github.hatayama.uloopmcp": "0.69.6",
+    "io.github.hatayama.uloopmcp": "2.2.0",
     "io.github.kurotu.editor-driver": "https://github.com/kurotu/unity-editor-driver.git?path=Packages/io.github.kurotu.editor-driver#dev",
     "org.nuget.roslynator.analyzers": "4.14.0",
     "org.nuget.roslynator.codeanalysis.analyzers": "4.14.0",

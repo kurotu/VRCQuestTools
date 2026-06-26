@@ -1,16 +1,16 @@
 ---
 name: uloop-get-logs
-description: "Retrieve logs from Unity Console with filtering and search. Use when you need to: (1) Check for errors or warnings after compilation or play mode, (2) Debug issues by searching log messages, (3) Investigate failures with stack traces. Supports filtering by log type, text search, and regex."
+description: "Read current Unity Console entries from a running Editor. Use during bug investigation after compile, tests, PlayMode, or dynamic code to inspect logs, warnings, errors, and stack traces."
 ---
 
-# uloop get-logs
+# npx --yes uloop-cli@2.2.0 get-logs
 
 Retrieve logs from Unity Console.
 
 ## Usage
 
 ```bash
-uloop get-logs [options]
+npx --yes uloop-cli@2.2.0 get-logs [options]
 ```
 
 ## Parameters
@@ -28,25 +28,34 @@ uloop get-logs [options]
 
 | Option | Description |
 |--------|-------------|
-| `--project-path <path>` | Target a specific Unity project (mutually exclusive with `--port`) |
-| `-p, --port <port>` | Specify Unity TCP port directly (mutually exclusive with `--project-path`) |
+| `--project-path <path>` | Optional. Use only when the target Unity project is not the current directory. |
 
 ## Examples
 
 ```bash
 # Get all logs
-uloop get-logs
+npx --yes uloop-cli@2.2.0 get-logs
 
 # Get only errors
-uloop get-logs --log-type Error
+npx --yes uloop-cli@2.2.0 get-logs --log-type Error
 
 # Search for specific text
-uloop get-logs --search-text "NullReference"
+npx --yes uloop-cli@2.2.0 get-logs --search-text "NullReference"
 
 # Regex search
-uloop get-logs --search-text "Missing.*Component" --use-regex
+npx --yes uloop-cli@2.2.0 get-logs --search-text "Missing.*Component" --use-regex
 ```
 
 ## Output
 
-Returns JSON array of log entries with message, type, and optional stack trace.
+Returns JSON with:
+- `TotalCount` (number): Total logs available before max-count clipping
+- `DisplayedCount` (number): Logs returned in this response (≤ `--max-count`)
+- `LogType` (string): The `--log-type` filter that was applied
+- `MaxCount` (number): The `--max-count` cap that was applied
+- `SearchText` (string): The `--search-text` filter that was applied (empty when omitted)
+- `IncludeStackTrace` (boolean): Whether stack traces are included in `Logs[]`
+- `Logs` (array): Each entry has:
+  - `Type` (string): `"Error"`, `"Warning"`, or `"Log"`
+  - `Message` (string): Log message body
+  - `StackTrace` (string): Stack trace text. Empty when `--include-stack-trace` is `false`.

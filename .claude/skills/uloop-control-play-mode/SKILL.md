@@ -1,16 +1,16 @@
 ---
 name: uloop-control-play-mode
-description: "Control Unity Editor play mode (play/stop/pause). Use when you need to: (1) Start play mode to test game behavior, (2) Stop play mode to return to edit mode, (3) Pause play mode for frame-by-frame inspection."
+description: "Control Unity Editor Play Mode. Use to start, stop, or pause Play Mode for runtime behavior checks and frame inspection."
 ---
 
-# uloop control-play-mode
+# npx --yes uloop-cli@2.2.0 control-play-mode
 
 Control Unity Editor play mode (play/stop/pause).
 
 ## Usage
 
 ```bash
-uloop control-play-mode [options]
+npx --yes uloop-cli@2.2.0 control-play-mode [options]
 ```
 
 ## Parameters
@@ -23,20 +23,19 @@ uloop control-play-mode [options]
 
 | Option | Description |
 |--------|-------------|
-| `--project-path <path>` | Target a specific Unity project (mutually exclusive with `--port`) |
-| `-p, --port <port>` | Specify Unity TCP port directly (mutually exclusive with `--project-path`) |
+| `--project-path <path>` | Optional. Use only when the target Unity project is not the current directory. |
 
 ## Examples
 
 ```bash
 # Start play mode
-uloop control-play-mode --action Play
+npx --yes uloop-cli@2.2.0 control-play-mode --action Play
 
 # Stop play mode
-uloop control-play-mode --action Stop
+npx --yes uloop-cli@2.2.0 control-play-mode --action Stop
 
 # Pause play mode
-uloop control-play-mode --action Pause
+npx --yes uloop-cli@2.2.0 control-play-mode --action Pause
 ```
 
 ## Output
@@ -52,3 +51,5 @@ Returns JSON with the current play mode state:
 - Stop action exits play mode and returns to edit mode
 - Pause action pauses the game while remaining in play mode
 - Useful for automated testing workflows
+
+- PlayMode entry may complete on the next editor frame. If a PlayMode-dependent command reports "PlayMode is not active" immediately after `--action Play`, wait briefly and retry.
