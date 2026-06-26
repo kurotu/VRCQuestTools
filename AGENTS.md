@@ -18,6 +18,8 @@ Unity editor extension for converting VRChat PC avatars to Android (Quest/PICO) 
 | `uloop-get-logs` | Retrieve Unity Console logs |
 | `uloop-clear-console` | Clear Unity Console before a fresh run |
 
+Note: When you need to execute `npm` and `npx`, use `pnpm` and `pnpm dlx` instead.
+
 ### Lint
 
 | Command | Description |
