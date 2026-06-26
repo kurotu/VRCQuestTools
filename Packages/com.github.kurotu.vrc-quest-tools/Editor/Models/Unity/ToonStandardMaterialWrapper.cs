@@ -123,6 +123,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether vertex color is applied to the albedo.
+        /// </summary>
+        internal bool UseVertexColor
+        {
+            get => material.GetFloat("_VertexColor") > 0.5f;
+            set => material.SetFloat("_VertexColor", value ? 1.0f : 0.0f);
+        }
+
+        /// <summary>
         /// Gets or sets the albedo texture.
         /// </summary>
         internal Texture MainTexture

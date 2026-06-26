@@ -375,6 +375,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
                                 {
                                     request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
                                 }
+                                else if (m2 is PoiyomiMaterial poi)
+                                {
+                                    request = new PoiyomiToonStandardGenerator(poi, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                }
                                 else
                                 {
                                     request = new GenericToonStandardGenerator(m2, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
@@ -739,6 +743,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     {
                         return new LilToonToonStandardGenerator((LilToonMaterial)material, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                     }
+
+                    if (material is PoiyomiMaterial poiyomi)
+                    {
+                        return new PoiyomiToonStandardGenerator(poiyomi, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                    }
+
                     return new GenericToonStandardGenerator(material, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case MaterialReplaceSettings replaceSettings:
                     if (replaceSettings.material == null)
