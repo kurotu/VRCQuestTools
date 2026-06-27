@@ -56,6 +56,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed support for NDMF earlier than 1.5.0.
 - Removed VQT Avatar Builder window. Use VRChat SDK Control Panel to build and upload avatars directly, or use the "[NDMF] Build and Test for PC with Android Settings" context menu for local testing.
 
+## [2.11.7] - 2026-06-27
+
+### Fixed
+- Fixed an issue where emission may not be applied when converting Poiyomi materials to Toon Lit in some cases.
+
 ## [2.11.6] - 2026-04-29
 
 ### Fixed
