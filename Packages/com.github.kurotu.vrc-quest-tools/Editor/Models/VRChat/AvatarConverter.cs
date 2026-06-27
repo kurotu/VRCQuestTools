@@ -329,7 +329,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var sharedBlackTexture = GetOrCreateSharedBlackTexture(saveAsPng, saveDirectory);
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
             var avatarRoot = settings != null ? settings.gameObject : null;
-            var particleSystemMaterials = GetParticleSystemMaterials(avatarRoot);
+            var particleLikeMaterials = GetParticleLikeMaterials(avatarRoot);
             var explicitlyConfiguredMaterials = GetExplicitlyConfiguredMaterials(avatarRoot);
             var convertedTextures = new Dictionary<Material, Texture2D>();
 
@@ -350,7 +350,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     // particles; their explicit setting takes priority.
                     var wrapper = explicitlyConfiguredMaterials.Contains(m)
                         ? MaterialWrapperBuilder.BuildIgnoringParticleCategory(m)
-                        : MaterialWrapperBuilder.Build(m, particleSystemMaterials.Contains(m));
+                        : MaterialWrapperBuilder.Build(m, particleLikeMaterials.Contains(m));
                     if (wrapper is ParticleMaterial && !(materialSetting is MaterialReplaceSettings))
                     {
                         // Particle materials (including ParticleSystem materials with non-particle shaders)
@@ -438,7 +438,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             GameObject avatarRoot = null)
         {
             var convertedMaterials = new Dictionary<Material, Material>();
-            var particleSystemMaterials = GetParticleSystemMaterials(avatarRoot);
+            var particleLikeMaterials = GetParticleLikeMaterials(avatarRoot);
             var explicitlyConfiguredMaterials = GetExplicitlyConfiguredMaterials(avatarRoot);
 
             // Get unique materials that need conversion
@@ -455,7 +455,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
                 try
                 {
-                    var request = ConvertSingleMaterial(material, convertSettingsMap[material], saveAsFile, assetsDirectory, forEditorPreview, particleSystemMaterials.Contains(material), explicitlyConfiguredMaterials.Contains(material), (output) =>
+                    var request = ConvertSingleMaterial(material, convertSettingsMap[material], saveAsFile, assetsDirectory, forEditorPreview, particleLikeMaterials.Contains(material), explicitlyConfiguredMaterials.Contains(material), (output) =>
                     {
                         convertedMaterials[material] = output;
                         progressCallback?.Invoke(materialsToConvert.Length, currentIndex, material, output);
@@ -472,11 +472,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
         /// <summary>
-        /// Gets the set of materials used by ParticleSystemRenderers in the avatar.
+        /// Gets the set of materials used by particle-like renderers (ParticleSystemRenderer,
+        /// TrailRenderer, LineRenderer) in the avatar. These renderers share the same VFX rendering
+        /// model (dynamically generated mesh, vertex color, additive/transparent blending), so their
+        /// non-particle-shader materials need the same Additive bake conversion as ParticleSystems.
         /// </summary>
         /// <param name="avatarRoot">Avatar root object, or null.</param>
-        /// <returns>Materials used by ParticleSystemRenderers.</returns>
-        private static HashSet<Material> GetParticleSystemMaterials(GameObject avatarRoot)
+        /// <returns>Materials used by particle-like renderers.</returns>
+        private static HashSet<Material> GetParticleLikeMaterials(GameObject avatarRoot)
         {
             var materials = new HashSet<Material>();
             if (avatarRoot == null)
@@ -484,7 +487,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 return materials;
             }
 
-            foreach (var renderer in avatarRoot.GetComponentsInChildren<ParticleSystemRenderer>(true))
+            void AddMaterials(Renderer renderer)
             {
                 foreach (var material in renderer.sharedMaterials)
                 {
@@ -493,6 +496,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         materials.Add(material);
                     }
                 }
+            }
+
+            foreach (var renderer in avatarRoot.GetComponentsInChildren<ParticleSystemRenderer>(true))
+            {
+                AddMaterials(renderer);
+            }
+            foreach (var renderer in avatarRoot.GetComponentsInChildren<TrailRenderer>(true))
+            {
+                AddMaterials(renderer);
+            }
+            foreach (var renderer in avatarRoot.GetComponentsInChildren<LineRenderer>(true))
+            {
+                AddMaterials(renderer);
             }
             return materials;
         }
@@ -787,7 +803,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             bool saveAsFile,
             string assetsDirectory,
             bool forEditorPreview,
-            bool renderForParticleSystem,
+            bool renderForParticleLikeRenderer,
             bool isExplicitlyConfigured,
             Action<Material> completion)
         {
@@ -797,7 +813,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             // their explicit setting takes priority.
             var materialWrapper = isExplicitlyConfigured
                 ? MaterialWrapperBuilder.BuildIgnoringParticleCategory(material)
-                : MaterialWrapperBuilder.Build(material, renderForParticleSystem);
+                : MaterialWrapperBuilder.Build(material, renderForParticleLikeRenderer);
 
             // Generate converted material based on settings
             return GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory, forEditorPreview, convertedMaterial =>

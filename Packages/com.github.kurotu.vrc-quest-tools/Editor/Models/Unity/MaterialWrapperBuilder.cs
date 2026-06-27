@@ -39,13 +39,14 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Create an instance of appropriate MaterialBase object by shader category.
         /// </summary>
         /// <param name="material">Material.</param>
-        /// <param name="renderForParticleSystem">Whether the material is used by a ParticleSystem. When true and the
-        /// shader is not a recognized particle shader, the material's rendered appearance is converted to a particle shader.</param>
+        /// <param name="renderForParticleLikeRenderer">Whether the material is used by a particle-like renderer
+        /// (ParticleSystemRenderer, TrailRenderer, or LineRenderer). When true and the shader is not a recognized
+        /// particle shader, the material's rendered appearance is converted to a particle shader.</param>
         /// <returns>Material wrapper object.</returns>
-        internal virtual MaterialBase Build(Material material, bool renderForParticleSystem)
+        internal virtual MaterialBase Build(Material material, bool renderForParticleLikeRenderer)
         {
             var category = DetectShaderCategory(material);
-            if (renderForParticleSystem && category != ShaderCategory.Particle)
+            if (renderForParticleLikeRenderer && category != ShaderCategory.Particle)
             {
                 return new RenderedParticleMaterial(material);
             }
