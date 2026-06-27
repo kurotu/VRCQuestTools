@@ -3,8 +3,11 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Linq;
+using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEditor;
@@ -433,6 +436,118 @@ namespace KRT.VRCQuestTools
                 var wrapper = new MaterialWrapperBuilder().BuildIgnoringParticleCategory(mat.Object);
                 Assert.IsFalse(wrapper is ParticleMaterial);
             }
+        }
+
+        /// <summary>
+        /// A TrailRenderer material whose rendered appearance is semi-transparent is converted to the
+        /// Additive particle shader, the same as ParticleSystem materials.
+        /// </summary>
+        [Test]
+        public void TrailRendererMaterialWithTransparencyConvertsToAdditive()
+        {
+            AssertParticleLikeRendererConverts<TrailRenderer>(TransparentTexture(), Additive);
+        }
+
+        /// <summary>
+        /// A LineRenderer material whose rendered appearance is semi-transparent is converted to the
+        /// Additive particle shader, the same as ParticleSystem materials.
+        /// </summary>
+        [Test]
+        public void LineRendererMaterialWithTransparencyConvertsToAdditive()
+        {
+            AssertParticleLikeRendererConverts<LineRenderer>(TransparentTexture(), Additive);
+        }
+
+        /// <summary>
+        /// A TrailRenderer material whose rendered (Graphics.Blit) appearance is fully opaque does not need
+        /// transparent rendering, so it falls back to the normal Toon Lit conversion instead of Additive.
+        /// </summary>
+        [Test]
+        public void TrailRendererMaterialWithOpaqueResultConvertsToToonLit()
+        {
+            AssertParticleLikeRendererConverts<TrailRenderer>(null, ToonLit);
+        }
+
+        /// <summary>
+        /// A LineRenderer material whose rendered (Graphics.Blit) appearance is fully opaque falls back to
+        /// the normal Toon Lit conversion instead of Additive.
+        /// </summary>
+        [Test]
+        public void LineRendererMaterialWithOpaqueResultConvertsToToonLit()
+        {
+            AssertParticleLikeRendererConverts<LineRenderer>(null, ToonLit);
+        }
+
+        /// <summary>
+        /// A MeshRenderer material with a non-particle shader is NOT treated as a particle material; it
+        /// follows the selected Toon Lit setting. Guards against over-broadening the particle-like detection.
+        /// </summary>
+        [Test]
+        public void MeshRendererMaterialWithNonParticleShaderConvertsToToonLit()
+        {
+            TestUtils.AssertIgnoreOnMissingShader("Unlit/Transparent");
+            var avatarRoot = new GameObject("TestAvatar");
+            try
+            {
+                using (var mat = DisposableObject.New(new Material(Shader.Find("Unlit/Transparent"))))
+                {
+                    mat.Object.mainTexture = TransparentTexture();
+                    var rendererObject = new GameObject("Mesh");
+                    rendererObject.transform.SetParent(avatarRoot.transform);
+                    rendererObject.AddComponent<MeshRenderer>().sharedMaterial = mat.Object;
+
+                    var converted = ConvertViaAvatarRoot(mat.Object, avatarRoot);
+                    Assert.AreEqual(ToonLit, converted.shader.name);
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(avatarRoot);
+            }
+        }
+
+        // A semi-transparent texture used to make the rendered appearance need transparent rendering.
+        private Texture2D TransparentTexture()
+        {
+            return TestUtils.LoadFixtureAssetAtPath<Texture2D>("Textures/alpha_test.png");
+        }
+
+        // The opacity decision is based on the Graphics.Blit result alpha. With a transparent main texture
+        // the Unlit/Transparent bake produces alpha; with no texture it samples the opaque white texture.
+        private void AssertParticleLikeRendererConverts<T>(Texture2D mainTexture, string expectedShader)
+            where T : Renderer
+        {
+            TestUtils.AssertIgnoreOnMissingShader("Unlit/Transparent");
+            var avatarRoot = new GameObject("TestAvatar");
+            try
+            {
+                using (var mat = DisposableObject.New(new Material(Shader.Find("Unlit/Transparent"))))
+                {
+                    mat.Object.mainTexture = mainTexture;
+                    var rendererObject = new GameObject("Effect");
+                    rendererObject.transform.SetParent(avatarRoot.transform);
+                    rendererObject.AddComponent<T>().sharedMaterial = mat.Object;
+
+                    var converted = ConvertViaAvatarRoot(mat.Object, avatarRoot);
+                    Assert.AreEqual(expectedShader, converted.shader.name);
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(avatarRoot);
+            }
+        }
+
+        private Material ConvertViaAvatarRoot(Material material, GameObject avatarRoot)
+        {
+            var converter = new AvatarConverter(new MaterialWrapperBuilder());
+            var map = new Dictionary<Material, IMaterialConvertSettings>
+            {
+                [material] = new ToonLitConvertSettings(),
+            };
+            var converted = converter.ConvertMaterialsForMobile(map, false, string.Empty, null, false, avatarRoot);
+            Assert.IsTrue(converted.ContainsKey(material), "Material should have been converted.");
+            return converted[material];
         }
 
         private void AssertDestinationByBlendState(BlendMode src, BlendMode dst, bool alphaTest, ParticleMaterial.ParticleBlend expectedBlend, string expectedShader)

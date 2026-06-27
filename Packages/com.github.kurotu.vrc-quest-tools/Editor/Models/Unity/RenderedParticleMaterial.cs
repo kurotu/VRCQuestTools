@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
@@ -39,6 +40,62 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// The rendered appearance always needs to be baked; the original texture cannot be reused.
         /// </summary>
         internal override bool ShouldUseOriginalMainTexture => false;
+
+        /// <summary>
+        /// Bakes the rendered appearance and determines whether transparent (Additive) rendering is required.
+        /// When the result is fully opaque, transparent rendering is unnecessary and the material should be
+        /// converted with the normal material conversion path instead.
+        /// </summary>
+        /// <returns>true when the baked appearance contains any non-opaque pixel; otherwise false.</returns>
+        internal bool RequiresTransparentRendering()
+        {
+            // A moderate size is enough to detect whether any transparency exists; downscaling only lowers
+            // alpha where transparent pixels are present, so a fully opaque result stays fully opaque.
+            const int checkTextureSize = 256;
+            Texture2D baked = null;
+            GenerateParticleImage(checkTextureSize, t => baked = t).WaitForCompletion();
+            if (baked == null)
+            {
+                // Fail-safe: keep the transparent particle path when the appearance cannot be inspected.
+                return true;
+            }
+
+            // The baked texture may be non-readable (e.g. created via AsyncGPUReadback with Apply(..., makeNoLongerReadable: true)).
+            // Read back its pixels through a temporary RenderTexture so we can inspect alpha reliably.
+            RenderTexture rt = null;
+            var prev = RenderTexture.active;
+            try
+            {
+                var desc = new RenderTextureDescriptor(baked.width, baked.height, RenderTextureFormat.ARGB32, 0)
+                {
+                    sRGB = baked.isDataSRGB,
+                };
+                rt = RenderTexture.GetTemporary(desc);
+                Graphics.Blit(baked, rt);
+
+                RenderTexture.active = rt;
+                var readable = new Texture2D(baked.width, baked.height, TextureFormat.RGBA32, false, !baked.isDataSRGB);
+                try
+                {
+                    readable.ReadPixels(new Rect(0, 0, baked.width, baked.height), 0, 0);
+                    readable.Apply(false, false);
+                    return readable.GetPixels32().Any(p => p.a < 255);
+                }
+                finally
+                {
+                    Object.DestroyImmediate(readable);
+                }
+            }
+            finally
+            {
+                RenderTexture.active = prev;
+                if (rt != null)
+                {
+                    RenderTexture.ReleaseTemporary(rt);
+                }
+                Object.DestroyImmediate(baked);
+            }
+        }
 
         /// <inheritdoc/>
         internal override AsyncCallbackRequest GenerateParticleImage(int maxTextureSize, System.Action<Texture2D> completion)
