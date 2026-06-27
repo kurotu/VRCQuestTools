@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [2.11.7] - 2026-06-27
 
 ### 修正
 - Poiyomi マテリアルを Toon Lit に反感する際、マテリアル設定によっては発光が反映されないことがある問題を修正。
