@@ -60,15 +60,39 @@ namespace KRT.VRCQuestTools.Models.Unity
                 return true;
             }
 
+            // The baked texture may be non-readable (e.g. created via AsyncGPUReadback with Apply(..., makeNoLongerReadable: true)).
+            // Read back its pixels through a temporary RenderTexture so we can inspect alpha reliably.
+            RenderTexture rt = null;
+            var prev = RenderTexture.active;
             try
             {
-                using (var readable = DisposableObject.New(TextureUtility.CopyAsReadable(baked, !baked.isDataSRGB)))
+                var desc = new RenderTextureDescriptor(baked.width, baked.height, RenderTextureFormat.ARGB32, 0)
                 {
-                    return readable.Object.GetPixels32().Any(p => p.a < 255);
+                    sRGB = baked.isDataSRGB,
+                };
+                rt = RenderTexture.GetTemporary(desc);
+                Graphics.Blit(baked, rt);
+
+                RenderTexture.active = rt;
+                var readable = new Texture2D(baked.width, baked.height, TextureFormat.RGBA32, false, !baked.isDataSRGB);
+                try
+                {
+                    readable.ReadPixels(new Rect(0, 0, baked.width, baked.height), 0, 0);
+                    readable.Apply(false, false);
+                    return readable.GetPixels32().Any(p => p.a < 255);
+                }
+                finally
+                {
+                    Object.DestroyImmediate(readable);
                 }
             }
             finally
             {
+                RenderTexture.active = prev;
+                if (rt != null)
+                {
+                    RenderTexture.ReleaseTemporary(rt);
+                }
                 Object.DestroyImmediate(baked);
             }
         }
