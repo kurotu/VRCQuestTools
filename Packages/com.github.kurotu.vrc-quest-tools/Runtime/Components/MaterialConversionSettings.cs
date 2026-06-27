@@ -36,6 +36,18 @@ namespace KRT.VRCQuestTools.Components
         [SerializeField]
         public AvatarConverterNdmfPhase ndmfPhase = AvatarConverterNdmfPhase.Auto;
 
+        /// <summary>
+        /// Whether to enable material preview in the editor.
+        /// </summary>
+        [SerializeField]
+        public bool enableMaterialPreview = true;
+
+        /// <summary>
+        /// Temporarily force enabling material preview for NDMF preview (non-serialized).
+        /// </summary>
+        [System.NonSerialized]
+        public bool forceMaterialPreview = false;
+
         /// <inheritdoc/>
         public IMaterialConvertSettings DefaultMaterialConvertSettings => defaultMaterialConvertSettings;
 
@@ -62,6 +74,14 @@ namespace KRT.VRCQuestTools.Components
                 return isRoot && !hasAvatarConverterSettings;
             }
         }
+
+        /// <inheritdoc/>
+        public bool EnableMaterialPreview => enableMaterialPreview;
+
+        /// <summary>
+        /// Gets a value indicating whether the temporary force preview is enabled.
+        /// </summary>
+        public bool ForceMaterialPreview => forceMaterialPreview;
 
         private void Reset()
         {

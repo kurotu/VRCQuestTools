@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -57,20 +58,41 @@ namespace KRT.VRCQuestTools.Inspector
             EditorGUI.indentLevel++;
 
             var generateQuestTextures = property.FindPropertyRelative("generateQuestTextures");
-            EditorGUI.PropertyField(fieldRect, generateQuestTextures, new GUIContent(i18n.GenerateAndroidTexturesLabel, i18n.GenerateAndroidTexturesTooltip));
+            EditorGUI.PropertyField(fieldRect, generateQuestTextures, new GUIContent(i18n.GenerateMobileTexturesLabel, i18n.GenerateMobileTexturesTooltip));
             fieldRect.y += EditorGUIUtility.singleLineHeight;
             fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
 
             using (var disabled = new EditorGUI.DisabledScope(!generateQuestTextures.boolValue))
             {
-                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                fieldRect = DrawGroupHeader(fieldRect, new GUIContent(i18n.IMaterialConvertSettingsMainTextureSettingsLabel));
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
 
-                EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("mobileTextureFormat"), new GUIContent(i18n.IMaterialConvertSettingsMobileTextureFormatLabel));
-                fieldRect.y += EditorGUIUtility.singleLineHeight;
-                fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("mobileTextureFormat"), new GUIContent(i18n.IMaterialConvertSettingsMobileTextureFormatLabel));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                }
+
+                fieldRect = DrawGroupHeader(fieldRect, new GUIContent(i18n.IMaterialConvertSettingsMaskTextureSettingsLabel));
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maskMaxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("maskMobileTextureFormat"), new GUIContent(i18n.IMaterialConvertSettingsMobileTextureFormatLabel));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                }
             }
+
+            var generateShadowRamp = property.FindPropertyRelative("generateShadowRamp");
+            EditorGUI.PropertyField(fieldRect, generateShadowRamp, new GUIContent(i18n.ToonStandardConvertSettingsGenerateShadowRampLabel));
+            fieldRect.y += EditorGUIUtility.singleLineHeight;
+            fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
 
             var fallbackShadowRamp = property.FindPropertyRelative("fallbackShadowRamp");
             using (var scope = new EditorGUI.PropertyScope(fieldRect, new GUIContent(i18n.ToonStandardConvertSettingsFallbackShadowRampLabel), fallbackShadowRamp))
@@ -100,6 +122,65 @@ namespace KRT.VRCQuestTools.Inspector
                 }
             }
 
+            // Row 1: Features label + featureMode dropdown
+            var featureModeProperty = property.FindPropertyRelative("featureMode");
+            var modeOptions = new GUIContent[]
+            {
+                new GUIContent(i18n.ToonStandardConvertSettingsFeaturesModeOptIn),
+                new GUIContent(i18n.ToonStandardConvertSettingsFeaturesModeOptOut),
+            };
+            using (var ccs = new EditorGUI.ChangeCheckScope())
+            {
+                var newModeIndex = EditorGUI.Popup(fieldRect, new GUIContent(i18n.ToonStandardConvertSettingsFeaturesLabel), featureModeProperty.enumValueIndex, modeOptions);
+                if (ccs.changed)
+                {
+                    featureModeProperty.enumValueIndex = newModeIndex;
+                    var newMode = (ToonStandardFeaturesMode)featureModeProperty.enumValueIndex;
+                    SetAllFeaturesSerializedProperty(property, newMode == ToonStandardFeaturesMode.OptOut);
+                    property.serializedObject.ApplyModifiedProperties();
+                    NdmfUtility.NotifyObjectUpdate(property.serializedObject.targetObject);
+                }
+            }
+
+            fieldRect.y += EditorGUIUtility.singleLineHeight;
+            fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+
+            // Row 2: Select All / Deselect All buttons
+            var buttonRect = fieldRect;
+            buttonRect.x = fieldRect.x + EditorGUIUtility.labelWidth;
+            buttonRect.width = (fieldRect.width - EditorGUIUtility.labelWidth) / 2;
+            if (GUI.Button(buttonRect, new GUIContent(i18n.SelectAllButtonLabel)))
+            {
+                SetAllFeaturesSerializedProperty(property, true);
+                property.serializedObject.ApplyModifiedProperties();
+                NdmfUtility.NotifyObjectUpdate(property.serializedObject.targetObject);
+            }
+
+            buttonRect.x += buttonRect.width;
+            if (GUI.Button(buttonRect, new GUIContent(i18n.DeselectAllButtonLabel)))
+            {
+                SetAllFeaturesSerializedProperty(property, false);
+                property.serializedObject.ApplyModifiedProperties();
+                NdmfUtility.NotifyObjectUpdate(property.serializedObject.targetObject);
+            }
+
+            fieldRect.y += EditorGUIUtility.singleLineHeight;
+            fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+
+            // Feature checkboxes driven by FeaturePropertyNames
+            using (new EditorGUI.IndentLevelScope())
+            {
+                foreach (var propName in ToonStandardConvertSettings.FeaturePropertyNames)
+                {
+                    var featureProp = property.FindPropertyRelative(propName);
+                    var labelKey = GetFeatureLabelKey(propName);
+                    var label = i18n.GetText(labelKey);
+                    EditorGUI.PropertyField(fieldRect, featureProp, new GUIContent(label));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                }
+            }
+
             EditorGUI.indentLevel--;
 
             return fieldRect;
@@ -111,11 +192,19 @@ namespace KRT.VRCQuestTools.Inspector
             var height = 0.0f;
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("generateQuestTextures"));
             height += EditorGUIUtility.standardVerticalSpacing;
+            height += GetGroupHeaderHeight();
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maxTextureSize"));
             height += EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("mobileTextureFormat"));
             height += EditorGUIUtility.standardVerticalSpacing;
+            height += GetGroupHeaderHeight();
+            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maskMaxTextureSize"));
+            height += EditorGUIUtility.standardVerticalSpacing;
+            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maskMobileTextureFormat"));
+            height += EditorGUIUtility.standardVerticalSpacing;
 
+            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("generateShadowRamp"));
+            height += EditorGUIUtility.standardVerticalSpacing;
             var fallbackShadowRamp = property.FindPropertyRelative("fallbackShadowRamp");
             height += EditorGUIUtility.singleLineHeight;
             height += EditorGUIUtility.standardVerticalSpacing;
@@ -124,7 +213,34 @@ namespace KRT.VRCQuestTools.Inspector
                 height += EditorGUI.GetPropertyHeight(fallbackShadowRamp);
                 height += EditorGUIUtility.standardVerticalSpacing;
             }
+
+            height += EditorGUIUtility.singleLineHeight; // Features label + featureMode dropdown
+            height += EditorGUIUtility.standardVerticalSpacing;
+            height += EditorGUIUtility.singleLineHeight; // Select All / Deselect All buttons
+            height += EditorGUIUtility.standardVerticalSpacing;
+            foreach (var propName in ToonStandardConvertSettings.FeaturePropertyNames)
+            {
+                height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative(propName));
+                height += EditorGUIUtility.standardVerticalSpacing;
+            }
+            height += EditorGUIUtility.standardVerticalSpacing;
+
             return height;
+        }
+
+        private static string GetFeatureLabelKey(string fieldName)
+        {
+            // "useNormalMap" -> "ToonStandardConvertSettingsFeaturesNormalMapLabel"
+            var featureName = fieldName.Substring("use".Length);
+            return "ToonStandardConvertSettingsFeatures" + featureName + "Label";
+        }
+
+        private static void SetAllFeaturesSerializedProperty(SerializedProperty property, bool value)
+        {
+            foreach (var propName in ToonStandardConvertSettings.FeaturePropertyNames)
+            {
+                property.FindPropertyRelative(propName).boolValue = value;
+            }
         }
 
         private FallbackShadow GetSelectedFallbackShadow(Texture2D texture)

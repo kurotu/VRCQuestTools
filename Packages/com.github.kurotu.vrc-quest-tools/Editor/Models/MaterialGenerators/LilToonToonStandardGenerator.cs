@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
@@ -20,8 +21,9 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="material">LilToon material.</param>
         /// <param name="settings">Convert settings.</param>
         /// <param name="sharedBlackTexture">Shared black texture to disable emission.</param>
-        public LilToonToonStandardGenerator(LilToonMaterial material, ToonStandardConvertSettings settings, Texture2D sharedBlackTexture)
-            : base(settings, sharedBlackTexture)
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview.</param>
+        public LilToonToonStandardGenerator(LilToonMaterial material, ToonStandardConvertSettings settings, Texture2D sharedBlackTexture, bool forEditorPreview)
+            : base(settings, sharedBlackTexture, forEditorPreview)
         {
             this.lilMaterial = material;
         }
@@ -38,7 +40,7 @@ namespace KRT.VRCQuestTools.Models
             newMaterial.MainTextureOffset = lilMaterial.MainTextureOffset;
             newMaterial.MainColor = Utils.ColorUtility.HdrToLdr(lilMaterial.Material.color);
 
-            if (lilMaterial.UseNormalMap)
+            if (lilMaterial.UseNormalMap && Settings.useNormalMap)
             {
                 newMaterial.UseNormalMap = true;
                 newMaterial.NormalMap = lilMaterial.NormalMap;
@@ -51,7 +53,7 @@ namespace KRT.VRCQuestTools.Models
 
             if (lilMaterial.UseShadow)
             {
-                newMaterial.ShadowRamp = settings.fallbackShadowRamp;
+                newMaterial.ShadowRamp = Settings.fallbackShadowRamp;
             }
             else
             {
@@ -60,7 +62,7 @@ namespace KRT.VRCQuestTools.Models
 
             newMaterial.MinBrightness = lilMaterial.LightMinLimit;
 
-            if (lilMaterial.UseEmission)
+            if (lilMaterial.UseEmission && Settings.useEmission)
             {
                 newMaterial.EmissionMap = lilMaterial.EmissionMap;
                 newMaterial.EmissionMapTextureScale = lilMaterial.EmissionMapTextureScale;
@@ -73,7 +75,7 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.EmissionColor = Color.black;
             }
 
-            if (lilMaterial.UseShadow && lilMaterial.AOMap != null)
+            if (lilMaterial.UseShadow && lilMaterial.AOMap != null && Settings.useOcclusion)
             {
                 newMaterial.UseOcclusion = true;
                 newMaterial.OcclusionMap = lilMaterial.AOMap;
@@ -81,7 +83,7 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.OcclusionMapTextureOffset = lilMaterial.AOMapTextureOffset;
             }
 
-            if (lilMaterial.UseReflection)
+            if (lilMaterial.UseReflection && Settings.useSpecular)
             {
                 newMaterial.UseSpecular = true;
                 newMaterial.MetallicMap = lilMaterial.MetallicMap;
@@ -96,7 +98,7 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.Sharpness = 1.0f - lilMaterial.SpecularBlur;
             }
 
-            if (lilMaterial.UseMatCap)
+            if (lilMaterial.UseMatCap && Settings.useMatcap)
             {
                 newMaterial.UseMatcap = true;
                 newMaterial.Matcap = lilMaterial.MatCapTex;
@@ -117,7 +119,7 @@ namespace KRT.VRCQuestTools.Models
                 }
             }
 
-            if (lilMaterial.UseRimLight)
+            if (lilMaterial.UseRimLight && Settings.useRimLighting)
             {
                 newMaterial.UseRimLighting = true;
                 newMaterial.RimColor = Utils.ColorUtility.HdrToLdr(lilMaterial.RimLightColor);
@@ -134,6 +136,172 @@ namespace KRT.VRCQuestTools.Models
             return newMaterial;
         }
 
+        /// <summary>
+        /// Gets the platform override settings for main texture.
+        /// </summary>
+        /// <returns>Platform override settings, or null if none.</returns>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
+        {
+            // Only use color textures, not mask textures, and only from enabled features
+            var textures = new List<Texture>(3);
+
+            if (lilMaterial.Material.mainTexture != null)
+            {
+                textures.Add(lilMaterial.Material.mainTexture);
+            }
+
+            if (lilMaterial.UseMain2ndTex && lilMaterial.Main2ndTex != null)
+            {
+                textures.Add(lilMaterial.Main2ndTex);
+            }
+
+            if (lilMaterial.UseMain3rdTex && lilMaterial.Main3rdTex != null)
+            {
+                textures.Add(lilMaterial.Main3rdTex);
+            }
+
+            if (textures.Count > 0)
+            {
+                return TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray());
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the platform override settings for emission map textures.
+        /// </summary>
+        /// <returns>Platform override settings, or null if none.</returns>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride()
+        {
+            // Only use color textures, and only if the feature is actually enabled
+            var textures = new List<Texture>(2);
+
+            if (lilMaterial.UseEmission && lilMaterial.EmissionMap != null)
+            {
+                textures.Add(lilMaterial.EmissionMap);
+            }
+
+            if (lilMaterial.UseEmission2nd && lilMaterial.Emission2ndMap != null)
+            {
+                textures.Add(lilMaterial.Emission2ndMap);
+            }
+
+            if (textures.Count > 0)
+            {
+                return TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray());
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the platform override settings for gloss map textures.
+        /// </summary>
+        /// <returns>Platform override settings, or null if none.</returns>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetGlossMapPlatformOverride()
+        {
+            var textures = new List<Texture>(2);
+
+            if (lilMaterial.SmoothnessTex != null)
+            {
+                textures.Add(lilMaterial.SmoothnessTex);
+            }
+
+            if (lilMaterial.ReflectionColorTex != null)
+            {
+                textures.Add(lilMaterial.ReflectionColorTex);
+            }
+
+            if (textures.Count > 0)
+            {
+                return TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray());
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the platform override settings for matcap textures.
+        /// </summary>
+        /// <returns>Platform override settings, or null if none.</returns>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMatcapPlatformOverride()
+        {
+            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MatCapTex);
+        }
+
+        /// <summary>
+        /// Gets the platform override settings for matcap mask textures.
+        /// </summary>
+        /// <returns>Platform override settings, or null if none.</returns>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMatcapMaskPlatformOverride()
+        {
+            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MatCapMask);
+        }
+
+        /// <summary>
+        /// Gets the platform override settings for metallic map textures.
+        /// </summary>
+        /// <returns>Platform override settings, or null if none.</returns>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMetallicMapPlatformOverride()
+        {
+            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MetallicMap, lilMaterial.ReflectionColorTex);
+        }
+
+        /// <summary>
+        /// Gets the platform override settings for normal map textures.
+        /// </summary>
+        /// <returns>Platform override settings, or null if none.</returns>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetNormalMapPlatformOverride()
+        {
+            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.NormalMap);
+        }
+
+        /// <summary>
+        /// Gets the platform override settings for occlusion map textures.
+        /// </summary>
+        /// <returns>Platform override settings, or null if none.</returns>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetOcclusionMapPlatformOverride()
+        {
+            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.AOMap);
+        }
+
+        /// <summary>
+        /// Gets the platform override settings for packed mask textures.
+        /// </summary>
+        /// <param name="pack">The texture pack for which to get overrides.</param>
+        /// <returns>Platform override settings, or null if none.</returns>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetPackedMaskPlatformOverride(TexturePack pack)
+        {
+            var sourceTextures = new List<Texture>();
+            foreach (var mask in pack.GetMasks())
+            {
+                Texture tex = null;
+                switch (mask.MaskType)
+                {
+                    case MaskType.DetailMask:
+                        break; // lilToon doesn't have detail mask
+                    case MaskType.MetallicMap:
+                        tex = lilMaterial.MetallicMap;
+                        break;
+                    case MaskType.MatcapMask:
+                        tex = lilMaterial.MatCapMask;
+                        break;
+                    case MaskType.OcculusionMap:
+                        tex = lilMaterial.AOMap;
+                        break;
+                    case MaskType.GlossMap:
+                        tex = lilMaterial.SmoothnessTex;
+                        break;
+                }
+                if (tex != null)
+                {
+                    sourceTextures.Add(tex);
+                }
+            }
+            return TextureUtility.GetBestPlatformOverrideSettings(sourceTextures.ToArray());
+        }
+
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateEmissionMap(Action<Texture2D> completion)
         {
@@ -145,9 +313,7 @@ namespace KRT.VRCQuestTools.Models
             mTask.WaitForCompletion();
 
             var bakeMat = new Material(lilMaterial.Material);
-#if UNITY_2022_1_OR_NEWER
             bakeMat.parent = null;
-#endif
             bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/lilToon/Emission");
             var bakeMatWrapper = new LilToonMaterial(bakeMat);
             bakeMatWrapper.Material.SetTexture("_VQT_AlbedoTex", main);
@@ -165,7 +331,15 @@ namespace KRT.VRCQuestTools.Models
                 lilMaterial.Emission2ndMap ? lilMaterial.Emission2ndMap.height : 4,
                 lilMaterial.Emission2ndBlendMask ? lilMaterial.Emission2ndBlendMask.height : 4);
 
-            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, (int)settings.maxTextureSize);
+            // Check platform override settings from source textures used in emission shader
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(
+                lilMaterial.EmissionMap,
+                lilMaterial.EmissionBlendMask,
+                lilMaterial.Emission2ndMap,
+                lilMaterial.Emission2ndBlendMask);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, maxTextureSize);
             var rt = RenderTexture.GetTemporary(targetWidth, targetHeight, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(lilMaterial.EmissionMap, rt, bakeMat);
             return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
@@ -185,7 +359,12 @@ namespace KRT.VRCQuestTools.Models
             var reflectionColorTexHeight = reflectionColorTex ? reflectionColorTex.height : 4;
             var sourceWidth = Math.Max(gloss ? gloss.width : 4, reflectionColorTexWidth);
             var sourceHeight = Math.Max(gloss ? gloss.height : 4, reflectionColorTexHeight);
-            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, (int)settings.maxTextureSize);
+
+            // Check platform override settings from source textures
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(gloss, reflectionColorTex);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, maxTextureSize);
 
             var alphaGlossMap = RenderTexture.GetTemporary(sourceWidth, sourceHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -216,9 +395,11 @@ namespace KRT.VRCQuestTools.Models
             return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
             {
                 RenderTexture.ReleaseTemporary(alphaGlossMap);
+                RenderTexture.ReleaseTemporary(reflectionGrayscaleTex);
                 RenderTexture.ReleaseTemporary(rt1);
                 RenderTexture.ReleaseTemporary(rt2);
                 UnityEngine.Object.DestroyImmediate(mat);
+                UnityEngine.Object.DestroyImmediate(mat0);
                 UnityEngine.Object.DestroyImmediate(mat1);
                 completion?.Invoke(tex);
             });
@@ -227,16 +408,25 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateMainTexture(Action<Texture2D> completion)
         {
-            var rt = lilMaterial.BakeMain();
-            var (width, height) = TextureUtility.AspectFitReduction(rt.width, rt.height, (int)settings.maxTextureSize);
-            var rt2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
-            TextureUtility.DownscaleBlit(rt, true, rt2);
-            return TextureUtility.RequestReadbackRenderTexture(rt2, true, (tex) =>
+            var toonLitConvertSettings = new ToonLitConvertSettings
             {
-                UnityEngine.Object.DestroyImmediate(rt);
-                RenderTexture.ReleaseTemporary(rt2);
-                completion?.Invoke(tex);
-            });
+                generateQuestTextures = Settings.generateQuestTextures,
+                maxTextureSize = Settings.maxTextureSize,
+                mobileTextureFormat = Settings.mobileTextureFormat,
+                mainTextureBrightness = 1.0f,
+                generateShadowFromNormalMap = !Settings.useNormalMap,
+            };
+            var toonLitBakeMat = new LilToonMaterial(new Material(lilMaterial.Material));
+            if (Settings.useEmission)
+            {
+                toonLitBakeMat.UseEmission = false;
+                toonLitBakeMat.UseEmission2nd = false;
+            }
+            if (Settings.useMatcap)
+            {
+                toonLitBakeMat.Material.SetFloat("_VQT_UseToonStandardMatCap", 1);
+            }
+            return toonLitBakeMat.GenerateToonLitImage(toonLitConvertSettings, completion);
         }
 
         /// <inheritdoc/>
@@ -267,7 +457,12 @@ namespace KRT.VRCQuestTools.Models
 
             var matcapWidth = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.width : 4;
             var matcapHeight = lilMaterial.MatCapTex ? lilMaterial.MatCapTex.height : 4;
-            var (width, height) = TextureUtility.AspectFitReduction(matcapWidth, matcapHeight, (int)settings.maxTextureSize);
+
+            // Check platform override settings from source texture
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MatCapTex);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (width, height) = TextureUtility.AspectFitReduction(matcapWidth, matcapHeight, maxTextureSize);
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(null, rt, mat);
 
@@ -283,7 +478,12 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateMatcapMask(Action<Texture2D> completion)
         {
             var matcapMask = (Texture2D)lilMaterial.MatCapMask;
-            var (width, height) = TextureUtility.AspectFitReduction(matcapMask.width, matcapMask.height, (int)settings.maxTextureSize);
+
+            // Check platform override settings from source texture
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(matcapMask);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (width, height) = TextureUtility.AspectFitReduction(matcapMask.width, matcapMask.height, maxTextureSize);
 
             var rt = RenderTexture.GetTemporary(matcapMask.width, matcapMask.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -317,7 +517,12 @@ namespace KRT.VRCQuestTools.Models
 
             var originalWidth = Math.Max(metallicWidth, reflectionColorWidth);
             var originalHeight = Math.Max(metallicHeight, reflectionColorHeight);
-            var (width, height) = TextureUtility.AspectFitReduction(originalWidth, originalHeight, (int)settings.maxTextureSize);
+
+            // Check platform override settings from source textures
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(metallic, reflectionColorTex);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (width, height) = TextureUtility.AspectFitReduction(originalWidth, originalHeight, maxTextureSize);
 
             var reflectionGrayscaleTex = RenderTexture.GetTemporary(reflectionColorWidth, reflectionColorHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat0 = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
@@ -343,6 +548,7 @@ namespace KRT.VRCQuestTools.Models
                 RenderTexture.ReleaseTemporary(reflectionGrayscaleTex);
                 RenderTexture.ReleaseTemporary(rt);
                 RenderTexture.ReleaseTemporary(rt2);
+                UnityEngine.Object.DestroyImmediate(mat0);
                 UnityEngine.Object.DestroyImmediate(mat);
                 completion?.Invoke(tex);
             });
@@ -352,7 +558,12 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion)
         {
             var normal = (Texture2D)lilMaterial.NormalMap;
-            var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, (int)settings.maxTextureSize);
+
+            // Check platform override settings from source texture
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(normal);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, maxTextureSize);
             var newTex = TextureUtility.DownscaleNormalMap(normal, outputRGB, width, height);
             return new ResultRequest<Texture2D>(newTex, completion);
         }
@@ -361,7 +572,12 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateOcclusionMap(Action<Texture2D> completion)
         {
             var aoMap = (Texture2D)lilMaterial.AOMap;
-            var (width, height) = TextureUtility.AspectFitReduction(aoMap.width, aoMap.height, (int)settings.maxTextureSize);
+
+            // Check platform override settings from source texture
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(aoMap);
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+
+            var (width, height) = TextureUtility.AspectFitReduction(aoMap.width, aoMap.height, maxTextureSize);
 
             var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
             swizzleMat.SetTexture("_Texture0", aoMap);
@@ -400,6 +616,8 @@ namespace KRT.VRCQuestTools.Models
 
             int maxWidth = 0;
             int maxHeight = 0;
+            var sourceTextures = new System.Collections.Generic.List<Texture>();
+
             foreach (var (mask, index) in pack.GetMasks().Select((mask, index) => (mask, index)))
             {
                 switch (mask.MaskType)
@@ -409,6 +627,16 @@ namespace KRT.VRCQuestTools.Models
                     case MaskType.DetailMask:
                         break;
                     case MaskType.MetallicMap:
+                        // Collect source textures for platform override
+                        if (lilMaterial.MetallicMap)
+                        {
+                            sourceTextures.Add(lilMaterial.MetallicMap);
+                        }
+                        if (lilMaterial.ReflectionColorTex)
+                        {
+                            sourceTextures.Add(lilMaterial.ReflectionColorTex);
+                        }
+
                         GenerateMetallicMap((tex) =>
                         {
                             if (tex)
@@ -422,6 +650,12 @@ namespace KRT.VRCQuestTools.Models
                         }).WaitForCompletion();
                         break;
                     case MaskType.MatcapMask:
+                        // Collect source textures for platform override
+                        if (lilMaterial.MatCapMask)
+                        {
+                            sourceTextures.Add(lilMaterial.MatCapMask);
+                        }
+
                         GenerateMatcapMask((tex) =>
                         {
                             if (tex)
@@ -435,6 +669,12 @@ namespace KRT.VRCQuestTools.Models
                         }).WaitForCompletion();
                         break;
                     case MaskType.OcculusionMap:
+                        // Collect source textures for platform override
+                        if (lilMaterial.AOMap)
+                        {
+                            sourceTextures.Add(lilMaterial.AOMap);
+                        }
+
                         GenerateOcclusionMap((tex) =>
                         {
                             if (tex)
@@ -448,6 +688,16 @@ namespace KRT.VRCQuestTools.Models
                         }).WaitForCompletion();
                         break;
                     case MaskType.GlossMap:
+                        // Collect source textures for platform override
+                        if (lilMaterial.SmoothnessTex)
+                        {
+                            sourceTextures.Add(lilMaterial.SmoothnessTex);
+                        }
+                        if (lilMaterial.ReflectionColorTex)
+                        {
+                            sourceTextures.Add(lilMaterial.ReflectionColorTex);
+                        }
+
                         GenerateGlossMap((tex) =>
                         {
                             if (tex)
@@ -463,8 +713,21 @@ namespace KRT.VRCQuestTools.Models
                 }
             }
 
-            var width = Math.Min(maxWidth, (int)settings.maxTextureSize);
-            var height = Math.Min(maxHeight, (int)settings.maxTextureSize);
+            // Check platform override settings from source textures
+            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(sourceTextures.ToArray());
+            var sourceMaxSize = TextureUtility.NormalizeMaxTextureSize(platformOverride?.MaxTextureSize);
+            var maskMaxSize = TextureUtility.NormalizeMaxTextureSize((int)Settings.maskMaxTextureSize);
+            var mainMaxSize = TextureUtility.NormalizeMaxTextureSize((int)Settings.maxTextureSize);
+            var settingsMaxSize = maskMaxSize ?? mainMaxSize;
+            var maxTextureSize = TextureUtility.MinDefinedMaxTextureSize(sourceMaxSize, settingsMaxSize);
+
+            var width = Math.Max(1, maxWidth);
+            var height = Math.Max(1, maxHeight);
+            if (maxTextureSize.HasValue)
+            {
+                width = Math.Min(width, maxTextureSize.Value);
+                height = Math.Min(height, maxTextureSize.Value);
+            }
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             Graphics.Blit(null, rt, swizzleMat);
             return TextureUtility.RequestReadbackRenderTexture(rt, true, true, (tex) =>
@@ -479,9 +742,7 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateShadowRamp(Action<Texture2D> completion)
         {
             var material = new Material(lilMaterial.Material);
-#if UNITY_2022_1_OR_NEWER
             material.parent = null;
-#endif
 
             if (AssetUtility.CanLilToonBakeShadowRamp())
             {
@@ -545,6 +806,13 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override Color GetMainColor()
         {
+            if (Settings.useMatcap && lilMaterial.UseMatCap && lilMaterial.MatCapBlendingMode == LilToonMaterial.MatCapBlendMode.Normal)
+            {
+                if (!GetUseMainTexture())
+                {
+                    return Color.black;
+                }
+            }
             return lilMaterial.Material.color;
         }
 
@@ -559,10 +827,10 @@ namespace KRT.VRCQuestTools.Models
         {
             switch (lilMaterial.MatCapBlendingMode)
             {
+                case LilToonMaterial.MatCapBlendMode.Normal:
                 case LilToonMaterial.MatCapBlendMode.Add:
                 case LilToonMaterial.MatCapBlendMode.Screen:
                     return ToonStandardMaterialWrapper.MatcapTypeMode.Additive;
-                case LilToonMaterial.MatCapBlendMode.Normal:
                 case LilToonMaterial.MatCapBlendMode.Multiply:
                     return ToonStandardMaterialWrapper.MatcapTypeMode.Multiplicative;
                 default:
@@ -705,6 +973,10 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseMainTexture()
         {
+            if (!Settings.useEmission && (lilMaterial.UseEmission || lilMaterial.UseEmission2nd))
+            {
+                return true;
+            }
             return lilMaterial.Material.mainTexture != null;
         }
 

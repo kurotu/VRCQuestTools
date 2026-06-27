@@ -1,3 +1,4 @@
+using System.Linq;
 using KRT.VRCQuestTools.Models;
 
 namespace KRT.VRCQuestTools.Components
@@ -31,5 +32,25 @@ namespace KRT.VRCQuestTools.Components
         /// Gets a value indicating whether to use default material convert settings.
         /// </summary>
         bool IsPrimaryRoot { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether to enable material preview in the editor.
+        /// </summary>
+        bool EnableMaterialPreview { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether to force-enable material preview temporarily (non-serialized).
+        /// </summary>
+        bool ForceMaterialPreview { get; }
+
+        /// <summary>
+        /// Gets the cache key for the material conversion component.
+        /// </summary>
+        /// <returns>Cache key.</returns>
+        public string GetCacheKey()
+        {
+            return $"{DefaultMaterialConvertSettings.GetCacheKey()}_" +
+                   $"{string.Join("_", AdditionalMaterialConvertSettings.Select(s => s.GetCacheKey()))}";
+        }
     }
 }

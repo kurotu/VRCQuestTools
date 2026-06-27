@@ -2,10 +2,29 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Start Website",
+			"label": "lint",
+			"detail": "Run analyzers",
+			"type": "shell",
+			"command": "PowerShell",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"args": [
+				"-ExecutionPolicy",
+				"RemoteSigned",
+				".\\scripts\\lint.ps1"
+			],
+			"options": {
+				"env": {
+					"DOTNET_CLI_UI_LANGUAGE": "en"
+				}
+			}
+		},
+		{
+			"label": "start-website-en",
 			"detail": "docusaurus start",
 			"type": "shell",
-			"command": "npm",
+			"command": "pnpm",
 			"problemMatcher": [],
 			"args": [
 				"start"
@@ -15,10 +34,10 @@
 			},
 		},
 		{
-			"label": "Start Website (ja)",
+			"label": "start-website-ja",
 			"detail": "docusaurus start with Japanese locale",
 			"type": "shell",
-			"command": "npm",
+			"command": "pnpm",
 			"problemMatcher": [],
 			"args": [
 				"start",
@@ -28,6 +47,37 @@
 			"options": {
 				"cwd": "${workspaceFolder}/Website"
 			},
+		},
+		{
+			"label": "build-website",
+			"detail": "docusaurus build",
+			"type": "shell",
+			"command": "pnpm",
+			"problemMatcher": [],
+			"args": [
+				"run",
+				"build"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/Website"
+			}
+		},
+		{
+			"label": "test-website",
+			"detail": "docusaurus serve",
+			"type": "shell",
+			"command": "pnpm",
+			"problemMatcher": [],
+			"args": [
+				"run",
+				"serve"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/Website"
+			},
+			"dependsOn": [
+				"build-website"
+			]
 		}
 	]
 }

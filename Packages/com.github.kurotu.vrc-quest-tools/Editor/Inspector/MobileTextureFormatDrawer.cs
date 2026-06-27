@@ -13,14 +13,13 @@ namespace KRT.VRCQuestTools.Inspector
     internal class MobileTextureFormatDrawer : PropertyDrawer
     {
         private readonly string[] mobileTextureFormatNames = Enum.GetNames(typeof(MobileTextureFormat))
+            .Select(n => n == "NoOverride" ? "No Override" : n)
             .Select(n => n.Replace('_', ' '))
             .ToArray();
 
         /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var mobileTextureFormat = (MobileTextureFormat)property.enumValueIndex;
-
             using (new EditorGUI.PropertyScope(position, label, property))
             {
                 using (var ccs = new EditorGUI.ChangeCheckScope())
@@ -38,13 +37,16 @@ namespace KRT.VRCQuestTools.Inspector
         private GUIContent[] GetPopupLabels()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-            return mobileTextureFormatNames.Select((label, i) =>
+            return Enum.GetValues(typeof(MobileTextureFormat))
+                .Cast<MobileTextureFormat>()
+                .Select((format, i) =>
                 {
-                    if (i == 0)
+                    var label = mobileTextureFormatNames[i];
+                    if (format == MobileTextureFormat.ASTC_4x4)
                     {
                         return $"{label} ({i18n.TextureFormatHighQuality})";
                     }
-                    if (i == mobileTextureFormatNames.Length - 1)
+                    if (format == MobileTextureFormat.ASTC_12x12)
                     {
                         return $"{label} ({i18n.TextureFormatHighCompression})";
                     }

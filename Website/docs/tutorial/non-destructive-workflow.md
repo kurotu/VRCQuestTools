@@ -59,14 +59,14 @@ Reference:
 - [Build and Test for Android Mobile](https://creators.vrchat.com/platforms/android/build-test-mobile/)
 :::
 
-1. Open the VRChat SDK control panel and select the avatar to test in the **Builder** tab.
-2. Select **Tools** > **VRCQuestTools** > **Show Avatar Builder** from the menu bar.
-3. The **VQT Avatar Builder** window will appear.
-4. Click the **Build & Test on PC/Android** button.
-5. The avatar will be built with Android settings.
+### Testing with Android Settings on PC
 
-The built avatar will appear in the **Others** section of the VRChat avatar list.
-Launch VRChat and test the avatar.
+You can test avatars with Android settings on your PC using the hierarchy right-click menu.
+
+1. Select the avatar in the hierarchy that you want to test.
+2. Right-click the avatar and select **VRCQuestTools** > **[NDMF] Build & Test for PC with Android Settings**.
+3. The avatar will be built with Android settings and appear in the **Others** section of the VRChat avatar list.
+4. Launch VRChat and test the avatar.
 
 ## Uploading the Avatar
 
@@ -75,7 +75,6 @@ There are following ways to upload the avatar with non-destructive conversion:
 
 - [Regular Upload](#regular-upload) (VRChat SDK)
 - [Multi-Platform Build](#multi-platform-build) (VRChat SDK)
-- [VQT Avatar Builder](#vqt-avatar-builder) (VRCQuestTools)
 - [ContinuousAvatarUploader](https://github.com/anatawa12/ContinuousAvatarUploader)
 
 ### Regular Upload
@@ -94,17 +93,5 @@ You can upload the avatar for both of PC and Android by using the **Multi-Platfo
 4. Click the **Milti-Platform Build** button.
 5. The avatar will be uploaded for both of PC and Android.
 
-### VQT Avatar Builder
-
-You can upload the avatar without pre-build validation by using the [VQT Avatar Builder].
-
-1. Change the Unity build settings to Android.
-2. Open the VRChat SDK control panel and select the avatar to upload in the **Builder** tab.
-3. Select **Tools** > **VRCQuestTools** > **Show Avatar Builder** from the menu bar.
-4. The **VQT Avatar Builder** window will appear.
-5. Click the **Build & Upload for Quest** button.
-6. The avatar thumnail will have a green **Mobile** icon after the upload is complete.
-
 [Modular Avatar]: https://modular-avatar.nadena.dev/
 [Anatawa12's AvatarOptimizer]: https://vpm.anatawa12.com/avatar-optimizer/en/
-[VQT Avatar Builder]: ../references/main-menu/show-avatar-builder.md

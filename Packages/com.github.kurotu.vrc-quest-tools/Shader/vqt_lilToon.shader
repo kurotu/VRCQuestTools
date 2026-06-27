@@ -2,13 +2,6 @@
 {
     Properties
     {
-        _LIL_FEATURE_NORMAL_1ST("LIL_FEATURE_NORMAL_1ST", Int) = 1
-        _LIL_FEATURE_EMISSION_1ST("LIL_FEATURE_EMISSION_1ST", Int) = 1
-        _LIL_FEATURE_EMISSION_2ND("LIL_FEATURE_EMISSION_2ND", Int) = 1
-        _LIL_FEATURE_ANIMATE_EMISSION_UV("LIL_FEATURE_ANIMATE_EMISSION_UV", Int) = 1
-        _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV("LIL_FEATURE_ANIMATE_EMISSION_MASK_UV", Int) = 1
-        _LIL_FEATURE_EMISSION_GRADATION("LIL_FEATURE_EMISSION_GRADATION", Int) = 1
-
         _MainTex ("Texture", 2D) = "white" {}
         [HDR]_Color("Color", Color) = (1,1,1,1)
 
@@ -68,8 +61,14 @@
         _Emission2ndFluorescence("Fluorescence", Range(0,1)) = 0
         _Emission2ndMainStrength("Emission2ndMainStrength", Range(0,1)) = 0
 
+        _UseMatCap("Use MatCap", Int) = 0
+        _MatCapColor("MatCap Color", Color) = (1, 1, 1, 1)
+        _MatCapBlendMask("MatCap Blend Mask", 2D) = "white" {}
+        _MatCapBlendMode("MatCap Blend Mode", Int) = 1
+
         _VQT_MainTexBrightness("VQT Main Texture Brightness", Range(0, 1)) = 1
         _VQT_GenerateShadow("VQT Generate Shadow", Int) = 1
+        _VQT_UseToonStandardMatCap("VQT Use Toon Standard MatCap", Int) = 0
     }
     SubShader
     {
@@ -98,15 +97,9 @@
                 float2 uv_EmissionBlendMask : TEXCOORD3;
                 float2 uv_Emission2ndMap : TEXCOORD4;
                 float2 uv_Emission2ndBlendMask : TEXCOORD5;
+                float2 uv_MatCapBlendMask : TEXCOORD6;
                 float4 vertex : SV_POSITION;
             };
-
-            uint _LIL_FEATURE_NORMAL_1ST;
-            uint _LIL_FEATURE_EMISSION_1ST;
-            uint _LIL_FEATURE_EMISSION_2ND;
-            uint _LIL_FEATURE_ANIMATE_EMISSION_UV;
-            uint _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV;
-            uint _LIL_FEATURE_EMISSION_GRADATION;
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
@@ -167,8 +160,15 @@
             float _Emission2ndFluorescence;
             float _Emission2ndMainStrength;
 
+            uint _UseMatCap;
+            fixed4 _MatCapColor;
+            sampler2D _MatCapBlendMask;
+            float4 _MatCapBlendMask_ST;
+            uint _MatCapBlendMode;
+
             float _VQT_MainTexBrightness;
             uint _VQT_GenerateShadow;
+            uint _VQT_UseToonStandardMatCap;
 
             float4 sampleTex2D(sampler2D tex, float2 uv, float angle) {
                 half angleCos           = cos(angle);
@@ -209,6 +209,7 @@
                 o.uv_EmissionBlendMask = TRANSFORM_TEX(v.uv, _EmissionBlendMask);
                 o.uv_Emission2ndMap = TRANSFORM_TEX(v.uv, _Emission2ndMap);
                 o.uv_Emission2ndBlendMask = TRANSFORM_TEX(v.uv, _Emission2ndBlendMask);
+                o.uv_MatCapBlendMask = TRANSFORM_TEX(v.uv, _MatCapBlendMask);
                 return o;
             }
 
@@ -258,7 +259,7 @@
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 albedo = tex2D(_MainTex, i.uv);
-                if (_VQT_GenerateShadow && _LIL_FEATURE_NORMAL_1ST && _UseShadow && _UseBumpMap) {
+                if (_VQT_GenerateShadow && _UseShadow && _UseBumpMap) {
                     half3 normal = UnpackScaleNormal(tex2D(_BumpMap, i.uv_BumpMap), _BumpScale);
                     half4 normalCol = vqt_normalToGrayScale(normal);
 
@@ -270,14 +271,21 @@
                 albedo.rgb *= _VQT_MainTexBrightness;
                 fixed4 col = albedo;
 
-                if (_LIL_FEATURE_EMISSION_1ST && _UseEmission) {
+                // MatCap processing - Set main texture output to (0,0,0) when in normal mode (mode == 0)
+                if (_VQT_UseToonStandardMatCap && _UseMatCap && _MatCapBlendMode == 0) {
+                    float4 matCapMask = tex2D(_MatCapBlendMask, i.uv_MatCapBlendMask);
+                    float matCapMaskValue = matCapMask.r * _MatCapColor.a;
+                    col.rgb = lerp(col.rgb, float3(0,0,0), matCapMaskValue);
+                }
+
+                if (_UseEmission) {
                     float angle;
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_UV ? _EmissionMap_ScrollRotate.b : 0.0f;
+                    angle = _EmissionMap_ScrollRotate.b;
                     float4 emi = sampleTex2D(_EmissionMap, i.uv_EmissionMap, angle);
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? _EmissionBlendMask_ScrollRotate.b : 0.0f;
+                    angle = _EmissionBlendMask_ScrollRotate.b;
                     float4 emiMask = sampleTex2D(_EmissionBlendMask, i.uv_EmissionBlendMask, angle);
                     emi = emissionRGB(_EmissionColor, emi, _EmissionBlend, emiMask, albedo, _EmissionMainStrength);
-                    if (_LIL_FEATURE_EMISSION_GRADATION && _EmissionUseGrad) {
+                    if (_EmissionUseGrad) {
                         // Use first color
                         fixed4 c = _EmissionGradTex.Sample(sampler_EmissionGradTex, 0);
                         emi.rgb *= c.rgb;
@@ -286,14 +294,14 @@
                     col = compose(col, emi, _EmissionBlendMode);
                 }
 
-                if (_LIL_FEATURE_EMISSION_2ND && _UseEmission2nd) {
+                if (_UseEmission2nd) {
                     float angle;
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_UV ? _Emission2ndMap_ScrollRotate.b : 0.0f;
+                    angle = _Emission2ndMap_ScrollRotate.b;
                     float4 emi = sampleTex2D(_Emission2ndMap, i.uv_Emission2ndMap, angle);
-                    angle = _LIL_FEATURE_ANIMATE_EMISSION_MASK_UV ? _Emission2ndBlendMask_ScrollRotate.b : 0.0f;
+                    angle = _Emission2ndBlendMask_ScrollRotate.b;
                     float4 emiMask = sampleTex2D(_Emission2ndBlendMask, i.uv_Emission2ndBlendMask, angle);
                     emi.rgb = emissionRGB(_Emission2ndColor, emi, _Emission2ndBlend, emiMask, albedo, _Emission2ndMainStrength);
-                    if (_LIL_FEATURE_EMISSION_GRADATION && _Emission2ndUseGrad) {
+                    if (_Emission2ndUseGrad) {
                         // Use first color
                         fixed4 c = _Emission2ndGradTex.Sample(sampler_Emission2ndGradTex, 0);
                         emi.rgb *= c.rgb;

@@ -4,10 +4,61 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 追加
+- `Unity Settings for Mobile` に iOS Build Support の確認項目を追加。未インストール時は案内を表示しますが、起動時の自動表示条件には含めません。
+- 元テクスチャのプラットフォーム別オーバーライド設定（圧縮形式と最大テクスチャサイズ）を生成テクスチャに反映。
+- Toon Standard の変換設定に項目を追加
+    - `影の設定を生成する`: 影の設定用のRampテクスチャを生成します。
+    - `機能設定`: 変換されたマテリアルに適用する機能を選択します。
+    - `マスクテクスチャの最大サイズ` と `マスクの圧縮形式`: マスクテクスチャの最大解像度と圧縮形式を個別に設定できます。
+- Toon Standard の機能設定にオプトイン/オプトアウトモードを追加。
+- 残しておく PhysBone を選択するときにワイヤーフレームによるプレビューを追加。
+- [NDMF] マテリアル変換と頂点カラー削除のプレビューを追加。
+- テクスチャ圧縮形式の設定に「No Override」オプションを追加し、プラットフォーム別オーバーライドを設定せずにUnityのデフォルト設定でASTC圧縮を制御できるようにしました。`Avatar Converter Settings` コンポーネントのテクスチャ圧縮形式のデフォルト値は「No Override」になりました。
+- `VQT Fallback Avatar` コンポーネントを追加。モバイルプラットフォームのパフォーマンス要件（Good以上）を満たした場合、アップロード後に自動的にアバターをフォールバックアバターとして設定します。
+- Mobile向けアップロード時、Avatar Dynamics のカテゴリが Very Poor の場合に警告ログを表示するよう追加。
+- (実験的機能) Poiyomi から Toon Standard へのマテリアル変換を追加。
+- パーティクルシェーダーおよびパーティクルシステム専用のマテリアル変換を追加。
+
+### 変更
+- Avatar Dynamics Selector の保持/削除設定を `Avatar Converter Settings` のレガシー配列ではなく `Platform Component Remover` に保存するように変更。適用時に設定を移行し、古い参照が残らないようレガシー配列をクリアします。
+- PhysBones Remover に、現在の保持/削除選択を `Platform Component Remover` に反映するボタンを追加。
+- `Avatar Converter Settings` インスペクターの Avatar Dynamics パフォーマンス推定タイミングを最適化。
+- `Avatar Converter Settings` の変換ボタンによる手動変換で、元アバターを非アクティブ化せず、変換後アバターを元アバターの位置からワールド座標の +Z 方向に配置するよう変更。
+- デフォルトのマテリアル変換設定の初期値を Toon Standard に変更。
+- lilToon の通常モードの MatCap を Toon Standard に変換するときの見た目を改善。
+- 処理対象の非対応マテリアルは `Avatar Converter Settings` と `Material Conversion Settings` で警告されないように変更。
+- asmdefの Auto Referenced をオフに変更。
+- 非対応の lilToon のマテリアルを変換するときのエラーメッセージを改善。
+- 非対応の Modular Avatar を使用しているときアバターの変換時にエラーとなるよう変更。
+- アバター変換時の頂点カラー削除を `Vertex Color Remover` コンポーネントの代わりに `.vqtmesh` アセットを使用するように変更。
+- [NDMF] 非対応のバージョンを使用しているときビルド時にエラーダイアログを表示してビルドを中止するように変更。
+- [NDMF] `Mesh Flipper` のプレビューをデフォルトで有効化。
+- ユーザーが目にする文言とUI要素において、Android/iOSの表記を「Mobile」に統一。Unity Build Supportの設定と内部APIではAndroid固有の用語を維持。
+- `Avatar Converter Settings` の変換ボタンによる手動変換で `Platform GameObject Remover` の設定を適用し、Android 向けに指定された GameObject を削除するよう変更。
+- `Convert Avatar for Mobile` で `VQT Network ID Assigner` を自動追加しないよう変更。代わりに `Avatar Converter Settings` の高度な設定に `Network ID を割り当てる` オプションを追加。
+- メニューアイコン設定を `Avatar Converter Settings` に統合し、NDMFのアイコン処理を `VQT Menu Icon Resizer` に統一。
+- `Convert Avatar for Mobile` を `Setup Avatar for Mobile` に改名し、初期セットアップをMA/AAOの利用可否対応・既存コンポーネント無効化表示・`MA Sync Parameter Sequence` の `PrimaryPlatform=PC` 設定を含む挙動へ統合。
+
+### 修正
+- `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。
+- アバター変換時のテクスチャ生成処理における RenderTexture と Material のメモリリークを修正。
+- 一度も描画されていない RenderTexture をテクスチャとして使用しているマテリアルのテクスチャ生成が失敗する問題を修正。
+- アバター変換失敗ダイアログに表示するスタックトレースの行数を制限し、ダイアログが操作不能になる問題を修正。
+
+### 削除
+- Unity 2019 のサポートを終了。
+- VRCSDK 3.9.0 未満のサポートを終了。
+- lilToon 1.10.0 未満のサポートを終了。
+- NDMF 1.5.0 未満のサポートを終了。
+- VQT Avatar Builder ウィンドウを削除。アバターのビルドとアップロードには VRChat SDK コントロールパネルを直接使用するか、ローカルテストには「[NDMF] Build and Test for PC with Android Settings」コンテキストメニューを使用してください。
+
 ## [2.11.7] - 2026-06-27
 
 ### 修正
-- Poiyomi マテリアルを Toon Lit に反感する際、マテリアル設定によっては発光が反映されないことがある問題を修正。
+- Poiyomi マテリアルを Toon Lit に変換する際、マテリアル設定によっては発光が反映されないことがある問題を修正。
 
 ## [2.11.6] - 2026-04-29
 

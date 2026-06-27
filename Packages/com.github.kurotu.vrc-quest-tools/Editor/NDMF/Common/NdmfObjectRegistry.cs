@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using nadena.dev.ndmf;
 using UnityEngine;
-#if !VQT_HAS_NDMF_ERROR_REPORT
-using KRT.VRCQuestTools.Ndmf.Dummy;
-#endif
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -33,7 +30,7 @@ namespace KRT.VRCQuestTools.Ndmf
         {
             if (registeredObjects.Contains(replaced))
             {
-                Debug.LogWarning($"{VRCQuestTools.Name} Replaced object {replaced} is already registered.");
+                Logger.LogWarning($"Replaced object {replaced} is already registered.");
                 return;
             }
             ObjectRegistry.RegisterReplacedObject(original, replaced);

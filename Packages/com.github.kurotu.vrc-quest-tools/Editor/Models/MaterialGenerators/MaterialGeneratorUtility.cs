@@ -12,6 +12,16 @@ namespace KRT.VRCQuestTools.Models
     internal static class MaterialGeneratorUtility
     {
         /// <summary>
+        /// Convert MobileTextureFormat to nullable TextureFormat, handling NoOverride case.
+        /// </summary>
+        /// <param name="format">Mobile texture format to convert.</param>
+        /// <returns>Nullable TextureFormat, or null if NoOverride.</returns>
+        private static TextureFormat? ConvertToNullableTextureFormat(MobileTextureFormat format)
+        {
+            return format == MobileTextureFormat.NoOverride ? null : (TextureFormat?)format;
+        }
+
+        /// <summary>
         /// Generate a texture for material.
         /// </summary>
         /// <param name="material">Original material.</param>
@@ -21,10 +31,11 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="texturesPath">Textures directory to save PNG.</param>
         /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
         /// <param name="completion">Completion callback.</param>
+        /// <param name="platformOverride">Optional platform override settings (MaxTextureSize and Format) from source textures.</param>
         /// <returns>Async callback request.</returns>
-        internal static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride)
         {
-            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.SRGB, requestGenerateImageFunc, completion);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.SRGB, requestGenerateImageFunc, completion, platformOverride, false);
         }
 
         /// <summary>
@@ -37,10 +48,11 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="texturesPath">Textures directory to save PNG.</param>
         /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
         /// <param name="completion">Completion callback.</param>
+        /// <param name="platformOverride">Optional platform override settings (MaxTextureSize and Format) from source textures.</param>
         /// <returns>Async callback request.</returns>
-        internal static AsyncCallbackRequest GenerateParameterTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest GenerateParameterTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride)
         {
-            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.Parameter, requestGenerateImageFunc, completion);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.Parameter, requestGenerateImageFunc, completion, platformOverride, false);
         }
 
         /// <summary>
@@ -53,13 +65,15 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="texturesPath">Textures directory to save PNG.</param>
         /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
         /// <param name="completion">Completion callback.</param>
+        /// <param name="platformOverride">Optional platform override settings (MaxTextureSize and Format) from source textures.</param>
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview; re-uploads the generated normal map so it displays.</param>
         /// <returns>Async callback request.</returns>
-        internal static AsyncCallbackRequest GenerateNormalMap(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
+        internal static AsyncCallbackRequest GenerateNormalMap(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride, bool forEditorPreview)
         {
-            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.NormalMap, requestGenerateImageFunc, completion);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.NormalMap, requestGenerateImageFunc, completion, platformOverride, forEditorPreview);
         }
 
-        private static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion)
+        private static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride, bool forEditorPreview)
         {
             var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material) + settings.GetCacheKey());
             var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}_{assetHash}" + (saveAsPng ? ".png" : ".json");
@@ -71,7 +85,7 @@ namespace KRT.VRCQuestTools.Models
                 outFile = $"{texturesPath}/{texName}_from_{guid}.png";
             }
 
-            var cacheTexture = TryLoadCacheTexture(material, settings, saveAsPng, texturesPath, config, cacheFile, outFile);
+            var cacheTexture = TryLoadCacheTexture(material, settings, saveAsPng, texturesPath, config, cacheFile, outFile, platformOverride);
             if (cacheTexture)
             {
                 cacheTexture.name = texName;
@@ -83,66 +97,77 @@ namespace KRT.VRCQuestTools.Models
                 if (texToWrite)
                 {
                     texToWrite.name = texName;
-                    texToWrite = SaveTexture(settings.MobileTextureFormat, saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile);
+                    texToWrite = SaveTexture(settings.MobileTextureFormat, saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile, platformOverride);
+
+                    // A freshly generated normal map is not uploaded to the GPU by TextureGenerator; re-upload it
+                    // for the NDMF preview (preview only) so it renders. See TextureUtility.ReuploadForEditorDisplay.
+                    if (config.isNormalMap && forEditorPreview)
+                    {
+                        var reuploaded = TextureUtility.ReuploadForEditorDisplay(texToWrite);
+                        TextureUtility.DestroyTexture(texToWrite);
+                        texToWrite = reuploaded;
+                    }
                 }
                 completion?.Invoke(texToWrite);
             });
             return request;
         }
 
-        private static Texture2D TryLoadCacheTexture(Material material, IMaterialConvertSettings settings, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile)
+        private static Texture2D TryLoadCacheTexture(Material material, IMaterialConvertSettings settings, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile, (int MaxTextureSize, TextureFormat Format)? platformOverride)
         {
-            using (var mutex = CacheManager.Texture.CreateMutex())
+            // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
+            // Use platform override format if provided, otherwise fall back to settings
+            TextureFormat? mobileTextureFormatNullable = platformOverride?.Format ?? ConvertToNullableTextureFormat(settings.MobileTextureFormat);
+            int? overrideMaxTextureSize = TextureUtility.NormalizeMaxTextureSize(platformOverride?.MaxTextureSize);
+
+            if (CacheManager.Texture.Exists(cacheFile))
             {
-                mutex.WaitOne();
                 try
                 {
-                    if (CacheManager.Texture.Exists(cacheFile))
+                    if (saveAsPng)
                     {
-                        try
+                        Directory.CreateDirectory(texturesPath);
+                        CacheManager.Texture.CopyFromCache(cacheFile, outFile);
+                        AssetDatabase.ImportAsset(outFile);
+                        if (config.isNormalMap)
                         {
-                            if (saveAsPng)
-                            {
-                                Directory.CreateDirectory(texturesPath);
-                                CacheManager.Texture.CopyFromCache(cacheFile, outFile);
-                                AssetDatabase.ImportAsset(outFile);
-                                if (config.isNormalMap)
-                                {
-                                    TextureUtility.ConfigureNormalMapImporter(outFile, (TextureFormat)settings.MobileTextureFormat);
-                                }
-                                else
-                                {
-                                    TextureUtility.ConfigureTextureImporter(outFile, (TextureFormat)settings.MobileTextureFormat, config.isSRGB);
-                                }
-                                var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
-                                return tex;
-                            }
-                            else
-                            {
-                                var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
-                                var tex = cache.ToTexture2D();
-                                TextureUtility.SetStreamingMipMaps(tex, true);
-                                return tex;
-                            }
+                            TextureUtility.ConfigureNormalMapImporter(outFile, mobileTextureFormatNullable, overrideMaxTextureSize);
                         }
-                        catch (Exception e)
+                        else
                         {
-                            // Recoverable error, just log and continue.
-                            Debug.LogException(e);
-                            Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to load cache file {cacheFile} for {material.name}");
+                            TextureUtility.ConfigureTextureImporter(outFile, mobileTextureFormatNullable, config.isSRGB, overrideMaxTextureSize);
                         }
+                        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(outFile);
+                        return tex;
+                    }
+                    else
+                    {
+                        var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
+                        var tex = cache.ToTexture2D();
+                        TextureUtility.SetStreamingMipMaps(tex, true);
+                        return tex;
                     }
                 }
-                finally
+                catch (Exception e)
                 {
-                    mutex.ReleaseMutex();
+                    // Recoverable error, just log and continue.
+                    Logger.LogException(e);
+                    Logger.LogWarning($"Failed to load cache file {cacheFile} for {material.name}");
                 }
             }
             return null;
         }
 
-        private static Texture2D SaveTexture(MobileTextureFormat mobileTextureFormat, bool saveAsPng, string texturesPath, TextureConfig config, Texture2D texToWrite, string cacheFile, string outFile)
+        private static Texture2D SaveTexture(MobileTextureFormat mobileTextureFormat, bool saveAsPng, string texturesPath, TextureConfig config, Texture2D texToWrite, string cacheFile, string outFile, (int MaxTextureSize, TextureFormat Format)? platformOverride)
         {
+            // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
+            // Use platform override format if provided, otherwise fall back to settings
+            TextureFormat? mobileTextureFormatNullable = platformOverride?.Format ?? ConvertToNullableTextureFormat(mobileTextureFormat);
+            int? overrideMaxTextureSize = TextureUtility.NormalizeMaxTextureSize(platformOverride?.MaxTextureSize);
+
+            // For in-code compression, use override format if provided, otherwise fall back to settings
+            TextureFormat mobileTextureFormatForCompression = platformOverride?.Format ?? TextureUtility.GetCompressionFormat(mobileTextureFormat);
+
             if (saveAsPng)
             {
                 Directory.CreateDirectory(texturesPath);
@@ -153,10 +178,10 @@ namespace KRT.VRCQuestTools.Models
                     var dir = Path.GetDirectoryName(outFile);
                     Directory.CreateDirectory(dir);
                 }
-                texToWrite = TextureUtility.SaveUncompressedTexture(outFile, texToWrite, (TextureFormat)mobileTextureFormat, config.isSRGB);
+                texToWrite = TextureUtility.SaveUncompressedTexture(outFile, texToWrite, mobileTextureFormatNullable, config.isSRGB, overrideMaxTextureSize);
                 if (config.isNormalMap)
                 {
-                    TextureUtility.ConfigureNormalMapImporter(outFile, (TextureFormat)mobileTextureFormat);
+                    TextureUtility.ConfigureNormalMapImporter(outFile, mobileTextureFormatNullable, overrideMaxTextureSize);
                 }
                 CacheManager.Texture.CopyToCache(outFile, cacheFile);
             }
@@ -165,13 +190,13 @@ namespace KRT.VRCQuestTools.Models
                 TextureUtility.SetStreamingMipMaps(texToWrite, true);
                 if (config.isNormalMap)
                 {
-                    texToWrite = TextureUtility.CompressNormalMap(texToWrite, EditorUserBuildSettings.activeBuildTarget, (TextureFormat)mobileTextureFormat);
+                    texToWrite = TextureUtility.CompressNormalMap(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression, maxTextureSize: overrideMaxTextureSize);
                 }
                 else
                 {
-                    TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget, (TextureFormat)mobileTextureFormat);
+                    texToWrite = TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression, overrideMaxTextureSize);
                 }
-                CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap)));
+                CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap, EditorUserBuildSettings.activeBuildTarget)));
             }
 
             return texToWrite;

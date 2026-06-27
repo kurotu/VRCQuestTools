@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Text;
+using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -47,23 +49,44 @@ namespace KRT.VRCQuestTools.Utils
                         break;
                     case ShaderPropertyType.Texture:
                         var tex = material.GetTexture(name);
-                        if (tex != null)
-                        {
-                            sb.Append($"{name}_{tex.imageContentsHash}");
-                        }
-                        else
-                        {
-                            sb.Append($"{name}_null");
-                        }
+                        var hash = TextureUtility.GetImageContentsHash(tex);
+                        sb.Append($"{name}_{hash}");
                         break;
-#if UNITY_2021_1_OR_NEWER
                     case ShaderPropertyType.Int:
                         sb.Append($"{name}_{material.GetInteger(name)}");
                         break;
-#endif
                 }
             }
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Hashes a file name using MD5 and preserves the extension (if any).
+        /// Example: "very/long/name.png" -> "<md5hex>.png"
+        /// </summary>
+        /// <param name="fileName">Original file name.</param>
+        /// <returns>Hashed file name with extension.</returns>
+        internal static string HashFileName(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return fileName;
+            }
+            var ext = Path.GetExtension(fileName);
+            // Use full input (including path) to reduce collisions across different paths.
+            var input = fileName;
+            using (var md5 = MD5.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(input);
+                var hashBytes = md5.ComputeHash(bytes);
+                var sbHash = new StringBuilder(hashBytes.Length * 2);
+                foreach (var b in hashBytes)
+                {
+                    sbHash.Append(b.ToString("x2"));
+                }
+                var hashed = sbHash.ToString();
+                return string.IsNullOrEmpty(ext) ? hashed : (hashed + ext);
+            }
         }
 
         /// <summary>
@@ -88,6 +111,9 @@ namespace KRT.VRCQuestTools.Utils
             private bool normalMap;
 
             [SerializeField]
+            private BuildTarget buildTarget;
+
+            [SerializeField]
             private bool mipmap;
 
             [SerializeField]
@@ -97,15 +123,17 @@ namespace KRT.VRCQuestTools.Utils
             /// Initializes a new instance of the <see cref="TextureCache"/> class.
             /// </summary>
             /// <param name="texture">Texture to cache.</param>
-            /// <param name="linear"="linear">Texture is linear.</param>
-            /// <param name="normalMap"="normalMap">Texture is normal map.</param>
-            internal TextureCache(Texture2D texture, bool linear, bool normalMap = false)
+            /// <param name="linear">Texture is linear.</param>
+            /// <param name="normalMap">Texture is normal map.</param>
+            /// <param name="buildTarget">Build target for the texture.</param>
+            internal TextureCache(Texture2D texture, bool linear, bool normalMap, BuildTarget buildTarget)
             {
                 width = texture.width;
                 height = texture.height;
                 format = texture.format;
                 this.linear = linear;
                 this.normalMap = normalMap;
+                this.buildTarget = buildTarget;
                 mipmap = texture.mipmapCount > 1;
                 base64Data = Convert.ToBase64String(texture.GetRawTextureData());
             }
@@ -126,8 +154,60 @@ namespace KRT.VRCQuestTools.Utils
 
             private Texture2D CreateCompressedNormalMap(int width, int height)
             {
+                if (buildTarget == BuildTarget.Android || buildTarget == BuildTarget.iOS)
+                {
+                    var path = ResolveNormalMapPath();
+                    var normal = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+                    if (normal != null)
+                    {
+                        // Restore the cached color space (normal maps are linear); CopyAsReadable's bool is the Texture2D "linear" flag.
+                        return TextureUtility.CopyAsReadable(normal, linear);
+                    }
+                    Logger.LogWarning($"Failed to load normal map from {path}. Creating normal map from uncompressed one.");
+                }
                 var tex = new Texture2D(width, height, format, mipmap, linear);
-                return TextureUtility.CompressNormalMap(tex, EditorUserBuildSettings.activeBuildTarget, format, true);
+                return TextureUtility.CompressNormalMap(tex, buildTarget, format, true);
+            }
+
+            private string ResolveNormalMapPath()
+            {
+                if (width != height)
+                {
+                    return string.Empty;
+                }
+
+                // Package/-/Assets/BlankNormalMaps
+                var folder = AssetDatabase.GUIDToAssetPath("17d9dbede49f19943a367a284154f9d4");
+                if (string.IsNullOrEmpty(folder))
+                {
+                    throw new InvalidOperationException("Failed to resolve normal map folder.");
+                }
+
+                string formatName;
+                switch (format)
+                {
+                    case TextureFormat.ASTC_4x4:
+                        formatName = nameof(TextureFormat.ASTC_4x4);
+                        break;
+                    case TextureFormat.ASTC_5x5:
+                        formatName = nameof(TextureFormat.ASTC_5x5);
+                        break;
+                    case TextureFormat.ASTC_6x6:
+                        formatName = nameof(TextureFormat.ASTC_6x6);
+                        break;
+                    case TextureFormat.ASTC_8x8:
+                        formatName = nameof(TextureFormat.ASTC_8x8);
+                        break;
+                    case TextureFormat.ASTC_10x10:
+                        formatName = nameof(TextureFormat.ASTC_10x10);
+                        break;
+                    case TextureFormat.ASTC_12x12:
+                        formatName = nameof(TextureFormat.ASTC_12x12);
+                        break;
+                    default:
+                        return string.Empty;
+                }
+                return Path.Join(folder, $"VQT_Normal_{width}px_{formatName}.png");
             }
         }
     }

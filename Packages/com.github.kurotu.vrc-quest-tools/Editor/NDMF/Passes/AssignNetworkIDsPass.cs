@@ -20,14 +20,16 @@ namespace KRT.VRCQuestTools.Ndmf
             var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
             if (avatarDescriptor == null)
             {
-                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping network ID assignment.");
+                Logger.LogWarning($"No VRCAvatarDescriptor found in the avatar root object. Skipping network ID assignment.");
                 return;
             }
 
             var assigner = avatarDescriptor.GetComponent<NetworkIDAssigner>();
-            if (assigner == null)
+            var settings = avatarDescriptor.GetComponent<AvatarConverterSettings>();
+            var shouldAssignNetworkIds = assigner != null || (settings != null && settings.assignNetworkIds);
+            if (!shouldAssignNetworkIds)
             {
-                if (avatarDescriptor.GetComponent<AvatarConverterSettings>() != null && VRCSDKUtility.HasMissingNetworkIds(avatarDescriptor))
+                if (settings != null && VRCSDKUtility.HasMissingNetworkIds(avatarDescriptor))
                 {
                     NdmfErrorReport.ReportError(new MissingNetworkIDAssignerWarning());
                 }

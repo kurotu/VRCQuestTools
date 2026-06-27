@@ -2,14 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using KRT.VRCQuestTools.Models;
 using Unity.Collections;
 using UnityEditor;
-
-#if UNITY_2020_2_OR_NEWER
 using UnityEditor.AssetImporters;
-#else
-using UnityEditor.Experimental.AssetImporters;
-#endif
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
@@ -121,6 +117,16 @@ namespace KRT.VRCQuestTools.Utils
         };
 
         /// <summary>
+        /// Get the TextureFormat to use for compression, with fallback to ASTC_6x6 for NoOverride.
+        /// </summary>
+        /// <param name="format">Mobile texture format.</param>
+        /// <returns>TextureFormat to use for compression.</returns>
+        internal static TextureFormat GetCompressionFormat(MobileTextureFormat format)
+        {
+            return format == MobileTextureFormat.NoOverride ? TextureFormat.ASTC_6x6 : (TextureFormat)format;
+        }
+
+        /// <summary>
         /// Creates a minimum empty texture.
         /// </summary>
         /// <returns>Created texture object.</returns>
@@ -137,7 +143,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="mobileFormat">Texture format for mobile build target.</param>
         /// <param name="isSRGB">Texture is sRGB.</param>
         /// <returns>Saved texture asset.</returns>
-        internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, TextureFormat? mobileFormat, bool isSRGB = true)
+        internal static Texture2D SaveUncompressedTexture(string path, Texture2D texture, TextureFormat? mobileFormat, bool isSRGB = true, int? maxTextureSize = null)
         {
             var src = texture.isReadable ? texture : CopyAsReadable(texture, isSRGB);
             var png = src.EncodeToPNG();
@@ -148,7 +154,7 @@ namespace KRT.VRCQuestTools.Utils
             }
             File.WriteAllBytes(path, png);
             AssetDatabase.ImportAsset(path);
-            ConfigureTextureImporter(path, mobileFormat, isSRGB);
+            ConfigureTextureImporter(path, mobileFormat, isSRGB, maxTextureSize);
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
@@ -158,7 +164,8 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="path">Texture path.</param>
         /// <param name="mobileFormat">Texture format for mobile build target.</param>
         /// <param name="isSRGB">Texture is sRGB.</param>
-        internal static void ConfigureTextureImporter(string path, TextureFormat? mobileFormat, bool isSRGB = true)
+        /// <param name="maxTextureSize">Optional max texture size override for platform settings.</param>
+        internal static void ConfigureTextureImporter(string path, TextureFormat? mobileFormat, bool isSRGB = true, int? maxTextureSize = null)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.alphaSource = TextureImporterAlphaSource.FromInput;
@@ -174,7 +181,7 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     name = "Android",
                     overridden = true,
-                    maxTextureSize = importer.maxTextureSize,
+                    maxTextureSize = maxTextureSize ?? importer.maxTextureSize,
                     format = (TextureImporterFormat)mobileFormat.Value,
                 };
                 var iosSettings = new TextureImporterPlatformSettings
@@ -187,6 +194,10 @@ namespace KRT.VRCQuestTools.Utils
                 importer.SetPlatformTextureSettings(androidSettings);
                 importer.SetPlatformTextureSettings(iosSettings);
             }
+            else
+            {
+                RemovePlatformOverrides(importer);
+            }
             importer.SaveAndReimport();
         }
 
@@ -195,7 +206,8 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="path">Texture path.</param>
         /// <param name="mobileFormat">Texture format for mobile build target.</param>
-        internal static void ConfigureNormalMapImporter(string path, TextureFormat? mobileFormat)
+        /// <param name="maxTextureSize">Optional max texture size override for platform settings.</param>
+        internal static void ConfigureNormalMapImporter(string path, TextureFormat? mobileFormat, int? maxTextureSize = null)
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
             importer.textureType = TextureImporterType.NormalMap;
@@ -208,7 +220,7 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     name = "Android",
                     overridden = true,
-                    maxTextureSize = importer.maxTextureSize,
+                    maxTextureSize = maxTextureSize ?? importer.maxTextureSize,
                     format = (TextureImporterFormat)mobileFormat.Value,
                 };
                 var iosSettings = new TextureImporterPlatformSettings
@@ -221,7 +233,31 @@ namespace KRT.VRCQuestTools.Utils
                 importer.SetPlatformTextureSettings(androidSettings);
                 importer.SetPlatformTextureSettings(iosSettings);
             }
+            else
+            {
+                RemovePlatformOverrides(importer);
+            }
             importer.SaveAndReimport();
+        }
+
+        /// <summary>
+        /// Removes platform-specific overrides from a texture importer.
+        /// </summary>
+        /// <param name="importer">The texture importer to modify.</param>
+        private static void RemovePlatformOverrides(TextureImporter importer)
+        {
+            var androidSettings = new TextureImporterPlatformSettings
+            {
+                name = "Android",
+                overridden = false,
+            };
+            var iosSettings = new TextureImporterPlatformSettings
+            {
+                name = "iPhone",
+                overridden = false,
+            };
+            importer.SetPlatformTextureSettings(androidSettings);
+            importer.SetPlatformTextureSettings(iosSettings);
         }
 
         /// <summary>
@@ -236,9 +272,19 @@ namespace KRT.VRCQuestTools.Utils
                 return null;
             }
 
-            if (texture.GetType() == typeof(RenderTexture))
+            if (texture is RenderTexture rt)
             {
-                return CreateColorTexture(Color.black);
+                if (!rt.IsCreated())
+                {
+                    rt.Create();
+                }
+                Texture2D newTex = null;
+                var request = RequestReadbackRenderTexture(rt, rt.mipmapCount > 1, !rt.isDataSRGB, (result) =>
+                {
+                    newTex = result;
+                });
+                request.WaitForCompletion();
+                return newTex;
             }
 
             var path = AssetDatabase.GetAssetPath(texture);
@@ -369,11 +415,11 @@ namespace KRT.VRCQuestTools.Utils
         /// Copy a texture as readable.
         /// </summary>
         /// <param name="texture">Texture to copy.</param>
-        /// <param name="isDataSRGB">Texture is sRGB.</param>
+        /// <param name="linear">Texture is linear.</param>
         /// <returns>Readable texture.</returns>
-        internal static Texture2D CopyAsReadable(Texture2D texture, bool isDataSRGB)
+        internal static Texture2D CopyAsReadable(Texture2D texture, bool linear)
         {
-            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, isDataSRGB);
+            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, linear);
             var data = texture.GetRawTextureData();
             copy.LoadRawTextureData(data);
             copy.Apply(); // Do not use arguments to keep readable.
@@ -393,6 +439,23 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Request to wait.</returns>
         internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, int width, int height, bool useMipmap, Material material, Action<Texture2D> completion)
         {
+            return BakeTexture(input, isDataSRGB, width, height, useMipmap, material, false, completion);
+        }
+
+        /// <summary>
+        /// Bake a texture to a new one.
+        /// </summary>
+        /// <param name="input">Input texture.</param>
+        /// <param name="isDataSRGB">Texture is sRGB.</param>
+        /// <param name="width">Desired width.</param>
+        /// <param name="height">Desired height.</param>
+        /// <param name="useMipmap">Use mip map.</param>
+        /// <param name="material">Material to bake with Graphics.Blit.</param>
+        /// <param name="clearRenderTarget">Clear the render target to transparent before baking (for blended shaders).</param>
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Request to wait.</returns>
+        internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, int width, int height, bool useMipmap, Material material, bool clearRenderTarget, Action<Texture2D> completion)
+        {
             var desc = new RenderTextureDescriptor(input.width, input.height, RenderTextureFormat.ARGB32, 0, useMipmap ? input.mipmapCount : 1);
             desc.sRGB = isDataSRGB;
 
@@ -407,6 +470,10 @@ namespace KRT.VRCQuestTools.Utils
             try
             {
                 RenderTexture.active = rt;
+                if (clearRenderTarget)
+                {
+                    GL.Clear(true, true, Color.clear);
+                }
                 if (material)
                 {
                     Graphics.Blit(input, rt, material);
@@ -538,19 +605,31 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="texture">Texture to compress.</param>
         /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
         /// <param name="mobileFormat">Format for mobile build target.</param>
-        internal static void CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat)
+        /// <param name="maxTextureSize">Optional max texture size. When provided, the texture is resized before compression.</param>
+        /// <returns>Compressed texture. May be a new texture if resized.</returns>
+        internal static Texture2D CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, int? maxTextureSize = null)
         {
+            if (maxTextureSize.HasValue)
+            {
+                var (w, h) = AspectFitReduction(texture.width, texture.height, maxTextureSize.Value);
+                if (w != texture.width || h != texture.height)
+                {
+                    texture = ResizeTextureImmediate(texture, w, h);
+                }
+            }
+
             var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
             var format = isMobile ? mobileFormat : TextureFormat.DXT5;
             if (format == TextureFormat.DXT5)
             {
                 if (texture.width % 4 != 0 || texture.height % 4 != 0)
                 {
-                    Debug.LogWarning($"[{VRCQuestTools.Name}] Texture {texture.name} is not a multiple of 4. Not compressed to DXT5.", texture);
-                    return;
+                    Logger.LogWarning($"Texture {texture.name} is not a multiple of 4. Not compressed to DXT5.", texture);
+                    return texture;
                 }
             }
             EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);
+            return texture;
         }
 
         /// <summary>
@@ -560,8 +639,9 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
         /// <param name="mobileFormat">Format for mobile build target.</param>
         /// <param name="readable">Whether to make output texture readable.</param>
+        /// <param name="maxTextureSize">Optional max texture size override.</param>
         /// <returns>Compressed normal map.</returns>
-        internal static Texture2D CompressNormalMap(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool readable = false)
+        internal static Texture2D CompressNormalMap(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool readable = false, int? maxTextureSize = null)
         {
             var pixels = texture.GetPixels32(0);
             var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
@@ -574,7 +654,8 @@ namespace KRT.VRCQuestTools.Utils
                 settings.textureImporterSettings.wrapMode = texture.wrapMode;
                 settings.textureImporterSettings.filterMode = texture.filterMode;
                 settings.textureImporterSettings.aniso = texture.anisoLevel;
-                settings.platformSettings.maxTextureSize = Math.Max(texture.width, texture.height);
+                var currentMaxSize = Math.Max(texture.width, texture.height);
+                settings.platformSettings.maxTextureSize = maxTextureSize.HasValue ? Math.Min(maxTextureSize.Value, currentMaxSize) : currentMaxSize;
                 settings.sourceTextureInformation.width = texture.width;
                 settings.sourceTextureInformation.height = texture.height;
                 settings.sourceTextureInformation.containsAlpha = true;
@@ -588,6 +669,31 @@ namespace KRT.VRCQuestTools.Utils
                 output.texture.name = texture.name;
                 return output.texture;
             }
+        }
+
+        /// <summary>
+        /// Re-uploads an in-memory texture into a fresh same-format copy so that it can be displayed in the editor.
+        /// Textures produced by <see cref="UnityEditor.TextureGenerator"/> (e.g. <see cref="CompressNormalMap"/>)
+        /// are not uploaded to the GPU, so a freshly generated normal map renders incorrectly in the editor
+        /// preview until re-uploaded (the editor displays the compressed normal map correctly once uploaded).
+        /// </summary>
+        /// <param name="texture">Texture to re-upload.</param>
+        /// <returns>A newly created copy that the caller is responsible for destroying, or null when input is null.</returns>
+        internal static Texture2D ReuploadForEditorDisplay(Texture2D texture)
+        {
+            if (texture == null)
+            {
+                return null;
+            }
+
+            var copy = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1, !texture.isDataSRGB);
+            copy.LoadRawTextureData(texture.GetRawTextureData());
+            copy.Apply(false, true);
+            copy.name = texture.name;
+            copy.wrapMode = texture.wrapMode;
+            copy.filterMode = texture.filterMode;
+            copy.anisoLevel = texture.anisoLevel;
+            return copy;
         }
 
         /// <summary>
@@ -687,7 +793,7 @@ namespace KRT.VRCQuestTools.Utils
                 return;
             }
 
-            if (AssetDatabase.GetAssetPath(texture) != null)
+            if (!string.IsNullOrEmpty(AssetDatabase.GetAssetPath(texture)))
             {
                 return;
             }
@@ -720,7 +826,7 @@ namespace KRT.VRCQuestTools.Utils
             };
             var inputRGB = !raFomrats.Contains(source.format);
 
-            // ì¸óÕÇ∆èoóÕÇÃRenderTexture
+            // Input and output are RenderTextures
             var d = new RenderTextureDescriptor(source.width, source.height, RenderTextureFormat.ARGB32)
             {
                 useMipMap = false,
@@ -753,7 +859,7 @@ namespace KRT.VRCQuestTools.Utils
             int threadGroupsY = Mathf.CeilToInt(targetHeight / 8.0f);
             computeShader.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
 
-            // åãâ ÇTexture2DÇ…ïœä∑
+            // Convert result to Texture2D
             var prevActive = RenderTexture.active;
             RenderTexture.active = dstRT;
             Texture2D result = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false, true);
@@ -772,27 +878,273 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <param name="width">Original width.</param>
         /// <param name="height">Original height.</param>
-        /// <param name="maxSize">Maximum size.</param>
-        /// <returns>Reduced size or original size.</returns>
+        /// <param name="maxSize">Maximum allowed size. 0 or less means no limit.</param>
+        /// <returns>Reduced size while maintaining aspect ratio. Returned width and height are clamped to at least 1.</returns>
         internal static (int Width, int Height) AspectFitReduction(int width, int height, int maxSize)
         {
-            var scale = (float)maxSize / Math.Max(width, height);
+            var safeWidth = Math.Max(1, width);
+            var safeHeight = Math.Max(1, height);
+
+            if (maxSize <= 0)
+            {
+                return (safeWidth, safeHeight);
+            }
+
+            var scale = (float)maxSize / Math.Max(safeWidth, safeHeight);
             if (scale > 1.0f)
             {
-                return (width, height);
+                return (safeWidth, safeHeight);
             }
-            var newWidth = Math.Round(width * scale);
-            var newHeight = Math.Round(height * scale);
-            return ((int)newWidth, (int)newHeight);
+            var newWidth = Math.Max(1, (int)Math.Round(safeWidth * scale));
+            var newHeight = Math.Max(1, (int)Math.Round(safeHeight * scale));
+            return (newWidth, newHeight);
+        }
+
+        /// <summary>
+        /// Converts max texture size value to nullable valid limit.
+        /// </summary>
+        /// <param name="maxTextureSize">Max texture size value. 0 or less means no limit.</param>
+        /// <returns>Valid max texture size or null when no limit.</returns>
+        internal static int? NormalizeMaxTextureSize(int? maxTextureSize)
+        {
+            if (!maxTextureSize.HasValue || maxTextureSize.Value <= 0)
+            {
+                return null;
+            }
+
+            return maxTextureSize.Value;
+        }
+
+        /// <summary>
+        /// Gets the minimum value from valid max texture sizes.
+        /// </summary>
+        /// <param name="first">First max texture size.</param>
+        /// <param name="second">Second max texture size.</param>
+        /// <returns>Minimum of both when both are valid; otherwise the valid one; null when both are no limit.</returns>
+        internal static int? MinDefinedMaxTextureSize(int? first, int? second)
+        {
+            var a = NormalizeMaxTextureSize(first);
+            var b = NormalizeMaxTextureSize(second);
+            if (a.HasValue && b.HasValue)
+            {
+                return Math.Min(a.Value, b.Value);
+            }
+
+            return a ?? b;
+        }
+
+        /// <summary>
+        /// Resizes a texture immediately (synchronously) using GPU blit.
+        /// </summary>
+        /// <param name="texture">Texture to resize.</param>
+        /// <param name="width">Target width.</param>
+        /// <param name="height">Target height.</param>
+        /// <returns>Resized texture.</returns>
+        private static Texture2D ResizeTextureImmediate(Texture2D texture, int width, int height)
+        {
+            var desc = new RenderTextureDescriptor(width, height, RenderTextureFormat.ARGB32, 0);
+            desc.sRGB = texture.isDataSRGB;
+            var rt = RenderTexture.GetTemporary(desc);
+            var prev = RenderTexture.active;
+            try
+            {
+                Graphics.Blit(texture, rt);
+                RenderTexture.active = rt;
+                var result = new Texture2D(width, height, TextureFormat.RGBA32, texture.mipmapCount > 1, !desc.sRGB);
+                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                result.Apply();
+                result.name = texture.name;
+                return result;
+            }
+            finally
+            {
+                RenderTexture.active = prev;
+                RenderTexture.ReleaseTemporary(rt);
+            }
+        }
+
+        /// <summary>
+        /// Requests the image content hash of a texture.
+        /// </summary>
+        /// <param name="texture">The texture to compute the content hash for.</param>
+        /// <returns>Contents Hash.</returns>
+        internal static Hash128 GetImageContentsHash(Texture texture)
+        {
+            switch (texture)
+            {
+                case null:
+                    return default;
+                case RenderTexture:
+                    // RenderTexture's imageContentsHash is 0, so we generate a random hash.
+                    return Hash128.Compute(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
+                default:
+                    return texture.imageContentsHash;
+            }
+        }
+
+        /// <summary>
+        /// Gets the best platform-specific texture override settings from multiple textures and returns the optimal resolution and compression format.
+        /// Analyzes Android and iOS platform overrides from texture importers and selects the maximum resolution and highest quality ASTC format.
+        /// Only ASTC compression formats are considered, as per VRCQuestTools mobile texture format requirements.
+        /// Non-ASTC override formats will be ignored.
+        /// HDR ASTC formats are mapped to their non-HDR equivalents.
+        /// </summary>
+        /// <param name="textures">Source textures to analyze.</param>
+        /// <returns>A tuple containing the maximum resolution and the best mobile texture format from the overrides, or null if no overrides exist or if no ASTC formats are found.</returns>
+        internal static (int MaxTextureSize, TextureFormat Format)? GetBestPlatformOverrideSettings(params Texture[] textures)
+        {
+            if (textures == null || textures.Length == 0)
+            {
+                return null;
+            }
+
+            int? maxResolution = null;
+            TextureFormat? bestFormat = null;
+
+            foreach (var texture in textures)
+            {
+                if (texture == null)
+                {
+                    continue;
+                }
+
+                var path = AssetDatabase.GetAssetPath(texture);
+                if (string.IsNullOrEmpty(path))
+                {
+                    continue;
+                }
+
+                var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                if (importer == null)
+                {
+                    continue;
+                }
+
+                // Check Android and iOS overrides
+                var androidSettings = importer.GetPlatformTextureSettings("Android");
+                var iosSettings = importer.GetPlatformTextureSettings("iPhone");
+
+                // Process Android override if it exists
+                if (androidSettings.overridden)
+                {
+                    var resolution = androidSettings.maxTextureSize;
+                    var format = GetMobileTextureFormatFromImporterFormat(androidSettings.format);
+
+                    if (format.HasValue)
+                    {
+                        maxResolution = maxResolution.HasValue ? Math.Max(maxResolution.Value, resolution) : resolution;
+                        bestFormat = GetBetterASTCFormat(bestFormat, format.Value);
+                    }
+                }
+
+                // Process iOS override if it exists
+                if (iosSettings.overridden)
+                {
+                    var resolution = iosSettings.maxTextureSize;
+                    var format = GetMobileTextureFormatFromImporterFormat(iosSettings.format);
+
+                    if (format.HasValue)
+                    {
+                        maxResolution = maxResolution.HasValue ? Math.Max(maxResolution.Value, resolution) : resolution;
+                        bestFormat = GetBetterASTCFormat(bestFormat, format.Value);
+                    }
+                }
+            }
+
+            if (maxResolution.HasValue && bestFormat.HasValue)
+            {
+                return (maxResolution.Value, bestFormat.Value);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Converts TextureImporterFormat to TextureFormat.
+        /// HDR ASTC formats are mapped to their non-HDR equivalents.
+        /// </summary>
+        /// <param name="importerFormat">The TextureImporterFormat to convert.</param>
+        /// <returns>The corresponding TextureFormat, or null if the format is not a supported ASTC format.</returns>
+        private static TextureFormat? GetMobileTextureFormatFromImporterFormat(TextureImporterFormat importerFormat)
+        {
+            // Only handle ASTC formats as per requirements
+            // HDR ASTC formats are mapped to their non-HDR equivalents
+            switch (importerFormat)
+            {
+                case TextureImporterFormat.ASTC_4x4:
+                case TextureImporterFormat.ASTC_HDR_4x4:
+                    return TextureFormat.ASTC_4x4;
+                case TextureImporterFormat.ASTC_5x5:
+                case TextureImporterFormat.ASTC_HDR_5x5:
+                    return TextureFormat.ASTC_5x5;
+                case TextureImporterFormat.ASTC_6x6:
+                case TextureImporterFormat.ASTC_HDR_6x6:
+                    return TextureFormat.ASTC_6x6;
+                case TextureImporterFormat.ASTC_8x8:
+                case TextureImporterFormat.ASTC_HDR_8x8:
+                    return TextureFormat.ASTC_8x8;
+                case TextureImporterFormat.ASTC_10x10:
+                case TextureImporterFormat.ASTC_HDR_10x10:
+                    return TextureFormat.ASTC_10x10;
+                case TextureImporterFormat.ASTC_12x12:
+                case TextureImporterFormat.ASTC_HDR_12x12:
+                    return TextureFormat.ASTC_12x12;
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Compares two ASTC formats and returns the higher quality one (smaller block size = higher quality).
+        /// </summary>
+        /// <param name="current">The current best format, or null.</param>
+        /// <param name="candidate">The candidate format to compare.</param>
+        /// <returns>The higher quality ASTC format.</returns>
+        private static TextureFormat GetBetterASTCFormat(TextureFormat? current, TextureFormat candidate)
+        {
+            if (!current.HasValue)
+            {
+                return candidate;
+            }
+
+            // Get quality scores (lower block size = higher quality)
+            var currentQuality = GetASTCQualityScore(current.Value);
+            var candidateQuality = GetASTCQualityScore(candidate);
+
+            // Return the format with lower block size (higher quality)
+            return candidateQuality < currentQuality ? candidate : current.Value;
+        }
+
+        /// <summary>
+        /// Gets a quality score for an ASTC format (lower is better quality).
+        /// The score is based on the block size: 4x4 = 16, 5x5 = 25, etc.
+        /// </summary>
+        /// <param name="format">The ASTC format.</param>
+        /// <returns>Quality score (lower is better).</returns>
+        private static int GetASTCQualityScore(TextureFormat format)
+        {
+            switch (format)
+            {
+                case TextureFormat.ASTC_4x4:
+                    return 16;
+                case TextureFormat.ASTC_5x5:
+                    return 25;
+                case TextureFormat.ASTC_6x6:
+                    return 36;
+                case TextureFormat.ASTC_8x8:
+                    return 64;
+                case TextureFormat.ASTC_10x10:
+                    return 100;
+                case TextureFormat.ASTC_12x12:
+                    return 144;
+                default:
+                    return int.MaxValue;
+            }
         }
 
         private static bool ShouldUseAsyncGPUReadback()
         {
-#if UNITY_2022_1_OR_NEWER
             return SystemInfo.supportsAsyncGPUReadback;
-#else
-            return false;
-#endif
         }
     }
 }

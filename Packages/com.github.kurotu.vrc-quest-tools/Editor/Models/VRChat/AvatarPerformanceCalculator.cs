@@ -1,12 +1,5 @@
-#if VQT_HAS_VRCSDK_BASE
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
-#else
-using AvatarPerformanceCategory = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceCategory;
-using AvatarPerformanceStatsLevel = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceStatsLevel;
-using AvatarPerformanceStatsLevelSet = KRT.VRCQuestTools.Mocks.Mock_AvatarPerformanceStatsLevelSet;
-using PerformanceRating = KRT.VRCQuestTools.Mocks.Mock_PerformanceRating;
-#endif
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -64,7 +57,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
         private static int GetRatingValue(AvatarPerformanceStatsLevelSet statsLevelSet, AvatarPerformanceCategory category, PerformanceRating rating)
         {
-#if VQT_HAS_VRCSDK_BASE
             var statsLevel = GetStatsLevel(statsLevelSet, rating);
             switch (category)
             {
@@ -81,9 +73,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 default:
                     throw new System.NotImplementedException();
             }
-#else
-            throw new System.InvalidProgramException();
-#endif
         }
 
         private static AvatarPerformanceStatsLevel GetStatsLevel(AvatarPerformanceStatsLevelSet statsLevelSet, PerformanceRating rating)

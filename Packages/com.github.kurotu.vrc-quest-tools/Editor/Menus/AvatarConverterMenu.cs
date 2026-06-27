@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-#if VQT_HAS_VRCSDK_BASE
 using KRT.VRCQuestTools.Utils;
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
@@ -16,7 +15,7 @@ namespace KRT.VRCQuestTools.Menus
     /// </summary>
     internal static class AvatarConverterMenu
     {
-        [MenuItem(VRCQuestToolsMenus.MenuPaths.ConvertAvatarForAndroid, false, (int)VRCQuestToolsMenus.MenuPriorities.ConvertAvatarForQuest)]
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.ConvertAvatarForMobile, false, (int)VRCQuestToolsMenus.MenuPriorities.ConvertAvatarForMobile)]
         private static void InitFromMenu()
         {
             var target = Selection.activeGameObject;
@@ -31,13 +30,13 @@ namespace KRT.VRCQuestTools.Menus
             }
         }
 
-        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.ConvertAvatarForQuest, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectConvertAvatarForQuest)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.ConvertAvatarForMobile, false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectConvertAvatarForMobile)]
         private static void InitFromContextForGameObject()
         {
             InitFromMenu();
         }
 
-        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.ConvertAvatarForQuest, true)]
+        [MenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.ConvertAvatarForMobile, true)]
         private static bool ValidateContextForGameObject()
         {
             var obj = Selection.activeGameObject;
@@ -45,4 +44,3 @@ namespace KRT.VRCQuestTools.Menus
         }
     }
 }
-#endif

@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-#if VQT_HAS_VRCSDK_BASE
 using KRT.VRCQuestTools.Views;
 using UnityEditor;
 
@@ -21,4 +20,3 @@ namespace KRT.VRCQuestTools.Menus
         }
     }
 }
-#endif

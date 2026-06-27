@@ -31,7 +31,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnEnable()
         {
-            titleContent.text = "Unity Settings for Android";
+            titleContent.text = "Unity Settings for Mobile";
         }
 
         private void OnGUI()
@@ -51,6 +51,18 @@ namespace KRT.VRCQuestTools.Views
                 if (GUILayout.Button(i18n.AndroidBuildSupportButtonLabel))
                 {
                     OnClickAndroidBuildSupportButton();
+                }
+            }
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField($"iOS Build Support: {GetYesNoString(model.HasIOSBuildSupport)}");
+            if (!model.HasIOSBuildSupport)
+            {
+                EditorGUILayout.HelpBox(i18n.IOSBuildSupportHelp, MessageType.Error);
+                if (GUILayout.Button(i18n.IOSBuildSupportButtonLabel))
+                {
+                    OnClickIOSBuildSupportButton();
                 }
             }
 
@@ -91,6 +103,12 @@ namespace KRT.VRCQuestTools.Views
         }
 
         private void OnClickAndroidBuildSupportButton()
+        {
+            var url = "https://kurotu.github.io/VRCQuestTools/docs/tutorial/set-up-environment/?lang=auto";
+            Application.OpenURL(url);
+        }
+
+        private void OnClickIOSBuildSupportButton()
         {
             var url = "https://kurotu.github.io/VRCQuestTools/docs/tutorial/set-up-environment/?lang=auto";
             Application.OpenURL(url);

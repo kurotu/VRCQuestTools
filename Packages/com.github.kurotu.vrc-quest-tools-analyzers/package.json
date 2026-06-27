@@ -1,0 +1,11 @@
+{
+    "name": "com.github.kurotu.vrc-quest-tools.analyzers",
+    "version": "1.0.0",
+    "displayName": "VRCQuestTools Analyzers",
+    "description": "Roslyn analyzers for VRCQuestTools",
+    "author": {
+        "name": "kurotu"
+    },
+    "license": "MIT",
+    "licensesUrl": "https://github.com/kurotu/VRCQuestTools/blob/master/LICENSE.txt"
+}

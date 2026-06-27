@@ -11,6 +11,22 @@ namespace KRT.VRCQuestTools.Debug
     internal static class DebugMenu
     {
         private const string DebugMenuRoot = VRCQuestToolsMenus.MenuPaths.RootMenu + "Debug/";
+        private const string UseDebugKey = "KRT.VRCQuestTools.UseDebug";
+
+        [InitializeOnLoadMethod]
+        private static void Init()
+        {
+            Logger.UseDebug = SessionState.GetBool(UseDebugKey, true);
+            Menu.SetChecked(DebugMenuRoot + "Use Debug", Logger.UseDebug);
+        }
+
+        [MenuItem(DebugMenuRoot + "Use Debug")]
+        private static void ToggleDebug()
+        {
+            Logger.UseDebug = !Logger.UseDebug;
+            SessionState.SetBool(UseDebugKey, Logger.UseDebug);
+            Menu.SetChecked(DebugMenuRoot + "Use Debug", Logger.UseDebug);
+        }
 
         [MenuItem(DebugMenuRoot + "Clear Skipped Version")]
         private static void ClearSkippedVersion()
@@ -18,11 +34,11 @@ namespace KRT.VRCQuestTools.Debug
             VRCQuestToolsSettings.SkippedVersion = new SemVer(0, 0, 0);
         }
 
-        [MenuItem("GameObject/VRCQuestTools/[NDMF] Manual Bake without Cache", false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfManualBakeWithAndroidSettings + 1)]
+        [MenuItem("GameObject/VRCQuestTools/[NDMF] Manual Bake without Cache", false, (int)VRCQuestToolsMenus.GameObjectMenuPriorities.GameObjectNdmfManualBakeWithMobileSettings + 1)]
         private static void ClearCacheThenManualBake()
         {
             CacheManager.Texture.Clear();
-            EditorApplication.ExecuteMenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithAndroidSettings);
+            EditorApplication.ExecuteMenuItem(VRCQuestToolsMenus.GameObjectMenuPaths.NdmfManualBakeWithMobileSettings);
         }
     }
 }

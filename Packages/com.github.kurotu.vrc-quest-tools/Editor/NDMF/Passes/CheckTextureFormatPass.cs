@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
             if (avatarDescriptor == null)
             {
-                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping texture format check.");
+                Logger.LogWarning("No VRCAvatarDescriptor found in the avatar root object. Skipping texture format check.");
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 catch (System.NotSupportedException e)
                 {
-                    Debug.LogWarning($"[{VRCQuestTools.Name}] Texture format check is skipped: {e.Message}");
+                    Logger.LogWarning($"Texture format check is skipped: {e.Message}");
                     return;
                 }
             }

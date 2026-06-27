@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Services;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
+using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase.Validation.Performance;
 using VRC.SDKBase.Validation.Performance.Stats;
 
@@ -112,19 +116,36 @@ namespace KRT.VRCQuestTools.Views
         /// <param name="selectedObjects">Already selected components.</param>
         /// <returns>New selected components.</returns>
         internal static T[] AvatarDynamicsComponentSelectorList<T>(T[] objects, T[] selectedObjects)
-            where T : UnityEngine.Component
+            where T : IVRCAvatarDynamicsProvider
         {
             var afterSelected = new List<T>();
+            IVRCAvatarDynamicsProvider hoveredProvider = null;
+
             foreach (var obj in objects)
             {
-                using (var horizontal = new EditorGUILayout.HorizontalScope())
+                var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Select(o => o.Component).Contains(obj.Component), obj);
+
+                // Check for hover on the last drawn control
+                var currentEvent = Event.current;
+                if ((currentEvent.type == EventType.Repaint || currentEvent.type == EventType.MouseMove))
                 {
-                    var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Contains(obj), obj);
-                    if (isSelected)
+                    var lastRect = GUILayoutUtility.GetLastRect();
+                    if (lastRect.Contains(currentEvent.mousePosition))
                     {
-                        afterSelected.Add(obj);
+                        hoveredProvider = obj;
                     }
                 }
+
+                if (isSelected)
+                {
+                    afterSelected.Add(obj);
+                }
+            }
+
+            // Update preview component after all controls are processed
+            if (hoveredProvider != null)
+            {
+                AvatarDynamicsPreviewService.SetPreviewComponent(hoveredProvider);
             }
             return afterSelected.ToArray();
         }
@@ -133,18 +154,19 @@ namespace KRT.VRCQuestTools.Views
         /// Show a toggle field for Avatar Dynamics component.
         /// </summary>
         /// <param name="value">Current state.</param>
-        /// <param name="component">Component to show.</param>
+        /// <param name="provider">Provider to show.</param>
         /// <returns>true for selected.</returns>
-        internal static bool ToggleAvatarDynamicsComponentField(bool value, Component component)
+        internal static bool ToggleAvatarDynamicsComponentField(bool value, IVRCAvatarDynamicsProvider provider)
         {
             const int CheckBoxWidth = 16;
             using (var horizontal = new EditorGUILayout.HorizontalScope())
             {
                 var selected = EditorGUILayout.Toggle(value, GUILayout.Width(CheckBoxWidth));
                 GUILayout.Space(2);
-                EditorGUILayout.ObjectField(component, component.GetType(), true);
+                using var disabledScope = new EditorGUI.DisabledScope(true);
+                EditorGUILayout.ObjectField(provider.Component, typeof(Component), true);
                 GUILayout.Space(2);
-                EditorGUILayout.ObjectField(VRCSDKUtility.GetRootTransform(component), typeof(Transform), true);
+                EditorGUILayout.ObjectField(VRCSDKUtility.GetRootTransform(provider.Component), typeof(Transform), true);
                 return selected;
             }
         }
@@ -201,31 +223,11 @@ namespace KRT.VRCQuestTools.Views
             string label = $"{categoryDisplayName}: {ratingDisplayName}";
             string veryPoorViolation = null;
 
-            switch (category)
-            {
-                case AvatarPerformanceCategory.PhysBoneComponentCount:
-                    label = $"{categoryDisplayName}: {stats.physBone.Value.componentCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.componentCount})";
-                    veryPoorViolation = i18n.PhysBonesWillBeRemovedAtRunTime;
-                    break;
-                case AvatarPerformanceCategory.PhysBoneTransformCount:
-                    label = $"{categoryDisplayName}: {stats.physBone.Value.transformCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.transformCount})";
-                    veryPoorViolation = i18n.PhysBonesTransformsShouldBeReduced;
-                    break;
-                case AvatarPerformanceCategory.PhysBoneColliderCount:
-                    label = $"{categoryDisplayName}: {stats.physBone.Value.colliderCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.colliderCount})";
-                    veryPoorViolation = i18n.PhysBoneCollidersWillBeRemovedAtRunTime;
-                    break;
-                case AvatarPerformanceCategory.PhysBoneCollisionCheckCount:
-                    label = $"{categoryDisplayName}: {stats.physBone.Value.collisionCheckCount} ({i18n.Maximum}: {statsLevelSet.poor.physBone.collisionCheckCount})";
-                    veryPoorViolation = i18n.PhysBonesCollisionCheckCountShouldBeReduced;
-                    break;
-                case AvatarPerformanceCategory.ContactCount:
-                    label = $"{categoryDisplayName}: {stats.contactCount.Value} ({i18n.Maximum}: {statsLevelSet.poor.contactCount})";
-                    veryPoorViolation = i18n.ContactsWillBeRemovedAtRunTime;
-                    break;
-                default:
-                    throw new System.InvalidProgramException();
-            }
+            var currentValue = VRCSDKUtility.GetAvatarDynamicsCurrentPerformanceValue(stats, category);
+            var poorRankLimit = VRCSDKUtility.GetAvatarDynamicsPoorRankLimit(statsLevelSet, category);
+            label = $"{categoryDisplayName}: {currentValue} ({i18n.Maximum}: {poorRankLimit})";
+
+            veryPoorViolation = VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(category, i18n);
             PerformanceRatingPanel(rating, label, rating >= PerformanceRating.VeryPoor ? veryPoorViolation : null);
         }
 

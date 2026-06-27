@@ -8,7 +8,7 @@ namespace KRT.VRCQuestTools.Ndmf
     internal class AvatarConverterOptimizingPass : Pass<AvatarConverterOptimizingPass>
     {
         /// <inheritdoc/>
-        public override string DisplayName => "Convert avatar for Android in optimizing phase";
+        public override string DisplayName => "Convert avatar for Mobile in optimizing phase";
 
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)

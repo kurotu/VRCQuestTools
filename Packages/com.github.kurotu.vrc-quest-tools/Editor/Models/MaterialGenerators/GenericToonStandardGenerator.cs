@@ -11,14 +11,19 @@ namespace KRT.VRCQuestTools.Models
     /// </summary>
     internal class GenericToonStandardGenerator : ToonStandardGenerator
     {
+        private readonly MaterialBase material;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericToonStandardGenerator"/> class.
         /// </summary>
+        /// <param name="material">Material to convert.</param>
         /// <param name="settings">Convert settings.</param>
         /// <param name="sharedBlackTexture">Shared black texture to disable emission.</param>
-        public GenericToonStandardGenerator(ToonStandardConvertSettings settings, Texture2D sharedBlackTexture)
-            : base(settings, sharedBlackTexture)
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview.</param>
+        public GenericToonStandardGenerator(MaterialBase material, ToonStandardConvertSettings settings, Texture2D sharedBlackTexture, bool forEditorPreview)
+            : base(settings, sharedBlackTexture, forEditorPreview)
         {
+            this.material = material;
         }
 
         /// <inheritdoc/>
@@ -86,6 +91,61 @@ namespace KRT.VRCQuestTools.Models
         protected override AsyncCallbackRequest GenerateShadowRamp(Action<Texture2D> completion)
         {
             throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
+        {
+            // Return the platform override from main texture
+            return TextureUtility.GetBestPlatformOverrideSettings(material.Material.mainTexture);
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetNormalMapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMatcapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMatcapMaskPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMetallicMapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetGlossMapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetOcclusionMapPlatformOverride()
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetPackedMaskPlatformOverride(TexturePack pack)
+        {
+            return null;
         }
 
         /// <inheritdoc/>

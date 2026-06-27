@@ -10,7 +10,7 @@ namespace KRT.VRCQuestTools.Models.Validators
     /// <summary>
     /// Rules container.
     /// </summary>
-    internal class AvatarValidationRules
+    internal static class AvatarValidationRules
     {
         private static List<IAvatarValidationRule> rules = new List<IAvatarValidationRule>();
 

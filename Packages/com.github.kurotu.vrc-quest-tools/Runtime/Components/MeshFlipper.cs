@@ -95,6 +95,27 @@ namespace KRT.VRCQuestTools.Components
         /// </summary>
         public MeshFlipperProcessingPhase processingPhase = MeshFlipperProcessingPhase.AfterPolygonReduction;
 
+#if UNITY_EDITOR
+        /// <summary>
+        /// Create a new mesh basd on the component settings.
+        /// </summary>
+        /// <param name="meshFlipper">Mesh Flipper component.</param>
+        /// <param name="mesh">Mesh to flip.</param>
+        /// <returns>New mesh.</returns>
+        public static Mesh CreateFlippedMesh(MeshFlipper meshFlipper, Mesh mesh)
+        {
+            switch (meshFlipper.direction)
+            {
+                case MeshFlipperMeshDirection.Flip:
+                    return CreateFlippedMesh(mesh, meshFlipper.useMask, meshFlipper.maskTexture, meshFlipper.maskMode);
+                case MeshFlipperMeshDirection.BothSides:
+                    return CreateBothSidesMesh(mesh, meshFlipper.useMask, meshFlipper.maskTexture, meshFlipper.maskMode);
+                default:
+                    throw new System.InvalidProgramException("Mask texture must be readable.");
+            }
+        }
+#endif
+
         /// <summary>
         /// Get shared mesh of the component.
         /// </summary>
@@ -143,24 +164,6 @@ namespace KRT.VRCQuestTools.Components
             return CreateFlippedMesh(this, sharedMesh);
         }
 
-        /// <summary>
-        /// Create a new mesh basd on the component settings.
-        /// </summary>
-        /// <param name="meshFlipper">Mesh Flipper component.</param>
-        /// <param name="mesh">Mesh to flip.</param>
-        /// <returns>New mesh.</returns>
-        public static Mesh CreateFlippedMesh(MeshFlipper meshFlipper, Mesh mesh) {
-            switch (meshFlipper.direction)
-            {
-                case MeshFlipperMeshDirection.Flip:
-                    return CreateFlippedMesh(mesh, meshFlipper.useMask, meshFlipper.maskTexture, meshFlipper.maskMode);
-                case MeshFlipperMeshDirection.BothSides:
-                    return CreateBothSidesMesh(mesh, meshFlipper.useMask, meshFlipper.maskTexture, meshFlipper.maskMode);
-                default:
-                    throw new System.InvalidProgramException("Mask texture must be readable.");
-            }
-        }
-
         private static Mesh CreateFlippedMesh(Mesh mesh, bool useMask, Texture2D mask, MeshFlipperMaskMode maskMode)
         {
             Mesh newMesh = Instantiate(mesh);
@@ -180,7 +183,8 @@ namespace KRT.VRCQuestTools.Components
                     var triangles = newMesh.GetTriangles(i);
                     for (int j = 0; j < triangles.Length; j += 3)
                     {
-                        var uvs = new Vector2[] {
+                        var uvs = new Vector2[]
+                        {
                             mesh.uv[triangles[j]],
                             mesh.uv[triangles[j + 1]],
                             mesh.uv[triangles[j + 2]],
@@ -211,7 +215,8 @@ namespace KRT.VRCQuestTools.Components
             for (int i = 0; i < newMesh.subMeshCount; i++)
             {
                 var triangles = newMesh.GetTriangles(i);
-                if (useMask) {
+                if (useMask)
+                {
                     if (mask == null)
                     {
                         throw new MeshFlipperMaskMissingException("Mask texture is missing.");
@@ -223,7 +228,8 @@ namespace KRT.VRCQuestTools.Components
                     var trianglesList = new List<int>();
                     for (int j = 0; j < triangles.Length; j += 3)
                     {
-                        var uvs = new Vector2[]{
+                        var uvs = new Vector2[]
+                        {
                             mesh.uv[triangles[j]],
                             mesh.uv[triangles[j + 1]],
                             mesh.uv[triangles[j + 2]],
@@ -239,7 +245,8 @@ namespace KRT.VRCQuestTools.Components
                     }
                     newMesh.SetTriangles(triangles.Concat(trianglesList).ToArray(), i);
                 }
-                else {
+                else
+                {
                     newMesh.SetTriangles(triangles.Concat(triangles.Reverse()).ToArray(), i);
                 }
             }

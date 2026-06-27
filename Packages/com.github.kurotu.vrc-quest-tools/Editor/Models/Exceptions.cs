@@ -22,7 +22,7 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Source object.
         /// </summary>
-        public readonly T source;
+        public readonly T SourceObject;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConversionException{T}"/> class.
@@ -33,7 +33,7 @@ namespace KRT.VRCQuestTools.Models
         public ConversionException(string message, T source, System.Exception innerException)
             : base(message, innerException)
         {
-            this.source = source;
+            this.SourceObject = source;
         }
     }
 
@@ -96,7 +96,7 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Component which has the error.
         /// </summary>
-        public readonly Component component;
+        public readonly Component Component;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TargetMaterialNullException"/> class.
@@ -106,7 +106,7 @@ namespace KRT.VRCQuestTools.Models
         public TargetMaterialNullException(string message, Component component)
             : base(message)
         {
-            this.component = component;
+            this.Component = component;
         }
     }
 
@@ -118,7 +118,7 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Component which has the error.
         /// </summary>
-        public readonly MaterialSwap component;
+        public readonly MaterialSwap Component;
 
         private readonly int index;
 
@@ -131,13 +131,14 @@ namespace KRT.VRCQuestTools.Models
         public InvalidMaterialSwapNullException(string message, MaterialSwap materialSwap, int index)
             : base(message)
         {
-            this.component = materialSwap;
+            this.Component = materialSwap;
+            this.index = index;
         }
 
         /// <summary>
         /// Gets the material mapping which has the error.
         /// </summary>
-        public MaterialSwap.MaterialMapping MaterialMapping => component.materialMappings[index];
+        public MaterialSwap.MaterialMapping MaterialMapping => Component.materialMappings[index];
     }
 
     /// <summary>
@@ -148,12 +149,12 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Component which has the error.
         /// </summary>
-        public readonly Component component;
+        public readonly Component Component;
 
         /// <summary>
         /// Replacement material which has the error.
         /// </summary>
-        public readonly Material replacementMaterial;
+        public readonly Material ReplacementMaterial;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidReplacementMaterialException"/> class.
@@ -164,8 +165,8 @@ namespace KRT.VRCQuestTools.Models
         public InvalidReplacementMaterialException(string message, Component component, Material replacementMaterial)
             : base(message)
         {
-            this.component = component;
-            this.replacementMaterial = replacementMaterial;
+            this.Component = component;
+            this.ReplacementMaterial = replacementMaterial;
         }
     }
 }

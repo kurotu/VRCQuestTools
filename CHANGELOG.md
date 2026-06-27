@@ -5,6 +5,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Added iOS Build Support check in `Unity Settings for Mobile`; when missing, guidance is shown but it does not trigger startup auto-open.
+- Apply platform-specific texture override settings (compression format and max texture size) from source textures to generated textures.
+- Added options to Toon Standard conversion settings.
+    - `Generate shadow ramp` to generate shadow ramp texture.
+    - `Features` to select features to apply to the converted material.
+    - `Mask Textures Size Limit` and `Mask Compression Format` to control max resolution and compression format of mask textures independently.
+- Added opt-in/opt-out mode for Toon Standard feature selection.
+- Preview wireframe when selecting PhysBones to keep.
+- [NDMF] Preview for material conversion and removal of vertex color.
+- Added "No Override" option to texture compression format settings, allowing Unity's default ASTC compression settings to control texture format instead of forcing platform-specific overrides. The default texture compression format for `Avatar Converter Settings` component is now "No Override".
+- Added `VQT Fallback Avatar` component that automatically sets an avatar as a fallback avatar after upload when performance requirements are met (Good or better rating for mobile platforms).
+- Show warning logs during mobile upload when Avatar Dynamics categories are rated Very Poor.
+- (Experimental) Material conversion from Poiyomi to Toon Standard.
+- Material conversion for particle shaders and particle system.
+
+### Changed
+- Avatar Dynamics Selector now stores keep/remove settings in `Platform Component Remover` instead of the legacy arrays in `Avatar Converter Settings`. Applying the selector migrates settings and clears the legacy arrays to avoid stale references.
+- Added a button in PhysBones Remover to apply current keep/remove selections to `Platform Component Remover`.
+- Optimized Avatar Dynamics performance estimation timing in `Avatar Converter Settings` inspector.
+- Manual conversion from `Avatar Converter Settings` now keeps the original avatar active and places the converted avatar offset along world +Z from the original avatar.
+- Changed the initial value of default material conversion settings to Toon Standard.
+- Improved the appearance when converting lilToon normal mode MatCap to Toon Standard.
+- Unsupported materials to be processed are no longer warned in `Avatar Converter Settings` and `Material Conversion Settings`.
+- Turned off Auto Referenced in asmdef.
+- Improved error messages when converting unsupported lilToon materials.
+- Changed to show an error when converting an avatar that uses an unsupported Modular Avatar.
+- Changed to use `.vqtmesh` asset to remove vertex color in avatar conversion instead of using `Vertex Color Remover` component.
+- [NDMF] Show an error dialog then abort the build when using unsupported version of NDMF.
+- [NDMF] Enabled preview for `Mesh Flipper` by default.
+- Unified Android/iOS terminology to "Mobile" in user-facing strings and UI elements. Android-specific terminology is retained for Unity Build Support settings and internal APIs.
+- Manual conversion from `Avatar Converter Settings` now applies `Platform GameObject Remover` settings and removes marked GameObjects for Android.
+- `Convert Avatar for Mobile` no longer auto-attaches `VQT Network ID Assigner`; use the new `Assign Network IDs` option in `Avatar Converter Settings` advanced settings instead.
+- Integrated menu icon settings into `Avatar Converter Settings`, and aligned NDMF icon processing with `VQT Menu Icon Resizer`.
+- Renamed `Convert Avatar for Mobile` to `Setup Avatar for Mobile` and updated setup to use availability-aware MA/AAO options with disabled already-added items and `MA Sync Parameter Sequence` defaulting `PrimaryPlatform` to `PC`.
+
+### Fixed
+- `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
+- Fixed RenderTexture and Material memory leaks in texture generation pipeline during avatar conversion.
+- Fixed an issue where texture generation failed when a material used an un-rendered RenderTexture as a texture.
+- Limited stack trace lines shown in avatar conversion failure dialog to keep the dialog operable.
+
+### Removed
+- Removed support for Unity 2019.
+- Removed support for VRCSDK earlier than 3.9.0.
+- Removed support for lilToon earlier than 1.10.0.
+- Removed support for NDMF earlier than 1.5.0.
+- Removed VQT Avatar Builder window. Use VRChat SDK Control Panel to build and upload avatars directly, or use the "[NDMF] Build and Test for PC with Android Settings" context menu for local testing.
+
 ## [2.11.7] - 2026-06-27
 
 ### Fixed
@@ -68,7 +119,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.10.0] - 2025-05-31
 
 ### Added
-- Toon Standard conversion settings. (VRCSDK 3.8.1-beta.4 or later)
+- Toon Standard conversion settings. (VRCSDK 3.8.1 or later)
     - There are following limitations:
         - Only supports lilToon 1.10.0 and later. For unsupported materials, Toon Lit main texture is only used.
         - [Missing rim lighting mask](https://feedback.vrchat.com/open-beta/p/sdk-381-beta3-add-rim-lighting-mask-for-toon-standard). This might lead overbright rim lighting.

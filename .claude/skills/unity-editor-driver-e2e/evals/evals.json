@@ -1,0 +1,23 @@
+{
+  "skill_name": "unity-editor-driver-e2e",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm working on a Unity Editor plugin. I have an IMGUI EditorWindow called `MyWindow` (no framework dependency) with a text field that shows 'Hello World' and a toggle group. I want to write an EditMode E2E test class that: (1) opens the window in SetUp, (2) closes it in TearDown, (3) has a test that reads the text field's current value with Page.Scan and asserts it equals 'Hello World', (4) has a test that fills the text field with 'Updated Value', repaints, and then reads back to verify. Please show the full C# file including the asmdef-compatible namespace, [UnityTest] attribute, and yield return null patterns. The test assembly references EditorDriver.Editor and SampleWindows.Editor.",
+      "expected_output": "A complete C# test fixture with correct [UnityTest]/IEnumerator structure, Driver SetUp/TearDown, Page.Scan(), GetByValue(), ReadText(), Fill(), Repaint(), yield return null, and page.Refresh() in the right places.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need an E2E test for MyUIElementsComponent's custom inspector. This inspector is UIElements-based and uses CreateInspectorGUI with BindProperty. It has a 'Text Field' (bound to myString, initial value 'Hello World') and a toggle 'Optional Settings'. Write a test that: opens the inspector with driver.OpenInspector<MyUIElementsComponent>(), waits for bindings, finds the text field by label, reads it, fills it with 'UIElements Test', and verifies the change is reflected both in the UI and in the component field. Explain any UIElements-specific timing or serializedObject concerns.",
+      "expected_output": "Test using OpenInspector, WaitForBindings helper (3x yield return null), Page.Scan, GetByLabel, Fill, Repaint, WaitForBindings again, page.Refresh, and serializedObject.Update() for the state-to-UI direction.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I want bidirectional state verification tests for MyComponent's IMGUI custom inspector. Write two tests: (a) UI→State: fill the 'Hello World' text field via Page API, then assert that ((MyComponent)handle.Component).myString was updated. (b) State→UI: set component.myString = 'From Code' directly, call Repaint, yield, then verify the new value is visible in the UI via Page.Scan. Show the complete test fixture.",
+      "expected_output": "Test fixture with both directions, correct cast of handle.Component to MyComponent, proper Repaint/yield sequence, and page.Refresh() before reading back in the State→UI direction.",
+      "files": []
+    }
+  ]
+}

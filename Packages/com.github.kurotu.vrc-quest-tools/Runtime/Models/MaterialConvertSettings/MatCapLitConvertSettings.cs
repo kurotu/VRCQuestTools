@@ -26,7 +26,7 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Texture format for android.
         /// </summary>
-        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_6x6;
+        public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.NoOverride;
 
         /// <summary>
         /// Texture brightness for quest. [0-1].
@@ -79,7 +79,7 @@ namespace KRT.VRCQuestTools.Models
                 sb.Append(":");
 
                 object valueObject;
-                if (value is Texture texture)
+                if (value is Texture texture && texture != null)
                 {
 #if UNITY_EDITOR
                     valueObject = texture.imageContentsHash;

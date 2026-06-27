@@ -15,10 +15,11 @@ namespace KRT.VRCQuestTools.Components
     public class AvatarConverterSettings : VRCQuestToolsEditorOnly, IMaterialConversionComponent
     {
         /// <summary>
-        /// Default material convert setting. The default value is <see cref="ToonLitConvertSettings"/>.
+        /// Default material convert setting.
         /// </summary>
         [SerializeReference]
-        public IMaterialConvertSettings defaultMaterialConvertSettings = new ToonLitConvertSettings();
+        public IMaterialConvertSettings defaultMaterialConvertSettings =
+            ToonStandardConvertSettings.SimpleFeatures;
 
         /// <summary>
         /// Additional material convert settings.
@@ -35,18 +36,21 @@ namespace KRT.VRCQuestTools.Components
         /// <summary>
         /// PhysBones to keep while conversion.
         /// </summary>
+        [System.Obsolete("Use PlatformComponentRemover on the avatar dynamics component's GameObject instead.")]
         [SerializeField]
         public VRCPhysBone[] physBonesToKeep = { };
 
         /// <summary>
         /// PhysBone colliders to keep while conversion.
         /// </summary>
+        [System.Obsolete("Use PlatformComponentRemover on the avatar dynamics component's GameObject instead.")]
         [SerializeField]
         public VRCPhysBoneCollider[] physBoneCollidersToKeep = { };
 
         /// <summary>
         /// Contact senders and receivers to keep while conversion.
         /// </summary>
+        [System.Obsolete("Use PlatformComponentRemover on the avatar dynamics component's GameObject instead.")]
         [SerializeField]
         public ContactBase[] contactsToKeep = { };
 
@@ -54,9 +58,7 @@ namespace KRT.VRCQuestTools.Components
         /// Animator override controllers to apply while conversion.
         /// </summary>
         [SerializeField]
-#if UNITY_2020_2_OR_NEWER
         [NonReorderable] // somehow reorderable list doesn't work well
-#endif
         public AnimatorOverrideController[] animatorOverrideControllers = { };
 
         /// <summary>
@@ -72,16 +74,52 @@ namespace KRT.VRCQuestTools.Components
         public bool removeExtraMaterialSlots = true;
 
         /// <summary>
-        /// Whether to compress existing expressions menu icons if they'are uncompressed.
+        /// Whether to resize expressions menu icons on mobile build target.
+        /// </summary>
+        [SerializeField]
+        public bool resizeExpressionsMenuIcons = true;
+
+        /// <summary>
+        /// Resize mode for expressions menu icons on mobile build target.
+        /// </summary>
+        [SerializeField]
+        public MenuIconResizer.TextureResizeMode expressionsMenuIconResizeMode = MenuIconResizer.TextureResizeMode.Max128x128;
+
+        /// <summary>
+        /// Whether to compress existing expressions menu icons if they are uncompressed.
         /// </summary>
         [SerializeField]
         public bool compressExpressionsMenuIcons = true;
+
+        /// <summary>
+        /// Mobile texture format for expressions menu icon compression.
+        /// </summary>
+        [SerializeField]
+        public MobileTextureFormat expressionsMenuIconMobileTextureFormat = MobileTextureFormat.ASTC_8x8;
+
+        /// <summary>
+        /// Whether to assign network IDs to PhysBones during build.
+        /// </summary>
+        [SerializeField]
+        public bool assignNetworkIds = true;
 
         /// <summary>
         /// NDMF phase to convert the avatar.
         /// </summary>
         [SerializeField]
         public AvatarConverterNdmfPhase ndmfPhase = AvatarConverterNdmfPhase.Auto;
+
+        /// <summary>
+        /// Whether to enable material preview in the editor.
+        /// </summary>
+        [SerializeField]
+        public bool enableMaterialPreview = true;
+
+        /// <summary>
+        /// Temporarily force enabling material preview for NDMF preview (non-serialized).
+        /// </summary>
+        [System.NonSerialized]
+        public bool forceMaterialPreview = false;
 
         /// <summary>
         /// Gets avatar descriptor of the avatar root object.
@@ -107,6 +145,24 @@ namespace KRT.VRCQuestTools.Components
         /// <inheritdoc/>
         public bool IsPrimaryRoot => true;
 
+        /// <inheritdoc/>
+        public bool EnableMaterialPreview => enableMaterialPreview;
+
+        /// <summary>
+        /// Gets a value indicating whether the temporary force preview is enabled.
+        /// </summary>
+        public bool ForceMaterialPreview => forceMaterialPreview;
+
+        /// <summary>
+        /// Gets a value indicating whether any legacy avatar dynamics settings (<see cref="physBonesToKeep"/>, <see cref="physBoneCollidersToKeep"/>, or <see cref="contactsToKeep"/>) contain non-null entries.
+        /// </summary>
+#pragma warning disable CS0618
+        public bool HasLegacyAvatarDynamicsSettings =>
+            physBonesToKeep.Any(x => x != null) ||
+            physBoneCollidersToKeep.Any(x => x != null) ||
+            contactsToKeep.Any(x => x != null);
+#pragma warning restore CS0618
+
         /// <summary>
         /// Gets the material convert settings for the specified material.
         /// </summary>
@@ -127,29 +183,6 @@ namespace KRT.VRCQuestTools.Components
         private void Reset()
         {
             defaultMaterialConvertSettings.LoadDefaultAssets();
-
-            var descriptor = AvatarDescriptor;
-            physBonesToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBone>(true) : new VRCPhysBone[] { };
-            physBoneCollidersToKeep = descriptor ? descriptor.gameObject.GetComponentsInChildren<VRCPhysBoneCollider>(true) : new VRCPhysBoneCollider[] { };
-            contactsToKeep = descriptor ? descriptor.GetComponentsInChildren<ContactBase>(true)
-                .Where(c =>
-                {
-                    switch (c)
-                    {
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_RECEIVER
-                        case ContactReceiver receiver:
-                            return !receiver.IsLocalOnly;
-#endif
-#if VQT_HAS_VRCSDK_LOCAL_CONTACT_SENDER
-                        case ContactSender sender:
-                            return !sender.IsLocalOnly;
-#endif
-                        default:
-                            return true;
-                    }
-                })
-                .ToArray()
-                : new ContactBase[] { };
         }
     }
 }

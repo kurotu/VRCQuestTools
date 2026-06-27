@@ -21,7 +21,7 @@ namespace KRT.VRCQuestTools.Automators
         static UpdateCheckerAutomator()
         {
 #if !VQT_HAS_NEWTONSOFT_JSON
-            Debug.LogWarning($"[{VRCQuestTools.Name}] Newtonsoft Json package is not installed. Update checker is not working.");
+            Logger.LogWarning($"Newtonsoft Json package is not installed. Update checker is not working.");
             return;
 #else
             EditorApplication.playModeStateChanged += PlayModeStateChanged;
@@ -52,18 +52,18 @@ namespace KRT.VRCQuestTools.Automators
             try
             {
                 var latestVersion = await GetLatestVersion(CurrentVersion.IsPrerelease, ignoreCache);
-                Debug.Log($"[{VRCQuestTools.Name}] Latest version is {latestVersion} (Current: {CurrentVersion})");
+                Logger.Log($"Latest version is {latestVersion} (Current: {CurrentVersion})");
                 var hasUpdate = latestVersion > CurrentVersion;
                 if (hasUpdate)
                 {
-                    Debug.LogWarning($"[{VRCQuestTools.Name}] New version {latestVersion} is available, see {VRCQuestTools.BoothURL}");
+                    Logger.LogWarning($"New version {latestVersion} is available, see {VRCQuestTools.BoothURL}");
                 }
                 return hasUpdate;
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"[{VRCQuestTools.Name}] Failed to get latest version");
-                Debug.LogException(e);
+                Logger.LogWarning($"Failed to get latest version");
+                Logger.LogException(e);
                 return false;
             }
         }
@@ -89,7 +89,7 @@ namespace KRT.VRCQuestTools.Automators
             var lastVersionCheckDate = VRCQuestToolsSettings.LastVersionCheckDateTime;
             if (DateTime.Now < lastVersionCheckDate.AddDays(1) && !ignoreCache)
             {
-                Debug.Log($"[{VRCQuestTools.Name}] Version check is skipped until {lastVersionCheckDate.AddDays(1).ToLocalTime()}");
+                Logger.Log($"Version check is skipped until {lastVersionCheckDate.AddDays(1).ToLocalTime()}");
                 return VRCQuestToolsSettings.LatestVersionCache;
             }
 

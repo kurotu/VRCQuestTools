@@ -94,17 +94,21 @@ namespace KRT.VRCQuestTools.Utils
 
         private ChildAnimatorStateMachine Duplicate(ChildAnimatorStateMachine child)
         {
-            var newChild = new ChildAnimatorStateMachine();
-            newChild.position = child.position;
-            newChild.stateMachine = Duplicate(child.stateMachine);
+            var newChild = new ChildAnimatorStateMachine
+            {
+                position = child.position,
+                stateMachine = Duplicate(child.stateMachine),
+            };
             return newChild;
         }
 
         private ChildAnimatorState Duplicate(ChildAnimatorState child)
         {
-            var newChild = new ChildAnimatorState();
-            newChild.position = child.position;
-            newChild.state = Duplicate(child.state);
+            var newChild = new ChildAnimatorState
+            {
+                position = child.position,
+                state = Duplicate(child.state),
+            };
             return newChild;
         }
 
@@ -193,10 +197,12 @@ namespace KRT.VRCQuestTools.Utils
 
         private AnimatorCondition Duplicate(AnimatorCondition condition)
         {
-            var newCondition = new AnimatorCondition();
-            newCondition.mode = condition.mode;
-            newCondition.parameter = condition.parameter;
-            newCondition.threshold = condition.threshold;
+            var newCondition = new AnimatorCondition
+            {
+                mode = condition.mode,
+                parameter = condition.parameter,
+                threshold = condition.threshold,
+            };
             return newCondition;
         }
 

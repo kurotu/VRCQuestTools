@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
             if (avatarDescriptor == null)
             {
-                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping menu icon resizing.");
+                Logger.LogWarning($"No VRCAvatarDescriptor found in the avatar root object. Skipping menu icon resizing.");
                 return;
             }
 
@@ -41,24 +41,23 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var resizer = context.AvatarRootObject.GetComponentInChildren<MenuIconResizer>(true);
+            if (resizer == null)
+            {
+                return;
+            }
 
             var target = NdmfHelper.ResolveBuildTarget(context.AvatarRootObject);
 
             var maxSize = MaxActionTextureSize;
-            if (resizer != null)
+            var resizeMode = target == BuildTarget.PC ? resizer.resizeModePC : resizer.resizeModeAndroid;
+            if (resizeMode != MenuIconResizer.TextureResizeMode.DoNotResize)
             {
-                var resizeMode = target == BuildTarget.PC ? resizer.resizeModePC : resizer.resizeModeAndroid;
-                if (resizeMode != MenuIconResizer.TextureResizeMode.DoNotResize)
-                {
-                    maxSize = (int)resizeMode;
-                }
+                maxSize = (int)resizeMode;
             }
 
-            var compressTextures =
-                (resizer != null ? resizer.compressTextures : false)
-                || context.GetState<NdmfState>().compressExpressionsMenuIcons;
+            var compressTextures = resizer.compressTextures;
 
-            if (maxSize == MaxActionTextureSize && compressTextures == false)
+            if (maxSize == MaxActionTextureSize && !compressTextures)
             {
                 return;
             }
@@ -90,9 +89,11 @@ namespace KRT.VRCQuestTools.Ndmf
             avatarDescriptor.expressionsMenu = newMenu;
             objectRegistry.RegisterReplacedObject(menu, newMenu);
 
+            var mobileTextureFormatForCompression = TextureUtility.GetCompressionFormat(resizer.mobileTextureFormat);
+
             VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, maxSize, compressTextures, (oldTex, newTex) =>
             {
-                TextureUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget, (TextureFormat)resizer.mobileTextureFormat);
+                TextureUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression);
                 objectRegistry.RegisterReplacedObject(oldTex, newTex);
             });
         }

@@ -13,9 +13,9 @@ namespace KRT.VRCQuestTools.Views
         private const ulong MegaBytes = 1024 * 1024;
 
         [SettingsProvider]
-        private static SettingsProvider CreatePreferencesProvider()
+        private static SettingsProvider CreateProjectSettingsProvider()
         {
-            var provider = new SettingsProvider("Preferences/VRCQuestTools", SettingsScope.User)
+            var provider = new SettingsProvider("Project/VRCQuestTools", SettingsScope.Project)
             {
                 label = "VRCQuestTools",
                 guiHandler = (searchContext) =>
@@ -35,19 +35,7 @@ namespace KRT.VRCQuestTools.Views
                             }
                         }
 
-                        using (var horizontal = new EditorGUILayout.HorizontalScope())
-                        {
-                            EditorGUILayout.LabelField("Texture Cache Folder", VRCQuestToolsSettings.TextureCacheFolder);
-                            if (GUILayout.Button("Select", GUILayout.Width(60)))
-                            {
-                                var path = UnityEditor.EditorUtility.OpenFolderPanel("Select Texture Cache Folder", VRCQuestToolsSettings.TextureCacheFolder, string.Empty);
-                                if (!string.IsNullOrEmpty(path))
-                                {
-                                    VRCQuestToolsSettings.TextureCacheFolder = path;
-                                    CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
-                                }
-                            }
-                        }
+                        EditorGUILayout.LabelField("Texture Cache Folder", VRCQuestToolsSettings.TextureCacheFolder);
 
                         using (var horizontal = new EditorGUILayout.HorizontalScope())
                         {

@@ -14,7 +14,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// Resolve the build target from the avatar root object.
         /// </summary>
         /// <param name="avatarRootObject">Avatar root object.</param>
-        /// <returns>Resolved build target, PC or Android.</returns>
+        /// <returns>Resolved build target, PC or Mobile.</returns>
         public static Models.BuildTarget ResolveBuildTarget(GameObject avatarRootObject)
         {
             var targetSettings = avatarRootObject.GetComponent<PlatformTargetSettings>();
@@ -46,7 +46,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     break;
                 default:
                     target = Models.BuildTarget.PC;
-                    Debug.LogWarning($"[{VRCQuestTools.Name}] Unsupported unity build target: {EditorUserBuildSettings.activeBuildTarget}. Fallback to PC configuration.");
+                    Logger.LogWarning($"Unsupported unity build target: {EditorUserBuildSettings.activeBuildTarget}. Fallback to PC configuration.");
                     break;
             }
             Assert.IsTrue(target != Models.BuildTarget.Auto);

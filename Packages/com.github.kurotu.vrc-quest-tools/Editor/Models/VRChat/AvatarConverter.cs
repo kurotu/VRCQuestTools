@@ -9,21 +9,16 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using KRT.VRCQuestTools.Components;
+using KRT.VRCQuestTools.Importers;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
-#if VQT_HAS_MODULAR_AVATAR
-using nadena.dev.modular_avatar.core;
-#endif
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
-
-#if VQT_HAS_VRCSDK_BASE
 using VRC.Core;
+using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
-#else
-using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
-#endif
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -100,9 +95,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="avatar">Avatar object to convert.</param>
         internal void PrepareModularAvatarComponentsInPlace(VRChatAvatar avatar)
         {
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
-            avatar.GameObject.GetOrAddComponent<ModularAvatarConvertConstraints>();
-#endif
+            if (ModularAvatarUtility.IsModularAvatarImported())
+            {
+                ModularAvatarUtility.GetOrAddConvertConstraintsComponent(avatar.GameObject);
+            }
         }
 
         /// <summary>
@@ -115,6 +111,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="progressCallback">Callback to show progress.</param>
         internal void ConvertForQuestInPlace(VRChatAvatar avatar, ComponentRemover remover, bool saveAssetsAsFile, string assetsDirectory, ProgressCallback progressCallback)
         {
+            if (ModularAvatarUtility.IsLegacyVersion())
+            {
+                throw new LegacyPackageException(ModularAvatarUtility.PackageDisplayName, ModularAvatarUtility.RequiredVersion);
+            }
+            if (ModularAvatarUtility.IsBreakingVersion())
+            {
+                throw new BreakingPackageException(ModularAvatarUtility.PackageDisplayName, ModularAvatarUtility.BreakingVersion);
+            }
+
             // Clear cache to ensure each avatar gets its own VQT_Shared_Black texture
             ClearSharedBlackTextureCache();
 
@@ -123,9 +128,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var converterSettings = questAvatarObject.GetComponent<AvatarConverterSettings>();
 
             // Remove extra material slots such as lilToon FakeShadow.
-            var primaryRootConversion = questAvatarObject
-                .GetComponents<IMaterialConversionComponent>()
-                .FirstOrDefault(c => c.IsPrimaryRoot);
+            var primaryRootConversion = ComponentUtility.GetPrimaryMaterialConversionComponent(questAvatarObject);
             if (primaryRootConversion != null && primaryRootConversion.RemoveExtraMaterialSlots)
             {
                 RemoveExtraMaterialSlots(questAvatarObject);
@@ -133,27 +136,35 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             // Convert materials and generate textures.
             var convertSettingsMap = CreateMaterialConvertSettingsMap(avatar);
-            var convertedMaterials = ConvertMaterialsForAndroid(convertSettingsMap, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress);
+            var convertedMaterials = ConvertMaterialsForMobile(convertSettingsMap, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress, forEditorPreview: false, avatarRoot: questAvatarObject);
             CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
 
             ApplyConvertedMaterials(questAvatarObject, convertedMaterials, saveAssetsAsFile, assetsDirectory, progressCallback);
 
             if (converterSettings != null)
             {
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS && VQT_HAS_VRCSDK_NO_PRECHECK
-                if (saveAssetsAsFile && questAvatarObject.GetComponent<ModularAvatarConvertConstraints>() != null) {
+                if (ModularAvatarUtility.IsModularAvatarImported() && saveAssetsAsFile && ModularAvatarUtility.HasConvertConstraintsComponent(questAvatarObject))
+                {
                     remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true, false, new Type[] { typeof(UnityEngine.Animations.IConstraint) });
                 }
                 else
                 {
                     remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
                 }
-#else
-                remover.RemoveUnsupportedComponentsInChildren(questAvatarObject, true);
-#endif
                 ModularAvatarUtility.RemoveUnsupportedComponents(questAvatarObject, true);
 
-                ApplyVRCQuestToolsComponents(converterSettings, questAvatarObject);
+                if (saveAssetsAsFile && converterSettings.removeVertexColor)
+                {
+                    RemoveVertexColor(questAvatarObject, assetsDirectory);
+                }
+
+                ApplyVRCQuestToolsComponents(converterSettings, questAvatarObject, saveAssetsAsFile);
+
+                if (saveAssetsAsFile)
+                {
+                    // In manual (non-NDMF) conversion, apply platform-specific GameObject removals regardless of dynamics settings.
+                    ApplyPlatformGameObjectRemoversForAndroid(questAvatarObject);
+                }
 
                 var contactsToKeep = converterSettings.contactsToKeep
                     .Concat(avatar.GetLocalContactReceivers())
@@ -163,7 +174,19 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
                 if (converterSettings.removeAvatarDynamics)
                 {
-                    VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSettings.physBonesToKeep, converterSettings.physBoneCollidersToKeep, contactsToKeep);
+                    bool isLegacyMode = converterSettings.HasLegacyAvatarDynamicsSettings;
+
+                    if (isLegacyMode)
+                    {
+                        VRCSDKUtility.DeleteAvatarDynamicsComponents(avatar, converterSettings.physBonesToKeep, converterSettings.physBoneCollidersToKeep, contactsToKeep);
+                    }
+                    else if (saveAssetsAsFile)
+                    {
+                        // New mode for manual (non-NDMF) conversion: apply platform-specific component removals for Android.
+                        ApplyPlatformComponentRemoversForAndroid(questAvatarObject);
+                    }
+
+                    // For NDMF builds (!saveAssetsAsFile), removal was already handled in NDMF passes.
                 }
             }
 
@@ -228,7 +251,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 var convertedAnimatorControllers = ConvertAnimatorControllersForQuest(avatar.GetRuntimeAnimatorControllers(), saveAssetsAsFile, assetsDirectory, convertedMotions, progressCallback.onRuntimeAnimatorProgress);
 
                 // Apply converted animator controllers.
-#if VQT_HAS_VRCSDK_BASE
                 var layers = questAvatarObject.GetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>().baseAnimationLayers;
                 for (int i = 0; i < layers.Length; i++)
                 {
@@ -240,7 +262,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                         }
                     }
                 }
-#endif
 
                 foreach (var animator in questAvatarObject.GetComponentsInChildren<Animator>(true))
                 {
@@ -253,18 +274,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                 }
 
-#if VQT_HAS_MODULAR_AVATAR
-                foreach (var ma in questAvatarObject.GetComponentsInChildren<ModularAvatarMergeAnimator>(true))
+                if (ModularAvatarUtility.IsModularAvatarImported())
                 {
-                    if (ma.animator != null)
+                    foreach (var ma in ModularAvatarUtility.GetMergeAnimatorComponentsInChildren(questAvatarObject, true))
                     {
-                        if (convertedAnimatorControllers.ContainsKey(ma.animator))
+                        var animator = ModularAvatarUtility.GetMergeAnimatorController(ma);
+                        if (animator != null && convertedAnimatorControllers.ContainsKey(animator))
                         {
-                            ma.animator = convertedAnimatorControllers[ma.animator];
+                            ModularAvatarUtility.SetMergeAnimatorController(ma, convertedAnimatorControllers[animator]);
                         }
                     }
                 }
-#endif
             }
 
             // Apply converted materials to renderers.
@@ -294,7 +314,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="settings">Avatar converter settings component.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
-        internal void GenerateAndroidTextures(Material[] materials, bool saveAsPng, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
+        internal void GenerateMobileTextures(Material[] materials, bool saveAsPng, string assetsDirectory, AvatarConverterSettings settings, TextureProgressCallback progressCallback)
         {
             // Clear cache to ensure each texture generation gets its own VQT_Shared_Black texture
             ClearSharedBlackTextureCache();
@@ -308,6 +328,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             var sharedBlackTexture = GetOrCreateSharedBlackTexture(saveAsPng, saveDirectory);
             var materialsToConvert = materials.Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m)).ToArray();
+            var avatarRoot = settings != null ? settings.gameObject : null;
+            var particleSystemMaterials = GetParticleSystemMaterials(avatarRoot);
+            var explicitlyConfiguredMaterials = GetExplicitlyConfiguredMaterials(avatarRoot);
             var convertedTextures = new Dictionary<Material, Texture2D>();
 
             for (int i = 0; i < materialsToConvert.Length; i++)
@@ -323,53 +346,69 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     AsyncCallbackRequest request;
                     var materialSetting = settings.GetMaterialConvertSettings(m);
                     var buildTarget = EditorUserBuildSettings.activeBuildTarget;
-                    switch (materialSetting)
+                    // Materials with an explicit per-material convert setting are not auto-converted as
+                    // particles; their explicit setting takes priority.
+                    var wrapper = explicitlyConfiguredMaterials.Contains(m)
+                        ? MaterialWrapperBuilder.BuildIgnoringParticleCategory(m)
+                        : MaterialWrapperBuilder.Build(m, particleSystemMaterials.Contains(m));
+                    if (wrapper is ParticleMaterial && !(materialSetting is MaterialReplaceSettings))
                     {
-                        case ToonLitConvertSettings toonLitConvertSettings:
-                            if (toonLitConvertSettings.generateQuestTextures)
-                            {
-                                var m2 = MaterialWrapperBuilder.Build(m);
-                                request = new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
-                            }
-                            else
-                            {
-                                request = new ResultRequest(Completion);
-                            }
-                            break;
-                        case MatCapLitConvertSettings matCapLitConvertSettings:
-                            if (matCapLitConvertSettings.generateQuestTextures)
-                            {
-                                var m2 = MaterialWrapperBuilder.Build(m);
-                                request = new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
-                            }
-                            else
-                            {
-                                request = new ResultRequest(Completion);
-                            }
-                            break;
-                        case ToonStandardConvertSettings toonStandardConvertSettings:
-                            if (toonStandardConvertSettings.generateQuestTextures)
-                            {
-                                var m2 = MaterialWrapperBuilder.Build(m);
-                                if (m2 is LilToonMaterial lil)
+                        // Particle materials (including ParticleSystem materials with non-particle shaders)
+                        // are converted to avatar-compatible particle shaders regardless of the selected
+                        // Toon Lit/Toon Standard setting.
+                        request = new ParticleGenerator(materialSetting).GenerateTextures(wrapper, buildTarget, saveAsPng, saveDirectory, Completion);
+                    }
+                    else
+                    {
+                        switch (materialSetting)
+                        {
+                            case ToonLitConvertSettings toonLitConvertSettings:
+                                if (toonLitConvertSettings.generateQuestTextures)
                                 {
-                                    request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings, sharedBlackTexture).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    request = new ToonLitGenerator(toonLitConvertSettings).GenerateTextures(wrapper, buildTarget, saveAsPng, saveDirectory, Completion);
                                 }
                                 else
                                 {
-                                    request = new GenericToonStandardGenerator(toonStandardConvertSettings, sharedBlackTexture).GenerateTextures(m2, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    request = new ResultRequest(Completion);
                                 }
-                            }
-                            else
-                            {
+                                break;
+                            case MatCapLitConvertSettings matCapLitConvertSettings:
+                                if (matCapLitConvertSettings.generateQuestTextures)
+                                {
+                                    request = new MatCapLitGenerator(matCapLitConvertSettings).GenerateTextures(wrapper, buildTarget, saveAsPng, saveDirectory, Completion);
+                                }
+                                else
+                                {
+                                    request = new ResultRequest(Completion);
+                                }
+                                break;
+                            case ToonStandardConvertSettings toonStandardConvertSettings:
+                                if (toonStandardConvertSettings.generateQuestTextures)
+                                {
+                                    if (wrapper is LilToonMaterial lil)
+                                    {
+                                        request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(wrapper, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    }
+                                    else if (wrapper is PoiyomiMaterial poi)
+                                    {
+                                        request = new PoiyomiToonStandardGenerator(poi, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(wrapper, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    }
+                                    else
+                                    {
+                                        request = new GenericToonStandardGenerator(wrapper, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(wrapper, buildTarget, saveAsPng, saveDirectory, Completion);
+                                    }
+                                }
+                                else
+                                {
+                                    request = new ResultRequest(Completion);
+                                }
+                                break;
+                            case MaterialReplaceSettings materialReplaceSettings:
                                 request = new ResultRequest(Completion);
-                            }
-                            break;
-                        case MaterialReplaceSettings materialReplaceSettings:
-                            request = new ResultRequest(Completion);
-                            break;
-                        default:
-                            throw new InvalidProgramException($"Unhandled material convert setting: {materialSetting.GetType().Name}");
+                                break;
+                            default:
+                                throw new InvalidProgramException($"Unhandled material convert setting: {materialSetting.GetType().Name}");
+                        }
                     }
                     request.WaitForCompletion();
                 }
@@ -382,20 +421,25 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
         /// <summary>
-        /// Converts materials and generate textures for Android.
+        /// Converts materials and generate textures for Mobile.
         /// </summary>
         /// <param name="convertSettingsMap">Materials convert settings map.</param>
         /// <param name="saveAsFile">Whether to save materials as file.</param>
         /// <param name="assetsDirectory">Root directory for converted avatar.</param>
         /// <param name="progressCallback">Callback to show progress.</param>
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview (re-uploads generated normal maps so they display in the editor).</param>
         /// <returns>Converted materials (key: original material).</returns>
-        private Dictionary<Material, Material> ConvertMaterialsForAndroid(
+        internal Dictionary<Material, Material> ConvertMaterialsForMobile(
             Dictionary<Material, IMaterialConvertSettings> convertSettingsMap,
             bool saveAsFile,
             string assetsDirectory,
-            TextureProgressCallback progressCallback)
+            TextureProgressCallback progressCallback,
+            bool forEditorPreview,
+            GameObject avatarRoot = null)
         {
             var convertedMaterials = new Dictionary<Material, Material>();
+            var particleSystemMaterials = GetParticleSystemMaterials(avatarRoot);
+            var explicitlyConfiguredMaterials = GetExplicitlyConfiguredMaterials(avatarRoot);
 
             // Get unique materials that need conversion
             var materialsToConvert = convertSettingsMap.Keys
@@ -407,14 +451,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
             {
                 var currentIndex = i;
                 var material = materialsToConvert[i];
-                progressCallback(materialsToConvert.Length, i, material, null);
+                progressCallback?.Invoke(materialsToConvert.Length, i, material, null);
 
                 try
                 {
-                    var request = ConvertSingleMaterial(material, convertSettingsMap[material], saveAsFile, assetsDirectory, (output) =>
+                    var request = ConvertSingleMaterial(material, convertSettingsMap[material], saveAsFile, assetsDirectory, forEditorPreview, particleSystemMaterials.Contains(material), explicitlyConfiguredMaterials.Contains(material), (output) =>
                     {
                         convertedMaterials[material] = output;
-                        progressCallback(materialsToConvert.Length, currentIndex, material, output);
+                        progressCallback?.Invoke(materialsToConvert.Length, currentIndex, material, output);
                     });
                     request.WaitForCompletion();
                 }
@@ -425,6 +469,187 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             return convertedMaterials;
+        }
+
+        /// <summary>
+        /// Gets the set of materials used by ParticleSystemRenderers in the avatar.
+        /// </summary>
+        /// <param name="avatarRoot">Avatar root object, or null.</param>
+        /// <returns>Materials used by ParticleSystemRenderers.</returns>
+        private static HashSet<Material> GetParticleSystemMaterials(GameObject avatarRoot)
+        {
+            var materials = new HashSet<Material>();
+            if (avatarRoot == null)
+            {
+                return materials;
+            }
+
+            foreach (var renderer in avatarRoot.GetComponentsInChildren<ParticleSystemRenderer>(true))
+            {
+                foreach (var material in renderer.sharedMaterials)
+                {
+                    if (material != null)
+                    {
+                        materials.Add(material);
+                    }
+                }
+            }
+            return materials;
+        }
+
+        /// <summary>
+        /// Gets the set of materials that have an explicit per-material convert setting
+        /// (additionalMaterialConvertSettings or MaterialSwap). These take priority over automatic
+        /// particle conversion.
+        /// </summary>
+        /// <param name="avatarRoot">Avatar root object, or null.</param>
+        /// <returns>Explicitly configured materials.</returns>
+        private static HashSet<Material> GetExplicitlyConfiguredMaterials(GameObject avatarRoot)
+        {
+            var materials = new HashSet<Material>();
+            if (avatarRoot == null)
+            {
+                return materials;
+            }
+
+            foreach (var setting in avatarRoot.GetComponentsInChildren<MaterialConversionSettings>(true))
+            {
+                foreach (var s in setting.additionalMaterialConvertSettings)
+                {
+                    if (s.targetMaterial != null)
+                    {
+                        materials.Add(s.targetMaterial);
+                    }
+                }
+            }
+
+            foreach (var swap in avatarRoot.GetComponentsInChildren<MaterialSwap>(true))
+            {
+                foreach (var mapping in swap.materialMappings)
+                {
+                    if (mapping.originalMaterial != null)
+                    {
+                        materials.Add(mapping.originalMaterial);
+                    }
+                }
+            }
+
+            var converterSettings = avatarRoot.GetComponent<AvatarConverterSettings>();
+            if (converterSettings != null)
+            {
+                foreach (var s in converterSettings.additionalMaterialConvertSettings)
+                {
+                    if (s.targetMaterial != null)
+                    {
+                        materials.Add(s.targetMaterial);
+                    }
+                }
+            }
+
+            return materials;
+        }
+
+        /// <summary>
+        /// Applies PlatformGameObjectRemover settings for Android, removing GameObjects marked for removal.
+        /// This is used during manual (non-NDMF) avatar conversion.
+        /// </summary>
+        /// <param name="avatarObject">Avatar root object.</param>
+        private static void ApplyPlatformGameObjectRemoversForAndroid(GameObject avatarObject)
+        {
+            var removers = avatarObject.GetComponentsInChildren<PlatformGameObjectRemover>(true);
+            foreach (var remover in removers)
+            {
+                if (remover == null || remover.gameObject == null || !remover.removeOnAndroid)
+                {
+                    continue;
+                }
+
+                Logger.Log($"Remove {remover.gameObject.name} for Android platform", remover.gameObject);
+                UnityEngine.Object.DestroyImmediate(remover.gameObject);
+            }
+        }
+
+        /// <summary>
+        /// Applies PlatformComponentRemover settings for Android, removing components marked for removal.
+        /// This is used during manual (non-NDMF) avatar conversion in new PCR-based dynamics mode.
+        /// Collider references are cleaned up from kept PhysBones before colliders are destroyed,
+        /// and unused NetworkIDs are stripped after PhysBone removal.
+        /// </summary>
+        /// <param name="avatarObject">Avatar root object.</param>
+        private static void ApplyPlatformComponentRemoversForAndroid(GameObject avatarObject)
+        {
+            var avatarDescriptor = avatarObject.GetComponent<VRC_AvatarDescriptor>();
+            var removers = avatarObject.GetComponentsInChildren<PlatformComponentRemover>(true);
+            var componentsToRemove = removers
+                .SelectMany(r => r.componentSettings)
+                .Where(s => s.component != null && s.removeOnAndroid)
+                .Select(s => s.component)
+                .ToArray();
+
+            // Remove PhysBones first.
+            foreach (var physBone in componentsToRemove.OfType<VRCPhysBone>())
+            {
+                Logger.Log($"Remove {physBone.GetType().Name} for Android platform", physBone.gameObject);
+                UnityEngine.Object.DestroyImmediate(physBone);
+            }
+
+            // Remove colliders, clearing references from remaining PhysBones first.
+            var remainingPhysBones = avatarObject.GetComponentsInChildren<VRCPhysBone>(true);
+            foreach (var collider in componentsToRemove.OfType<VRCPhysBoneCollider>())
+            {
+                foreach (var bone in remainingPhysBones)
+                {
+                    bool modified = false;
+                    for (var i = 0; i < bone.colliders.Count; i++)
+                    {
+                        if (bone.colliders[i] == collider)
+                        {
+                            if (!modified)
+                            {
+                                Undo.RecordObject(bone, "Apply Avatar Dynamics Settings");
+                                modified = true;
+                            }
+
+                            bone.colliders[i] = null;
+                        }
+                    }
+
+                    if (modified)
+                    {
+                        EditorUtility.SetDirty(bone);
+                    }
+                }
+
+                Logger.Log($"Remove {collider.GetType().Name} for Android platform", collider.gameObject);
+                UnityEngine.Object.DestroyImmediate(collider);
+            }
+
+            // Remove contacts and other components.
+            foreach (var component in componentsToRemove.Where(c => !(c is VRCPhysBone) && !(c is VRCPhysBoneCollider)))
+            {
+                Logger.Log($"Remove {component.GetType().Name} for Android platform", component.gameObject);
+                UnityEngine.Object.DestroyImmediate(component);
+            }
+
+            // Remove PCR components that have no removal effect.
+            var allRemovers = avatarObject.GetComponentsInChildren<PlatformComponentRemover>(true);
+            foreach (var remover in allRemovers)
+            {
+                remover.UpdateComponentSettings();
+                bool hasEffect = System.Array.Exists(
+                    remover.componentSettings,
+                    s => s.component != null && (s.removeOnAndroid || s.removeOnPC));
+                if (!hasEffect)
+                {
+                    UnityEngine.Object.DestroyImmediate(remover);
+                }
+            }
+
+            // Strip orphaned NetworkIDs left by removed PhysBones.
+            if (avatarDescriptor != null && componentsToRemove.OfType<VRCPhysBone>().Any())
+            {
+                VRCSDKUtility.StripeUnusedNetworkIds(avatarDescriptor);
+            }
         }
 
         private void RemoveExtraMaterialSlots(GameObject questAvatarObject)
@@ -446,12 +671,17 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
         }
 
-        private Dictionary<Material, IMaterialConvertSettings> CreateMaterialConvertSettingsMap(VRChatAvatar avatar)
+        internal Dictionary<Material, IMaterialConvertSettings> CreateMaterialConvertSettingsMap(VRChatAvatar avatar)
+        {
+            return CreateMaterialConvertSettingsMap(avatar.GameObject, avatar.Materials);
+        }
+
+        internal Dictionary<Material, IMaterialConvertSettings> CreateMaterialConvertSettingsMap(GameObject avatarRoot, Material[] avatarMaterials)
         {
             var convertSettingsMap = new Dictionary<Material, IMaterialConvertSettings>();
 
             // Apply MaterialConversionSettings
-            var materialConversionSettings = avatar.GameObject.GetComponentsInChildren<MaterialConversionSettings>(true);
+            var materialConversionSettings = avatarRoot.GetComponentsInChildren<MaterialConversionSettings>(true);
             foreach (var setting in materialConversionSettings)
             {
                 foreach (var s in setting.additionalMaterialConvertSettings)
@@ -475,7 +705,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             // Apply MaterialSwap
-            var materialSwaps = avatar.GameObject.GetComponentsInChildren<MaterialSwap>(true);
+            var materialSwaps = avatarRoot.GetComponentsInChildren<MaterialSwap>(true);
             foreach (var swap in materialSwaps)
             {
                 foreach (var (mapping, index) in swap.materialMappings.Select((value, index) => (value, index)))
@@ -506,7 +736,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             // Apply AvatarConverterSettings
-            var converterSettings = avatar.GameObject.GetComponent<AvatarConverterSettings>();
+            var converterSettings = avatarRoot.GetComponent<AvatarConverterSettings>();
             if (converterSettings != null)
             {
                 foreach (var setting in converterSettings.additionalMaterialConvertSettings)
@@ -530,10 +760,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             // Apply default material convert settings
-            var avatarMaterials = avatar.Materials;
-            var primaryConversion = avatar.GameObject
-                .GetComponents<IMaterialConversionComponent>()
-                .FirstOrDefault(c => c.IsPrimaryRoot);
+            var primaryConversion = ComponentUtility.GetPrimaryMaterialConversionComponent(avatarRoot);
             if (primaryConversion != null)
             {
                 foreach (var material in avatarMaterials)
@@ -559,22 +786,37 @@ namespace KRT.VRCQuestTools.Models.VRChat
             IMaterialConvertSettings convertSettings,
             bool saveAsFile,
             string assetsDirectory,
+            bool forEditorPreview,
+            bool renderForParticleSystem,
+            bool isExplicitlyConfigured,
             Action<Material> completion)
         {
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localId);
-            var materialWrapper = MaterialWrapperBuilder.Build(material);
+
+            // Materials with an explicit per-material convert setting are not auto-converted as particles;
+            // their explicit setting takes priority.
+            var materialWrapper = isExplicitlyConfigured
+                ? MaterialWrapperBuilder.BuildIgnoringParticleCategory(material)
+                : MaterialWrapperBuilder.Build(material, renderForParticleSystem);
 
             // Generate converted material based on settings
-            return GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory, convertedMaterial =>
+            return GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory, forEditorPreview, convertedMaterial =>
             {
                 // Save as asset if required
-                if (saveAsFile && !(convertSettings is MaterialReplaceSettings))
+                if (!(convertSettings is MaterialReplaceSettings))
                 {
-                    convertedMaterial = SaveMaterialAsset(
-                        convertedMaterial,
-                        material.name,
-                        guid,
-                        assetsDirectory);
+                    if (saveAsFile)
+                    {
+                        convertedMaterial = SaveMaterialAsset(
+                            convertedMaterial,
+                            material.name,
+                            guid,
+                            assetsDirectory);
+                    }
+                    else
+                    {
+                        convertedMaterial.name += " (VQT)";
+                    }
                 }
                 completion(convertedMaterial);
             });
@@ -585,12 +827,20 @@ namespace KRT.VRCQuestTools.Models.VRChat
             IMaterialConvertSettings settings,
             bool saveAsFile,
             string assetsDirectory,
+            bool forEditorPreview,
             Action<Material> completion)
         {
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
             var texturesPath = $"{assetsDirectory}/Textures";
 
             var sharedBlackTexture = GetOrCreateSharedBlackTexture(saveAsFile, texturesPath);
+
+            // Particle shaders are converted to avatar-compatible particle shaders regardless of the
+            // selected Toon Lit/Toon Standard setting. MaterialReplaceSettings (explicit replacement) takes priority.
+            if (material is ParticleMaterial && !(settings is MaterialReplaceSettings))
+            {
+                return new ParticleGenerator(settings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+            }
 
             switch (settings)
             {
@@ -601,9 +851,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 case ToonStandardConvertSettings toonStandardSettings:
                     if (material is LilToonMaterial)
                     {
-                        return new LilToonToonStandardGenerator((LilToonMaterial)material, toonStandardSettings, sharedBlackTexture).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                        return new LilToonToonStandardGenerator((LilToonMaterial)material, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                     }
-                    return new GenericToonStandardGenerator(toonStandardSettings, sharedBlackTexture).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+
+                    if (material is PoiyomiMaterial poiyomi)
+                    {
+                        return new PoiyomiToonStandardGenerator(poiyomi, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                    }
+
+                    return new GenericToonStandardGenerator(material, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case MaterialReplaceSettings replaceSettings:
                     if (replaceSettings.material == null)
                     {
@@ -677,7 +933,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             }
                             break;
                         default:
-                            Debug.LogWarning($"Unsupported controller type: {controller.name}: {controller.GetType().Name}");
+                            Logger.LogWarning($"Unsupported controller type: {controller.name}: {controller.GetType().Name}");
                             break;
                     }
                     if (cloneController)
@@ -829,7 +1085,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             Directory.CreateDirectory(dir);
                         }
                         anim = AssetUtility.CreateAsset(anim, outFile);
-                        Debug.Log("create asset: " + outFile);
+                        Logger.Log("create asset: " + outFile);
                     }
                     convertedAnimationClips.Add(clip, anim);
                     progressCallback(animationClips.Length, i, clip, anim);
@@ -842,34 +1098,86 @@ namespace KRT.VRCQuestTools.Models.VRChat
             return convertedAnimationClips;
         }
 
-        private void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject)
+        private void RemoveVertexColor(GameObject questAvatarObject, string assetsDirectory)
+        {
+            var renderers = questAvatarObject.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                .Cast<Renderer>()
+                .Concat(questAvatarObject.GetComponentsInChildren<MeshRenderer>(true))
+                .Where(r =>
+                {
+                    var mesh = RendererUtility.GetSharedMesh(r);
+                    return mesh != null && mesh.colors32 != null && mesh.colors32.Length > 0;
+                });
+
+            if (!renderers.Any())
+            {
+                return;
+            }
+
+            var saveDirectory = $"{assetsDirectory}/Meshes";
+            Directory.CreateDirectory(saveDirectory);
+
+            var convertedMeshes = new Dictionary<Mesh, Mesh>();
+
+            foreach (var renderer in renderers)
+            {
+                var mesh = RendererUtility.GetSharedMesh(renderer);
+
+                if (convertedMeshes.ContainsKey(mesh))
+                {
+                    RendererUtility.SetSharedMesh(renderer, convertedMeshes[mesh]);
+                    continue;
+                }
+
+                var originalName = mesh.name;
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(mesh, out string guid, out long _);
+                var outFile = $"{saveDirectory}/{originalName}_from_{guid}.vqtmesh";
+
+                // When the mesh is added into another asset, "/" is acceptable as name.
+                if (originalName.Contains("/"))
+                {
+                    var dir = Path.GetDirectoryName(outFile);
+                    Directory.CreateDirectory(dir);
+                }
+
+                MeshModifierImporter.CreateAsset(mesh, outFile, true);
+                var newMesh = AssetDatabase.LoadAssetAtPath<Mesh>(outFile);
+                if (newMesh == null)
+                {
+                    Logger.LogError($"Failed to load generated mesh asset at path '{outFile}' for renderer '{renderer.name}'.");
+                    continue;
+                }
+                convertedMeshes[mesh] = newMesh;
+                RendererUtility.SetSharedMesh(renderer, newMesh);
+            }
+        }
+
+        private void ApplyVRCQuestToolsComponents(AvatarConverterSettings setting, GameObject questAvatarObject, bool saveAssetsAsFile)
         {
             if (questAvatarObject.GetComponent<ConvertedAvatar>() == null)
             {
                 questAvatarObject.AddComponent<ConvertedAvatar>();
             }
-#if VQT_HAS_VRCSDK_BASE
-            if (setting.removeVertexColor)
+
+            if (saveAssetsAsFile && setting.assignNetworkIds && questAvatarObject.GetComponent<NetworkIDAssigner>() == null)
             {
-                var vcr = questAvatarObject.GetComponent<VertexColorRemover>();
-                if (vcr == null)
-                {
-                    vcr = questAvatarObject.AddComponent<VertexColorRemover>();
-                }
-                vcr.includeChildren = true;
-                vcr.enabled = true;
+                questAvatarObject.AddComponent<NetworkIDAssigner>();
             }
-#endif
 
 #if VQT_HAS_NDMF
-            if (setting.compressExpressionsMenuIcons)
+            if (setting.resizeExpressionsMenuIcons || setting.compressExpressionsMenuIcons)
             {
                 var resizer = questAvatarObject.GetComponentInChildren<MenuIconResizer>(true);
                 if (resizer == null)
                 {
                     resizer = questAvatarObject.AddComponent<MenuIconResizer>();
                 }
-                resizer.compressTextures = true;
+
+                resizer.resizeModeAndroid = setting.resizeExpressionsMenuIcons
+                    ? setting.expressionsMenuIconResizeMode
+                    : MenuIconResizer.TextureResizeMode.DoNotResize;
+                resizer.compressTextures = setting.compressExpressionsMenuIcons;
+                resizer.mobileTextureFormat = setting.expressionsMenuIconMobileTextureFormat;
             }
 #endif
 

@@ -3,17 +3,12 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
-
-#if VQT_HAS_VRCSDK_BASE
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
-#else
-using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
-#endif
 
 namespace KRT.VRCQuestTools.Views
 {
@@ -27,6 +22,15 @@ namespace KRT.VRCQuestTools.Views
 
         [SerializeField]
         private Vector2 scrollPosition = Vector2.zero;
+
+        [SerializeField]
+        private bool addMaConvertConstraints = true;
+
+        [SerializeField]
+        private bool addMaSyncParameterSequence = true;
+
+        [SerializeField]
+        private bool addAaoTraceAndOptimize = true;
 
         private Editor editor;
 
@@ -52,7 +56,7 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnEnable()
         {
-            titleContent.text = "Convert Avatar for Android";
+            titleContent.text = "Setup Avatar for Mobile";
         }
 
         private void OnGUI()
@@ -72,16 +76,30 @@ namespace KRT.VRCQuestTools.Views
                 var converterSettings = targetRoot.GetComponentInChildren<AvatarConverterSettings>(true);
                 if (converterSettings == null)
                 {
-                    var components = new string[]
+                    var hasMaConvertConstraints = ModularAvatarUtility.IsModularAvatarImported();
+                    var hasMaSyncParameterSequence = ModularAvatarUtility.SupportsSyncParameterSequenceComponent();
+                    var hasAaoTraceAndOptimize = AvatarOptimizerUtility.IsAvatarOptimizerImported();
+                    var hasMaConvertConstraintsComponent = hasMaConvertConstraints && ModularAvatarUtility.HasConvertConstraintsComponent(targetRoot);
+                    var hasMaSyncParameterSequenceComponent = hasMaSyncParameterSequence && ModularAvatarUtility.HasSyncParameterSequenceComponent(targetRoot);
+                    var hasAaoTraceAndOptimizeComponent = hasAaoTraceAndOptimize && AvatarOptimizerUtility.HasTraceAndOptimizeComponent(targetRoot);
+
+                    EditorGUILayout.LabelField(i18n.BeginConvertSettingsButtonDescription, EditorStyles.wordWrappedLabel);
+                    EditorGUILayout.Space();
+
+                    if (hasMaConvertConstraints)
                     {
-                        "VQT Avatar Converter Settings",
-                        "VQT Network ID Assigner",
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
-                        "MA Convert Constraints",
-#endif
-                    };
-                    var componentsText = components.Select(c => $"  - {c}").Aggregate((a, b) => $"{a}\n{b}");
-                    EditorGUILayout.HelpBox(i18n.BeginConvertSettingsButtonDescription + "\n" + componentsText, MessageType.Info);
+                        addMaConvertConstraints = DrawOptionalComponentToggle("MA Convert Constraints", addMaConvertConstraints, hasMaConvertConstraintsComponent);
+                    }
+
+                    if (hasMaSyncParameterSequence)
+                    {
+                        addMaSyncParameterSequence = DrawOptionalComponentToggle("MA Sync Parameter Sequence", addMaSyncParameterSequence, hasMaSyncParameterSequenceComponent);
+                    }
+
+                    if (hasAaoTraceAndOptimize)
+                    {
+                        addAaoTraceAndOptimize = DrawOptionalComponentToggle("AAO Trace and Optimize", addAaoTraceAndOptimize, hasAaoTraceAndOptimizeComponent);
+                    }
 
                     editor = null;
                     if (GUILayout.Button(i18n.BeginConvertSettingsButtonLabel))
@@ -107,25 +125,43 @@ namespace KRT.VRCQuestTools.Views
 
         private void OnClickAttachAvatarConverterButton()
         {
+            var i18n = VRCQuestToolsSettings.I18nResource;
             var group = Undo.GetCurrentGroup();
             Undo.SetCurrentGroupName("Add AvatarConverterSettings");
             var converterSettings = Undo.AddComponent<AvatarConverterSettings>(targetRoot);
             editor = Editor.CreateEditor(converterSettings);
-            if (targetRoot.gameObject.GetComponent<NetworkIDAssigner>() == null)
+            if (converterSettings.assignNetworkIds)
             {
-                var i18n = VRCQuestToolsSettings.I18nResource;
-                Undo.AddComponent<NetworkIDAssigner>(targetRoot);
-                EditorUtility.DisplayDialog("VRCQuestTools", i18n.NetworkIdAssignerAttached, "OK");
+                EditorUtility.DisplayDialog(VRCQuestTools.Name, i18n.PhysBoneSyncReminder, "OK");
             }
 
-#if VQT_HAS_MA_CONVERT_CONSTRAINTS
-            if (targetRoot.GetComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>() == null)
+            if (addMaConvertConstraints && ModularAvatarUtility.IsModularAvatarImported() && !ModularAvatarUtility.HasConvertConstraintsComponent(targetRoot))
             {
-                Undo.AddComponent<nadena.dev.modular_avatar.core.ModularAvatarConvertConstraints>(targetRoot);
+                ModularAvatarUtility.AddConvertConstraintsComponent(targetRoot);
             }
-#endif
+
+            if (addMaSyncParameterSequence && ModularAvatarUtility.SupportsSyncParameterSequenceComponent() && !ModularAvatarUtility.HasSyncParameterSequenceComponent(targetRoot))
+            {
+                ModularAvatarUtility.AddSyncParameterSequenceComponent(targetRoot);
+            }
+
+            if (addAaoTraceAndOptimize && AvatarOptimizerUtility.IsAvatarOptimizerImported() && !AvatarOptimizerUtility.HasTraceAndOptimizeComponent(targetRoot))
+            {
+                AvatarOptimizerUtility.AddTraceAndOptimizeComponent(targetRoot);
+            }
 
             Undo.CollapseUndoOperations(group);
+        }
+
+        private static bool DrawOptionalComponentToggle(string label, bool enabledByUser, bool alreadyExists)
+        {
+            var value = alreadyExists || enabledByUser;
+            using (new EditorGUI.DisabledScope(alreadyExists))
+            {
+                value = EditorGUILayout.ToggleLeft(label, value);
+            }
+
+            return alreadyExists || value;
         }
     }
 }

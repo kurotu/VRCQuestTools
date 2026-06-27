@@ -3,6 +3,7 @@ using System.Linq;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEngine;
@@ -33,7 +34,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <returns>NDMF Phase.</returns>
         internal static AvatarConverterNdmfPhase ResolveAvatarConverterNdmfPhase(GameObject avatarRoot)
         {
-            var primaryRoot = avatarRoot.GetComponents<IMaterialConversionComponent>().FirstOrDefault(c => c.IsPrimaryRoot);
+            var primaryRoot = ComponentUtility.GetPrimaryMaterialConversionComponent(avatarRoot);
             if (primaryRoot != null)
             {
                 return primaryRoot.NdmfPhase.Resolve(avatarRoot);
@@ -51,7 +52,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var avatarDescriptor = context.AvatarRootObject.GetComponent<VRCAvatarDescriptor>();
             if (avatarDescriptor == null)
             {
-                Debug.LogWarning($"[{VRCQuestTools.Name}] No VRCAvatarDescriptor found in the avatar root object. Skipping avatar conversion.");
+                Logger.LogWarning($"No VRCAvatarDescriptor found in the avatar root object. Skipping avatar conversion.");
                 return;
             }
 
@@ -62,10 +63,6 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var settings = context.AvatarRootObject.GetComponent<AvatarConverterSettings>();
-            if (settings != null)
-            {
-                context.GetState<NdmfState>().compressExpressionsMenuIcons = settings.compressExpressionsMenuIcons;
-            }
 
             try
             {
@@ -99,6 +96,8 @@ namespace KRT.VRCQuestTools.Ndmf
                         }
                     },
                 });
+
+                ConfigureMenuIconResizer(context.AvatarRootObject, settings);
             }
             catch (System.Exception exception)
             {
@@ -174,6 +173,31 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
                 swap.materialMappings = swap.materialMappings.Concat(newMappings).ToList();
             }
+        }
+
+        private static void ConfigureMenuIconResizer(GameObject avatarRoot, AvatarConverterSettings settings)
+        {
+            if (settings == null)
+            {
+                return;
+            }
+
+            var resizer = avatarRoot.GetComponentInChildren<MenuIconResizer>(true);
+            if (resizer == null && !settings.resizeExpressionsMenuIcons && !settings.compressExpressionsMenuIcons)
+            {
+                return;
+            }
+
+            if (resizer == null)
+            {
+                resizer = avatarRoot.AddComponent<MenuIconResizer>();
+            }
+
+            resizer.resizeModeAndroid = settings.resizeExpressionsMenuIcons
+                ? settings.expressionsMenuIconResizeMode
+                : MenuIconResizer.TextureResizeMode.DoNotResize;
+            resizer.compressTextures = settings.compressExpressionsMenuIcons;
+            resizer.mobileTextureFormat = settings.expressionsMenuIconMobileTextureFormat;
         }
     }
 }

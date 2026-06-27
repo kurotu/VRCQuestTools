@@ -9,21 +9,14 @@ using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
-#if VQT_HAS_MODULAR_AVATAR
-using nadena.dev.modular_avatar.core;
-#endif
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Animations;
 using VRC.Dynamics;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 using VRC.SDKBase.Validation.Performance.Stats;
-
-#if VQT_HAS_VRCSDK_BASE
 using VRC_AvatarDescriptor = VRC.SDKBase.VRC_AvatarDescriptor;
-#else
-using VRC_AvatarDescriptor = KRT.VRCQuestTools.Mocks.Mock_VRC_AvatarDescriptor;
-#endif
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -140,41 +133,39 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// Gets PhysBones.
         /// </summary>
         /// <returns>All attached PhysBones.</returns>
-        internal Component[] GetPhysBones()
+        internal VRCPhysBone[] GetPhysBones()
         {
-            if (VRCSDKUtility.IsPhysBonesImported())
-            {
-                return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneType, true);
-            }
-            return new Component[] { };
+            return AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true);
+        }
+
+        /// <summary>
+        /// Gets PhysBones as providers for abstraction layer.
+        /// </summary>
+        /// <returns>All attached PhysBones as providers.</returns>
+        internal VRCPhysBoneProviderBase[] GetPhysBoneProviders()
+        {
+            return AvatarDescriptor.GetComponentsInChildren<VRCPhysBone>(true)
+                .Select(pb => new VRCPhysBoneProvider(pb))
+                .Cast<VRCPhysBoneProviderBase>()
+                .ToArray();
         }
 
         /// <summary>
         /// Gets PhysBoneColliders.
         /// </summary>
         /// <returns>All attached PhysBoneColliders.</returns>
-        internal Component[] GetPhysBoneColliders()
+        internal VRCPhysBoneCollider[] GetPhysBoneColliders()
         {
-            if (VRCSDKUtility.IsPhysBonesImported())
-            {
-                return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.PhysBoneColliderType, true);
-            }
-            return new Component[] { };
+            return AvatarDescriptor.GetComponentsInChildren<VRCPhysBoneCollider>(true);
         }
 
         /// <summary>
         /// Gets ContactReceivers and ContactSenders.
         /// </summary>
         /// <returns>All attached ContactReceivers and ContactSenders.</returns>
-        internal Component[] GetContacts()
+        internal ContactBase[] GetContacts()
         {
-            if (VRCSDKUtility.IsPhysBonesImported())
-            {
-                return AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.ContactReceiverType, true)
-                    .Concat(AvatarDescriptor.GetComponentsInChildren(VRCSDKUtility.ContactSenderType, true))
-                    .ToArray();
-            }
-            return new Component[] { };
+            return AvatarDescriptor.GetComponentsInChildren<ContactBase>(true);
         }
 
         /// <summary>
@@ -184,7 +175,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal ContactBase[] GetNonLocalContacts()
         {
             return AvatarDescriptor.GetComponentsInChildren<ContactBase>(true)
-                .Where(c => !VRCSDKUtility.IsLocalOnlyContact(c))
+                .Where(c => !c.IsLocalOnly)
                 .ToArray();
         }
 
@@ -195,7 +186,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal ContactReceiver[] GetLocalContactReceivers()
         {
             return AvatarDescriptor.GetComponentsInChildren<ContactReceiver>(true)
-                .Where(VRCSDKUtility.IsLocalOnlyContact).ToArray();
+                .Where(r => r.IsLocalOnly).ToArray();
         }
 
         /// <summary>
@@ -205,7 +196,25 @@ namespace KRT.VRCQuestTools.Models.VRChat
         internal ContactSender[] GetLocalContactSenders()
         {
             return AvatarDescriptor.GetComponentsInChildren<ContactSender>(true)
-                .Where(VRCSDKUtility.IsLocalOnlyContact).ToArray();
+                .Where(s => s.IsLocalOnly).ToArray();
+        }
+
+        /// <summary>
+        /// Estimates performance stats.
+        /// </summary>
+        /// <param name="physbones">PhysBone providers to keep.</param>
+        /// <param name="colliders">PhysBone colliders to keep.</param>
+        /// <param name="contacts">Contacts to keep.</param>
+        /// <param name="isMobile">true for mobile.</param>
+        /// <returns>Estimated performance stats.</returns>
+        internal AvatarPerformanceStats EstimatePerformanceStats(
+            VRCPhysBoneProviderBase[] physbones,
+            VRCPhysBoneCollider[] colliders,
+            ContactBase[] contacts,
+            bool isMobile = true)
+        {
+            var vrcPhysBones = physbones.SelectMany(pb => pb.GetPhysBones()).ToArray();
+            return EstimatePerformanceStats(vrcPhysBones, colliders, contacts, isMobile);
         }
 
         /// <summary>
@@ -217,9 +226,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="isMobile">true for mobile.</param>
         /// <returns>Estimated performance stats.</returns>
         internal AvatarPerformanceStats EstimatePerformanceStats(
-            VRCSDKUtility.Reflection.PhysBone[] physbones,
-            VRCSDKUtility.Reflection.PhysBoneCollider[] colliders,
-            VRCSDKUtility.Reflection.ContactBase[] contacts,
+            VRCPhysBone[] physbones,
+            VRCPhysBoneCollider[] colliders,
+            ContactBase[] contacts,
             bool isMobile = true)
         {
             var stats = VRCSDKUtility.CalculatePerformanceStats(AvatarDescriptor.gameObject, isMobile);
@@ -240,9 +249,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 stats.clothMaxVertices = null;
                 stats.constraintsCount = null;
                 stats.downloadSizeBytes = null;
-#if !VQT_HAS_VRCSDK_CONSTRAINTS
-                stats.dynamicBone = null;
-#endif
                 stats.lightCount = null;
                 stats.physicsColliderCount = null;
                 stats.physicsRigidbodyCount = null;
@@ -279,7 +285,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
             // AV3 Playable Layers
             RuntimeAnimatorController[] playableLayers = { };
-#if VQT_HAS_VRCSDK_BASE
             var avatarDescriptor = rootObject.GetComponent<VRC_AvatarDescriptor>();
             if (avatarDescriptor != null)
             {
@@ -290,16 +295,16 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     .Select(obj => obj.animatorController)
                     .ToArray();
             }
-#endif
 
             // Modular Avatar Merge Animator
             RuntimeAnimatorController[] mergeAnimators = { };
-#if VQT_HAS_MODULAR_AVATAR
-            mergeAnimators = rootObject
-                .GetComponentsInChildren<ModularAvatarMergeAnimator>(true)
-                .Select(ma => ma.animator)
-                .ToArray();
-#endif
+            if (ModularAvatarUtility.IsModularAvatarImported())
+            {
+                mergeAnimators = ModularAvatarUtility.GetMergeAnimatorComponentsInChildren(rootObject, true)
+                    .Select(ma => ModularAvatarUtility.GetMergeAnimatorController(ma))
+                    .Where(controller => controller != null)
+                    .ToArray();
+            }
 
             var controllers = animatorControllers.Concat(playableLayers).Concat(mergeAnimators).Where(c => c != null).ToArray();
             var overrideBases = controllers

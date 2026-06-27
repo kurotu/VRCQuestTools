@@ -125,7 +125,7 @@ namespace KRT.VRCQuestTools.Utils
                             if (newMaterials.ContainsKey(material))
                             {
                                 keyframes[k].value = newMaterials[material];
-                                Debug.Log("replace animationClip: " + newMaterials[material]);
+                                Logger.Log("replace animationClip: " + newMaterials[material]);
                             }
                         }
                     }

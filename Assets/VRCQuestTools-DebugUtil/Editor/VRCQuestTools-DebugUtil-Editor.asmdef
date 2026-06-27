@@ -1,5 +1,6 @@
 {
     "name": "VRCQuestTools-DebugUtil-Editor",
+    "rootNamespace": "KRT.VRCQuestTools.Debug",
     "references": [
         "VRCQuestTools",
         "VRCQuestTools-Editor"
@@ -11,7 +12,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

@@ -36,32 +36,29 @@ namespace KRT.VRCQuestTools.Models
             var shader = Shader.Find(PoiyomiShaderName);
             Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
 
-            using (var sourceMaterial = DisposableObject.New(new Material(shader)))
+            using var sourceMaterial = DisposableObject.New(new Material(shader));
+            var expectedScale = new Vector2(2.5f, 3.0f);
+            var expectedOffset = new Vector2(0.1f, 0.2f);
+            sourceMaterial.Object.SetVector("_MainTex_ST", new Vector4(expectedScale.x, expectedScale.y, expectedOffset.x, expectedOffset.y));
+
+            var settings = new ToonLitConvertSettings
             {
-                var expectedScale = new Vector2(2.5f, 3.0f);
-                var expectedOffset = new Vector2(0.1f, 0.2f);
-                sourceMaterial.Object.SetVector("_MainTex_ST", new Vector4(expectedScale.x, expectedScale.y, expectedOffset.x, expectedOffset.y));
+                generateQuestTextures = false,
+            };
 
-                var settings = new ToonLitConvertSettings
-                {
-                    generateQuestTextures = false,
-                };
+            var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
+            var generator = new ToonLitGenerator(settings);
 
-                var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-                var generator = new ToonLitGenerator(settings);
+            Material resultMat = null;
+            generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
+            {
+                resultMat = mat;
+            }).WaitForCompletion();
+            using var resultMaterial = DisposableObject.New(resultMat);
 
-                Material resultMat = null;
-                generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
-                {
-                    resultMat = mat;
-                }).WaitForCompletion();
-                using (var resultMaterial = DisposableObject.New(resultMat))
-                {
-                    Assert.IsNotNull(resultMat, "Generated material should not be null.");
-                    Assert.AreEqual(expectedScale, resultMat.mainTextureScale, "Main texture scale should be preserved.");
-                    Assert.AreEqual(expectedOffset, resultMat.mainTextureOffset, "Main texture offset should be preserved.");
-                }
-            }
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            Assert.AreEqual(expectedScale, resultMat.mainTextureScale, "Main texture scale should be preserved.");
+            Assert.AreEqual(expectedOffset, resultMat.mainTextureOffset, "Main texture offset should be preserved.");
         }
 
         /// <summary>
@@ -81,28 +78,26 @@ namespace KRT.VRCQuestTools.Models
             var shader = Shader.Find(PoiyomiShaderName);
             Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
 
-            using (var sourceMaterial = DisposableObject.New(new Material(shader)))
+            using var sourceMaterial = DisposableObject.New(new Material(shader));
+
+            var settings = new ToonLitConvertSettings
             {
-                var settings = new ToonLitConvertSettings
-                {
-                    generateQuestTextures = false,
-                };
+                generateQuestTextures = false,
+            };
 
-                var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-                var generator = new ToonLitGenerator(settings);
+            var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
+            var generator = new ToonLitGenerator(settings);
 
-                Material resultMat = null;
-                generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
-                {
-                    resultMat = mat;
-                }).WaitForCompletion();
-                using (var resultMaterial = DisposableObject.New(resultMat))
-                {
-                    Assert.IsNotNull(resultMat, "Generated material should not be null.");
-                    Assert.AreEqual(Vector2.one, resultMat.mainTextureScale, "Default main texture scale should be (1,1).");
-                    Assert.AreEqual(Vector2.zero, resultMat.mainTextureOffset, "Default main texture offset should be (0,0).");
-                }
-            }
+            Material resultMat = null;
+            generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
+            {
+                resultMat = mat;
+            }).WaitForCompletion();
+            using var resultMaterial = DisposableObject.New(resultMat);
+
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            Assert.AreEqual(Vector2.one, resultMat.mainTextureScale, "Default main texture scale should be (1,1).");
+            Assert.AreEqual(Vector2.zero, resultMat.mainTextureOffset, "Default main texture offset should be (0,0).");
         }
 
         /// <summary>
@@ -131,34 +126,31 @@ namespace KRT.VRCQuestTools.Models
                 return;
             }
 
-            using (var sourceMaterial = DisposableObject.New(new Material(shader)))
+            using var sourceMaterial = DisposableObject.New(new Material(shader));
+            var expectedScale = new Vector2(2.5f, 3.0f);
+            var expectedOffset = new Vector2(0.1f, 0.2f);
+            sourceMaterial.Object.mainTexture = mainTexture;
+            sourceMaterial.Object.SetVector("_MainTex_ST", new Vector4(expectedScale.x, expectedScale.y, expectedOffset.x, expectedOffset.y));
+
+            var settings = new ToonLitConvertSettings
             {
-                var expectedScale = new Vector2(2.5f, 3.0f);
-                var expectedOffset = new Vector2(0.1f, 0.2f);
-                sourceMaterial.Object.mainTexture = mainTexture;
-                sourceMaterial.Object.SetVector("_MainTex_ST", new Vector4(expectedScale.x, expectedScale.y, expectedOffset.x, expectedOffset.y));
+                generateQuestTextures = true,
+            };
 
-                var settings = new ToonLitConvertSettings
-                {
-                    generateQuestTextures = true,
-                };
+            var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
+            var generator = new ToonLitGenerator(settings);
 
-                var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-                var generator = new ToonLitGenerator(settings);
+            Material resultMat = null;
+            generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
+            {
+                resultMat = mat;
+            }).WaitForCompletion();
+            using var resultMainTex = DisposableObject.New(resultMat != null ? resultMat.mainTexture : null);
+            using var resultMaterial = DisposableObject.New(resultMat);
 
-                Material resultMat = null;
-                generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
-                {
-                    resultMat = mat;
-                }).WaitForCompletion();
-                using (var resultMainTex = DisposableObject.New(resultMat != null ? resultMat.mainTexture : null))
-                using (var resultMaterial = DisposableObject.New(resultMat))
-                {
-                    Assert.IsNotNull(resultMat, "Generated material should not be null.");
-                    Assert.AreEqual(expectedScale, resultMat.mainTextureScale, "Main texture scale should be preserved after baking.");
-                    Assert.AreEqual(expectedOffset, resultMat.mainTextureOffset, "Main texture offset should be preserved after baking.");
-                }
-            }
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            Assert.AreEqual(expectedScale, resultMat.mainTextureScale, "Main texture scale should be preserved after baking.");
+            Assert.AreEqual(expectedOffset, resultMat.mainTextureOffset, "Main texture offset should be preserved after baking.");
         }
 
         /// <summary>
@@ -189,57 +181,54 @@ namespace KRT.VRCQuestTools.Models
                 return;
             }
 
-            using (var mat11 = DisposableObject.New(new Material(shader)))
-            using (var mat22 = DisposableObject.New(new Material(shader)))
+            using var mat11 = DisposableObject.New(new Material(shader));
+            using var mat22 = DisposableObject.New(new Material(shader));
+
+            mat11.Object.mainTexture = mainTexture;
+            mat11.Object.SetVector("_MainTex_ST", new Vector4(1f, 1f, 0f, 0f));
+
+            mat22.Object.mainTexture = mainTexture;
+            mat22.Object.SetVector("_MainTex_ST", new Vector4(2f, 2f, 0f, 0f));
+
+            var settings = new ToonLitConvertSettings
             {
-                mat11.Object.mainTexture = mainTexture;
-                mat11.Object.SetVector("_MainTex_ST", new Vector4(1f, 1f, 0f, 0f));
+                generateQuestTextures = true,
+            };
 
-                mat22.Object.mainTexture = mainTexture;
-                mat22.Object.SetVector("_MainTex_ST", new Vector4(2f, 2f, 0f, 0f));
+            var poiMat11 = new PoiyomiMaterial(mat11.Object);
+            var gen11 = new ToonLitGenerator(settings);
+            var poiMat22 = new PoiyomiMaterial(mat22.Object);
+            var gen22 = new ToonLitGenerator(settings);
 
-                var settings = new ToonLitConvertSettings
-                {
-                    generateQuestTextures = true,
-                };
+            Material resultMat11 = null;
+            gen11.GenerateMaterial(poiMat11, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat11 = mat; }).WaitForCompletion();
+            using var result11Tex = DisposableObject.New(resultMat11 != null ? resultMat11.mainTexture : null);
+            using var result11 = DisposableObject.New(resultMat11);
 
-                var poiMat11 = new PoiyomiMaterial(mat11.Object);
-                var gen11 = new ToonLitGenerator(settings);
-                var poiMat22 = new PoiyomiMaterial(mat22.Object);
-                var gen22 = new ToonLitGenerator(settings);
+            Material resultMat22 = null;
+            gen22.GenerateMaterial(poiMat22, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat22 = mat; }).WaitForCompletion();
+            using var result22Tex = DisposableObject.New(resultMat22 != null ? resultMat22.mainTexture : null);
+            using var result22 = DisposableObject.New(resultMat22);
 
-                Material resultMat11 = null;
-                gen11.GenerateMaterial(poiMat11, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat11 = mat; }).WaitForCompletion();
-                Material resultMat22 = null;
-                gen22.GenerateMaterial(poiMat22, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat22 = mat; }).WaitForCompletion();
+            Assert.IsNotNull(resultMat11, "ToonLit result for scale (1,1) should not be null.");
+            Assert.IsNotNull(resultMat22, "ToonLit result for scale (2,2) should not be null.");
 
-                using (var result11Tex = DisposableObject.New(resultMat11 != null ? resultMat11.mainTexture : null))
-                using (var result11 = DisposableObject.New(resultMat11))
-                using (var result22Tex = DisposableObject.New(resultMat22 != null ? resultMat22.mainTexture : null))
-                using (var result22 = DisposableObject.New(resultMat22))
-                {
-                    Assert.IsNotNull(resultMat11, "ToonLit result for scale (1,1) should not be null.");
-                    Assert.IsNotNull(resultMat22, "ToonLit result for scale (2,2) should not be null.");
+            Assert.AreEqual(Vector2.one, resultMat11.mainTextureScale, "Scale (1,1) source should produce (1,1) on output material.");
+            Assert.AreEqual(new Vector2(2f, 2f), resultMat22.mainTextureScale, "Scale (2,2) source should produce (2,2) on output material.");
 
-                    Assert.AreEqual(Vector2.one, resultMat11.mainTextureScale, "Scale (1,1) source should produce (1,1) on output material.");
-                    Assert.AreEqual(new Vector2(2f, 2f), resultMat22.mainTextureScale, "Scale (2,2) source should produce (2,2) on output material.");
+            var bakedTex11 = resultMat11.mainTexture as Texture2D;
+            var bakedTex22 = resultMat22.mainTexture as Texture2D;
 
-                    var bakedTex11 = resultMat11.mainTexture as Texture2D;
-                    var bakedTex22 = resultMat22.mainTexture as Texture2D;
-
-                    if (bakedTex11 != null && bakedTex22 != null)
-                    {
-                        var diff = TestUtils.MaxDifference(bakedTex11, bakedTex22);
-                        var message = "Baked textures should be nearly identical regardless of UV tiling stored in _MainTex_ST. " +
-                            "UV tiling must not be embedded in the baked texture to prevent double-tiling at runtime. " +
-                            $"Actual max difference: {diff:F4}.";
-                        Assert.Less(diff, 0.01f, message);
-                    }
-                    else
-                    {
-                        Assert.Ignore("Baked textures are not available as Texture2D for comparison (may be RenderTexture on this platform).");
-                    }
-                }
+            if (bakedTex11 != null && bakedTex22 != null)
+            {
+                var diff = TestUtils.MaxDifference(bakedTex11, bakedTex22);
+                Assert.Less(diff, 0.01f, "Baked textures should be nearly identical regardless of UV tiling stored in _MainTex_ST. " +
+                    "UV tiling must not be embedded in the baked texture to prevent double-tiling at runtime. " +
+                    $"Actual max difference: {diff:F4}.");
+            }
+            else
+            {
+                Assert.Ignore("Baked textures are not available as Texture2D for comparison (may be RenderTexture on this platform).");
             }
         }
     }
