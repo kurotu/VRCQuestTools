@@ -20,7 +20,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         {
 #pragma warning disable SA1136 // Enum values should be on separate lines
 #pragma warning disable SA1602 // Enumeration items should be documented
-            UTS2, Arktoon, Standard, Unlit, Quest, Sunao, AXCS, LilToon, Poiyomi, VirtualLens2, Unverified,
+            UTS2, Arktoon, Standard, Unlit, Quest, Sunao, AXCS, LilToon, Poiyomi, VirtualLens2, Particle, Unverified,
 #pragma warning restore SA1602 // Enumeration items should be documented
 #pragma warning restore SA1136 // Enum values should be on separate lines
         }
@@ -32,7 +32,47 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <returns>Material wrapper object.</returns>
         internal virtual MaterialBase Build(Material material)
         {
+            return Build(material, false);
+        }
+
+        /// <summary>
+        /// Create an instance of appropriate MaterialBase object by shader category.
+        /// </summary>
+        /// <param name="material">Material.</param>
+        /// <param name="renderForParticleSystem">Whether the material is used by a ParticleSystem. When true and the
+        /// shader is not a recognized particle shader, the material's rendered appearance is converted to a particle shader.</param>
+        /// <returns>Material wrapper object.</returns>
+        internal virtual MaterialBase Build(Material material, bool renderForParticleSystem)
+        {
             var category = DetectShaderCategory(material);
+            if (renderForParticleSystem && category != ShaderCategory.Particle)
+            {
+                return new RenderedParticleMaterial(material);
+            }
+
+            return BuildForCategory(material, category);
+        }
+
+        /// <summary>
+        /// Creates a wrapper while ignoring particle conversion: recognized particle shaders are treated as
+        /// generic materials. Used when a material has an explicit per-material convert setting that must be
+        /// honored instead of automatic particle conversion.
+        /// </summary>
+        /// <param name="material">Material.</param>
+        /// <returns>Material wrapper object.</returns>
+        internal MaterialBase BuildIgnoringParticleCategory(Material material)
+        {
+            var category = DetectShaderCategory(material);
+            if (category == ShaderCategory.Particle)
+            {
+                category = ShaderCategory.Unverified;
+            }
+
+            return BuildForCategory(material, category);
+        }
+
+        private MaterialBase BuildForCategory(Material material, ShaderCategory category)
+        {
             switch (category)
             {
                 case ShaderCategory.UTS2:
@@ -48,6 +88,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                     return new PoiyomiMaterial(material);
                 case ShaderCategory.VirtualLens2:
                     return new VirtualLens2Material(material);
+                case ShaderCategory.Particle:
+                    return new ParticleMaterial(material);
                 case ShaderCategory.Standard:
                 case ShaderCategory.Unlit:
                 case ShaderCategory.Quest:
@@ -89,6 +131,13 @@ namespace KRT.VRCQuestTools.Models.Unity
             {
                 return ShaderCategory.Unlit;
             }
+
+            // Particle shaders must be detected before VRChat/Mobile/ (Quest) so that
+            // "VRChat/Mobile/Particles/*" is captured here instead of being treated as a Quest material.
+            if (IsParticleShader(shaderName))
+            {
+                return ShaderCategory.Particle;
+            }
             if (shaderName.StartsWith("VRChat/Mobile/".ToLower()))
             {
                 return ShaderCategory.Quest;
@@ -114,6 +163,23 @@ namespace KRT.VRCQuestTools.Models.Unity
                 return ShaderCategory.VirtualLens2;
             }
             return ShaderCategory.Unverified;
+        }
+
+        /// <summary>
+        /// Determines whether the shader name represents a particle shader.
+        /// </summary>
+        /// <param name="shaderNameLower">Lower-cased shader name.</param>
+        /// <returns>true when the shader is a particle shader.</returns>
+        private static bool IsParticleShader(string shaderNameLower)
+        {
+            // "particles/*"                : Unity built-in and "Particles/Standard Unlit|Surface".
+            // "legacy shaders/particles/*" : Legacy particle shaders.
+            // "mobile/particles/*"         : Mobile particle shaders.
+            // "vrchat/mobile/particles/*"  : VRChat mobile particle shaders (Additive/Multiply/Alpha Blended).
+            return shaderNameLower.StartsWith("particles/")
+                || shaderNameLower.StartsWith("legacy shaders/particles/")
+                || shaderNameLower.StartsWith("mobile/particles/")
+                || shaderNameLower.StartsWith("vrchat/mobile/particles/");
         }
     }
 }

@@ -439,6 +439,23 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Request to wait.</returns>
         internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, int width, int height, bool useMipmap, Material material, Action<Texture2D> completion)
         {
+            return BakeTexture(input, isDataSRGB, width, height, useMipmap, material, false, completion);
+        }
+
+        /// <summary>
+        /// Bake a texture to a new one.
+        /// </summary>
+        /// <param name="input">Input texture.</param>
+        /// <param name="isDataSRGB">Texture is sRGB.</param>
+        /// <param name="width">Desired width.</param>
+        /// <param name="height">Desired height.</param>
+        /// <param name="useMipmap">Use mip map.</param>
+        /// <param name="material">Material to bake with Graphics.Blit.</param>
+        /// <param name="clearRenderTarget">Clear the render target to transparent before baking (for blended shaders).</param>
+        /// <param name="completion">Completion action.</param>
+        /// <returns>Request to wait.</returns>
+        internal static AsyncCallbackRequest BakeTexture(Texture input, bool isDataSRGB, int width, int height, bool useMipmap, Material material, bool clearRenderTarget, Action<Texture2D> completion)
+        {
             var desc = new RenderTextureDescriptor(input.width, input.height, RenderTextureFormat.ARGB32, 0, useMipmap ? input.mipmapCount : 1);
             desc.sRGB = isDataSRGB;
 
@@ -453,6 +470,10 @@ namespace KRT.VRCQuestTools.Utils
             try
             {
                 RenderTexture.active = rt;
+                if (clearRenderTarget)
+                {
+                    GL.Clear(true, true, Color.clear);
+                }
                 if (material)
                 {
                     Graphics.Blit(input, rt, material);
