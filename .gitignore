@@ -3,6 +3,13 @@
 .serena/cache
 .uloop/outputs
 
+# Optional package settings
+/ProjectSettings/SceneTemplateSettings.json
+/ProjectSettings/VRCQuestToolsSettings.json
+/ProjectSettings/lilToonSetting.json
+/ProjectSettings/net.rs64.TexTransTool-Version.json
+/Thry/
+
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
