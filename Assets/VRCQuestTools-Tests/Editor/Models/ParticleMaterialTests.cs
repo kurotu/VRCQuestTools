@@ -339,6 +339,102 @@ namespace KRT.VRCQuestTools
             }
         }
 
+        /// <summary>
+        /// A ParticleSystem material with a non-particle shader is wrapped as RenderedParticleMaterial and converts to Additive.
+        /// </summary>
+        [Test]
+        public void ParticleSystemMaterialWithNonParticleShaderBecomesRendered()
+        {
+            TestUtils.AssertIgnoreOnMissingShader("Unlit/Transparent");
+            using (var mat = DisposableObject.New(new Material(Shader.Find("Unlit/Transparent"))))
+            {
+                var wrapper = new MaterialWrapperBuilder().Build(mat.Object, true);
+                Assert.AreEqual(typeof(RenderedParticleMaterial), wrapper.GetType());
+                var particle = (ParticleMaterial)wrapper;
+                Assert.AreEqual(Additive, particle.DestinationShaderName);
+                Assert.IsFalse(particle.ShouldUseOriginalMainTexture);
+            }
+        }
+
+        /// <summary>
+        /// A ParticleSystem material with a recognized particle shader stays a normal ParticleMaterial.
+        /// </summary>
+        [Test]
+        public void ParticleSystemMaterialWithParticleShaderStaysParticleMaterial()
+        {
+            using (var mat = NewParticleWithBlend(BlendMode.SrcAlpha, BlendMode.One, false))
+            {
+                var wrapper = new MaterialWrapperBuilder().Build(mat.Object, true);
+                Assert.AreEqual(typeof(ParticleMaterial), wrapper.GetType());
+            }
+        }
+
+        /// <summary>
+        /// A non-particle shader that is not used by a ParticleSystem is not treated as a particle material.
+        /// </summary>
+        [Test]
+        public void NonParticleShaderNotRenderedWhenNotOnParticleSystem()
+        {
+            TestUtils.AssertIgnoreOnMissingShader("Unlit/Transparent");
+            using (var mat = DisposableObject.New(new Material(Shader.Find("Unlit/Transparent"))))
+            {
+                var wrapper = new MaterialWrapperBuilder().Build(mat.Object, false);
+                Assert.IsFalse(wrapper is ParticleMaterial);
+            }
+        }
+
+        /// <summary>
+        /// Rendering the material's own shader bakes a texture that reflects transparency (alpha).
+        /// </summary>
+        [Test]
+        public void RenderedParticleBakeReflectsTransparency()
+        {
+            TestUtils.AssertIgnoreOnMissingShader("Unlit/Transparent");
+            using (var mat = DisposableObject.New(new Material(Shader.Find("Unlit/Transparent"))))
+            {
+                mat.Object.mainTexture = TestUtils.LoadFixtureAssetAtPath<Texture2D>("Textures/alpha_test.png");
+                var particle = (ParticleMaterial)new MaterialWrapperBuilder().Build(mat.Object, true);
+
+                Texture2D texObj = null;
+                Assert.DoesNotThrow(() => particle.GenerateParticleImage(0, (t) => { texObj = t; }).WaitForCompletion());
+                using (var tex = DisposableObject.New(texObj))
+                {
+                    Assert.NotNull(tex.Object);
+                    var pixels = TestUtils.CopyTextureAsReadable(tex.Object).GetPixels32();
+                    Assert.IsTrue(pixels.Any(p => p.a < 255), "Rendered result must reflect transparency.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// BuildIgnoringParticleCategory treats a recognized particle shader as a generic material so that an
+        /// explicit per-material convert setting is honored instead of automatic particle conversion.
+        /// </summary>
+        [Test]
+        public void BuildIgnoringParticleCategoryTreatsParticleShaderAsGeneric()
+        {
+            using (var mat = NewParticleWithBlend(BlendMode.SrcAlpha, BlendMode.One, false))
+            {
+                var wrapper = new MaterialWrapperBuilder().BuildIgnoringParticleCategory(mat.Object);
+                Assert.IsFalse(wrapper is ParticleMaterial, "Explicit settings must bypass particle conversion.");
+                Assert.AreEqual(typeof(StandardMaterial), wrapper.GetType());
+            }
+        }
+
+        /// <summary>
+        /// BuildIgnoringParticleCategory does not render a ParticleSystem material with a non-particle shader.
+        /// </summary>
+        [Test]
+        public void BuildIgnoringParticleCategoryDoesNotRenderNonParticleShader()
+        {
+            TestUtils.AssertIgnoreOnMissingShader("Unlit/Transparent");
+            using (var mat = DisposableObject.New(new Material(Shader.Find("Unlit/Transparent"))))
+            {
+                var wrapper = new MaterialWrapperBuilder().BuildIgnoringParticleCategory(mat.Object);
+                Assert.IsFalse(wrapper is ParticleMaterial);
+            }
+        }
+
         private void AssertDestinationByBlendState(BlendMode src, BlendMode dst, bool alphaTest, ParticleMaterial.ParticleBlend expectedBlend, string expectedShader)
         {
             using (var mat = NewParticleWithBlend(src, dst, alphaTest))

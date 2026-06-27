@@ -32,7 +32,47 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <returns>Material wrapper object.</returns>
         internal virtual MaterialBase Build(Material material)
         {
+            return Build(material, false);
+        }
+
+        /// <summary>
+        /// Create an instance of appropriate MaterialBase object by shader category.
+        /// </summary>
+        /// <param name="material">Material.</param>
+        /// <param name="renderForParticleSystem">Whether the material is used by a ParticleSystem. When true and the
+        /// shader is not a recognized particle shader, the material's rendered appearance is converted to a particle shader.</param>
+        /// <returns>Material wrapper object.</returns>
+        internal virtual MaterialBase Build(Material material, bool renderForParticleSystem)
+        {
             var category = DetectShaderCategory(material);
+            if (renderForParticleSystem && category != ShaderCategory.Particle)
+            {
+                return new RenderedParticleMaterial(material);
+            }
+
+            return BuildForCategory(material, category);
+        }
+
+        /// <summary>
+        /// Creates a wrapper while ignoring particle conversion: recognized particle shaders are treated as
+        /// generic materials. Used when a material has an explicit per-material convert setting that must be
+        /// honored instead of automatic particle conversion.
+        /// </summary>
+        /// <param name="material">Material.</param>
+        /// <returns>Material wrapper object.</returns>
+        internal MaterialBase BuildIgnoringParticleCategory(Material material)
+        {
+            var category = DetectShaderCategory(material);
+            if (category == ShaderCategory.Particle)
+            {
+                category = ShaderCategory.Unverified;
+            }
+
+            return BuildForCategory(material, category);
+        }
+
+        private MaterialBase BuildForCategory(Material material, ShaderCategory category)
+        {
             switch (category)
             {
                 case ShaderCategory.UTS2:

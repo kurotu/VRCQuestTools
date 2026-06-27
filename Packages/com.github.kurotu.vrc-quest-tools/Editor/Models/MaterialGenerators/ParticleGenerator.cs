@@ -70,10 +70,13 @@ namespace KRT.VRCQuestTools.Models
         {
             var platformOverride = material.GetToonLitPlatformOverride();
             var maxTextureSize = GetMaxTextureSize(platformOverride);
+            // Use a dedicated texture type so the cache key does not collide with the "main" texture of a
+            // normal Toon Lit/Toon Standard conversion of the same material (the cache key is otherwise
+            // identical because ParticleGenerator reuses the selected convert settings type).
             return MaterialGeneratorUtility.GenerateTexture(
                 material.Material,
                 settings,
-                "main",
+                "particle",
                 saveAsPng,
                 texturesPath,
                 (compl) => material.GenerateParticleImage(maxTextureSize, compl),

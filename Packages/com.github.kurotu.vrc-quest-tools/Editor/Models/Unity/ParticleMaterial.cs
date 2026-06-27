@@ -68,7 +68,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <summary>
         /// Gets the destination (avatar-compatible) shader name.
         /// </summary>
-        internal string DestinationShaderName
+        internal virtual string DestinationShaderName
         {
             get
             {
@@ -138,7 +138,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Gets a value indicating whether the original _MainTex reference can be reused without baking.
         /// Both the logical no-op condition and the unity_builtin_extra condition must hold.
         /// </summary>
-        internal bool ShouldUseOriginalMainTexture => CanSkipBakeLogically && IsMainTextureUnityBuiltinExtra();
+        internal virtual bool ShouldUseOriginalMainTexture => CanSkipBakeLogically && IsMainTextureUnityBuiltinExtra();
 
         /// <summary>
         /// Gets a value indicating whether texture processing is logically unnecessary.
@@ -184,7 +184,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// <param name="maxTextureSize">Max texture size (0 for no limit).</param>
         /// <param name="completion">Completion action.</param>
         /// <returns>Request to wait.</returns>
-        internal AsyncCallbackRequest GenerateParticleImage(int maxTextureSize, System.Action<Texture2D> completion)
+        internal virtual AsyncCallbackRequest GenerateParticleImage(int maxTextureSize, System.Action<Texture2D> completion)
         {
             var mainTexture = Material.mainTexture ?? Texture2D.whiteTexture;
 
