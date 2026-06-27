@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Linq;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
@@ -39,6 +40,38 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// The rendered appearance always needs to be baked; the original texture cannot be reused.
         /// </summary>
         internal override bool ShouldUseOriginalMainTexture => false;
+
+        /// <summary>
+        /// Bakes the rendered appearance and determines whether transparent (Additive) rendering is required.
+        /// When the result is fully opaque, transparent rendering is unnecessary and the material should be
+        /// converted with the normal material conversion path instead.
+        /// </summary>
+        /// <returns>true when the baked appearance contains any non-opaque pixel; otherwise false.</returns>
+        internal bool RequiresTransparentRendering()
+        {
+            // A moderate size is enough to detect whether any transparency exists; downscaling only lowers
+            // alpha where transparent pixels are present, so a fully opaque result stays fully opaque.
+            const int checkTextureSize = 256;
+            Texture2D baked = null;
+            GenerateParticleImage(checkTextureSize, t => baked = t).WaitForCompletion();
+            if (baked == null)
+            {
+                // Fail-safe: keep the transparent particle path when the appearance cannot be inspected.
+                return true;
+            }
+
+            try
+            {
+                using (var readable = DisposableObject.New(TextureUtility.CopyAsReadable(baked, !baked.isDataSRGB)))
+                {
+                    return readable.Object.GetPixels32().Any(p => p.a < 255);
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(baked);
+            }
+        }
 
         /// <inheritdoc/>
         internal override AsyncCallbackRequest GenerateParticleImage(int maxTextureSize, System.Action<Texture2D> completion)

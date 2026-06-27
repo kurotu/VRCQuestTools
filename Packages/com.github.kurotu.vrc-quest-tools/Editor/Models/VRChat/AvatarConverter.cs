@@ -348,9 +348,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     var buildTarget = EditorUserBuildSettings.activeBuildTarget;
                     // Materials with an explicit per-material convert setting are not auto-converted as
                     // particles; their explicit setting takes priority.
-                    var wrapper = explicitlyConfiguredMaterials.Contains(m)
-                        ? MaterialWrapperBuilder.BuildIgnoringParticleCategory(m)
-                        : MaterialWrapperBuilder.Build(m, particleLikeMaterials.Contains(m));
+                    var wrapper = BuildMaterialWrapper(m, particleLikeMaterials.Contains(m), explicitlyConfiguredMaterials.Contains(m));
                     if (wrapper is ParticleMaterial && !(materialSetting is MaterialReplaceSettings))
                     {
                         // Particle materials (including ParticleSystem materials with non-particle shaders)
@@ -469,6 +467,36 @@ namespace KRT.VRCQuestTools.Models.VRChat
             }
 
             return convertedMaterials;
+        }
+
+        /// <summary>
+        /// Builds the material wrapper that decides how a material is converted.
+        /// Materials with an explicit per-material convert setting bypass automatic particle conversion.
+        /// A particle-like renderer material whose rendered (Graphics.Blit) appearance is fully opaque does
+        /// not need transparent (Additive) rendering, so it falls back to the normal material conversion path.
+        /// </summary>
+        /// <param name="material">Material to wrap.</param>
+        /// <param name="renderForParticleLikeRenderer">Whether the material is used by a particle-like renderer.</param>
+        /// <param name="isExplicitlyConfigured">Whether the material has an explicit per-material convert setting.</param>
+        /// <returns>Material wrapper.</returns>
+        private MaterialBase BuildMaterialWrapper(Material material, bool renderForParticleLikeRenderer, bool isExplicitlyConfigured)
+        {
+            if (isExplicitlyConfigured)
+            {
+                return MaterialWrapperBuilder.BuildIgnoringParticleCategory(material);
+            }
+
+            var wrapper = MaterialWrapperBuilder.Build(material, renderForParticleLikeRenderer);
+
+            // Only convert to a transparent particle shader when the rendered appearance actually needs it.
+            // A fully opaque result keeps proper lighting and respects the selected convert settings via the
+            // normal conversion path.
+            if (wrapper is RenderedParticleMaterial rendered && !rendered.RequiresTransparentRendering())
+            {
+                return MaterialWrapperBuilder.Build(material, false);
+            }
+
+            return wrapper;
         }
 
         /// <summary>
@@ -809,11 +837,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(material, out string guid, out long localId);
 
-            // Materials with an explicit per-material convert setting are not auto-converted as particles;
-            // their explicit setting takes priority.
-            var materialWrapper = isExplicitlyConfigured
-                ? MaterialWrapperBuilder.BuildIgnoringParticleCategory(material)
-                : MaterialWrapperBuilder.Build(material, renderForParticleLikeRenderer);
+            var materialWrapper = BuildMaterialWrapper(material, renderForParticleLikeRenderer, isExplicitlyConfigured);
 
             // Generate converted material based on settings
             return GenerateConvertedMaterial(materialWrapper, convertSettings, saveAsFile, assetsDirectory, forEditorPreview, convertedMaterial =>

@@ -439,23 +439,43 @@ namespace KRT.VRCQuestTools
         }
 
         /// <summary>
-        /// A TrailRenderer material with a non-particle shader is converted to the Additive particle shader,
-        /// the same as ParticleSystem materials.
+        /// A TrailRenderer material whose rendered appearance is semi-transparent is converted to the
+        /// Additive particle shader, the same as ParticleSystem materials.
         /// </summary>
         [Test]
-        public void TrailRendererMaterialWithNonParticleShaderConvertsToAdditive()
+        public void TrailRendererMaterialWithTransparencyConvertsToAdditive()
         {
-            AssertParticleLikeRendererConvertsToAdditive<TrailRenderer>();
+            AssertParticleLikeRendererConverts<TrailRenderer>(TransparentTexture(), Additive);
         }
 
         /// <summary>
-        /// A LineRenderer material with a non-particle shader is converted to the Additive particle shader,
-        /// the same as ParticleSystem materials.
+        /// A LineRenderer material whose rendered appearance is semi-transparent is converted to the
+        /// Additive particle shader, the same as ParticleSystem materials.
         /// </summary>
         [Test]
-        public void LineRendererMaterialWithNonParticleShaderConvertsToAdditive()
+        public void LineRendererMaterialWithTransparencyConvertsToAdditive()
         {
-            AssertParticleLikeRendererConvertsToAdditive<LineRenderer>();
+            AssertParticleLikeRendererConverts<LineRenderer>(TransparentTexture(), Additive);
+        }
+
+        /// <summary>
+        /// A TrailRenderer material whose rendered (Graphics.Blit) appearance is fully opaque does not need
+        /// transparent rendering, so it falls back to the normal Toon Lit conversion instead of Additive.
+        /// </summary>
+        [Test]
+        public void TrailRendererMaterialWithOpaqueResultConvertsToToonLit()
+        {
+            AssertParticleLikeRendererConverts<TrailRenderer>(null, ToonLit);
+        }
+
+        /// <summary>
+        /// A LineRenderer material whose rendered (Graphics.Blit) appearance is fully opaque falls back to
+        /// the normal Toon Lit conversion instead of Additive.
+        /// </summary>
+        [Test]
+        public void LineRendererMaterialWithOpaqueResultConvertsToToonLit()
+        {
+            AssertParticleLikeRendererConverts<LineRenderer>(null, ToonLit);
         }
 
         /// <summary>
@@ -471,6 +491,7 @@ namespace KRT.VRCQuestTools
             {
                 using (var mat = DisposableObject.New(new Material(Shader.Find("Unlit/Transparent"))))
                 {
+                    mat.Object.mainTexture = TransparentTexture();
                     var rendererObject = new GameObject("Mesh");
                     rendererObject.transform.SetParent(avatarRoot.transform);
                     rendererObject.AddComponent<MeshRenderer>().sharedMaterial = mat.Object;
@@ -485,7 +506,15 @@ namespace KRT.VRCQuestTools
             }
         }
 
-        private void AssertParticleLikeRendererConvertsToAdditive<T>()
+        // A semi-transparent texture used to make the rendered appearance need transparent rendering.
+        private Texture2D TransparentTexture()
+        {
+            return TestUtils.LoadFixtureAssetAtPath<Texture2D>("Textures/alpha_test.png");
+        }
+
+        // The opacity decision is based on the Graphics.Blit result alpha. With a transparent main texture
+        // the Unlit/Transparent bake produces alpha; with no texture it samples the opaque white texture.
+        private void AssertParticleLikeRendererConverts<T>(Texture2D mainTexture, string expectedShader)
             where T : Renderer
         {
             TestUtils.AssertIgnoreOnMissingShader("Unlit/Transparent");
@@ -494,12 +523,13 @@ namespace KRT.VRCQuestTools
             {
                 using (var mat = DisposableObject.New(new Material(Shader.Find("Unlit/Transparent"))))
                 {
+                    mat.Object.mainTexture = mainTexture;
                     var rendererObject = new GameObject("Effect");
                     rendererObject.transform.SetParent(avatarRoot.transform);
                     rendererObject.AddComponent<T>().sharedMaterial = mat.Object;
 
                     var converted = ConvertViaAvatarRoot(mat.Object, avatarRoot);
-                    Assert.AreEqual(Additive, converted.shader.name);
+                    Assert.AreEqual(expectedShader, converted.shader.name);
                 }
             }
             finally
