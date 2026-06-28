@@ -7,7 +7,6 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
-using nadena.dev.ndmf;
 using nadena.dev.ndmf.preview;
 using UnityEditor;
 using UnityEngine;
@@ -158,7 +157,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     {
                         continue;
                     }
-                    var original = ObjectRegistry.GetReference(m)?.Object as Material;
+                    var original = NdmfObjectRegistry.GetReference(m)?.Object as Material;
                     if (original != null && original != m && settingsMap.TryGetValue(original, out var s))
                     {
                         settingsMap[m] = s;
@@ -168,11 +167,26 @@ namespace KRT.VRCQuestTools.Ndmf
                 // forEditorPreview: true re-uploads freshly generated normal maps so they render in the editor preview.
                 var materialLease = SharedPreviewMaterialCache.Acquire(settingsMap, m => converter.ConvertMaterialsForMobile(m, false, string.Empty, null, forEditorPreview: true, avatarRoot: avatarRoot));
 
-                // Register replaced materials so the ObjectRegistry can trace converted assets back to originals,
+                // Register replaced materials so the ObjectRegistry can trace converted materials back to originals,
                 // matching build-pass behavior. Runs inside Instantiate where an ObjectRegistryScope is active.
-                foreach (var kv in materialLease.MaterialMap)
+                // SharedPreviewMaterialCache can map multiple source materials to the same converted instance, so we
+                // group by converted material and register a single deterministic representative to keep tracing stable.
+                foreach (var materialGroup in materialLease.MaterialMap.GroupBy(kv => kv.Value))
                 {
-                    NdmfObjectRegistry.TryRegisterReplacedObjectToActiveRegistry(kv.Key, kv.Value);
+                    var converted = materialGroup.Key;
+
+                    // Skip asset-backed converted materials such as MaterialReplaceSettings replacements.
+                    // Build registers only in-memory converted materials. See AvatarConverterPassUtility.
+                    if (converted == null || !string.IsNullOrEmpty(AssetDatabase.GetAssetPath(converted)))
+                    {
+                        continue;
+                    }
+
+                    var original = materialGroup.Select(kv => kv.Key)
+                        .Where(m => m != null)
+                        .OrderBy(m => m.GetInstanceID())
+                        .FirstOrDefault();
+                    NdmfObjectRegistry.TryRegisterReplacedObjectToActiveRegistry(original, converted);
                 }
 
                 return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(materialLease.MaterialMap, removeExtraMaterialSlots, materialLease));
