@@ -1,7 +1,6 @@
 /Artifacts*
 *.log
 .serena/cache
-.uloop/outputs
 
 # Optional package settings
 /ProjectSettings/SceneTemplateSettings.json
@@ -9,6 +8,11 @@
 /ProjectSettings/lilToonSetting.json
 /ProjectSettings/net.rs64.TexTransTool-Version.json
 /Thry/
+
+# unity-cli-loop
+**/.uloop/*
+!**/.uloop/settings.permissions.json
+!**/.uloop/settings.tools.json
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
