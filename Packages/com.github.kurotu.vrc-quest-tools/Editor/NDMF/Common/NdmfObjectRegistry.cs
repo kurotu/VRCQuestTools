@@ -22,6 +22,22 @@ namespace KRT.VRCQuestTools.Ndmf
         }
 
         /// <summary>
+        /// Register a replaced object into the ambient ObjectRegistry. Intended for NDMF preview filters,
+        /// whose <c>Instantiate</c>/<c>Refresh</c> calls run inside an active <c>ObjectRegistryScope</c>.
+        /// Safe to call when no active registry exists or when the object is already registered.
+        /// </summary>
+        /// <param name="original">Original object.</param>
+        /// <param name="replaced">Replaced object.</param>
+        internal static void TryRegisterReplacedObjectToActiveRegistry(Object original, Object replaced)
+        {
+            if (original == null || replaced == null || original == replaced)
+            {
+                return;
+            }
+            ObjectRegistry.TryRegisterReplacedObject(ObjectRegistry.GetReference(original), replaced);
+        }
+
+        /// <summary>
         /// Register replaced object.
         /// </summary>
         /// <param name="original">Original object.</param>
