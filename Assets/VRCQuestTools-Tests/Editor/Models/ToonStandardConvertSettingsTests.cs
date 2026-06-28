@@ -121,6 +121,26 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
+        /// Default matcapMaxTextureSize should be Max256x256.
+        /// </summary>
+        [Test]
+        public void DefaultMatcapMaxTextureSize_IsMax256x256()
+        {
+            var settings = new ToonStandardConvertSettings();
+            Assert.AreEqual(TextureSizeLimit.Max256x256, settings.matcapMaxTextureSize);
+        }
+
+        /// <summary>
+        /// Default matcapMobileTextureFormat should be NoOverride.
+        /// </summary>
+        [Test]
+        public void DefaultMatcapMobileTextureFormat_IsNoOverride()
+        {
+            var settings = new ToonStandardConvertSettings();
+            Assert.AreEqual(MobileTextureFormat.NoOverride, settings.matcapMobileTextureFormat);
+        }
+
+        /// <summary>
         /// OnAfterDeserialize with old version and OptOut mode enables new features.
         /// </summary>
         [Test]

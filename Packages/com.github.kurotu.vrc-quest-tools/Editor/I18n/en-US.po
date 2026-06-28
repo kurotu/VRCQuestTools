@@ -275,6 +275,9 @@ msgstr "Main Texture Settings"
 msgid "IMaterialConvertSettingsMaskTextureSettingsLabel"
 msgstr "Mask Texture Settings"
 
+msgid "IMaterialConvertSettingsMatCapTextureSettingsLabel"
+msgstr "MatCap Texture Settings"
+
 msgid "IMaterialConvertSettingsMainTextureBrightnessLabel"
 msgstr "Brightness"
 

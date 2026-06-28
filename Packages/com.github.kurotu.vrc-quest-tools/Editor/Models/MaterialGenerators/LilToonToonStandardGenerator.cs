@@ -460,7 +460,8 @@ namespace KRT.VRCQuestTools.Models
 
             // Check platform override settings from source texture
             var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MatCapTex);
-            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+            var matcapLimit = TextureUtility.NormalizeMaxTextureSize((int)Settings.matcapMaxTextureSize) ?? (int)Settings.maxTextureSize;
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? matcapLimit;
 
             var (width, height) = TextureUtility.AspectFitReduction(matcapWidth, matcapHeight, maxTextureSize);
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);

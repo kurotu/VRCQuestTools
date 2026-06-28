@@ -271,7 +271,8 @@ namespace KRT.VRCQuestTools.Models
                 if (GetUseMatcap() && Settings.useMatcap)
                 {
                     newMaterial.UseMatcap = true;
-                    var matcapPlatformOverride = GetMatcapPlatformOverride();
+                    var sourceMatcapPlatformOverride = GetMatcapPlatformOverride();
+                    var matcapPlatformOverride = BuildEffectiveMatcapFormatOverride(sourceMatcapPlatformOverride);
                     MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "matcap", saveTextureAsPng, texturesPath, (compl) => GenerateMatcap(compl), (t) =>
                     {
                         newMaterial.Matcap = t;
@@ -713,6 +714,27 @@ namespace KRT.VRCQuestTools.Models
                 var maskLimit = TextureUtility.NormalizeMaxTextureSize((int)Settings.maskMaxTextureSize);
                 var mainLimit = TextureUtility.NormalizeMaxTextureSize((int)Settings.maxTextureSize);
                 var settingsMaxSize = maskLimit ?? mainLimit;
+                var maxSize = TextureUtility.MinDefinedMaxTextureSize(sourceMaxSize, settingsMaxSize) ?? 0;
+                return (maxSize, format);
+            }
+
+            return sourceOverride;
+        }
+
+        /// <summary>
+        /// Builds the effective platform override for matcap textures, incorporating matcap format settings.
+        /// </summary>
+        /// <param name="sourceOverride">Platform override derived from source textures.</param>
+        /// <returns>Effective platform override for matcap textures.</returns>
+        private (int MaxTextureSize, TextureFormat Format)? BuildEffectiveMatcapFormatOverride((int MaxTextureSize, TextureFormat Format)? sourceOverride)
+        {
+            if (Settings.matcapMobileTextureFormat != MobileTextureFormat.NoOverride)
+            {
+                var format = (TextureFormat)(int)Settings.matcapMobileTextureFormat;
+                var sourceMaxSize = TextureUtility.NormalizeMaxTextureSize(sourceOverride?.MaxTextureSize);
+                var matcapLimit = TextureUtility.NormalizeMaxTextureSize((int)Settings.matcapMaxTextureSize);
+                var mainLimit = TextureUtility.NormalizeMaxTextureSize((int)Settings.maxTextureSize);
+                var settingsMaxSize = matcapLimit ?? mainLimit;
                 var maxSize = TextureUtility.MinDefinedMaxTextureSize(sourceMaxSize, settingsMaxSize) ?? 0;
                 return (maxSize, format);
             }

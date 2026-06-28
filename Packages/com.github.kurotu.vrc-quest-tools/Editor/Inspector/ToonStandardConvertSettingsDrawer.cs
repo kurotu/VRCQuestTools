@@ -87,6 +87,18 @@ namespace KRT.VRCQuestTools.Inspector
                     fieldRect.y += EditorGUIUtility.singleLineHeight;
                     fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
                 }
+
+                fieldRect = DrawGroupHeader(fieldRect, new GUIContent(i18n.IMaterialConvertSettingsMatCapTextureSettingsLabel));
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("matcapMaxTextureSize"), new GUIContent(i18n.IMaterialConvertSettingsTexturesSizeLimitLabel));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+
+                    EditorGUI.PropertyField(fieldRect, property.FindPropertyRelative("matcapMobileTextureFormat"), new GUIContent(i18n.IMaterialConvertSettingsMobileTextureFormatLabel));
+                    fieldRect.y += EditorGUIUtility.singleLineHeight;
+                    fieldRect.y += EditorGUIUtility.standardVerticalSpacing;
+                }
             }
 
             var generateShadowRamp = property.FindPropertyRelative("generateShadowRamp");
@@ -201,6 +213,11 @@ namespace KRT.VRCQuestTools.Inspector
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maskMaxTextureSize"));
             height += EditorGUIUtility.standardVerticalSpacing;
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("maskMobileTextureFormat"));
+            height += EditorGUIUtility.standardVerticalSpacing;
+            height += GetGroupHeaderHeight();
+            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("matcapMaxTextureSize"));
+            height += EditorGUIUtility.standardVerticalSpacing;
+            height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("matcapMobileTextureFormat"));
             height += EditorGUIUtility.standardVerticalSpacing;
 
             height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("generateShadowRamp"));
