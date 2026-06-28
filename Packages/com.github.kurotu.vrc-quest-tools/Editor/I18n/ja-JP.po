@@ -275,6 +275,9 @@ msgstr "メインテクスチャ設定"
 msgid "IMaterialConvertSettingsMaskTextureSettingsLabel"
 msgstr "マスクテクスチャ設定"
 
+msgid "IMaterialConvertSettingsMatCapTextureSettingsLabel"
+msgstr "マットキャップ設定"
+
 msgid "IMaterialConvertSettingsMainTextureBrightnessLabel"
 msgstr "明るさ"
 

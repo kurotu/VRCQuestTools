@@ -440,7 +440,8 @@ namespace KRT.VRCQuestTools.Models
             var matcapWidth = poiyomiMaterial.MatcapTexture ? poiyomiMaterial.MatcapTexture.width : 4;
             var matcapHeight = poiyomiMaterial.MatcapTexture ? poiyomiMaterial.MatcapTexture.height : 4;
             var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(poiyomiMaterial.MatcapTexture);
-            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
+            var matcapLimit = TextureUtility.NormalizeMaxTextureSize((int)Settings.matcapMaxTextureSize) ?? (int)Settings.maxTextureSize;
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? matcapLimit;
             var (width, height) = TextureUtility.AspectFitReduction(matcapWidth, matcapHeight, maxTextureSize);
 
             var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
