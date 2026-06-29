@@ -46,6 +46,10 @@ namespace KRT.VRCQuestTools.Inspector
                     {
                         return $"{label} ({i18n.TextureFormatHighQuality})";
                     }
+                    if (format == MobileTextureFormat.ASTC_6x6)
+                    {
+                        return $"{label} ({i18n.TextureFormatStandard})";
+                    }
                     if (format == MobileTextureFormat.ASTC_12x12)
                     {
                         return $"{label} ({i18n.TextureFormatHighCompression})";

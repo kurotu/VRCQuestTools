@@ -55,6 +55,9 @@ msgstr "Incompatible VRChat SDK. Please report."
 msgid "TextureFormatHighQuality"
 msgstr "High Quality"
 
+msgid "TextureFormatStandard"
+msgstr "Standard"
+
 msgid "TextureFormatHighCompression"
 msgstr "High Compression"
 
