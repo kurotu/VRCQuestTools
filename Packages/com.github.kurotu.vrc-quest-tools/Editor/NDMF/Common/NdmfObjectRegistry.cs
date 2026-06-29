@@ -34,7 +34,20 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 return;
             }
-            ObjectRegistry.TryRegisterReplacedObject(ObjectRegistry.GetReference(original), replaced);
+            var objRef = ObjectRegistry.GetReference(original);
+#if VQT_NDMF_HAS_TRY_REGISTER_REPLACED_OBJECT
+            // NDMF >= 1.6.8: dedicated no-throw API.
+            ObjectRegistry.TryRegisterReplacedObject(objRef, replaced);
+#else
+            // NDMF < 1.6.8: RegisterReplacedObject throws ArgumentException when already registered.
+            try
+            {
+                ObjectRegistry.RegisterReplacedObject(objRef, replaced);
+            }
+            catch (System.ArgumentException)
+            {
+            }
+#endif
         }
 
         /// <summary>
