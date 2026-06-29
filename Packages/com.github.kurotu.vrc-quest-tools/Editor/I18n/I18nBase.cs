@@ -69,6 +69,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string IncompatibleSDK => GetText("IncompatibleSDK");
 
         internal string TextureFormatHighQuality => GetText("TextureFormatHighQuality");
+        internal string TextureFormatStandard => GetText("TextureFormatStandard");
         internal string TextureFormatHighCompression => GetText("TextureFormatHighCompression");
 
         // Convert Avatar for Quest
