@@ -146,8 +146,49 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 var converter = new AvatarConverter(new MaterialWrapperBuilder());
                 var settingsMap = converter.CreateMaterialConvertSettingsMap(avatarRoot, avatarMaterials.ToArray());
+
+                // Track reference changes: when an upstream filter (e.g. another plugin) already replaced a material and
+                // registered it in the ObjectRegistry, the convert settings are keyed by the original material. Resolve
+                // the replaced material back to its original to apply the same settings (mirrors the build-time
+                // AvatarConverterPassUtility.TrackObjectRegistryForMaterialConversion/Swaps). Components are not mutated.
+                foreach (var m in avatarMaterials)
+                {
+                    if (m == null || settingsMap.ContainsKey(m))
+                    {
+                        continue;
+                    }
+                    var original = NdmfObjectRegistry.GetReference(m)?.Object as Material;
+                    if (original != null && original != m && settingsMap.TryGetValue(original, out var s))
+                    {
+                        settingsMap[m] = s;
+                    }
+                }
+
                 // forEditorPreview: true re-uploads freshly generated normal maps so they render in the editor preview.
                 var materialLease = SharedPreviewMaterialCache.Acquire(settingsMap, m => converter.ConvertMaterialsForMobile(m, false, string.Empty, null, forEditorPreview: true, avatarRoot: avatarRoot));
+
+                // Register replaced materials so the ObjectRegistry can trace converted materials back to originals,
+                // matching build-pass behavior. Runs inside Instantiate where an ObjectRegistryScope is active.
+                // SharedPreviewMaterialCache can map multiple source materials to the same converted instance, so we
+                // group by converted material and register a single deterministic representative to keep tracing stable.
+                foreach (var materialGroup in materialLease.MaterialMap.GroupBy(kv => kv.Value))
+                {
+                    var converted = materialGroup.Key;
+
+                    // Skip asset-backed converted materials such as MaterialReplaceSettings replacements.
+                    // Build registers only in-memory converted materials. See AvatarConverterPassUtility.
+                    if (converted == null || !string.IsNullOrEmpty(AssetDatabase.GetAssetPath(converted)))
+                    {
+                        continue;
+                    }
+
+                    var original = materialGroup.Select(kv => kv.Key)
+                        .Where(m => m != null)
+                        .OrderBy(m => m.GetInstanceID())
+                        .FirstOrDefault();
+                    NdmfObjectRegistry.TryRegisterReplacedObjectToActiveRegistry(original, converted);
+                }
+
                 return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(materialLease.MaterialMap, removeExtraMaterialSlots, materialLease));
             }
             catch (System.Exception e)

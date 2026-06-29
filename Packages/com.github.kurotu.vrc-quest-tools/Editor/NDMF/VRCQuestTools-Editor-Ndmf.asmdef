@@ -34,6 +34,11 @@
             "define": "VQT_HAS_NDMF"
         },
         {
+            "name": "nadena.dev.ndmf",
+            "expression": "[1.6.8,2.0.0-a)",
+            "define": "VQT_NDMF_HAS_TRY_REGISTER_REPLACED_OBJECT"
+        },
+        {
             "name": "jp.lilxyzw.ndmfmeshsimplifier",
             "expression": "0.2.0",
             "define": "VQT_LIL_NDMF_MESH_SIMPLIFIER"

@@ -68,6 +68,10 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 newMesh = Mesh.Instantiate(newMesh);
                 newMesh.colors32 = null;
+
+                // Register the replaced mesh so the ObjectRegistry can trace it back to the original,
+                // matching build-pass behavior. Runs inside Instantiate where an ObjectRegistryScope is active.
+                NdmfObjectRegistry.TryRegisterReplacedObjectToActiveRegistry(mesh, newMesh);
             }
             return Task.FromResult<IRenderFilterNode>(new VertexColorRemoverFilterNode(newMesh));
         }

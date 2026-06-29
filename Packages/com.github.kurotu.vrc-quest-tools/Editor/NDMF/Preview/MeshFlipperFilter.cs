@@ -97,6 +97,10 @@ namespace KRT.VRCQuestTools.Ndmf
                 try
                 {
                     result = MeshFlipper.CreateFlippedMesh(meshFlipper, mesh);
+
+                    // Register the replaced mesh so the ObjectRegistry can trace it back to the original,
+                    // matching build-pass behavior. Runs inside Instantiate where an ObjectRegistryScope is active.
+                    NdmfObjectRegistry.TryRegisterReplacedObjectToActiveRegistry(mesh, result);
                 }
                 catch (MeshFlipperMaskMissingException)
                 {
