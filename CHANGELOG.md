@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Avatar Dynamics Selector now stores keep/remove settings in `Platform Component Remover` instead of the legacy arrays in `Avatar Converter Settings`. Applying the selector migrates settings and clears the legacy arrays to avoid stale references.
 - Added a button in PhysBones Remover to apply current keep/remove selections to `Platform Component Remover`.
+- Grouped the component list in Avatar Dynamics Selector and PhysBones Remover by prefab.
 - Optimized Avatar Dynamics performance estimation timing in `Avatar Converter Settings` inspector.
 - Manual conversion from `Avatar Converter Settings` now keeps the original avatar active and places the converted avatar offset along world +Z from the original avatar.
 - Changed the initial value of default material conversion settings to Toon Standard.

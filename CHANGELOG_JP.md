@@ -26,6 +26,7 @@
 ### 変更
 - Avatar Dynamics Selector の保持/削除設定を `Avatar Converter Settings` のレガシー配列ではなく `Platform Component Remover` に保存するように変更。適用時に設定を移行し、古い参照が残らないようレガシー配列をクリアします。
 - PhysBones Remover に、現在の保持/削除選択を `Platform Component Remover` に反映するボタンを追加。
+- Avatar Dynamics Selector と PhysBones Remover のコンポーネント一覧をプレハブごとにグループ化。
 - `Avatar Converter Settings` インスペクターの Avatar Dynamics パフォーマンス推定タイミングを最適化。
 - `Avatar Converter Settings` の変換ボタンによる手動変換で、元アバターを非アクティブ化せず、変換後アバターを元アバターの位置からワールド座標の +Z 方向に配置するよう変更。
 - デフォルトのマテリアル変換設定の初期値を Toon Standard に変更。

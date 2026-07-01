@@ -114,8 +114,9 @@ namespace KRT.VRCQuestTools.Views
         /// <typeparam name="T">Component type.</typeparam>
         /// <param name="objects">Components to list.</param>
         /// <param name="selectedObjects">Already selected components.</param>
+        /// <param name="componentFieldIndent">Left offset (px) of the component field, so it aligns under the group header label.</param>
         /// <returns>New selected components.</returns>
-        internal static T[] AvatarDynamicsComponentSelectorList<T>(T[] objects, T[] selectedObjects)
+        internal static T[] AvatarDynamicsComponentSelectorList<T>(T[] objects, T[] selectedObjects, float componentFieldIndent = 0f)
             where T : IVRCAvatarDynamicsProvider
         {
             var afterSelected = new List<T>();
@@ -123,7 +124,7 @@ namespace KRT.VRCQuestTools.Views
 
             foreach (var obj in objects)
             {
-                var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Select(o => o.Component).Contains(obj.Component), obj);
+                var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Select(o => o.Component).Contains(obj.Component), obj, componentFieldIndent);
 
                 // Check for hover on the last drawn control
                 var currentEvent = Event.current;
@@ -151,24 +152,164 @@ namespace KRT.VRCQuestTools.Views
         }
 
         /// <summary>
+        /// Show a check list to select components, grouped by the nearest prefab instance root.
+        /// Each group has its own foldout, indentation by prefab nesting depth, and select/deselect buttons.
+        /// </summary>
+        /// <typeparam name="T">Component provider type.</typeparam>
+        /// <param name="objects">Components to list.</param>
+        /// <param name="selectedObjects">Already selected components.</param>
+        /// <param name="avatarRoot">Avatar root GameObject for relative path labels.</param>
+        /// <param name="groupFoldouts">Foldout states keyed by group label. Modified in place.</param>
+        /// <returns>New selected components, in the original order of <paramref name="objects"/>.</returns>
+        internal static T[] GroupedAvatarDynamicsComponentSelectorList<T>(T[] objects, T[] selectedObjects, GameObject avatarRoot, Dictionary<string, bool> groupFoldouts)
+            where T : IVRCAvatarDynamicsProvider
+        {
+            var i18n = VRCQuestToolsSettings.I18nResource;
+            var selectedComponents = new HashSet<Component>(selectedObjects.Select(o => o.Component));
+            var groups = objects
+                .GroupBy(o => PrefabUtility.GetNearestPrefabInstanceRoot(o.GameObject))
+                .OrderBy(g => (g.Key == null || g.Key == avatarRoot) ? 0 : 1);
+            var baseIndent = EditorGUI.indentLevel;
+            foreach (var group in groups)
+            {
+                var groupArray = group.ToArray();
+                var isPrefab = group.Key != null && group.Key != avatarRoot;
+                var iconTarget = isPrefab ? group.Key : avatarRoot;
+                var label = iconTarget.name;
+                var key = GetGroupFoldoutKey(avatarRoot, group.Key);
+                var depth = GetGroupNestingDepth(avatarRoot.transform, group.Key != null ? group.Key.transform : null);
+                if (!groupFoldouts.TryGetValue(key, out var groupOpen))
+                {
+                    groupOpen = true;
+                }
+
+                // Draw the header manually so the whole row toggles the foldout (like the Hierarchy) and
+                // highlights on hover. EditorGUILayout.Foldout cannot render the icon reliably when indented,
+                // so the arrow glyph, icon and label are drawn on explicit rects within the row.
+                var lineHeight = UnityEditor.EditorGUIUtility.singleLineHeight;
+                const float arrowWidth = 13f;
+                const float arrowIconGap = 4f;
+                const float iconLabelGap = 2f;
+                var icon = GetHierarchyIcon(iconTarget);
+                var selectContent = new GUIContent(i18n.SelectAllButtonLabel);
+                var deselectContent = new GUIContent(i18n.DeselectAllButtonLabel);
+                var selectWidth = EditorStyles.miniButton.CalcSize(selectContent).x;
+                var deselectWidth = EditorStyles.miniButton.CalcSize(deselectContent).x;
+
+                EditorGUI.indentLevel = 0;
+                var rowRect = EditorGUILayout.GetControlRect(false, lineHeight);
+                var indent = (baseIndent + depth) * 15f;
+
+                // Left offset of the header label; item component fields align to this so they sit under the label.
+                var labelOffset = indent + arrowWidth + arrowIconGap + lineHeight + iconLabelGap;
+                var deselectRect = new Rect(rowRect.xMax - deselectWidth, rowRect.y, deselectWidth, lineHeight);
+                var selectRect = new Rect(deselectRect.x - selectWidth, rowRect.y, selectWidth, lineHeight);
+                var toggleRect = new Rect(rowRect.x, rowRect.y, selectRect.x - rowRect.x, lineHeight);
+                var hovered = toggleRect.Contains(Event.current.mousePosition);
+
+                if (Event.current.type == EventType.Repaint)
+                {
+                    if (hovered)
+                    {
+                        var hoverColor = UnityEditor.EditorGUIUtility.isProSkin ? new Color(1f, 1f, 1f, 0.08f) : new Color(0f, 0f, 0f, 0.06f);
+                        EditorGUI.DrawRect(toggleRect, hoverColor);
+                    }
+                    var arrowRect = new Rect(rowRect.x + indent, rowRect.y, arrowWidth, lineHeight);
+                    EditorStyles.foldout.Draw(arrowRect, false, false, groupOpen, false);
+                    var iconRect = new Rect(arrowRect.xMax + arrowIconGap, rowRect.y, lineHeight, lineHeight);
+                    if (icon != null)
+                    {
+                        GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit);
+                    }
+                    var labelRect = new Rect(iconRect.xMax + iconLabelGap, rowRect.y, toggleRect.xMax - iconRect.xMax - iconLabelGap, lineHeight);
+                    GUI.Label(labelRect, label, EditorStyles.boldLabel);
+                }
+
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && toggleRect.Contains(Event.current.mousePosition))
+                {
+                    groupFoldouts[key] = !groupOpen;
+                    Event.current.Use();
+                }
+                else
+                {
+                    groupFoldouts[key] = groupOpen;
+                }
+
+                if (GUI.Button(selectRect, selectContent, EditorStyles.miniButton))
+                {
+                    foreach (var o in groupArray)
+                    {
+                        selectedComponents.Add(o.Component);
+                    }
+                }
+                if (GUI.Button(deselectRect, deselectContent, EditorStyles.miniButton))
+                {
+                    foreach (var o in groupArray)
+                    {
+                        selectedComponents.Remove(o.Component);
+                    }
+                }
+
+                // Use the value captured at the start of this frame for item visibility so the
+                // EditorGUILayout control count stays consistent between Layout and other events.
+                if (groupOpen)
+                {
+                    // Align each item's component field under the group header label. The right (RootTransform)
+                    // column stays fixed, so the component field width shrinks as the group is nested deeper.
+                    var currentGroupSelected = groupArray.Where(o => selectedComponents.Contains(o.Component)).ToArray();
+                    var newGroupSelected = AvatarDynamicsComponentSelectorList(groupArray, currentGroupSelected, labelOffset);
+                    var newSet = new HashSet<Component>(newGroupSelected.Select(o => o.Component));
+                    foreach (var o in groupArray)
+                    {
+                        if (newSet.Contains(o.Component))
+                        {
+                            selectedComponents.Add(o.Component);
+                        }
+                        else
+                        {
+                            selectedComponents.Remove(o.Component);
+                        }
+                    }
+                }
+                EditorGUI.indentLevel = baseIndent;
+            }
+            return objects.Where(o => selectedComponents.Contains(o.Component)).ToArray();
+        }
+
+        /// <summary>
         /// Show a toggle field for Avatar Dynamics component.
         /// </summary>
         /// <param name="value">Current state.</param>
         /// <param name="provider">Provider to show.</param>
+        /// <param name="componentFieldIndent">Left offset (px) of the component field so it aligns under the group header label.</param>
         /// <returns>true for selected.</returns>
-        internal static bool ToggleAvatarDynamicsComponentField(bool value, IVRCAvatarDynamicsProvider provider)
+        internal static bool ToggleAvatarDynamicsComponentField(bool value, IVRCAvatarDynamicsProvider provider, float componentFieldIndent = 0f)
         {
-            const int CheckBoxWidth = 16;
-            using (var horizontal = new EditorGUILayout.HorizontalScope())
+            const float checkBoxWidth = 16f;
+            const float gap = 2f;
+            const float minComponentWidth = 80f;
+            var lineHeight = UnityEditor.EditorGUIUtility.singleLineHeight;
+
+            var prevIndent = EditorGUI.indentLevel;
+            EditorGUI.indentLevel = 0;
+            var rowRect = EditorGUILayout.GetControlRect(false, lineHeight);
+            EditorGUI.indentLevel = prevIndent;
+
+            // The right (RootTransform) column is fixed at the midpoint; the component field's left edge is
+            // aligned under the group header label, so its width shrinks as the group is nested deeper.
+            var half = rowRect.width * 0.5f;
+            var componentX = Mathf.Clamp(componentFieldIndent, checkBoxWidth + gap, half - gap - minComponentWidth);
+            var checkRect = new Rect(rowRect.x + componentX - gap - checkBoxWidth, rowRect.y, checkBoxWidth, lineHeight);
+            var componentRect = new Rect(rowRect.x + componentX, rowRect.y, rowRect.x + half - gap - (rowRect.x + componentX), lineHeight);
+            var rootRect = new Rect(rowRect.x + half + gap, rowRect.y, rowRect.xMax - (rowRect.x + half + gap), lineHeight);
+
+            var selected = EditorGUI.Toggle(checkRect, value);
+            using (new EditorGUI.DisabledScope(true))
             {
-                var selected = EditorGUILayout.Toggle(value, GUILayout.Width(CheckBoxWidth));
-                GUILayout.Space(2);
-                using var disabledScope = new EditorGUI.DisabledScope(true);
-                EditorGUILayout.ObjectField(provider.Component, typeof(Component), true);
-                GUILayout.Space(2);
-                EditorGUILayout.ObjectField(VRCSDKUtility.GetRootTransform(provider.Component), typeof(Transform), true);
-                return selected;
+                EditorGUI.ObjectField(componentRect, provider.Component, typeof(Component), true);
+                EditorGUI.ObjectField(rootRect, VRCSDKUtility.GetRootTransform(provider.Component), typeof(Transform), true);
             }
+            return selected;
         }
 
         /// <summary>
@@ -345,6 +486,61 @@ namespace KRT.VRCQuestTools.Views
             }
 
             return display;
+        }
+
+        // Unique foldout key per group. Uses the relative path so prefabs sharing a name keep independent foldout states.
+        private static string GetGroupFoldoutKey(GameObject avatarRoot, GameObject prefabRoot)
+        {
+            if (prefabRoot == null || prefabRoot == avatarRoot)
+            {
+                return avatarRoot.name;
+            }
+            return GetRelativeTransformPath(avatarRoot.transform, prefabRoot.transform);
+        }
+
+        // Returns the icon Unity uses for the GameObject in the Hierarchy (plain GameObject, prefab, or variant).
+        private static Texture GetHierarchyIcon(GameObject go)
+        {
+            var icon = AssetPreview.GetMiniThumbnail(go);
+            if (icon == null)
+            {
+                icon = AssetPreview.GetMiniTypeThumbnail(typeof(GameObject));
+            }
+            return icon;
+        }
+
+        private static string GetRelativeTransformPath(Transform root, Transform target)
+        {
+            var parts = new List<string>();
+            var t = target;
+            while (t != null && t != root)
+            {
+                parts.Insert(0, t.name);
+                t = t.parent;
+            }
+            return string.Join(" / ", parts);
+        }
+
+        // Returns how many intermediate prefab instance roots exist between avatarRoot and prefabRoot.
+        // null or avatarRoot → 0; direct child prefab → 1; nested inside another prefab → 2; etc.
+        private static int GetGroupNestingDepth(Transform avatarRoot, Transform prefabRoot)
+        {
+            if (prefabRoot == null || prefabRoot == avatarRoot)
+            {
+                return 0;
+            }
+            int depth = 0;
+            var t = prefabRoot.parent;
+            while (t != null && t != avatarRoot)
+            {
+                var root = PrefabUtility.GetNearestPrefabInstanceRoot(t.gameObject);
+                if (root != null && root == t.gameObject)
+                {
+                    depth++;
+                }
+                t = t.parent;
+            }
+            return depth + 1;
         }
 
         private static GUIContent MessageTypeIconContent(MessageType type)

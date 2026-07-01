@@ -35,6 +35,11 @@ namespace KRT.VRCQuestTools.Views
         private bool showPhysBoneColliders = true;
         private bool showContacts = true;
 
+        // Per-group foldout states keyed by relative path label. Default: open (true).
+        private Dictionary<string, bool> physBoneGroupFoldouts = new Dictionary<string, bool>();
+        private Dictionary<string, bool> colliderGroupFoldouts = new Dictionary<string, bool>();
+        private Dictionary<string, bool> contactGroupFoldouts = new Dictionary<string, bool>();
+
         private AvatarPerformanceStatsLevelSet statsLevelSet;
 
         /// <summary>
@@ -63,6 +68,7 @@ namespace KRT.VRCQuestTools.Views
         private void OnEnable()
         {
             titleContent.text = "PhysBones Remover";
+            wantsMouseMove = true;
             foldedContentPanel = new GUIStyle()
             {
                 padding =
@@ -94,6 +100,8 @@ namespace KRT.VRCQuestTools.Views
             }
             model.DeselectRemovedComponents();
 
+            var avatarRoot = model.Avatar.AvatarDescriptor.gameObject;
+
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField(i18n.SelectComponentsToKeep, EditorStyles.wordWrappedLabel);
@@ -121,8 +129,7 @@ namespace KRT.VRCQuestTools.Views
                                 }
                             }
                             var selected = model.PhysBoneProvidersToKeep.ToArray();
-                            var physBoneComponents = physBones;
-                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(physBoneComponents, selected);
+                            selected = Views.EditorGUIUtility.GroupedAvatarDynamicsComponentSelectorList(physBones, selected, avatarRoot, physBoneGroupFoldouts);
                             model.SetSelectedPhysBoneProviders(selected);
                         }
                         else
@@ -153,7 +160,7 @@ namespace KRT.VRCQuestTools.Views
                                 }
                             }
                             var selected = model.PhysBoneCollidersToKeep.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray();
-                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(colliders.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray(), selected);
+                            selected = Views.EditorGUIUtility.GroupedAvatarDynamicsComponentSelectorList(colliders.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray(), selected, avatarRoot, colliderGroupFoldouts);
                             model.SetSelectedPhysBoneColliders(selected.Select(provider => provider.Component).Cast<VRCPhysBoneCollider>());
                         }
                         else
@@ -185,7 +192,7 @@ namespace KRT.VRCQuestTools.Views
                                 }
                             }
                             var selected = model.ContactsToKeep.Select(c => new VRCContactBaseProvider(c)).ToArray();
-                            selected = Views.EditorGUIUtility.AvatarDynamicsComponentSelectorList(contacts.Select(c => new VRCContactBaseProvider(c)).ToArray(), selected);
+                            selected = Views.EditorGUIUtility.GroupedAvatarDynamicsComponentSelectorList(contacts.Select(c => new VRCContactBaseProvider(c)).ToArray(), selected, avatarRoot, contactGroupFoldouts);
                             model.SetSelectedContacts(selected.Select(provider => provider.Component).Cast<VRC.Dynamics.ContactBase>());
                         }
                         else
