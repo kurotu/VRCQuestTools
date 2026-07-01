@@ -121,10 +121,11 @@ namespace KRT.VRCQuestTools.Views
         {
             var afterSelected = new List<T>();
             IVRCAvatarDynamicsProvider hoveredProvider = null;
+            var selectedComponents = new HashSet<Component>(selectedObjects.Select(o => o.Component));
 
             foreach (var obj in objects)
             {
-                var isSelected = ToggleAvatarDynamicsComponentField(selectedObjects.Select(o => o.Component).Contains(obj.Component), obj, componentFieldIndent);
+                var isSelected = ToggleAvatarDynamicsComponentField(selectedComponents.Contains(obj.Component), obj, componentFieldIndent);
 
                 // Check for hover on the last drawn control
                 var currentEvent = Event.current;
@@ -297,11 +298,17 @@ namespace KRT.VRCQuestTools.Views
 
             // The right (RootTransform) column is fixed at the midpoint; the component field's left edge is
             // aligned under the group header label, so its width shrinks as the group is nested deeper.
+            // Clamp bounds are kept ordered (min <= max) and the resulting rect widths are non-negative so
+            // narrow window sizes cannot produce invalid rects.
             var half = rowRect.width * 0.5f;
-            var componentX = Mathf.Clamp(componentFieldIndent, checkBoxWidth + gap, half - gap - minComponentWidth);
+            var minComponentX = checkBoxWidth + gap;
+            var maxComponentX = Mathf.Max(minComponentX, half - gap - minComponentWidth);
+            var componentX = Mathf.Clamp(componentFieldIndent, minComponentX, maxComponentX);
             var checkRect = new Rect(rowRect.x + componentX - gap - checkBoxWidth, rowRect.y, checkBoxWidth, lineHeight);
-            var componentRect = new Rect(rowRect.x + componentX, rowRect.y, rowRect.x + half - gap - (rowRect.x + componentX), lineHeight);
-            var rootRect = new Rect(rowRect.x + half + gap, rowRect.y, rowRect.xMax - (rowRect.x + half + gap), lineHeight);
+            var componentWidth = Mathf.Max(0f, half - gap - componentX);
+            var componentRect = new Rect(rowRect.x + componentX, rowRect.y, componentWidth, lineHeight);
+            var rootWidth = Mathf.Max(0f, rowRect.width - half - gap);
+            var rootRect = new Rect(rowRect.x + half + gap, rowRect.y, rootWidth, lineHeight);
 
             var selected = EditorGUI.Toggle(checkRect, value);
             using (new EditorGUI.DisabledScope(true))
