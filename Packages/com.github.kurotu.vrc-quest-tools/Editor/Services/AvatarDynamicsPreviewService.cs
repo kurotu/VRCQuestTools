@@ -29,6 +29,10 @@ namespace KRT.VRCQuestTools.Services
         private static IVRCAvatarDynamicsProvider hoveredProvider;
         private static bool isInitialized = false;
 
+        // Reference count of active users (windows). The service stays alive while any user is active,
+        // so closing one window does not tear down the scene preview for another still-open window.
+        private static int referenceCount = 0;
+
         /// <summary>
         /// Sets the VRCPhysBoneProviderBase component to preview in the scene view.
         /// </summary>
@@ -62,9 +66,11 @@ namespace KRT.VRCQuestTools.Services
 
         /// <summary>
         /// Initializes the preview service by subscribing to scene view events.
+        /// Reference counted: each caller must pair this with <see cref="Cleanup"/>.
         /// </summary>
         internal static void Initialize()
         {
+            referenceCount++;
             if (!isInitialized)
             {
                 SceneView.duringSceneGui -= OnSceneGUI;
@@ -75,9 +81,17 @@ namespace KRT.VRCQuestTools.Services
 
         /// <summary>
         /// Cleanup the preview service by unsubscribing from scene view events.
+        /// The service is only torn down once every caller has cleaned up (reference count reaches zero),
+        /// so closing one window keeps the preview working for other still-open windows.
         /// </summary>
         internal static void Cleanup()
         {
+            referenceCount = Mathf.Max(0, referenceCount - 1);
+            if (referenceCount > 0)
+            {
+                return;
+            }
+
             SceneView.duringSceneGui -= OnSceneGUI;
             hoveredProvider = null;
             isInitialized = false;

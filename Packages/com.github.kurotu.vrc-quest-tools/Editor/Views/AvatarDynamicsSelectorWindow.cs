@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
@@ -52,6 +53,11 @@ namespace KRT.VRCQuestTools.Views
         private I18nBase i18n;
         private AvatarPerformanceStatsLevelSet statsLevelSet;
 
+        // Per-group foldout states keyed by relative path label. Default: open (true).
+        private Dictionary<string, bool> physBoneGroupFoldouts = new Dictionary<string, bool>();
+        private Dictionary<string, bool> colliderGroupFoldouts = new Dictionary<string, bool>();
+        private Dictionary<string, bool> contactGroupFoldouts = new Dictionary<string, bool>();
+
         /// <summary>
         /// Applies avatar dynamics settings to PlatformComponentRemover components.
         /// Components not in the keep lists will be configured for Android removal.
@@ -90,6 +96,7 @@ namespace KRT.VRCQuestTools.Views
         private void OnEnable()
         {
             titleContent = new GUIContent("Avatar Dynamics Selector");
+            wantsMouseMove = true;
             foldoutContentStyle = new GUIStyle()
             {
                 padding = new RectOffset(16, 0, 0, 0),
@@ -117,6 +124,7 @@ namespace KRT.VRCQuestTools.Views
             }
 
             var avatar = new VRChatAvatar(converterSettings.AvatarDescriptor);
+            var avatarRoot = converterSettings.AvatarDescriptor.gameObject;
 
             EditorGUILayout.LabelField(i18n.SelectComponentsToKeep, EditorStyles.wordWrappedLabel);
             using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPosition))
@@ -148,7 +156,7 @@ namespace KRT.VRCQuestTools.Views
                                         physBoneProvidersToKeep = new VRCPhysBoneProviderBase[] { };
                                     }
                                 }
-                                physBoneProvidersToKeep = EditorGUIUtility.AvatarDynamicsComponentSelectorList(pbs, physBoneProvidersToKeep);
+                                physBoneProvidersToKeep = EditorGUIUtility.GroupedAvatarDynamicsComponentSelectorList(pbs, physBoneProvidersToKeep, avatarRoot, physBoneGroupFoldouts);
                             }
                         }
                     }
@@ -182,10 +190,10 @@ namespace KRT.VRCQuestTools.Views
                                         physBoneCollidersToKeep = new VRCPhysBoneCollider[] { };
                                     }
                                 }
-                                var providers = colliders.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray();
-                                var selected = physBoneCollidersToKeep.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray();
-                                selected = EditorGUIUtility.AvatarDynamicsComponentSelectorList(providers, selected);
-                                physBoneCollidersToKeep = selected.Select(p => p.Component).Cast<VRCPhysBoneCollider>().ToArray();
+                                var colliderProviders = colliders.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray();
+                                var selectedColliders = physBoneCollidersToKeep.Select(c => new VRCPhysBoneColliderProvider(c)).ToArray();
+                                selectedColliders = EditorGUIUtility.GroupedAvatarDynamicsComponentSelectorList(colliderProviders, selectedColliders, avatarRoot, colliderGroupFoldouts);
+                                physBoneCollidersToKeep = selectedColliders.Select(p => p.Component).Cast<VRCPhysBoneCollider>().ToArray();
                             }
                         }
                     }
@@ -220,10 +228,10 @@ namespace KRT.VRCQuestTools.Views
                                         contactsToKeep = new VRC.Dynamics.ContactBase[] { };
                                     }
                                 }
-                                var providers = contacts.Select(c => new VRCContactBaseProvider(c)).ToArray();
-                                var selected = contactsToKeep.Select(c => new VRCContactBaseProvider(c)).ToArray();
-                                selected = EditorGUIUtility.AvatarDynamicsComponentSelectorList(providers, selected);
-                                contactsToKeep = selected.Select(p => p.Component).Cast<ContactBase>().ToArray();
+                                var contactProviders = contacts.Select(c => new VRCContactBaseProvider(c)).ToArray();
+                                var selectedContacts = contactsToKeep.Select(c => new VRCContactBaseProvider(c)).ToArray();
+                                selectedContacts = EditorGUIUtility.GroupedAvatarDynamicsComponentSelectorList(contactProviders, selectedContacts, avatarRoot, contactGroupFoldouts);
+                                contactsToKeep = selectedContacts.Select(p => p.Component).Cast<ContactBase>().ToArray();
                             }
                         }
                     }
