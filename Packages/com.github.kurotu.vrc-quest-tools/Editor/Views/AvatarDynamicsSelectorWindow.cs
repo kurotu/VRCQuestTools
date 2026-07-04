@@ -18,27 +18,32 @@ namespace KRT.VRCQuestTools.Views
     /// <summary>
     /// Editor window for selecting avatar dynamics components to keep.
     /// </summary>
-    internal class AvatarDynamicsSelectorWindow : EditorWindow
+    internal class AvatarDynamicsSelectorWindow : EditorWindow, ISerializationCallbackReceiver
     {
-        /// <summary>
-        /// AvatarConverterSettings to edit.
-        /// </summary>
-        internal KRT.VRCQuestTools.Components.AvatarConverterSettings converterSettings;
+        [SerializeField]
+        private GameObject avatarRootGameObject;
 
         /// <summary>
         /// PhysBone providers to keep.
+        /// Providers are not serializable, so the underlying components are serialized in
+        /// <see cref="serializedPhysBonesToKeep"/> and providers are rebuilt on enable.
         /// </summary>
         internal VRCPhysBoneProviderBase[] physBoneProvidersToKeep = { };
 
         /// <summary>
         /// PhysBoneColliders to keep.
         /// </summary>
+        [SerializeField]
         internal VRCPhysBoneCollider[] physBoneCollidersToKeep = { };
 
         /// <summary>
         /// ContactSenders & ContactReceivers to keep.
         /// </summary>
+        [SerializeField]
         internal VRC.Dynamics.ContactBase[] contactsToKeep = { };
+
+        [SerializeField]
+        private List<Component> serializedPhysBonesToKeep = new List<Component>();
 
         [SerializeField]
         private Vector2 scrollPosition = Vector2.zero;
@@ -48,6 +53,8 @@ namespace KRT.VRCQuestTools.Views
         private bool foldoutPhysBonesColliders = true;
         [SerializeField]
         private bool foldoutContacts = true;
+        [SerializeField]
+        private bool foldoutEstimatedPerformance = true;
 
         private GUIStyle foldoutContentStyle;
         private I18nBase i18n;
@@ -57,6 +64,36 @@ namespace KRT.VRCQuestTools.Views
         private Dictionary<string, bool> physBoneGroupFoldouts = new Dictionary<string, bool>();
         private Dictionary<string, bool> colliderGroupFoldouts = new Dictionary<string, bool>();
         private Dictionary<string, bool> contactGroupFoldouts = new Dictionary<string, bool>();
+
+        /// <summary>
+        /// AvatarConverterSettings to edit. Backed by a GameObject reference rather than the component
+        /// directly: this component is editor-only and gets destroyed by NDMF's Play Mode avatar
+        /// processing, so a direct component reference would be unrecoverable after a Play Mode round
+        /// trip. The backing GameObject is not destroyed, so it is re-resolved live on every access.
+        /// </summary>
+        internal KRT.VRCQuestTools.Components.AvatarConverterSettings converterSettings
+        {
+            get => avatarRootGameObject != null ? avatarRootGameObject.GetComponent<KRT.VRCQuestTools.Components.AvatarConverterSettings>() : null;
+            set => avatarRootGameObject = value != null ? value.gameObject : null;
+        }
+
+        /// <summary>
+        /// Stores the underlying components of the PhysBone providers, which are not serializable themselves.
+        /// </summary>
+        public void OnBeforeSerialize()
+        {
+            serializedPhysBonesToKeep = physBoneProvidersToKeep
+                .Where(p => p != null && p.Component != null)
+                .Select(p => p.Component)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Providers are rebuilt in OnEnable because the Unity API is not available during deserialization.
+        /// </summary>
+        public void OnAfterDeserialize()
+        {
+        }
 
         /// <summary>
         /// Applies avatar dynamics settings to PlatformComponentRemover components.
@@ -97,22 +134,80 @@ namespace KRT.VRCQuestTools.Views
         {
             titleContent = new GUIContent("Avatar Dynamics Selector");
             wantsMouseMove = true;
+            wantsMouseEnterLeaveWindow = true;
             foldoutContentStyle = new GUIStyle()
             {
                 padding = new RectOffset(16, 0, 0, 0),
             };
             statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(true);
             AvatarDynamicsPreviewService.Initialize();
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            RestorePhysBoneProviders();
         }
 
         private void OnDisable()
         {
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             AvatarDynamicsPreviewService.Cleanup();
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state == PlayModeStateChange.EnteredEditMode)
+            {
+                ResetSelectionAfterPlayMode();
+            }
+        }
+
+        // Rebuilds PhysBone providers from the serialized components after a domain reload.
+        private void RestorePhysBoneProviders()
+        {
+            if (physBoneProvidersToKeep.Length > 0 || serializedPhysBonesToKeep.Count == 0)
+            {
+                return;
+            }
+            if (converterSettings == null || converterSettings.AvatarDescriptor == null)
+            {
+                return;
+            }
+            var components = new HashSet<Component>(serializedPhysBonesToKeep.Where(c => c != null));
+            physBoneProvidersToKeep = new VRChatAvatar(converterSettings.AvatarDescriptor)
+                .GetPhysBoneProviders()
+                .Where(p => components.Contains(p.Component))
+                .ToArray();
+        }
+
+        // Re-derives the selection after returning from Play Mode, using the same safe default logic
+        // as opening the window fresh (see AvatarConverterSettingsEditor.InitializeSelectorWindow).
+        // The precise pre-play selection can't be preserved: NDMF's Play Mode avatar processing
+        // destroys, and can merge/replace, the underlying PhysBone and Collider components while
+        // testing, so any component reference captured before Play Mode still ends up dangling once
+        // Unity remaps object references through the round trip. Falling back to the default
+        // selection avoids silently ending up with an empty "keep" list, which would mark every
+        // component for Android removal if Apply were pressed.
+        private void ResetSelectionAfterPlayMode()
+        {
+            if (converterSettings == null || converterSettings.AvatarDescriptor == null)
+            {
+                return;
+            }
+            KRT.VRCQuestTools.Inspector.AvatarConverterSettingsEditor.InitializeSelectorWindow(this, converterSettings, converterSettings.AvatarDescriptor);
         }
 
         private void OnGUI()
         {
             i18n = VRCQuestToolsSettings.I18nResource;
+
+            if (EditorApplication.isPlaying)
+            {
+                // The referenced AvatarConverterSettings is editor-only and gets destroyed by NDMF's
+                // Play Mode avatar processing, so it looks "missing" while playing even though the
+                // selection is preserved (see OnPlayModeStateChanged) and will reappear on returning
+                // to Edit Mode.
+                EditorGUILayout.HelpBox(i18n.ExitPlayModeToEdit, MessageType.Warning);
+                return;
+            }
+
             if (converterSettings == null)
             {
                 EditorGUILayout.LabelField("Referenced AvatarConverter is missing.");
@@ -123,8 +218,15 @@ namespace KRT.VRCQuestTools.Views
                 return;
             }
 
+            AvatarDynamicsPreviewService.BeginPreviewFrame(this);
+
             var avatar = new VRChatAvatar(converterSettings.AvatarDescriptor);
             var avatarRoot = converterSettings.AvatarDescriptor.gameObject;
+
+            using (new EditorGUI.DisabledScope(true))
+            {
+                EditorGUILayout.ObjectField(i18n.AvatarLabel, converterSettings.AvatarDescriptor, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+            }
 
             EditorGUILayout.LabelField(i18n.SelectComponentsToKeep, EditorStyles.wordWrappedLabel);
             using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPosition))
@@ -241,19 +343,30 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField(i18n.EstimatedPerformanceStats, EditorStyles.boldLabel);
-            var pbcToKeep = physBoneCollidersToKeep.Where(x => x != null).ToArray();
-            var cToKeep = contactsToKeep.Where(x => x != null).ToArray();
-            var stats = avatar.EstimatePerformanceStats(physBoneProvidersToKeep, pbcToKeep, cToKeep, true);
-            var categories = VRCSDKUtility.AvatarDynamicsPerformanceCategories;
-            foreach (var category in categories)
+            // Update the fallback scene preview with the current selection (drawn while no row is hovered).
+            AvatarDynamicsPreviewService.SetSelectedPreviewComponents(
+                physBoneProvidersToKeep.Cast<IVRCAvatarDynamicsProvider>()
+                    .Concat(contactsToKeep.Where(c => c != null).Select(c => (IVRCAvatarDynamicsProvider)new VRCContactBaseProvider(c))));
+
+            using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutEstimatedPerformance, new GUIContent(i18n.EstimatedPerformanceStats)))
             {
-                EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
+                foldoutEstimatedPerformance = foldout.Foldout;
+                if (foldoutEstimatedPerformance)
+                {
+                    var pbcToKeep = physBoneCollidersToKeep.Where(x => x != null).ToArray();
+                    var cToKeep = contactsToKeep.Where(x => x != null).ToArray();
+                    var stats = avatar.EstimatePerformanceStats(physBoneProvidersToKeep, pbcToKeep, cToKeep, true);
+                    var categories = VRCSDKUtility.AvatarDynamicsPerformanceCategories;
+                    foreach (var category in categories)
+                    {
+                        EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
+                    }
+                }
             }
 
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(8);
 
-            if (GUILayout.Button(i18n.ApplyButtonLabel))
+            if (EditorGUIUtility.LargeButton(i18n.ApplyButtonLabel))
             {
                 ApplyDynamicsSettings(converterSettings, physBoneProvidersToKeep, physBoneCollidersToKeep, contactsToKeep);
 
@@ -266,7 +379,9 @@ namespace KRT.VRCQuestTools.Views
                 Close();
             }
 
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(8);
+
+            AvatarDynamicsPreviewService.EndPreviewFrame();
         }
     }
 }

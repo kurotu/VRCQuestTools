@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.VRChat;
@@ -20,6 +21,12 @@ namespace KRT.VRCQuestTools.Views
     /// </summary>
     internal static class EditorGUIUtility
     {
+        // GUIClip.visibleRect is internal but is the only way to know the visible portion of the
+        // current clip area (e.g. a scroll view) during a layout-based OnGUI pass.
+        private static readonly PropertyInfo GuiClipVisibleRectProperty = typeof(GUI).Assembly
+            .GetType("UnityEngine.GUIClip")
+            ?.GetProperty("visibleRect", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+
         private static Dictionary<DisplayLanguage, string> displayLanguageNames = System.Enum.GetValues(typeof(DisplayLanguage))
             .Cast<DisplayLanguage>()
             .ToDictionary(x => x, x =>
@@ -132,7 +139,11 @@ namespace KRT.VRCQuestTools.Views
                 if ((currentEvent.type == EventType.Repaint || currentEvent.type == EventType.MouseMove))
                 {
                     var lastRect = GUILayoutUtility.GetLastRect();
-                    if (lastRect.Contains(currentEvent.mousePosition))
+
+                    // Extend the rect over the layout spacing below the row so the hover doesn't
+                    // drop out (falling back to the all-selected preview) between adjacent rows.
+                    lastRect.height += UnityEditor.EditorGUIUtility.standardVerticalSpacing;
+                    if (lastRect.Contains(currentEvent.mousePosition) && IsMouseInVisibleClipRect(currentEvent.mousePosition))
                     {
                         hoveredProvider = obj;
                     }
@@ -450,6 +461,17 @@ namespace KRT.VRCQuestTools.Views
         }
 
         /// <summary>
+        /// Show a large button for primary window actions. Taller than the default button
+        /// so it is easier to click without hitting neighboring controls.
+        /// </summary>
+        /// <param name="label">Button label.</param>
+        /// <returns>true when clicked.</returns>
+        internal static bool LargeButton(string label)
+        {
+            return GUILayout.Button(label, GUILayout.Height(28));
+        }
+
+        /// <summary>
         /// Show horizontal divider.
         /// </summary>
         /// <param name="lineHeight">Line height.</param>
@@ -493,6 +515,21 @@ namespace KRT.VRCQuestTools.Views
             }
 
             return display;
+        }
+
+        // Rows scrolled out of a scroll view still have layout rects, and the mouse position is
+        // translated into the scroll content space, so a rect check alone can hit a hidden row
+        // while the cursor is physically outside the viewport. Require the mouse to also be inside
+        // the visible clip area. When the internal API cannot be resolved, everything is treated
+        // as visible (the previous behavior).
+        private static bool IsMouseInVisibleClipRect(Vector2 mousePosition)
+        {
+            if (GuiClipVisibleRectProperty == null)
+            {
+                return true;
+            }
+            var visibleRect = (Rect)GuiClipVisibleRectProperty.GetValue(null);
+            return visibleRect.Contains(mousePosition);
         }
 
         // Unique foldout key per group. Uses the relative path so prefabs sharing a name keep independent foldout states.

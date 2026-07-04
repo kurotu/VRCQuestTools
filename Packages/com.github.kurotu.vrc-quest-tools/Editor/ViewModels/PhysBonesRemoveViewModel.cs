@@ -26,8 +26,11 @@ namespace KRT.VRCQuestTools.ViewModels
         [SerializeField]
         private GameObject avatarRoot;
 
+        // Underlying components of the selected PhysBone providers. Providers themselves are not
+        // serializable (abstract, wrapping a non-serialized component), so the components are
+        // stored instead and providers are rebuilt on access. Insertion order is preserved.
         [SerializeField]
-        private List<VRCPhysBoneProviderBase> physBonesToKeep = new List<VRCPhysBoneProviderBase>();
+        private List<Component> physBonesToKeep = new List<Component>();
 
         [SerializeField]
         private List<VRCPhysBoneCollider> physBoneCollidersToKeep = new List<VRCPhysBoneCollider>();
@@ -68,7 +71,22 @@ namespace KRT.VRCQuestTools.ViewModels
         /// <summary>
         /// Gets selected PhysBones to keep as providers for abstraction layer.
         /// </summary>
-        internal IEnumerable<VRCPhysBoneProviderBase> PhysBoneProvidersToKeep => physBonesToKeep;
+        internal IEnumerable<VRCPhysBoneProviderBase> PhysBoneProvidersToKeep
+        {
+            get
+            {
+                var avatar = Avatar;
+                if (avatar == null)
+                {
+                    return Enumerable.Empty<VRCPhysBoneProviderBase>();
+                }
+                var providers = avatar.GetPhysBoneProviders().ToDictionary(p => p.Component);
+                return physBonesToKeep
+                    .Where(c => c != null && providers.ContainsKey(c))
+                    .Select(c => providers[c])
+                    .ToList();
+            }
+        }
 
         /// <summary>
         /// Gets selected PhysBoneColliders to keep.
@@ -111,7 +129,7 @@ namespace KRT.VRCQuestTools.ViewModels
         internal void SetSelectedPhysBoneProviders(IEnumerable<VRCPhysBoneProviderBase> physBoneProviders)
         {
             physBonesToKeep.Clear();
-            physBonesToKeep.AddRange(physBoneProviders);
+            physBonesToKeep.AddRange(physBoneProviders.Select(p => p.Component));
         }
 
         /// <summary>
@@ -123,14 +141,14 @@ namespace KRT.VRCQuestTools.ViewModels
         {
             if (select)
             {
-                if (!physBonesToKeep.Contains(physBone))
+                if (!physBonesToKeep.Contains(physBone.Component))
                 {
-                    physBonesToKeep.Add(physBone);
+                    physBonesToKeep.Add(physBone.Component);
                 }
             }
             else
             {
-                physBonesToKeep.Remove(physBone);
+                physBonesToKeep.Remove(physBone.Component);
             }
         }
 
@@ -238,7 +256,7 @@ namespace KRT.VRCQuestTools.ViewModels
         {
             Undo.IncrementCurrentGroup();
             Undo.SetCurrentGroupName("Remove Avatar Dynamics Components");
-            var pbToKeep = physBonesToKeep.ToArray();
+            var pbToKeep = PhysBoneProvidersToKeep.ToArray();
             var pbcToKeep = physBoneCollidersToKeep.ToArray();
             var cToKeep = contactsToKeep.ToArray();
             VRCSDKUtility.DeleteAvatarDynamicsComponents(Avatar, pbToKeep, pbcToKeep, cToKeep);
@@ -250,13 +268,33 @@ namespace KRT.VRCQuestTools.ViewModels
         /// </summary>
         internal void DeselectRemovedComponents()
         {
-            physBonesToKeep.RemoveAll(p => p.GetPhysBones().Length == 0);
+            physBonesToKeep.RemoveAll(c => c == null);
 
             var colliders = Avatar.GetPhysBoneColliders();
             physBoneCollidersToKeep.RemoveAll(c => !colliders.Contains(c));
 
             var contacts = Avatar.GetContacts();
             contactsToKeep.RemoveAll(c => !contacts.Contains(c));
+        }
+
+        /// <summary>
+        /// Re-derives the selection after returning from Play Mode, using the same safe default
+        /// logic as selecting the avatar fresh (see <see cref="SelectAvatar"/>). The precise pre-play
+        /// selection can't be preserved: NDMF's Play Mode avatar processing destroys, and can
+        /// merge/replace, the underlying PhysBone and Collider components while testing, so any
+        /// component reference captured before Play Mode still ends up dangling once Unity remaps
+        /// object references through the round trip. Falling back to the default selection avoids
+        /// silently ending up with an empty "keep" list, which would mark every component for removal.
+        /// Call from <see cref="PlayModeStateChange.EnteredEditMode"/>.
+        /// </summary>
+        internal void ResetSelectionAfterPlayMode()
+        {
+            if (avatarRoot == null || Avatar?.AvatarDescriptor == null)
+            {
+                return;
+            }
+
+            SelectAvatar(Avatar.AvatarDescriptor);
         }
 
         /// <summary>
@@ -274,7 +312,7 @@ namespace KRT.VRCQuestTools.ViewModels
                 switch (setting.component)
                 {
                     case VRCPhysBone physBone:
-                        physBonesToKeep.RemoveAll(provider => provider.GetPhysBones().Contains(physBone));
+                        physBonesToKeep.RemoveAll(c => c == physBone);
                         break;
                     case VRCPhysBoneCollider physBoneCollider:
                         physBoneCollidersToKeep.Remove(physBoneCollider);

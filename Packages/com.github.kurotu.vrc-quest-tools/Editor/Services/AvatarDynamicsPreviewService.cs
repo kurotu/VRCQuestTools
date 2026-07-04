@@ -29,6 +29,21 @@ namespace KRT.VRCQuestTools.Services
         private static IVRCAvatarDynamicsProvider hoveredProvider;
         private static bool isInitialized = false;
 
+        // Fallback preview drawn while no list row is hovered: all selected PhysBones and Contacts.
+        private static List<IVRCAvatarDynamicsProvider> selectedProviders = new List<IVRCAvatarDynamicsProvider>();
+        private static HashSet<Component> selectedComponents = new HashSet<Component>();
+
+        // Windows using the preview, registered through BeginPreviewFrame. The fallback preview is
+        // drawn only while the mouse cursor is over one of them. Closed windows are only removed on
+        // full cleanup, but stale entries are harmless: a destroyed window is never under the mouse.
+        private static HashSet<EditorWindow> ownerWindows = new HashSet<EditorWindow>();
+
+        // Hover tracking for a single window OnGUI pass. When a pass which can detect hover
+        // (MouseMove/Repaint) ends without any SetPreviewComponent call, the hover is cleared
+        // so the preview falls back to the selected components.
+        private static bool isTrackingHoverFrame = false;
+        private static bool hoverDetectedInFrame = false;
+
         // Reference count of active users (windows). The service stays alive while any user is active,
         // so closing one window does not tear down the scene preview for another still-open window.
         private static int referenceCount = 0;
@@ -39,6 +54,10 @@ namespace KRT.VRCQuestTools.Services
         /// <param name="provider">Provider to preview, or null to clear preview.</param>
         internal static void SetPreviewComponent(IVRCAvatarDynamicsProvider provider)
         {
+            if (isTrackingHoverFrame && provider != null)
+            {
+                hoverDetectedInFrame = true;
+            }
             if (hoveredProvider != provider)
             {
                 hoveredProvider = provider;
@@ -47,6 +66,86 @@ namespace KRT.VRCQuestTools.Services
                     SceneView.RepaintAll();
                 }
             }
+        }
+
+        /// <summary>
+        /// Sets the selected components drawn as a fallback preview while no row is hovered.
+        /// Providers are recreated on every OnGUI pass, so the change is detected by comparing
+        /// the underlying components; the scene view is repainted only when the set changed.
+        /// </summary>
+        /// <param name="providers">Selected providers, or an empty sequence to clear.</param>
+        internal static void SetSelectedPreviewComponents(IEnumerable<IVRCAvatarDynamicsProvider> providers)
+        {
+            var newProviders = new List<IVRCAvatarDynamicsProvider>();
+            var newComponents = new HashSet<Component>();
+            foreach (var provider in providers)
+            {
+                if (provider?.Component == null)
+                {
+                    continue;
+                }
+                newProviders.Add(provider);
+                newComponents.Add(provider.Component);
+            }
+
+            if (selectedComponents.SetEquals(newComponents))
+            {
+                return;
+            }
+
+            selectedProviders = newProviders;
+            selectedComponents = newComponents;
+            if (isInitialized)
+            {
+                SceneView.RepaintAll();
+            }
+        }
+
+        /// <summary>
+        /// Begins hover tracking for a window OnGUI pass.
+        /// Call at the beginning of OnGUI; pair with <see cref="EndPreviewFrame"/>.
+        /// The window must set <see cref="EditorWindow.wantsMouseEnterLeaveWindow"/> so the
+        /// enter/leave events reach this method.
+        /// </summary>
+        /// <param name="window">Window running the OnGUI pass. The fallback preview is drawn only while the cursor is over a registered window.</param>
+        internal static void BeginPreviewFrame(EditorWindow window)
+        {
+            ownerWindows.Add(window);
+
+            var eventType = Event.current.type;
+            if (eventType == EventType.MouseLeaveWindow)
+            {
+                // The scene view doesn't repaint by itself when the cursor moves off the window,
+                // so trigger a repaint to hide the fallback preview. Same for showing it on enter.
+                ClearPreview();
+                if (isInitialized)
+                {
+                    SceneView.RepaintAll();
+                }
+                return;
+            }
+
+            if (eventType == EventType.MouseEnterWindow && isInitialized)
+            {
+                SceneView.RepaintAll();
+            }
+
+            // Only these event types run the hover detection in the selector lists.
+            isTrackingHoverFrame = eventType == EventType.MouseMove || eventType == EventType.Repaint;
+            hoverDetectedInFrame = false;
+        }
+
+        /// <summary>
+        /// Ends hover tracking for a window OnGUI pass. Clears the hover preview when
+        /// no row reported hover during the pass, falling back to the selected components.
+        /// </summary>
+        internal static void EndPreviewFrame()
+        {
+            if (isTrackingHoverFrame && !hoverDetectedInFrame)
+            {
+                ClearPreview();
+            }
+            isTrackingHoverFrame = false;
         }
 
         /// <summary>
@@ -94,39 +193,70 @@ namespace KRT.VRCQuestTools.Services
 
             SceneView.duringSceneGui -= OnSceneGUI;
             hoveredProvider = null;
+            selectedProviders = new List<IVRCAvatarDynamicsProvider>();
+            selectedComponents = new HashSet<Component>();
+            ownerWindows = new HashSet<EditorWindow>();
             isInitialized = false;
         }
 
         private static void OnSceneGUI(SceneView sceneView)
         {
-            if (hoveredProvider == null)
-            {
-                return;
-            }
-
             var originalColor = Handles.color;
 
             try
             {
-                switch (hoveredProvider.ComponentType)
+                if (hoveredProvider != null)
                 {
-                    case AvatarDynamicsComponentType.PhysBone:
-                        Handles.color = PrimaryPreviewColor;
-                        DrawPhysBonePreview((VRCPhysBoneProviderBase)hoveredProvider);
-                        break;
-                    case AvatarDynamicsComponentType.PhysBoneCollider:
-                        Handles.color = PrimaryPreviewColor;
-                        DrawColliderPreview((VRCPhysBoneColliderProvider)hoveredProvider, drawRelatedPhysBones: true);
-                        break;
-                    case AvatarDynamicsComponentType.Contact:
-                        Handles.color = PrimaryPreviewColor;
-                        DrawContactPreview((VRCContactBaseProvider)hoveredProvider);
-                        break;
+                    DrawProviderPreview(hoveredProvider);
+                }
+                else if (IsMouseOverOwnerWindow())
+                {
+                    // Fallback: draw all selected PhysBones and Contacts so the whole selection is
+                    // visible at a glance. Colliders are drawn only through the PhysBones referencing
+                    // them, the same way as when a PhysBone is hovered. Drawn only while the cursor
+                    // is over one of the owner windows to keep the scene view clean otherwise.
+                    foreach (var provider in selectedProviders)
+                    {
+                        if (provider.Component == null)
+                        {
+                            continue;
+                        }
+                        if (provider.ComponentType == AvatarDynamicsComponentType.PhysBoneCollider)
+                        {
+                            continue;
+                        }
+                        DrawProviderPreview(provider);
+                    }
                 }
             }
             finally
             {
                 Handles.color = originalColor;
+            }
+        }
+
+        private static bool IsMouseOverOwnerWindow()
+        {
+            var mouseOver = EditorWindow.mouseOverWindow;
+            return mouseOver != null && ownerWindows.Contains(mouseOver);
+        }
+
+        private static void DrawProviderPreview(IVRCAvatarDynamicsProvider provider)
+        {
+            switch (provider.ComponentType)
+            {
+                case AvatarDynamicsComponentType.PhysBone:
+                    Handles.color = PrimaryPreviewColor;
+                    DrawPhysBonePreview((VRCPhysBoneProviderBase)provider);
+                    break;
+                case AvatarDynamicsComponentType.PhysBoneCollider:
+                    Handles.color = PrimaryPreviewColor;
+                    DrawColliderPreview((VRCPhysBoneColliderProvider)provider, drawRelatedPhysBones: true);
+                    break;
+                case AvatarDynamicsComponentType.Contact:
+                    Handles.color = PrimaryPreviewColor;
+                    DrawContactPreview((VRCContactBaseProvider)provider);
+                    break;
             }
         }
 
@@ -157,7 +287,7 @@ namespace KRT.VRCQuestTools.Services
 
         private static void DrawColliderPreview(VRCPhysBoneColliderProvider provider, bool drawRelatedPhysBones = false)
         {
-            if (provider?.Component is not VRCPhysBoneCollider collider)
+            if (provider?.Component is not VRCPhysBoneCollider collider || collider == null)
             {
                 return;
             }
@@ -231,7 +361,7 @@ namespace KRT.VRCQuestTools.Services
 
         private static void DrawContactPreview(VRCContactBaseProvider provider)
         {
-            if (provider?.Component is not ContactBase contact)
+            if (provider?.Component is not ContactBase contact || contact == null)
             {
                 return;
             }
