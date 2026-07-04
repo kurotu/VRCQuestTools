@@ -44,6 +44,15 @@ namespace KRT.VRCQuestTools.Services
         private static bool isTrackingHoverFrame = false;
         private static bool hoverDetectedInFrame = false;
 
+        // Window currently running its OnGUI pass (set by BeginPreviewFrame), and the window that
+        // owns the current hoveredProvider (set by SetPreviewComponent). Since OnGUI calls never
+        // interleave, a window's Begin/End pair fully brackets its own SetPreviewComponent calls.
+        // EndPreviewFrame/BeginPreviewFrame's MouseLeaveWindow branch only clear the hover when their
+        // own window owns it, so a non-hovered window's pass can't clobber the hover another window
+        // legitimately set earlier in the same Repaint cycle.
+        private static EditorWindow currentTrackingWindow;
+        private static EditorWindow hoveredOwnerWindow;
+
         // Reference count of active users (windows). The service stays alive while any user is active,
         // so closing one window does not tear down the scene preview for another still-open window.
         private static int referenceCount = 0;
@@ -57,6 +66,7 @@ namespace KRT.VRCQuestTools.Services
             if (isTrackingHoverFrame && provider != null)
             {
                 hoverDetectedInFrame = true;
+                hoveredOwnerWindow = currentTrackingWindow;
             }
             if (hoveredProvider != provider)
             {
@@ -111,13 +121,16 @@ namespace KRT.VRCQuestTools.Services
         internal static void BeginPreviewFrame(EditorWindow window)
         {
             ownerWindows.Add(window);
+            currentTrackingWindow = window;
 
             var eventType = Event.current.type;
             if (eventType == EventType.MouseLeaveWindow)
             {
                 // The scene view doesn't repaint by itself when the cursor moves off the window,
                 // so trigger a repaint to hide the fallback preview. Same for showing it on enter.
-                ClearPreview();
+                // Only clear if this window owns the hover: otherwise the cursor leaving a
+                // non-hovered window would wipe out another window's legitimate hover.
+                ClearPreviewOwnedBy(window);
                 if (isInitialized)
                 {
                     SceneView.RepaintAll();
@@ -136,31 +149,49 @@ namespace KRT.VRCQuestTools.Services
         }
 
         /// <summary>
-        /// Ends hover tracking for a window OnGUI pass. Clears the hover preview when
-        /// no row reported hover during the pass, falling back to the selected components.
+        /// Ends hover tracking for a window OnGUI pass. Clears the hover preview when no row
+        /// reported hover during the pass and this window owns it, falling back to the selected
+        /// components. A window that doesn't currently own the hover never clears it: multiple
+        /// windows using this service can be open at once, and Unity may run each window's Repaint
+        /// pass within the same cycle, so a non-hovered window's pass must not clobber the hover
+        /// another window legitimately set moments earlier.
         /// </summary>
-        internal static void EndPreviewFrame()
+        /// <param name="window">Window ending its OnGUI pass. Must match the window passed to <see cref="BeginPreviewFrame"/>.</param>
+        internal static void EndPreviewFrame(EditorWindow window)
         {
             if (isTrackingHoverFrame && !hoverDetectedInFrame)
             {
-                ClearPreview();
+                ClearPreviewOwnedBy(window);
             }
             isTrackingHoverFrame = false;
         }
 
         /// <summary>
-        /// Clears the current preview component.
+        /// Clears the current preview component, regardless of which window owns it.
         /// </summary>
         internal static void ClearPreview()
         {
             if (hoveredProvider != null)
             {
                 hoveredProvider = null;
+                hoveredOwnerWindow = null;
                 if (isInitialized)
                 {
                     SceneView.RepaintAll();
                 }
             }
+        }
+
+        // Clears the hover only if it is not owned by another window. A null owner (e.g. the hover
+        // was never set by a window, such as right after Initialize) is treated as clearable by
+        // anyone.
+        private static void ClearPreviewOwnedBy(EditorWindow window)
+        {
+            if (hoveredOwnerWindow != null && hoveredOwnerWindow != window)
+            {
+                return;
+            }
+            ClearPreview();
         }
 
         /// <summary>
@@ -193,6 +224,8 @@ namespace KRT.VRCQuestTools.Services
 
             SceneView.duringSceneGui -= OnSceneGUI;
             hoveredProvider = null;
+            hoveredOwnerWindow = null;
+            currentTrackingWindow = null;
             selectedProviders = new List<IVRCAvatarDynamicsProvider>();
             selectedComponents = new HashSet<Component>();
             ownerWindows = new HashSet<EditorWindow>();

@@ -242,9 +242,14 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space();
 
+            // PhysBoneProvidersToKeep rebuilds providers from the serialized components on every
+            // access, so it's fetched once here and reused below instead of being enumerated
+            // separately for the preview and the performance stats.
+            var physBoneProvidersToKeep = model.PhysBoneProvidersToKeep.ToArray();
+
             // Update the fallback scene preview with the current selection (drawn while no row is hovered).
             AvatarDynamicsPreviewService.SetSelectedPreviewComponents(
-                model.PhysBoneProvidersToKeep.Cast<IVRCAvatarDynamicsProvider>()
+                physBoneProvidersToKeep.Cast<IVRCAvatarDynamicsProvider>()
                     .Concat(model.ContactsToKeep.Where(c => c != null).Select(c => (IVRCAvatarDynamicsProvider)new VRCContactBaseProvider(c))));
 
             using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutEstimatedPerformance, new GUIContent(i18n.EstimatedPerformanceStats)))
@@ -253,7 +258,7 @@ namespace KRT.VRCQuestTools.Views
                 if (foldoutEstimatedPerformance)
                 {
                     var stats = model.Avatar.EstimatePerformanceStats(
-                        model.PhysBoneProvidersToKeep.ToArray(),
+                        physBoneProvidersToKeep,
                         model.PhysBoneCollidersToKeep.ToArray(),
                         model.ContactsToKeep.ToArray(),
                         true);
@@ -280,7 +285,7 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space(8);
 
-            AvatarDynamicsPreviewService.EndPreviewFrame();
+            AvatarDynamicsPreviewService.EndPreviewFrame(this);
         }
 
         private void OnSelectAvatar(VRC_AvatarDescriptor avatar)

@@ -381,7 +381,7 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space(8);
 
-            AvatarDynamicsPreviewService.EndPreviewFrame();
+            AvatarDynamicsPreviewService.EndPreviewFrame(this);
         }
     }
 }
