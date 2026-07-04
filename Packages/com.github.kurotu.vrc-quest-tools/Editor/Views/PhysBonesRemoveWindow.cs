@@ -30,10 +30,16 @@ namespace KRT.VRCQuestTools.Views
 
         [SerializeField]
         private PhysBonesRemoveViewModel model = new PhysBonesRemoveViewModel();
+        [SerializeField]
         private Vector2 scrollPosition;
+        [SerializeField]
         private bool showPhysBones = true;
+        [SerializeField]
         private bool showPhysBoneColliders = true;
+        [SerializeField]
         private bool showContacts = true;
+        [SerializeField]
+        private bool foldoutEstimatedPerformance = true;
 
         // Per-group foldout states keyed by relative path label. Default: open (true).
         private Dictionary<string, bool> physBoneGroupFoldouts = new Dictionary<string, bool>();
@@ -69,6 +75,7 @@ namespace KRT.VRCQuestTools.Views
         {
             titleContent.text = "PhysBones Remover";
             wantsMouseMove = true;
+            wantsMouseEnterLeaveWindow = true;
             foldedContentPanel = new GUIStyle()
             {
                 padding =
@@ -78,16 +85,35 @@ namespace KRT.VRCQuestTools.Views
             };
             statsLevelSet = VRCSDKUtility.LoadAvatarPerformanceStatsLevelSet(true);
             AvatarDynamicsPreviewService.Initialize();
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
         private void OnDisable()
         {
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             AvatarDynamicsPreviewService.Cleanup();
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state == PlayModeStateChange.EnteredEditMode)
+            {
+                model.ResetSelectionAfterPlayMode();
+            }
         }
 
         private void OnGUI()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
+
+            if (EditorApplication.isPlaying)
+            {
+                // The referenced PhysBones/Colliders/Contacts are destroyed by NDMF's Play Mode avatar
+                // processing, so they look "missing" while playing even though the selection is
+                // preserved (see OnPlayModeStateChanged) and will reappear on returning to Edit Mode.
+                EditorGUILayout.HelpBox(i18n.ExitPlayModeToEdit, MessageType.Warning);
+                return;
+            }
 
             var selectedAvatar = (VRC_AvatarDescriptor)EditorGUILayout.ObjectField(i18n.AvatarLabel, model.Avatar?.AvatarDescriptor, typeof(VRC_AvatarDescriptor), true);
             if (model.Avatar?.AvatarDescriptor != selectedAvatar)
@@ -99,6 +125,8 @@ namespace KRT.VRCQuestTools.Views
                 return;
             }
             model.DeselectRemovedComponents();
+
+            AvatarDynamicsPreviewService.BeginPreviewFrame(this);
 
             var avatarRoot = model.Avatar.AvatarDescriptor.gameObject;
 
@@ -214,28 +242,50 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space();
 
-            var stats = model.Avatar.EstimatePerformanceStats(
-                model.PhysBoneProvidersToKeep.ToArray(),
-                model.PhysBoneCollidersToKeep.ToArray(),
-                model.ContactsToKeep.ToArray(),
-                true);
-            EditorGUILayout.LabelField(i18n.EstimatedPerformanceStats, EditorStyles.boldLabel);
-            foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
+            // PhysBoneProvidersToKeep rebuilds providers from the serialized components on every
+            // access, so it's fetched once here and reused below instead of being enumerated
+            // separately for the preview and the performance stats.
+            var physBoneProvidersToKeep = model.PhysBoneProvidersToKeep.ToArray();
+
+            // Update the fallback scene preview with the current selection (drawn while no row is hovered).
+            AvatarDynamicsPreviewService.SetSelectedPreviewComponents(
+                physBoneProvidersToKeep.Cast<IVRCAvatarDynamicsProvider>()
+                    .Concat(model.ContactsToKeep.Where(c => c != null).Select(c => (IVRCAvatarDynamicsProvider)new VRCContactBaseProvider(c))));
+
+            using (var foldout = new EditorGUIUtility.FoldoutHeaderGroupScope(foldoutEstimatedPerformance, new GUIContent(i18n.EstimatedPerformanceStats)))
             {
-                EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
+                foldoutEstimatedPerformance = foldout.Foldout;
+                if (foldoutEstimatedPerformance)
+                {
+                    var stats = model.Avatar.EstimatePerformanceStats(
+                        physBoneProvidersToKeep,
+                        model.PhysBoneCollidersToKeep.ToArray(),
+                        model.ContactsToKeep.ToArray(),
+                        true);
+                    foreach (var category in VRCSDKUtility.AvatarDynamicsPerformanceCategories)
+                    {
+                        EditorGUIUtility.PerformanceRatingPanel(stats, statsLevelSet, category, i18n);
+                    }
+                }
             }
 
-            if (GUILayout.Button(i18n.DeleteUnselectedComponents))
+            EditorGUILayout.Space(8);
+
+            if (EditorGUIUtility.LargeButton(i18n.DeleteUnselectedComponents))
             {
                 OnClickDelete();
             }
 
-            if (GUILayout.Button(i18n.SetPlatformComponentRemoverButtonLabel))
+            EditorGUILayout.Space(4);
+
+            if (EditorGUIUtility.LargeButton(i18n.SetPlatformComponentRemoverButtonLabel))
             {
                 OnClickSetPlatformComponentRemover();
             }
 
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(8);
+
+            AvatarDynamicsPreviewService.EndPreviewFrame(this);
         }
 
         private void OnSelectAvatar(VRC_AvatarDescriptor avatar)
