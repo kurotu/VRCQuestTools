@@ -48,6 +48,12 @@ namespace KRT.VRCQuestTools.Components
         [System.NonSerialized]
         public bool forceMaterialPreview = false;
 
+        /// <summary>
+        /// Serialized schema version for forward compatibility.
+        /// </summary>
+        [SerializeField]
+        private int serializedVersion = 1;
+
         /// <inheritdoc/>
         public IMaterialConvertSettings DefaultMaterialConvertSettings => defaultMaterialConvertSettings;
 

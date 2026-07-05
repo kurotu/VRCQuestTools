@@ -15,5 +15,11 @@ namespace KRT.VRCQuestTools.Components
         /// Build target to control VQT Platform components.
         /// </summary>
         public BuildTarget buildTarget = BuildTarget.Auto;
+
+        /// <summary>
+        /// Serialized schema version for forward compatibility.
+        /// </summary>
+        [SerializeField]
+        private int serializedVersion = 1;
     }
 }

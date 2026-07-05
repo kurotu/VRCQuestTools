@@ -19,6 +19,12 @@ namespace KRT.VRCQuestTools.Components
         public PlatformComponentRemoverItem[] componentSettings = new PlatformComponentRemoverItem[0];
 
         /// <summary>
+        /// Serialized schema version for forward compatibility.
+        /// </summary>
+        [SerializeField]
+        private int serializedVersion = 1;
+
+        /// <summary>
         /// Remove non-existing components then add unregistered components.
         /// </summary>
         public void UpdateComponentSettings()

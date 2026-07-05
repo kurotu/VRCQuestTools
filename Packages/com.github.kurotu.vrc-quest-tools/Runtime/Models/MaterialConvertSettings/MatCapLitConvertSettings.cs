@@ -44,6 +44,10 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         public Texture matCapTexture;
 
+        /// <summary>Serialized schema version for forward compatibility.</summary>
+        [SerializeField]
+        private int serializedVersion = 1;
+
         private static Lazy<FieldInfo[]> unitySerializableFields = new Lazy<FieldInfo[]>(() => GetUnitySerializableFields(typeof(MatCapLitConvertSettings)));
 
         /// <inheritdoc/>

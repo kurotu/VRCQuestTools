@@ -95,6 +95,12 @@ namespace KRT.VRCQuestTools.Components
         /// </summary>
         public MeshFlipperProcessingPhase processingPhase = MeshFlipperProcessingPhase.AfterPolygonReduction;
 
+        /// <summary>
+        /// Serialized schema version for forward compatibility.
+        /// </summary>
+        [SerializeField]
+        private int serializedVersion = 1;
+
 #if UNITY_EDITOR
         /// <summary>
         /// Create a new mesh basd on the component settings.

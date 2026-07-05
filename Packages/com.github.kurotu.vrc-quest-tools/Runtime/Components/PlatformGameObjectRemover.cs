@@ -18,5 +18,11 @@ namespace KRT.VRCQuestTools.Components
         /// Remove the GameObject this component is attached when the target platform is Android.
         /// </summary>
         public bool removeOnAndroid = false;
+
+        /// <summary>
+        /// Serialized schema version for forward compatibility.
+        /// </summary>
+        [SerializeField]
+        private int serializedVersion = 1;
     }
 }

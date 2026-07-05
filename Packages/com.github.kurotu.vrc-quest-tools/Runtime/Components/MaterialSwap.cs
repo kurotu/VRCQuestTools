@@ -18,6 +18,12 @@ namespace KRT.VRCQuestTools.Components
         public List<MaterialMapping> materialMappings = new List<MaterialMapping>();
 
         /// <summary>
+        /// Serialized schema version for forward compatibility.
+        /// </summary>
+        [SerializeField]
+        private int serializedVersion = 1;
+
+        /// <summary>
         /// Apply material swaps based on the mapping.
         /// </summary>
         public void ApplyMaterialSwaps()

@@ -15,5 +15,10 @@ namespace KRT.VRCQuestTools.Components
     [DisallowMultipleComponent]
     public class FallbackAvatar : VRCQuestToolsEditorOnly, IAvatarRootComponent
     {
+        /// <summary>
+        /// Serialized schema version for forward compatibility.
+        /// </summary>
+        [SerializeField]
+        private int serializedVersion = 1;
     }
 }

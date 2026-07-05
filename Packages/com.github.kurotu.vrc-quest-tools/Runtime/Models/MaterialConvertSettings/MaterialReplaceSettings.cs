@@ -13,6 +13,10 @@ namespace KRT.VRCQuestTools.Models
         [SerializeField]
         public Material material;
 
+        /// <summary>Serialized schema version for forward compatibility.</summary>
+        [SerializeField]
+        private int serializedVersion = 1;
+
         /// <inheritdoc/>
         public MobileTextureFormat MobileTextureFormat => throw new System.InvalidProgramException("MaterialReplaceSettings doesn't generate textures.");
 

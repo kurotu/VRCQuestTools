@@ -39,6 +39,10 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         public bool generateShadowFromNormalMap = true;
 
+        /// <summary>Serialized schema version for forward compatibility.</summary>
+        [SerializeField]
+        private int serializedVersion = 1;
+
         /// <inheritdoc/>
         public bool GenerateQuestTextures => generateQuestTextures;
 

@@ -32,6 +32,12 @@ namespace KRT.VRCQuestTools.Components
         public MobileTextureFormat mobileTextureFormat = MobileTextureFormat.ASTC_8x8;
 
         /// <summary>
+        /// Serialized schema version for forward compatibility.
+        /// </summary>
+        [SerializeField]
+        private int serializedVersion = 1;
+
+        /// <summary>
         /// Texture size limit for quest.
         /// 256px is the maximum size for VRChat expressions menu icons.
         /// </summary>

@@ -12,6 +12,10 @@ namespace KRT.VRCQuestTools.Components
     [DisallowMultipleComponent]
     public class NetworkIDAssigner : VRCQuestToolsEditorOnly
     {
-        // no members.
+        /// <summary>
+        /// Serialized schema version for forward compatibility.
+        /// </summary>
+        [SerializeField]
+        private int serializedVersion = 1;
     }
 }
