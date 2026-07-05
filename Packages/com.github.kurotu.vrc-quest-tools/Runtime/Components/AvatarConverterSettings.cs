@@ -122,6 +122,14 @@ namespace KRT.VRCQuestTools.Components
         public bool forceMaterialPreview = false;
 
         /// <summary>
+        /// Serialized schema version for forward compatibility.
+        /// </summary>
+        [SerializeField]
+#pragma warning disable CS0414
+        private int serializedVersion = 1;
+#pragma warning restore CS0414
+
+        /// <summary>
         /// Gets avatar descriptor of the avatar root object.
         /// </summary>
         public VRC_AvatarDescriptor AvatarDescriptor => gameObject.GetComponent<VRC_AvatarDescriptor>();
