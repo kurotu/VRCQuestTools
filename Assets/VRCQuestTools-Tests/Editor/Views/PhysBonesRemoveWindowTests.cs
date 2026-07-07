@@ -20,7 +20,7 @@ namespace KRT.VRCQuestTools.Views
     /// Tests for AvatarDynamicsSettingsUtility.Apply(VRC_AvatarDescriptor, ...)
     /// used by PhysBonesRemoveWindow's "Set Platform Component Remover" button.
     /// </summary>
-    public class PhysBonesRemoveWindowTests
+    public class PhysBonesRemoveWindowTests : KRT.VRCQuestTools.TestUtilities.IsolatedEditorSceneTest
     {
         private GameObject avatarRoot;
         private VRCAvatarDescriptor descriptor;
@@ -36,6 +36,7 @@ namespace KRT.VRCQuestTools.Views
         public void SetUp()
         {
             avatarRoot = new GameObject("TestAvatar");
+            avatarRoot.transform.SetParent(TestRoot.transform);
             descriptor = avatarRoot.AddComponent<VRCAvatarDescriptor>();
 
             boneObject = new GameObject("BoneObject");

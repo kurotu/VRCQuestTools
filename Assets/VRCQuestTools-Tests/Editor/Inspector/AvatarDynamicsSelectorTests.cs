@@ -23,7 +23,7 @@ namespace KRT.VRCQuestTools.Inspector
     /// Verifies that the Apply logic configures PlatformComponentRemover correctly
     /// instead of writing to legacy physBonesToKeep fields (issue #185).
     /// </summary>
-    public class AvatarDynamicsSelectorTests
+    public class AvatarDynamicsSelectorTests : KRT.VRCQuestTools.TestUtilities.IsolatedEditorSceneTest
     {
         private GameObject avatarRoot;
         private AvatarConverterSettings converterSettings;
@@ -39,6 +39,7 @@ namespace KRT.VRCQuestTools.Inspector
         public void SetUp()
         {
             avatarRoot = new GameObject("TestAvatar");
+            avatarRoot.transform.SetParent(TestRoot.transform);
             avatarRoot.AddComponent<VRCAvatarDescriptor>();
             converterSettings = avatarRoot.AddComponent<AvatarConverterSettings>();
 

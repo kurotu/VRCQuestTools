@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools.Inspector
     /// AvatarDynamicsSelectorWindow initial state when the selector is opened
     /// (issue #185).
     /// </summary>
-    public class AvatarDynamicsSelectorEditorE2ETests
+    public class AvatarDynamicsSelectorEditorE2ETests : KRT.VRCQuestTools.TestUtilities.IsolatedEditorSceneTest
     {
         private Driver driver;
         private GameObject avatarRoot;
@@ -47,6 +47,7 @@ namespace KRT.VRCQuestTools.Inspector
             driver = new Driver();
 
             avatarRoot = new GameObject("TestAvatar");
+            avatarRoot.transform.SetParent(TestRoot.transform);
             descriptor = avatarRoot.AddComponent<VRCAvatarDescriptor>();
             converterSettings = avatarRoot.AddComponent<AvatarConverterSettings>();
 
