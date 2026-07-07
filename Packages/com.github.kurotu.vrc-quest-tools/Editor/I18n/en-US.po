@@ -191,6 +191,9 @@ msgstr "You can non-destructively convert the avatar at build-time when the proj
 msgid "InfoForNdmfConversion2"
 msgstr "You can non-destructively convert the avatar at build-time when the project has Non-Destructive Modular Framework (NDMF) package. Now you can also upload the avatar directly from VRChat SDK Control Panel."
 
+msgid "InfoForNdmfAutoConversion"
+msgstr "This avatar will be automatically converted for the mobile platform at build time (non-destructive). You can upload it as usual from the VRChat SDK Control Panel."
+
 msgid "PhysBoneSyncReminder"
 msgstr "To synchronize PhysBones between PC and Mobile, please upload the non-converted avatar for PC."
 
@@ -259,6 +262,9 @@ msgstr "When converting manually, non-destructive components other than MA Merge
 
 msgid "ManualConvertButtonLabel"
 msgstr "Convert"
+
+msgid "ManualConversionFoldoutLabel"
+msgstr "Manual Conversion"
 
 msgid "ConfirmationForUnityConstraints"
 msgstr "Manual conversion will remove Unity Constraints. You can non-destructively convert them to VRChat Constraints by adding a MA Convert Constraints component to the avatar and using Avatar Builder to upload. Do you really want to continue conversion?"

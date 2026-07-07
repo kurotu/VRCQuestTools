@@ -43,6 +43,7 @@
 - `Convert Avatar for Mobile` で `VQT Network ID Assigner` を自動追加しないよう変更。代わりに `Avatar Converter Settings` の高度な設定に `Network ID を割り当てる` オプションを追加。
 - メニューアイコン設定を `Avatar Converter Settings` に統合し、NDMFのアイコン処理を `VQT Menu Icon Resizer` に統一。
 - `Convert Avatar for Mobile` を `Setup Avatar for Mobile` に改名し、初期セットアップをMA/AAOの利用可否対応・既存コンポーネント無効化表示・`MA Sync Parameter Sequence` の `PrimaryPlatform=PC` 設定を含む挙動へ統合。
+- `Avatar Converter Settings` インスペクターのレイアウトを改善。
 
 ### 修正
 - `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。
