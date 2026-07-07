@@ -117,6 +117,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string InvalidReplacementMaterialExceptionDialogMessage => GetText("InvalidReplacementMaterialExceptionDialogMessage");
         internal string InfoForNdmfConversion => GetText("InfoForNdmfConversion");
         internal string InfoForNdmfConversion2 => GetText("InfoForNdmfConversion2");
+        internal string InfoForNdmfAutoConversion => GetText("InfoForNdmfAutoConversion");
         internal string PhysBoneSyncReminder => GetText("PhysBoneSyncReminder");
 
         internal string WarningForPerformance => GetText("WarningForPerformance");
@@ -143,6 +144,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string AvatarConverterContactsTooltip => GetText("AvatarConverterContactsTooltip");
         internal string ManualConversionWarning => GetText("ManualConversionWarning");
         internal string ManualConvertButtonLabel => GetText("ManualConvertButtonLabel");
+        internal string ManualConversionFoldoutLabel => GetText("ManualConversionFoldoutLabel");
         internal string ConfirmationForUnityConstraints => GetText("ConfirmationForUnityConstraints");
         internal string ConfirmationForMAConvertConstraints => GetText("ConfirmationForMAConvertConstraints");
 

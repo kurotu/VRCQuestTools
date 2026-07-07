@@ -142,21 +142,6 @@ namespace KRT.VRCQuestTools.Inspector
                     canConvert = false;
                 }
 
-                using (var disabled = new EditorGUI.DisabledGroupScope(true))
-                {
-                    var path = GetOutputPath(descriptor);
-                    if (Directory.Exists(path))
-                    {
-                        EditorGUILayout.ObjectField(i18n.SaveToLabel, AssetDatabase.LoadAssetAtPath<DefaultAsset>(path), typeof(DefaultAsset), false);
-                    }
-                    else
-                    {
-                        EditorGUILayout.TextField(i18n.SaveToLabel, path);
-                    }
-                }
-
-                EditorGUILayout.Space(12);
-
                 var avatarDynamicsStats = converterSettings.removeAvatarDynamics ? GetEstimatedPerformanceStats(converterSettings) : null;
 
                 editorState.foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingsLabel, editorState.foldOutMaterialSettings);
@@ -165,12 +150,6 @@ namespace KRT.VRCQuestTools.Inspector
                     additionalMaterialConvertSettingsReorderableList ??= MaterialConversionGUI.CreateAdditionalMaterialConvertSettingsList(so, so.FindProperty(nameof(AvatarConverterSettings.additionalMaterialConvertSettings)));
                     editorState.foldOutAdditionalMaterialSettings = MaterialConversionGUI.Draw(so, editorState.foldOutAdditionalMaterialSettings, additionalMaterialConvertSettingsReorderableList);
 
-                    EditorGUILayout.Space();
-
-                    if (GUILayout.Button(i18n.UpdateTexturesLabel))
-                    {
-                        OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSettings);
-                    }
                     EditorGUILayout.Space(12);
                 }
 
@@ -238,21 +217,6 @@ namespace KRT.VRCQuestTools.Inspector
                     EditorGUILayout.PropertyField(so.FindProperty("ndmfPhase"), new GUIContent("[NDMF] " + i18n.NdmfPhaseLabel, i18n.NdmfPhaseTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("enableMaterialPreview"), new GUIContent("[NDMF] " + i18n.EnableMaterialPreviewLabel, i18n.EnableMaterialPreviewTooltip));
                 }
-
-                Views.EditorGUIUtility.HorizontalDivider(2);
-
-                // Temporary force preview toggle (non-serialized), shown regardless of Advanced foldout state
-                var forceLabel = converterSettings.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
-                var oldBg = GUI.backgroundColor;
-                if (converterSettings.ForceMaterialPreview)
-                {
-                    GUI.backgroundColor = Color.green;
-                }
-                if (GUILayout.Button(new GUIContent("[NDMF] " + forceLabel, i18n.ForceMaterialPreviewTooltip)))
-                {
-                    converterSettings.forceMaterialPreview = !converterSettings.forceMaterialPreview;
-                }
-                GUI.backgroundColor = oldBg;
 
                 Views.EditorGUIUtility.HorizontalDivider(2);
 
@@ -342,25 +306,105 @@ namespace KRT.VRCQuestTools.Inspector
                 }
                 else
                 {
+#if VQT_HAS_NDMF
+                    EditorGUILayout.HelpBox(i18n.InfoForNdmfAutoConversion, MessageType.Info);
+
+                    EditorGUILayout.Space();
+
+                    using (var disabledPreview = new EditorGUI.DisabledGroupScope(IsMobileBuildTarget(descriptor)))
+                    {
+                        var forceLabel = converterSettings.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
+                        var oldBg = GUI.backgroundColor;
+                        if (converterSettings.ForceMaterialPreview)
+                        {
+                            GUI.backgroundColor = Color.green;
+                        }
+                        if (GUILayout.Button(new GUIContent("[NDMF] " + forceLabel, i18n.ForceMaterialPreviewTooltip)))
+                        {
+                            converterSettings.forceMaterialPreview = !converterSettings.forceMaterialPreview;
+                        }
+                        GUI.backgroundColor = oldBg;
+                    }
+
+                    EditorGUILayout.Space();
+
+                    editorState.foldOutManualConversion = EditorGUILayout.Foldout(editorState.foldOutManualConversion, i18n.ManualConversionFoldoutLabel, true);
+                    if (editorState.foldOutManualConversion)
+                    {
+                        EditorGUILayout.HelpBox(i18n.ManualConversionWarning, MessageType.Warning);
+
+                        if (descriptor)
+                        {
+                            using (var disabledPath = new EditorGUI.DisabledGroupScope(true))
+                            {
+                                var path = GetOutputPath(descriptor);
+                                if (Directory.Exists(path))
+                                {
+                                    EditorGUILayout.ObjectField(i18n.SaveToLabel, AssetDatabase.LoadAssetAtPath<DefaultAsset>(path), typeof(DefaultAsset), false);
+                                }
+                                else
+                                {
+                                    EditorGUILayout.TextField(i18n.SaveToLabel, path);
+                                }
+                            }
+
+                            EditorGUILayout.Space();
+                        }
+
+                        using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
+                        {
+                            if (GUILayout.Button(i18n.ManualConvertButtonLabel))
+                            {
+                                OnClickConvertButton(descriptor);
+                            }
+                        }
+
+                        EditorGUILayout.Space();
+
+                        using (var disabledTextures = new EditorGUI.DisabledGroupScope(!canConvert))
+                        {
+                            if (GUILayout.Button(i18n.UpdateTexturesLabel))
+                            {
+                                OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSettings);
+                            }
+                        }
+                    }
+#else
                     EditorGUILayout.HelpBox(i18n.InfoForNdmfConversion2, MessageType.Info);
 
                     EditorGUILayout.Space();
 
-#if VQT_HAS_NDMF
-                    EditorGUILayout.HelpBox(i18n.ManualConversionWarning, MessageType.Warning);
-                    using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
+                    if (descriptor)
                     {
-                        if (GUILayout.Button(i18n.ManualConvertButtonLabel))
+                        using (var disabledPath = new EditorGUI.DisabledGroupScope(true))
                         {
-                            OnClickConvertButton(descriptor);
+                            var path = GetOutputPath(descriptor);
+                            if (Directory.Exists(path))
+                            {
+                                EditorGUILayout.ObjectField(i18n.SaveToLabel, AssetDatabase.LoadAssetAtPath<DefaultAsset>(path), typeof(DefaultAsset), false);
+                            }
+                            else
+                            {
+                                EditorGUILayout.TextField(i18n.SaveToLabel, path);
+                            }
                         }
+
+                        EditorGUILayout.Space();
                     }
-#else
+
                     using (var disabled = new EditorGUI.DisabledGroupScope(!canConvert))
                     {
                         if (GUILayout.Button(i18n.ConvertButtonLabel))
                         {
                             OnClickConvertButton(descriptor);
+                        }
+                    }
+
+                    using (var disabledTextures = new EditorGUI.DisabledGroupScope(!canConvert))
+                    {
+                        if (GUILayout.Button(i18n.UpdateTexturesLabel))
+                        {
+                            OnClickRegenerateTexturesButton(descriptor, converterSettings.defaultMaterialConvertSettings);
                         }
                     }
 #endif
@@ -719,6 +763,25 @@ namespace KRT.VRCQuestTools.Inspector
             }
             Logger.LogException(exception, context);
             DisplayErrorDialog(message, dialogException);
+        }
+
+        private static bool IsMobileBuildTarget(VRC_AvatarDescriptor avatar)
+        {
+            if (avatar == null)
+            {
+                return false;
+            }
+
+            var targetSettings = avatar.GetComponent<PlatformTargetSettings>();
+            var buildTarget = targetSettings != null ? targetSettings.buildTarget : Models.BuildTarget.Auto;
+            if (buildTarget == Models.BuildTarget.Auto)
+            {
+                buildTarget = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS
+                    ? Models.BuildTarget.Android
+                    : Models.BuildTarget.PC;
+            }
+
+            return buildTarget == Models.BuildTarget.Android;
         }
 
         private string GetOutputPath(VRC_AvatarDescriptor avatar)
