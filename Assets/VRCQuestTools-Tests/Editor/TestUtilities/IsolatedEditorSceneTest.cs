@@ -1,3 +1,8 @@
+// <copyright file="IsolatedEditorSceneTest.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 #if UNITY_EDITOR
 using System;
 using NUnit.Framework;
@@ -64,7 +69,7 @@ namespace KRT.VRCQuestTools.TestUtilities
 
             if (createdTempScene && testScene.IsValid())
             {
-                // Close and unload the temporary scene (do not save)
+                // Close and unload the temporary scene (remove it from the hierarchy)
                 EditorSceneManager.CloseScene(testScene, true);
             }
 
