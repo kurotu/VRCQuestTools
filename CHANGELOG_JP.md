@@ -21,7 +21,7 @@
 - `VQT Fallback Avatar` コンポーネントを追加。モバイルプラットフォームのパフォーマンス要件（Good以上）を満たした場合、アップロード後に自動的にアバターをフォールバックアバターとして設定します。
 - Mobile向けアップロード時、Avatar Dynamics のカテゴリが Very Poor の場合に警告ログを表示するよう追加。
 - (実験的機能) Poiyomi から Toon Standard へのマテリアル変換を追加。
-- パーティクルシェーダー、パーティクルシステム、Trail Renderer、Line Renderer 専用のマテリアル変換を追加。
+- パーティクルシェーダー、パーティクルシステム、Trail Renderer、Line Renderer 専用のマテリアル変換を追加。
 
 ### 変更
 - Avatar Dynamics Selector の保持/削除設定を `Avatar Converter Settings` のレガシー配列ではなく `Platform Component Remover` に保存するように変更。適用時に設定を移行し、古い参照が残らないようレガシー配列をクリアします。
@@ -50,6 +50,7 @@
 - アバター変換時のテクスチャ生成処理における RenderTexture と Material のメモリリークを修正。
 - 一度も描画されていない RenderTexture をテクスチャとして使用しているマテリアルのテクスチャ生成が失敗する問題を修正。
 - アバター変換失敗ダイアログに表示するスタックトレースの行数を制限し、ダイアログが操作不能になる問題を修正。
+- lilToon から Toon Standard への変換結果が暗くなりすぎる問題を修正。Occlusion の強度を常にフル適用するのではなく、lilToon の陰影色から算出するように変更。
 
 ### 削除
 - Unity 2019 のサポートを終了。

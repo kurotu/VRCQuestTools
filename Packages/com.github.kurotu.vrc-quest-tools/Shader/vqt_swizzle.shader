@@ -5,6 +5,8 @@ Shader "Hidden/VRCQuestTools/Swizzle"
         _Texture0 ("Texture 0", 2D) = "white" {}
         [Enum(R, 0, G, 1, B, 2, A, 3, Grayscale, 4)] _Texture0Input ("Texture 0 Input", Int) = 0
         [Enum(R, 0, G, 1, B, 2, A, 3)] _Texture0Output ("Texture 0 Output", Int) = -1
+        _Texture0Scale ("Texture 0 Scale", Float) = 1
+        _Texture0Offset ("Texture 0 Offset", Float) = 0
 
         _Texture1 ("Texture 1", 2D) = "white" {}
         [Enum(R, 0, G, 1, B, 2, A, 3, Grayscale, 4)] _Texture1Input ("Texture 1 Input", Int) = 1
@@ -47,6 +49,8 @@ Shader "Hidden/VRCQuestTools/Swizzle"
             float4 _Texture0_ST;
             float _Texture0Input;
             float _Texture0Output;
+            float _Texture0Scale;
+            float _Texture0Offset;
 
             sampler2D _Texture1;
             float4 _Texture1_ST;
@@ -93,6 +97,7 @@ Shader "Hidden/VRCQuestTools/Swizzle"
 
                 fixed4 input0 = tex2D(_Texture0, i.uv);
                 float value0 = swizzleInput(input0, _Texture0Input);
+                value0 = saturate(value0 * _Texture0Scale + _Texture0Offset);
                 if (_Texture0Output == 0) {
                     output.r = value0;
                 } else if (_Texture0Output == 1) {

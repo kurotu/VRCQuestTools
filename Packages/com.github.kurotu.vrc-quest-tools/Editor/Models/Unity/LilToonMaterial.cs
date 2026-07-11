@@ -107,6 +107,26 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal bool UseShadow3rd => UseShadow && Material.GetColor("_Shadow3rdColor").a > 0.0f;
 
         /// <summary>
+        /// Gets the 1st shadow color.
+        /// </summary>
+        internal Color ShadowColor => Material.GetColor("_ShadowColor");
+
+        /// <summary>
+        /// Gets the 2nd shadow color.
+        /// </summary>
+        internal Color Shadow2ndColor => Material.GetColor("_Shadow2ndColor");
+
+        /// <summary>
+        /// Gets the 3rd shadow color.
+        /// </summary>
+        internal Color Shadow3rdColor => Material.GetColor("_Shadow3rdColor");
+
+        /// <summary>
+        /// Gets the shadow strength.
+        /// </summary>
+        internal float ShadowStrength => Material.GetFloat("_ShadowStrength");
+
+        /// <summary>
         /// Gets a value indicating whether to use main 2nd texture.
         /// </summary>
         internal bool UseMain2ndTex => Material.GetFloat("_UseMain2ndTex") > 0.5f;
@@ -140,6 +160,16 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Gets the ao map texture offset.
         /// </summary>
         internal Vector2 AOMapTextureOffset => Material.GetTextureOffset("_ShadowBorderMask");
+
+        /// <summary>
+        /// Gets the AO map remap parameters for 1st and 2nd shadows (x: 1st scale, y: 1st offset, z: 2nd scale, w: 2nd offset).
+        /// </summary>
+        internal Vector4 ShadowAOShift => Material.GetVector("_ShadowAOShift");
+
+        /// <summary>
+        /// Gets the AO map remap parameters for 3rd shadow (x: 3rd scale, y: 3rd offset).
+        /// </summary>
+        internal Vector4 ShadowAOShift2 => Material.GetVector("_ShadowAOShift2");
 
         /// <summary>
         /// Gets cull mode.

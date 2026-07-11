@@ -245,6 +245,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override float GetOcclusionStrength()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override float GetReflectance()
         {
             throw new NotImplementedException();

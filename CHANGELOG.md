@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed RenderTexture and Material memory leaks in texture generation pipeline during avatar conversion.
 - Fixed an issue where texture generation failed when a material used an un-rendered RenderTexture as a texture.
 - Limited stack trace lines shown in avatar conversion failure dialog to keep the dialog operable.
+- Fixed lilToon to Toon Standard conversion producing overly dark results by deriving occlusion strength from the lilToon shadow colors instead of always applying full-strength occlusion.
 
 ### Removed
 - Removed support for Unity 2019.
