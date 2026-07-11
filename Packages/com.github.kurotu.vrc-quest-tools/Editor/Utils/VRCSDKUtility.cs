@@ -591,8 +591,8 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Gets whether the game object is finally "EditorOnly" in the avatar, i.e. the object itself or
-        /// any ancestor below the avatar root is tagged as "EditorOnly". Such objects are removed by VRCSDK on build.
+        /// Gets whether the game object is effectively "EditorOnly" in the avatar hierarchy, i.e. the object itself or
+        /// any ancestor below the avatar root is tagged as "EditorOnly". Such objects are removed by VRCSDK during build.
         /// </summary>
         /// <param name="avatarRoot">Avatar root object.</param>
         /// <param name="gameObject">Game object to test.</param>
