@@ -393,6 +393,9 @@ msgstr "Снять выделение"
 msgid "ApplyButtonLabel"
 msgstr "Применить"
 
+msgid "EditorOnlyTooltip"
+msgstr ""
+
 msgid "TextureLabel"
 msgstr "Текстура"
 

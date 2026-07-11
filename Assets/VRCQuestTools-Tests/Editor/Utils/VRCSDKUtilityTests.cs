@@ -111,5 +111,35 @@ namespace KRT.VRCQuestTools.Utils
             Assert.AreEqual(i18n.ContactsWillBeRemovedAtRunTime, VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(AvatarPerformanceCategory.ContactCount, i18n));
             Assert.Throws<System.InvalidProgramException>(() => VRCSDKUtility.GetAvatarDynamicsVeryPoorViolationMessage(AvatarPerformanceCategory.Overall, i18n));
         }
+
+        /// <summary>
+        /// IsEditorOnlyInHierarchy test.
+        /// </summary>
+        [Test]
+        public void IsEditorOnlyInHierarchy()
+        {
+            var root = new GameObject("Root");
+            var editorOnlyChild = new GameObject("EditorOnlyChild");
+            editorOnlyChild.tag = "EditorOnly";
+            editorOnlyChild.transform.SetParent(root.transform);
+            var grandchild = new GameObject("Grandchild");
+            grandchild.transform.SetParent(editorOnlyChild.transform);
+            var normalChild = new GameObject("NormalChild");
+            normalChild.transform.SetParent(root.transform);
+
+            try
+            {
+                Assert.IsTrue(VRCSDKUtility.IsEditorOnlyInHierarchy(root, editorOnlyChild), "the object itself is tagged as EditorOnly");
+                Assert.IsTrue(VRCSDKUtility.IsEditorOnlyInHierarchy(root, grandchild), "a descendant of an EditorOnly object is EditorOnly");
+                Assert.IsFalse(VRCSDKUtility.IsEditorOnlyInHierarchy(root, normalChild), "an untagged object under untagged parents is not EditorOnly");
+
+                root.tag = "EditorOnly";
+                Assert.IsFalse(VRCSDKUtility.IsEditorOnlyInHierarchy(root, normalChild), "the walk stops before checking the avatar root's own tag");
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
     }
 }

@@ -122,8 +122,9 @@ namespace KRT.VRCQuestTools.Views
         /// <param name="objects">Components to list.</param>
         /// <param name="selectedObjects">Already selected components.</param>
         /// <param name="componentFieldIndent">Left offset (px) of the component field, so it aligns under the group header label.</param>
+        /// <param name="avatarRoot">Avatar root GameObject used to detect components under an EditorOnly-tagged object. When null, EditorOnly detection is skipped.</param>
         /// <returns>New selected components.</returns>
-        internal static T[] AvatarDynamicsComponentSelectorList<T>(T[] objects, T[] selectedObjects, float componentFieldIndent = 0f)
+        internal static T[] AvatarDynamicsComponentSelectorList<T>(T[] objects, T[] selectedObjects, float componentFieldIndent = 0f, GameObject avatarRoot = null)
             where T : IVRCAvatarDynamicsProvider
         {
             var afterSelected = new List<T>();
@@ -132,7 +133,8 @@ namespace KRT.VRCQuestTools.Views
 
             foreach (var obj in objects)
             {
-                var isSelected = ToggleAvatarDynamicsComponentField(selectedComponents.Contains(obj.Component), obj, componentFieldIndent);
+                var isEditorOnly = avatarRoot != null && VRCSDKUtility.IsEditorOnlyInHierarchy(avatarRoot, obj.GameObject);
+                var isSelected = ToggleAvatarDynamicsComponentField(selectedComponents.Contains(obj.Component), obj, componentFieldIndent, isEditorOnly);
 
                 // Check for hover on the last drawn control
                 var currentEvent = Event.current;
@@ -269,7 +271,7 @@ namespace KRT.VRCQuestTools.Views
                     // Align each item's component field under the group header label. The right (RootTransform)
                     // column stays fixed, so the component field width shrinks as the group is nested deeper.
                     var currentGroupSelected = groupArray.Where(o => selectedComponents.Contains(o.Component)).ToArray();
-                    var newGroupSelected = AvatarDynamicsComponentSelectorList(groupArray, currentGroupSelected, labelOffset);
+                    var newGroupSelected = AvatarDynamicsComponentSelectorList(groupArray, currentGroupSelected, labelOffset, avatarRoot);
                     var newSet = new HashSet<Component>(newGroupSelected.Select(o => o.Component));
                     foreach (var o in groupArray)
                     {
@@ -294,13 +296,16 @@ namespace KRT.VRCQuestTools.Views
         /// <param name="value">Current state.</param>
         /// <param name="provider">Provider to show.</param>
         /// <param name="componentFieldIndent">Left offset (px) of the component field so it aligns under the group header label.</param>
+        /// <param name="isEditorOnly">Whether the component is under an EditorOnly-tagged object. When true, an "EO" label is shown next to the checkbox and the component/root fields are grayed out.</param>
         /// <returns>true for selected.</returns>
-        internal static bool ToggleAvatarDynamicsComponentField(bool value, IVRCAvatarDynamicsProvider provider, float componentFieldIndent = 0f)
+        internal static bool ToggleAvatarDynamicsComponentField(bool value, IVRCAvatarDynamicsProvider provider, float componentFieldIndent = 0f, bool isEditorOnly = false)
         {
             const float checkBoxWidth = 16f;
             const float gap = 2f;
             const float minComponentWidth = 80f;
+            const string editorOnlyLabelText = "EO"; // Abbreviation of Unity's "EditorOnly" tag name; not localized.
             var lineHeight = UnityEditor.EditorGUIUtility.singleLineHeight;
+            var i18n = VRCQuestToolsSettings.I18nResource;
 
             var prevIndent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
@@ -316,16 +321,41 @@ namespace KRT.VRCQuestTools.Views
             var maxComponentX = Mathf.Max(minComponentX, half - gap - minComponentWidth);
             var componentX = Mathf.Clamp(componentFieldIndent, minComponentX, maxComponentX);
             var checkRect = new Rect(rowRect.x + componentX - gap - checkBoxWidth, rowRect.y, checkBoxWidth, lineHeight);
-            var componentWidth = Mathf.Max(0f, half - gap - componentX);
-            var componentRect = new Rect(rowRect.x + componentX, rowRect.y, componentWidth, lineHeight);
             var rootWidth = Mathf.Max(0f, rowRect.width - half - gap);
             var rootRect = new Rect(rowRect.x + half + gap, rowRect.y, rootWidth, lineHeight);
 
+            // When EditorOnly, an "EO" text label is inserted right after the checkbox so it's noticed while
+            // scanning the checkbox column, and the component field's start is pushed right to make room.
+            // Non-EditorOnly rows are unaffected, so normal rows keep their shared group alignment.
+            var componentStartX = rowRect.x + componentX;
+            Rect editorOnlyLabelRect = default;
+            GUIContent editorOnlyLabelContent = null;
+            if (isEditorOnly)
+            {
+                editorOnlyLabelContent = new GUIContent(editorOnlyLabelText, i18n.EditorOnlyTooltip);
+                var editorOnlyLabelWidth = EditorStyles.miniBoldLabel.CalcSize(editorOnlyLabelContent).x;
+                editorOnlyLabelRect = new Rect(checkRect.xMax + gap, rowRect.y, editorOnlyLabelWidth, lineHeight);
+                componentStartX = Mathf.Max(componentStartX, editorOnlyLabelRect.xMax + gap);
+            }
+            var componentWidth = Mathf.Max(0f, half - gap - (componentStartX - rowRect.x));
+            var componentRect = new Rect(componentStartX, rowRect.y, componentWidth, lineHeight);
+
             var selected = EditorGUI.Toggle(checkRect, value);
+            var prevColor = GUI.color;
+            if (isEditorOnly)
+            {
+                GUI.color = prevColor * new Color(1f, 1f, 1f, 0.5f);
+            }
             using (new EditorGUI.DisabledScope(true))
             {
                 EditorGUI.ObjectField(componentRect, provider.Component, typeof(Component), true);
                 EditorGUI.ObjectField(rootRect, VRCSDKUtility.GetRootTransform(provider.Component), typeof(Transform), true);
+            }
+            GUI.color = prevColor;
+            if (isEditorOnly)
+            {
+                // Drawn at full opacity (after the tint is restored) so the label stays noticeable.
+                GUI.Label(editorOnlyLabelRect, editorOnlyLabelContent, EditorStyles.miniBoldLabel);
             }
             return selected;
         }
