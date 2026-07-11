@@ -452,6 +452,9 @@ msgstr "すべて解除"
 msgid "ApplyButtonLabel"
 msgstr "適用"
 
+msgid "EditorOnlyTooltip"
+msgstr "このオブジェクトにはEditorOnlyタグが設定されています。アバターのビルド時にVRChat SDKによって削除されます。"
+
 msgid "TextureLabel"
 msgstr "テクスチャ"
 

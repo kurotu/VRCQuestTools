@@ -78,14 +78,14 @@ namespace KRT.VRCQuestTools.Models.VRChat
         private static int CalculatePhysBonesCollisionCheckCount(GameObject root, VRCPhysBone[] physbones, VRCPhysBoneCollider[] colliders)
         {
             // exclude editor only physbones
-            var actualPbs = physbones.Where((obj) => !IsFinallyEditorOnly(root, obj.gameObject));
+            var actualPbs = physbones.Where((obj) => !VRCSDKUtility.IsEditorOnlyInHierarchy(root, obj.gameObject));
             var collisions = actualPbs.Select((pb) =>
             {
                 var transformCount = CalculatePhysBoneTransformCount(pb) - 1; // ignore itself.
                 var rootTrans = pb.rootTransform == null ? pb.gameObject.transform : pb.rootTransform;
 
                 var multiChildRoots = rootTrans.GetComponentsInChildren<Transform>(true)
-                    .Where(t => !IsFinallyEditorOnly(root, t.gameObject))
+                    .Where(t => !VRCSDKUtility.IsEditorOnlyInHierarchy(root, t.gameObject))
                     .Where(t => IsMultiChildRoot(pb, t))
                     .ToArray();
                 transformCount -= multiChildRoots.Sum(t => t.childCount);
@@ -101,7 +101,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     var endpoints = rootTrans.GetComponentsInChildren<Transform>(true)
                         .Where(t => t.childCount == 0)
                         .Where(t => !IsIgnoredTransform(t, ignore))
-                        .Where(t => !IsFinallyEditorOnly(root, t.gameObject));
+                        .Where(t => !VRCSDKUtility.IsEditorOnlyInHierarchy(root, t.gameObject));
                     transformCount += endpoints.Count();
                 }
 
@@ -123,25 +123,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
         private static VRCPhysBone[] GetActualPhysBones(GameObject root, VRCPhysBone[] physbones)
         {
             // exclude editor only physbones
-            return physbones.Where(obj => !IsFinallyEditorOnly(root, obj.gameObject)).ToArray();
+            return physbones.Where(obj => !VRCSDKUtility.IsEditorOnlyInHierarchy(root, obj.gameObject)).ToArray();
         }
 
         private static bool IsColliderReferencedByPhysBone(VRCPhysBoneCollider collider, VRCPhysBone physBone)
         {
             return physBone.colliders.Contains(collider);
-        }
-
-        private static bool IsFinallyEditorOnly(GameObject root, GameObject obj)
-        {
-            if (obj.tag == "EditorOnly")
-            {
-                return true;
-            }
-            if (obj.transform.parent == null || obj.transform.parent.gameObject == root)
-            {
-                return false;
-            }
-            return IsFinallyEditorOnly(root, obj.transform.parent.gameObject);
         }
 
         private static bool IsIgnoredTransform(Transform transform, Transform[] ignoreTransforms)

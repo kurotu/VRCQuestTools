@@ -590,6 +590,25 @@ namespace KRT.VRCQuestTools.Utils
             return null;
         }
 
+        /// <summary>
+        /// Gets whether the game object is finally "EditorOnly" in the avatar, i.e. the object itself or
+        /// any ancestor below the avatar root is tagged as "EditorOnly". Such objects are removed by VRCSDK on build.
+        /// </summary>
+        /// <param name="avatarRoot">Avatar root object.</param>
+        /// <param name="gameObject">Game object to test.</param>
+        /// <returns>true when the object is effectively EditorOnly.</returns>
+        internal static bool IsEditorOnlyInHierarchy(GameObject avatarRoot, GameObject gameObject)
+        {
+            if (gameObject.tag == "EditorOnly")
+            {
+                return true;
+            }
+            if (gameObject.transform.parent == null || gameObject.transform.parent.gameObject == avatarRoot)
+            {
+                return false;
+            }
+            return IsEditorOnlyInHierarchy(avatarRoot, gameObject.transform.parent.gameObject);
+        }
 
         /// <summary>
         /// Stripes unused network ids from the avatar.

@@ -219,6 +219,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string SelectAllButtonLabel => GetText("SelectAllButtonLabel");
         internal string DeselectAllButtonLabel => GetText("DeselectAllButtonLabel");
         internal string ApplyButtonLabel => GetText("ApplyButtonLabel");
+        internal string EditorOnlyTooltip => GetText("EditorOnlyTooltip");
 
         // Metallic Smoothness
         internal string TextureLabel => GetText("TextureLabel");

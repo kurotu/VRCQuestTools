@@ -452,6 +452,9 @@ msgstr "Deselect All"
 msgid "ApplyButtonLabel"
 msgstr "Apply"
 
+msgid "EditorOnlyTooltip"
+msgstr "This object is tagged as EditorOnly. VRChat SDK removes it when building the avatar."
+
 msgid "TextureLabel"
 msgstr "Texture"
 
