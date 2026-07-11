@@ -376,19 +376,22 @@ namespace KRT.VRCQuestTools.Models
             mat.SetFloat("_Texture0Output", 3); // A
             Graphics.Blit(null, alphaGlossMap, mat);
 
+            // ReflectionColor is authored in sRGB (gamma) space in the Inspector; linearize before
+            // computing luminance so it matches how lilToon composes it in the shader
+            // (same treatment as GetOcclusionStrength's shadow colors).
+            var reflectionColor = lilMaterial.ReflectionColor;
+            var reflectionColorGrayscale = Utils.ColorUtility.GetRec709Grayscale(reflectionColor.linear) * reflectionColor.a;
             var reflectionGrayscaleTex = RenderTexture.GetTemporary(reflectionColorTexWidth, reflectionColorTexHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat0 = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
             mat0.SetTexture("_Texture0", reflectionColorTex);
             mat0.SetFloat("_Texture0Input", 4); // Grayscale
             mat0.SetFloat("_Texture0Output", 3); // A
+            mat0.SetFloat("_Texture0Scale", reflectionColorGrayscale); // Bake ReflectionColor tint (Float property avoids Color gamma auto-conversion)
             Graphics.Blit(null, reflectionGrayscaleTex, mat0);
 
             var rt1 = RenderTexture.GetTemporary(sourceWidth, sourceHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat1 = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
             mat1.SetTexture("_Texture0", alphaGlossMap);
-            var reflectionColorGrayscale = Utils.ColorUtility.GetRec709Grayscale(lilMaterial.ReflectionColor) * lilMaterial.ReflectionColor.a;
-            var reflectionColor = new Color(1.0f, 1.0f, 1.0f, reflectionColorGrayscale);
-            mat1.SetColor("_Texture0Color", reflectionColor);
             mat1.SetTexture("_Texture1", reflectionGrayscaleTex);
             Graphics.Blit(null, rt1, mat1);
 
@@ -528,19 +531,22 @@ namespace KRT.VRCQuestTools.Models
 
             var (width, height) = TextureUtility.AspectFitReduction(originalWidth, originalHeight, maxTextureSize);
 
+            // ReflectionColor is authored in sRGB (gamma) space in the Inspector; linearize before
+            // computing luminance so it matches how lilToon composes it in the shader
+            // (same treatment as GetOcclusionStrength's shadow colors).
+            var reflectionColor = lilMaterial.ReflectionColor;
+            var reflectionGrayscale = Utils.ColorUtility.GetRec709Grayscale(reflectionColor.linear) * reflectionColor.a;
             var reflectionGrayscaleTex = RenderTexture.GetTemporary(reflectionColorWidth, reflectionColorHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat0 = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
             mat0.SetTexture("_Texture0", reflectionColorTex);
             mat0.SetFloat("_Texture0Input", 4); // Grayscale
             mat0.SetFloat("_Texture0Output", 0); // R
+            mat0.SetFloat("_Texture0Scale", reflectionGrayscale); // Bake ReflectionColor tint (Float property avoids Color gamma auto-conversion)
             Graphics.Blit(null, reflectionGrayscaleTex, mat0);
 
             var rt = RenderTexture.GetTemporary(originalWidth, originalHeight, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
             var mat = new Material(Shader.Find("Hidden/VRCQuestTools/Multiply"));
-            var reflectionGrayscale = Utils.ColorUtility.GetRec709Grayscale(lilMaterial.ReflectionColor) * lilMaterial.ReflectionColor.a;
-            var reflectionColor = new Color(reflectionGrayscale, 1.0f, 1.0f, 1.0f);
             mat.SetTexture("_Texture0", reflectionGrayscaleTex);
-            mat.SetColor("_Texture0Color", reflectionColor);
             mat.SetTexture("_Texture1", metallic);
             Graphics.Blit(null, rt, mat);
 

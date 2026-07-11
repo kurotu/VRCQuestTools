@@ -890,6 +890,49 @@ namespace KRT.VRCQuestTools.Models
             Assert.GreaterOrEqual(sample.g, 0.99f, "AO values remapped by _ShadowAOShift should be baked as white.");
         }
 
+        /// <summary>
+        /// Test that Metallic/Gloss maps derive their ReflectionColor scalar from the
+        /// sRGB-decoded (linear) luminance, not the raw Inspector (gamma) value.
+        /// </summary>
+        [Test]
+        public void GenerateMaterial_QuestTextures_MetallicAndGlossMapsUseLinearReflectionColorLuminance()
+        {
+            if (!IsLilToonTestEnvironmentAvailable())
+            {
+                return;
+            }
+
+            // Equal RGB components make the expected luminance equal to the (decoded) component value,
+            // and alpha != 1 exercises that the alpha multiplier itself is left untouched.
+            var reflectionColor = new Color(0.8f, 0.8f, 0.8f, 0.6f);
+
+            using var sourceMaterial = DisposableObject.New(new Material(Shader.Find("lilToon")));
+            sourceMaterial.Object.SetFloat("_UseReflection", 1);
+            sourceMaterial.Object.SetColor("_ReflectionColor", reflectionColor);
+
+            var resultMat = GenerateMaterial(sourceMaterial.Object, true, useSpecular: true);
+            using var resultMaterial = DisposableObject.New(resultMat);
+            var resultWrapper = new ToonStandardMaterialWrapper(resultMat);
+
+            Assert.IsTrue(resultWrapper.UseSpecular, "UseSpecular should be enabled.");
+            var metallicTex = resultWrapper.MetallicMap as Texture2D;
+            var glossTex = resultWrapper.GlossMap as Texture2D;
+            Assert.IsNotNull(metallicTex, "Metallic map should be generated as Texture2D.");
+            Assert.IsNotNull(glossTex, "Gloss map should be generated as Texture2D.");
+
+            // Correct value: linearize the sRGB Inspector color before taking luminance.
+            var expected = Utils.ColorUtility.GetRec709Grayscale(reflectionColor.linear) * reflectionColor.a;
+
+            var metallicSample = SampleCenterPixel(metallicTex);
+            var glossSample = SampleCenterPixel(glossTex);
+            Assert.AreEqual(expected, metallicSample.r, 0.05f, "Metallic map R should equal linear-space Rec.709 luminance of ReflectionColor.");
+            Assert.AreEqual(expected, glossSample.a, 0.05f, "Gloss map A should equal linear-space Rec.709 luminance of ReflectionColor.");
+
+            // Sanity check the fixture actually discriminates linear vs. gamma-space math.
+            var naiveGammaSpaceValue = Utils.ColorUtility.GetRec709Grayscale(reflectionColor) * reflectionColor.a;
+            Assert.Greater(Mathf.Abs(expected - naiveGammaSpaceValue), 0.1f, "Fixture should meaningfully separate linear vs. gamma-space results.");
+        }
+
         private static bool IsLilToonTestEnvironmentAvailable()
         {
             if (!AssetUtility.IsLilToonImported())
@@ -930,7 +973,7 @@ namespace KRT.VRCQuestTools.Models
             return material;
         }
 
-        private static Material GenerateMaterial(Material sourceMaterial, bool generateQuestTextures)
+        private static Material GenerateMaterial(Material sourceMaterial, bool generateQuestTextures, bool useSpecular = false)
         {
             var settings = new ToonStandardConvertSettings
             {
@@ -940,6 +983,7 @@ namespace KRT.VRCQuestTools.Models
             };
             settings.SetAllFeatures(false);
             settings.useOcclusion = true;
+            settings.useSpecular = useSpecular;
 
             var lilMat = new LilToonMaterial(sourceMaterial);
             var generator = new LilToonToonStandardGenerator(lilMat, settings, null, false);
