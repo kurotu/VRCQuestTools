@@ -52,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed an issue where texture generation failed when a material used an un-rendered RenderTexture as a texture.
 - Limited stack trace lines shown in avatar conversion failure dialog to keep the dialog operable.
 - Fixed lilToon to Toon Standard conversion producing overly dark results by deriving occlusion strength from the lilToon shadow colors instead of always applying full-strength occlusion.
+- Fixed lilToon to Toon Standard conversion computing gloss/metallic strength from the un-linearized (gamma-space) Reflection Color, which also caused Metallic to be inadvertently gamma-decoded a second time.
 
 ### Removed
 - Removed support for Unity 2019.
