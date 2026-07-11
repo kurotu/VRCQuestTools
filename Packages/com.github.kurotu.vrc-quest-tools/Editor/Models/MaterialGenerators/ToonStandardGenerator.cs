@@ -246,6 +246,7 @@ namespace KRT.VRCQuestTools.Models
                 if (GetUseOcclusionMap() && Settings.useOcclusion)
                 {
                     newMaterial.UseOcclusion = true;
+                    newMaterial.OcclusionStrength = GetOcclusionStrength();
                     masks.Add(MaskType.OcculusionMap);
                 }
 
@@ -468,6 +469,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Scale and offset.</returns>
         protected abstract (Vector2 Scale, Vector2 Offset) GetOcculusionMapST();
+
+        /// <summary>
+        /// Gets the occlusion strength of the material.
+        /// </summary>
+        /// <returns>Occlusion strength.</returns>
+        protected abstract float GetOcclusionStrength();
 
         /// <summary>
         /// Gets the material should use occulusion map.

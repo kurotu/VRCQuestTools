@@ -746,5 +746,249 @@ namespace KRT.VRCQuestTools.Models
                 Assert.Greater(texture2D.height, 0, "Generated occlusion texture height should be greater than zero.");
             }
         }
+
+        /// <summary>
+        /// Test that ConvertToToonStandard derives OcclusionStrength from the shadow color floor luminance.
+        /// </summary>
+        [Test]
+        public void ConvertToToonStandard_SetsOcclusionStrengthFromShadowColor()
+        {
+            if (!IsLilToonTestEnvironmentAvailable())
+            {
+                return;
+            }
+
+            var shadowColor = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+            using var sourceMaterial = DisposableObject.New(CreateLilToonMaterialWithAOMap());
+            sourceMaterial.Object.SetColor("_ShadowColor", shadowColor);
+            sourceMaterial.Object.SetColor("_Shadow2ndColor", new Color(0, 0, 0, 0));
+            sourceMaterial.Object.SetColor("_Shadow3rdColor", new Color(0, 0, 0, 0));
+            sourceMaterial.Object.SetFloat("_ShadowStrength", 1.0f);
+
+            var strength = GetGeneratedOcclusionStrength(sourceMaterial.Object, false);
+
+            var floor = Color.Lerp(Color.white, Color.white * shadowColor.linear, shadowColor.a);
+            var expected = 1.0f - Utils.ColorUtility.GetRec709Grayscale(floor);
+            Assert.AreEqual(expected, strength, 0.001f, "OcclusionStrength should match 1 - luminance of the linear shadow floor color.");
+            Assert.Less(strength, 1.0f, "OcclusionStrength should be less than the shader default 1.0.");
+        }
+
+        /// <summary>
+        /// Test that an enabled 2nd shadow color darkens the floor and increases OcclusionStrength.
+        /// </summary>
+        [Test]
+        public void ConvertToToonStandard_OcclusionStrengthIncreasesWithShadow2nd()
+        {
+            if (!IsLilToonTestEnvironmentAvailable())
+            {
+                return;
+            }
+
+            var shadowColor = new Color(0.7f, 0.65f, 0.72f, 1.0f);
+
+            using var baseMaterial = DisposableObject.New(CreateLilToonMaterialWithAOMap());
+            baseMaterial.Object.SetColor("_ShadowColor", shadowColor);
+            baseMaterial.Object.SetColor("_Shadow2ndColor", new Color(0, 0, 0, 0));
+            baseMaterial.Object.SetColor("_Shadow3rdColor", new Color(0, 0, 0, 0));
+            baseMaterial.Object.SetFloat("_ShadowStrength", 1.0f);
+            var strength1 = GetGeneratedOcclusionStrength(baseMaterial.Object, false);
+
+            using var secondShadowMaterial = DisposableObject.New(CreateLilToonMaterialWithAOMap());
+            secondShadowMaterial.Object.SetColor("_ShadowColor", shadowColor);
+            secondShadowMaterial.Object.SetColor("_Shadow2ndColor", new Color(0.2f, 0.2f, 0.2f, 1.0f));
+            secondShadowMaterial.Object.SetColor("_Shadow3rdColor", new Color(0, 0, 0, 0));
+            secondShadowMaterial.Object.SetFloat("_ShadowStrength", 1.0f);
+            var strength2 = GetGeneratedOcclusionStrength(secondShadowMaterial.Object, false);
+
+            Assert.Greater(strength2, strength1, "OcclusionStrength should increase when the 2nd shadow color darkens the floor.");
+        }
+
+        /// <summary>
+        /// Test that OcclusionStrength becomes zero when shadow strength is zero.
+        /// </summary>
+        [Test]
+        public void ConvertToToonStandard_OcclusionStrengthZeroWhenShadowStrengthZero()
+        {
+            if (!IsLilToonTestEnvironmentAvailable())
+            {
+                return;
+            }
+
+            using var sourceMaterial = DisposableObject.New(CreateLilToonMaterialWithAOMap());
+            sourceMaterial.Object.SetColor("_ShadowColor", new Color(0.5f, 0.5f, 0.5f, 1.0f));
+            sourceMaterial.Object.SetColor("_Shadow2ndColor", new Color(0, 0, 0, 0));
+            sourceMaterial.Object.SetColor("_Shadow3rdColor", new Color(0, 0, 0, 0));
+            sourceMaterial.Object.SetFloat("_ShadowStrength", 0.0f);
+
+            var strength = GetGeneratedOcclusionStrength(sourceMaterial.Object, false);
+
+            Assert.AreEqual(0.0f, strength, 0.001f, "OcclusionStrength should be zero when shadow strength is zero.");
+        }
+
+        /// <summary>
+        /// Test that the Quest texture generation path also sets OcclusionStrength.
+        /// </summary>
+        [Test]
+        public void GenerateMaterial_QuestTextures_SetsOcclusionStrength()
+        {
+            if (!IsLilToonTestEnvironmentAvailable())
+            {
+                return;
+            }
+
+            var shadowColor = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+            using var aoMap = DisposableObject.New(new Texture2D(32, 32));
+            using var sourceMaterial = DisposableObject.New(CreateLilToonMaterialWithAOMap(aoMap.Object));
+            sourceMaterial.Object.SetColor("_ShadowColor", shadowColor);
+            sourceMaterial.Object.SetColor("_Shadow2ndColor", new Color(0, 0, 0, 0));
+            sourceMaterial.Object.SetColor("_Shadow3rdColor", new Color(0, 0, 0, 0));
+            sourceMaterial.Object.SetFloat("_ShadowStrength", 1.0f);
+
+            var strength = GetGeneratedOcclusionStrength(sourceMaterial.Object, true);
+
+            var floor = Color.Lerp(Color.white, Color.white * shadowColor.linear, shadowColor.a);
+            var expected = 1.0f - Utils.ColorUtility.GetRec709Grayscale(floor);
+            Assert.AreEqual(expected, strength, 0.001f, "OcclusionStrength should be set on the Quest texture generation path.");
+        }
+
+        /// <summary>
+        /// Test that the _ShadowAOShift remap is baked into the generated occlusion mask.
+        /// </summary>
+        [Test]
+        public void GenerateMaterial_QuestTextures_BakesShadowAOShiftIntoOcclusionMask()
+        {
+            if (!IsLilToonTestEnvironmentAvailable())
+            {
+                return;
+            }
+
+            using var aoMap = DisposableObject.New(new Texture2D(4, 4));
+            var pixels = new Color[4 * 4];
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                pixels[i] = new Color(0.25f, 0.25f, 0.25f, 1.0f);
+            }
+            aoMap.Object.SetPixels(pixels);
+            aoMap.Object.Apply();
+
+            using var sourceMaterial = DisposableObject.New(CreateLilToonMaterialWithAOMap(aoMap.Object));
+
+            // Scale 0 and offset 1 remap every AO value to white regardless of color space conversion.
+            sourceMaterial.Object.SetVector("_ShadowAOShift", new Vector4(0.0f, 1.0f, 1.0f, 0.0f));
+            sourceMaterial.Object.SetColor("_Shadow2ndColor", new Color(0, 0, 0, 0));
+            sourceMaterial.Object.SetColor("_Shadow3rdColor", new Color(0, 0, 0, 0));
+
+            var resultMat = GenerateMaterial(sourceMaterial.Object, true);
+            using var resultMaterial = DisposableObject.New(resultMat);
+            var resultWrapper = new ToonStandardMaterialWrapper(resultMat);
+
+            Assert.IsTrue(resultWrapper.UseOcclusion, "UseOcclusion should be enabled.");
+            var occlusionMap = resultWrapper.OcclusionMap as Texture2D;
+            Assert.IsNotNull(occlusionMap, "Occlusion map should be generated as Texture2D.");
+
+            var sample = SampleCenterPixel(occlusionMap);
+            Assert.GreaterOrEqual(sample.g, 0.99f, "AO values remapped by _ShadowAOShift should be baked as white.");
+        }
+
+        private static bool IsLilToonTestEnvironmentAvailable()
+        {
+            if (!AssetUtility.IsLilToonImported())
+            {
+                Assert.Ignore("lilToon is not installed.");
+                return false;
+            }
+
+            var lilToonVersion = AssetUtility.LilToonVersion;
+            var requiredVersion = new SemVer(1, 10, 0);
+            var breakingVersion = new SemVer(3, 0, 0);
+            if (lilToonVersion < requiredVersion || lilToonVersion >= breakingVersion)
+            {
+                Assert.Ignore($"lilToon version {lilToonVersion} is not supported.");
+                return false;
+            }
+
+            if (Shader.Find("VRChat/Mobile/Toon Standard") == null)
+            {
+                Assert.Ignore("VRChat/Mobile/Toon Standard shader not available.");
+                return false;
+            }
+
+            if (Shader.Find("lilToon") == null)
+            {
+                Assert.Ignore("lilToon shader not available.");
+                return false;
+            }
+
+            return true;
+        }
+
+        private static Material CreateLilToonMaterialWithAOMap(Texture2D aoMap = null)
+        {
+            var material = new Material(Shader.Find("lilToon"));
+            material.SetFloat("_UseShadow", 1);
+            material.SetTexture("_ShadowBorderMask", aoMap != null ? aoMap : Texture2D.whiteTexture);
+            return material;
+        }
+
+        private static Material GenerateMaterial(Material sourceMaterial, bool generateQuestTextures)
+        {
+            var settings = new ToonStandardConvertSettings
+            {
+                generateQuestTextures = generateQuestTextures,
+                maxTextureSize = TextureSizeLimit.NoLimit,
+                maskMaxTextureSize = TextureSizeLimit.NoLimit,
+            };
+            settings.SetAllFeatures(false);
+            settings.useOcclusion = true;
+
+            var lilMat = new LilToonMaterial(sourceMaterial);
+            var generator = new LilToonToonStandardGenerator(lilMat, settings, null, false);
+
+            Material resultMat = null;
+            generator.GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
+            {
+                resultMat = mat;
+            }).WaitForCompletion();
+
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            return resultMat;
+        }
+
+        private static Color SampleCenterPixel(Texture2D texture)
+        {
+            // The baked texture may be non-readable, so read pixels back through a temporary RenderTexture.
+            var rt = RenderTexture.GetTemporary(texture.width, texture.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            var previous = RenderTexture.active;
+            try
+            {
+                Graphics.Blit(texture, rt);
+                RenderTexture.active = rt;
+                var readable = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false, true);
+                try
+                {
+                    readable.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
+                    readable.Apply(false, false);
+                    return readable.GetPixel(texture.width / 2, texture.height / 2);
+                }
+                finally
+                {
+                    Object.DestroyImmediate(readable);
+                }
+            }
+            finally
+            {
+                RenderTexture.active = previous;
+                RenderTexture.ReleaseTemporary(rt);
+            }
+        }
+
+        private static float GetGeneratedOcclusionStrength(Material sourceMaterial, bool generateQuestTextures)
+        {
+            var resultMat = GenerateMaterial(sourceMaterial, generateQuestTextures);
+            using var resultMaterial = DisposableObject.New(resultMat);
+            var resultWrapper = new ToonStandardMaterialWrapper(resultMat);
+            Assert.IsTrue(resultWrapper.UseOcclusion, "UseOcclusion should be enabled.");
+            return resultWrapper.OcclusionStrength;
+        }
     }
 }

@@ -839,6 +839,13 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override float GetOcclusionStrength()
+        {
+            var (_, strength) = GetPrimaryAOChannelAndStrength();
+            return strength;
+        }
+
+        /// <inheritdoc/>
         protected override float GetReflectance()
         {
             switch (GetSpecularSource())
