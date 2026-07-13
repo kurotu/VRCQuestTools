@@ -3,36 +3,16 @@
     "message": "Next",
     "description": "The label for version current"
   },
-  "sidebar.tutorialSidebar.category.Tutorial": {
-    "message": "チュートリアル",
-    "description": "The label for category Tutorial in sidebar tutorialSidebar"
+  "sidebar.tutorialSidebar.category.Getting Started": {
+    "message": "はじめに",
+    "description": "The label for category Getting Started in sidebar tutorialSidebar"
   },
-  "sidebar.tutorialSidebar.category.Tutorial.link.generated-index.description": {
-    "message": "アバターを Android 用に変換してアップロードする方法",
-    "description": "The generated-index page description for category Tutorial in sidebar tutorialSidebar"
-  },
-  "sidebar.tutorialSidebar.category.References": {
-    "message": "リファレンス",
-    "description": "The label for category References in sidebar tutorialSidebar"
-  },
-  "sidebar.tutorialSidebar.category.References.link.generated-index.description": {
-    "message": "VRCQuestTools のリファレンス",
-    "description": "The generated-index page description for category References in sidebar tutorialSidebar"
-  },
-  "sidebar.tutorialSidebar.category.Main Menu": {
-    "message": "メインメニュー",
-    "description": "The label for category Tools/VRCQuestTools Menu in sidebar tutorialSidebar"
-  },
-  "sidebar.tutorialSidebar.category.Main Menu.link.generated-index.description": {
-    "message": "VRCQuestTools のメインメニュー (Tools/VRCQuestTools)",
-    "description": "The generated-index page description for category Tools/VRCQuestTools Menu in sidebar tutorialSidebar"
+  "sidebar.tutorialSidebar.category.Getting Started.link.generated-index.description": {
+    "message": "VRCQuestTools のインストールから、アバターの変換とアップロードまでを順番に説明します。",
+    "description": "The generated-index page description for category Getting Started in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.Components": {
     "message": "コンポーネント",
     "description": "The label for category Components in sidebar tutorialSidebar"
-  },
-  "sidebar.tutorialSidebar.category.Components.link.generated-index.description": {
-    "message": "VRCQuestTools のコンポーネント",
-    "description": "The generated-index page description for category Components in sidebar tutorialSidebar"
   }
 }

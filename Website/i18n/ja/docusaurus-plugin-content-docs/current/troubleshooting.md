@@ -1,106 +1,128 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
+slug: /troubleshooting
 ---
 
 # トラブルシューティング
 
-## UnityをAndroid用に切り替えられない
+よくある問題と対処方法をまとめています。
+ここにない問題が起きた場合は、[GitHub の Issues](https://github.com/kurotu/VRCQuestTools/issues) で報告してください。
 
-### Android Build Supportをインストールする
+## 見た目の問題
 
-Android用にアバターをアップロードするにはUnityのビルド設定をAndroidに切り替える必要があります(Switch Platform)。
-UnityにAndroid Build Supportがインストールされていない場合、ビルド設定をAndroidに切り替えることができません。
+### 変換後のアバターの明るさが PC 版と違う {#brightness}
 
-[チュートリアル: 環境の準備](./tutorial/set-up-environment.mdx)
+Mobile 用シェーダーはライティングの仕組みが PC 用シェーダーと異なるため、明るさの印象はワールドによって変わります。
 
-## 非圧縮サイズが大きくてアップロードできない
+Toon Lit で変換している場合は、マテリアル変換設定の「明るさ」で調整できます。
+Toon Lit シェーダーは環境光で明るく表示されるため、初期値は 0.83 に設定されています。
 
-> Avatar uncompressed size is too large for the target platform. XX.XX MB > 40.00 MB
+### 透過を使った表現（頬染めなど）がおかしくなる {#transparency}
 
-非圧縮サイズ(Uncompressed Size)が大きくなる原因として、主に以下のようなものがあります。
+Mobile 用シェーダーではテクスチャの透過が反映されません。
+頬染めやメガネのレンズのような透過を前提とした表現は、そのままでは再現できません。
 
-- 使用していないシェイプキー
-- 使用していないメッシュ
-- 使用していないテクスチャ
+次のような対策があります。
 
-### 最適化により不要なデータを削除する
+- アニメーションを編集して、表示する必要のないメッシュを非表示にする
+- [VQT Platform Component Remover](./components/platform-component-remover.md) や [VQT Platform GameObject Remover](./components/platform-gameobject-remover.md) で、Mobile では対象のオブジェクトを削除する
+- メッシュやテクスチャを Mobile 用に編集する
 
-アバターの最適化ツールを使うことで、これらの不要なデータを削除できます。
-例として[Avatar Optimizer](https://anatawa12.booth.pm/items/4885109)の[Trace And Optimize](https://vpm.anatawa12.com/avatar-optimizer/ja/docs/reference/trace-and-optimize/)コンポーネントを使うと不要なものをアップロード時に自動的に削除できます。 
+### 非対応シェーダーの警告が表示される {#unsupported-shaders}
 
-## ダウンロードサイズが大きくてアップロードできない
+マテリアル変換は、次のシェーダーに対応しています。
 
-> Avatar download size is too large for the target platform. XX.XX MB > 10.00 MB
+- Standard
+- Unity-Chan Toon Shader 2 (UTS2)
+- arktoon-Shaders
+- ArxCharacterShaders (AXCS)
+- Sunao Shader
+- lilToon
+- Poiyomi
 
-ダウンロードサイズ(Download Size)が大きくなる原因として、主に以下のようなものがあります。
+これ以外のシェーダーを使用したマテリアルは、テクスチャが正しく生成されない可能性があります。
+その場合は、次の方法を試してください。
 
-- テクスチャの枚数が多い
-- テクスチャの圧縮率が低い
-- テクスチャの解像度が大きい
-- メッシュの数が多い
+- 「Mobile用のテクスチャを生成する」をオフにして、シェーダーのみを変更する
+- Mobile 用のマテリアルを自分で用意し、「マテリアル置換」または [VQT Material Swap](./components/material-swap.md) で置き換える
 
-### テクスチャのサイズを調整する
+### スカートの裏側などが見えなくなる {#backface}
 
-[Avatar Converter Settings](./references/components/avatar-converter-settings.md)コンポーネントの`最大テクスチャサイズ`を小さくすることでダウンロードサイズは小さくなりますが、テクスチャの品質を大きく損ないます。
-最大テクスチャサイズを変更するよりも先に、`圧縮形式`を変更して調整することを推奨します。
+Mobile 用シェーダーではポリゴンの裏面が描画されません。
+[VQT Mesh Flipper](./components/mesh-flipper.md) でメッシュを両面化すると表示できます。
 
-### テクスチャをアトラス化する
+### 生成されたテクスチャの内容が古い、またはおかしい {#texture-cache}
 
-テクスチャのアトラス化をした上で合計の解像度を下げることでダウンロードサイズを小さくすることもできます。
-例として[TexTransTool](https://rs-shop.booth.pm/items/4833984)を使って[アトラス化](https://ttt.rs64.net/docs/Tutorial/ReductionTextureMemoryByAtlasing)をすることができます。
+マテリアル変換で生成したテクスチャはキャッシュされています。
+メニューバーの「Tools」→「VRCQuestTools」→「Clear Texture Cache」でキャッシュを削除してから、もう一度変換してください。
 
-### メニュー用アイコンを小さくする
+## アップロードの問題
 
-表情やポーズアニメーションを追加するツールを使用している場合、大量のメニュー用アイコンがダウンロードサイズを圧迫することがあります。
-[Menu Icon Resizer](./references/components/menu-icon-resizer.md)コンポーネントを使うことで、メニュー用アイコンの解像度を小さくしたり削除したりすることができます。
+### プラットフォームを Android や iOS に切り替えられない {#android-build-support}
 
-### 衣装の着替えなどのギミックを減らす
+Android への切り替えには Android Build Support、iOS への切り替えには iOS Build Support の各モジュールが必要です。
+[環境を準備する](./getting-started/set-up-environment.md#android-build-support)の手順でインストールしてください。
+Unity Hub からインストールできない場合は、[Unity ダウンロードアーカイブのインストーラー](./getting-started/set-up-environment.md#without-unity-hub)を使用してください。
 
-着替えなどのギミックを実装している場合、着替え用の衣装の分だけメッシュやテクスチャが増えるためダウンロードサイズが大きくなります。
-ギミックを減らし、可能であれば一つのアバターにつき衣装は一つだけにしてアップロードします。
-同期ズレにより着替えなどのギミックが片方のプラットフォームで意図しない状態になってしまうことを防ぐため、PCとAndroidでは同じ構成のアバターにすることを推奨します。
+### パフォーマンスランクが Very Poor と表示される {#very-poor}
 
-## アップロードに成功したがSecurity checks failedと表示される
+Mobile ではパフォーマンスランクが Very Poor でもアップロードはできます。
+ただし、他のプレイヤーからはデフォルトでインポスターまたはフォールバックアバターとして表示されます。
+見る側が「アバターの表示 (Show Avatar)」を個別に許可すると、本来のアバターが表示されます。
 
-VRChatのサーバー側でのセキュリティチェックに失敗した場合、アップロードに成功してもアバターが使用できないことがあります。
+### Avatar Dynamics のパフォーマンスランクが Very Poor になる {#avatar-dynamics}
 
-### プラットフォームを再度切り替えてアップロードする
+PhysBone や Contact が多すぎる場合、アップロードしてもすべての PhysBone や Contact が VRChat 上で削除されます。
+Avatar Dynamics のパフォーマンスランクが Poor に収まるように、コンポーネントを削減してください。
 
-実際には問題がないのにセキュリティチェックに失敗するケースとして、Unityのビルドターゲット切り替えに失敗していた事例が報告されています。
-もう一度Switch Platfromを行うか、Unityを再起動してからアップロードを試みてください。
-このとき、Unityのビルドターゲットがアップロード先のプラットフォームになっていることを確認してください。
+- アバター変換を使う場合：[VQT Avatar Converter Settings](./components/avatar-converter-settings.md) の「Avatar Dynamics 設定」で、残すコンポーネントを選択します。
+- アバター変換を使わない場合：メニューバーの「Tools」→「VRCQuestTools」→「Remove PhysBones」で削除するコンポーネントを選択します。
 
-![Unityのビルドターゲットの確認方法](/img/unity_titlebar_android.png)
+## PhysBone の問題
 
-## PCとAndroidでギミックが同期しない
+### PC 版と Mobile 版で PhysBone の揺れ方が同期しない {#physbone-sync}
 
-PCとAndroidでExpression Parametersの順番が一致しない場合、誤った値が同期されてギミックの誤動作に繋がります。
+PhysBone を正しく同期させるには、PC 版と Mobile 版で PhysBone が同じネットワーク ID を持つ必要があります。
 
-### PCとAndroidで同じ構成のアバターにする
+[VQT Avatar Converter Settings](./components/avatar-converter-settings.md) の「Network ID を割り当てる」を有効にするか、[VQT Network ID Assigner](./components/network-id-assigner.md) をアバターに追加してください。
+その後、PC 用と Mobile 用の両方のアバターをアップロードし直すと同期するようになります。
 
-PCの方にだけ特定のギミックがありAndroidの方にはない場合に特に発生しやすくなるため、PCとAndroidでは同じ構成のアバターにすることを推奨します。
+Mobile 用の変換で PhysBone を削減している場合、1 つの GameObject に複数の PhysBone があると、正しく同期しないことがあります。
 
-### Expression Parametersの順番を一致させる
+## エラーと警告
 
-[Modular Avatar](https://modular-avatar.nadena.dev/ja)の[Sync Parameter Sequence](https://modular-avatar.nadena.dev/ja/docs/reference/sync-parameter-sequence)コンポーネントを使用することでExpression Parametersの順番を一致させることができます。
+### "Missing" 状態のコンポーネントがあると表示される {#missing-components}
 
-## ギミックが動作しない
+インポートし忘れたアセットやパッケージがないかを確認してください。
+Dynamic Bone のような有料アセットを含むアバターを、そのアセットのないプロジェクトで開いた場合にも発生します。
 
-Androidでは使用不可能なコンポーネントがあるため、ギミックが動作しないことがあります。
+不要なコンポーネントであれば、メニューバーの「Tools」→「VRCQuestTools」→「Remove Missing Components」で削除できます。
 
-### Uniyt ConstraintsをVRChat Constraintsにする
+![Missing 状態のコンポーネント](/img/missing_script.png)
 
-UnityのConstraintsコンポーネントはAndroidでは使用できないため、VRChat Constraintsに置き換える必要があります。
-[Modular Avatar](https://modular-avatar.nadena.dev/ja)の[Convert Constraints](https://modular-avatar.nadena.dev/ja/docs/reference/convert-constraints)コンポーネントを使用することでConstraintsを自動的に変換することができます。
+### Dynamic Bone に関する警告が表示される {#dynamic-bone}
 
-### Contact ReceiverとContact Senderを有効にする
+VRCQuestTools は Dynamic Bone を PhysBone に変換しません。
+アバターを変換する前に、VRChat SDK の「VRChat SDK」→「Utilities」→「Convert DynamicBones To PhysBones」などで PhysBone へ移行してください。
 
-[Avatar Converter Settings](./references/components/avatar-converter-settings.md)コンポーネントの`Avatar Dynamics 設定`でContact ReceiverとContact Senderのチェックボックスがオンになっていることを確認してください。
+### Unity Constraints に関する警告が表示される {#unity-constraints}
 
-## PCとAndroidでPhysBoneが同期しない
+Mobile では Unity 標準の Constraint コンポーネントを使用できず、変換時に削除されます。
+VRChat Constraints へ移行すると Mobile でも使用できます。
 
-PCとAndroidでPhysBoneの数や順序が異なる場合、PhysBoneを掴んだときの動作が同期しません。
+Modular Avatar がプロジェクトにある場合は、アバターに「MA Convert Constraints」コンポーネントを追加すると、ビルド時に非破壊で VRChat Constraints へ変換されます。
 
-### ネットワークIDを一致させる
+### Prefab モードでアバターを変換できない {#prefab-mode}
 
-[Network ID Assigner](./references/components/network-id-assigner.md)コンポーネントを使用してPCとAndroidの両方に再度アップロードすることで、PhysBoneを同期させることができます。
+Prefab モードではアバターを変換できません。
+Prefab モードを抜けて、シーンに戻ってから変換してください。
+
+### マスクテクスチャのエラーが表示される (Mesh Flipper) {#mesh-flipper-mask}
+
+- 「マスクテクスチャがありません」：[VQT Mesh Flipper](./components/mesh-flipper.md) の「マスクテクスチャ」にテクスチャを設定してください。
+- 「マスクテクスチャは読み取り可能に設定されている必要があります」：テクスチャのインポート設定で「Read/Write」を有効にしてください。
+
+### 非対応のテクスチャフォーマットと表示される {#texture-format}
+
+Mobile で使用できないテクスチャ形式（DXT など PC 用の形式）がアバターに含まれています。
+マニュアルベイクで作成したテクスチャを使用している場合は、ターゲットプラットフォームを切り替えた後で、もう一度マニュアルベイクしてください。
