@@ -33,24 +33,34 @@ namespace KRT.VRCQuestTools.Debug.Screenshots
             }
 
             var renderTexture = RenderTexture.GetTemporary(descriptor);
-            InternalEditorUtilityBridge.CaptureEditorWindow(window, renderTexture);
-
             var previousActive = RenderTexture.active;
-            RenderTexture.active = renderTexture;
-            var texture = new Texture2D(width, height, TextureFormat.RGB24, false);
-            texture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-            texture.Apply();
-            RenderTexture.active = previousActive;
-            RenderTexture.ReleaseTemporary(renderTexture);
-
-            var directory = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            Texture2D texture = null;
+            try
             {
-                Directory.CreateDirectory(directory);
-            }
+                InternalEditorUtilityBridge.CaptureEditorWindow(window, renderTexture);
 
-            File.WriteAllBytes(path, texture.EncodeToPNG());
-            Object.DestroyImmediate(texture);
+                RenderTexture.active = renderTexture;
+                texture = new Texture2D(width, height, TextureFormat.RGB24, false);
+                texture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                texture.Apply();
+
+                var directory = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                File.WriteAllBytes(path, texture.EncodeToPNG());
+            }
+            finally
+            {
+                RenderTexture.active = previousActive;
+                RenderTexture.ReleaseTemporary(renderTexture);
+                if (texture != null)
+                {
+                    Object.DestroyImmediate(texture);
+                }
+            }
         }
     }
 }

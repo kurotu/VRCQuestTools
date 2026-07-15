@@ -29,7 +29,13 @@ namespace KRT.VRCQuestTools.Debug.Screenshots
             {
                 if (window == null)
                 {
+                    // The window was closed before the wait completed. Callers rely on onSaved to
+                    // close windows, destroy temp objects, and restore editor settings (e.g.
+                    // display language), so it must still run even though there is nothing to
+                    // capture; otherwise those temp objects/settings leak and a "Capture All" chain
+                    // waiting on this callback would stall forever.
                     EditorApplication.update -= tick;
+                    onSaved();
                     return;
                 }
 
@@ -41,9 +47,17 @@ namespace KRT.VRCQuestTools.Debug.Screenshots
                 }
 
                 EditorApplication.update -= tick;
-                WindowPixelCapture.SaveScreenshot(window, path);
-                Logger.Log($"Saved screenshot: {path}");
-                onSaved();
+                try
+                {
+                    WindowPixelCapture.SaveScreenshot(window, path);
+                    Logger.Log($"Saved screenshot: {path}");
+                }
+                finally
+                {
+                    // Guarantee onSaved runs even if the capture itself throws, for the same reason
+                    // as the window == null case above.
+                    onSaved();
+                }
             };
             EditorApplication.update += tick;
         }

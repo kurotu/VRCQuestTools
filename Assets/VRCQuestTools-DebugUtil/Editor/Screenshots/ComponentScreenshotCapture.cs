@@ -54,7 +54,11 @@ namespace KRT.VRCQuestTools.Debug.Screenshots
             var path = Path.Combine(ScreenshotSettings.OutputDirectory, fileName);
             CaptureScheduler.CaptureAfterRepaint(window, path, () =>
             {
-                window.Close();
+                if (window != null)
+                {
+                    window.Close();
+                }
+
                 if (tempGameObjectToDestroy != null)
                 {
                     UnityEngine.Object.DestroyImmediate(tempGameObjectToDestroy);
