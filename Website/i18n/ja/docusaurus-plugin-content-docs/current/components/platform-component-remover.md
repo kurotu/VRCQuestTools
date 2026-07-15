@@ -11,9 +11,7 @@ slug: /references/components/platform-component-remover
 PC では使いたいが Mobile では削除したいコンポーネント（またはその逆）があるときに使用します。
 たとえば、Mobile 用にアップロードするときだけ特定の PhysBone を削除する、といった使い方ができます。
 
-:::info スクリーンショット準備中
-ここに VQT Platform Component Remover の Inspector のスクリーンショットが入ります。
-:::
+![VQT Platform Component Remover の Inspector](/img/platform-component-remover.png)
 
 ## 設定項目
 

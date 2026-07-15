@@ -11,9 +11,7 @@ slug: /references/components/platform-target-settings
 「PCで維持」「Mobileで有効」のような設定を持つ VRCQuestTools のコンポーネントは、通常 Unity のターゲットプラットフォームを見て動作を切り替えます。
 このコンポーネントを追加すると、Unity のターゲットプラットフォームに関係なく、指定したプラットフォームの設定でビルドできます。
 
-:::info スクリーンショット準備中
-ここに VQT Platform Target Settings の Inspector のスクリーンショットが入ります。
-:::
+![VQT Platform Target Settings の Inspector](/img/platform-target-settings.png)
 
 ## 設定項目
 

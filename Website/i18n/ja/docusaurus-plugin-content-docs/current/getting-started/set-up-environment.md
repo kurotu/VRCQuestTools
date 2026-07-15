@@ -68,9 +68,7 @@ iOS Build Support をインストールすると、VRChat SDK のコントロー
 メニューバーの「Tools」→「VRCQuestTools」→「Unity Settings for Mobile」を開くと、Mobile 向け作業のための推奨設定を確認できます。
 Android Build Support と iOS Build Support の導入状況も、このウィンドウで確認できます。
 
-:::info スクリーンショット準備中
-ここに「Unity Settings for Mobile」ウィンドウのスクリーンショットが入ります。
-:::
+![Unity Settings for Mobile ウィンドウ](/img/set-up-environment.png)
 
 - **Android テクスチャ圧縮**：ASTC を使用すると、Android 用のテクスチャ圧縮に時間がかかる代わりに画質が向上します。
 

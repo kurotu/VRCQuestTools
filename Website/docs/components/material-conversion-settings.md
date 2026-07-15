@@ -10,9 +10,7 @@ NDMF is required.
 
 Materials of the GameObject with this component and its children are converted in Mobile builds.
 
-:::info Screenshot placeholder
-A screenshot of the VQT Material Conversion Settings Inspector will be placed here.
-:::
+![VQT Material Conversion Settings Inspector](/img/material-conversion-settings.png)
 
 ## Settings
 

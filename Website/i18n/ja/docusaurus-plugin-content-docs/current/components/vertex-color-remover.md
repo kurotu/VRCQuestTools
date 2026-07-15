@@ -9,9 +9,7 @@ GameObject に紐づくメッシュから頂点カラーを削除するコンポ
 
 他のコンポーネントと異なり、ビルド時ではなく、追加した時点でシーン上のメッシュから頂点カラーを削除します。
 
-:::info スクリーンショット準備中
-ここに VQT Vertex Color Remover の Inspector のスクリーンショットが入ります。
-:::
+![VQT Vertex Color Remover の Inspector](/img/vertex-color-remover.png)
 
 ## 設定項目
 

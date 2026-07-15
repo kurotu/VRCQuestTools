@@ -17,9 +17,7 @@ If you haven't uploaded the original avatar for PC yet, upload it first.
 2. Select your avatar in the window.
 3. Press the "Begin Converter Settings" button.
 
-:::info Screenshot placeholder
-A screenshot of the "Setup Avatar for Mobile" window will be placed here.
-:::
+![Setup Avatar for Mobile window](/img/convert-avatar.png)
 
 The [VQT Avatar Converter Settings](../components/avatar-converter-settings.md) component is added to the avatar and the converter settings appear.
 When the project has Modular Avatar or Avatar Optimizer, you can also choose additional components to add with the checkboxes above the button.
