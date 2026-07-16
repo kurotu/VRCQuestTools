@@ -13,9 +13,7 @@ See [Convert Your Avatar](../getting-started/convert-avatar.md) for the steps.
 When the project has NDMF, the avatar is automatically converted in Mobile builds.
 Without NDMF, press the "Convert" button in the Inspector to create a converted copy of the avatar.
 
-:::info Screenshot placeholder
-A screenshot of the VQT Avatar Converter Settings Inspector will be placed here.
-:::
+![VQT Avatar Converter Settings Inspector](/img/avatar-converter-settings.png)
 
 ## Material Conversion Settings
 

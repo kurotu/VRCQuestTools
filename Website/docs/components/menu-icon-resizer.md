@@ -9,9 +9,7 @@ It reduces the texture size of the icons and the download size of the avatar.
 Attach it to the avatar's root object.
 NDMF is required.
 
-:::info Screenshot placeholder
-A screenshot of the VQT Menu Icon Resizer Inspector will be placed here.
-:::
+![VQT Menu Icon Resizer Inspector](/img/menu-icon-resizer.png)
 
 ## Settings
 

@@ -10,9 +10,7 @@ slug: /references/components/platform-gameobject-remover
 
 PC 専用のアクセサリーを Mobile では丸ごと外す、といった使い方ができます。
 
-:::info スクリーンショット準備中
-ここに VQT Platform GameObject Remover の Inspector のスクリーンショットが入ります。
-:::
+![VQT Platform GameObject Remover の Inspector](/img/platform-gameobject-remover.png)
 
 ## 設定項目
 

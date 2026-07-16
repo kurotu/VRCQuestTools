@@ -9,9 +9,7 @@ Some PC avatars have vertex colors, and texture colors may not be displayed corr
 
 Unlike other components, it removes vertex colors from the meshes in the scene as soon as it is added, not at build time.
 
-:::info Screenshot placeholder
-A screenshot of the VQT Vertex Color Remover Inspector will be placed here.
-:::
+![VQT Vertex Color Remover Inspector](/img/vertex-color-remover.png)
 
 ## Settings
 

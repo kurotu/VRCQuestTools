@@ -10,9 +10,7 @@ NDMF is required.
 
 Renderers of the GameObject with this component and its children are the targets of the replacement.
 
-:::info Screenshot placeholder
-A screenshot of the VQT Material Swap Inspector will be placed here.
-:::
+![VQT Material Swap Inspector](/img/material-swap.png)
 
 ## Settings
 

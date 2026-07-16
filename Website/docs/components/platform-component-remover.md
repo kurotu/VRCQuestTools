@@ -11,9 +11,7 @@ NDMF is required.
 Use it when there are components you want to use on PC but remove on Mobile (or the other way around).
 For example, you can remove specific PhysBones only when uploading for Mobile.
 
-:::info Screenshot placeholder
-A screenshot of the VQT Platform Component Remover Inspector will be placed here.
-:::
+![VQT Platform Component Remover Inspector](/img/platform-component-remover.png)
 
 ## Settings
 

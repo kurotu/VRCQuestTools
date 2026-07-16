@@ -3,7 +3,9 @@
     "rootNamespace": "KRT.VRCQuestTools.Debug",
     "references": [
         "VRCQuestTools",
-        "VRCQuestTools-Editor"
+        "VRCQuestTools-Editor",
+        "EditorDriver.Editor",
+        "Unity.InternalAPIEditorBridge.024"
     ],
     "includePlatforms": [
         "Editor"
@@ -11,7 +13,12 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [],
+    "precompiledReferences": [
+        "VRCSDKBase.dll",
+        "VRCSDK3A.dll",
+        "VRC.SDK3.Dynamics.PhysBone.dll",
+        "VRC.Dynamics.dll"
+    ],
     "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],

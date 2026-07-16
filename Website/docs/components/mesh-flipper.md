@@ -9,9 +9,7 @@ Because Mobile shaders don't render backfaces, the inside of skirts and similar 
 When you attach this component to a GameObject with a mesh, a double-sided mesh is generated and applied at build time.
 NDMF is required.
 
-:::info Screenshot placeholder
-A screenshot of the VQT Mesh Flipper Inspector will be placed here.
-:::
+![VQT Mesh Flipper Inspector](/img/mesh-flipper.png)
 
 ## Settings
 

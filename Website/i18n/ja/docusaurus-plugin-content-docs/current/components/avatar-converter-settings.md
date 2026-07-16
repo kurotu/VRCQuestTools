@@ -13,9 +13,7 @@ slug: /references/components/avatar-converter-settings
 プロジェクトに NDMF がある場合、アバターは Mobile 向けビルド時に自動で変換されます。
 NDMF がない場合は、Inspector の「変換」ボタンでアバターの複製を作成して変換します。
 
-:::info スクリーンショット準備中
-ここに VQT Avatar Converter Settings の Inspector のスクリーンショットが入ります。
-:::
+![VQT Avatar Converter Settings の Inspector](/img/avatar-converter-settings.png)
 
 ## マテリアル変換設定
 

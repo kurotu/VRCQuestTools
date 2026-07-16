@@ -10,9 +10,7 @@ NDMF is required.
 
 For example, you can remove a PC-only accessory entirely on Mobile.
 
-:::info Screenshot placeholder
-A screenshot of the VQT Platform GameObject Remover Inspector will be placed here.
-:::
+![VQT Platform GameObject Remover Inspector](/img/platform-gameobject-remover.png)
 
 ## Settings
 

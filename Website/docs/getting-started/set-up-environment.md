@@ -68,9 +68,7 @@ After installing iOS Build Support, you can switch the platform to iOS in the VR
 Open "Tools" → "VRCQuestTools" → "Unity Settings for Mobile" from the menu bar to check the recommended settings for working with Mobile.
 This window also shows whether Android Build Support and iOS Build Support are installed.
 
-:::info Screenshot placeholder
-A screenshot of the "Unity Settings for Mobile" window will be placed here.
-:::
+![Unity Settings for Mobile window](/img/set-up-environment.png)
 
 - **Android Texture Compression**: Using ASTC improves texture quality for Android in exchange for longer compression time.
 

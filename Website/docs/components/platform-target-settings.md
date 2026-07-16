@@ -11,9 +11,7 @@ NDMF is required.
 VRCQuestTools components with settings like "Keep on PC" or "Enable on Mobile" normally switch their behavior based on Unity's target platform.
 With this component, the avatar is built with the settings of the specified platform regardless of Unity's target platform.
 
-:::info Screenshot placeholder
-A screenshot of the VQT Platform Target Settings Inspector will be placed here.
-:::
+![VQT Platform Target Settings Inspector](/img/platform-target-settings.png)
 
 ## Settings
 

@@ -9,9 +9,7 @@ Expressions Menu のアイコンをビルド時にリサイズするコンポー
 アバターのルートオブジェクトに追加します。
 動作には NDMF が必要です。
 
-:::info スクリーンショット準備中
-ここに VQT Menu Icon Resizer の Inspector のスクリーンショットが入ります。
-:::
+![VQT Menu Icon Resizer の Inspector](/img/menu-icon-resizer.png)
 
 ## 設定項目
 
