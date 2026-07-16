@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -55,7 +56,14 @@ namespace KRT.VRCQuestTools.Debug.Screenshots
             // excludes from its "Non-Local Contact" section. IsLocalOnly has no public setter, so
             // the serialized field must be flipped through SerializedObject.
             var so = new SerializedObject(contact);
-            so.FindProperty("localOnly").boolValue = false;
+            var localOnlyProperty = so.FindProperty("localOnly");
+            if (localOnlyProperty == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(ContactReceiver)}'s serialized \"localOnly\" field was not found. The VRChat SDK's internal layout may have changed.");
+            }
+
+            localOnlyProperty.boolValue = false;
             so.ApplyModifiedProperties();
 
             return avatar;

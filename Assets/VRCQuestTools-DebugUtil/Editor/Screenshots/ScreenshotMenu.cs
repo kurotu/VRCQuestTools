@@ -53,64 +53,22 @@ namespace KRT.VRCQuestTools.Debug.Screenshots
         private static void MenuCaptureMaterialConversionSettings() => CaptureMaterialConversionSettings(null);
 
         [MenuItem(Root + "Components/Menu Icon Resizer")]
-        private static void MenuCaptureMenuIconResizer() =>
-            CaptureComponent<MenuIconResizer>(
-                "menu-icon-resizer.png",
-                ScreenshotSettings.MenuIconResizerSize,
-                c => c.resizeModeAndroid = MenuIconResizer.TextureResizeMode.Max128x128,
-                null);
+        private static void MenuCaptureMenuIconResizer() => CaptureMenuIconResizer(null);
 
         [MenuItem(Root + "Components/Mesh Flipper")]
-        private static void MenuCaptureMeshFlipper() =>
-            CaptureComponent<MeshFlipper>("mesh-flipper.png", ScreenshotSettings.MeshFlipperSize, null, null);
+        private static void MenuCaptureMeshFlipper() => CaptureMeshFlipper(null);
 
         [MenuItem(Root + "Components/Platform Component Remover")]
-        private static void MenuCapturePlatformComponentRemover() =>
-            CaptureComponent<PlatformComponentRemover>(
-                "platform-component-remover.png",
-                ScreenshotSettings.PlatformComponentRemoverSize,
-                c =>
-                {
-                    // Rename off the internal temp-GameObject name so the Component field shown in
-                    // the "Components to Keep" list looks like a real avatar bone, not an
-                    // implementation detail of this screenshot tool.
-                    c.gameObject.name = "Hair";
-                    var physBone = c.gameObject.AddComponent<VRCPhysBone>();
-
-                    // Pre-seed componentSettings before the Inspector's own UpdateComponentSettings()
-                    // runs on first draw; it preserves entries that already reference a known
-                    // component, so this survives instead of resetting to the false/false default.
-                    // Matches the component's own documented example: keep on PC, remove on Mobile.
-                    c.componentSettings = new[]
-                    {
-                        new KRT.VRCQuestTools.Models.PlatformComponentRemoverItem { component = physBone, removeOnAndroid = true },
-                    };
-                },
-                null);
+        private static void MenuCapturePlatformComponentRemover() => CapturePlatformComponentRemover(null);
 
         [MenuItem(Root + "Components/Platform GameObject Remover")]
-        private static void MenuCapturePlatformGameObjectRemover() =>
-            CaptureComponent<PlatformGameObjectRemover>(
-                "platform-gameobject-remover.png",
-                ScreenshotSettings.PlatformGameObjectRemoverSize,
-                c => c.removeOnAndroid = true,
-                null);
+        private static void MenuCapturePlatformGameObjectRemover() => CapturePlatformGameObjectRemover(null);
 
         [MenuItem(Root + "Components/Platform Target Settings")]
-        private static void MenuCapturePlatformTargetSettings() =>
-            CaptureComponent<PlatformTargetSettings>(
-                "platform-target-settings.png",
-                ScreenshotSettings.PlatformTargetSettingsSize,
-                c => c.buildTarget = KRT.VRCQuestTools.Models.BuildTarget.Android,
-                null);
+        private static void MenuCapturePlatformTargetSettings() => CapturePlatformTargetSettings(null);
 
         [MenuItem(Root + "Components/Vertex Color Remover")]
-        private static void MenuCaptureVertexColorRemover() =>
-            CaptureComponent<VertexColorRemover>(
-                "vertex-color-remover.png",
-                ScreenshotSettings.VertexColorRemoverSize,
-                c => c.includeChildren = true,
-                null);
+        private static void MenuCaptureVertexColorRemover() => CaptureVertexColorRemover(null);
 
         [MenuItem(Root + "Capture All")]
         private static void CaptureAll()
@@ -124,48 +82,12 @@ namespace KRT.VRCQuestTools.Debug.Screenshots
             steps.Enqueue(CaptureAvatarConverterSettings);
             steps.Enqueue(CaptureMaterialSwap);
             steps.Enqueue(CaptureMaterialConversionSettings);
-            steps.Enqueue(done => CaptureComponent<MenuIconResizer>(
-                "menu-icon-resizer.png",
-                ScreenshotSettings.MenuIconResizerSize,
-                c => c.resizeModeAndroid = MenuIconResizer.TextureResizeMode.Max128x128,
-                done));
-            steps.Enqueue(done => CaptureComponent<MeshFlipper>("mesh-flipper.png", ScreenshotSettings.MeshFlipperSize, null, done));
-            steps.Enqueue(done => CaptureComponent<PlatformComponentRemover>(
-                "platform-component-remover.png",
-                ScreenshotSettings.PlatformComponentRemoverSize,
-                c =>
-                {
-                    // Rename off the internal temp-GameObject name so the Component field shown in
-                    // the "Components to Keep" list looks like a real avatar bone, not an
-                    // implementation detail of this screenshot tool.
-                    c.gameObject.name = "Hair";
-                    var physBone = c.gameObject.AddComponent<VRCPhysBone>();
-
-                    // Pre-seed componentSettings before the Inspector's own UpdateComponentSettings()
-                    // runs on first draw; it preserves entries that already reference a known
-                    // component, so this survives instead of resetting to the false/false default.
-                    // Matches the component's own documented example: keep on PC, remove on Mobile.
-                    c.componentSettings = new[]
-                    {
-                        new KRT.VRCQuestTools.Models.PlatformComponentRemoverItem { component = physBone, removeOnAndroid = true },
-                    };
-                },
-                done));
-            steps.Enqueue(done => CaptureComponent<PlatformGameObjectRemover>(
-                "platform-gameobject-remover.png",
-                ScreenshotSettings.PlatformGameObjectRemoverSize,
-                c => c.removeOnAndroid = true,
-                done));
-            steps.Enqueue(done => CaptureComponent<PlatformTargetSettings>(
-                "platform-target-settings.png",
-                ScreenshotSettings.PlatformTargetSettingsSize,
-                c => c.buildTarget = KRT.VRCQuestTools.Models.BuildTarget.Android,
-                done));
-            steps.Enqueue(done => CaptureComponent<VertexColorRemover>(
-                "vertex-color-remover.png",
-                ScreenshotSettings.VertexColorRemoverSize,
-                c => c.includeChildren = true,
-                done));
+            steps.Enqueue(CaptureMenuIconResizer);
+            steps.Enqueue(CaptureMeshFlipper);
+            steps.Enqueue(CapturePlatformComponentRemover);
+            steps.Enqueue(CapturePlatformGameObjectRemover);
+            steps.Enqueue(CapturePlatformTargetSettings);
+            steps.Enqueue(CaptureVertexColorRemover);
 
             RunNext(steps);
         }
@@ -341,6 +263,60 @@ namespace KRT.VRCQuestTools.Debug.Screenshots
                     onDone?.Invoke();
                 });
         }
+
+        private static void CaptureMenuIconResizer(Action onDone) =>
+            CaptureComponent<MenuIconResizer>(
+                "menu-icon-resizer.png",
+                ScreenshotSettings.MenuIconResizerSize,
+                c => c.resizeModeAndroid = MenuIconResizer.TextureResizeMode.Max128x128,
+                onDone);
+
+        private static void CaptureMeshFlipper(Action onDone) =>
+            CaptureComponent<MeshFlipper>("mesh-flipper.png", ScreenshotSettings.MeshFlipperSize, null, onDone);
+
+        private static void CapturePlatformComponentRemover(Action onDone) =>
+            CaptureComponent<PlatformComponentRemover>(
+                "platform-component-remover.png",
+                ScreenshotSettings.PlatformComponentRemoverSize,
+                c =>
+                {
+                    // Rename off the internal temp-GameObject name so the Component field shown in
+                    // the "Components to Keep" list looks like a real avatar bone, not an
+                    // implementation detail of this screenshot tool.
+                    c.gameObject.name = "Hair";
+                    var physBone = c.gameObject.AddComponent<VRCPhysBone>();
+
+                    // Pre-seed componentSettings before the Inspector's own UpdateComponentSettings()
+                    // runs on first draw; it preserves entries that already reference a known
+                    // component, so this survives instead of resetting to the false/false default.
+                    // Matches the component's own documented example: keep on PC, remove on Mobile.
+                    c.componentSettings = new[]
+                    {
+                        new KRT.VRCQuestTools.Models.PlatformComponentRemoverItem { component = physBone, removeOnAndroid = true },
+                    };
+                },
+                onDone);
+
+        private static void CapturePlatformGameObjectRemover(Action onDone) =>
+            CaptureComponent<PlatformGameObjectRemover>(
+                "platform-gameobject-remover.png",
+                ScreenshotSettings.PlatformGameObjectRemoverSize,
+                c => c.removeOnAndroid = true,
+                onDone);
+
+        private static void CapturePlatformTargetSettings(Action onDone) =>
+            CaptureComponent<PlatformTargetSettings>(
+                "platform-target-settings.png",
+                ScreenshotSettings.PlatformTargetSettingsSize,
+                c => c.buildTarget = KRT.VRCQuestTools.Models.BuildTarget.Android,
+                onDone);
+
+        private static void CaptureVertexColorRemover(Action onDone) =>
+            CaptureComponent<VertexColorRemover>(
+                "vertex-color-remover.png",
+                ScreenshotSettings.VertexColorRemoverSize,
+                c => c.includeChildren = true,
+                onDone);
 
         private static void CaptureComponent<TComponent>(string fileName, Vector2 size, Action<TComponent> populate, Action onDone)
             where TComponent : Component

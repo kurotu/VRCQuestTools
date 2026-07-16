@@ -45,7 +45,7 @@ under the Unity menu `Tools/VRCQuestTools/Debug/Screenshots/...`.
 
 | File | Role |
 |---|---|
-| `ScreenshotMenu.cs` | One `[MenuItem]` per target, plus a private `Capture...` method for any target that needs its own sample-data setup/teardown (materials, textures, avatars); simple targets call the shared generic `CaptureComponent<T>` inline from their `[MenuItem]` method instead. This is where sample data is seeded via a `populate`/`configure` lambda, and where `Capture All` chains every target — **note each `[MenuItem]` method's size/lambda is duplicated in the `Capture All` queue below it; when you change one, change both, or `Capture All` will silently regenerate the stale version.** |
+| `ScreenshotMenu.cs` | One `[MenuItem]` per target, each delegating to a private `Capture...(Action onDone)` method that holds the target's file name, size, and `populate`/`configure` lambda in one place. `Capture All` enqueues those same methods directly (never duplicates their parameters), so there is exactly one place to edit per target. |
 | `ScreenshotSettings.cs` | Fixed `Vector2` size per capture target, plus the shared `CaptureOrigin` and output directory. |
 | `SampleContentFactory.cs` | Procedural, in-memory-only sample data helpers (`CreateSampleMaterial`, `CreateSampleTexture`, `CreateSampleSkinnedMeshRenderer`, `CreateAdditionalMaterialConvertSettings`). Reuse these before writing a new one. |
 | `AvatarFixtures.cs` | Instantiates the `SimpleCubeAvatar` test fixture prefab as a temporary avatar (`InstantiateSimpleCubeAvatar`), plus a variant with sample PhysBone/PhysBoneCollider/ContactReceiver children (`InstantiateSimpleCubeAvatarWithDynamics`). |

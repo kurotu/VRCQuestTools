@@ -23,6 +23,11 @@ namespace KRT.VRCQuestTools.Debug.Screenshots
         /// <param name="onSaved">Callback invoked once the PNG has been written.</param>
         internal static void CaptureAfterRepaint(EditorWindow window, string path, Action onSaved)
         {
+            if (onSaved == null)
+            {
+                throw new ArgumentNullException(nameof(onSaved));
+            }
+
             var framesLeft = FramesToWait;
             EditorApplication.CallbackFunction tick = null;
             tick = () =>
