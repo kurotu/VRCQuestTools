@@ -3,31 +3,53 @@ sidebar_position: 1
 slug: /tutorial/set-up-environment
 ---
 
+import AddToVccLink from '@site/src/components/AddToVccLink';
+
 # Set up Environment
 
 Before converting an avatar, install VRCQuestTools in your project and prepare Unity for Mobile.
+The project is not the only thing which needs preparation.
+Unless a Unity module called Android Build Support is installed, you can't even switch the platform to upload for Android.
 
 ## Prerequisites
 
 This documentation assumes a project which can already upload the avatar for PC.
-Create the project with VRChat Creator Companion (VCC) and set up your avatar in advance.
 
 ## Install VRCQuestTools
 
-1. Open the [Add to VCC](https://kurotu.github.io/vpm-repos/vpm.html) page and add the repository to VCC.
-2. Open "Manage Project" for your project in VCC, then add "VRCQuestTools".
+VRCQuestTools is distributed as a VPM repository.
+Add the repository to VRChat Creator Companion (VCC) or [ALCOM](https://vrc-get.anatawa12.com/en/alcom/) to install the package.
+
+1. Press the following button to add the repository to VCC or ALCOM.
+
+    <AddToVccLink className="button button--primary" />
+
+2. Add "VRCQuestTools" to your project in the package management screen.
+
+:::note
+To add the repository manually, use the following URL.
+
+```
+https://kurotu.github.io/vpm-repos/vpm.json
+```
+
+:::
 
 After the installation, "Tools" → "VRCQuestTools" appears in the Unity menu bar.
 
-:::tip NDMF for non-destructive conversion
-When the project has the Non-Destructive Modular Framework (NDMF) package, avatars can be automatically converted on upload without modifying the original.
-NDMF is available from [bd_'s VPM repository](https://vpm.nadena.dev/).
-If you use [Modular Avatar](https://modular-avatar.nadena.dev/), NDMF is already included in your project.
+:::tip NDMF for automatic conversion on upload
+Hearing "conversion", you may wonder whether your carefully set up avatar gets rewritten.
+The conversion does not rewrite the original avatar. It duplicates the avatar and its assets, and converts the copies.
+When the project has the Non-Destructive Modular Framework (NDMF) package, avatars are automatically converted on upload without even creating copies.
+It also works together with other non-destructive tools such as Modular Avatar.
+To install NDMF, add the repository with the "Download" button at the top of the [Modular Avatar](https://modular-avatar.nadena.dev/) website.
+If you use Modular Avatar, NDMF is already included in your project.
 :::
 
 ## Install Android Build Support {#android-build-support}
 
 To upload avatars for Android, the Android Build Support module for Unity is required.
+Without it, you can't switch the platform to Android in the VRChat SDK control panel.
 Install it from Unity Hub with the following steps.
 
 1. Open "Installs" in Unity Hub.
