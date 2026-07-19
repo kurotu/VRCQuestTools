@@ -84,7 +84,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 context.Observe(rootConversion, c => AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(c.gameObject));
             }
 
-            return rootConversions.Select(root => root.GetComponentsInChildren<Renderer>().Where(r => r is SkinnedMeshRenderer || r is MeshRenderer))
+            return rootConversions.Select(root => context.GetComponentsInChildren<Renderer>(root.gameObject, true).Where(r => r is SkinnedMeshRenderer || r is MeshRenderer))
                 .Where(r => r.Any())
                 .Select(r => RenderGroup.For(r))
                 .ToImmutableList();
