@@ -38,7 +38,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 .ToArray();
 
             return rootConversions
-                .SelectMany(root => root.GetComponentsInChildren<Renderer>())
+                .SelectMany(root => context.GetComponentsInChildren<Renderer>(root.gameObject, true))
                 .Distinct()
                 .Where(renderer => renderer is SkinnedMeshRenderer || renderer is MeshRenderer)
                 .Select(renderer => RenderGroup.For(renderer))
