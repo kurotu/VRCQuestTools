@@ -40,7 +40,7 @@ The following components use Non-Destructive Modular Framework (NDMF) for their 
 - VQT Platform Target Settings
 
 When the project doesn't have NDMF, these components don't work and a warning appears in the Inspector.
-NDMF is available from [bd_'s VPM repository](https://vpm.nadena.dev/).
+To install NDMF, add the repository with the "Download" button at the top of the [Modular Avatar](https://modular-avatar.nadena.dev/) website.
 
 ## About Build Targets
 
