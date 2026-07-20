@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("VRCQuestTools-Editor-NonDestructive")]
 [assembly: InternalsVisibleTo("VRCQuestTools-DebugUtil-Editor")]
 [assembly: InternalsVisibleTo("VRCQuestTools-EditorTests")]
+[assembly: InternalsVisibleTo("VRCQuestTools-EditorTests-Ndmf")]
 [assembly: InternalsVisibleTo("VRCQuestToolsExtra-Editor")]
 [assembly: InternalsVisibleTo("VRCQuestToolsExtra-EditorTests")]
 #endif

@@ -18,6 +18,15 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public override string DisplayName => "Remove platform components";
 
+        /// <summary>
+        /// Runs this pass directly for EditMode tests, bypassing the NDMF pass pipeline.
+        /// </summary>
+        /// <param name="context">BuildContext.</param>
+        internal void RunForTest(BuildContext context)
+        {
+            Execute(context);
+        }
+
         /// <inheritdoc/>
         protected override void Execute(BuildContext context)
         {
