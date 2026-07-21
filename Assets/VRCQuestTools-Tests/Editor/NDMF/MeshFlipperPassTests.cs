@@ -55,19 +55,32 @@ namespace KRT.VRCQuestTools.Ndmf
             flipper.processingPhase = MeshFlipperProcessingPhase.BeforePolygonReduction;
 
             var context = new BuildContext(builder.Root, null);
-            using (new ObjectRegistryScope(context.ObjectRegistry))
+            Mesh flippedMesh = null;
+            try
             {
-                MeshFlipperPass.Instance.RunForTest(context);
+                using (new ObjectRegistryScope(context.ObjectRegistry))
+                {
+                    MeshFlipperPass.Instance.RunForTest(context);
 
-                var reference = NdmfObjectRegistry.GetReference(smr.sharedMesh);
-                Assert.AreSame(originalMesh, reference.Object, "ObjectRegistry should trace the flipped mesh back to the original.");
+                    // Capture the duplicate before any assertion can throw, so the finally block
+                    // below can always clean it up even if an assertion fails partway through.
+                    flippedMesh = smr.sharedMesh;
+
+                    var reference = NdmfObjectRegistry.GetReference(smr.sharedMesh);
+                    Assert.AreSame(originalMesh, reference.Object, "ObjectRegistry should trace the flipped mesh back to the original.");
+                }
+
+                Assert.AreNotSame(originalMesh, smr.sharedMesh, "Pass should replace the mesh with a flipped duplicate, not mutate it in place.");
+                Assert.AreEqual(new[] { 2, 1, 0 }, smr.sharedMesh.triangles, "Flipped mesh should have reversed winding order.");
+                Assert.AreEqual(new[] { 0, 1, 2 }, originalMesh.triangles, "Original mesh asset must remain untouched.");
             }
-
-            Assert.AreNotSame(originalMesh, smr.sharedMesh, "Pass should replace the mesh with a flipped duplicate, not mutate it in place.");
-            Assert.AreEqual(new[] { 2, 1, 0 }, smr.sharedMesh.triangles, "Flipped mesh should have reversed winding order.");
-            Assert.AreEqual(new[] { 0, 1, 2 }, originalMesh.triangles, "Original mesh asset must remain untouched.");
-
-            Object.DestroyImmediate(smr.sharedMesh);
+            finally
+            {
+                if (flippedMesh != null)
+                {
+                    Object.DestroyImmediate(flippedMesh);
+                }
+            }
         }
 
         /// <summary>
@@ -95,11 +108,34 @@ namespace KRT.VRCQuestTools.Ndmf
             flipperB.processingPhase = MeshFlipperProcessingPhase.BeforePolygonReduction;
 
             var context = new BuildContext(builder.Root, null);
-            MeshFlipperPass.Instance.RunForTest(context);
+            Mesh flippedMeshA = null;
+            Mesh flippedMeshB = null;
+            try
+            {
+                using (new ObjectRegistryScope(context.ObjectRegistry))
+                {
+                    MeshFlipperPass.Instance.RunForTest(context);
+                }
 
-            Assert.AreSame(smrA.sharedMesh, smrB.sharedMesh, "Renderers sharing the original mesh must resolve to the same flipped mesh instance.");
+                // Capture both before asserting: if dedup is broken, each renderer ends up with
+                // its own duplicate, and both must still be cleaned up in that failure case too.
+                flippedMeshA = smrA.sharedMesh;
+                flippedMeshB = smrB.sharedMesh;
 
-            Object.DestroyImmediate(smrA.sharedMesh);
+                Assert.AreSame(flippedMeshA, flippedMeshB, "Renderers sharing the original mesh must resolve to the same flipped mesh instance.");
+            }
+            finally
+            {
+                if (flippedMeshA != null)
+                {
+                    Object.DestroyImmediate(flippedMeshA);
+                }
+
+                if (flippedMeshB != null && !ReferenceEquals(flippedMeshB, flippedMeshA))
+                {
+                    Object.DestroyImmediate(flippedMeshB);
+                }
+            }
         }
 
         /// <summary>

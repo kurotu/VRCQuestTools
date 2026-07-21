@@ -60,21 +60,34 @@ namespace KRT.VRCQuestTools.Ndmf
             var smr = builder.AddSkinnedMeshRenderer("Body", originalMesh);
 
             var context = new BuildContext(builder.Root, null);
-            using (new ObjectRegistryScope(context.ObjectRegistry))
+            Mesh replacedMesh = null;
+            try
             {
-                RemoveVertexColorPass.Instance.RunForTest(context);
+                using (new ObjectRegistryScope(context.ObjectRegistry))
+                {
+                    RemoveVertexColorPass.Instance.RunForTest(context);
 
-                // ObjectRegistry.ActiveRegistry is only set inside this scope, so the lookup
-                // must happen before it (and the registration it reads) goes out of scope.
-                var reference = NdmfObjectRegistry.GetReference(smr.sharedMesh);
-                Assert.AreSame(originalMesh, reference.Object, "ObjectRegistry should trace the replacement mesh back to the original.");
+                    // Capture the duplicate before any assertion can throw, so the finally block
+                    // below can always clean it up even if an assertion fails partway through.
+                    replacedMesh = smr.sharedMesh;
+
+                    // ObjectRegistry.ActiveRegistry is only set inside this scope, so the lookup
+                    // must happen before it (and the registration it reads) goes out of scope.
+                    var reference = NdmfObjectRegistry.GetReference(smr.sharedMesh);
+                    Assert.AreSame(originalMesh, reference.Object, "ObjectRegistry should trace the replacement mesh back to the original.");
+                }
+
+                Assert.AreNotSame(originalMesh, smr.sharedMesh, "Pass should replace the mesh with a duplicate, not mutate it in place.");
+                Assert.IsTrue(originalMesh.colors32 != null && originalMesh.colors32.Length > 0, "Original mesh asset must remain untouched.");
+                Assert.IsTrue(smr.sharedMesh.colors32 == null || smr.sharedMesh.colors32.Length == 0, "Replacement mesh must have vertex colors removed.");
             }
-
-            Assert.AreNotSame(originalMesh, smr.sharedMesh, "Pass should replace the mesh with a duplicate, not mutate it in place.");
-            Assert.IsTrue(originalMesh.colors32 != null && originalMesh.colors32.Length > 0, "Original mesh asset must remain untouched.");
-            Assert.IsTrue(smr.sharedMesh.colors32 == null || smr.sharedMesh.colors32.Length == 0, "Replacement mesh must have vertex colors removed.");
-
-            Object.DestroyImmediate(smr.sharedMesh);
+            finally
+            {
+                if (replacedMesh != null)
+                {
+                    Object.DestroyImmediate(replacedMesh);
+                }
+            }
         }
 
         /// <summary>
