@@ -484,7 +484,7 @@ msgid "PlatformTargetSettingsEditorDescription"
 msgstr "Компоненты принудительно используют определенные настройки платформы в процессе сборки NDMF."
 
 msgid "PlatformTargetSettingsIsRequiredToEnforcePlatform"
-msgstr "Компонент настройки целевой платформы требуется для корневого объекта аватара, чтобы принудительно применить определенные настройки платформы."
+msgstr "Чтобы переопределить платформу для этого компонента, добавьте компонент PlatformTargetSettings в корневой объект аватара."
 
 msgid "ComponentRequiresNdmf"
 msgstr "Требуется Неразрушаемая Модульная Структура (NDMF)."

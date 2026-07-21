@@ -549,7 +549,7 @@ msgid "PlatformTargetSettingsEditorDescription"
 msgstr "Components are enforced to use a specific platform settings in NDMF build process."
 
 msgid "PlatformTargetSettingsIsRequiredToEnforcePlatform"
-msgstr "PlatformTargetSettings component is required to the avatar root object in order to enforce a specific platform settings."
+msgstr "To override the platform for this component, add a PlatformTargetSettings component to the avatar root object."
 
 msgid "ComponentRequiresNdmf"
 msgstr "Non-Destructive Modular Framework (NDMF) is required."

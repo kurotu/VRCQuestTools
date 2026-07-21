@@ -3,6 +3,7 @@ using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using VRC.SDKBase;
 
 namespace KRT.VRCQuestTools.Inspector
 {
@@ -52,22 +53,51 @@ namespace KRT.VRCQuestTools.Inspector
                 }
             }
 
+#if VQT_HAS_NDMF
             // Temporary force preview toggle (non-serialized), shown regardless of Advanced foldout state
-            var comp2 = TargetComponent;
-            var forceLabel2 = comp2.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
-            var oldBg2 = GUI.backgroundColor;
-            if (comp2.ForceMaterialPreview)
+            using (var disabledPreview = new EditorGUI.DisabledGroupScope(IsMobileBuildTarget(TargetComponent.gameObject)))
             {
-                GUI.backgroundColor = Color.green;
+                var component = TargetComponent;
+                var forceLabel = component.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
+                var oldBg = GUI.backgroundColor;
+                if (component.ForceMaterialPreview)
+                {
+                    GUI.backgroundColor = Color.green;
+                }
+                if (GUILayout.Button(new GUIContent("[NDMF] " + forceLabel, i18n.ForceMaterialPreviewTooltip)))
+                {
+                    component.forceMaterialPreview = !component.forceMaterialPreview;
+                }
+                GUI.backgroundColor = oldBg;
             }
-            if (GUILayout.Button(new GUIContent(forceLabel2, i18n.ForceMaterialPreviewTooltip)))
-            {
-                comp2.forceMaterialPreview = !comp2.forceMaterialPreview;
-            }
-            GUI.backgroundColor = oldBg2;
+#endif
 
             serializedObject.ApplyModifiedProperties();
         }
+
+#if VQT_HAS_NDMF
+        // MaterialConversionSettings may be on a child object rather than the avatar root,
+        // so the avatar descriptor is resolved via the parent hierarchy.
+        private static bool IsMobileBuildTarget(GameObject componentGameObject)
+        {
+            var avatarDescriptor = componentGameObject.GetComponentInParent<VRC_AvatarDescriptor>(true);
+            if (avatarDescriptor == null)
+            {
+                return false;
+            }
+
+            var targetSettings = avatarDescriptor.GetComponent<PlatformTargetSettings>();
+            var buildTarget = targetSettings != null ? targetSettings.buildTarget : Models.BuildTarget.Auto;
+            if (buildTarget == Models.BuildTarget.Auto)
+            {
+                buildTarget = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS
+                    ? Models.BuildTarget.Android
+                    : Models.BuildTarget.PC;
+            }
+
+            return buildTarget == Models.BuildTarget.Android;
+        }
+#endif
 
         private class EditorState : ScriptableSingleton<EditorState>
         {
