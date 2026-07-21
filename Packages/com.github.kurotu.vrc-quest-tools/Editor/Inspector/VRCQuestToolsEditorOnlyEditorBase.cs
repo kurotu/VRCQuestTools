@@ -4,7 +4,6 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
-using VRC.SDKBase;
 
 namespace KRT.VRCQuestTools.Inspector
 {
@@ -70,13 +69,11 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
 #if VQT_HAS_NDMF
-            if ((target is IPlatformDependentComponent || target is AvatarConverterSettings) && !AvatarHasPlatformTargetSettings(TargetComponent.gameObject))
-#else
-            if (target is IPlatformDependentComponent && !AvatarHasPlatformTargetSettings(TargetComponent.gameObject))
-#endif
+            if ((target is IPlatformDependentComponent || target is AvatarConverterSettings) && !ComponentUtility.AvatarHasPlatformTargetSettings(TargetComponent.gameObject))
             {
                 EditorGUILayout.HelpBox(i18n.PlatformTargetSettingsIsRequiredToEnforcePlatform, MessageType.Info);
             }
+#endif
 
             EditorGUILayout.Space();
 
@@ -87,14 +84,5 @@ namespace KRT.VRCQuestTools.Inspector
         /// Called after header GUI is drawed in OnInspectorGUI.
         /// </summary>
         public abstract void OnInspectorGUIInternal();
-
-        // PlatformTargetSettings is looked up on the avatar root rather than gameObject itself,
-        // since platform-dependent components are commonly placed on child objects.
-        private static bool AvatarHasPlatformTargetSettings(GameObject gameObject)
-        {
-            var avatarDescriptor = gameObject.GetComponentInParent<VRC_AvatarDescriptor>(true);
-            var avatarRoot = avatarDescriptor != null ? avatarDescriptor.gameObject : gameObject;
-            return avatarRoot.GetComponent<PlatformTargetSettings>() != null;
-        }
     }
 }

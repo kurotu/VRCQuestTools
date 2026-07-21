@@ -311,7 +311,7 @@ namespace KRT.VRCQuestTools.Inspector
 
                     EditorGUILayout.Space();
 
-                    using (var disabledPreview = new EditorGUI.DisabledGroupScope(IsMobileBuildTarget(descriptor)))
+                    using (var disabledPreview = new EditorGUI.DisabledGroupScope(Utils.ComponentUtility.IsMobileBuildTarget(descriptor.gameObject)))
                     {
                         var forceLabel = converterSettings.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
                         var oldBg = GUI.backgroundColor;
@@ -763,25 +763,6 @@ namespace KRT.VRCQuestTools.Inspector
             }
             Logger.LogException(exception, context);
             DisplayErrorDialog(message, dialogException);
-        }
-
-        private static bool IsMobileBuildTarget(VRC_AvatarDescriptor avatar)
-        {
-            if (avatar == null)
-            {
-                return false;
-            }
-
-            var targetSettings = avatar.GetComponent<PlatformTargetSettings>();
-            var buildTarget = targetSettings != null ? targetSettings.buildTarget : Models.BuildTarget.Auto;
-            if (buildTarget == Models.BuildTarget.Auto)
-            {
-                buildTarget = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS
-                    ? Models.BuildTarget.Android
-                    : Models.BuildTarget.PC;
-            }
-
-            return buildTarget == Models.BuildTarget.Android;
         }
 
         private string GetOutputPath(VRC_AvatarDescriptor avatar)

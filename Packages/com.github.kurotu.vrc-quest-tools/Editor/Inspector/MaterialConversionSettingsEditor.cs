@@ -3,7 +3,6 @@ using KRT.VRCQuestTools.Models;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using VRC.SDKBase;
 
 namespace KRT.VRCQuestTools.Inspector
 {
@@ -55,7 +54,7 @@ namespace KRT.VRCQuestTools.Inspector
 
 #if VQT_HAS_NDMF
             // Temporary force preview toggle (non-serialized), shown regardless of Advanced foldout state
-            using (var disabledPreview = new EditorGUI.DisabledGroupScope(IsMobileBuildTarget(TargetComponent.gameObject)))
+            using (var disabledPreview = new EditorGUI.DisabledGroupScope(Utils.ComponentUtility.IsMobileBuildTarget(TargetComponent.gameObject)))
             {
                 var component = TargetComponent;
                 var forceLabel = component.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
@@ -74,30 +73,6 @@ namespace KRT.VRCQuestTools.Inspector
 
             serializedObject.ApplyModifiedProperties();
         }
-
-#if VQT_HAS_NDMF
-        // MaterialConversionSettings may be on a child object rather than the avatar root,
-        // so the avatar descriptor is resolved via the parent hierarchy.
-        private static bool IsMobileBuildTarget(GameObject componentGameObject)
-        {
-            var avatarDescriptor = componentGameObject.GetComponentInParent<VRC_AvatarDescriptor>(true);
-            if (avatarDescriptor == null)
-            {
-                return false;
-            }
-
-            var targetSettings = avatarDescriptor.GetComponent<PlatformTargetSettings>();
-            var buildTarget = targetSettings != null ? targetSettings.buildTarget : Models.BuildTarget.Auto;
-            if (buildTarget == Models.BuildTarget.Auto)
-            {
-                buildTarget = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS
-                    ? Models.BuildTarget.Android
-                    : Models.BuildTarget.PC;
-            }
-
-            return buildTarget == Models.BuildTarget.Android;
-        }
-#endif
 
         private class EditorState : ScriptableSingleton<EditorState>
         {
