@@ -61,5 +61,54 @@ namespace KRT.VRCQuestTools.Utils
 
             Assert.DoesNotThrow(() => UnityAnimationUtility.ReplaceAnimationClips(controller, false, null, new Dictionary<Motion, Motion> { }));
         }
+
+        /// <summary>
+        /// ReplaceAnimationClipMaterials should rewrite a material-swap object reference curve on a
+        /// duplicated clip while leaving the source clip untouched. This is a regression test for the
+        /// non-NDMF-standard animation rewriting used by the NDMF passes (see NDMF/AvatarConverterPassUtility).
+        /// </summary>
+        [Test]
+        public void ReplaceAnimationClipMaterials_RewritesRendererMaterialCurve()
+        {
+            var originalMaterial = new Material(Shader.Find("Standard"));
+            var newMaterial = new Material(Shader.Find("Standard"));
+            AnimationClip clip = null;
+            AnimationClip replaced = null;
+            try
+            {
+                clip = new AnimationClip();
+                var binding = EditorCurveBinding.PPtrCurve("Body", typeof(SkinnedMeshRenderer), "m_Materials.Array.data[0]");
+                var keyframes = new[]
+                {
+                    new ObjectReferenceKeyframe { time = 0, value = originalMaterial },
+                };
+                AnimationUtility.SetObjectReferenceCurve(clip, binding, keyframes);
+
+                replaced = UnityAnimationUtility.ReplaceAnimationClipMaterials(clip, new Dictionary<Material, Material> { [originalMaterial] = newMaterial });
+
+                Assert.AreNotSame(clip, replaced, "The pass must duplicate the clip rather than mutate it in place.");
+
+                var originalKeyframes = AnimationUtility.GetObjectReferenceCurve(clip, binding);
+                Assert.AreSame(originalMaterial, originalKeyframes[0].value, "Source clip must remain untouched.");
+
+                var replacedKeyframes = AnimationUtility.GetObjectReferenceCurve(replaced, binding);
+                Assert.AreSame(newMaterial, replacedKeyframes[0].value, "Duplicated clip's material reference curve must point to the new material.");
+            }
+            finally
+            {
+                if (clip != null)
+                {
+                    Object.DestroyImmediate(clip);
+                }
+
+                if (replaced != null)
+                {
+                    Object.DestroyImmediate(replaced);
+                }
+
+                Object.DestroyImmediate(originalMaterial);
+                Object.DestroyImmediate(newMaterial);
+            }
+        }
     }
 }
