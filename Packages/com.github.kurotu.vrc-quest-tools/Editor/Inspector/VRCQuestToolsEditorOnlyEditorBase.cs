@@ -3,6 +3,7 @@ using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
+using UnityEngine;
 
 namespace KRT.VRCQuestTools.Inspector
 {
@@ -68,13 +69,11 @@ namespace KRT.VRCQuestTools.Inspector
             }
 
 #if VQT_HAS_NDMF
-            if (target is IPlatformDependentComponent || target is AvatarConverterSettings)
-#else
-            if (target is IPlatformDependentComponent)
-#endif
+            if ((target is IPlatformDependentComponent || target is AvatarConverterSettings) && !ComponentUtility.AvatarHasPlatformTargetSettings(TargetComponent.gameObject))
             {
                 EditorGUILayout.HelpBox(i18n.PlatformTargetSettingsIsRequiredToEnforcePlatform, MessageType.Info);
             }
+#endif
 
             EditorGUILayout.Space();
 

@@ -549,7 +549,7 @@ msgid "PlatformTargetSettingsEditorDescription"
 msgstr "ビルド時にコンポーネントの設定を特定のプラットフォームに強制します。"
 
 msgid "PlatformTargetSettingsIsRequiredToEnforcePlatform"
-msgstr "特定のプラットフォーム設定を強制するにはアバターのルートオブジェクトに Platform Target Settings コンポーネントが必要です。"
+msgstr "このコンポーネントの対象プラットフォームを上書きするには、アバターのルートオブジェクトに Platform Target Settings コンポーネントを追加してください。"
 
 msgid "ComponentRequiresNdmf"
 msgstr "Non-Destructive Modular Framework (NDMF) が必要です。"
