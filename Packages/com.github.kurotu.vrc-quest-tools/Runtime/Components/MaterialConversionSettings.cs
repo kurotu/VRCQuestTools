@@ -13,10 +13,10 @@ namespace KRT.VRCQuestTools.Components
     public class MaterialConversionSettings : VRCQuestToolsEditorOnly, IMaterialConversionComponent, IPlatformDependentComponent, INdmfComponent
     {
         /// <summary>
-        /// Default material convert setting. The default value is <see cref="ToonLitConvertSettings"/>.
+        /// Default material convert setting. The default value is <see cref="ToonStandardConvertSettings"/>.
         /// </summary>
         [SerializeReference]
-        public IMaterialConvertSettings defaultMaterialConvertSettings = new ToonLitConvertSettings();
+        public IMaterialConvertSettings defaultMaterialConvertSettings = ToonStandardConvertSettings.SimpleFeatures;
 
         /// <summary>
         /// Additional material convert settings.
