@@ -7,7 +7,7 @@ export default function AddToVccLink(props) {
             {...props}
             target={null}
             to="vcc://vpm/addRepo?url=https://kurotu.github.io/vpm-repos/vpm.json">
-            <Translate>Add to VCC</Translate>
+            <Translate>Add to VCC/ALCOM</Translate>
         </Link>
     );
 }
