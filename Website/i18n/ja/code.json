@@ -2,8 +2,8 @@
   "Get Started": {
     "message": "使ってみる"
   },
-  "Add to VCC": {
-    "message": "VCCに追加"
+  "Add to VCC/ALCOM": {
+    "message": "VCC/ALCOMに追加"
   },
   "theme.ErrorPageContent.title": {
     "message": "エラーが発生しました",
