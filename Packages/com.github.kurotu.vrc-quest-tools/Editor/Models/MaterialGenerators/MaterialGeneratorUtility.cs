@@ -76,7 +76,19 @@ namespace KRT.VRCQuestTools.Models
         private static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, TextureConfig config, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride, bool forEditorPreview)
         {
             var assetHash = Hash128.Compute(CacheUtility.GetContentCacheKey(material) + settings.GetCacheKey());
-            var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}_{assetHash}" + (saveAsPng ? ".png" : ".json");
+
+            // Only the in-code compression path (saveAsPng == false) actually invokes an ITextureCompressor;
+            // include its identifier so switching between astcenc and Unity compression (or astcenc presets)
+            // doesn't reuse a stale cache entry produced by a different encoder.
+            var compressorKeyComponent = string.Empty;
+            if (!saveAsPng)
+            {
+                var isMobile = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS;
+                var compressionFormat = isMobile ? (platformOverride?.Format ?? TextureUtility.GetCompressionFormat(settings.MobileTextureFormat)) : TextureFormat.DXT5;
+                compressorKeyComponent = "_" + TextureCompressorProvider.GetCompressor(compressionFormat, config.isNormalMap).CacheKeyComponent;
+            }
+
+            var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}{compressorKeyComponent}_{assetHash}" + (saveAsPng ? ".png" : ".json");
             var texName = $"{material.name}_{textureType}";
             string outFile = null;
             if (saveAsPng)
