@@ -67,7 +67,13 @@ namespace KRT.VRCQuestTools.Utils
                         + Decode(pixels[rowOffset1 + srcX0])
                         + Decode(pixels[rowOffset1 + srcX1]);
 
-                    var normal = sum.sqrMagnitude > 0f ? sum.normalized : new Vector3(0f, 0f, 1f);
+                    // Threshold matches Vector3.normalized's own zero-vector cutoff (magnitude < 1e-5, i.e.
+                    // sqrMagnitude < 1e-10) rather than "> 0f": in the window 0 < sqrMagnitude <= 1e-10,
+                    // Vector3.normalized itself already treats the vector as zero-length and returns Vector3.zero,
+                    // which would encode as the degenerate (128, 128, 128) instead of the intended (0, 0, 1)
+                    // fallback below. Not reachable with 8-bit-encoded input (the smallest possible non-zero sum
+                    // is far larger than this threshold), but kept for defense in depth.
+                    var normal = sum.sqrMagnitude > 1e-10f ? sum.normalized : new Vector3(0f, 0f, 1f);
                     result[(y * newWidth) + x] = Encode(normal);
                 }
             }

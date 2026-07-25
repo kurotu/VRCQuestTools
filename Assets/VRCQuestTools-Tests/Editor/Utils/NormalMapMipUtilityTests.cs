@@ -42,13 +42,16 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Verifies the zero-length guard: when a block's decoded vectors sum to exactly zero (no dominant
-        /// direction), the result falls back to the flat (0,0,1) normal instead of producing a NaN from
-        /// normalizing a zero vector. Pairs are constructed as exact byte complements (channel value v paired
-        /// with 255 - v) rather than via <see cref="EncodeNormal"/> on opposing unit vectors: decode(v) and
-        /// decode(255 - v) are exact negatives of each other algebraically, whereas independently encoding e.g.
-        /// (1,0,0) and (-1,0,0) both quantize their zero components to the same rounded byte (127.5 always rounds
-        /// to 128), which does not cancel and defeated an earlier version of this test.
+        /// Verifies the zero-length guard: when a block's decoded vectors sum to (near-)zero, no single direction
+        /// is dominant, so a direction cannot be derived from the sum and the result falls back to the flat
+        /// (0,0,1) normal instead. (Note: <c>Vector3.zero.normalized</c> itself does not produce a NaN -- it
+        /// returns <c>Vector3.zero</c> -- but that zero vector would encode as the degenerate (128,128,128) pixel
+        /// rather than the intended fallback, which is what this guard avoids.) Pairs are constructed as exact
+        /// byte complements (channel value v paired with 255 - v) rather than via <see cref="EncodeNormal"/> on
+        /// opposing unit vectors: decode(v) and decode(255 - v) are exact negatives of each other algebraically,
+        /// whereas independently encoding e.g. (1,0,0) and (-1,0,0) both quantize their zero components to the
+        /// same rounded byte (127.5 always rounds to 128), which does not cancel and defeated an earlier version
+        /// of this test.
         /// </summary>
         [Test]
         public void DownsampleNormalMap_ZeroSumBlock_FallsBackToFlatNormal()

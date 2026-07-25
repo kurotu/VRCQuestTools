@@ -30,33 +30,24 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Determined empirically, separately for each path:
+        /// Determined empirically: true (top-left origin) is the value that makes astcenc's output match Unity's
+        /// own ASTC encoder for both input paths --
+        /// AstcencTextureCompressorTests.CompressTexture_Orientation_MatchesUnityCompressor for the color path
+        /// (<see cref="Texture2D.GetRawTextureData()"/> input, measured diff 0.0000 with true vs. 0.20 with
+        /// false), and AstcencNormalMapCompressionTests.CompressNormalMap_Orientation_MatchesUnityCompressor for
+        /// the normal map path (<see cref="Texture2D.GetPixels32(int)"/> input, measured diff 0.0000 with true vs.
+        /// 0.0345 with false).
         /// </para>
         /// <para>
-        /// Color path (AstcencTextureCompressorTests.CompressTexture_Orientation_MatchesUnityCompressor): with
-        /// topToBottom = false (bottom-left origin, the value predicted by <see cref="AstcUtility.WriteTga"/>'s
-        /// remarks under the assumption that raw texture data uses the same row order as
-        /// <see cref="Texture2D.GetPixels32()"/>), the astcenc output was vertically flipped relative to Unity's
-        /// own ASTC encoder (measured diff 0.20, threshold 0.1). Flipping to true (top-left origin) makes
-        /// astcenc's output match Unity's encoder, so <see cref="Texture2D.GetRawTextureData()"/> apparently
-        /// returns row 0 as the *top* row for this raw-buffer path, unlike GetPixels32.
-        /// </para>
-        /// <para>
-        /// Normal map path (AstcencNormalMapCompressionTests.CompressNormalMap_Orientation_MatchesUnityCompressor):
-        /// with topToBottom = false (bottom-left origin, the value that literally matches <c>GetPixels32</c>'s
-        /// documented row order -- see <see cref="AstcUtility.WriteTga(Color32[], int, int, bool, string)"/>'s
-        /// remarks), the astcenc output still visibly diverged from Unity's own normal map ASTC encoder (measured
-        /// diff 0.0345, comfortably under the test's 0.1 threshold but far from the near-zero match a correct
-        /// orientation should produce). Flipping to true (top-left origin) made the two outputs match essentially
-        /// exactly (measured diff 0.0000).
-        /// </para>
-        /// <para>
-        /// Note the normal map result is the opposite of what <see cref="AstcUtility.WriteTga"/>'s own remarks
-        /// would predict for <c>GetPixels32</c> input (bottom-left origin, i.e. false) -- unlike the color path,
-        /// there is no known explanation here for why top-left origin is nonetheless the empirically correct
-        /// choice; this is left unresolved. The two orientation tests above are what actually guards correctness:
-        /// they compare against Unity's own encoder (diff approx. 0) and will fail if this constant, or any of
-        /// the surrounding row-order assumptions, ever needs to change.
+        /// This is not what <see cref="AstcUtility.WriteTga(Color32[], int, int, bool, string)"/>'s own remarks
+        /// would predict for <c>GetPixels32</c> input: those remarks document row 0 of <c>GetPixels32</c>'s array
+        /// as the *bottom* row, which would call for topToBottom = false (the value that measured worse above).
+        /// Since both paths -- one from <c>GetRawTextureData</c>, one from <c>GetPixels32</c> -- empirically want
+        /// true regardless, the row-order premise behind that documented default is itself unverified and
+        /// unresolved here; see <see cref="AstcUtility.WriteTga(Color32[], int, int, bool, string)"/>'s remarks
+        /// for the caveat. Correctness of this constant is guarded by the two orientation tests above, not by that
+        /// premise: both compare against Unity's own encoder (diff approx. 0) and will fail if this constant, or
+        /// any surrounding row-order assumption, ever needs to change.
         /// </para>
         /// </remarks>
         private const bool TgaTopToBottomOrigin = true;
@@ -114,7 +105,22 @@ namespace KRT.VRCQuestTools.Utils
             // false (the state of every baked texture after readback, which calls Apply(updateMipmaps,
             // makeNoLongerReadable: true)), while the generic NativeArray overload GetRawTextureData<T>() throws
             // UnityException for non-readable textures.
-            var raw = texture.GetRawTextureData();
+            //
+            // This read is wrapped in its own try/catch (rather than relying on TryCompressLevels' try/catch,
+            // which does not start until after this call) so a read failure here still gets the same
+            // warn-and-fall-back treatment as a failure during the astcenc run itself, instead of propagating as
+            // an unhandled exception out of CompressTexture.
+            byte[] raw;
+            try
+            {
+                raw = texture.GetRawTextureData();
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning($"astcenc compression failed for texture \"{texture.name}\", falling back to Unity's texture compression. {e.Message}", texture);
+                return fallback.CompressTexture(texture, format, completion);
+            }
+
             var mipmapCount = Math.Max(1, texture.mipmapCount);
 
             var levels = new List<(int Width, int Height)>(mipmapCount);
@@ -185,7 +191,21 @@ namespace KRT.VRCQuestTools.Utils
                 return fallback.CompressNormalMap(texture, format, readable, maxTextureSize, completion);
             }
 
-            var pixels = texture.GetPixels32(0);
+            // Wrapped in its own try/catch (rather than relying on TryCompressLevels' try/catch, which does not
+            // start until much later, after the maxTextureSize/alpha preprocessing below) so a read failure here
+            // still gets the same warn-and-fall-back treatment as a failure during the astcenc run itself,
+            // instead of propagating as an unhandled exception out of CompressNormalMap.
+            Color32[] pixels;
+            try
+            {
+                pixels = texture.GetPixels32(0);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning($"astcenc normal map compression failed for texture \"{texture.name}\", falling back to Unity's texture compression. {e.Message}", texture);
+                return fallback.CompressNormalMap(texture, format, readable, maxTextureSize, completion);
+            }
+
             var width = texture.width;
             var height = texture.height;
 
@@ -202,7 +222,13 @@ namespace KRT.VRCQuestTools.Utils
             // (TextureImporterPlatformSettings.maxTextureSize) would produce for a non-power-of-two source, since
             // Unity's resize is not guaranteed to be a simple floor-halving chain.
             var currentMaxSize = Math.Max(width, height);
-            var targetMaxSize = maxTextureSize.HasValue ? Math.Min(maxTextureSize.Value, currentMaxSize) : currentMaxSize;
+
+            // Math.Max(1, ...): defends the loop below against an infinite spin if targetMaxSize were ever <= 0.
+            // Not currently reachable -- TextureUtility.NormalizeMaxTextureSize already maps maxTextureSize values
+            // <= 0 to null before they can reach here, and currentMaxSize is always >= 1 -- but the loop condition
+            // alone (Math.Max(width, height) > targetMaxSize) never becomes false on its own if targetMaxSize <= 0,
+            // since width/height are clamped to a minimum of 1 by DownsampleNormalMap.
+            var targetMaxSize = Math.Max(1, maxTextureSize.HasValue ? Math.Min(maxTextureSize.Value, currentMaxSize) : currentMaxSize);
             while (Math.Max(width, height) > targetMaxSize)
             {
                 pixels = NormalMapMipUtility.DownsampleNormalMap(pixels, width, height, out width, out height);

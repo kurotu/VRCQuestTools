@@ -200,10 +200,18 @@ namespace KRT.VRCQuestTools.Utils
         /// <remarks>
         /// Pixel rows are always written in array order (row 0 first); only the image descriptor's origin bit changes.
         /// When <paramref name="topToBottom"/> is true, the origin bit (bit 5) is set to top-left, so readers treat
-        /// row 0 of the array as the top row of the image. Because Unity's <c>Texture2D.GetPixels32</c> returns row 0
-        /// as the bottom row, passing its result with <paramref name="topToBottom"/> = true produces an image that
-        /// readers such as astcenc see vertically flipped. When false, the origin bit is cleared (bottom-left), so
+        /// row 0 of the array as the top row of the image. When false, the origin bit is cleared (bottom-left), so
         /// row 0 of the array is treated as the bottom row.
+        /// <para>
+        /// The commonly documented premise is that Unity's <c>Texture2D.GetPixels32</c> returns row 0 as the
+        /// bottom row, which would call for <paramref name="topToBottom"/> = false when passing its result
+        /// through. In practice, this codebase's own measurements disagree: both callers of the
+        /// <see cref="WriteTga(Color32[], int, int, bool, string)"/> overload found true (top-left) to be the
+        /// value that matches Unity's own ASTC encoder output, including for <c>GetPixels32</c> input -- see
+        /// <see cref="AstcencTextureCompressor.TgaTopToBottomOrigin"/>'s remarks for the measurements. That
+        /// discrepancy is unresolved; treat the row-order premise above as documentation of the general
+        /// convention, not as a guarantee for this codebase's actual inputs.
+        /// </para>
         /// </remarks>
         /// <param name="pixels">Pixels in RGBA order as returned by <c>Texture2D.GetPixels32</c>.</param>
         /// <param name="width">Image width in pixels.</param>

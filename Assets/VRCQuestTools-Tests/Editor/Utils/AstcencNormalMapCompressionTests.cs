@@ -55,15 +55,17 @@ namespace KRT.VRCQuestTools.Utils
             var unityUploaded = TextureUtility.ReuploadForEditorDisplay(unityResult);
 
             var astcSource = CreateOrientationTestNormalMap(size);
+            var countBefore = AstcencTextureCompressor.SuccessfulCompressionCount;
             Texture2D astcResult = null;
             compressor.CompressNormalMap(astcSource, TextureFormat.ASTC_4x4, true, null, t => astcResult = t).WaitForCompletion();
             Assert.IsNotNull(astcResult);
+            Assert.AreEqual(countBefore + 1, AstcencTextureCompressor.SuccessfulCompressionCount, "The compression must take the astcenc path, not the Unity fallback.");
 
             var unityDecoded = TestUtils.DecodeToRGBA32(unityUploaded, size, size);
             var astcDecoded = TestUtils.DecodeToRGBA32(astcResult, size, size);
 
             var diff = TestUtils.MaxDifference(unityDecoded, astcDecoded);
-            Assert.Less(diff, 0.1f, $"astcenc normal map output orientation doesn't match Unity's ASTC encoder (diff={diff:F4}). " +
+            Assert.Less(diff, 0.01f, $"astcenc normal map output orientation doesn't match Unity's ASTC encoder (diff={diff:F4}). " +
                 "If this fails, AstcencTextureCompressor.TgaTopToBottomOrigin must be flipped.");
         }
 
@@ -124,9 +126,11 @@ namespace KRT.VRCQuestTools.Utils
             const int size = 64;
             var source = CreateVariedNormalMap(size);
 
+            var countBefore = AstcencTextureCompressor.SuccessfulCompressionCount;
             Texture2D result = null;
             compressor.CompressNormalMap(source, TextureFormat.ASTC_4x4, true, null, t => result = t).WaitForCompletion();
             Assert.IsNotNull(result);
+            Assert.AreEqual(countBefore + 1, AstcencTextureCompressor.SuccessfulCompressionCount, "The compression must take the astcenc path, not the Unity fallback.");
             Assert.Greater(result.mipmapCount, 1, "Expected a full mip chain down to 1x1.");
 
             var mip1Pixels = result.GetPixels32(1);

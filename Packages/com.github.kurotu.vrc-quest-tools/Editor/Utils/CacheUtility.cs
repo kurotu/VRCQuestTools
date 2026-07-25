@@ -166,7 +166,21 @@ namespace KRT.VRCQuestTools.Utils
                     Logger.LogWarning($"Failed to load normal map from {path}. Creating normal map from uncompressed one.");
                 }
                 var tex = new Texture2D(width, height, format, mipmap, linear);
-                return TextureUtility.CompressNormalMap(tex, buildTarget, format, true);
+
+                // Deliberately bypass TextureUtility.CompressNormalMap / TextureCompressorProvider here and call
+                // UnityTextureCompressor directly. This texture only exists as a correctly-shaped container: its
+                // compressed content is immediately discarded and replaced by LoadRawTextureData in ToTexture2D().
+                // Going through the facade would let TextureCompressorProvider pick AstcencTextureCompressor for
+                // ASTC formats, which spawns an out-of-process astcenc invocation per mip level just to produce
+                // bytes nobody reads -- a needless performance regression on the cache-hit path (hit whenever no
+                // matching blank normal map asset exists, e.g. non-square or unlisted sizes). The isMobile->format
+                // resolution itself is still needed (not just "format" as-is): for a non-mobile buildTarget this
+                // must resolve to null, same as the facade would, so UnityTextureCompressor lets TextureGenerator
+                // auto-decide the format exactly as it did when this cache entry was originally written.
+                var effectiveFormat = TextureUtility.ResolveEffectiveCompressionFormat(buildTarget, format, true);
+                Texture2D result = null;
+                new UnityTextureCompressor().CompressNormalMap(tex, effectiveFormat, true, null, t => result = t).WaitForCompletion();
+                return result;
             }
 
             private string ResolveNormalMapPath()
