@@ -1,0 +1,2 @@
+# Bundled astcenc binaries must never go through EOL conversion.
+Packages/com.github.kurotu.vrc-quest-tools/Editor/Tools/astcenc/** -text
