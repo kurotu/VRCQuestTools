@@ -20,6 +20,21 @@ Unity editor extension for converting VRChat PC avatars to Android (Quest/PICO) 
 
 Note: When you need to execute `npm` and `npx`, use `pnpm` and `pnpm dlx` instead.
 
+### Setup
+
+The `astcenc` CLI binaries used for fast ASTC texture compression are not committed to the
+repository; download them once per clone/worktree:
+
+| Command | Description |
+|---------|-------------|
+| `bash scripts/download-astcenc.sh` | Download astcenc binaries (Windows + Linux) on Linux/macOS/Git Bash |
+| `pwsh scripts/download-astcenc.ps1` | Download astcenc binaries (Windows + Linux) on Windows |
+
+Both accept `--platform windows\|linux\|all` (default `all`) and are idempotent (re-running when
+the binaries already match the recorded SHA256 is a no-op). If this step is skipped, VRCQuestTools
+still works — texture compression automatically falls back to Unity's built-in compressor — but
+the astcenc code path is not exercised and its tests are skipped.
+
 ### Lint
 
 | Command | Description |

@@ -1,5 +1,11 @@
 astcenc 5.3.0 (https://github.com/ARM-software/astc-encoder)
 
+These binaries are not committed to the repository. Run
+scripts/download-astcenc.sh (or scripts/download-astcenc.ps1 on Windows) to
+fetch them; the script downloads the archives below, verifies their SHA256
+against the values recorded in this file, and extracts only the avx2/sse2
+binaries into win-x64/ and linux-x64/ next to this file.
+
 Version note: 5.3.0 is the newest release whose Linux binaries require
 GLIBC_2.34 or older, so they run on Ubuntu 22.04 (glibc 2.35) used by
 Unity CI images. Newer releases (5.4.0+) require GLIBC_2.38.

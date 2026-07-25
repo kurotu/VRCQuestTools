@@ -85,3 +85,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# astcenc binaries are downloaded by scripts/download-astcenc.sh (not committed)
+/Packages/com.github.kurotu.vrc-quest-tools/Editor/Tools/astcenc/win-x64/
+/Packages/com.github.kurotu.vrc-quest-tools/Editor/Tools/astcenc/linux-x64/
