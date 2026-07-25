@@ -5,6 +5,7 @@
 
 using System;
 using System.IO;
+using Unity.Collections;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
@@ -185,8 +186,53 @@ namespace KRT.VRCQuestTools.Utils
                 throw new ArgumentException($"Pixel count {pixels.Length} does not match {width}x{height}", nameof(pixels));
             }
 
+            var rgba = new byte[pixels.Length * 4];
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                var pixel = pixels[i];
+                var o = i * 4;
+                rgba[o] = pixel.r;
+                rgba[o + 1] = pixel.g;
+                rgba[o + 2] = pixel.b;
+                rgba[o + 3] = pixel.a;
+            }
+
+            var native = new NativeArray<byte>(rgba, Allocator.Temp);
+            try
+            {
+                WriteTga(native, 0, native.Length, width, height, topToBottom, path);
+            }
+            finally
+            {
+                native.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Writes a slice of raw RGBA bytes as an uncompressed 32-bit BGRA TGA (type 2) file, converting
+        /// directly from the RGBA byte layout without materializing an intermediate <see cref="Color32"/> array.
+        /// </summary>
+        /// <remarks>
+        /// See the <see cref="WriteTga(Color32[], int, int, bool, string)"/> overload's remarks for the row-order
+        /// / origin-bit semantics; they apply identically here.
+        /// </remarks>
+        /// <param name="rgba">Buffer containing RGBA texel bytes (e.g. <c>Texture2D.GetRawTextureData&lt;byte&gt;()</c>).</param>
+        /// <param name="offset">Offset in <paramref name="rgba"/> of the first byte of this image's data.</param>
+        /// <param name="length">Number of bytes belonging to this image, starting at <paramref name="offset"/>. Must equal width * height * 4.</param>
+        /// <param name="width">Image width in pixels.</param>
+        /// <param name="height">Image height in pixels.</param>
+        /// <param name="topToBottom">Whether to declare top-left origin (bit 5 of the image descriptor).</param>
+        /// <param name="path">File path to write.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="length"/> does not match width * height * 4.</exception>
+        internal static void WriteTga(NativeArray<byte> rgba, int offset, int length, int width, int height, bool topToBottom, string path)
+        {
+            if (length != width * height * 4)
+            {
+                throw new ArgumentException($"Data length {length} does not match {width}x{height}x4", nameof(length));
+            }
+
             const int headerBytes = 18;
-            var data = new byte[headerBytes + (pixels.Length * 4)];
+            var data = new byte[headerBytes + length];
             data[2] = 2; // Uncompressed true-color image.
             data[12] = (byte)(width & 0xFF);
             data[13] = (byte)((width >> 8) & 0xFF);
@@ -195,14 +241,14 @@ namespace KRT.VRCQuestTools.Utils
             data[16] = 32; // Bits per pixel.
             data[17] = (byte)(8 | (topToBottom ? 0x20 : 0)); // 8 bits of alpha + origin bit.
 
-            for (var i = 0; i < pixels.Length; i++)
+            for (var i = 0; i < length; i += 4)
             {
-                var pixel = pixels[i];
-                var offset = headerBytes + (i * 4);
-                data[offset] = pixel.b;
-                data[offset + 1] = pixel.g;
-                data[offset + 2] = pixel.r;
-                data[offset + 3] = pixel.a;
+                var src = offset + i;
+                var dst = headerBytes + i;
+                data[dst] = rgba[src + 2]; // B
+                data[dst + 1] = rgba[src + 1]; // G
+                data[dst + 2] = rgba[src]; // R
+                data[dst + 3] = rgba[src + 3]; // A
             }
             File.WriteAllBytes(path, data);
         }

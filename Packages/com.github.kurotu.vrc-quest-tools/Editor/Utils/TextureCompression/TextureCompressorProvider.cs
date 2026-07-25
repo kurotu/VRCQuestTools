@@ -65,9 +65,12 @@ namespace KRT.VRCQuestTools.Utils
 
         private static AstcencTextureCompressor CreateAstcencCompressor()
         {
-            var exePath = AstcencBinaryLocator.GetAstcencPath();
-            var version = AstcencCli.GetVersion(exePath) ?? "unknown";
-            return new AstcencTextureCompressor(exePath, version, DefaultPreset);
+            // GetCompressor only evaluates this Lazy after confirming AstcencBinaryLocator.GetAstcencPath() != null,
+            // so the resolution is already cached and guaranteed non-null here; reading it back avoids spawning a
+            // second astcenc process just to re-derive the version that AstcencBinaryLocator already queried while
+            // resolving the path.
+            var resolution = AstcencBinaryLocator.GetResolution().Value;
+            return new AstcencTextureCompressor(resolution.Path, resolution.Version ?? "unknown", DefaultPreset);
         }
     }
 }

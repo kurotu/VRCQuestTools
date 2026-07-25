@@ -87,8 +87,8 @@ namespace KRT.VRCQuestTools.Utils
             compressor.CompressTexture(astcSource, TextureFormat.ASTC_4x4, t => astcResult = t).WaitForCompletion();
             Assert.IsNotNull(astcResult);
 
-            var unityDecoded = DecodeToRGBA32(unityTex, size, size);
-            var astcDecoded = DecodeToRGBA32(astcResult, size, size);
+            var unityDecoded = TestUtils.DecodeToRGBA32(unityTex, size, size);
+            var astcDecoded = TestUtils.DecodeToRGBA32(astcResult, size, size);
 
             var diff = TestUtils.MaxDifference(unityDecoded, astcDecoded);
             Assert.Less(diff, 0.1f, $"astcenc output orientation doesn't match Unity's ASTC encoder (diff={diff:F4}). " +
@@ -160,9 +160,9 @@ namespace KRT.VRCQuestTools.Utils
             compressor.CompressTexture(astcSource, TextureFormat.ASTC_4x4, t => astcResult = t).WaitForCompletion();
             Assert.IsNotNull(astcResult);
 
-            var referenceDecoded = DecodeToRGBA32(reference, size, size);
-            var unityDecoded = DecodeToRGBA32(unitySource, size, size);
-            var astcDecoded = DecodeToRGBA32(astcResult, size, size);
+            var referenceDecoded = TestUtils.DecodeToRGBA32(reference, size, size);
+            var unityDecoded = TestUtils.DecodeToRGBA32(unitySource, size, size);
+            var astcDecoded = TestUtils.DecodeToRGBA32(astcResult, size, size);
 
             var diffUnity = TestUtils.Difference(referenceDecoded, unityDecoded);
             var diffAstc = TestUtils.Difference(referenceDecoded, astcDecoded);
@@ -310,28 +310,5 @@ namespace KRT.VRCQuestTools.Utils
             }
         }
 
-        private static Texture2D DecodeToRGBA32(Texture2D compressed, int width, int height)
-        {
-            RenderTexture rt = null;
-            var prevActive = RenderTexture.active;
-            try
-            {
-                rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
-                Graphics.Blit(compressed, rt);
-                RenderTexture.active = rt;
-                var result = new Texture2D(width, height, TextureFormat.RGBA32, false);
-                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                result.Apply();
-                return result;
-            }
-            finally
-            {
-                RenderTexture.active = prevActive;
-                if (rt != null)
-                {
-                    RenderTexture.ReleaseTemporary(rt);
-                }
-            }
-        }
     }
 }

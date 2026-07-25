@@ -83,8 +83,10 @@ namespace KRT.VRCQuestTools.Models
             var compressorKeyComponent = string.Empty;
             if (!saveAsPng)
             {
-                var isMobile = EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android || EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.iOS;
-                var compressionFormat = isMobile ? (platformOverride?.Format ?? TextureUtility.GetCompressionFormat(settings.MobileTextureFormat)) : TextureFormat.DXT5;
+                // Mirrors the format resolution actually used by the compression path (TextureUtility.CompressTextureForBuildTarget
+                // / CompressNormalMap via ResolveEffectiveCompressionFormat) so the cache key never diverges from what gets compressed.
+                var mobileFormat = platformOverride?.Format ?? TextureUtility.GetCompressionFormat(settings.MobileTextureFormat);
+                var compressionFormat = TextureUtility.ResolveEffectiveCompressionFormat(EditorUserBuildSettings.activeBuildTarget, mobileFormat, config.isNormalMap);
                 compressorKeyComponent = "_" + TextureCompressorProvider.GetCompressor(compressionFormat, config.isNormalMap).CacheKeyComponent;
             }
 

@@ -68,7 +68,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 // Reference is the uncompressed mip-0 image at this size; used as the diff baseline for
                 // every encoder/preset measured at this size. No mip chain: only mip 0 is ever sampled back
-                // by DecodeToRGBA32, and generating mip 0 does not depend on whether further mips are
+                // by TestUtils.DecodeToRGBA32, and generating mip 0 does not depend on whether further mips are
                 // requested, so this is directly comparable to every candidate's mip 0 (candidates are
                 // regenerated from the same deterministic procedural function for each measurement).
                 var reference = CreateNaturalisticTexture(size, false);
@@ -139,8 +139,8 @@ namespace KRT.VRCQuestTools.Utils
                 withWeight = CompressWithRawFlags(astcencPath, pixels, size, size, "4x4", "-thorough -a 0", srgb: true);
                 swWithWeight.Stop();
 
-                decodedNoWeight = DecodeToRGBA32(noWeight, size, size);
-                decodedWithWeight = DecodeToRGBA32(withWeight, size, size);
+                decodedNoWeight = TestUtils.DecodeToRGBA32(noWeight, size, size);
+                decodedWithWeight = TestUtils.DecodeToRGBA32(withWeight, size, size);
 
                 var diffNoWeight = TestUtils.Difference(reference, decodedNoWeight);
                 var diffWithWeight = TestUtils.Difference(reference, decodedWithWeight);
@@ -188,7 +188,7 @@ namespace KRT.VRCQuestTools.Utils
             EditorUtility.CompressTexture(candidate, format, TextureCompressionQuality.Best);
             sw.Stop();
 
-            var decoded = DecodeToRGBA32(candidate, size, size);
+            var decoded = TestUtils.DecodeToRGBA32(candidate, size, size);
             var diff = TestUtils.Difference(reference, decoded);
             LogRow(rows, size, block, "unity", "best", sw.Elapsed.TotalMilliseconds, diff);
 
@@ -206,7 +206,7 @@ namespace KRT.VRCQuestTools.Utils
             sw.Stop();
             Assert.IsNotNull(result, $"astcenc compression returned null for size={size} block={block} preset={preset}");
 
-            var decoded = DecodeToRGBA32(result, size, size);
+            var decoded = TestUtils.DecodeToRGBA32(result, size, size);
             var diff = TestUtils.Difference(reference, decoded);
             LogRow(rows, size, block, "astcenc", preset.TrimStart('-'), sw.Elapsed.TotalMilliseconds, diff);
 
@@ -363,33 +363,6 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Decodes a (possibly compressed) texture back to a readable RGBA32 texture via GPU blit and readback,
-        /// matching AstcencTextureCompressorTests.DecodeToRGBA32.
-        /// </summary>
-        private static Texture2D DecodeToRGBA32(Texture2D compressed, int width, int height)
-        {
-            var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
-            var prevActive = RenderTexture.active;
-            try
-            {
-                LogAssert.ignoreFailingMessages = true;
-                Graphics.Blit(compressed, rt);
-                RenderTexture.active = rt;
-                var result = new Texture2D(width, height, TextureFormat.RGBA32, false);
-                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                LogAssert.ignoreFailingMessages = false;
-                result.Apply();
-                return result;
-            }
-            finally
-            {
-                LogAssert.ignoreFailingMessages = false;
-                RenderTexture.active = prevActive;
-                RenderTexture.ReleaseTemporary(rt);
-            }
-        }
-
-        /// <summary>
         /// Runs astcenc directly (bypassing AstcencTextureCompressor) with an arbitrary preset/flags string,
         /// so that ad-hoc flags like "-a 0" (alpha-weighted error metric) can be exercised for the alpha
         /// benchmark without adding a permanent option to the production compressor.
@@ -422,27 +395,8 @@ namespace KRT.VRCQuestTools.Utils
             }
             finally
             {
-                DeleteFileSilently(tgaPath);
-                DeleteFileSilently(astcPath);
-            }
-        }
-
-        private static void DeleteFileSilently(string path)
-        {
-            try
-            {
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
-                }
-            }
-            catch (IOException)
-            {
-                // Leftovers in Temp/ are cleaned up together with the Temp folder eventually.
-            }
-            catch (UnauthorizedAccessException)
-            {
-                // Leftovers in Temp/ are cleaned up together with the Temp folder eventually.
+                AstcencCli.DeleteFileSilently(tgaPath);
+                AstcencCli.DeleteFileSilently(astcPath);
             }
         }
 

@@ -598,6 +598,29 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Resolves the texture format that is actually used to compress a texture for a build target, given the
+        /// configured mobile format. Used both by the compression facade methods (<see cref="CompressTextureForBuildTarget"/>,
+        /// <see cref="CompressNormalMap"/>) and by cache key computation (<see cref="MaterialGeneratorUtility"/>),
+        /// so the two stay in sync instead of independently re-deriving the same "isMobile ? mobileFormat : fallback"
+        /// logic.
+        /// </summary>
+        /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
+        /// <param name="mobileFormat">Format for mobile (Android/iOS) build targets.</param>
+        /// <param name="isNormalMap">Whether the texture is a normal map. Non-mobile normal maps are left
+        /// uncompressed (null) since <see cref="UnityEditor.TextureGenerator"/> handles them; non-mobile color
+        /// textures fall back to <see cref="TextureFormat.DXT5"/>.</param>
+        /// <returns>Effective compression format, or null when the texture is left uncompressed.</returns>
+        internal static TextureFormat? ResolveEffectiveCompressionFormat(UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool isNormalMap)
+        {
+            var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
+            if (isMobile)
+            {
+                return mobileFormat;
+            }
+            return isNormalMap ? (TextureFormat?)null : TextureFormat.DXT5;
+        }
+
+        /// <summary>
         /// Compresses a texture for the build target.
         /// </summary>
         /// <param name="texture">Texture to compress.</param>
@@ -616,8 +639,8 @@ namespace KRT.VRCQuestTools.Utils
                 }
             }
 
-            var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
-            var format = isMobile ? mobileFormat : TextureFormat.DXT5;
+            // isNormalMap: false, so the result is always non-null (DXT5 fallback on non-mobile).
+            var format = ResolveEffectiveCompressionFormat(buildTarget, mobileFormat, false).Value;
             if (format == TextureFormat.DXT5)
             {
                 if (texture.width % 4 != 0 || texture.height % 4 != 0)
@@ -642,8 +665,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Compressed normal map.</returns>
         internal static Texture2D CompressNormalMap(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool readable = false, int? maxTextureSize = null)
         {
-            var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
-            TextureFormat? format = isMobile ? mobileFormat : (TextureFormat?)null;
+            var format = ResolveEffectiveCompressionFormat(buildTarget, mobileFormat, true);
             Texture2D result = null;
             TextureCompressorProvider.GetCompressor(format, true).CompressNormalMap(texture, format, readable, maxTextureSize, (t) => result = t).WaitForCompletion();
             return result;

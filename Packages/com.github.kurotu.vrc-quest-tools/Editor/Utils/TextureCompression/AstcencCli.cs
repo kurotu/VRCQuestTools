@@ -42,30 +42,24 @@ namespace KRT.VRCQuestTools.Utils
             var arguments = $"{mode} \"{inputPath}\" \"{outputPath}\" {blockSize} {preset} -j {jobs} -silent";
             try
             {
-                using (var process = Process.Start(CreateStartInfo(exePath, arguments)))
+                var result = RunProcess(exePath, arguments, timeoutMs);
+                if (result.TimedOut)
                 {
-                    _ = process.StandardOutput.ReadToEndAsync(); // Drain to avoid blocking on a full buffer.
-                    var stdErrTask = process.StandardError.ReadToEndAsync();
-                    if (!process.WaitForExit(timeoutMs))
-                    {
-                        KillSilently(process);
-                        return new AstcencRunResult
-                        {
-                            Success = false,
-                            ExitCode = -1,
-                            StdErr = $"astcenc timed out after {timeoutMs} ms",
-                            TimedOut = true,
-                        };
-                    }
-                    process.WaitForExit(); // Ensure redirected streams are flushed.
                     return new AstcencRunResult
                     {
-                        Success = process.ExitCode == 0,
-                        ExitCode = process.ExitCode,
-                        StdErr = stdErrTask.Result,
-                        TimedOut = false,
+                        Success = false,
+                        ExitCode = -1,
+                        StdErr = $"astcenc timed out after {timeoutMs} ms",
+                        TimedOut = true,
                     };
                 }
+                return new AstcencRunResult
+                {
+                    Success = result.ExitCode == 0,
+                    ExitCode = result.ExitCode,
+                    StdErr = result.StdErr,
+                    TimedOut = false,
+                };
             }
             catch (Exception e)
             {
@@ -127,25 +121,15 @@ namespace KRT.VRCQuestTools.Utils
         {
             try
             {
-                using (var process = Process.Start(CreateStartInfo(exePath, "-version")))
+                var result = RunProcess(exePath, "-version", UtilityTimeoutMs);
+                if (result.TimedOut || result.ExitCode != 0)
                 {
-                    var stdOutTask = process.StandardOutput.ReadToEndAsync();
-                    _ = process.StandardError.ReadToEndAsync(); // Drain to avoid blocking on a full buffer.
-                    if (!process.WaitForExit(UtilityTimeoutMs))
-                    {
-                        KillSilently(process);
-                        return null;
-                    }
-                    process.WaitForExit(); // Ensure redirected streams are flushed.
-                    if (process.ExitCode != 0)
-                    {
-                        return null;
-                    }
-
-                    // The version banner is printed to stdout: "astcenc v5.6.0, 64-bit avx2+popcnt+f16c".
-                    var match = Regex.Match(stdOutTask.Result, @"astcenc v(\d+(?:\.\d+)+)");
-                    return match.Success ? match.Groups[1].Value : null;
+                    return null;
                 }
+
+                // The version banner is printed to stdout: "astcenc v5.6.0, 64-bit avx2+popcnt+f16c".
+                var match = Regex.Match(result.StdOut, @"astcenc v(\d+(?:\.\d+)+)");
+                return match.Success ? match.Groups[1].Value : null;
             }
             catch (Exception)
             {
@@ -173,6 +157,31 @@ namespace KRT.VRCQuestTools.Utils
             }
         }
 
+        /// <summary>
+        /// Runs an executable and waits for it to exit, draining stdout/stderr asynchronously so the process
+        /// never blocks on a full output buffer. On timeout, the process is killed and the output streams are
+        /// not read (they may never complete).
+        /// </summary>
+        /// <param name="exePath">Path to the executable.</param>
+        /// <param name="arguments">Command line arguments.</param>
+        /// <param name="timeoutMs">Timeout in milliseconds. The process is killed on timeout.</param>
+        /// <returns>Result of the run.</returns>
+        private static ProcessRunResult RunProcess(string exePath, string arguments, int timeoutMs)
+        {
+            using (var process = Process.Start(CreateStartInfo(exePath, arguments)))
+            {
+                var stdOutTask = process.StandardOutput.ReadToEndAsync();
+                var stdErrTask = process.StandardError.ReadToEndAsync();
+                if (!process.WaitForExit(timeoutMs))
+                {
+                    KillSilently(process);
+                    return new ProcessRunResult(-1, string.Empty, string.Empty, true);
+                }
+                process.WaitForExit(); // Ensure redirected streams are flushed.
+                return new ProcessRunResult(process.ExitCode, stdOutTask.Result, stdErrTask.Result, false);
+            }
+        }
+
         private static ProcessStartInfo CreateStartInfo(string exePath, string arguments)
         {
             return new ProcessStartInfo
@@ -186,7 +195,11 @@ namespace KRT.VRCQuestTools.Utils
             };
         }
 
-        private static void DeleteFileSilently(string path)
+        /// <summary>
+        /// Deletes a file, ignoring errors. Shared by every astcenc temp-file cleanup path (production and tests).
+        /// </summary>
+        /// <param name="path">Path of the file to delete.</param>
+        internal static void DeleteFileSilently(string path)
         {
             try
             {
@@ -203,6 +216,40 @@ namespace KRT.VRCQuestTools.Utils
             {
                 // Leftovers in Temp/ are cleaned up together with the Temp folder eventually.
             }
+        }
+
+        /// <summary>
+        /// Result of running a process to completion (or timing out).
+        /// </summary>
+        private readonly struct ProcessRunResult
+        {
+            internal ProcessRunResult(int exitCode, string stdOut, string stdErr, bool timedOut)
+            {
+                ExitCode = exitCode;
+                StdOut = stdOut;
+                StdErr = stdErr;
+                TimedOut = timedOut;
+            }
+
+            /// <summary>
+            /// Gets the process exit code. -1 when the process did not produce an exit code.
+            /// </summary>
+            internal int ExitCode { get; }
+
+            /// <summary>
+            /// Gets the captured standard output. Empty when the process timed out.
+            /// </summary>
+            internal string StdOut { get; }
+
+            /// <summary>
+            /// Gets the captured standard error. Empty when the process timed out.
+            /// </summary>
+            internal string StdErr { get; }
+
+            /// <summary>
+            /// Gets a value indicating whether the process was killed due to timeout.
+            /// </summary>
+            internal bool TimedOut { get; }
         }
 
         /// <summary>

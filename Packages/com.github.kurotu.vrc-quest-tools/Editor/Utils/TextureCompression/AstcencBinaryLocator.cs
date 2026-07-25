@@ -22,7 +22,7 @@ namespace KRT.VRCQuestTools.Utils
         private static readonly Version MinimumSystemVersion = new Version(4, 0, 0);
 #endif
 
-        private static Lazy<string> cachedPath = new Lazy<string>(Resolve);
+        private static Lazy<Resolution> cachedResolution = new Lazy<Resolution>(Resolve);
 
         /// <summary>
         /// Gets the full path of a usable astcenc executable. The result is cached.
@@ -30,7 +30,19 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Full path of the executable, or null when no usable astcenc is found.</returns>
         internal static string GetAstcencPath()
         {
-            return cachedPath.Value;
+            return cachedResolution.Value.Path;
+        }
+
+        /// <summary>
+        /// Gets the path and version of a usable astcenc executable, resolved (and its version queried) at most
+        /// once. Callers that need both the path and the version (e.g. to build the cache key component) should
+        /// use this instead of pairing <see cref="GetAstcencPath"/> with a separate <see cref="AstcencCli.GetVersion"/>
+        /// call, which would spawn a second astcenc process just to re-derive information already gathered here.
+        /// </summary>
+        /// <returns>Path and version, or null when no usable astcenc is found.</returns>
+        internal static Resolution? GetResolution()
+        {
+            return cachedResolution.Value.Path != null ? cachedResolution.Value : (Resolution?)null;
         }
 
         /// <summary>
@@ -38,10 +50,10 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         internal static void ResetCacheForTesting()
         {
-            cachedPath = new Lazy<string>(Resolve);
+            cachedResolution = new Lazy<Resolution>(Resolve);
         }
 
-        private static string Resolve()
+        private static Resolution Resolve()
         {
 #if UNITY_EDITOR_WIN
             var path = ResolveBundled("win-x64", ".exe", false);
@@ -56,12 +68,35 @@ namespace KRT.VRCQuestTools.Utils
             {
                 var version = AstcencCli.GetVersion(path);
                 Logger.Log($"Using astcenc for ASTC compression: {path} (version {version})");
+                return new Resolution(path, version);
             }
             else
             {
                 Logger.Log("No usable astcenc executable was found. Using Unity's texture compression.");
+                return new Resolution(null, null);
             }
-            return path;
+        }
+
+        /// <summary>
+        /// Path and version of a resolved astcenc executable.
+        /// </summary>
+        internal readonly struct Resolution
+        {
+            internal Resolution(string path, string version)
+            {
+                Path = path;
+                Version = version;
+            }
+
+            /// <summary>
+            /// Gets the full path of the astcenc executable.
+            /// </summary>
+            internal string Path { get; }
+
+            /// <summary>
+            /// Gets the astcenc version string (e.g. "5.6.0"), or null when it could not be determined.
+            /// </summary>
+            internal string Version { get; }
         }
 
 #if UNITY_EDITOR_WIN || UNITY_EDITOR_LINUX

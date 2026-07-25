@@ -7,6 +7,7 @@ using KRT.VRCQuestTools.Models.Unity;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace KRT.VRCQuestTools
 {
@@ -166,6 +167,39 @@ namespace KRT.VRCQuestTools
             }
 
             return max / (float)(255L * 255L * 4L);
+        }
+
+        /// <summary>
+        /// Decodes a (possibly GPU-compressed, e.g. ASTC/DXT) texture back to a readable RGBA32 texture via GPU
+        /// blit and readback. Guards the blit/readback with <see cref="LogAssert.ignoreFailingMessages"/> because
+        /// CI's GPU support is limited (e.g. Linux CI: <see cref="SystemInfo.supportsAsyncGPUReadback"/> reports
+        /// true, but the underlying readback can still fail for RenderTexture assets and log an error).
+        /// </summary>
+        /// <param name="compressed">Texture to decode.</param>
+        /// <param name="width">Width to decode at.</param>
+        /// <param name="height">Height to decode at.</param>
+        /// <returns>Newly created readable RGBA32 texture. The caller is responsible for destroying it.</returns>
+        internal static Texture2D DecodeToRGBA32(Texture2D compressed, int width, int height)
+        {
+            var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+            var prevActive = RenderTexture.active;
+            try
+            {
+                LogAssert.ignoreFailingMessages = true;
+                Graphics.Blit(compressed, rt);
+                RenderTexture.active = rt;
+                var result = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                LogAssert.ignoreFailingMessages = false;
+                result.Apply();
+                return result;
+            }
+            finally
+            {
+                LogAssert.ignoreFailingMessages = false;
+                RenderTexture.active = prevActive;
+                RenderTexture.ReleaseTemporary(rt);
+            }
         }
 
         /// <summary>
