@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Avatar Converter Settings` now warns when a MA Sync Parameter Sequence or AAO Trace and Optimize component is missing on the avatar, with a button to add it.
 
 ### Changed
+- Texture compression for ASTC formats (except normal maps) now uses the bundled astcenc encoder (Windows/Linux) or a system-installed astcenc (macOS), running on all CPU cores. When astcenc is not available, the previous Unity compressor is used as before.
 - Avatar Dynamics Selector now stores keep/remove settings in `Platform Component Remover` instead of the legacy arrays in `Avatar Converter Settings`. Applying the selector migrates settings and clears the legacy arrays to avoid stale references.
 - Added a button in PhysBones Remover to apply current keep/remove selections to `Platform Component Remover`.
 - Grouped the component list in Avatar Dynamics Selector and PhysBones Remover by prefab.
