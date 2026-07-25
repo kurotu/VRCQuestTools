@@ -879,15 +879,15 @@ namespace KRT.VRCQuestTools.Models.VRChat
             // selected Toon Lit/Toon Standard setting. MaterialReplaceSettings (explicit replacement) takes priority.
             if (material is ParticleMaterial && !(settings is MaterialReplaceSettings))
             {
-                return new ParticleGenerator(settings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                return new ParticleGenerator(settings, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
             }
 
             switch (settings)
             {
                 case ToonLitConvertSettings toonLitSettings:
-                    return new ToonLitGenerator(toonLitSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                    return new ToonLitGenerator(toonLitSettings, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case MatCapLitConvertSettings matCapSettings:
-                    return new MatCapLitGenerator(matCapSettings).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                    return new MatCapLitGenerator(matCapSettings, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case ToonStandardConvertSettings toonStandardSettings:
                     if (material is LilToonMaterial)
                     {

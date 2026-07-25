@@ -32,10 +32,11 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
         /// <param name="completion">Completion callback.</param>
         /// <param name="platformOverride">Optional platform override settings (MaxTextureSize and Format) from source textures.</param>
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview, which trades a little compression quality for speed.</param>
         /// <returns>Async callback request.</returns>
-        internal static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride)
+        internal static AsyncCallbackRequest GenerateTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride, bool forEditorPreview = false)
         {
-            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.SRGB, requestGenerateImageFunc, completion, platformOverride, false);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.SRGB, requestGenerateImageFunc, completion, platformOverride, forEditorPreview);
         }
 
         /// <summary>
@@ -49,10 +50,11 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="requestGenerateImageFunc">Function to generate Texture2D.</param>
         /// <param name="completion">Completion callback.</param>
         /// <param name="platformOverride">Optional platform override settings (MaxTextureSize and Format) from source textures.</param>
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview, which trades a little compression quality for speed.</param>
         /// <returns>Async callback request.</returns>
-        internal static AsyncCallbackRequest GenerateParameterTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride)
+        internal static AsyncCallbackRequest GenerateParameterTexture(Material material, IMaterialConvertSettings settings, string textureType, bool saveAsPng, string texturesPath, Func<Action<Texture2D>, AsyncCallbackRequest> requestGenerateImageFunc, Action<Texture2D> completion, (int MaxTextureSize, TextureFormat Format)? platformOverride, bool forEditorPreview = false)
         {
-            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.Parameter, requestGenerateImageFunc, completion, platformOverride, false);
+            return GenerateTexture(material, settings, textureType, saveAsPng, texturesPath, TextureConfig.Parameter, requestGenerateImageFunc, completion, platformOverride, forEditorPreview);
         }
 
         /// <summary>
@@ -92,7 +94,9 @@ namespace KRT.VRCQuestTools.Models
                 // / CompressNormalMap via ResolveEffectiveCompressionFormat) so the cache key never diverges from what gets compressed.
                 var mobileFormat = platformOverride?.Format ?? TextureUtility.GetCompressionFormat(settings.MobileTextureFormat);
                 var compressionFormat = TextureUtility.ResolveEffectiveCompressionFormat(EditorUserBuildSettings.activeBuildTarget, mobileFormat, config.isNormalMap);
-                compressorKeyComponent = "_" + TextureCompressorProvider.GetCompressor(compressionFormat).CacheKeyComponent;
+                // forEditorPreview selects a faster astcenc preset, which produces different bytes than the final
+                // one, so it belongs in the key: preview and final results must not share a cache entry.
+                compressorKeyComponent = "_" + TextureCompressorProvider.GetCompressor(compressionFormat, forEditorPreview).CacheKeyComponent;
             }
 
             var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}{compressorKeyComponent}_{assetHash}" + (saveAsPng ? ".png" : ".json");
@@ -116,7 +120,7 @@ namespace KRT.VRCQuestTools.Models
                 if (texToWrite)
                 {
                     texToWrite.name = texName;
-                    texToWrite = SaveTexture(settings.MobileTextureFormat, saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile, platformOverride);
+                    texToWrite = SaveTexture(settings.MobileTextureFormat, saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile, platformOverride, forEditorPreview);
 
                     // A freshly generated normal map is not uploaded to the GPU by TextureGenerator; re-upload it
                     // for the NDMF preview (preview only) so it renders. See TextureUtility.ReuploadForEditorDisplay.
@@ -177,7 +181,7 @@ namespace KRT.VRCQuestTools.Models
             return null;
         }
 
-        private static Texture2D SaveTexture(MobileTextureFormat mobileTextureFormat, bool saveAsPng, string texturesPath, TextureConfig config, Texture2D texToWrite, string cacheFile, string outFile, (int MaxTextureSize, TextureFormat Format)? platformOverride)
+        private static Texture2D SaveTexture(MobileTextureFormat mobileTextureFormat, bool saveAsPng, string texturesPath, TextureConfig config, Texture2D texToWrite, string cacheFile, string outFile, (int MaxTextureSize, TextureFormat Format)? platformOverride, bool forEditorPreview)
         {
             // Convert MobileTextureFormat to TextureFormat?, handling NoOverride case
             // Use platform override format if provided, otherwise fall back to settings
@@ -208,11 +212,11 @@ namespace KRT.VRCQuestTools.Models
             {
                 if (config.isNormalMap)
                 {
-                    texToWrite = TextureUtility.CompressNormalMap(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression, maxTextureSize: overrideMaxTextureSize);
+                    texToWrite = TextureUtility.CompressNormalMap(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression, maxTextureSize: overrideMaxTextureSize, forEditorPreview: forEditorPreview);
                 }
                 else
                 {
-                    texToWrite = TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression, overrideMaxTextureSize);
+                    texToWrite = TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression, overrideMaxTextureSize, forEditorPreview);
                 }
 
                 // Must run after compression, not before: compression backends may replace texToWrite with a new

@@ -222,7 +222,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressTexture_Quality_SimilarToUnityCompressor()
         {
-            var compressor = TestUtils.CreateAstcencCompressorOrIgnore(TextureCompressorProvider.DefaultPreset);
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore(TextureCompressorProvider.FinalPreset);
             const int size = 64;
 
             var reference = CreateNaturalisticTestTexture(size);
@@ -275,6 +275,27 @@ namespace KRT.VRCQuestTools.Utils
             // back to Unity, regardless of astcenc availability.
             var nullFormatCompressor = TextureCompressorProvider.GetCompressor(null);
             Assert.IsInstanceOf<UnityTextureCompressor>(nullFormatCompressor);
+        }
+
+        /// <summary>
+        /// Verifies that editor previews get the faster preset while final conversions get the quality preset,
+        /// and that the two are distinguishable through the cache key so their results never share a cache entry.
+        /// </summary>
+        [Test]
+        public void GetCompressor_UsesFasterPresetForEditorPreview()
+        {
+            if (AstcencBinaryLocator.GetAstcencPath() == null)
+            {
+                Assert.Ignore("No usable astcenc executable is available in this environment.");
+            }
+
+            var final = (AstcencTextureCompressor)TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, false);
+            var preview = (AstcencTextureCompressor)TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, true);
+
+            Assert.AreNotSame(final, preview);
+            StringAssert.EndsWith(TextureCompressorProvider.FinalPreset.TrimStart('-'), final.CacheKeyComponent);
+            StringAssert.EndsWith(TextureCompressorProvider.PreviewPreset.TrimStart('-'), preview.CacheKeyComponent);
+            Assert.AreNotEqual(final.CacheKeyComponent, preview.CacheKeyComponent);
         }
 
         /// <summary>

@@ -21,7 +21,7 @@ namespace KRT.VRCQuestTools.Utils
     /// (<see cref="EditorUtility.CompressTexture"/> with <see cref="TextureCompressionQuality.Best"/>) for
     /// compression speed and resulting image quality. This is not part of the normal (CI) test run: it is
     /// marked <see cref="ExplicitAttribute"/> and must be invoked directly from the Test Runner. Used to
-    /// decide <see cref="TextureCompressorProvider.DefaultPreset"/>.
+    /// decide <see cref="TextureCompressorProvider.FinalPreset"/>.
     ///
     /// Content note: this benchmark uses procedurally generated textures rather than the repository's
     /// albedo_1024px_png.png / alpha_test.png fixtures. Those fixtures are near-solid-color placeholder
