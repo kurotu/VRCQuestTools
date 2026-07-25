@@ -76,6 +76,7 @@ namespace KRT.VRCQuestTools.Utils
                 Assert.LessOrEqual(newTex.width, newSize);
                 Assert.LessOrEqual(newTex.height, newSize);
                 Assert.IsTrue(TextureUtility.IsUncompressedFormat(newTex.format));
+                return newTex;
             });
             Assert.IsTrue(callbackCalled);
         }
@@ -93,8 +94,67 @@ namespace KRT.VRCQuestTools.Utils
             VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, newSize, true, (oldTex, newTex) =>
             {
                 callbackCalled = true;
+                return newTex;
             });
             Assert.IsFalse(callbackCalled);
+        }
+
+        /// <summary>
+        /// Verifies that when the progress callback returns a different texture instance than it was given (as
+        /// AstcencTextureCompressor does: it destroys its input and returns a new instance), that returned instance
+        /// -- not the pre-compression texture -- ends up assigned to the control's icon. This is the scenario behind
+        /// the astcenc "compress texture" callback used by MenuIconResizerPass.
+        /// </summary>
+        [Test]
+        public void ResizeMenuIcons_CallbackReplacementInstance_BecomesControlIcon()
+        {
+            var menu = TestUtils.LoadFixtureAssetAtPath<VRCExpressionsMenu>("Expressions/RecursiveExMenu.asset");
+            var newMenu = VRCSDKUtility.DuplicateExpressionsMenu(menu);
+            var newSize = 128;
+
+            Texture2D replacement = null;
+            VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, newSize, true, (oldTex, newTex) =>
+            {
+                // Simulate a compressor with AstcencTextureCompressor's semantics: it consumes (destroys) its
+                // input and hands back a brand-new instance.
+                var compressed = TextureUtility.CompressTextureForBuildTarget(newTex, UnityEditor.BuildTarget.Android, TextureFormat.ASTC_6x6);
+                replacement = compressed;
+                return compressed;
+            });
+
+            Assert.IsNotNull(replacement);
+            Assert.IsTrue(replacement, "The returned replacement texture must be a valid (non-destroyed) object.");
+
+            var iconControl = FindControlWithIcon(newMenu);
+            Assert.IsNotNull(iconControl, "Fixture is expected to contain at least one control with an icon.");
+            Assert.AreSame(replacement, iconControl.icon, "control.icon must be the callback's returned instance, not the pre-compression texture.");
+            Assert.AreEqual((int)TextureFormat.ASTC_6x6, (int)iconControl.icon.format);
+        }
+
+        private static VRCExpressionsMenu.Control FindControlWithIcon(VRCExpressionsMenu menu)
+        {
+            var visited = new System.Collections.Generic.HashSet<VRCExpressionsMenu>();
+            VRCExpressionsMenu.Control Search(VRCExpressionsMenu m)
+            {
+                if (m == null || !visited.Add(m))
+                {
+                    return null;
+                }
+                foreach (var control in m.controls)
+                {
+                    if (control.icon != null)
+                    {
+                        return control;
+                    }
+                    var found = Search(control.subMenu);
+                    if (found != null)
+                    {
+                        return found;
+                    }
+                }
+                return null;
+            }
+            return Search(menu);
         }
 
         /// <summary>

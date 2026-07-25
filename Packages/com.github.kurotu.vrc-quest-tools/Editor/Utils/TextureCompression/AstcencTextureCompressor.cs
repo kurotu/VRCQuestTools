@@ -49,6 +49,11 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="preset">Quality preset with a leading dash (e.g. "-thorough").</param>
         internal AstcencTextureCompressor(string exePath, string version, string preset)
         {
+            // First use in the process: any file already present in AstcencCli.TempDirectory is a leftover from an
+            // aborted previous run (e.g. an editor crash), since every astcenc invocation runs synchronously on the
+            // main thread and cleans up its own temp files in a finally block. Safe to clear it out up front.
+            AstcencCli.CleanupTempDirectoryOnce();
+
             this.exePath = exePath;
             this.preset = preset;
             Version = version;
@@ -76,6 +81,7 @@ namespace KRT.VRCQuestTools.Utils
 
             var tempFiles = new List<string>();
             Texture2D result = null;
+            var success = false;
             try
             {
                 var raw = texture.GetRawTextureData<byte>();
@@ -143,8 +149,7 @@ namespace KRT.VRCQuestTools.Utils
                 result.filterMode = texture.filterMode;
                 result.anisoLevel = texture.anisoLevel;
 
-                TextureUtility.DestroyTexture(texture);
-                return new ResultRequest<Texture2D>(result, completion);
+                success = true;
             }
             catch (Exception e)
             {
@@ -152,10 +157,8 @@ namespace KRT.VRCQuestTools.Utils
                 if (result != null)
                 {
                     UnityEngine.Object.DestroyImmediate(result);
+                    result = null;
                 }
-
-                // The input texture is intentionally left intact so the fallback path can still compress it.
-                return fallback.CompressTexture(texture, format, completion);
             }
             finally
             {
@@ -164,6 +167,19 @@ namespace KRT.VRCQuestTools.Utils
                     AstcencCli.DeleteFileSilently(path);
                 }
             }
+
+            // Destroying the input and constructing ResultRequest (which synchronously invokes completion) are
+            // deliberately outside the try/catch above: completion is caller-supplied and may itself throw, and
+            // that must not be misdiagnosed as "astcenc failed" and trigger a second, conflicting completion via
+            // the fallback path below with an already-destroyed input texture.
+            if (success)
+            {
+                TextureUtility.DestroyTexture(texture);
+                return new ResultRequest<Texture2D>(result, completion);
+            }
+
+            // The input texture is intentionally left intact so the fallback path can still compress it.
+            return fallback.CompressTexture(texture, format, completion);
         }
 
         /// <inheritdoc/>

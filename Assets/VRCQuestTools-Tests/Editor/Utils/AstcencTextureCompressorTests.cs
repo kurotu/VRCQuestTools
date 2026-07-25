@@ -70,6 +70,48 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Verifies non-square NPOT dimensions are handled correctly by the raw-layout mip concatenation (each
+        /// mip's width/height is independently halved and rounded down, so a non-square source can produce mips
+        /// whose aspect ratio drifts from the source's), and that the compressed result still decodes to
+        /// approximately the same image as Unity's own ASTC encoder.
+        /// </summary>
+        [Test]
+        public void CompressTexture_NonSquareNpot_MatchesExpectedLayoutAndQuality()
+        {
+            var compressor = CreateCompressorOrIgnore();
+            const int width = 48;
+            const int height = 20;
+            const TextureFormat format = TextureFormat.ASTC_4x4;
+            Assert.IsTrue(AstcUtility.TryGetBlockSize(format, out var blockX, out var blockY));
+
+            var astcSource = CreateGradientTexture(width, height, mipChain: true);
+            var mipmapCount = astcSource.mipmapCount;
+
+            var expectedSize = 0;
+            for (var level = 0; level < mipmapCount; level++)
+            {
+                var w = Math.Max(1, width >> level);
+                var h = Math.Max(1, height >> level);
+                expectedSize += AstcUtility.GetMipDataSize(w, h, blockX, blockY);
+            }
+
+            Texture2D astcResult = null;
+            compressor.CompressTexture(astcSource, format, t => astcResult = t).WaitForCompletion();
+            Assert.IsNotNull(astcResult);
+            Assert.AreEqual(mipmapCount, astcResult.mipmapCount);
+            Assert.AreEqual(expectedSize, astcResult.GetRawTextureData().Length);
+
+            var unitySource = CreateGradientTexture(width, height, mipChain: true);
+            EditorUtility.CompressTexture(unitySource, format, TextureCompressionQuality.Best);
+
+            var unityDecoded = TestUtils.DecodeToRGBA32(unitySource, width, height);
+            var astcDecoded = TestUtils.DecodeToRGBA32(astcResult, width, height);
+
+            var diff = TestUtils.MaxDifference(unityDecoded, astcDecoded);
+            Assert.Less(diff, 0.1f, $"astcenc output for a non-square NPOT texture doesn't match Unity's ASTC encoder (diff={diff:F4}).");
+        }
+
+        /// <summary>
         /// Verifies the TGA orientation used for astcenc input (topToBottom) produces the same visual result as
         /// Unity's own ASTC encoder for an asymmetric image, i.e. astcenc's output is not vertically flipped.
         /// </summary>
@@ -114,6 +156,30 @@ namespace KRT.VRCQuestTools.Utils
 
             Assert.IsNotNull(result);
             Assert.AreEqual((int)TextureFormat.ASTC_4x4, (int)result.format);
+        }
+
+        /// <summary>
+        /// Verifies the documented discard semantics of a successful astcenc compression (unlike
+        /// <see cref="UnityTextureCompressor"/>, which compresses in place and returns the same reference): the
+        /// returned texture is a new, valid instance, and the input texture has been destroyed. Unity's overloaded
+        /// <c>==</c> operator returns true for a destroyed <see cref="UnityEngine.Object"/> even though the C#
+        /// reference itself is not null, so <c>source == null</c> is the correct way to observe this. See also
+        /// <see cref="TextureUtility.CompressTextureForBuildTarget"/>'s XML doc, which documents this contract for
+        /// callers.
+        /// </summary>
+        [Test]
+        public void CompressTexture_Success_ReturnsNewInstanceAndDestroysInput()
+        {
+            var compressor = CreateCompressorOrIgnore();
+            var source = CreateGradientTexture(16, 16, mipChain: false);
+
+            Texture2D result = null;
+            compressor.CompressTexture(source, TextureFormat.ASTC_4x4, t => result = t).WaitForCompletion();
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result, "The returned texture must be a valid, non-destroyed object.");
+            Assert.AreNotSame(source, result, "A successful astcenc compression returns a new instance rather than mutating the input in place.");
+            Assert.IsTrue(source == null, "The input texture must be destroyed on a successful astcenc compression.");
         }
 
         /// <summary>

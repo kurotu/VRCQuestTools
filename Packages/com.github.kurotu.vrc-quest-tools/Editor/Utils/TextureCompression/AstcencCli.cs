@@ -24,6 +24,37 @@ namespace KRT.VRCQuestTools.Utils
 
         private const int UtilityTimeoutMs = 10 * 1000;
 
+        private static bool tempDirectoryCleaned = false;
+
+        /// <summary>
+        /// Deletes any files already present in <see cref="TempDirectory"/>, once per editor session. All astcenc
+        /// work (temp file writes, process invocation, temp file deletion) happens synchronously on the main
+        /// thread, so anything found here on first use is necessarily a leftover from an aborted previous run
+        /// (e.g. the editor crashing mid-compression) rather than an in-progress operation.
+        /// </summary>
+        internal static void CleanupTempDirectoryOnce()
+        {
+            if (tempDirectoryCleaned)
+            {
+                return;
+            }
+            tempDirectoryCleaned = true;
+
+            try
+            {
+                var fullPath = Path.GetFullPath(TempDirectory);
+                if (Directory.Exists(fullPath))
+                {
+                    Directory.Delete(fullPath, true);
+                }
+            }
+            catch (Exception e)
+            {
+                // Best-effort cleanup; a leftover file or two does not prevent compression from working.
+                Logger.LogDebug($"Failed to clean up astcenc temp directory: {e.Message}");
+            }
+        }
+
         /// <summary>
         /// Runs astcenc to compress an image file into a .astc file.
         /// </summary>
@@ -175,6 +206,17 @@ namespace KRT.VRCQuestTools.Utils
                 if (!process.WaitForExit(timeoutMs))
                 {
                     KillSilently(process);
+                    try
+                    {
+                        // Give the OS a moment to actually release the process's file handles (e.g. the input/output
+                        // temp files) after the kill signal, so the caller's temp-file cleanup that runs right after
+                        // this returns doesn't race a still-exiting process and silently fail to delete them.
+                        process.WaitForExit(2000);
+                    }
+                    catch (Exception)
+                    {
+                        // Best-effort; proceed regardless of whether the post-kill wait itself succeeded.
+                    }
                     return new ProcessRunResult(-1, string.Empty, string.Empty, true);
                 }
                 process.WaitForExit(); // Ensure redirected streams are flushed.

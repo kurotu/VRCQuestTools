@@ -55,24 +55,36 @@ namespace KRT.VRCQuestTools.Utils
 
         private static Resolution Resolve()
         {
+            try
+            {
 #if UNITY_EDITOR_WIN
-            var path = ResolveBundled("win-x64", ".exe", false);
+                var resolved = ResolveBundled("win-x64", ".exe", false);
 #elif UNITY_EDITOR_LINUX
-            var path = ResolveBundled("linux-x64", string.Empty, true);
+                var resolved = ResolveBundled("linux-x64", string.Empty, true);
 #elif UNITY_EDITOR_OSX
-            var path = ResolveSystem();
+                var resolved = ResolveSystem();
 #else
-            string path = null;
+                (string Path, string Version)? resolved = null;
 #endif
-            if (path != null)
-            {
-                var version = AstcencCli.GetVersion(path);
-                Logger.Log($"Using astcenc for ASTC compression: {path} (version {version})");
-                return new Resolution(path, version);
+                if (resolved.HasValue)
+                {
+                    Logger.Log($"Using astcenc for ASTC compression: {resolved.Value.Path} (version {resolved.Value.Version})");
+                    return new Resolution(resolved.Value.Path, resolved.Value.Version);
+                }
+                else
+                {
+                    Logger.Log("No usable astcenc executable was found. Using Unity's texture compression.");
+                    return new Resolution(null, null);
+                }
             }
-            else
+            catch (Exception e)
             {
-                Logger.Log("No usable astcenc executable was found. Using Unity's texture compression.");
+                // Resolution touches external state (e.g. VRCQuestTools.AssetRoot, the filesystem, environment
+                // variables) that could throw in an unexpected project configuration. Since this result is cached
+                // for the rest of the editor session via the enclosing Lazy, a stray exception here must not be
+                // allowed to propagate and take down every caller for the whole session; degrade to "astcenc is
+                // unavailable" instead.
+                Logger.LogWarning($"Failed to resolve an astcenc executable, falling back to Unity's texture compression. {e.Message}");
                 return new Resolution(null, null);
             }
         }
@@ -100,7 +112,7 @@ namespace KRT.VRCQuestTools.Utils
         }
 
 #if UNITY_EDITOR_WIN || UNITY_EDITOR_LINUX
-        private static string ResolveBundled(string platformFolder, string extension, bool needsChmod)
+        private static (string Path, string Version)? ResolveBundled(string platformFolder, string extension, bool needsChmod)
         {
             var folder = Path.Combine(Path.GetFullPath(VRCQuestTools.AssetRoot), "Editor", "Tools", "astcenc", platformFolder);
             foreach (var variant in new[] { "astcenc-avx2", "astcenc-sse2" })
@@ -118,7 +130,17 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     continue;
                 }
-                return path;
+
+                // A binary that self-tests successfully but can't report its own version is unreliable enough that
+                // its cache key component would degrade to "astcenc-unknown-...", which could alias cache entries
+                // across genuinely different (and future, unknown-quality) astcenc builds. Prefer the next variant,
+                // or Unity's fallback compressor if none qualify.
+                var version = AstcencCli.GetVersion(path);
+                if (version == null)
+                {
+                    continue;
+                }
+                return (path, version);
             }
             return null;
         }
@@ -153,7 +175,7 @@ namespace KRT.VRCQuestTools.Utils
 #endif
 
 #if UNITY_EDITOR_OSX
-        private static string ResolveSystem()
+        private static (string Path, string Version)? ResolveSystem()
         {
             foreach (var candidate in EnumerateSystemCandidates())
             {
@@ -166,7 +188,7 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     continue;
                 }
-                return candidate;
+                return (candidate, versionString);
             }
             return null;
         }

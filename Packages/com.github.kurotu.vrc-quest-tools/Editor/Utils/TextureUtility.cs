@@ -627,7 +627,12 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
         /// <param name="mobileFormat">Format for mobile build target.</param>
         /// <param name="maxTextureSize">Optional max texture size. When provided, the texture is resized before compression.</param>
-        /// <returns>Compressed texture. May be a new texture if resized.</returns>
+        /// <returns>Compressed texture. May be a new texture if resized. IMPORTANT: the compressor backend may also
+        /// replace the texture during compression itself -- e.g. the astcenc path (<see cref="AstcencTextureCompressor"/>)
+        /// always destroys <paramref name="texture"/> on success and returns a new instance, unlike
+        /// <see cref="UnityTextureCompressor"/> which compresses in place and returns the same reference. Callers must
+        /// always use the returned value and must never keep using <paramref name="texture"/> (or any reference derived
+        /// from it before this call) afterwards.</returns>
         internal static Texture2D CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, int? maxTextureSize = null)
         {
             if (maxTextureSize.HasValue)

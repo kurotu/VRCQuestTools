@@ -79,7 +79,12 @@ namespace KRT.VRCQuestTools.Models
 
             // Only the in-code compression path (saveAsPng == false) actually invokes an ITextureCompressor;
             // include its identifier so switching between astcenc and Unity compression (or astcenc presets)
-            // doesn't reuse a stale cache entry produced by a different encoder.
+            // doesn't reuse a stale cache entry produced by a different encoder. Note this identifies the encoder
+            // that was *available* when the key was computed, not necessarily the one that produced the bytes:
+            // AstcencTextureCompressor can fall back to UnityTextureCompressor mid-compression (e.g. the astcenc
+            // process fails for this particular texture) without that fallback being reflected here. That's
+            // harmless -- both encoders emit valid ASTC data, so nothing renders incorrectly -- it just means the
+            // cache key doesn't always perfectly identify which encoder actually wrote a given cache entry.
             var compressorKeyComponent = string.Empty;
             if (!saveAsPng)
             {
@@ -201,7 +206,6 @@ namespace KRT.VRCQuestTools.Models
             }
             else
             {
-                TextureUtility.SetStreamingMipMaps(texToWrite, true);
                 if (config.isNormalMap)
                 {
                     texToWrite = TextureUtility.CompressNormalMap(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression, maxTextureSize: overrideMaxTextureSize);
@@ -210,6 +214,11 @@ namespace KRT.VRCQuestTools.Models
                 {
                     texToWrite = TextureUtility.CompressTextureForBuildTarget(texToWrite, EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression, overrideMaxTextureSize);
                 }
+
+                // Must run after compression, not before: compression backends may replace texToWrite with a new
+                // instance (e.g. the astcenc path always returns a new Texture2D on success), which would silently
+                // drop a flag set on the pre-compression instance.
+                TextureUtility.SetStreamingMipMaps(texToWrite, true);
                 CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap, EditorUserBuildSettings.activeBuildTarget)));
             }
 

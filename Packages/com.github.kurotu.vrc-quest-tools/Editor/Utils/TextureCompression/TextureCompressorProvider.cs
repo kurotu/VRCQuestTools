@@ -21,7 +21,10 @@ namespace KRT.VRCQuestTools.Utils
 
         private static readonly UnityTextureCompressor UnityCompressor = new UnityTextureCompressor();
 
-        private static readonly Lazy<AstcencTextureCompressor> LazyAstcencCompressor = new Lazy<AstcencTextureCompressor>(CreateAstcencCompressor);
+        // Not readonly: ResetForTesting() re-creates this alongside AstcencBinaryLocator's own cache, so a test that
+        // resolves a different (or no) astcenc binary via AstcencBinaryLocator.ResetCacheForTesting() doesn't leave
+        // this provider still handing out a compressor built from the previously-cached path/version.
+        private static Lazy<AstcencTextureCompressor> lazyAstcencCompressor = new Lazy<AstcencTextureCompressor>(CreateAstcencCompressor);
 
         private static ITextureCompressor compressorOverrideForTesting;
 
@@ -40,7 +43,7 @@ namespace KRT.VRCQuestTools.Utils
 
             if (!isNormalMap && format.HasValue && AstcUtility.TryGetBlockSize(format.Value, out _, out _) && AstcencBinaryLocator.GetAstcencPath() != null)
             {
-                return LazyAstcencCompressor.Value;
+                return lazyAstcencCompressor.Value;
             }
 
             return UnityCompressor;
@@ -57,10 +60,15 @@ namespace KRT.VRCQuestTools.Utils
 
         /// <summary>
         /// Restores the normal compressor selection logic after a test overrode it via <see cref="SetCompressorForTesting"/>.
+        /// Also resets <see cref="AstcencBinaryLocator"/>'s cached resolution and this provider's cached astcenc
+        /// compressor, so a subsequent <see cref="GetCompressor"/> call re-resolves the astcenc binary from scratch
+        /// instead of reusing a compressor built from a path/version cached before this call.
         /// </summary>
         internal static void ResetForTesting()
         {
             compressorOverrideForTesting = null;
+            AstcencBinaryLocator.ResetCacheForTesting();
+            lazyAstcencCompressor = new Lazy<AstcencTextureCompressor>(CreateAstcencCompressor);
         }
 
         private static AstcencTextureCompressor CreateAstcencCompressor()
