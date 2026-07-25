@@ -160,10 +160,25 @@ namespace KRT.VRCQuestTools.Utils
                     var normal = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
                     if (normal != null)
                     {
-                        // Restore the cached color space (normal maps are linear); CopyAsReadable's bool is the Texture2D "linear" flag.
-                        return TextureUtility.CopyAsReadable(normal, linear);
+                        // The blank normal map asset's .meta only overrides the import format to ASTC for the
+                        // Android/iOS platforms. When the active build target differs (e.g. Standalone/Linux in
+                        // CI), Unity imports the same asset with an Automatic (non-ASTC) format instead, so its
+                        // format/dimensions/mip layout no longer match what this TextureCache recorded at save
+                        // time. Using such an asset as a raw-byte container would make the LoadRawTextureData
+                        // call in ToTexture2D() over/underread the stored buffer. Only use the asset as a
+                        // container when it actually matches; otherwise fall back to building the container
+                        // directly below. This mismatch is an expected, environment-dependent situation (not a
+                        // missing asset), so no warning is logged for it.
+                        if (normal.format == format && normal.width == width && normal.height == height && (normal.mipmapCount > 1) == mipmap)
+                        {
+                            // Restore the cached color space (normal maps are linear); CopyAsReadable's bool is the Texture2D "linear" flag.
+                            return TextureUtility.CopyAsReadable(normal, linear);
+                        }
                     }
-                    Logger.LogWarning($"Failed to load normal map from {path}. Creating normal map from uncompressed one.");
+                    else
+                    {
+                        Logger.LogWarning($"Failed to load normal map from {path}. Creating normal map from uncompressed one.");
+                    }
                 }
                 // Build the container directly instead of going through TextureUtility.CompressNormalMap /
                 // TextureCompressorProvider. This texture's fields (format/mipmap/linear/dimensions) are a
