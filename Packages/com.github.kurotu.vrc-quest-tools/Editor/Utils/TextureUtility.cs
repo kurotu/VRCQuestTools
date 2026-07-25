@@ -627,14 +627,13 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
         /// <param name="mobileFormat">Format for mobile build target.</param>
         /// <param name="maxTextureSize">Optional max texture size. When provided, the texture is resized before compression.</param>
-        /// <param name="forEditorPreview">Whether the texture is generated for an editor preview, which trades a little quality for speed.</param>
         /// <returns>Compressed texture. May be a new texture if resized. IMPORTANT: the compressor backend may also
         /// replace the texture during compression itself -- e.g. the astcenc path (<see cref="AstcencTextureCompressor"/>)
         /// always destroys <paramref name="texture"/> on success and returns a new instance, unlike
         /// <see cref="UnityTextureCompressor"/> which compresses in place and returns the same reference. Callers must
         /// always use the returned value and must never keep using <paramref name="texture"/> (or any reference derived
         /// from it before this call) afterwards.</returns>
-        internal static Texture2D CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, int? maxTextureSize = null, bool forEditorPreview = false)
+        internal static Texture2D CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, int? maxTextureSize = null)
         {
             if (maxTextureSize.HasValue)
             {
@@ -663,7 +662,7 @@ namespace KRT.VRCQuestTools.Utils
                 }
             }
             Texture2D result = null;
-            TextureCompressorProvider.GetCompressor(format, forEditorPreview).CompressTexture(texture, format, (t) => result = t).WaitForCompletion();
+            TextureCompressorProvider.GetCompressor(format).CompressTexture(texture, format, (t) => result = t).WaitForCompletion();
             return result;
         }
 
@@ -675,13 +674,12 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="mobileFormat">Format for mobile build target.</param>
         /// <param name="readable">Whether to make output texture readable.</param>
         /// <param name="maxTextureSize">Optional max texture size override.</param>
-        /// <param name="forEditorPreview">Whether the texture is generated for an editor preview, which trades a little quality for speed.</param>
         /// <returns>Compressed normal map.</returns>
-        internal static Texture2D CompressNormalMap(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool readable = false, int? maxTextureSize = null, bool forEditorPreview = false)
+        internal static Texture2D CompressNormalMap(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool readable = false, int? maxTextureSize = null)
         {
             var format = ResolveEffectiveCompressionFormat(buildTarget, mobileFormat, true);
             Texture2D result = null;
-            TextureCompressorProvider.GetCompressor(format, forEditorPreview).CompressNormalMap(texture, format, readable, maxTextureSize, (t) => result = t).WaitForCompletion();
+            TextureCompressorProvider.GetCompressor(format).CompressNormalMap(texture, format, readable, maxTextureSize, (t) => result = t).WaitForCompletion();
             return result;
         }
 

@@ -14,27 +14,20 @@ namespace KRT.VRCQuestTools.Utils
     internal static class TextureCompressorProvider
     {
         /// <summary>
-        /// astcenc quality preset used for textures that end up on the avatar. Corresponds to Unity's
-        /// TextureCompressionQuality.Best: AstcencBenchmarkTests measured the same quality as Unity for every
-        /// size and block size tried.
+        /// astcenc quality preset used for every ASTC compression, previews and final conversions alike.
+        /// Corresponds to Unity's TextureCompressionQuality.Best: AstcencBenchmarkTests measured the same quality
+        /// as Unity for every size and block size tried. Using the same preset for previews and final conversions
+        /// means they share a single cache key, so a disk cache entry produced while previewing is reused as-is
+        /// by a later manual conversion or build instead of being recompressed under a different preset.
         /// </summary>
-        internal const string FinalPreset = "-thorough";
-
-        /// <summary>
-        /// astcenc quality preset used for NDMF editor previews. AstcencBenchmarkTests measured a quality
-        /// difference from <see cref="FinalPreset"/> only in the fifth decimal place while running 1.5x-2.2x
-        /// faster, and a preview that exaggerates compression artifacts errs on the safe side anyway.
-        /// </summary>
-        internal const string PreviewPreset = "-medium";
+        internal const string Preset = "-thorough";
 
         private static readonly UnityTextureCompressor UnityCompressor = new UnityTextureCompressor();
 
-        // Not readonly: ResetForTesting() re-creates these alongside AstcencBinaryLocator's own cache, so a test that
+        // Not readonly: ResetForTesting() re-creates this alongside AstcencBinaryLocator's own cache, so a test that
         // resolves a different (or no) astcenc binary via AstcencBinaryLocator.ResetCacheForTesting() doesn't leave
         // this provider still handing out a compressor built from the previously-cached path/version.
-        private static Lazy<AstcencTextureCompressor> lazyFinalCompressor = CreateLazyCompressor(FinalPreset);
-
-        private static Lazy<AstcencTextureCompressor> lazyPreviewCompressor = CreateLazyCompressor(PreviewPreset);
+        private static Lazy<AstcencTextureCompressor> lazyCompressor = CreateLazyCompressor(Preset);
 
         private static ITextureCompressor compressorOverrideForTesting;
 
@@ -47,9 +40,8 @@ namespace KRT.VRCQuestTools.Utils
         /// <see cref="UnityEditor.TextureGenerator"/> to decide) always falls back to Unity.
         /// </summary>
         /// <param name="format">Format to compress to. Null when the format is left unset for normal map compression.</param>
-        /// <param name="forEditorPreview">Whether the texture is generated for an editor preview, which uses the faster <see cref="PreviewPreset"/>.</param>
         /// <returns>Texture compressor.</returns>
-        internal static ITextureCompressor GetCompressor(TextureFormat? format, bool forEditorPreview = false)
+        internal static ITextureCompressor GetCompressor(TextureFormat? format)
         {
             if (compressorOverrideForTesting != null)
             {
@@ -58,7 +50,7 @@ namespace KRT.VRCQuestTools.Utils
 
             if (format.HasValue && AstcUtility.TryGetBlockSize(format.Value, out _, out _) && AstcencBinaryLocator.GetAstcencPath() != null)
             {
-                return forEditorPreview ? lazyPreviewCompressor.Value : lazyFinalCompressor.Value;
+                return lazyCompressor.Value;
             }
 
             return UnityCompressor;
@@ -76,15 +68,14 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Restores the normal compressor selection logic after a test overrode it via <see cref="SetCompressorForTesting"/>.
         /// Also resets <see cref="AstcencBinaryLocator"/>'s cached resolution and this provider's cached astcenc
-        /// compressors, so a subsequent <see cref="GetCompressor"/> call re-resolves the astcenc binary from scratch
+        /// compressor, so a subsequent <see cref="GetCompressor"/> call re-resolves the astcenc binary from scratch
         /// instead of reusing a compressor built from a path/version cached before this call.
         /// </summary>
         internal static void ResetForTesting()
         {
             compressorOverrideForTesting = null;
             AstcencBinaryLocator.ResetCacheForTesting();
-            lazyFinalCompressor = CreateLazyCompressor(FinalPreset);
-            lazyPreviewCompressor = CreateLazyCompressor(PreviewPreset);
+            lazyCompressor = CreateLazyCompressor(Preset);
         }
 
         private static Lazy<AstcencTextureCompressor> CreateLazyCompressor(string preset)

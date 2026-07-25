@@ -222,7 +222,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressTexture_Quality_SimilarToUnityCompressor()
         {
-            var compressor = TestUtils.CreateAstcencCompressorOrIgnore(TextureCompressorProvider.FinalPreset);
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore(TextureCompressorProvider.Preset);
             const int size = 64;
 
             var reference = CreateNaturalisticTestTexture(size);
@@ -278,24 +278,25 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Verifies that editor previews get the faster preset while final conversions get the quality preset,
-        /// and that the two are distinguishable through the cache key so their results never share a cache entry.
+        /// Verifies that editor previews and final conversions get the exact same compressor instance (and
+        /// therefore the same <see cref="AstcencTextureCompressor.CacheKeyComponent"/>), so a disk cache entry
+        /// produced while previewing is reused as-is by a later manual conversion or build instead of triggering
+        /// a recompression under a different cache key.
         /// </summary>
         [Test]
-        public void GetCompressor_UsesFasterPresetForEditorPreview()
+        public void GetCompressor_SharesSameCompressorAndCacheKeyForPreviewAndFinal()
         {
             if (AstcencBinaryLocator.GetAstcencPath() == null)
             {
                 Assert.Ignore("No usable astcenc executable is available in this environment.");
             }
 
-            var final = (AstcencTextureCompressor)TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, false);
-            var preview = (AstcencTextureCompressor)TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, true);
+            var first = (AstcencTextureCompressor)TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6);
+            var second = (AstcencTextureCompressor)TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6);
 
-            Assert.AreNotSame(final, preview);
-            StringAssert.EndsWith(TextureCompressorProvider.FinalPreset.TrimStart('-'), final.CacheKeyComponent);
-            StringAssert.EndsWith(TextureCompressorProvider.PreviewPreset.TrimStart('-'), preview.CacheKeyComponent);
-            Assert.AreNotEqual(final.CacheKeyComponent, preview.CacheKeyComponent);
+            Assert.AreSame(first, second, "Preview and final conversion must resolve to the exact same compressor instance.");
+            StringAssert.EndsWith(TextureCompressorProvider.Preset.TrimStart('-'), first.CacheKeyComponent);
+            Assert.AreEqual(first.CacheKeyComponent, second.CacheKeyComponent);
         }
 
         /// <summary>

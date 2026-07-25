@@ -80,7 +80,7 @@ namespace KRT.VRCQuestTools.Utils
         /// Attempts to enqueue a texture for background ASTC compression.
         /// </summary>
         /// <param name="placeholder">Uncompressed baked texture already assigned to preview material(s); becomes owned by the queue (destroyed once replaced, or left alone on failure).</param>
-        /// <param name="compressor">astcenc compressor to use (the preview-preset instance resolved by <see cref="TextureCompressorProvider"/>).</param>
+        /// <param name="compressor">astcenc compressor to use (the instance resolved by <see cref="TextureCompressorProvider"/>).</param>
         /// <param name="format">Target ASTC format. Must be non-null for color textures; may be non-null for normal maps only (a null format is never astcenc-compatible).</param>
         /// <param name="isNormalMap">Whether <paramref name="placeholder"/> is a normal map (uses <see cref="AstcencTextureCompressor.CompressNormalMapAsync"/>) or a color/parameter texture (uses <see cref="AstcencTextureCompressor.CompressTextureAsync"/>).</param>
         /// <param name="readable">Normal map only: whether the compressed result should remain readable.</param>
@@ -291,8 +291,8 @@ namespace KRT.VRCQuestTools.Utils
 
         /// <summary>
         /// Falls back to synchronous compression (<see cref="TextureUtility.CompressTextureForBuildTarget"/> /
-        /// <see cref="TextureUtility.CompressNormalMap"/>, both with <c>forEditorPreview: true</c> to match what
-        /// the abandoned background attempt would have produced) when the background astcenc attempt for
+        /// <see cref="TextureUtility.CompressNormalMap"/>, which produce the exact same bytes as the abandoned
+        /// background attempt since both use the same astcenc preset) when the background astcenc attempt for
         /// <paramref name="item"/> failed, so a single transient failure does not leave the placeholder
         /// uncompressed -- and re-compressed from scratch on every subsequent preview regeneration, since a
         /// failed background attempt never writes a disk cache entry -- for the rest of the editor session.
@@ -312,8 +312,8 @@ namespace KRT.VRCQuestTools.Utils
             try
             {
                 compressed = item.IsNormalMap
-                    ? TextureUtility.CompressNormalMap(item.Placeholder, item.BuildTarget, item.Format.Value, item.Readable, item.MaxTextureSize, forEditorPreview: true)
-                    : TextureUtility.CompressTextureForBuildTarget(item.Placeholder, item.BuildTarget, item.Format.Value, item.MaxTextureSize, forEditorPreview: true);
+                    ? TextureUtility.CompressNormalMap(item.Placeholder, item.BuildTarget, item.Format.Value, item.Readable, item.MaxTextureSize)
+                    : TextureUtility.CompressTextureForBuildTarget(item.Placeholder, item.BuildTarget, item.Format.Value, item.MaxTextureSize);
             }
             catch (Exception e)
             {
