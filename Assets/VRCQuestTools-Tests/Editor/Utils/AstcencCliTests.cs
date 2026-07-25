@@ -61,7 +61,7 @@ namespace KRT.VRCQuestTools.Utils
 #if UNITY_EDITOR_WIN || UNITY_EDITOR_LINUX
             var path = AstcencBinaryLocator.GetAstcencPath();
             Assert.IsNotNull(path);
-            Assert.AreEqual("5.6.0", AstcencCli.GetVersion(path));
+            Assert.AreEqual("5.3.0", AstcencCli.GetVersion(path));
 #elif UNITY_EDITOR_OSX
             Assert.Ignore("astcenc availability depends on the environment on macOS.");
 #else

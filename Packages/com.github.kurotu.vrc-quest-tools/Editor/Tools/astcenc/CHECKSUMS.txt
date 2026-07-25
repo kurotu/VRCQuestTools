@@ -1,16 +1,20 @@
-astcenc 5.6.0 (https://github.com/ARM-software/astc-encoder)
+astcenc 5.3.0 (https://github.com/ARM-software/astc-encoder)
+
+Version note: 5.3.0 is the newest release whose Linux binaries require
+GLIBC_2.34 or older, so they run on Ubuntu 22.04 (glibc 2.35) used by
+Unity CI images. Newer releases (5.4.0+) require GLIBC_2.38.
 
 Binaries are extracted from the official release archives:
-- https://github.com/ARM-software/astc-encoder/releases/download/5.6.0/astcenc-5.6.0-windows-x64.zip
-  (SHA256: 25871b3f798005b11cfb2b369ee7911043d4d5e7bcde5b10cb8b51f81bf4a95d)
-- https://github.com/ARM-software/astc-encoder/releases/download/5.6.0/astcenc-5.6.0-linux-x64.zip
-  (SHA256: 4fa262fb4883997b2b38a95c0de3b7ee26d22ac7ab1ebd030558089f2e917502)
+- https://github.com/ARM-software/astc-encoder/releases/download/5.3.0/astcenc-5.3.0-windows-x64.zip
+  (SHA256: 199b2287be0264182292869798bef91c35a64791e52bfd43824d1d3ac3e7846f)
+- https://github.com/ARM-software/astc-encoder/releases/download/5.3.0/astcenc-5.3.0-linux-x64.zip
+  (SHA256: 495b2f0cf0357ae05728a727e3d0e81d6e7f27b242c21cb5ef6254dd56dba5ff)
 
 Archive checksums are published by the upstream project:
-https://github.com/ARM-software/astc-encoder/releases/download/5.6.0/release-sha256.txt
+https://github.com/ARM-software/astc-encoder/releases/download/5.3.0/release-sha256.txt
 
 SHA256 of bundled binaries:
-aec13e952ddc8cc78fe906e643abc2a322dae165faa3030153fa81c152952178  win-x64/astcenc-avx2.exe
-8cc175fddb0dbba27821dd6b1bccfbb0cca9143fe3243b5f7274e298178e2509  win-x64/astcenc-sse2.exe
-29774a572968922976f4058507b915ff9a0dbe06d4c9d38d2938817884b74d45  linux-x64/astcenc-avx2
-f186a8a9b88be9a95766a6752ae6d82aff8727a49c768d6f43331f336d02343a  linux-x64/astcenc-sse2
+c2eb4bbbad344666ccd9c176f3b915077c057366681a3093c4047a7677e6504b  win-x64/astcenc-avx2.exe
+02154aaab77770cf279d09629fd75c1ae912e3748067616a38a2d75137429cdd  win-x64/astcenc-sse2.exe
+eaa0d194e82790bd338ef00e69e5d085ae6a2134da30bf7b3f186b78fb19f5cb  linux-x64/astcenc-avx2
+61071c177f3c4b873097a223283be9b47d9c14f6a0f3de34d2e7c97019344300  linux-x64/astcenc-sse2
