@@ -37,6 +37,22 @@ namespace KRT.VRCQuestTools.Utils
         /// </remarks>
         private const bool TopToBottomOrigin = true;
 
+        /// <summary>
+        /// Whether the TGA image descriptor written for astcenc normal-map input declares top-left origin, for
+        /// pixel data obtained via <see cref="Texture2D.GetPixels32(int)"/>.
+        /// </summary>
+        /// <remarks>
+        /// Determined empirically in AstcencNormalMapCompressionTests.CompressNormalMap_Orientation_MatchesUnityCompressor,
+        /// the same way as <see cref="TopToBottomOrigin"/>: with topToBottom = false (bottom-left origin, the
+        /// value that literally matches <c>GetPixels32</c>'s documented row order -- see
+        /// <see cref="AstcUtility.WriteTga(Color32[], int, int, bool, string)"/>'s remarks), the astcenc output
+        /// still visibly diverged from Unity's own normal map ASTC encoder (measured diff 0.0345, comfortably
+        /// under the test's 0.1 threshold but far from the near-zero match a correct orientation should produce).
+        /// Flipping to true (top-left origin) made the two outputs match essentially exactly (measured diff
+        /// 0.0000).
+        /// </remarks>
+        private const bool TopToBottomOriginForNormalMap = true;
+
         private readonly string exePath;
         private readonly string preset;
         private readonly ITextureCompressor fallback;
@@ -195,13 +211,153 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <inheritdoc/>
-        /// <exception cref="NotSupportedException">Always thrown. Normal map compression is never routed to
-        /// astcenc by <see cref="TextureCompressorProvider"/>, since Unity's <see cref="UnityEditor.TextureGenerator"/>
-        /// pipeline handles normal map specific encoding (e.g. tangent space packing) that astcenc's generic
-        /// color/alpha encoder does not replicate.</exception>
+        /// <remarks>
+        /// Unity's ASTC normal map encoding stores the tangent-space normal directly as RGB (no swizzle, alpha
+        /// fixed to 1.0), which astcenc's generic linear (-cl) color encoder reproduces equivalent output for, so
+        /// the same encoder used for color textures applies here too. astcenc itself never generates mipmaps, so
+        /// the full chain (down to 1x1) is built by this method via <see cref="NormalMapMipUtility.DownsampleNormalMap"/>,
+        /// which re-normalizes after each box-filter step so mip levels do not read as flattened shading.
+        /// </remarks>
         public AsyncCallbackRequest CompressNormalMap(Texture2D texture, TextureFormat? format, bool readable, int? maxTextureSize, Action<Texture2D> completion)
         {
-            throw new NotSupportedException($"{nameof(AstcencTextureCompressor)} does not support normal map compression.");
+            if (!format.HasValue || !AstcUtility.TryGetBlockSize(format.Value, out var blockX, out var blockY) || !texture.isReadable)
+            {
+                // Not a path astcenc can handle (e.g. a non-mobile normal map left for TextureGenerator to decide,
+                // an unsupported ASTC format, or a non-readable input). This is a normal, expected fallback, not
+                // an error, so no warning is logged.
+                return fallback.CompressNormalMap(texture, format, readable, maxTextureSize, completion);
+            }
+
+            var tempFiles = new List<string>();
+            Texture2D result = null;
+            var success = false;
+            try
+            {
+                var pixels = texture.GetPixels32(0);
+                var width = texture.width;
+                var height = texture.height;
+
+                // Unity's normal map TextureGenerator pipeline always writes alpha = 1.0 (fully opaque), regardless
+                // of the source texture's own alpha. Match that here, including for mip 0, so a source with a
+                // meaningless (or missing) alpha channel does not leak into the compressed output.
+                for (var i = 0; i < pixels.Length; i++)
+                {
+                    var p = pixels[i];
+                    pixels[i] = new Color32(p.r, p.g, p.b, 255);
+                }
+
+                // Mirrors UnityTextureCompressor.CompressNormalMap's maxTextureSize handling: shrink mip 0 itself
+                // when it exceeds the requested cap, using the same re-normalizing downsample as the mip chain
+                // below (so this is just the mip chain generation starting one or more levels early).
+                var currentMaxSize = Math.Max(width, height);
+                var targetMaxSize = maxTextureSize.HasValue ? Math.Min(maxTextureSize.Value, currentMaxSize) : currentMaxSize;
+                while (Math.Max(width, height) > targetMaxSize)
+                {
+                    pixels = NormalMapMipUtility.DownsampleNormalMap(pixels, width, height, out width, out height);
+                }
+
+                var jobs = Math.Max(1, SystemInfo.processorCount);
+                var blockSize = AstcUtility.GetBlockSizeString(format.Value);
+
+                // Precompute every mip level's dimensions (level 0, already capped above, down to 1x1) so the
+                // destination buffer can be allocated once, mirroring CompressTexture's approach.
+                var levelSizes = new List<(int Width, int Height)> { (width, height) };
+                var lw = width;
+                var lh = height;
+                while (lw > 1 || lh > 1)
+                {
+                    lw = Math.Max(1, lw >> 1);
+                    lh = Math.Max(1, lh >> 1);
+                    levelSizes.Add((lw, lh));
+                }
+
+                var combinedSize = 0;
+                foreach (var size in levelSizes)
+                {
+                    combinedSize += AstcUtility.GetMipDataSize(size.Width, size.Height, blockX, blockY);
+                }
+                var combined = new byte[combinedSize];
+                var combinedOffset = 0;
+
+                Directory.CreateDirectory(Path.GetFullPath(AstcencCli.TempDirectory));
+
+                var levelPixels = pixels;
+                var levelWidth = width;
+                var levelHeight = height;
+                for (var level = 0; level < levelSizes.Count; level++)
+                {
+                    var (w, h) = levelSizes[level];
+
+                    var id = Guid.NewGuid().ToString("N");
+                    var tgaPath = Path.GetFullPath(Path.Combine(AstcencCli.TempDirectory, $"{id}.tga"));
+                    var astcPath = Path.GetFullPath(Path.Combine(AstcencCli.TempDirectory, $"{id}.astc"));
+                    tempFiles.Add(tgaPath);
+                    tempFiles.Add(astcPath);
+
+                    AstcUtility.WriteTga(levelPixels, w, h, TopToBottomOriginForNormalMap, tgaPath);
+
+                    // Normal maps are always linear (never sRGB), so always -cl.
+                    var runResult = AstcencCli.RunCompress(exePath, tgaPath, astcPath, blockSize, preset, false, jobs, CompressTimeoutMs);
+                    if (!runResult.Success)
+                    {
+                        throw new InvalidOperationException($"astcenc failed for normal map \"{texture.name}\" mip level {level} (exitCode={runResult.ExitCode}, timedOut={runResult.TimedOut}): {runResult.StdErr}");
+                    }
+
+                    var astcFileData = File.ReadAllBytes(astcPath);
+                    var blockData = AstcUtility.StripAstcHeader(astcFileData, w, h, blockX, blockY);
+                    Buffer.BlockCopy(blockData, 0, combined, combinedOffset, blockData.Length);
+                    combinedOffset += blockData.Length;
+
+                    if (level + 1 < levelSizes.Count)
+                    {
+                        levelPixels = NormalMapMipUtility.DownsampleNormalMap(levelPixels, levelWidth, levelHeight, out levelWidth, out levelHeight);
+                    }
+                }
+
+                // Normal maps are always linear (isDataSRGB = false), matching UnityTextureCompressor's output.
+                result = new Texture2D(width, height, format.Value, levelSizes.Count > 1, true);
+                result.LoadRawTextureData(combined);
+
+                // updateMipmaps=false: mip data was already generated and encoded per level above.
+                result.Apply(false, !readable);
+                result.name = texture.name;
+                result.wrapMode = texture.wrapMode;
+                result.filterMode = texture.filterMode;
+                result.anisoLevel = texture.anisoLevel;
+
+                // Matches UnityTextureCompressor.CompressNormalMap, which always enables streaming mipmaps via
+                // TextureGenerationSettings for its output.
+                TextureUtility.SetStreamingMipMaps(result, true);
+
+                success = true;
+                SuccessfulCompressionCount++;
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning($"astcenc normal map compression failed for texture \"{texture.name}\", falling back to Unity's texture compression. {e.Message}", texture);
+                if (result != null)
+                {
+                    UnityEngine.Object.DestroyImmediate(result);
+                    result = null;
+                }
+            }
+            finally
+            {
+                foreach (var path in tempFiles)
+                {
+                    AstcencCli.DeleteFileSilently(path);
+                }
+            }
+
+            if (success)
+            {
+                return new ResultRequest<Texture2D>(result, completion);
+            }
+
+            // Unlike CompressTexture, the input is never destroyed here (on success or failure): this mirrors
+            // UnityTextureCompressor.CompressNormalMap, which also leaves the input texture untouched and always
+            // returns a distinct new instance from TextureGenerator.
+            return fallback.CompressNormalMap(texture, format, readable, maxTextureSize, completion);
         }
     }
 }

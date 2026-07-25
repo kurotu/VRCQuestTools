@@ -247,12 +247,12 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Verifies TextureCompressorProvider selects an AstcencTextureCompressor for ASTC formats on
-        /// non-normal-map textures when a usable astcenc executable is available, and Unity's compressor
-        /// otherwise (normal maps, non-ASTC formats).
+        /// Verifies TextureCompressorProvider selects an AstcencTextureCompressor for any supported ASTC format
+        /// (color or normal map alike -- selection depends only on the format) when a usable astcenc executable
+        /// is available, and Unity's compressor otherwise (non-ASTC formats, or no format at all).
         /// </summary>
         [Test]
-        public void GetCompressor_SelectsAstcencForColorAstcFormats_WhenAvailable()
+        public void GetCompressor_SelectsAstcencForAstcFormats_WhenAvailable()
         {
             var path = AstcencBinaryLocator.GetAstcencPath();
             if (path == null)
@@ -260,14 +260,21 @@ namespace KRT.VRCQuestTools.Utils
                 Assert.Ignore("No usable astcenc executable is available in this environment.");
             }
 
-            var astcCompressor = TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, false);
+            var astcCompressor = TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6);
             Assert.IsInstanceOf<AstcencTextureCompressor>(astcCompressor);
 
-            var normalMapCompressor = TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, true);
-            Assert.IsInstanceOf<UnityTextureCompressor>(normalMapCompressor);
+            // Normal maps use the same ASTC format selection as color textures now that AstcencTextureCompressor
+            // implements CompressNormalMap.
+            var normalMapCompressor = TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6);
+            Assert.IsInstanceOf<AstcencTextureCompressor>(normalMapCompressor);
 
-            var dxtCompressor = TextureCompressorProvider.GetCompressor(TextureFormat.DXT5, false);
+            var dxtCompressor = TextureCompressorProvider.GetCompressor(TextureFormat.DXT5);
             Assert.IsInstanceOf<UnityTextureCompressor>(dxtCompressor);
+
+            // A null format (e.g. a non-mobile normal map, left for TextureGenerator to decide) always falls
+            // back to Unity, regardless of astcenc availability.
+            var nullFormatCompressor = TextureCompressorProvider.GetCompressor(null);
+            Assert.IsInstanceOf<UnityTextureCompressor>(nullFormatCompressor);
         }
 
         /// <summary>
@@ -278,10 +285,10 @@ namespace KRT.VRCQuestTools.Utils
         {
             var fake = new UnityTextureCompressor();
             TextureCompressorProvider.SetCompressorForTesting(fake);
-            Assert.AreSame(fake, TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, false));
+            Assert.AreSame(fake, TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6));
 
             TextureCompressorProvider.ResetForTesting();
-            Assert.AreNotSame(fake, TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, false));
+            Assert.AreNotSame(fake, TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6));
         }
 
         private static AstcencTextureCompressor CreateCompressorOrIgnore(string preset = "-medium")

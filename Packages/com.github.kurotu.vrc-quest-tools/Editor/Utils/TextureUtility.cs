@@ -655,7 +655,7 @@ namespace KRT.VRCQuestTools.Utils
                 }
             }
             Texture2D result = null;
-            TextureCompressorProvider.GetCompressor(format, false).CompressTexture(texture, format, (t) => result = t).WaitForCompletion();
+            TextureCompressorProvider.GetCompressor(format).CompressTexture(texture, format, (t) => result = t).WaitForCompletion();
             return result;
         }
 
@@ -672,7 +672,7 @@ namespace KRT.VRCQuestTools.Utils
         {
             var format = ResolveEffectiveCompressionFormat(buildTarget, mobileFormat, true);
             Texture2D result = null;
-            TextureCompressorProvider.GetCompressor(format, true).CompressNormalMap(texture, format, readable, maxTextureSize, (t) => result = t).WaitForCompletion();
+            TextureCompressorProvider.GetCompressor(format).CompressNormalMap(texture, format, readable, maxTextureSize, (t) => result = t).WaitForCompletion();
             return result;
         }
 

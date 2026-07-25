@@ -92,7 +92,7 @@ namespace KRT.VRCQuestTools.Models
                 // / CompressNormalMap via ResolveEffectiveCompressionFormat) so the cache key never diverges from what gets compressed.
                 var mobileFormat = platformOverride?.Format ?? TextureUtility.GetCompressionFormat(settings.MobileTextureFormat);
                 var compressionFormat = TextureUtility.ResolveEffectiveCompressionFormat(EditorUserBuildSettings.activeBuildTarget, mobileFormat, config.isNormalMap);
-                compressorKeyComponent = "_" + TextureCompressorProvider.GetCompressor(compressionFormat, config.isNormalMap).CacheKeyComponent;
+                compressorKeyComponent = "_" + TextureCompressorProvider.GetCompressor(compressionFormat).CacheKeyComponent;
             }
 
             var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}{compressorKeyComponent}_{assetHash}" + (saveAsPng ? ".png" : ".json");

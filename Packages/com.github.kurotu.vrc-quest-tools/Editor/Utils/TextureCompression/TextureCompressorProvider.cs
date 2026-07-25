@@ -29,19 +29,23 @@ namespace KRT.VRCQuestTools.Utils
         private static ITextureCompressor compressorOverrideForTesting;
 
         /// <summary>
-        /// Gets a texture compressor to use for the format.
+        /// Gets a texture compressor to use for the format. The selection depends only on the format: astcenc is
+        /// used for any supported ASTC format (color or normal map alike) when a usable astcenc executable is
+        /// available, since <see cref="AstcencTextureCompressor"/> implements both <see cref="ITextureCompressor.CompressTexture"/>
+        /// and <see cref="ITextureCompressor.CompressNormalMap"/>. A null format (e.g. a non-mobile normal map,
+        /// which <see cref="TextureUtility.ResolveEffectiveCompressionFormat"/> leaves for
+        /// <see cref="UnityEditor.TextureGenerator"/> to decide) always falls back to Unity.
         /// </summary>
         /// <param name="format">Format to compress to. Null when the format is left unset for normal map compression.</param>
-        /// <param name="isNormalMap">Whether the compression target is a normal map. astcenc is never selected for normal maps.</param>
         /// <returns>Texture compressor.</returns>
-        internal static ITextureCompressor GetCompressor(TextureFormat? format, bool isNormalMap = false)
+        internal static ITextureCompressor GetCompressor(TextureFormat? format)
         {
             if (compressorOverrideForTesting != null)
             {
                 return compressorOverrideForTesting;
             }
 
-            if (!isNormalMap && format.HasValue && AstcUtility.TryGetBlockSize(format.Value, out _, out _) && AstcencBinaryLocator.GetAstcencPath() != null)
+            if (format.HasValue && AstcUtility.TryGetBlockSize(format.Value, out _, out _) && AstcencBinaryLocator.GetAstcencPath() != null)
             {
                 return lazyAstcencCompressor.Value;
             }
