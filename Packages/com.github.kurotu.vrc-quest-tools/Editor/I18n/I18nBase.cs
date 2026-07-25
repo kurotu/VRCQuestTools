@@ -126,6 +126,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string AlertForDynamicBoneConversion => GetText("AlertForDynamicBoneConversion");
         internal string AlertForMAConvertConstraints => GetText("AlertForMAConvertConstraints");
         internal string AlertForUnityConstraintsConversion => GetText("AlertForUnityConstraintsConversion");
+        internal string AlertForMASyncParameterSequence => GetText("AlertForMASyncParameterSequence");
+        internal string AlertForAaoTraceAndOptimize => GetText("AlertForAaoTraceAndOptimize");
         internal string AlertForMultiplePhysBones => GetText("AlertForMultiplePhysBones");
         internal string AlertForAvatarDynamicsPerformance => GetText("AlertForAvatarDynamicsPerformance");
         internal string AlertForComponents => GetText("AlertForComponents");

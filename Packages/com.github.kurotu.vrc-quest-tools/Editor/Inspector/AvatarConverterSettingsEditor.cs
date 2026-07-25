@@ -112,6 +112,30 @@ namespace KRT.VRCQuestTools.Inspector
                         }
                     }
 
+                    if (ModularAvatarUtility.SupportsSyncParameterSequenceComponent() && !ModularAvatarUtility.HasSyncParameterSequenceComponent(avatar.GameObject))
+                    {
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.HelpBox(i18n.AlertForMASyncParameterSequence, MessageType.Warning);
+                            if (GUILayout.Button(i18n.AddLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                            {
+                                OnClickAddSyncParameterSequenceButton(descriptor);
+                            }
+                        }
+                    }
+
+                    if (AvatarOptimizerUtility.IsAvatarOptimizerImported() && !AvatarOptimizerUtility.HasTraceAndOptimizeComponent(avatar.GameObject))
+                    {
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.HelpBox(i18n.AlertForAaoTraceAndOptimize, MessageType.Warning);
+                            if (GUILayout.Button(i18n.AddLabel, GUILayout.Height(38), GUILayout.Width(60)))
+                            {
+                                OnClickAddTraceAndOptimizeButton(descriptor);
+                            }
+                        }
+                    }
+
                     var pbs = descriptor.GetComponentsInChildren<VRCPhysBone>(true);
                     var multiPbObjs = pbs
                         .Select(pb => pb.gameObject)
@@ -135,6 +159,8 @@ namespace KRT.VRCQuestTools.Inspector
                             EditorGUILayout.Space(2);
                         });
                     }
+
+                    EditorGUILayout.Space(12);
                 }
                 else
                 {
@@ -532,6 +558,16 @@ namespace KRT.VRCQuestTools.Inspector
         private void OnClickAddConvertConstraintsButton(VRC_AvatarDescriptor avatar)
         {
             ModularAvatarUtility.AddConvertConstraintsComponent(avatar.gameObject);
+        }
+
+        private void OnClickAddSyncParameterSequenceButton(VRC_AvatarDescriptor avatar)
+        {
+            ModularAvatarUtility.AddSyncParameterSequenceComponent(avatar.gameObject);
+        }
+
+        private void OnClickAddTraceAndOptimizeButton(VRC_AvatarDescriptor avatar)
+        {
+            AvatarOptimizerUtility.AddTraceAndOptimizeComponent(avatar.gameObject);
         }
 
         private void OnClickAssignNetIdsButton(VRC_AvatarDescriptor avatar)

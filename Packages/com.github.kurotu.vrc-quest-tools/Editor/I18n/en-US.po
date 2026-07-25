@@ -216,10 +216,16 @@ msgid "AlertForDynamicBoneConversion"
 msgstr "VRCQuestTools doesn't convert Dynamic Bones to PhysBones. Please set up PhysBones before converting the avatar."
 
 msgid "AlertForMAConvertConstraints"
-msgstr "Unity Constraints cannot be used on Mobile. You can non-destructively convert Unity Constraints to VRChat Constraints by adding a MA Convert Constraints component to the avatar."
+msgstr "Unity Constraints cannot be used on Mobile. Adding a MA Convert Constraints component to the avatar non-destructively converts Unity Constraints to VRChat Constraints."
 
 msgid "AlertForUnityConstraintsConversion"
-msgstr "VRCQuestTools doesn't convert Unity constraints to VRChat constraints. Please set up VRChat constraints before converting the avatar."
+msgstr "VRCQuestTools doesn't convert Unity Constraints to VRChat Constraints. Please set up VRChat Constraints before converting the avatar."
+
+msgid "AlertForMASyncParameterSequence"
+msgstr "Adding a MA Sync Parameter Sequence component prevents parameter synchronization mismatches between platforms."
+
+msgid "AlertForAaoTraceAndOptimize"
+msgstr "Adding an AAO Trace and Optimize component automatically optimizes the avatar."
 
 msgid "AlertForAvatarDynamicsPerformance"
 msgstr "Avatar Dynamics (PhysBones and Contacts) performance rating will be \"Very Poor\", so components will be removed even if you upload to Mobile. Please keep \"Poor\" rating in avatar dynamics categories."

@@ -216,10 +216,16 @@ msgid "AlertForDynamicBoneConversion"
 msgstr "VRCQuestTools は Dynamic Bone を PhysBone に変換しません。アバターを変換する前に PhysBone を設定してください。"
 
 msgid "AlertForMAConvertConstraints"
-msgstr "Mobile では Unity Constraints を使用できません。アバターに MA Convert Constraints コンポーネントを追加することで非破壊的に Unity Constraints を VRChat Constraints に変換することができます。"
+msgstr "Mobile では Unity Constraints を使用できません。アバターに MA Convert Constraints コンポーネントを追加することで Unity Constraints を VRChat Constraints に非破壊的に変換します。"
 
 msgid "AlertForUnityConstraintsConversion"
 msgstr "VRCQuestTools は Unity Constraints を VRChat Constraints に変換しません。アバターを変換する前に VRChat Constraints を設定してください。"
+
+msgid "AlertForMASyncParameterSequence"
+msgstr "MA Sync Parameter Sequence コンポーネントを追加すると、プラットフォーム間でのパラメーターの同期ずれを防ぎます。"
+
+msgid "AlertForAaoTraceAndOptimize"
+msgstr "AAO Trace and Optimize コンポーネントを追加すると、アバターを自動的に最適化します。"
 
 msgid "AlertForAvatarDynamicsPerformance"
 msgstr "Avatar Dynamics (PhysBones, Contacts) のパフォーマンスランクが Very Poor になっており、 Mobile 用にアップロードしてもコンポーネントが削除されます。 Avatar Dynamics のパフォーマンスランクが Poor に収まるようコンポーネントを削減してください。"
