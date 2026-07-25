@@ -25,7 +25,7 @@
 - `Avatar Converter Settings` で、アバターに MA Sync Parameter Sequence または AAO Trace and Optimize コンポーネントがない場合に警告と追加ボタンを表示するように追加。
 
 ### 変更
-- ASTC 形式のテクスチャ圧縮 (ノーマルマップを除く) に同梱の astcenc エンコーダー (Windows/Linux) またはシステムにインストールされた astcenc (macOS) を使用し、全 CPU コアで実行するように変更。astcenc を利用できない場合は従来どおり Unity の圧縮処理を使用します。
+- ASTC 形式のテクスチャ圧縮に同梱の astcenc エンコーダー (Windows/Linux) またはシステムにインストールされた astcenc (macOS) を使用し、全 CPU コアで実行するように変更。astcenc を利用できない場合は従来どおり Unity の圧縮処理を使用します。
 - Avatar Dynamics Selector の保持/削除設定を `Avatar Converter Settings` のレガシー配列ではなく `Platform Component Remover` に保存するように変更。適用時に設定を移行し、古い参照が残らないようレガシー配列をクリアします。
 - PhysBones Remover に、現在の保持/削除選択を `Platform Component Remover` に反映するボタンを追加。
 - Avatar Dynamics Selector と PhysBones Remover のコンポーネント一覧をプレハブごとにグループ化。
