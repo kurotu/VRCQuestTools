@@ -151,11 +151,18 @@ namespace KRT.VRCQuestTools.Utils
             var source = CreateNonReadableTexture(size);
             Assert.IsFalse(source.isReadable);
 
+            var countBefore = AstcencTextureCompressor.SuccessfulCompressionCount;
             Texture2D result = null;
             compressor.CompressTexture(source, TextureFormat.ASTC_4x4, t => result = t).WaitForCompletion();
 
             Assert.IsNotNull(result);
             Assert.AreEqual((int)TextureFormat.ASTC_4x4, (int)result.format);
+
+            // The Unity fallback also produces a valid ASTC texture, so the assertions above cannot tell the
+            // two paths apart. The counter proves the astcenc process actually ran; without it this test kept
+            // passing while every non-readable texture silently fell back (GetRawTextureData<byte>() throws for
+            // non-readable textures while the byte[] overload does not).
+            Assert.AreEqual(countBefore + 1, AstcencTextureCompressor.SuccessfulCompressionCount, "The compression must take the astcenc path, not the Unity fallback.");
         }
 
         /// <summary>
@@ -173,9 +180,11 @@ namespace KRT.VRCQuestTools.Utils
             var compressor = CreateCompressorOrIgnore();
             var source = CreateGradientTexture(16, 16, mipChain: false);
 
+            var countBefore = AstcencTextureCompressor.SuccessfulCompressionCount;
             Texture2D result = null;
             compressor.CompressTexture(source, TextureFormat.ASTC_4x4, t => result = t).WaitForCompletion();
 
+            Assert.AreEqual(countBefore + 1, AstcencTextureCompressor.SuccessfulCompressionCount, "The compression must take the astcenc path, not the Unity fallback.");
             Assert.IsNotNull(result);
             Assert.IsTrue(result, "The returned texture must be a valid, non-destroyed object.");
             Assert.AreNotSame(source, result, "A successful astcenc compression returns a new instance rather than mutating the input in place.");

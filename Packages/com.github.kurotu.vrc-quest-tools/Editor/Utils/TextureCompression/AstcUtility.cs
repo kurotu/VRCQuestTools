@@ -5,7 +5,6 @@
 
 using System;
 using System.IO;
-using Unity.Collections;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
@@ -197,15 +196,7 @@ namespace KRT.VRCQuestTools.Utils
                 rgba[o + 3] = pixel.a;
             }
 
-            var native = new NativeArray<byte>(rgba, Allocator.Temp);
-            try
-            {
-                WriteTga(native, 0, native.Length, width, height, topToBottom, path);
-            }
-            finally
-            {
-                native.Dispose();
-            }
+            WriteTga(rgba, 0, rgba.Length, width, height, topToBottom, path);
         }
 
         /// <summary>
@@ -216,7 +207,7 @@ namespace KRT.VRCQuestTools.Utils
         /// See the <see cref="WriteTga(Color32[], int, int, bool, string)"/> overload's remarks for the row-order
         /// / origin-bit semantics; they apply identically here.
         /// </remarks>
-        /// <param name="rgba">Buffer containing RGBA texel bytes (e.g. <c>Texture2D.GetRawTextureData&lt;byte&gt;()</c>).</param>
+        /// <param name="rgba">Buffer containing RGBA texel bytes (e.g. <c>Texture2D.GetRawTextureData()</c>).</param>
         /// <param name="offset">Offset in <paramref name="rgba"/> of the first byte of this image's data.</param>
         /// <param name="length">Number of bytes belonging to this image, starting at <paramref name="offset"/>. Must equal width * height * 4.</param>
         /// <param name="width">Image width in pixels.</param>
@@ -224,8 +215,12 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="topToBottom">Whether to declare top-left origin (bit 5 of the image descriptor).</param>
         /// <param name="path">File path to write.</param>
         /// <exception cref="ArgumentException">Thrown when <paramref name="length"/> does not match width * height * 4.</exception>
-        internal static void WriteTga(NativeArray<byte> rgba, int offset, int length, int width, int height, bool topToBottom, string path)
+        internal static void WriteTga(byte[] rgba, int offset, int length, int width, int height, bool topToBottom, string path)
         {
+            if (rgba == null)
+            {
+                throw new ArgumentNullException(nameof(rgba));
+            }
             if (length != width * height * 4)
             {
                 throw new ArgumentException($"Data length {length} does not match {width}x{height}x4", nameof(length));

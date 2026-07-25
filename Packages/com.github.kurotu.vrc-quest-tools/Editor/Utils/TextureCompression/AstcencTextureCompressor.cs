@@ -69,6 +69,13 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         internal string Version { get; }
 
+        /// <summary>
+        /// Gets or sets the number of textures successfully compressed through the astcenc process.
+        /// Tests use this to verify that a compression actually took the astcenc path instead of
+        /// silently succeeding through the Unity fallback, which produces equally valid output.
+        /// </summary>
+        internal static int SuccessfulCompressionCount { get; set; }
+
         /// <inheritdoc/>
         public AsyncCallbackRequest CompressTexture(Texture2D texture, TextureFormat format, Action<Texture2D> completion)
         {
@@ -84,7 +91,11 @@ namespace KRT.VRCQuestTools.Utils
             var success = false;
             try
             {
-                var raw = texture.GetRawTextureData<byte>();
+                // The byte[] overload of GetRawTextureData must be used here: it succeeds even when
+                // isReadable is false (the state of every baked texture after readback, which calls
+                // Apply(updateMipmaps, makeNoLongerReadable: true)), while the generic NativeArray
+                // overload GetRawTextureData<T>() throws UnityException for non-readable textures.
+                var raw = texture.GetRawTextureData();
                 var mipmapCount = Math.Max(1, texture.mipmapCount);
                 var srgb = texture.isDataSRGB;
                 var jobs = Math.Max(1, SystemInfo.processorCount);
@@ -150,6 +161,7 @@ namespace KRT.VRCQuestTools.Utils
                 result.anisoLevel = texture.anisoLevel;
 
                 success = true;
+                SuccessfulCompressionCount++;
             }
             catch (Exception e)
             {
