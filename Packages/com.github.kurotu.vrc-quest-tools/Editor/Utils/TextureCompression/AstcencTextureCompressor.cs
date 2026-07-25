@@ -6,6 +6,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
 
@@ -296,6 +298,284 @@ namespace KRT.VRCQuestTools.Utils
             // UnityTextureCompressor.CompressNormalMap, which also leaves the input texture untouched and always
             // returns a distinct new instance from TextureGenerator.
             return fallback.CompressNormalMap(texture, format, readable, maxTextureSize, completion);
+        }
+
+        /// <summary>
+        /// Serializes background astcenc process execution across every <see cref="CompressTextureAsync"/> /
+        /// <see cref="CompressNormalMapAsync"/> call, regardless of which compressor instance (final or preview
+        /// preset) invoked it: astcenc already parallelizes internally via <c>-j</c> across every CPU core, so
+        /// running two astcenc processes at once would only make them fight over the same cores rather than
+        /// finish sooner.
+        /// </summary>
+        private static readonly SemaphoreSlim AsyncCompressionGate = new SemaphoreSlim(1, 1);
+
+        /// <summary>
+        /// Async, off-main-thread counterpart to <see cref="CompressTexture"/>, used only by the NDMF preview's
+        /// progressive texture replacement queue (<see cref="PreviewTextureCompressionQueue"/>).
+        /// Pixel extraction (<see cref="Texture2D.GetRawTextureData()"/>) and the final <see cref="Texture2D"/>
+        /// construction happen on the calling thread, which must be Unity's main thread (this method awaits back
+        /// onto it via the captured <see cref="SynchronizationContext"/>, the same mechanism the Unity editor
+        /// uses for every other main-thread-resuming await); the astcenc process invocation itself -- the part
+        /// that would otherwise stall the editor for the duration of compression -- runs on a background thread
+        /// pool thread via <see cref="Task.Run{TResult}(Func{TResult})"/> and touches no Unity API (not even logging).
+        /// </summary>
+        /// <remarks>
+        /// Unlike <see cref="CompressTexture"/>, this never falls back to <see cref="UnityTextureCompressor"/> on
+        /// failure -- that fallback is itself main-thread-only and would defeat the point of running here.
+        /// Instead it throws, and the caller (<see cref="PreviewTextureCompressionQueue"/>) is expected to catch the
+        /// exception, log a warning, and leave the pre-compression placeholder texture on screen as-is. The input
+        /// <paramref name="texture"/> is never destroyed, on success or failure: unlike <see cref="CompressTexture"/>,
+        /// which owns and destroys its input, the progressive queue's placeholder is the very texture already
+        /// assigned to preview materials, so it must stay valid until the queue itself swaps it out.
+        /// </remarks>
+        /// <param name="texture">Source texture (RGBA32). Only read on the calling thread, before the awaited work starts.</param>
+        /// <param name="format">Target ASTC format.</param>
+        /// <returns>The compressed <see cref="Texture2D"/> on success.</returns>
+        /// <exception cref="NotSupportedException">Thrown when this format/texture combination is not something the astcenc path can handle (e.g. a non-ASTC format or an already-compressed source). Callers should use the synchronous <see cref="CompressTexture"/> facade instead, which knows how to fall back to <see cref="UnityTextureCompressor"/>.</exception>
+        internal async Task<Texture2D> CompressTextureAsync(Texture2D texture, TextureFormat format)
+        {
+            if (!AstcUtility.TryGetBlockSize(format, out var blockX, out var blockY) || texture.format != TextureFormat.RGBA32)
+            {
+                throw new NotSupportedException($"astcenc cannot asynchronously compress texture \"{texture.name}\" ({texture.format}) to {format}.");
+            }
+
+            // See CompressTexture's identical call for why the byte[] overload (not GetRawTextureData<T>()) is used.
+            var raw = texture.GetRawTextureData();
+
+            var mipmapCount = Math.Max(1, texture.mipmapCount);
+            var levels = new List<(int Width, int Height)>(mipmapCount);
+            for (var level = 0; level < mipmapCount; level++)
+            {
+                levels.Add((Math.Max(1, texture.width >> level), Math.Max(1, texture.height >> level)));
+            }
+
+            // Every remaining read of `texture` happens before the first await below, so capturing these now is
+            // not strictly required for correctness (the caller must not touch `texture` from another thread
+            // concurrently either way) -- it documents that nothing past this point depends on `texture` still
+            // being a live, non-destroyed Unity object, and gives the worker a plain string for error messages.
+            var name = texture.name;
+            var wrapMode = texture.wrapMode;
+            var filterMode = texture.filterMode;
+            var anisoLevel = texture.anisoLevel;
+            var srgb = texture.isDataSRGB;
+            var linear = !texture.isDataSRGB;
+            var mipChain = mipmapCount > 1;
+            var jobs = Math.Max(1, SystemInfo.processorCount);
+
+            var offset = 0;
+            void WriteLevelTga(int level, string tgaPath)
+            {
+                var (w, h) = levels[level];
+                var levelBytes = w * h * 4;
+                if (offset + levelBytes > raw.Length)
+                {
+                    throw new InvalidDataException($"Raw texture data for \"{name}\" is too short for mip level {level} (offset={offset}, needed={levelBytes}, total={raw.Length}).");
+                }
+
+                AstcUtility.WriteTga(raw, offset, levelBytes, w, h, TgaTopToBottomOrigin, tgaPath);
+                offset += levelBytes;
+            }
+
+            byte[] combined;
+            await AsyncCompressionGate.WaitAsync();
+            try
+            {
+                combined = await Task.Run(() => CompressLevelsWorker(exePath, preset, name, string.Empty, levels, blockX, blockY, format, srgb, jobs, WriteLevelTga));
+            }
+            finally
+            {
+                AsyncCompressionGate.Release();
+            }
+
+            // Back on the main thread (the awaits above resume via the calling thread's SynchronizationContext):
+            // safe to touch Unity API again from here on.
+            var result = new Texture2D(levels[0].Width, levels[0].Height, format, mipChain, linear);
+            result.LoadRawTextureData(combined);
+
+            // makeNoLongerReadable=false: matches CompressTexture's sync path -- PreviewTextureCompressionQueue
+            // reads the result back via GetRawTextureData() right after compression to save the disk cache entry.
+            result.Apply(false, false);
+            result.name = name;
+            result.wrapMode = wrapMode;
+            result.filterMode = filterMode;
+            result.anisoLevel = anisoLevel;
+
+            SuccessfulCompressionCount++;
+            return result;
+        }
+
+        /// <summary>
+        /// Async, off-main-thread counterpart to <see cref="CompressNormalMap"/>. See
+        /// <see cref="CompressTextureAsync(Texture2D, TextureFormat)"/>'s remarks for the threading contract
+        /// (main thread before/after, background thread pool thread for the astcenc process itself) and failure
+        /// semantics (throws instead of falling back; input is never destroyed).
+        /// </summary>
+        /// <param name="texture">Normal map texture (RGB); must already be readable.</param>
+        /// <param name="format">Format to compress to. Must be a supported ASTC format (non-null).</param>
+        /// <param name="readable">Whether to make the output texture readable.</param>
+        /// <param name="maxTextureSize">Optional max texture size override.</param>
+        /// <returns>The compressed normal map on success.</returns>
+        /// <exception cref="NotSupportedException">Thrown when this format/texture combination is not something the astcenc path can handle (e.g. no format, an unsupported ASTC format, or a non-readable input). Callers should use the synchronous <see cref="CompressNormalMap"/> facade instead.</exception>
+        internal async Task<Texture2D> CompressNormalMapAsync(Texture2D texture, TextureFormat? format, bool readable, int? maxTextureSize)
+        {
+            if (!format.HasValue || !AstcUtility.TryGetBlockSize(format.Value, out var blockX, out var blockY) || !texture.isReadable)
+            {
+                throw new NotSupportedException($"astcenc cannot asynchronously compress normal map \"{texture.name}\" to {format}.");
+            }
+
+            var pixels = texture.GetPixels32(0);
+            var width = texture.width;
+            var height = texture.height;
+            var name = texture.name;
+            var wrapMode = texture.wrapMode;
+            var filterMode = texture.filterMode;
+            var anisoLevel = texture.anisoLevel;
+
+            // Mirrors CompressNormalMap's maxTextureSize handling; see its comments for details.
+            var currentMaxSize = Math.Max(width, height);
+            var targetMaxSize = Math.Max(1, maxTextureSize.HasValue ? Math.Min(maxTextureSize.Value, currentMaxSize) : currentMaxSize);
+            while (Math.Max(width, height) > targetMaxSize)
+            {
+                pixels = NormalMapMipUtility.DownsampleNormalMap(pixels, width, height, out width, out height);
+            }
+            pixels = NormalMapMipUtility.ForceOpaqueAlpha(pixels);
+
+            var levelSizes = new List<(int Width, int Height)> { (width, height) };
+            var lw = width;
+            var lh = height;
+            while (lw > 1 || lh > 1)
+            {
+                lw = Math.Max(1, lw >> 1);
+                lh = Math.Max(1, lh >> 1);
+                levelSizes.Add((lw, lh));
+            }
+
+            var levelPixels = pixels;
+            var levelWidth = width;
+            var levelHeight = height;
+            void WriteLevelTga(int level, string tgaPath)
+            {
+                var (w, h) = levelSizes[level];
+                AstcUtility.WriteTga(levelPixels, w, h, TgaTopToBottomOrigin, tgaPath);
+                if (level + 1 < levelSizes.Count)
+                {
+                    levelPixels = NormalMapMipUtility.DownsampleNormalMap(levelPixels, levelWidth, levelHeight, out levelWidth, out levelHeight);
+                }
+            }
+
+            var jobs = Math.Max(1, SystemInfo.processorCount);
+
+            byte[] combined;
+            await AsyncCompressionGate.WaitAsync();
+            try
+            {
+                combined = await Task.Run(() => CompressLevelsWorker(exePath, preset, name, "normal map ", levelSizes, blockX, blockY, format.Value, false, jobs, WriteLevelTga));
+            }
+            finally
+            {
+                AsyncCompressionGate.Release();
+            }
+
+            // Back on the main thread; see CompressTextureAsync's identical comment.
+            var result = new Texture2D(width, height, format.Value, levelSizes.Count > 1, true);
+            result.LoadRawTextureData(combined);
+            result.Apply(false, !readable);
+            result.name = name;
+            result.wrapMode = wrapMode;
+            result.filterMode = filterMode;
+            result.anisoLevel = anisoLevel;
+
+            // Matches CompressNormalMap's postProcess, which always enables streaming mipmaps for its output.
+            TextureUtility.SetStreamingMipMaps(result, true);
+
+            SuccessfulCompressionCount++;
+            return result;
+        }
+
+        /// <summary>
+        /// Worker-thread-safe core shared by <see cref="CompressTextureAsync"/> and
+        /// <see cref="CompressNormalMapAsync"/>: writes each level's TGA, runs astcenc on it, and copies the
+        /// resulting raw block data into a single combined buffer. Touches no Unity engine API -- not even
+        /// logging, since <see cref="Debug.Log(object)"/> is main-thread-only in the editor -- so it is safe to
+        /// invoke via <see cref="Task.Run{TResult}(Func{TResult})"/>. Reports failure by throwing rather than logging;
+        /// callers on the main thread are responsible for catching, logging (using the plain string parameters
+        /// captured before dispatch, since the source <see cref="Texture2D"/> itself must not be touched from
+        /// this thread), and falling back.
+        /// </summary>
+        /// <param name="exePath">Full path to the astcenc executable.</param>
+        /// <param name="preset">Quality preset with a leading dash (e.g. "-medium").</param>
+        /// <param name="textureNameForErrors">Source texture name, captured on the main thread, for error messages only.</param>
+        /// <param name="logPrefix">Prefix inserted into error messages ("normal map " or "").</param>
+        /// <param name="levels">Width/height of each mip level to encode, in order (level 0 first).</param>
+        /// <param name="blockX">ASTC block width.</param>
+        /// <param name="blockY">ASTC block height.</param>
+        /// <param name="format">Target ASTC texture format.</param>
+        /// <param name="srgb">Whether to invoke astcenc with sRGB (-cs) or linear (-cl) encoding.</param>
+        /// <param name="jobs">Number of threads to pass to astcenc's -j.</param>
+        /// <param name="writeLevelTga">Callback that writes the given level's TGA input file to the given path. Must not touch any Unity API.</param>
+        /// <returns>The combined raw ASTC block data for every level, concatenated in level order.</returns>
+        private static byte[] CompressLevelsWorker(
+            string exePath,
+            string preset,
+            string textureNameForErrors,
+            string logPrefix,
+            IReadOnlyList<(int Width, int Height)> levels,
+            int blockX,
+            int blockY,
+            TextureFormat format,
+            bool srgb,
+            int jobs,
+            Action<int, string> writeLevelTga)
+        {
+            var tempFiles = new List<string>();
+            try
+            {
+                var blockSize = AstcUtility.GetBlockSizeString(format);
+
+                var levelDataSizes = new int[levels.Count];
+                var combinedSize = 0;
+                for (var i = 0; i < levels.Count; i++)
+                {
+                    levelDataSizes[i] = AstcUtility.GetMipDataSize(levels[i].Width, levels[i].Height, blockX, blockY);
+                    combinedSize += levelDataSizes[i];
+                }
+                var combined = new byte[combinedSize];
+                var combinedOffset = 0;
+
+                Directory.CreateDirectory(Path.GetFullPath(AstcencCli.TempDirectory));
+
+                for (var level = 0; level < levels.Count; level++)
+                {
+                    var (w, h) = levels[level];
+
+                    var id = Guid.NewGuid().ToString("N");
+                    var tgaPath = Path.GetFullPath(Path.Combine(AstcencCli.TempDirectory, $"{id}.tga"));
+                    var astcPath = Path.GetFullPath(Path.Combine(AstcencCli.TempDirectory, $"{id}.astc"));
+                    tempFiles.Add(tgaPath);
+                    tempFiles.Add(astcPath);
+
+                    writeLevelTga(level, tgaPath);
+
+                    var runResult = AstcencCli.RunCompress(exePath, tgaPath, astcPath, blockSize, preset, srgb, jobs, CompressTimeoutMs);
+                    if (!runResult.Success)
+                    {
+                        throw new InvalidOperationException($"astcenc failed for {logPrefix}\"{textureNameForErrors}\" mip level {level} (exitCode={runResult.ExitCode}, timedOut={runResult.TimedOut}): {runResult.StdErr}");
+                    }
+
+                    var astcFileData = File.ReadAllBytes(astcPath);
+                    AstcUtility.StripAstcHeader(astcFileData, w, h, blockX, blockY, combined, combinedOffset);
+                    combinedOffset += levelDataSizes[level];
+                }
+
+                return combined;
+            }
+            finally
+            {
+                foreach (var path in tempFiles)
+                {
+                    AstcencCli.DeleteFileSilently(path);
+                }
+            }
         }
 
         /// <summary>

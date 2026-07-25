@@ -943,11 +943,17 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Resizes a texture immediately (synchronously) using GPU blit.
         /// </summary>
+        /// <remarks>
+        /// Internal (not private) so <see cref="Models.MaterialGeneratorUtility"/>'s progressive NDMF preview
+        /// path can apply the same maxTextureSize resize step to a placeholder texture before enqueueing it for
+        /// background compression, mirroring what <see cref="CompressTextureForBuildTarget"/> does inline for the
+        /// synchronous path.
+        /// </remarks>
         /// <param name="texture">Texture to resize.</param>
         /// <param name="width">Target width.</param>
         /// <param name="height">Target height.</param>
         /// <returns>Resized texture.</returns>
-        private static Texture2D ResizeTextureImmediate(Texture2D texture, int width, int height)
+        internal static Texture2D ResizeTextureImmediate(Texture2D texture, int width, int height)
         {
             var desc = new RenderTextureDescriptor(width, height, RenderTextureFormat.ARGB32, 0);
             desc.sRGB = texture.isDataSRGB;

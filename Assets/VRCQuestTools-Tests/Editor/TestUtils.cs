@@ -3,6 +3,8 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Collections;
+using System.Threading.Tasks;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
@@ -270,6 +272,32 @@ namespace KRT.VRCQuestTools
             }
             var version = AstcencCli.GetVersion(path);
             return new AstcencTextureCompressor(path, version, preset);
+        }
+
+        /// <summary>
+        /// Spins (via repeated <c>yield return null</c>, one Editor update per iteration) until <paramref name="task"/>
+        /// completes, then re-throws its exception if it faulted. For use from a <c>[UnityTest]</c> IEnumerator
+        /// test, not a plain <c>[Test]</c> method: this project's bundled Unity Test Framework does not support
+        /// <c>async Task</c> test methods directly under <c>[Test]</c> (they fail with "Method has non-void
+        /// return value, but no result is expected"), and blocking synchronously on the task (e.g.
+        /// <c>Task.Wait()</c>) from a plain <c>[Test]</c> would deadlock: code under test that awaits
+        /// <c>Task.Run(...)</c> resumes via the main thread's captured <see cref="System.Threading.SynchronizationContext"/>,
+        /// which only gets pumped between Editor update ticks -- exactly what each <c>yield return null</c> here
+        /// yields control back for.
+        /// </summary>
+        /// <param name="task">Task to wait for.</param>
+        /// <returns>Enumerator that completes once <paramref name="task"/> completes.</returns>
+        internal static IEnumerator WaitForTask(Task task)
+        {
+            while (!task.IsCompleted)
+            {
+                yield return null;
+            }
+
+            if (task.IsFaulted)
+            {
+                throw task.Exception.InnerException ?? task.Exception;
+            }
         }
     }
 }

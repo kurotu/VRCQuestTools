@@ -26,6 +26,22 @@ namespace KRT.VRCQuestTools.Ndmf
         private static readonly Dictionary<string, CacheEntry> Entries = new();
 
         /// <summary>
+        /// Registers <see cref="ReplaceTextureReferences"/> with <see cref="PreviewTextureCompressionQueue"/> so
+        /// it can swap a progressive preview placeholder texture for its background-compressed replacement once
+        /// compression finishes. Registration happens here (rather than the queue referencing this class
+        /// directly) because <see cref="PreviewTextureCompressionQueue"/> lives in the main VRCQuestTools-Editor
+        /// assembly, which is compiled unconditionally (even without NDMF installed) and therefore cannot
+        /// reference this NDMF-gated assembly; this assembly, which does reference the main one, registers the
+        /// callback instead. Runs on every domain reload (including the one after NDMF is first installed into a
+        /// project), so the registration is never stale.
+        /// </summary>
+        [InitializeOnLoadMethod]
+        private static void RegisterWithPreviewTextureCompressionQueue()
+        {
+            PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer(ReplaceTextureReferences);
+        }
+
+        /// <summary>
         /// Acquire a lease for converted preview materials corresponding to <paramref name="settingsMap"/>.
         /// Existing cached conversions are reused (reference count incremented). For entries not yet cached,
         /// <paramref name="convertFunc"/> is invoked to perform a batch conversion. The returned <see cref="SharedMaterialMapLease"/>
@@ -195,6 +211,45 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             acquiredKeys.Clear();
+        }
+
+        /// <summary>
+        /// Replaces every texture property equal to <paramref name="from"/>, across every cached converted
+        /// material's texture properties, with <paramref name="to"/>. Used by
+        /// <see cref="PreviewTextureCompressionQueue"/> to swap a progressive preview placeholder (an
+        /// uncompressed texture shown immediately) for its background-compressed replacement once compression
+        /// finishes, without regenerating the converted material or losing any of its other state.
+        /// </summary>
+        /// <param name="from">Texture instance to look for and replace.</param>
+        /// <param name="to">Replacement texture instance.</param>
+        /// <returns>The number of texture properties (across every cached material) that were replaced. Zero
+        /// means no cached material currently references <paramref name="from"/> -- e.g. every lease referencing
+        /// it was already released -- so the caller has nothing left to update.</returns>
+        internal static int ReplaceTextureReferences(Texture from, Texture to)
+        {
+            var count = 0;
+            lock (SyncRoot)
+            {
+                foreach (var e in Entries.Values)
+                {
+                    var m = e.Material;
+                    if (m == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (var prop in m.GetTexturePropertyNames())
+                    {
+                        if (m.GetTexture(prop) == from)
+                        {
+                            m.SetTexture(prop, to);
+                            count++;
+                        }
+                    }
+                }
+            }
+
+            return count;
         }
 
         /// <summary>

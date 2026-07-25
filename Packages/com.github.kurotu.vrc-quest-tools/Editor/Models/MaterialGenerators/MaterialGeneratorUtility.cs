@@ -88,12 +88,17 @@ namespace KRT.VRCQuestTools.Models
             // harmless -- both encoders emit valid ASTC data, so nothing renders incorrectly -- it just means the
             // cache key doesn't always perfectly identify which encoder actually wrote a given cache entry.
             var compressorKeyComponent = string.Empty;
+
+            // Resolved and captured here (rather than only inside the `if (!saveAsPng)` block below) so the
+            // progressive-preview branch further down -- inside the requestGenerateImageFunc completion closure --
+            // can reuse the exact same resolution instead of re-deriving it, keeping the two in sync by construction.
+            TextureFormat? compressionFormat = null;
             if (!saveAsPng)
             {
                 // Mirrors the format resolution actually used by the compression path (TextureUtility.CompressTextureForBuildTarget
                 // / CompressNormalMap via ResolveEffectiveCompressionFormat) so the cache key never diverges from what gets compressed.
                 var mobileFormat = platformOverride?.Format ?? TextureUtility.GetCompressionFormat(settings.MobileTextureFormat);
-                var compressionFormat = TextureUtility.ResolveEffectiveCompressionFormat(EditorUserBuildSettings.activeBuildTarget, mobileFormat, config.isNormalMap);
+                compressionFormat = TextureUtility.ResolveEffectiveCompressionFormat(EditorUserBuildSettings.activeBuildTarget, mobileFormat, config.isNormalMap);
                 // forEditorPreview selects a faster astcenc preset, which produces different bytes than the final
                 // one, so it belongs in the key: preview and final results must not share a cache entry.
                 compressorKeyComponent = "_" + TextureCompressorProvider.GetCompressor(compressionFormat, forEditorPreview).CacheKeyComponent;
@@ -120,10 +125,26 @@ namespace KRT.VRCQuestTools.Models
                 if (texToWrite)
                 {
                     texToWrite.name = texName;
+
+                    // Progressive NDMF preview: on a cache miss, forEditorPreview, and an astcenc-compatible
+                    // format, skip the (main-thread-stalling) synchronous compression below entirely. The baked,
+                    // uncompressed texToWrite becomes the immediate on-screen placeholder while the same texture
+                    // is handed to PreviewTextureCompressionQueue for background compression, disk cache save,
+                    // and eventual material texture replacement. TryEnqueueProgressiveCompression returns false
+                    // (falling through to the normal synchronous path below) when astcenc is unavailable for this
+                    // format or the queue's pending-bytes safety valve is full.
+                    if (!saveAsPng && forEditorPreview && TryEnqueueProgressiveCompression(compressionFormat, config, cacheFile, platformOverride, ref texToWrite))
+                    {
+                        completion?.Invoke(texToWrite);
+                        return;
+                    }
+
                     texToWrite = SaveTexture(settings.MobileTextureFormat, saveAsPng, texturesPath, config, texToWrite, cacheFile, outFile, platformOverride, forEditorPreview);
 
                     // A freshly generated normal map is not uploaded to the GPU by TextureGenerator; re-upload it
                     // for the NDMF preview (preview only) so it renders. See TextureUtility.ReuploadForEditorDisplay.
+                    // Not needed on the progressive branch above: its placeholder is an ordinary baked Texture2D
+                    // (from Graphics.Blit/ReadPixels), already GPU-uploaded, not TextureGenerator output.
                     if (config.isNormalMap && forEditorPreview)
                     {
                         var reuploaded = TextureUtility.ReuploadForEditorDisplay(texToWrite);
@@ -134,6 +155,43 @@ namespace KRT.VRCQuestTools.Models
                 completion?.Invoke(texToWrite);
             });
             return request;
+        }
+
+        /// <summary>
+        /// For the NDMF editor preview's progressive texture replacement: when astcenc is available for
+        /// <paramref name="compressionFormat"/>, hands the baked, uncompressed <paramref name="texToWrite"/> back
+        /// as-is (or resized, for the color path -- see below) as the immediate placeholder, and enqueues the
+        /// same texture in <see cref="PreviewTextureCompressionQueue"/> for background compression. The eventual
+        /// compressed result and disk cache entry end up indistinguishable from what <see cref="SaveTexture"/>'s
+        /// non-PNG branch would have produced synchronously -- just later, without stalling the editor meanwhile.
+        /// </summary>
+        /// <param name="compressionFormat">Resolved compression format from <see cref="TextureUtility.ResolveEffectiveCompressionFormat"/>; null when the texture is left uncompressed for a non-mobile normal map (never astcenc-compatible, so this method returns false immediately in that case).</param>
+        /// <param name="config">Texture config (isNormalMap/isSRGB) for the texture being generated.</param>
+        /// <param name="cacheFile">Disk cache file name the compressed result should eventually be saved under.</param>
+        /// <param name="platformOverride">Optional platform override; only its MaxTextureSize is used here (its Format already went into <paramref name="compressionFormat"/>).</param>
+        /// <param name="texToWrite">The freshly baked, uncompressed texture. For color textures with a maxTextureSize override, replaced in place with a resized instance (mirroring <see cref="TextureUtility.CompressTextureForBuildTarget"/>'s own maxTextureSize handling) before being enqueued as the placeholder; normal maps are left untouched here since <see cref="AstcencTextureCompressor.CompressNormalMapAsync"/> applies its own maxTextureSize shrink internally, mirroring <see cref="TextureUtility.CompressNormalMap"/>.</param>
+        /// <returns>True when the texture was successfully enqueued for background compression (the caller must treat <paramref name="texToWrite"/> as the new placeholder and do nothing further to it). False when astcenc is unavailable for <paramref name="compressionFormat"/>, or the queue's pending-bytes cap was reached, in which case the caller must fall back to synchronous compression.</returns>
+        private static bool TryEnqueueProgressiveCompression(TextureFormat? compressionFormat, TextureConfig config, string cacheFile, (int MaxTextureSize, TextureFormat Format)? platformOverride, ref Texture2D texToWrite)
+        {
+            if (!(TextureCompressorProvider.GetCompressor(compressionFormat, forEditorPreview: true) is AstcencTextureCompressor compressor))
+            {
+                return false;
+            }
+
+            var overrideMaxTextureSize = TextureUtility.NormalizeMaxTextureSize(platformOverride?.MaxTextureSize);
+
+            if (!config.isNormalMap && overrideMaxTextureSize.HasValue)
+            {
+                // Mirrors CompressTextureForBuildTarget's maxTextureSize resize step. Its DXT5 4-multiple guard is
+                // irrelevant here: TextureCompressorProvider only resolves to AstcencTextureCompressor for ASTC formats.
+                var (w, h) = TextureUtility.AspectFitReduction(texToWrite.width, texToWrite.height, overrideMaxTextureSize.Value);
+                if (w != texToWrite.width || h != texToWrite.height)
+                {
+                    texToWrite = TextureUtility.ResizeTextureImmediate(texToWrite, w, h);
+                }
+            }
+
+            return PreviewTextureCompressionQueue.TryEnqueue(texToWrite, compressor, compressionFormat, config.isNormalMap, readable: false, overrideMaxTextureSize, cacheFile, config.isSRGB);
         }
 
         private static Texture2D TryLoadCacheTexture(Material material, IMaterialConvertSettings settings, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile, (int MaxTextureSize, TextureFormat Format)? platformOverride)
