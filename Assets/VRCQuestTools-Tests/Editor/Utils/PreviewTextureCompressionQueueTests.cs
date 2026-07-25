@@ -251,12 +251,20 @@ namespace KRT.VRCQuestTools.Utils
             Assert.AreSame(placeholder, capturedFrom, "The replacer must still be called with the original placeholder as `from`.");
             Assert.IsNotNull(capturedTo, "The synchronous fallback compression must still replace the placeholder in preview materials.");
 
-            // Not asserting the exact resulting format: the fallback resolves its target format from the active
-            // build target (see TextureUtility.CompressTextureForBuildTarget), which this test does not control,
-            // so on a non-mobile editor build target it legitimately falls further back to DXT5/Unity compression
-            // rather than ASTC. Either way, the source RGBA32 placeholder must have actually been compressed.
-            Assert.AreNotEqual((int)TextureFormat.RGBA32, (int)capturedTo.format);
-            Assert.IsTrue(placeholder == null, "The placeholder must be destroyed once the fallback succeeds and the replacer reports it was replaced.");
+            // The fallback resolves its target format from the active build target (see
+            // TextureUtility.CompressTextureForBuildTarget), which this test does not control, so which backend
+            // runs -- and therefore whether the result is a new object -- differs by environment: on a mobile
+            // build target the astcenc backend returns a new ASTC texture and destroys the placeholder, while on a
+            // non-mobile one the format resolves to DXT5 and the Unity backend compresses the placeholder in place
+            // and returns that same object (which must therefore NOT be destroyed, or the replacement the preview
+            // materials just received would be destroyed with it). Assert what holds for both.
+            var compressedInPlace = ReferenceEquals(placeholder, capturedTo);
+            Assert.IsTrue(capturedTo != null, "The compression result must be a live texture, not destroyed along with the placeholder.");
+            Assert.AreNotEqual((int)TextureFormat.RGBA32, (int)capturedTo.format, "The source RGBA32 placeholder must have actually been compressed.");
+            if (!compressedInPlace)
+            {
+                Assert.IsTrue(placeholder == null, "A placeholder replaced by a separate compressed instance must be destroyed once the replacer reports it was replaced.");
+            }
 
             UnityEngine.Object.DestroyImmediate(capturedTo);
         }

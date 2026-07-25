@@ -329,13 +329,14 @@ namespace KRT.VRCQuestTools.Utils
             {
                 // checkPlaceholderStillAlive: false -- unlike the background astcenc path, the synchronous
                 // compression facades used above (TextureUtility.CompressTextureForBuildTarget / CompressNormalMap)
-                // destroy their input texture as a normal part of a *successful* compression (see their own XML
-                // docs), so item.Placeholder is now expected to read as destroyed here even though nothing
-                // external abandoned it. It remains safe (and necessary) to pass as the replacer's `from` and to
-                // TextureUtility.DestroyTexture (a no-op on an already-destroyed texture) below: this method only
-                // ever reads/dereferences the reference for identity comparison, never for its (freed) contents,
-                // and UnityEngine.Object's overridden equality still matches a destroyed object against itself by
-                // instance ID, so the replacer still finds and updates every preview material reference correctly.
+                // may consume the placeholder as a normal part of a *successful* compression, in one of two ways
+                // depending on which backend the format selects: the astcenc backend destroys it and returns a new
+                // instance, while the Unity backend compresses it in place and returns that same object. So here
+                // item.Placeholder reading as destroyed (or as identical to the result) is expected rather than a
+                // sign that something external abandoned it, and it is still correct to pass as the replacer's
+                // `from`: this method only compares the reference for identity, never dereferences its (possibly
+                // freed) contents, and UnityEngine.Object's overridden equality still matches a destroyed object
+                // against itself by instance ID, so every preview material reference is still found and updated.
                 ApplyCompressedResult(item, compressed, checkPlaceholderStillAlive: false);
             }
             catch (Exception e)
@@ -376,7 +377,7 @@ namespace KRT.VRCQuestTools.Utils
                 // released while this was compressing in the background, or the replacer was unregistered
                 // mid-flight). Nothing left to update.
                 TextureUtility.DestroyTexture(compressed);
-                TextureUtility.DestroyTexture(item.Placeholder);
+                DestroyPlaceholderUnlessItIsTheResult(item, compressed);
                 return;
             }
 
@@ -396,11 +397,36 @@ namespace KRT.VRCQuestTools.Utils
                 Logger.LogWarning($"Failed to save the disk cache entry for progressively compressed preview texture \"{compressed.name}\". {e.Message}");
             }
 
-            TextureUtility.DestroyTexture(item.Placeholder);
+            DestroyPlaceholderUnlessItIsTheResult(item, compressed);
 
             // InternalEditorUtility.RepaintAllViews() (rather than just SceneView.RepaintAll()) also repaints the
             // Game view and the material preview thumbnails, both of which can also be displaying the just-replaced texture.
             UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+        }
+
+        /// <summary>
+        /// Destroys the placeholder now that the compressed result has taken its place, unless the two are the
+        /// same object.
+        /// </summary>
+        /// <remarks>
+        /// The two compressor backends differ here: <see cref="AstcencTextureCompressor"/> always returns a new
+        /// instance, but <see cref="UnityTextureCompressor"/> compresses in place via
+        /// <see cref="UnityEditor.EditorUtility.CompressTexture"/> and returns the very texture it was given. The
+        /// synchronous fallback goes through <see cref="TextureUtility.CompressTextureForBuildTarget"/> /
+        /// <see cref="TextureUtility.CompressNormalMap"/>, which pick a backend by format, so it can hand back the
+        /// placeholder itself (e.g. a non-mobile build target resolving to DXT5). Destroying it then would destroy
+        /// the result the preview materials were just pointed at.
+        /// </remarks>
+        /// <param name="item">The item whose placeholder is being retired.</param>
+        /// <param name="compressed">The compressed result that replaced it.</param>
+        private static void DestroyPlaceholderUnlessItIsTheResult(PendingItem item, Texture2D compressed)
+        {
+            if (ReferenceEquals(item.Placeholder, compressed))
+            {
+                return;
+            }
+
+            TextureUtility.DestroyTexture(item.Placeholder);
         }
 
         private static long EstimatePlaceholderBytes(Texture2D placeholder)
