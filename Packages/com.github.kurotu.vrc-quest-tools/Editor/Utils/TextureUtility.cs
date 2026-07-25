@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Models;
-using Unity.Collections;
 using UnityEditor;
-using UnityEditor.AssetImporters;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
@@ -628,8 +626,9 @@ namespace KRT.VRCQuestTools.Utils
                     return texture;
                 }
             }
-            EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);
-            return texture;
+            Texture2D result = null;
+            TextureCompressorProvider.GetCompressor(format).CompressTexture(texture, format, (t) => result = t).WaitForCompletion();
+            return result;
         }
 
         /// <summary>
@@ -643,32 +642,11 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Compressed normal map.</returns>
         internal static Texture2D CompressNormalMap(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool readable = false, int? maxTextureSize = null)
         {
-            var pixels = texture.GetPixels32(0);
             var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
-            using (var colors = new NativeArray<Color32>(pixels, Allocator.Temp))
-            {
-                var settings = new TextureGenerationSettings(TextureImporterType.NormalMap);
-                settings.textureImporterSettings.readable = readable;
-                settings.textureImporterSettings.mipmapEnabled = true;
-                settings.textureImporterSettings.streamingMipmaps = true;
-                settings.textureImporterSettings.wrapMode = texture.wrapMode;
-                settings.textureImporterSettings.filterMode = texture.filterMode;
-                settings.textureImporterSettings.aniso = texture.anisoLevel;
-                var currentMaxSize = Math.Max(texture.width, texture.height);
-                settings.platformSettings.maxTextureSize = maxTextureSize.HasValue ? Math.Min(maxTextureSize.Value, currentMaxSize) : currentMaxSize;
-                settings.sourceTextureInformation.width = texture.width;
-                settings.sourceTextureInformation.height = texture.height;
-                settings.sourceTextureInformation.containsAlpha = true;
-                settings.sourceTextureInformation.hdr = false;
-                if (isMobile)
-                {
-                    settings.platformSettings.format = (TextureImporterFormat)mobileFormat;
-                }
-
-                var output = TextureGenerator.GenerateTexture(settings, colors);
-                output.texture.name = texture.name;
-                return output.texture;
-            }
+            TextureFormat? format = isMobile ? mobileFormat : (TextureFormat?)null;
+            Texture2D result = null;
+            TextureCompressorProvider.GetCompressor(format).CompressNormalMap(texture, format, readable, maxTextureSize, (t) => result = t).WaitForCompletion();
+            return result;
         }
 
         /// <summary>
