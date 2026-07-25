@@ -641,7 +641,14 @@ namespace KRT.VRCQuestTools.Utils
                 var (w, h) = AspectFitReduction(texture.width, texture.height, maxTextureSize.Value);
                 if (w != texture.width || h != texture.height)
                 {
+                    var original = texture;
                     texture = ResizeTextureImmediate(texture, w, h);
+
+                    // ResizeTextureImmediate returns a distinct new instance; the pre-resize one is no longer
+                    // referenced by this method (texture was just reassigned above) or, per this method's own
+                    // contract, by the caller (which must use the returned value and stop using its input), so
+                    // it would otherwise leak.
+                    DestroyTexture(original);
                 }
             }
 

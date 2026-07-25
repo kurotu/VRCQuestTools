@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -24,13 +25,28 @@ namespace KRT.VRCQuestTools.Utils
 
         private const int UtilityTimeoutMs = 10 * 1000;
 
+        /// <summary>
+        /// Every astcenc process currently running via <see cref="RunProcess"/>, whether started from the main
+        /// thread (every synchronous facade method) or from the background thread pool worker behind
+        /// <see cref="AstcencTextureCompressor.CompressTextureAsync"/> / <see cref="AstcencTextureCompressor.CompressNormalMapAsync"/>
+        /// (used only by the NDMF preview's progressive texture replacement queue, <see cref="PreviewTextureCompressionQueue"/>).
+        /// Guarded by <see cref="runningProcessesLock"/> since the async path adds/removes from a thread pool
+        /// thread while <see cref="KillAllRunningProcesses"/> may be called from the main thread.
+        /// </summary>
+        private static readonly HashSet<Process> RunningProcesses = new HashSet<Process>();
+
+        private static readonly object runningProcessesLock = new object();
+
         private static bool tempDirectoryCleaned = false;
 
         /// <summary>
-        /// Deletes any files already present in <see cref="TempDirectory"/>, once per editor session. All astcenc
-        /// work (temp file writes, process invocation, temp file deletion) happens synchronously on the main
-        /// thread, so anything found here on first use is necessarily a leftover from an aborted previous run
-        /// (e.g. the editor crashing mid-compression) rather than an in-progress operation.
+        /// Deletes any files already present in <see cref="TempDirectory"/>, once per editor session. This runs
+        /// the first time an <see cref="AstcencTextureCompressor"/> is constructed in the session (its constructor
+        /// calls this unconditionally), before any astcenc invocation in that session -- synchronous or the
+        /// background-thread async path used by <see cref="PreviewTextureCompressionQueue"/> -- has written a
+        /// single temp file of its own yet. So anything found here on first use is necessarily a leftover from an
+        /// aborted previous session (e.g. the editor crashing mid-compression), never a file some operation still
+        /// in flight this session owns.
         /// </summary>
         internal static void CleanupTempDirectoryOnce()
         {
@@ -169,7 +185,34 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Kills a process, ignoring errors caused by the process having already exited.
+        /// Kills every astcenc process currently running via <see cref="RunProcess"/>, so a domain reload or
+        /// editor quit does not leave an orphaned astcenc.exe process running past the editor session that
+        /// started it. Called by <see cref="PreviewTextureCompressionQueue"/> alongside cancelling its own
+        /// background work, since killing the process is what actually unblocks a worker thread currently
+        /// blocked in <see cref="Process.WaitForExit(int)"/> for the in-flight mip level -- cancellation alone
+        /// only stops the *next* level from starting. Safe to call when nothing is running (a no-op).
+        /// </summary>
+        internal static void KillAllRunningProcesses()
+        {
+            Process[] processes;
+            lock (runningProcessesLock)
+            {
+                processes = new Process[RunningProcesses.Count];
+                RunningProcesses.CopyTo(processes);
+            }
+
+            foreach (var process in processes)
+            {
+                KillSilently(process);
+            }
+        }
+
+        /// <summary>
+        /// Kills a process, ignoring errors caused by the process having already exited (or, for
+        /// <see cref="KillAllRunningProcesses"/>'s snapshot-then-kill pattern, already having been disposed by
+        /// <see cref="RunProcess"/>'s own <c>using</c> block in the narrow window between the snapshot and this
+        /// call -- <see cref="ObjectDisposedException"/> derives from <see cref="InvalidOperationException"/>, so
+        /// the existing catch below already covers it too).
         /// </summary>
         /// <param name="process">Process to kill.</param>
         internal static void KillSilently(Process process)
@@ -180,7 +223,7 @@ namespace KRT.VRCQuestTools.Utils
             }
             catch (InvalidOperationException)
             {
-                // The process has already exited.
+                // The process has already exited, or (see this method's remarks) was already disposed.
             }
             catch (Win32Exception)
             {
@@ -201,26 +244,44 @@ namespace KRT.VRCQuestTools.Utils
         {
             using (var process = Process.Start(CreateStartInfo(exePath, arguments)))
             {
-                var stdOutTask = process.StandardOutput.ReadToEndAsync();
-                var stdErrTask = process.StandardError.ReadToEndAsync();
-                if (!process.WaitForExit(timeoutMs))
+                lock (runningProcessesLock)
                 {
-                    KillSilently(process);
-                    try
-                    {
-                        // Give the OS a moment to actually release the process's file handles (e.g. the input/output
-                        // temp files) after the kill signal, so the caller's temp-file cleanup that runs right after
-                        // this returns doesn't race a still-exiting process and silently fail to delete them.
-                        process.WaitForExit(2000);
-                    }
-                    catch (Exception)
-                    {
-                        // Best-effort; proceed regardless of whether the post-kill wait itself succeeded.
-                    }
-                    return new ProcessRunResult(-1, string.Empty, string.Empty, true);
+                    RunningProcesses.Add(process);
                 }
-                process.WaitForExit(); // Ensure redirected streams are flushed.
-                return new ProcessRunResult(process.ExitCode, stdOutTask.Result, stdErrTask.Result, false);
+
+                try
+                {
+                    var stdOutTask = process.StandardOutput.ReadToEndAsync();
+                    var stdErrTask = process.StandardError.ReadToEndAsync();
+                    if (!process.WaitForExit(timeoutMs))
+                    {
+                        KillSilently(process);
+                        try
+                        {
+                            // Give the OS a moment to actually release the process's file handles (e.g. the input/output
+                            // temp files) after the kill signal, so the caller's temp-file cleanup that runs right after
+                            // this returns doesn't race a still-exiting process and silently fail to delete them.
+                            process.WaitForExit(2000);
+                        }
+                        catch (Exception)
+                        {
+                            // Best-effort; proceed regardless of whether the post-kill wait itself succeeded.
+                        }
+                        return new ProcessRunResult(-1, string.Empty, string.Empty, true);
+                    }
+                    process.WaitForExit(); // Ensure redirected streams are flushed.
+                    return new ProcessRunResult(process.ExitCode, stdOutTask.Result, stdErrTask.Result, false);
+                }
+                finally
+                {
+                    // Removed even when WaitForExit above is interrupted by KillAllRunningProcesses's own
+                    // KillSilently call racing this method's timeout-triggered KillSilently call above -- both
+                    // are idempotent (KillSilently swallows "already exited"), so the race is harmless.
+                    lock (runningProcessesLock)
+                    {
+                        RunningProcesses.Remove(process);
+                    }
+                }
             }
         }
 

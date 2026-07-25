@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace KRT.VRCQuestTools.Utils
     /// no main-thread stall) and enqueues the same texture here for background compression via
     /// <see cref="AstcencTextureCompressor.CompressTextureAsync"/> / <see cref="AstcencTextureCompressor.CompressNormalMapAsync"/>.
     /// Once compression finishes, every cached preview material still referencing the placeholder is updated to
-    /// the compressed result, the placeholder is destroyed, and the scene view is repainted.
+    /// the compressed result, the placeholder is destroyed, and every editor view is repainted.
     /// </summary>
     /// <remarks>
     /// This type lives in the main <c>VRCQuestTools-Editor</c> assembly (alongside <see cref="Models.MaterialGeneratorUtility"/>,
@@ -52,10 +53,13 @@ namespace KRT.VRCQuestTools.Utils
         private static bool updateHooked;
         private static bool processing;
         private static bool assemblyReloading;
+        private static CancellationTokenSource cts = new CancellationTokenSource();
 
         static PreviewTextureCompressionQueue()
         {
             AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+            AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
+            EditorApplication.quitting += OnEditorQuitting;
         }
 
         /// <summary>
@@ -108,6 +112,14 @@ namespace KRT.VRCQuestTools.Utils
                 CacheFile = cacheFile,
                 IsSRGB = isSRGB,
                 EstimatedBytes = estimatedBytes,
+
+                // Captured now (not read back from EditorUserBuildSettings.activeBuildTarget once compression
+                // finishes) so a platform switch that happens while this item is queued or compressing cannot
+                // desync the eventual disk cache entry's key (which embeds the build target the caller used to
+                // compute cacheFile) from its contents, and so a synchronous fallback compression (see
+                // ProcessItemAsync) reproduces the exact format this item was enqueued for instead of whatever
+                // the active build target resolves to by the time the fallback runs.
+                BuildTarget = EditorUserBuildSettings.activeBuildTarget,
             });
             pendingBytes += estimatedBytes;
             EnsureUpdateHooked();
@@ -139,10 +151,12 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Dequeues and fully processes (through completion, success or failure) a single pending item, for
         /// tests that cannot pump <see cref="EditorApplication.update"/> the way a running editor session does.
-        /// This runs the exact same <see cref="ProcessItemAsync"/> production uses -- an <c>async Task</c> test
-        /// method can simply <c>await</c> the returned <see cref="System.Threading.Tasks.Task"/> to block only
-        /// the test (not the whole editor), since NUnit's Editor test runner already pumps the main-thread
-        /// synchronization context between awaits in an <c>async Task</c> test method.
+        /// This runs the exact same <see cref="ProcessItemAsync"/> production uses. Callers must be a
+        /// <c>[UnityTest]</c> <c>IEnumerator</c> test method that <c>yield return</c>s <see cref="TestUtils.WaitForTask"/>
+        /// on the returned task -- see that method's own remarks for why a plain <c>[Test]</c> method cannot
+        /// simply <c>await</c> it directly (this project's bundled Unity Test Framework does not support
+        /// <c>async Task</c> test methods under <c>[Test]</c>, and blocking synchronously via e.g. <c>Task.Wait()</c>
+        /// would deadlock).
         /// </summary>
         /// <returns>A task that completes once the dequeued item finishes processing, with result true; or an already-completed task with result false if the queue was empty (or something is already processing).</returns>
         internal static async System.Threading.Tasks.Task<bool> ProcessNextForTesting()
@@ -189,67 +203,204 @@ namespace KRT.VRCQuestTools.Utils
                 return;
             }
 
-            DequeueAndProcess(out _);
+            DequeueAndProcess(out var task);
+
+            // ProcessItemAsync already handles every failure it knows how to handle internally (falling back to
+            // synchronous compression, logging, and cleaning up any orphaned texture); this ContinueWith is only
+            // a last-resort safety net for an exception that slips past that -- e.g. a bug in the fallback path
+            // itself, or in the pendingBytes/processing bookkeeping in ProcessItemAsync's own finally block --
+            // so that it is at least logged instead of becoming an unobserved task exception. Since
+            // ProcessItemAsync's own catch blocks do not rethrow, this deliberately should not normally fire; if
+            // it ever does, this is the only place logging it, so there is no risk of double-logging the same
+            // exception both here and inside ProcessItemAsync.
+            task.ContinueWith(
+                t => Logger.LogException(t.Exception),
+                System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted);
         }
 
         private static async System.Threading.Tasks.Task ProcessItemAsync(PendingItem item)
         {
             try
             {
-                Texture2D compressed = null;
-                try
-                {
-                    compressed = item.IsNormalMap
-                        ? await item.Compressor.CompressNormalMapAsync(item.Placeholder, item.Format, item.Readable, item.MaxTextureSize)
-                        : await item.Compressor.CompressTextureAsync(item.Placeholder, item.Format.Value);
-                }
-                catch (Exception e)
-                {
-                    // The placeholder (uncompressed) stays assigned to preview materials and keeps rendering;
-                    // only the background compression attempt is abandoned.
-                    var name = item.Placeholder != null ? item.Placeholder.name : "<destroyed>";
-                    Logger.LogWarning($"Progressive ASTC compression failed for preview texture \"{name}\"; the uncompressed preview texture remains displayed. {e.Message}");
-                    return;
-                }
-
                 if (item.Placeholder == null)
                 {
-                    // Destroyed (e.g. by a full domain reload recovery) while compression was in flight.
-                    TextureUtility.DestroyTexture(compressed);
+                    // Destroyed (e.g. every preview material lease referencing it was released, such as while
+                    // rapidly dragging a settings slider) before this item even reached the front of the queue.
+                    // Nothing to compress or apply.
                     return;
                 }
 
-                var replacer = materialTextureReplacer;
-                var replacedCount = replacer != null ? replacer(item.Placeholder, compressed) : 0;
-                if (replacedCount == 0)
+                Texture2D compressed;
+                try
                 {
-                    // No cached preview material references the placeholder anymore (e.g. every lease was
-                    // released while this was compressing in the background, or the replacer was unregistered
-                    // mid-flight). Nothing left to update.
-                    TextureUtility.DestroyTexture(compressed);
-                    TextureUtility.DestroyTexture(item.Placeholder);
+                    var token = cts.Token;
+                    compressed = item.IsNormalMap
+                        ? await item.Compressor.CompressNormalMapAsync(item.Placeholder, item.Format, item.Readable, item.MaxTextureSize, token)
+                        : await item.Compressor.CompressTextureAsync(item.Placeholder, item.Format.Value, token);
+                }
+                catch (Exception e)
+                {
+                    if (cts.IsCancellationRequested)
+                    {
+                        // A domain reload or editor quit is in progress (see OnBeforeAssemblyReload /
+                        // OnEditorQuitting). This is either a cooperative OperationCanceledException raised
+                        // before starting the next mip level, or the in-flight astcenc process was killed by
+                        // AstcencCli.KillAllRunningProcesses and surfaced here as an ordinary compression
+                        // failure instead. Either way, do not spawn more work (a synchronous fallback
+                        // compression) while the editor is tearing down -- the placeholder simply stays
+                        // uncompressed on screen, same as before progressive existed.
+                        return;
+                    }
+
+                    // The placeholder (uncompressed) stays assigned to preview materials and keeps rendering
+                    // while the fallback below runs.
+                    FallbackToSynchronousCompression(item, e);
                     return;
                 }
 
                 try
                 {
-                    CacheManager.Texture.Save(item.CacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(compressed, !item.IsSRGB, item.IsNormalMap, EditorUserBuildSettings.activeBuildTarget)));
+                    // checkPlaceholderStillAlive: true -- the background attempt just spent real time (a whole
+                    // astcenc process) off-thread, during which the placeholder could genuinely have been
+                    // destroyed out from under this item externally (e.g. every preview material lease referencing
+                    // it was released while compression ran). CompressTextureAsync/CompressNormalMapAsync
+                    // themselves never destroy their input, so if item.Placeholder is dead here, something else did.
+                    ApplyCompressedResult(item, compressed, checkPlaceholderStillAlive: true);
                 }
                 catch (Exception e)
                 {
-                    // The material already displays the compressed texture (replaced above); only the disk cache
-                    // write failed, so the next preview generation just re-does the work instead of reusing a cache hit.
-                    Logger.LogWarning($"Failed to save the disk cache entry for progressively compressed preview texture \"{compressed.name}\". {e.Message}");
+                    // The replacer callback (owned by the NDMF assembly) or a downstream step (disk cache save,
+                    // placeholder destruction, repaint) threw. Logged and cleaned up here, rather than left to
+                    // propagate: OnUpdate's ContinueWith is only a safety net for exceptions that were not
+                    // already handled, so this must not rethrow (that would both double-log the same exception
+                    // there and via this catch).
+                    var name = item.Placeholder != null ? item.Placeholder.name : "<destroyed>";
+                    Logger.LogWarning($"Applying progressively compressed preview texture \"{name}\" failed. {e.Message}");
+                    TextureUtility.DestroyTexture(compressed);
                 }
-
-                TextureUtility.DestroyTexture(item.Placeholder);
-                SceneView.RepaintAll();
             }
             finally
             {
-                pendingBytes -= item.EstimatedBytes;
+                // Clamped rather than allowed to go negative: OnBeforeAssemblyReload/OnEditorQuitting zero this
+                // out immediately (so a reload/quit is not blocked waiting on in-flight work), but this item's own
+                // finally still runs afterwards and would otherwise subtract its EstimatedBytes a second time.
+                pendingBytes = Math.Max(0, pendingBytes - item.EstimatedBytes);
                 processing = false;
             }
+        }
+
+        /// <summary>
+        /// Falls back to synchronous compression (<see cref="TextureUtility.CompressTextureForBuildTarget"/> /
+        /// <see cref="TextureUtility.CompressNormalMap"/>, both with <c>forEditorPreview: true</c> to match what
+        /// the abandoned background attempt would have produced) when the background astcenc attempt for
+        /// <paramref name="item"/> failed, so a single transient failure does not leave the placeholder
+        /// uncompressed -- and re-compressed from scratch on every subsequent preview regeneration, since a
+        /// failed background attempt never writes a disk cache entry -- for the rest of the editor session.
+        /// </summary>
+        /// <param name="item">The item whose background compression attempt failed.</param>
+        /// <param name="asyncException">The exception the background attempt threw, included in the logged warning.</param>
+        private static void FallbackToSynchronousCompression(PendingItem item, Exception asyncException)
+        {
+            if (item.Placeholder == null)
+            {
+                // Destroyed while the background attempt was in flight; nothing left to fall back for.
+                return;
+            }
+
+            var name = item.Placeholder.name;
+            Texture2D compressed;
+            try
+            {
+                compressed = item.IsNormalMap
+                    ? TextureUtility.CompressNormalMap(item.Placeholder, item.BuildTarget, item.Format.Value, item.Readable, item.MaxTextureSize, forEditorPreview: true)
+                    : TextureUtility.CompressTextureForBuildTarget(item.Placeholder, item.BuildTarget, item.Format.Value, item.MaxTextureSize, forEditorPreview: true);
+            }
+            catch (Exception e)
+            {
+                // The placeholder (uncompressed) stays assigned to preview materials and keeps rendering; both
+                // the background and the synchronous fallback attempt were abandoned.
+                Logger.LogWarning($"Progressive ASTC compression failed for preview texture \"{name}\", and the synchronous fallback also failed; the uncompressed preview texture remains displayed. Background error: {asyncException.Message} Fallback error: {e.Message}");
+                return;
+            }
+
+            Logger.LogWarning($"Background ASTC compression failed for preview texture \"{name}\"; fell back to synchronous compression. {asyncException.Message}");
+
+            try
+            {
+                // checkPlaceholderStillAlive: false -- unlike the background astcenc path, the synchronous
+                // compression facades used above (TextureUtility.CompressTextureForBuildTarget / CompressNormalMap)
+                // destroy their input texture as a normal part of a *successful* compression (see their own XML
+                // docs), so item.Placeholder is now expected to read as destroyed here even though nothing
+                // external abandoned it. It remains safe (and necessary) to pass as the replacer's `from` and to
+                // TextureUtility.DestroyTexture (a no-op on an already-destroyed texture) below: this method only
+                // ever reads/dereferences the reference for identity comparison, never for its (freed) contents,
+                // and UnityEngine.Object's overridden equality still matches a destroyed object against itself by
+                // instance ID, so the replacer still finds and updates every preview material reference correctly.
+                ApplyCompressedResult(item, compressed, checkPlaceholderStillAlive: false);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning($"Applying the synchronous fallback compression result for preview texture \"{name}\" failed. {e.Message}");
+                TextureUtility.DestroyTexture(compressed);
+            }
+        }
+
+        /// <summary>
+        /// Shared success path for both the background compression attempt and its synchronous fallback: enables
+        /// streaming mipmaps on the result, replaces every cached preview material reference to the placeholder,
+        /// saves the disk cache entry, destroys the placeholder, and repaints every editor view.
+        /// </summary>
+        /// <param name="item">The item that finished compressing.</param>
+        /// <param name="compressed">The compressed result. Destroyed by this method if it ends up unused (the placeholder was destroyed mid-flight, or nothing references it anymore).</param>
+        /// <param name="checkPlaceholderStillAlive">Whether to treat <c>item.Placeholder</c> reading as destroyed
+        /// as "abandon this result" (true, for the background astcenc path, whose input is never destroyed by the
+        /// compressor itself, so a dead placeholder here only means something external destroyed it while
+        /// compression was in flight) versus proceeding anyway (false, for the synchronous fallback path, whose
+        /// compression facades destroy their input as a normal side effect of success -- see
+        /// <see cref="FallbackToSynchronousCompression"/>'s call site for why that is still safe).</param>
+        private static void ApplyCompressedResult(PendingItem item, Texture2D compressed, bool checkPlaceholderStillAlive)
+        {
+            if (checkPlaceholderStillAlive && item.Placeholder == null)
+            {
+                // Destroyed while compression was in flight (e.g. a full domain reload recovery, or every
+                // preview material lease was released mid-compression).
+                TextureUtility.DestroyTexture(compressed);
+                return;
+            }
+
+            var replacer = materialTextureReplacer;
+            var replacedCount = replacer != null ? replacer(item.Placeholder, compressed) : 0;
+            if (replacedCount == 0)
+            {
+                // No cached preview material references the placeholder anymore (e.g. every lease was
+                // released while this was compressing in the background, or the replacer was unregistered
+                // mid-flight). Nothing left to update.
+                TextureUtility.DestroyTexture(compressed);
+                TextureUtility.DestroyTexture(item.Placeholder);
+                return;
+            }
+
+            // Matches what the synchronous path (MaterialGeneratorUtility.SaveTexture) does for both color and
+            // normal map textures; AstcencTextureCompressor.CompressNormalMap(Async) already does this itself for
+            // the normal map path, so doing it again here is a harmless no-op for that case.
+            TextureUtility.SetStreamingMipMaps(compressed, true);
+
+            try
+            {
+                CacheManager.Texture.Save(item.CacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(compressed, !item.IsSRGB, item.IsNormalMap, item.BuildTarget)));
+            }
+            catch (Exception e)
+            {
+                // The material already displays the compressed texture (replaced above); only the disk cache
+                // write failed, so the next preview generation just re-does the work instead of reusing a cache hit.
+                Logger.LogWarning($"Failed to save the disk cache entry for progressively compressed preview texture \"{compressed.name}\". {e.Message}");
+            }
+
+            TextureUtility.DestroyTexture(item.Placeholder);
+
+            // InternalEditorUtility.RepaintAllViews() (rather than just SceneView.RepaintAll()) also repaints the
+            // Game view and the material preview thumbnails, both of which can also be displaying the just-replaced texture.
+            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
         }
 
         private static long EstimatePlaceholderBytes(Texture2D placeholder)
@@ -273,25 +424,57 @@ namespace KRT.VRCQuestTools.Utils
 
         private static void OnBeforeAssemblyReload()
         {
-            // Stop dispatching new work; any astcenc process already running in the background for the
-            // in-flight item (if any) is abandoned as-is -- there is no handle to cancel it from here, and a
-            // domain reload is about to tear down all managed state (including this queue) regardless. Its
-            // eventual completion (if it ever resumes) finds a fresh, empty queue and a destroyed placeholder
-            // reference, so ProcessItemAsync's own null-checks make that a safe no-op rather than a crash.
-            //
-            // The placeholder texture(s) still referenced by preview materials are deliberately NOT destroyed
-            // here: they are live Unity objects owned by those materials, and the next preview regeneration
-            // (after reload) will naturally replace or release them through the normal material lifecycle.
             assemblyReloading = true;
+            StopAllWork();
+        }
+
+        private static void OnAfterAssemblyReload()
+        {
+            // Normally redundant (a domain reload re-runs this type's static constructor, giving every static
+            // field -- including this one and cts -- a fresh value automatically), but AssemblyReloadEvents does
+            // not guarantee beforeAssemblyReload is always followed by an actual domain reload; without this,
+            // that edge case would leave assemblyReloading stuck true (permanently refusing TryEnqueue) and cts
+            // stuck cancelled (permanently failing every future compression attempt with OperationCanceledException).
+            assemblyReloading = false;
+            cts = new CancellationTokenSource();
+        }
+
+        private static void OnEditorQuitting()
+        {
+            StopAllWork();
+        }
+
+        /// <summary>
+        /// Cancels background work and stops dispatching new work, for both <see cref="OnBeforeAssemblyReload"/>
+        /// and <see cref="OnEditorQuitting"/>.
+        /// </summary>
+        private static void StopAllWork()
+        {
+            // Cancelling first (before killing processes) is what makes CompressLevelsWorker's per-level check
+            // stop it from starting the *next* astcenc process; killing is what stops whichever process (if any)
+            // is already running right now for the *current* level -- cancellation alone cannot interrupt a
+            // worker thread already blocked in Process.WaitForExit.
+            cts.Cancel();
+            AstcencCli.KillAllRunningProcesses();
+
             if (updateHooked)
             {
                 EditorApplication.update -= OnUpdate;
                 updateHooked = false;
             }
 
+            // The in-flight item's own ProcessItemAsync (if any) is not awaited here -- it will unwind on its
+            // own shortly (its astcenc call now throws, is caught, and returns without further work, since
+            // cts.IsCancellationRequested is true) and its finally block re-applies this same reset
+            // (pendingBytes clamped via Math.Max(0, ...), processing = false), which is safe to run twice.
             Pending.Clear();
             pendingBytes = 0;
             processing = false;
+
+            // The placeholder texture(s) still referenced by preview materials are deliberately NOT destroyed
+            // here: they are live Unity objects owned by those materials, and the next preview regeneration
+            // (after reload, or never, if the editor is quitting) will naturally replace or release them through
+            // the normal material lifecycle.
         }
 
         private struct PendingItem
@@ -305,6 +488,7 @@ namespace KRT.VRCQuestTools.Utils
             internal string CacheFile;
             internal bool IsSRGB;
             internal long EstimatedBytes;
+            internal BuildTarget BuildTarget;
         }
     }
 }

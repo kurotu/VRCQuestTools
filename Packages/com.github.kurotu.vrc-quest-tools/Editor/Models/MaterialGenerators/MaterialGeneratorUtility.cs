@@ -187,7 +187,15 @@ namespace KRT.VRCQuestTools.Models
                 var (w, h) = TextureUtility.AspectFitReduction(texToWrite.width, texToWrite.height, overrideMaxTextureSize.Value);
                 if (w != texToWrite.width || h != texToWrite.height)
                 {
+                    var original = texToWrite;
                     texToWrite = TextureUtility.ResizeTextureImmediate(texToWrite, w, h);
+
+                    // ResizeTextureImmediate returns a distinct new instance; the pre-resize one is no longer
+                    // referenced by this method (texToWrite was just reassigned above) or by its caller (the
+                    // requestGenerateImageFunc completion closure in GenerateTexture, which only ever uses the
+                    // ref parameter's current value), so it would otherwise leak. Mirrors the identical fix in
+                    // TextureUtility.CompressTextureForBuildTarget.
+                    TextureUtility.DestroyTexture(original);
                 }
             }
 

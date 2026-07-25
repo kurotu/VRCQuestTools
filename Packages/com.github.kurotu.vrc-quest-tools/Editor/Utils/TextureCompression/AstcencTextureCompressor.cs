@@ -67,8 +67,10 @@ namespace KRT.VRCQuestTools.Utils
         internal AstcencTextureCompressor(string exePath, string version, string preset)
         {
             // First use in the process: any file already present in AstcencCli.TempDirectory is a leftover from an
-            // aborted previous run (e.g. an editor crash), since every astcenc invocation runs synchronously on the
-            // main thread and cleans up its own temp files in a finally block. Safe to clear it out up front.
+            // aborted previous session (e.g. an editor crash) -- this constructor runs before any astcenc
+            // invocation in this session (synchronous or the async background-thread path) has written its own
+            // temp files yet, and each invocation cleans up its own temp files in a finally block regardless.
+            // Safe to clear it out up front.
             AstcencCli.CleanupTempDirectoryOnce();
 
             this.exePath = exePath;
@@ -307,6 +309,14 @@ namespace KRT.VRCQuestTools.Utils
         /// running two astcenc processes at once would only make them fight over the same cores rather than
         /// finish sooner.
         /// </summary>
+        /// <remarks>
+        /// Currently redundant in practice: <see cref="PreviewTextureCompressionQueue"/> is the only caller of
+        /// these two methods, and it already serializes them itself (its own <c>processing</c> flag allows at
+        /// most one item -- and therefore at most one <see cref="CompressTextureAsync"/>/<see cref="CompressNormalMapAsync"/>
+        /// call -- in flight at a time). This gate is kept anyway as a safety net for if a second caller of these
+        /// async methods is ever added outside that queue's own serialization, so it cannot silently regress into
+        /// the core-contention problem described above.
+        /// </remarks>
         private static readonly SemaphoreSlim AsyncCompressionGate = new SemaphoreSlim(1, 1);
 
         /// <summary>
@@ -330,9 +340,11 @@ namespace KRT.VRCQuestTools.Utils
         /// </remarks>
         /// <param name="texture">Source texture (RGBA32). Only read on the calling thread, before the awaited work starts.</param>
         /// <param name="format">Target ASTC format.</param>
+        /// <param name="cancellationToken">Checked before dispatching astcenc for each mip level (never mid-level): once cancelled, no further astcenc process is started and the awaited task ends with <see cref="OperationCanceledException"/> instead of a result. Used by <see cref="PreviewTextureCompressionQueue"/> so a domain reload or editor quit stops the worker from starting more astcenc processes after the caller has separately killed whichever one was already running (see <see cref="AstcencCli.KillAllRunningProcesses"/>).</param>
         /// <returns>The compressed <see cref="Texture2D"/> on success.</returns>
         /// <exception cref="NotSupportedException">Thrown when this format/texture combination is not something the astcenc path can handle (e.g. a non-ASTC format or an already-compressed source). Callers should use the synchronous <see cref="CompressTexture"/> facade instead, which knows how to fall back to <see cref="UnityTextureCompressor"/>.</exception>
-        internal async Task<Texture2D> CompressTextureAsync(Texture2D texture, TextureFormat format)
+        /// <exception cref="OperationCanceledException">Thrown when <paramref name="cancellationToken"/> is cancelled before every mip level finished compressing.</exception>
+        internal async Task<Texture2D> CompressTextureAsync(Texture2D texture, TextureFormat format, CancellationToken cancellationToken = default)
         {
             if (!AstcUtility.TryGetBlockSize(format, out var blockX, out var blockY) || texture.format != TextureFormat.RGBA32)
             {
@@ -377,10 +389,10 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             byte[] combined;
-            await AsyncCompressionGate.WaitAsync();
+            await AsyncCompressionGate.WaitAsync(cancellationToken);
             try
             {
-                combined = await Task.Run(() => CompressLevelsWorker(exePath, preset, name, string.Empty, levels, blockX, blockY, format, srgb, jobs, WriteLevelTga));
+                combined = await Task.Run(() => CompressLevelsWorker(exePath, preset, name, string.Empty, levels, blockX, blockY, format, srgb, jobs, cancellationToken, WriteLevelTga));
             }
             finally
             {
@@ -406,7 +418,7 @@ namespace KRT.VRCQuestTools.Utils
 
         /// <summary>
         /// Async, off-main-thread counterpart to <see cref="CompressNormalMap"/>. See
-        /// <see cref="CompressTextureAsync(Texture2D, TextureFormat)"/>'s remarks for the threading contract
+        /// <see cref="CompressTextureAsync(Texture2D, TextureFormat, CancellationToken)"/>'s remarks for the threading contract
         /// (main thread before/after, background thread pool thread for the astcenc process itself) and failure
         /// semantics (throws instead of falling back; input is never destroyed).
         /// </summary>
@@ -414,9 +426,11 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="format">Format to compress to. Must be a supported ASTC format (non-null).</param>
         /// <param name="readable">Whether to make the output texture readable.</param>
         /// <param name="maxTextureSize">Optional max texture size override.</param>
+        /// <param name="cancellationToken">See <see cref="CompressTextureAsync(Texture2D, TextureFormat, CancellationToken)"/>'s identical parameter for the cancellation contract.</param>
         /// <returns>The compressed normal map on success.</returns>
         /// <exception cref="NotSupportedException">Thrown when this format/texture combination is not something the astcenc path can handle (e.g. no format, an unsupported ASTC format, or a non-readable input). Callers should use the synchronous <see cref="CompressNormalMap"/> facade instead.</exception>
-        internal async Task<Texture2D> CompressNormalMapAsync(Texture2D texture, TextureFormat? format, bool readable, int? maxTextureSize)
+        /// <exception cref="OperationCanceledException">Thrown when <paramref name="cancellationToken"/> is cancelled before every mip level finished compressing.</exception>
+        internal async Task<Texture2D> CompressNormalMapAsync(Texture2D texture, TextureFormat? format, bool readable, int? maxTextureSize, CancellationToken cancellationToken = default)
         {
             if (!format.HasValue || !AstcUtility.TryGetBlockSize(format.Value, out var blockX, out var blockY) || !texture.isReadable)
             {
@@ -466,10 +480,10 @@ namespace KRT.VRCQuestTools.Utils
             var jobs = Math.Max(1, SystemInfo.processorCount);
 
             byte[] combined;
-            await AsyncCompressionGate.WaitAsync();
+            await AsyncCompressionGate.WaitAsync(cancellationToken);
             try
             {
-                combined = await Task.Run(() => CompressLevelsWorker(exePath, preset, name, "normal map ", levelSizes, blockX, blockY, format.Value, false, jobs, WriteLevelTga));
+                combined = await Task.Run(() => CompressLevelsWorker(exePath, preset, name, "normal map ", levelSizes, blockX, blockY, format.Value, false, jobs, cancellationToken, WriteLevelTga));
             }
             finally
             {
@@ -512,6 +526,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="format">Target ASTC texture format.</param>
         /// <param name="srgb">Whether to invoke astcenc with sRGB (-cs) or linear (-cl) encoding.</param>
         /// <param name="jobs">Number of threads to pass to astcenc's -j.</param>
+        /// <param name="cancellationToken">Checked (via <see cref="CancellationToken.ThrowIfCancellationRequested"/>) immediately before dispatching each mip level's astcenc process, never mid-level: once cancelled, no further astcenc process is started here. Does not touch any Unity API, so safe to check from this worker thread.</param>
         /// <param name="writeLevelTga">Callback that writes the given level's TGA input file to the given path. Must not touch any Unity API.</param>
         /// <returns>The combined raw ASTC block data for every level, concatenated in level order.</returns>
         private static byte[] CompressLevelsWorker(
@@ -525,6 +540,7 @@ namespace KRT.VRCQuestTools.Utils
             TextureFormat format,
             bool srgb,
             int jobs,
+            CancellationToken cancellationToken,
             Action<int, string> writeLevelTga)
         {
             var tempFiles = new List<string>();
@@ -546,6 +562,12 @@ namespace KRT.VRCQuestTools.Utils
 
                 for (var level = 0; level < levels.Count; level++)
                 {
+                    // Checked before starting this level's astcenc process (not mid-level -- there is no way to
+                    // interrupt a single already-running astcenc invocation from here; that is instead
+                    // AstcencCli.KillAllRunningProcesses's job, called alongside cancelling this token by
+                    // PreviewTextureCompressionQueue).
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     var (w, h) = levels[level];
 
                     var id = Guid.NewGuid().ToString("N");

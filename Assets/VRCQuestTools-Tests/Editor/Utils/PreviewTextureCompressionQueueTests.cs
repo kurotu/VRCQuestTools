@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
@@ -208,6 +209,148 @@ namespace KRT.VRCQuestTools.Utils
             {
                 field.SetValue(null, originalPendingBytes);
                 UnityEngine.Object.DestroyImmediate(placeholder);
+            }
+        }
+
+        /// <summary>
+        /// Verifies the synchronous fallback path (Step 3-3 review item 2): when the background astcenc attempt
+        /// fails (here, an <see cref="AstcencTextureCompressor"/> pointed at a non-existent executable), the
+        /// placeholder is not left uncompressed forever -- <see cref="PreviewTextureCompressionQueue"/> falls back
+        /// to synchronous compression and still replaces every preview material reference and destroys the
+        /// placeholder, exactly as the background path would have on success.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator ProcessNextForTesting_BackgroundCompressionFails_FallsBackToSyncAndReplaces()
+        {
+            // Ensures a real, working astcenc is available in this environment for the synchronous fallback to
+            // succeed with -- the fallback resolves its own compressor via TextureCompressorProvider, entirely
+            // independent of the broken one enqueued below (which is only used for the abandoned background attempt).
+            TestUtils.CreateAstcencCompressorOrIgnore();
+
+            var brokenCompressor = new AstcencTextureCompressor("does-not-exist-astcenc.exe", "0.0.0", "-medium");
+            var placeholder = CreateColorTexture(16, 16);
+
+            Texture capturedFrom = null;
+            Texture2D capturedTo = null;
+            PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) =>
+            {
+                capturedFrom = from;
+                capturedTo = to as Texture2D;
+                return 1;
+            });
+
+            var cacheFile = $"test_progressive_fallback_{Guid.NewGuid():N}.json";
+            var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, brokenCompressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
+            Assert.IsTrue(enqueued);
+
+            var task = PreviewTextureCompressionQueue.ProcessNextForTesting();
+            yield return TestUtils.WaitForTask(task); // Must not throw -- the fallback failure path must not either.
+            var processed = task.Result;
+
+            Assert.IsTrue(processed);
+            Assert.AreSame(placeholder, capturedFrom, "The replacer must still be called with the original placeholder as `from`.");
+            Assert.IsNotNull(capturedTo, "The synchronous fallback compression must still replace the placeholder in preview materials.");
+
+            // Not asserting the exact resulting format: the fallback resolves its target format from the active
+            // build target (see TextureUtility.CompressTextureForBuildTarget), which this test does not control,
+            // so on a non-mobile editor build target it legitimately falls further back to DXT5/Unity compression
+            // rather than ASTC. Either way, the source RGBA32 placeholder must have actually been compressed.
+            Assert.AreNotEqual((int)TextureFormat.RGBA32, (int)capturedTo.format);
+            Assert.IsTrue(placeholder == null, "The placeholder must be destroyed once the fallback succeeds and the replacer reports it was replaced.");
+
+            UnityEngine.Object.DestroyImmediate(capturedTo);
+        }
+
+        /// <summary>
+        /// Verifies Step 3-3 review item 3: dequeuing an item whose placeholder was already destroyed (e.g. every
+        /// preview material lease was released, such as while rapidly dragging a settings slider, while the item
+        /// was still waiting in the queue) must not throw or log a warning -- in particular, must not pass the
+        /// destroyed placeholder into <see cref="AstcencTextureCompressor.CompressTextureAsync"/>, which would
+        /// throw <see cref="MissingReferenceException"/> reading from it.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator ProcessNextForTesting_PlaceholderDestroyedBeforeDequeue_NoExceptionOrWarning()
+        {
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
+            var placeholder = CreateColorTexture(8, 8);
+
+            PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) => 1);
+
+            var cacheFile = $"test_progressive_predestroyed_{Guid.NewGuid():N}.json";
+            var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
+            Assert.IsTrue(enqueued);
+
+            // Simulate every preview material lease releasing the placeholder (and it being destroyed as a
+            // result) while it is still sitting in the queue, before it reaches the front.
+            UnityEngine.Object.DestroyImmediate(placeholder);
+
+            var warnings = new List<string>();
+            void OnLogMessage(string condition, string stackTrace, LogType type)
+            {
+                if (type == LogType.Warning)
+                {
+                    warnings.Add(condition);
+                }
+            }
+
+            Application.logMessageReceived += OnLogMessage;
+            System.Threading.Tasks.Task<bool> task;
+            try
+            {
+                task = PreviewTextureCompressionQueue.ProcessNextForTesting();
+                yield return TestUtils.WaitForTask(task); // Must not throw.
+            }
+            finally
+            {
+                Application.logMessageReceived -= OnLogMessage;
+            }
+
+            Assert.IsTrue(task.Result);
+            Assert.AreEqual(0, PreviewTextureCompressionQueue.PendingCountForTesting);
+            CollectionAssert.IsEmpty(warnings, "Dequeuing an already-destroyed placeholder must not log a warning.");
+        }
+
+        /// <summary>
+        /// Verifies Step 3-3 review item 7: <see cref="PreviewTextureCompressionQueue.PendingBytesForTesting"/>
+        /// must never go negative. Reproduces the underflow condition directly (rather than by actually
+        /// triggering a domain reload mid-compression, which a test cannot do) by forcing the pendingBytes
+        /// counter to a value smaller than the processed item's own EstimatedBytes before letting
+        /// <c>ProcessItemAsync</c>'s <c>finally</c> block subtract it -- mirroring what
+        /// <c>OnBeforeAssemblyReload</c>/<c>OnEditorQuitting</c> zeroing pendingBytes out from under an in-flight
+        /// item would otherwise do. Only asserts the counter never goes negative (rather than an exact final
+        /// value) and restores whatever was there beforehand: <c>pendingBytes</c> is process-wide static state,
+        /// potentially shared with real (non-test) preview activity in the running editor session, not scoped to
+        /// this test -- same accommodation <see cref="TryEnqueue_PendingBytesCapReached_ReturnsFalse"/> already
+        /// makes for the same reason.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator ProcessNextForTesting_PendingBytesWouldUnderflow_ClampsToZero()
+        {
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
+            var placeholder = CreateColorTexture(16, 16);
+
+            PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) => 1);
+
+            var cacheFile = $"test_progressive_underflow_{Guid.NewGuid():N}.json";
+            var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
+            Assert.IsTrue(enqueued);
+
+            var field = typeof(PreviewTextureCompressionQueue).GetField("pendingBytes", BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.IsNotNull(field, "PreviewTextureCompressionQueue.pendingBytes field must exist for this test to drive it.");
+            var originalPendingBytes = (long)field.GetValue(null);
+            try
+            {
+                field.SetValue(null, 0L);
+
+                var task = PreviewTextureCompressionQueue.ProcessNextForTesting();
+                yield return TestUtils.WaitForTask(task);
+
+                Assert.IsTrue(task.Result);
+                Assert.GreaterOrEqual(PreviewTextureCompressionQueue.PendingBytesForTesting, 0L, "pendingBytes must never go negative.");
+            }
+            finally
+            {
+                field.SetValue(null, originalPendingBytes);
             }
         }
 
