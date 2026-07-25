@@ -113,6 +113,45 @@ namespace KRT.VRCQuestTools.Utils
         /// <exception cref="InvalidDataException">Thrown when the header does not match the expectation.</exception>
         internal static byte[] StripAstcHeader(byte[] astcFileData, int expectedWidth, int expectedHeight, int blockX, int blockY)
         {
+            var dataSize = ValidateAstcHeader(astcFileData, expectedWidth, expectedHeight, blockX, blockY);
+            var result = new byte[dataSize];
+            Buffer.BlockCopy(astcFileData, AstcHeaderBytes, result, 0, dataSize);
+            return result;
+        }
+
+        /// <summary>
+        /// Validates the 16 bytes header of a .astc file and copies the raw block data (without the header)
+        /// directly into <paramref name="destination"/> at <paramref name="destinationOffset"/>, avoiding the
+        /// intermediate array allocation of the <see cref="StripAstcHeader(byte[], int, int, int, int)"/> overload.
+        /// Used by <see cref="AstcencTextureCompressor"/> to assemble a mip chain's data directly into its final
+        /// combined buffer.
+        /// </summary>
+        /// <param name="astcFileData">Whole content of a .astc file.</param>
+        /// <param name="expectedWidth">Expected image width in pixels.</param>
+        /// <param name="expectedHeight">Expected image height in pixels.</param>
+        /// <param name="blockX">Expected block width in pixels.</param>
+        /// <param name="blockY">Expected block height in pixels.</param>
+        /// <param name="destination">Destination buffer to copy the block data into.</param>
+        /// <param name="destinationOffset">Offset in <paramref name="destination"/> to copy the block data to.</param>
+        /// <exception cref="InvalidDataException">Thrown when the header does not match the expectation.</exception>
+        internal static void StripAstcHeader(byte[] astcFileData, int expectedWidth, int expectedHeight, int blockX, int blockY, byte[] destination, int destinationOffset)
+        {
+            var dataSize = ValidateAstcHeader(astcFileData, expectedWidth, expectedHeight, blockX, blockY);
+            Buffer.BlockCopy(astcFileData, AstcHeaderBytes, destination, destinationOffset, dataSize);
+        }
+
+        /// <summary>
+        /// Validates a .astc file's 16 byte header against the expected image/block dimensions.
+        /// </summary>
+        /// <param name="astcFileData">Whole content of a .astc file.</param>
+        /// <param name="expectedWidth">Expected image width in pixels.</param>
+        /// <param name="expectedHeight">Expected image height in pixels.</param>
+        /// <param name="blockX">Expected block width in pixels.</param>
+        /// <param name="blockY">Expected block height in pixels.</param>
+        /// <returns>Size of the raw block data following the header, in bytes.</returns>
+        /// <exception cref="InvalidDataException">Thrown when the header does not match the expectation.</exception>
+        private static int ValidateAstcHeader(byte[] astcFileData, int expectedWidth, int expectedHeight, int blockX, int blockY)
+        {
             if (astcFileData == null)
             {
                 throw new ArgumentNullException(nameof(astcFileData));
@@ -152,9 +191,7 @@ namespace KRT.VRCQuestTools.Utils
                 throw new InvalidDataException($"Unexpected ASTC data size: {actualDataSize} bytes (expected {expectedDataSize} bytes)");
             }
 
-            var result = new byte[actualDataSize];
-            Buffer.BlockCopy(astcFileData, AstcHeaderBytes, result, 0, actualDataSize);
-            return result;
+            return actualDataSize;
         }
 
         /// <summary>
@@ -185,18 +222,21 @@ namespace KRT.VRCQuestTools.Utils
                 throw new ArgumentException($"Pixel count {pixels.Length} does not match {width}x{height}", nameof(pixels));
             }
 
-            var rgba = new byte[pixels.Length * 4];
+            const int headerBytes = 18;
+            var data = new byte[headerBytes + (pixels.Length * 4)];
+            WriteTgaHeader(data, width, height, topToBottom);
+
             for (var i = 0; i < pixels.Length; i++)
             {
                 var pixel = pixels[i];
-                var o = i * 4;
-                rgba[o] = pixel.r;
-                rgba[o + 1] = pixel.g;
-                rgba[o + 2] = pixel.b;
-                rgba[o + 3] = pixel.a;
+                var dst = headerBytes + (i * 4);
+                data[dst] = pixel.b;
+                data[dst + 1] = pixel.g;
+                data[dst + 2] = pixel.r;
+                data[dst + 3] = pixel.a;
             }
 
-            WriteTga(rgba, 0, rgba.Length, width, height, topToBottom, path);
+            File.WriteAllBytes(path, data);
         }
 
         /// <summary>
@@ -228,13 +268,7 @@ namespace KRT.VRCQuestTools.Utils
 
             const int headerBytes = 18;
             var data = new byte[headerBytes + length];
-            data[2] = 2; // Uncompressed true-color image.
-            data[12] = (byte)(width & 0xFF);
-            data[13] = (byte)((width >> 8) & 0xFF);
-            data[14] = (byte)(height & 0xFF);
-            data[15] = (byte)((height >> 8) & 0xFF);
-            data[16] = 32; // Bits per pixel.
-            data[17] = (byte)(8 | (topToBottom ? 0x20 : 0)); // 8 bits of alpha + origin bit.
+            WriteTgaHeader(data, width, height, topToBottom);
 
             for (var i = 0; i < length; i += 4)
             {
@@ -246,6 +280,27 @@ namespace KRT.VRCQuestTools.Utils
                 data[dst + 3] = rgba[src + 3]; // A
             }
             File.WriteAllBytes(path, data);
+        }
+
+        /// <summary>
+        /// Writes the 18 byte TGA header (uncompressed 32-bit true-color image descriptor) into the first 18
+        /// bytes of <paramref name="data"/>. Shared by both <see cref="WriteTga(Color32[], int, int, bool, string)"/>
+        /// and <see cref="WriteTga(byte[], int, int, int, int, bool, string)"/> so the header layout is defined
+        /// in exactly one place.
+        /// </summary>
+        /// <param name="data">Destination buffer; must be at least 18 bytes.</param>
+        /// <param name="width">Image width in pixels.</param>
+        /// <param name="height">Image height in pixels.</param>
+        /// <param name="topToBottom">Whether to declare top-left origin (bit 5 of the image descriptor).</param>
+        private static void WriteTgaHeader(byte[] data, int width, int height, bool topToBottom)
+        {
+            data[2] = 2; // Uncompressed true-color image.
+            data[12] = (byte)(width & 0xFF);
+            data[13] = (byte)((width >> 8) & 0xFF);
+            data[14] = (byte)(height & 0xFF);
+            data[15] = (byte)((height >> 8) & 0xFF);
+            data[16] = 32; // Bits per pixel.
+            data[17] = (byte)(8 | (topToBottom ? 0x20 : 0)); // 8 bits of alpha + origin bit.
         }
 
         private static int ReadUInt24(byte[] data, int offset)

@@ -4,6 +4,7 @@
 // </copyright>
 
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -251,6 +252,24 @@ namespace KRT.VRCQuestTools
             {
                 Assert.Ignore($"\"{name}\" shader not found");
             }
+        }
+
+        /// <summary>
+        /// Creates an <see cref="AstcencTextureCompressor"/> for tests, or calls <see cref="Assert.Ignore(string)"/>
+        /// when no usable astcenc executable is available in the current environment (e.g. an unsupported CI
+        /// platform). Shared by all astcenc test fixtures so the environment check lives in exactly one place.
+        /// </summary>
+        /// <param name="preset">Quality preset with a leading dash (e.g. "-medium").</param>
+        /// <returns>A usable <see cref="AstcencTextureCompressor"/>.</returns>
+        internal static AstcencTextureCompressor CreateAstcencCompressorOrIgnore(string preset = "-medium")
+        {
+            var path = AstcencBinaryLocator.GetAstcencPath();
+            if (path == null)
+            {
+                Assert.Ignore("No usable astcenc executable is available in this environment.");
+            }
+            var version = AstcencCli.GetVersion(path);
+            return new AstcencTextureCompressor(path, version, preset);
         }
     }
 }

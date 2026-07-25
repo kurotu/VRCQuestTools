@@ -378,7 +378,7 @@ namespace KRT.VRCQuestTools.Utils
             var astcPath = Path.Combine(tempDir, $"{id}.astc");
             try
             {
-                // TopToBottomOrigin = true, matching AstcencTextureCompressor (see its remarks for why).
+                // TgaTopToBottomOrigin = true, matching AstcencTextureCompressor (see its remarks for why).
                 AstcUtility.WriteTga(pixels, width, height, true, tgaPath);
 
                 var jobs = Math.Max(1, SystemInfo.processorCount);

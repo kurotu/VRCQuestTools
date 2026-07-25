@@ -15,7 +15,9 @@ namespace KRT.VRCQuestTools.Utils
     /// vector's length below 1 wherever the four source normals disagree, which reads as flattened / duller
     /// shading at a distance. This instead decodes each texel to a signed vector, averages in that linear
     /// vector space, and re-normalizes, mirroring how Unity's own normal map mip generation behaves
-    /// (mip0/mip1 both average very close to unit length there too).
+    /// (mip0/mip1 both average very close to unit length there too). Also owns forcing the encoded alpha
+    /// channel to opaque (see <see cref="ForceOpaqueAlpha"/>), a business rule of the same normal map pipeline
+    /// rather than a general-purpose texture operation.
     /// </summary>
     internal static class NormalMapMipUtility
     {
@@ -72,12 +74,50 @@ namespace KRT.VRCQuestTools.Utils
             return result;
         }
 
-        private static Vector3 Decode(Color32 c)
+        /// <summary>
+        /// Forces alpha to 255 (fully opaque) for every pixel in <paramref name="pixels"/>, mutating it in place.
+        /// </summary>
+        /// <remarks>
+        /// Unity's normal map ASTC encoding pipeline always writes alpha = 1.0 (fully opaque), regardless of the
+        /// source texture's own alpha channel, which is not meaningful for a tangent-space normal map. This
+        /// applies that same business rule so a source with a meaningless (or missing) alpha channel does not
+        /// leak into astcenc's compressed output.
+        /// </remarks>
+        /// <param name="pixels">Pixels to force opaque. Mutated in place.</param>
+        /// <returns>The same array instance as <paramref name="pixels"/>, for convenient chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="pixels"/> is null.</exception>
+        internal static Color32[] ForceOpaqueAlpha(Color32[] pixels)
+        {
+            if (pixels == null)
+            {
+                throw new ArgumentNullException(nameof(pixels));
+            }
+
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                var p = pixels[i];
+                pixels[i] = new Color32(p.r, p.g, p.b, 255);
+            }
+            return pixels;
+        }
+
+        /// <summary>
+        /// Decodes an encoded normal map texel ((v + 1) / 2 * 255 per channel) back to a signed vector.
+        /// </summary>
+        /// <param name="c">Encoded pixel; RGB is the encoded normal, alpha is ignored.</param>
+        /// <returns>Decoded signed vector; not necessarily unit length.</returns>
+        internal static Vector3 Decode(Color32 c)
         {
             return new Vector3(((c.r * 2f) / 255f) - 1f, ((c.g * 2f) / 255f) - 1f, ((c.b * 2f) / 255f) - 1f);
         }
 
-        private static Color32 Encode(Vector3 normal)
+        /// <summary>
+        /// Encodes a signed vector as a normal map texel ((v + 1) / 2 * 255 per channel, clamped). Alpha is
+        /// always 255.
+        /// </summary>
+        /// <param name="normal">Vector to encode.</param>
+        /// <returns>Encoded pixel.</returns>
+        internal static Color32 Encode(Vector3 normal)
         {
             var r = (byte)Mathf.Clamp(Mathf.RoundToInt(((normal.x + 1f) / 2f) * 255f), 0, 255);
             var g = (byte)Mathf.Clamp(Mathf.RoundToInt(((normal.y + 1f) / 2f) * 255f), 0, 255);

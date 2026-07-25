@@ -45,7 +45,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressNormalMap_Orientation_MatchesUnityCompressor()
         {
-            var compressor = CreateCompressorOrIgnore();
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
             const int size = 32;
 
             var unitySource = CreateOrientationTestNormalMap(size);
@@ -64,7 +64,7 @@ namespace KRT.VRCQuestTools.Utils
 
             var diff = TestUtils.MaxDifference(unityDecoded, astcDecoded);
             Assert.Less(diff, 0.1f, $"astcenc normal map output orientation doesn't match Unity's ASTC encoder (diff={diff:F4}). " +
-                "If this fails, AstcencTextureCompressor.TopToBottomOriginForNormalMap must be flipped.");
+                "If this fails, AstcencTextureCompressor.TgaTopToBottomOrigin must be flipped.");
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressNormalMap_Quality_SimilarToUnityCompressor()
         {
-            var compressor = CreateCompressorOrIgnore();
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
             var sourceNormalMap = AssetDatabase.LoadAssetAtPath<Texture2D>(
                 "Assets/VRCQuestTools-Tests/Fixtures/Textures/NormalMapSample01.png");
             Assert.IsNotNull(sourceNormalMap, "Failed to load NormalMapSample01.png.");
@@ -120,7 +120,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressNormalMap_Mip1_IsRenormalized()
         {
-            var compressor = CreateCompressorOrIgnore();
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
             const int size = 64;
             var source = CreateVariedNormalMap(size);
 
@@ -135,7 +135,7 @@ namespace KRT.VRCQuestTools.Utils
             var lengthSum = 0f;
             foreach (var p in mip1Pixels)
             {
-                var n = new Vector3(((p.r * 2f) / 255f) - 1f, ((p.g * 2f) / 255f) - 1f, ((p.b * 2f) / 255f) - 1f);
+                var n = NormalMapMipUtility.Decode(p);
                 lengthSum += n.magnitude;
             }
             var avgLength = lengthSum / mip1Pixels.Length;
@@ -149,7 +149,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressNormalMap_MaxTextureSize_ResizesAndMatchesUnityMipChain()
         {
-            var compressor = CreateCompressorOrIgnore();
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
             const int size = 64;
             const int maxSize = 32;
 
@@ -213,17 +213,6 @@ namespace KRT.VRCQuestTools.Utils
             Assert.IsInstanceOf<AstcencTextureCompressor>(compressor);
         }
 
-        private static AstcencTextureCompressor CreateCompressorOrIgnore(string preset = "-medium")
-        {
-            var path = AstcencBinaryLocator.GetAstcencPath();
-            if (path == null)
-            {
-                Assert.Ignore("No usable astcenc executable is available in this environment.");
-            }
-            var version = AstcencCli.GetVersion(path);
-            return new AstcencTextureCompressor(path, version, preset);
-        }
-
         /// <summary>
         /// Builds a mostly-flat normal map with two distinctly colored 4x4 regions (matching the ASTC_4x4 block
         /// size) at opposite corners of the pixel array, so a vertical flip between two compressed outputs is
@@ -277,10 +266,7 @@ namespace KRT.VRCQuestTools.Utils
                     var ny = Mathf.Sin(y * 0.5f) * 0.6f;
                     var nz = Mathf.Sqrt(Mathf.Max(0.01f, 1f - (nx * nx) - (ny * ny)));
                     var n = new Vector3(nx, ny, nz).normalized;
-                    var r = (byte)Mathf.Clamp(Mathf.RoundToInt(((n.x + 1f) / 2f) * 255f), 0, 255);
-                    var g = (byte)Mathf.Clamp(Mathf.RoundToInt(((n.y + 1f) / 2f) * 255f), 0, 255);
-                    var b = (byte)Mathf.Clamp(Mathf.RoundToInt(((n.z + 1f) / 2f) * 255f), 0, 255);
-                    pixels[(y * size) + x] = new Color32(r, g, b, 255);
+                    pixels[(y * size) + x] = NormalMapMipUtility.Encode(n);
                 }
             }
             tex.SetPixels32(pixels);

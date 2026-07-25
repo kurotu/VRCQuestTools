@@ -41,7 +41,7 @@ namespace KRT.VRCQuestTools.Utils
         [TestCase(TextureFormat.ASTC_12x12)]
         public void CompressTexture_MipChainConcatenation_MatchesExpectedSize(TextureFormat format)
         {
-            var compressor = CreateCompressorOrIgnore();
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
             Assert.IsTrue(AstcUtility.TryGetBlockSize(format, out var blockX, out var blockY));
 
             const int size = 64;
@@ -78,7 +78,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressTexture_NonSquareNpot_MatchesExpectedLayoutAndQuality()
         {
-            var compressor = CreateCompressorOrIgnore();
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
             const int width = 48;
             const int height = 20;
             const TextureFormat format = TextureFormat.ASTC_4x4;
@@ -118,7 +118,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressTexture_Orientation_MatchesUnityCompressor()
         {
-            var compressor = CreateCompressorOrIgnore();
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
             const int size = 32;
 
             var unityTex = CreateOrientationTestTexture(size);
@@ -134,7 +134,7 @@ namespace KRT.VRCQuestTools.Utils
 
             var diff = TestUtils.MaxDifference(unityDecoded, astcDecoded);
             Assert.Less(diff, 0.1f, $"astcenc output orientation doesn't match Unity's ASTC encoder (diff={diff:F4}). " +
-                "If this fails, AstcencTextureCompressor.TopToBottomOrigin must be flipped.");
+                "If this fails, AstcencTextureCompressor.TgaTopToBottomOrigin must be flipped.");
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressTexture_NonReadableInput_Succeeds()
         {
-            var compressor = CreateCompressorOrIgnore();
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
             const int size = 16;
 
             var source = CreateNonReadableTexture(size);
@@ -177,7 +177,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressTexture_Success_ReturnsNewInstanceAndDestroysInput()
         {
-            var compressor = CreateCompressorOrIgnore();
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
             var source = CreateGradientTexture(16, 16, mipChain: false);
 
             var countBefore = AstcencTextureCompressor.SuccessfulCompressionCount;
@@ -222,7 +222,7 @@ namespace KRT.VRCQuestTools.Utils
         [Test]
         public void CompressTexture_Quality_SimilarToUnityCompressor()
         {
-            var compressor = CreateCompressorOrIgnore(TextureCompressorProvider.DefaultPreset);
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore(TextureCompressorProvider.DefaultPreset);
             const int size = 64;
 
             var reference = CreateNaturalisticTestTexture(size);
@@ -289,17 +289,6 @@ namespace KRT.VRCQuestTools.Utils
 
             TextureCompressorProvider.ResetForTesting();
             Assert.AreNotSame(fake, TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6));
-        }
-
-        private static AstcencTextureCompressor CreateCompressorOrIgnore(string preset = "-medium")
-        {
-            var path = AstcencBinaryLocator.GetAstcencPath();
-            if (path == null)
-            {
-                Assert.Ignore("No usable astcenc executable is available in this environment.");
-            }
-            var version = AstcencCli.GetVersion(path);
-            return new AstcencTextureCompressor(path, version, preset);
         }
 
         private static Texture2D CreateGradientTexture(int width, int height, bool mipChain)
