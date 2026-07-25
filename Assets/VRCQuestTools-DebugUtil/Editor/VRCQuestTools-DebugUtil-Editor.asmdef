@@ -5,7 +5,8 @@
         "VRCQuestTools",
         "VRCQuestTools-Editor",
         "EditorDriver.Editor",
-        "Unity.InternalAPIEditorBridge.024"
+        "Unity.InternalAPIEditorBridge.024",
+        "GUID:214998e563c124e8a88199b2dd1f522d"
     ],
     "includePlatforms": [
         "Editor"
