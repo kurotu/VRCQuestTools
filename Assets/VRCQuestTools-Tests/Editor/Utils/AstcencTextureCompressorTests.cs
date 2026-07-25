@@ -1,0 +1,337 @@
+// <copyright file="AstcencTextureCompressorTests.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+using System;
+using System.IO;
+using System.Text.RegularExpressions;
+using NUnit.Framework;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.TestTools;
+
+namespace KRT.VRCQuestTools.Utils
+{
+    /// <summary>
+    /// Tests for AstcencTextureCompressor and its selection via TextureCompressorProvider.
+    /// </summary>
+    public class AstcencTextureCompressorTests
+    {
+        /// <summary>
+        /// Resets the global log-assert flag and any test compressor override after each test.
+        /// </summary>
+        [TearDown]
+        public void TearDown()
+        {
+            LogAssert.ignoreFailingMessages = false;
+            TextureCompressorProvider.ResetForTesting();
+        }
+
+        /// <summary>
+        /// Verifies that compressing a mipmapped RGBA32 texture produces raw data whose length matches the sum
+        /// of AstcUtility.GetMipDataSize across all mip levels, for every supported ASTC block size.
+        /// </summary>
+        /// <param name="format">ASTC format under test.</param>
+        [TestCase(TextureFormat.ASTC_4x4)]
+        [TestCase(TextureFormat.ASTC_5x5)]
+        [TestCase(TextureFormat.ASTC_6x6)]
+        [TestCase(TextureFormat.ASTC_8x8)]
+        [TestCase(TextureFormat.ASTC_10x10)]
+        [TestCase(TextureFormat.ASTC_12x12)]
+        public void CompressTexture_MipChainConcatenation_MatchesExpectedSize(TextureFormat format)
+        {
+            var compressor = CreateCompressorOrIgnore();
+            Assert.IsTrue(AstcUtility.TryGetBlockSize(format, out var blockX, out var blockY));
+
+            const int size = 64;
+            var source = CreateGradientTexture(size, size, mipChain: true);
+            var expectedMipmapCount = source.mipmapCount;
+
+            var expectedSize = 0;
+            for (var i = 0; i < expectedMipmapCount; i++)
+            {
+                var w = Math.Max(1, size >> i);
+                var h = Math.Max(1, size >> i);
+                expectedSize += AstcUtility.GetMipDataSize(w, h, blockX, blockY);
+            }
+
+            Texture2D result = null;
+            compressor.CompressTexture(source, format, t => result = t).WaitForCompletion();
+
+            Assert.IsNotNull(result);
+
+            // Compare by enum value, not name: EditorUtility.CompressTexture can rename ASTC_6x6 to the
+            // ASTC_RGB_6x6 alias (same underlying value), but astcenc-produced textures keep the exact
+            // format value that was requested since they never go through EditorUtility.CompressTexture.
+            Assert.AreEqual((int)format, (int)result.format);
+            Assert.AreEqual(expectedMipmapCount, result.mipmapCount);
+            Assert.AreEqual(expectedSize, result.GetRawTextureData().Length);
+        }
+
+        /// <summary>
+        /// Verifies the TGA orientation used for astcenc input (topToBottom) produces the same visual result as
+        /// Unity's own ASTC encoder for an asymmetric image, i.e. astcenc's output is not vertically flipped.
+        /// </summary>
+        [Test]
+        public void CompressTexture_Orientation_MatchesUnityCompressor()
+        {
+            var compressor = CreateCompressorOrIgnore();
+            const int size = 32;
+
+            var unityTex = CreateOrientationTestTexture(size);
+            EditorUtility.CompressTexture(unityTex, TextureFormat.ASTC_4x4, TextureCompressionQuality.Best);
+
+            var astcSource = CreateOrientationTestTexture(size);
+            Texture2D astcResult = null;
+            compressor.CompressTexture(astcSource, TextureFormat.ASTC_4x4, t => astcResult = t).WaitForCompletion();
+            Assert.IsNotNull(astcResult);
+
+            var unityDecoded = DecodeToRGBA32(unityTex, size, size);
+            var astcDecoded = DecodeToRGBA32(astcResult, size, size);
+
+            var diff = TestUtils.MaxDifference(unityDecoded, astcDecoded);
+            Assert.Less(diff, 0.1f, $"astcenc output orientation doesn't match Unity's ASTC encoder (diff={diff:F4}). " +
+                "If this fails, AstcencTextureCompressor.TopToBottomOrigin must be flipped.");
+        }
+
+        /// <summary>
+        /// Verifies that a non-readable texture (isReadable == false, as produced by a GPU readback) still
+        /// compresses successfully via the astcenc path, since GetRawTextureData works on such textures in the
+        /// editor even though other pixel accessors (GetPixels32/GetPixelData) do not.
+        /// </summary>
+        [Test]
+        public void CompressTexture_NonReadableInput_Succeeds()
+        {
+            var compressor = CreateCompressorOrIgnore();
+            const int size = 16;
+
+            var source = CreateNonReadableTexture(size);
+            Assert.IsFalse(source.isReadable);
+
+            Texture2D result = null;
+            compressor.CompressTexture(source, TextureFormat.ASTC_4x4, t => result = t).WaitForCompletion();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual((int)TextureFormat.ASTC_4x4, (int)result.format);
+        }
+
+        /// <summary>
+        /// Verifies that a non-functional astcenc executable path falls back to Unity's texture compression,
+        /// logs a warning, and leaves the original input texture intact (UnityTextureCompressor mutates the
+        /// texture in place and returns the same reference, so the fallback result must be the same object).
+        /// </summary>
+        [Test]
+        public void CompressTexture_ExecutableMissing_FallsBackToUnityAndKeepsInputIntact()
+        {
+            var missingPath = Path.Combine(Path.GetTempPath(), $"vrcqt-astcenc-missing-{Guid.NewGuid():N}.exe");
+            var compressor = new AstcencTextureCompressor(missingPath, "0.0.0", "-medium");
+
+            var source = CreateGradientTexture(16, 16, mipChain: false);
+
+            LogAssert.Expect(LogType.Warning, new Regex("astcenc compression failed.*falling back"));
+            Texture2D result = null;
+            compressor.CompressTexture(source, TextureFormat.ASTC_4x4, t => result = t).WaitForCompletion();
+
+            Assert.IsNotNull(result);
+            Assert.AreSame(source, result, "Unity's fallback compressor mutates the input in place; the same " +
+                "reference coming back proves the input texture was not destroyed before falling back.");
+            Assert.AreEqual((int)TextureFormat.ASTC_4x4, (int)result.format);
+        }
+
+        /// <summary>
+        /// Verifies that astcenc's "-thorough" preset produces quality in the same order as Unity's Best quality
+        /// preset for a moderately complex procedural texture (astcenc diff should not be more than roughly
+        /// double Unity's diff from the uncompressed source).
+        /// </summary>
+        [Test]
+        public void CompressTexture_Quality_SimilarToUnityCompressor()
+        {
+            var compressor = CreateCompressorOrIgnore(TextureCompressorProvider.DefaultPreset);
+            const int size = 64;
+
+            var reference = CreateNaturalisticTestTexture(size);
+            var unitySource = CreateNaturalisticTestTexture(size);
+            var astcSource = CreateNaturalisticTestTexture(size);
+
+            EditorUtility.CompressTexture(unitySource, TextureFormat.ASTC_4x4, TextureCompressionQuality.Best);
+
+            Texture2D astcResult = null;
+            compressor.CompressTexture(astcSource, TextureFormat.ASTC_4x4, t => astcResult = t).WaitForCompletion();
+            Assert.IsNotNull(astcResult);
+
+            var referenceDecoded = DecodeToRGBA32(reference, size, size);
+            var unityDecoded = DecodeToRGBA32(unitySource, size, size);
+            var astcDecoded = DecodeToRGBA32(astcResult, size, size);
+
+            var diffUnity = TestUtils.Difference(referenceDecoded, unityDecoded);
+            var diffAstc = TestUtils.Difference(referenceDecoded, astcDecoded);
+
+            Assert.Less(diffAstc, (diffUnity * 2f) + 0.001f,
+                $"astcenc quality (diff={diffAstc:F5}) should be within roughly 2x of Unity's Best quality (diff={diffUnity:F5}).");
+        }
+
+        /// <summary>
+        /// Verifies TextureCompressorProvider selects an AstcencTextureCompressor for ASTC formats on
+        /// non-normal-map textures when a usable astcenc executable is available, and Unity's compressor
+        /// otherwise (normal maps, non-ASTC formats).
+        /// </summary>
+        [Test]
+        public void GetCompressor_SelectsAstcencForColorAstcFormats_WhenAvailable()
+        {
+            var path = AstcencBinaryLocator.GetAstcencPath();
+            if (path == null)
+            {
+                Assert.Ignore("No usable astcenc executable is available in this environment.");
+            }
+
+            var astcCompressor = TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, false);
+            Assert.IsInstanceOf<AstcencTextureCompressor>(astcCompressor);
+
+            var normalMapCompressor = TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, true);
+            Assert.IsInstanceOf<UnityTextureCompressor>(normalMapCompressor);
+
+            var dxtCompressor = TextureCompressorProvider.GetCompressor(TextureFormat.DXT5, false);
+            Assert.IsInstanceOf<UnityTextureCompressor>(dxtCompressor);
+        }
+
+        /// <summary>
+        /// Verifies the testing hook overrides the normal selection logic and can be reset.
+        /// </summary>
+        [Test]
+        public void SetCompressorForTesting_OverridesSelection()
+        {
+            var fake = new UnityTextureCompressor();
+            TextureCompressorProvider.SetCompressorForTesting(fake);
+            Assert.AreSame(fake, TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, false));
+
+            TextureCompressorProvider.ResetForTesting();
+            Assert.AreNotSame(fake, TextureCompressorProvider.GetCompressor(TextureFormat.ASTC_6x6, false));
+        }
+
+        private static AstcencTextureCompressor CreateCompressorOrIgnore(string preset = "-medium")
+        {
+            var path = AstcencBinaryLocator.GetAstcencPath();
+            if (path == null)
+            {
+                Assert.Ignore("No usable astcenc executable is available in this environment.");
+            }
+            var version = AstcencCli.GetVersion(path);
+            return new AstcencTextureCompressor(path, version, preset);
+        }
+
+        private static Texture2D CreateGradientTexture(int width, int height, bool mipChain)
+        {
+            var tex = new Texture2D(width, height, TextureFormat.RGBA32, mipChain, false);
+            var pixels = new Color32[width * height];
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var r = (byte)(x * 255 / Math.Max(1, width - 1));
+                    var g = (byte)(y * 255 / Math.Max(1, height - 1));
+                    pixels[(y * width) + x] = new Color32(r, g, 128, 255);
+                }
+            }
+            tex.SetPixels32(pixels);
+            tex.Apply(mipChain, false);
+            return tex;
+        }
+
+        private static Texture2D CreateNaturalisticTestTexture(int size)
+        {
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false, false);
+            var pixels = new Color32[size * size];
+            for (var y = 0; y < size; y++)
+            {
+                for (var x = 0; x < size; x++)
+                {
+                    var r = (byte)(127 + (127 * Mathf.Sin(x * 0.3f)));
+                    var g = (byte)(127 + (127 * Mathf.Cos(y * 0.25f)));
+                    var b = (byte)((x * 4 + y * 4) % 256);
+                    var a = (byte)(200 + ((x + y) % 56));
+                    pixels[(y * size) + x] = new Color32(r, g, b, a);
+                }
+            }
+            tex.SetPixels32(pixels);
+            tex.Apply(false, false);
+            return tex;
+        }
+
+        private static Texture2D CreateOrientationTestTexture(int size)
+        {
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false, false);
+            var pixels = new Color32[size * size];
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                pixels[i] = new Color32(30, 30, 30, 255);
+            }
+
+            // Asymmetric markers: distinct colors at the first and last elements of the pixel array, so a
+            // vertical flip between the two compressed outputs is detectable regardless of which end of the
+            // array corresponds to the top of the image.
+            pixels[0] = new Color32(255, 0, 0, 255);
+            pixels[pixels.Length - 1] = new Color32(0, 0, 255, 255);
+            tex.SetPixels32(pixels);
+            tex.Apply(false, false);
+            return tex;
+        }
+
+        private static Texture2D CreateNonReadableTexture(int size)
+        {
+            RenderTexture rt = null;
+            var prevActive = RenderTexture.active;
+            try
+            {
+                rt = RenderTexture.GetTemporary(size, size, 0, RenderTextureFormat.ARGB32);
+                var source = CreateGradientTexture(size, size, mipChain: false);
+                try
+                {
+                    Graphics.Blit(source, rt);
+                }
+                finally
+                {
+                    UnityEngine.Object.DestroyImmediate(source);
+                }
+
+                RenderTexture.active = rt;
+                var result = new Texture2D(size, size, TextureFormat.RGBA32, false);
+                result.ReadPixels(new Rect(0, 0, size, size), 0, 0);
+                result.Apply(false, true); // makeNoLongerReadable = true.
+                return result;
+            }
+            finally
+            {
+                RenderTexture.active = prevActive;
+                if (rt != null)
+                {
+                    RenderTexture.ReleaseTemporary(rt);
+                }
+            }
+        }
+
+        private static Texture2D DecodeToRGBA32(Texture2D compressed, int width, int height)
+        {
+            RenderTexture rt = null;
+            var prevActive = RenderTexture.active;
+            try
+            {
+                rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+                Graphics.Blit(compressed, rt);
+                RenderTexture.active = rt;
+                var result = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                result.Apply();
+                return result;
+            }
+            finally
+            {
+                RenderTexture.active = prevActive;
+                if (rt != null)
+                {
+                    RenderTexture.ReleaseTemporary(rt);
+                }
+            }
+        }
+    }
+}
