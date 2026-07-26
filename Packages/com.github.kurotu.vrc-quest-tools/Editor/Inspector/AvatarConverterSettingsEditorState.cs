@@ -12,7 +12,7 @@ namespace KRT.VRCQuestTools.Inspector
         /// Whether to show the foldout for material settings.
         /// </summary>
         [SerializeField]
-        internal bool foldOutMaterialSettings = false;
+        internal bool foldOutMaterialSettings = true;
 
         /// <summary>
         /// Whether to show the foldout for additional material settings.
@@ -24,7 +24,7 @@ namespace KRT.VRCQuestTools.Inspector
         /// Whether to show the foldout for avatar dynamics.
         /// </summary>
         [SerializeField]
-        internal bool foldOutAvatarDynamics = false;
+        internal bool foldOutAvatarDynamics = true;
 
         /// <summary>
         /// Whether to show the foldout for estimated performance.

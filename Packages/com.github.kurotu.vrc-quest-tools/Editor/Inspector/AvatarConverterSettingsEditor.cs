@@ -182,16 +182,19 @@ namespace KRT.VRCQuestTools.Inspector
                 editorState.foldOutAvatarDynamics = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterAvatarDynamicsSettingsLabel, editorState.foldOutAvatarDynamics);
                 if (editorState.foldOutAvatarDynamics)
                 {
-                    EditorGUILayout.PropertyField(so.FindProperty("removeAvatarDynamics"), new GUIContent(i18n.AvatarConverterRemoveAvatarDynamicsLabel, i18n.AvatarConverterRemoveAvatarDynamicsTooltip));
+                    bool isLegacyMode = converterSettings.HasLegacyAvatarDynamicsSettings;
+
+                    if (isLegacyMode)
+                    {
+                        EditorGUILayout.PropertyField(so.FindProperty("removeAvatarDynamics"), new GUIContent(i18n.AvatarConverterRemoveAvatarDynamicsLabel, i18n.AvatarConverterRemoveAvatarDynamicsTooltip));
+                    }
 
                     if (converterSettings.removeAvatarDynamics)
                     {
-                        if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingsLabel))
+                        if (Views.EditorGUIUtility.LargeButton(i18n.AvatarConverterAvatarDynamicsSettingsLabel))
                         {
                             OnClickSelectAvatarDynamicsComponentsButton(descriptor);
                         }
-
-                        bool isLegacyMode = converterSettings.HasLegacyAvatarDynamicsSettings;
 
                         if (isLegacyMode)
                         {
@@ -253,7 +256,7 @@ namespace KRT.VRCQuestTools.Inspector
                         Views.EditorGUIUtility.HelpBoxGUI(MessageType.Error, () =>
                         {
                             EditorGUILayout.LabelField(i18n.AlertForAvatarDynamicsPerformance, EditorStyles.wordWrappedMiniLabel);
-                            if (GUILayout.Button(i18n.AvatarConverterAvatarDynamicsSettingsLabel))
+                            if (Views.EditorGUIUtility.LargeButton(i18n.AvatarConverterAvatarDynamicsSettingsLabel))
                             {
                                 OnClickSelectAvatarDynamicsComponentsButton(descriptor);
                             }
