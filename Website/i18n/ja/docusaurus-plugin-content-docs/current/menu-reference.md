@@ -69,6 +69,7 @@ VRCQuestTools の動作設定を切り替えます。
 
 - **Enable Validation Automator**：シーン内のアバターを自動で検証し、問題があれば通知します。
 - **[NDMF] Enable Texture Format Check on Windows Build**：Windows 向けビルド時に、Mobile で使用できないテクスチャ形式が含まれていないかを確認します。
+- **Enable Debug Log**：不具合調査用に、詳細なデバッグログを Console に出力します。
 
 ## Languages
 

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using KRT.VRCQuestTools.Models;
-using Unity.Collections;
 using UnityEditor;
-using UnityEditor.AssetImporters;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
@@ -600,13 +598,41 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Resolves the texture format that is actually used to compress a texture for a build target, given the
+        /// configured mobile format. Used both by the compression facade methods (<see cref="CompressTextureForBuildTarget"/>,
+        /// <see cref="CompressNormalMap"/>) and by cache key computation (<see cref="MaterialGeneratorUtility"/>),
+        /// so the two stay in sync instead of independently re-deriving the same "isMobile ? mobileFormat : fallback"
+        /// logic.
+        /// </summary>
+        /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
+        /// <param name="mobileFormat">Format for mobile (Android/iOS) build targets.</param>
+        /// <param name="isNormalMap">Whether the texture is a normal map. Non-mobile normal maps are left
+        /// uncompressed (null) since <see cref="UnityEditor.TextureGenerator"/> handles them; non-mobile color
+        /// textures fall back to <see cref="TextureFormat.DXT5"/>.</param>
+        /// <returns>Effective compression format, or null when the texture is left uncompressed.</returns>
+        internal static TextureFormat? ResolveEffectiveCompressionFormat(UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool isNormalMap)
+        {
+            var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
+            if (isMobile)
+            {
+                return mobileFormat;
+            }
+            return isNormalMap ? (TextureFormat?)null : TextureFormat.DXT5;
+        }
+
+        /// <summary>
         /// Compresses a texture for the build target.
         /// </summary>
         /// <param name="texture">Texture to compress.</param>
         /// <param name="buildTarget">Build target. Usually it's EditorUserBuildSettings.activeBuildTarget.</param>
         /// <param name="mobileFormat">Format for mobile build target.</param>
         /// <param name="maxTextureSize">Optional max texture size. When provided, the texture is resized before compression.</param>
-        /// <returns>Compressed texture. May be a new texture if resized.</returns>
+        /// <returns>Compressed texture. May be a new texture if resized. IMPORTANT: the compressor backend may also
+        /// replace the texture during compression itself -- e.g. the astcenc path (<see cref="AstcencTextureCompressor"/>)
+        /// always destroys <paramref name="texture"/> on success and returns a new instance, unlike
+        /// <see cref="UnityTextureCompressor"/> which compresses in place and returns the same reference. Callers must
+        /// always use the returned value and must never keep using <paramref name="texture"/> (or any reference derived
+        /// from it before this call) afterwards.</returns>
         internal static Texture2D CompressTextureForBuildTarget(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, int? maxTextureSize = null)
         {
             if (maxTextureSize.HasValue)
@@ -614,12 +640,19 @@ namespace KRT.VRCQuestTools.Utils
                 var (w, h) = AspectFitReduction(texture.width, texture.height, maxTextureSize.Value);
                 if (w != texture.width || h != texture.height)
                 {
+                    var original = texture;
                     texture = ResizeTextureImmediate(texture, w, h);
+
+                    // ResizeTextureImmediate returns a distinct new instance; the pre-resize one is no longer
+                    // referenced by this method (texture was just reassigned above) or, per this method's own
+                    // contract, by the caller (which must use the returned value and stop using its input), so
+                    // it would otherwise leak.
+                    DestroyTexture(original);
                 }
             }
 
-            var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
-            var format = isMobile ? mobileFormat : TextureFormat.DXT5;
+            // isNormalMap: false, so the result is always non-null (DXT5 fallback on non-mobile).
+            var format = ResolveEffectiveCompressionFormat(buildTarget, mobileFormat, false).Value;
             if (format == TextureFormat.DXT5)
             {
                 if (texture.width % 4 != 0 || texture.height % 4 != 0)
@@ -628,8 +661,9 @@ namespace KRT.VRCQuestTools.Utils
                     return texture;
                 }
             }
-            EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);
-            return texture;
+            Texture2D result = null;
+            TextureCompressorProvider.GetCompressor(format).CompressTexture(texture, format, (t) => result = t).WaitForCompletion();
+            return result;
         }
 
         /// <summary>
@@ -643,32 +677,10 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Compressed normal map.</returns>
         internal static Texture2D CompressNormalMap(Texture2D texture, UnityEditor.BuildTarget buildTarget, TextureFormat mobileFormat, bool readable = false, int? maxTextureSize = null)
         {
-            var pixels = texture.GetPixels32(0);
-            var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
-            using (var colors = new NativeArray<Color32>(pixels, Allocator.Temp))
-            {
-                var settings = new TextureGenerationSettings(TextureImporterType.NormalMap);
-                settings.textureImporterSettings.readable = readable;
-                settings.textureImporterSettings.mipmapEnabled = true;
-                settings.textureImporterSettings.streamingMipmaps = true;
-                settings.textureImporterSettings.wrapMode = texture.wrapMode;
-                settings.textureImporterSettings.filterMode = texture.filterMode;
-                settings.textureImporterSettings.aniso = texture.anisoLevel;
-                var currentMaxSize = Math.Max(texture.width, texture.height);
-                settings.platformSettings.maxTextureSize = maxTextureSize.HasValue ? Math.Min(maxTextureSize.Value, currentMaxSize) : currentMaxSize;
-                settings.sourceTextureInformation.width = texture.width;
-                settings.sourceTextureInformation.height = texture.height;
-                settings.sourceTextureInformation.containsAlpha = true;
-                settings.sourceTextureInformation.hdr = false;
-                if (isMobile)
-                {
-                    settings.platformSettings.format = (TextureImporterFormat)mobileFormat;
-                }
-
-                var output = TextureGenerator.GenerateTexture(settings, colors);
-                output.texture.name = texture.name;
-                return output.texture;
-            }
+            var format = ResolveEffectiveCompressionFormat(buildTarget, mobileFormat, true);
+            Texture2D result = null;
+            TextureCompressorProvider.GetCompressor(format).CompressNormalMap(texture, format, readable, maxTextureSize, (t) => result = t).WaitForCompletion();
+            return result;
         }
 
         /// <summary>
@@ -936,11 +948,17 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Resizes a texture immediately (synchronously) using GPU blit.
         /// </summary>
+        /// <remarks>
+        /// Internal (not private) so <see cref="Models.MaterialGeneratorUtility"/>'s progressive NDMF preview
+        /// path can apply the same maxTextureSize resize step to a placeholder texture before enqueueing it for
+        /// background compression, mirroring what <see cref="CompressTextureForBuildTarget"/> does inline for the
+        /// synchronous path.
+        /// </remarks>
         /// <param name="texture">Texture to resize.</param>
         /// <param name="width">Target width.</param>
         /// <param name="height">Target height.</param>
         /// <returns>Resized texture.</returns>
-        private static Texture2D ResizeTextureImmediate(Texture2D texture, int width, int height)
+        internal static Texture2D ResizeTextureImmediate(Texture2D texture, int width, int height)
         {
             var desc = new RenderTextureDescriptor(width, height, RenderTextureFormat.ARGB32, 0);
             desc.sRGB = texture.isDataSRGB;

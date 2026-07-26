@@ -3,10 +3,14 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Collections;
+using System.Threading.Tasks;
 using KRT.VRCQuestTools.Models.Unity;
+using KRT.VRCQuestTools.Utils;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace KRT.VRCQuestTools
 {
@@ -169,6 +173,39 @@ namespace KRT.VRCQuestTools
         }
 
         /// <summary>
+        /// Decodes a (possibly GPU-compressed, e.g. ASTC/DXT) texture back to a readable RGBA32 texture via GPU
+        /// blit and readback. Guards the blit/readback with <see cref="LogAssert.ignoreFailingMessages"/> because
+        /// CI's GPU support is limited (e.g. Linux CI: <see cref="SystemInfo.supportsAsyncGPUReadback"/> reports
+        /// true, but the underlying readback can still fail for RenderTexture assets and log an error).
+        /// </summary>
+        /// <param name="compressed">Texture to decode.</param>
+        /// <param name="width">Width to decode at.</param>
+        /// <param name="height">Height to decode at.</param>
+        /// <returns>Newly created readable RGBA32 texture. The caller is responsible for destroying it.</returns>
+        internal static Texture2D DecodeToRGBA32(Texture2D compressed, int width, int height)
+        {
+            var rt = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+            var prevActive = RenderTexture.active;
+            try
+            {
+                LogAssert.ignoreFailingMessages = true;
+                Graphics.Blit(compressed, rt);
+                RenderTexture.active = rt;
+                var result = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                LogAssert.ignoreFailingMessages = false;
+                result.Apply();
+                return result;
+            }
+            finally
+            {
+                LogAssert.ignoreFailingMessages = false;
+                RenderTexture.active = prevActive;
+                RenderTexture.ReleaseTemporary(rt);
+            }
+        }
+
+        /// <summary>
         /// Copy texture as readable.
         /// </summary>
         /// <param name="tex">Texture to copy.</param>
@@ -216,6 +253,50 @@ namespace KRT.VRCQuestTools
             if (shader == null)
             {
                 Assert.Ignore($"\"{name}\" shader not found");
+            }
+        }
+
+        /// <summary>
+        /// Creates an <see cref="AstcencTextureCompressor"/> for tests, or calls <see cref="Assert.Ignore(string)"/>
+        /// when no usable astcenc executable is available in the current environment (e.g. an unsupported CI
+        /// platform). Shared by all astcenc test fixtures so the environment check lives in exactly one place.
+        /// </summary>
+        /// <param name="preset">Quality preset with a leading dash (e.g. "-medium").</param>
+        /// <returns>A usable <see cref="AstcencTextureCompressor"/>.</returns>
+        internal static AstcencTextureCompressor CreateAstcencCompressorOrIgnore(string preset = "-medium")
+        {
+            var path = AstcencBinaryLocator.GetAstcencPath();
+            if (path == null)
+            {
+                Assert.Ignore("No usable astcenc executable is available in this environment.");
+            }
+            var version = AstcencCli.GetVersion(path);
+            return new AstcencTextureCompressor(path, version, preset);
+        }
+
+        /// <summary>
+        /// Spins (via repeated <c>yield return null</c>, one Editor update per iteration) until <paramref name="task"/>
+        /// completes, then re-throws its exception if it faulted. For use from a <c>[UnityTest]</c> IEnumerator
+        /// test, not a plain <c>[Test]</c> method: this project's bundled Unity Test Framework does not support
+        /// <c>async Task</c> test methods directly under <c>[Test]</c> (they fail with "Method has non-void
+        /// return value, but no result is expected"), and blocking synchronously on the task (e.g.
+        /// <c>Task.Wait()</c>) from a plain <c>[Test]</c> would deadlock: code under test that awaits
+        /// <c>Task.Run(...)</c> resumes via the main thread's captured <see cref="System.Threading.SynchronizationContext"/>,
+        /// which only gets pumped between Editor update ticks -- exactly what each <c>yield return null</c> here
+        /// yields control back for.
+        /// </summary>
+        /// <param name="task">Task to wait for.</param>
+        /// <returns>Enumerator that completes once <paramref name="task"/> completes.</returns>
+        internal static IEnumerator WaitForTask(Task task)
+        {
+            while (!task.IsCompleted)
+            {
+                yield return null;
+            }
+
+            if (task.IsFaulted)
+            {
+                throw task.Exception.InnerException ?? task.Exception;
             }
         }
     }

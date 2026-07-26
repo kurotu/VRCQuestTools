@@ -173,7 +173,7 @@ namespace KRT.VRCQuestTools.Models
                         newMaterial.MainTexture = t;
                         newMaterial.MainColor = new Color(1, 1, 1, 1);
                         (newMaterial.MainTextureScale, newMaterial.MainTextureOffset) = GetMainTextureST();
-                    }, mainPlatformOverride).WaitForCompletion();
+                    }, mainPlatformOverride, forEditorPreview).WaitForCompletion();
                 }
                 else
                 {
@@ -205,7 +205,7 @@ namespace KRT.VRCQuestTools.Models
                             newMaterial.ShadowRamp = t;
                             newMaterial.ShadowBoost = 0.0f;
                             newMaterial.ShadowTint = 0.0f;
-                        }, null).WaitForCompletion();
+                        }, null, forEditorPreview).WaitForCompletion();
                     }
                     else
                     {
@@ -230,7 +230,7 @@ namespace KRT.VRCQuestTools.Models
                         {
                             newMaterial.EmissionMap = t;
                             newMaterial.EmissionColor = new Color(1, 1, 1, 1);
-                        }, emissionPlatformOverride).WaitForCompletion();
+                        }, emissionPlatformOverride, forEditorPreview).WaitForCompletion();
                     }
                     else
                     {
@@ -277,7 +277,7 @@ namespace KRT.VRCQuestTools.Models
                     MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "matcap", saveTextureAsPng, texturesPath, (compl) => GenerateMatcap(compl), (t) =>
                     {
                         newMaterial.Matcap = t;
-                    }, matcapPlatformOverride).WaitForCompletion();
+                    }, matcapPlatformOverride, forEditorPreview).WaitForCompletion();
 
                     if (GetUseMatcapMask())
                     {
@@ -359,7 +359,7 @@ namespace KRT.VRCQuestTools.Models
                                         throw new InvalidProgramException($"Unhandled mask type: {mask.MaskType}");
                                 }
                             }
-                        }, packedMaskPlatformOverride).WaitForCompletion();
+                        }, packedMaskPlatformOverride, forEditorPreview).WaitForCompletion();
                     }
                 }
             }
