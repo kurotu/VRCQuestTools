@@ -168,6 +168,16 @@ namespace KRT.VRCQuestTools.Inspector
                     canConvert = false;
                 }
 
+                if (!converterSettings.HasLegacyAvatarDynamicsSettings && !converterSettings.removeAvatarDynamics)
+                {
+                    // removeAvatarDynamics is only user-editable in legacy mode (see the foldout below).
+                    // Heal any stale false value from before this avatar's legacy settings were cleared,
+                    // since a hidden false would otherwise disable the Avatar Dynamics section with no
+                    // way to re-enable it from the Inspector.
+                    converterSettings.removeAvatarDynamics = true;
+                    EditorUtility.SetDirty(converterSettings);
+                }
+
                 var avatarDynamicsStats = converterSettings.removeAvatarDynamics ? GetEstimatedPerformanceStats(converterSettings) : null;
 
                 editorState.foldOutMaterialSettings = Views.EditorGUIUtility.Foldout(i18n.AvatarConverterMaterialConvertSettingsLabel, editorState.foldOutMaterialSettings);
