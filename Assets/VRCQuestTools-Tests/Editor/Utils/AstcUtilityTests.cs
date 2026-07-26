@@ -1,3 +1,8 @@
+// <copyright file="AstcUtilityTests.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.IO;
 using NUnit.Framework;
