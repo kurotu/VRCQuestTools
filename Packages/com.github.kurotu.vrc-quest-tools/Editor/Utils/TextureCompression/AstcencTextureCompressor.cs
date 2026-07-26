@@ -96,6 +96,19 @@ namespace KRT.VRCQuestTools.Utils
         /// </summary>
         internal static int SuccessfulCompressionCount { get; set; }
 
+        /// <summary>
+        /// Gets the number of threads to pass to astcenc's -j: every core but one.
+        /// </summary>
+        /// <remarks>
+        /// astcenc saturates whatever it is given, and preview compression runs in the background while the user
+        /// keeps working, so handing it every core starves the editor's main thread for the entire compression --
+        /// long enough to be felt as sluggishness even though nothing is actually blocked (a 2048x2048 6x6
+        /// texture takes several seconds at the -thorough preset). Leaving one core free costs a little
+        /// wall-clock time per texture and keeps the editor usable meanwhile. Read on the main thread only,
+        /// before handing the value to the worker.
+        /// </remarks>
+        private static int CompressionJobs => Math.Max(1, SystemInfo.processorCount - 1);
+
         /// <inheritdoc/>
         public AsyncCallbackRequest CompressTexture(Texture2D texture, TextureFormat format, Action<Texture2D> completion)
         {
@@ -404,7 +417,7 @@ namespace KRT.VRCQuestTools.Utils
             var srgb = texture.isDataSRGB;
             var linear = !texture.isDataSRGB;
             var mipChain = mipmapCount > 1;
-            var jobs = Math.Max(1, SystemInfo.processorCount);
+            var jobs = CompressionJobs;
 
             var offset = 0;
             void WriteLevelTga(int level, string tgaPath)
@@ -447,7 +460,7 @@ namespace KRT.VRCQuestTools.Utils
             result.anisoLevel = anisoLevel;
 
             SuccessfulCompressionCount++;
-            Logger.LogDebug($"astcenc compressed texture \"{name}\" to {format} ({result.width}x{result.height}, {levels.Count} mips, {preset}) in {stopwatch.ElapsedMilliseconds} ms (background).", result);
+            Logger.LogDebug($"astcenc compressed texture \"{name}\" to {format} ({result.width}x{result.height}, {levels.Count} mips, {preset}, -j {jobs}) in {stopwatch.ElapsedMilliseconds} ms (background).", result);
             return result;
         }
 
@@ -525,7 +538,7 @@ namespace KRT.VRCQuestTools.Utils
                 }
             }
 
-            var jobs = Math.Max(1, SystemInfo.processorCount);
+            var jobs = CompressionJobs;
 
             byte[] combined;
             var stopwatch = Stopwatch.StartNew();
@@ -553,7 +566,7 @@ namespace KRT.VRCQuestTools.Utils
             TextureUtility.SetStreamingMipMaps(result, true);
 
             SuccessfulCompressionCount++;
-            Logger.LogDebug($"astcenc compressed normal map \"{name}\" to {format.Value} ({result.width}x{result.height}, {levelSizes.Count} mips, {preset}) in {stopwatch.ElapsedMilliseconds} ms (background).", result);
+            Logger.LogDebug($"astcenc compressed normal map \"{name}\" to {format.Value} ({result.width}x{result.height}, {levelSizes.Count} mips, {preset}, -j {jobs}) in {stopwatch.ElapsedMilliseconds} ms (background).", result);
             return result;
         }
 
@@ -701,7 +714,7 @@ namespace KRT.VRCQuestTools.Utils
             var stopwatch = Stopwatch.StartNew();
             try
             {
-                var jobs = Math.Max(1, SystemInfo.processorCount);
+                var jobs = CompressionJobs;
                 var blockSize = AstcUtility.GetBlockSizeString(format);
 
                 // Total compressed size is known up front from the mip dimensions alone (independent of the
@@ -757,7 +770,7 @@ namespace KRT.VRCQuestTools.Utils
                 SuccessfulCompressionCount++;
                 stopwatch.Stop();
                 var kind = string.IsNullOrEmpty(logPrefix) ? "texture" : "normal map";
-                Logger.LogDebug($"astcenc compressed {kind} \"{result.name}\" to {format} ({result.width}x{result.height}, {levels.Count} mips, {preset}) in {stopwatch.ElapsedMilliseconds} ms (synchronous).", result);
+                Logger.LogDebug($"astcenc compressed {kind} \"{result.name}\" to {format} ({result.width}x{result.height}, {levels.Count} mips, {preset}, -j {jobs}) in {stopwatch.ElapsedMilliseconds} ms (synchronous).", result);
                 return result;
             }
             catch (Exception e)
