@@ -30,6 +30,7 @@ namespace KRT.VRCQuestTools.Menus
             private const string SettingsMenu = RootMenu + "Settings/";
             internal const string EnableValidationAutomator = SettingsMenu + "Enable Validation Automator";
             internal const string EnableTextureFormatCheckOnStandalone = SettingsMenu + "[NDMF] Enable Texture Format Check on Windows Build";
+            internal const string EnableDebugLog = SettingsMenu + "Enable Debug Log";
             private const string LanguageMenu = RootMenu + "Languages/";
             internal const string LanguageAuto = LanguageMenu + "Auto (default)";
             internal const string LanguageEnglish = LanguageMenu + "English";
@@ -54,6 +55,7 @@ namespace KRT.VRCQuestTools.Menus
             ClearTextureCache,
             EnableValidationAutomator = 950,
             EnableTextureFormatCheckOnStandalone,
+            EnableDebugLog,
             LanguageAuto = 1000,
             LanguageEnglish,
             LanguageJapanese,

@@ -173,6 +173,15 @@ namespace KRT.VRCQuestTools.Models
             set { SetBooleanConfigValue(Keys.CheckTextureFormatOnStandalone, value); }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether debug logging is enabled.
+        /// </summary>
+        internal static bool IsDebugLogEnabled
+        {
+            get { return GetBooleanConfigValue(Keys.DebugLogEnabled, false); }
+            set { SetBooleanConfigValue(Keys.DebugLogEnabled, value); }
+        }
+
         private static DateTime UnixEpoch => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>
@@ -233,6 +242,7 @@ namespace KRT.VRCQuestTools.Models
             internal const string TextureCacheDirectory = PREFIX + "TextureCacheDirectory";
             internal const string ValidationAutomatorEnabled = PREFIX + "ValidationAutomatorEnabled";
             internal const string CheckTextureFormatOnStandalone = PREFIX + "CheckTextureFormatOnStandalone";
+            internal const string DebugLogEnabled = PREFIX + "DebugLogEnabled";
             private const string PREFIX = "dev.kurotu.VRCQuestTools.";
         }
     }

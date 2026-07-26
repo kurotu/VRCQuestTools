@@ -13,6 +13,12 @@ namespace KRT.VRCQuestTools.Menus
     /// </summary>
     internal static class SettingsMenu
     {
+        [InitializeOnLoadMethod]
+        private static void InitDebugLog()
+        {
+            Logger.UseDebug = VRCQuestToolsSettings.IsDebugLogEnabled;
+        }
+
         [MenuItem(VRCQuestToolsMenus.MenuPaths.EnableValidationAutomator, false, (int)VRCQuestToolsMenus.MenuPriorities.EnableValidationAutomator)]
         private static void ToggleValidationAutomator()
         {
@@ -36,6 +42,20 @@ namespace KRT.VRCQuestTools.Menus
         private static bool ToggleTextureFormatCheckOnStandaloneValidation()
         {
             Menu.SetChecked(VRCQuestToolsMenus.MenuPaths.EnableTextureFormatCheckOnStandalone, VRCQuestToolsSettings.IsCheckTextureFormatOnStandaloneEnabled);
+            return true;
+        }
+
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.EnableDebugLog, false, (int)VRCQuestToolsMenus.MenuPriorities.EnableDebugLog)]
+        private static void ToggleDebugLog()
+        {
+            VRCQuestToolsSettings.IsDebugLogEnabled = !VRCQuestToolsSettings.IsDebugLogEnabled;
+            Logger.UseDebug = VRCQuestToolsSettings.IsDebugLogEnabled;
+        }
+
+        [MenuItem(VRCQuestToolsMenus.MenuPaths.EnableDebugLog, true)]
+        private static bool ToggleDebugLogValidation()
+        {
+            Menu.SetChecked(VRCQuestToolsMenus.MenuPaths.EnableDebugLog, VRCQuestToolsSettings.IsDebugLogEnabled);
             return true;
         }
     }
