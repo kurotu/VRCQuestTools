@@ -35,6 +35,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 .BeforePlugin("nadena.dev.modular-avatar") // need to configure modular avatar
                 .Run(BuildTargetConfigurationPass.Instance)
                 .Then.Run(PlatformGameObjectRemoverPass.Instance)
+                .PreviewingWith(new PlatformGameObjectRemoverFilter())
                 .Then.Run(PlatformComponentRemoverPass.Instance)
                 .Then.Run(AvatarConverterResolvingPass.Instance);
 

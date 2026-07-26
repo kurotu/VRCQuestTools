@@ -20,3 +20,6 @@ For example, you can remove a PC-only accessory entirely on Mobile.
 | Keep on Mobile | When checked, keeps this GameObject in Mobile builds. |
 
 The GameObject and its children are removed in builds for the platforms you unchecked.
+
+When NDMF preview is enabled, meshes under the GameObject to be removed are hidden in the Scene view.
+Particles and other non-mesh rendering are not reflected in the preview, but they are removed with the GameObject at build time.

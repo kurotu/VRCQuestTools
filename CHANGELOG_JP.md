@@ -23,6 +23,7 @@
 - (実験的機能) Poiyomi から Toon Standard へのマテリアル変換を追加。
 - パーティクルシェーダー、パーティクルシステム、Trail Renderer、Line Renderer 専用のマテリアル変換を追加。
 - `Avatar Converter Settings` で、アバターに MA Sync Parameter Sequence または AAO Trace and Optimize コンポーネントがない場合に警告と追加ボタンを表示するように追加。
+- [NDMF] `Platform GameObject Remover` のプレビューを追加。対象プラットフォームで削除される GameObject 配下の Renderer が非表示になります。
 - `Tools/VRCQuestTools/Settings` に `Enable Debug Log` メニューを追加し、実プロジェクトでもデバッグログを有効化できるようにしました。
 
 ### 変更

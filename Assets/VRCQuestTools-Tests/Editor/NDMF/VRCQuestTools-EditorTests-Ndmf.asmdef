@@ -16,6 +16,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
+        "System.Collections.Immutable.dll",
         "nunit.framework.dll",
         "VRCSDKBase.dll",
         "VRCSDK3A.dll",
@@ -32,6 +33,11 @@
             "name": "nadena.dev.ndmf",
             "expression": "[1.5.0,2.0.0-a)",
             "define": "VQT_HAS_NDMF"
+        },
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "[1.10.0,2.0.0-a)",
+            "define": "VQT_NDMF_HAS_PROP_CACHE_DEBUG"
         }
     ],
     "noEngineReferences": false
