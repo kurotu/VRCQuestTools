@@ -90,14 +90,22 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>True when the texture was enqueued (the caller must not touch <paramref name="placeholder"/> or fall back to synchronous compression); false when no material-texture-replacer is registered (e.g. NDMF is not installed), or the pending-bytes cap would be exceeded, in which case the caller must fall back to synchronous compression itself and <paramref name="placeholder"/> remains entirely the caller's responsibility.</returns>
         internal static bool TryEnqueue(Texture2D placeholder, AstcencTextureCompressor compressor, TextureFormat? format, bool isNormalMap, bool readable, int? maxTextureSize, string cacheFile, bool isSRGB)
         {
-            if (assemblyReloading || materialTextureReplacer == null)
+            if (assemblyReloading)
             {
+                Logger.LogDebug($"Progressive compression queue declined \"{placeholder.name}\" (an assembly reload is in progress); the caller will fall back to synchronous compression.", placeholder);
+                return false;
+            }
+
+            if (materialTextureReplacer == null)
+            {
+                Logger.LogDebug($"Progressive compression queue declined \"{placeholder.name}\" (no material texture replacer is registered, e.g. NDMF is not installed); the caller will fall back to synchronous compression.", placeholder);
                 return false;
             }
 
             var estimatedBytes = EstimatePlaceholderBytes(placeholder);
             if (pendingBytes + estimatedBytes > MaxPendingBytes)
             {
+                Logger.LogDebug($"Progressive compression queue declined \"{placeholder.name}\" (pending bytes cap reached: {pendingBytes + estimatedBytes} > {MaxPendingBytes}); the caller will fall back to synchronous compression.", placeholder);
                 return false;
             }
 
@@ -123,6 +131,7 @@ namespace KRT.VRCQuestTools.Utils
             });
             pendingBytes += estimatedBytes;
             EnsureUpdateHooked();
+            Logger.LogDebug($"Progressive compression queue accepted \"{placeholder.name}\" (estimated {estimatedBytes} bytes, queue length {Pending.Count}).", placeholder);
             return true;
         }
 
@@ -380,6 +389,8 @@ namespace KRT.VRCQuestTools.Utils
                 DestroyPlaceholderUnlessItIsTheResult(item, compressed);
                 return;
             }
+
+            Logger.LogDebug($"Progressive compression replaced \"{compressed.name}\" in {replacedCount} cached preview material propert{(replacedCount == 1 ? "y" : "ies")}.", compressed);
 
             // Matches what the synchronous path (MaterialGeneratorUtility.SaveTexture) does for both color and
             // normal map textures; AstcencTextureCompressor.CompressNormalMap(Async) already does this itself for

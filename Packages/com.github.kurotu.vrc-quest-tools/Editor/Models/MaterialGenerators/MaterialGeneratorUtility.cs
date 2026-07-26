@@ -174,33 +174,46 @@ namespace KRT.VRCQuestTools.Models
         /// <returns>True when the texture was successfully enqueued for background compression (the caller must treat <paramref name="texToWrite"/> as the new placeholder and do nothing further to it). False when astcenc is unavailable for <paramref name="compressionFormat"/>, or the queue's pending-bytes cap was reached, in which case the caller must fall back to synchronous compression.</returns>
         private static bool TryEnqueueProgressiveCompression(TextureFormat? compressionFormat, TextureConfig config, string cacheFile, (int MaxTextureSize, TextureFormat Format)? platformOverride, ref Texture2D texToWrite)
         {
+            bool enqueued;
+            string skippedReason;
+
             if (!(TextureCompressorProvider.GetCompressor(compressionFormat) is AstcencTextureCompressor compressor))
             {
-                return false;
+                enqueued = false;
+                skippedReason = $"astcenc is unavailable for format {compressionFormat}";
             }
-
-            var overrideMaxTextureSize = TextureUtility.NormalizeMaxTextureSize(platformOverride?.MaxTextureSize);
-
-            if (!config.isNormalMap && overrideMaxTextureSize.HasValue)
+            else
             {
-                // Mirrors CompressTextureForBuildTarget's maxTextureSize resize step. Its DXT5 4-multiple guard is
-                // irrelevant here: TextureCompressorProvider only resolves to AstcencTextureCompressor for ASTC formats.
-                var (w, h) = TextureUtility.AspectFitReduction(texToWrite.width, texToWrite.height, overrideMaxTextureSize.Value);
-                if (w != texToWrite.width || h != texToWrite.height)
-                {
-                    var original = texToWrite;
-                    texToWrite = TextureUtility.ResizeTextureImmediate(texToWrite, w, h);
+                var overrideMaxTextureSize = TextureUtility.NormalizeMaxTextureSize(platformOverride?.MaxTextureSize);
 
-                    // ResizeTextureImmediate returns a distinct new instance; the pre-resize one is no longer
-                    // referenced by this method (texToWrite was just reassigned above) or by its caller (the
-                    // requestGenerateImageFunc completion closure in GenerateTexture, which only ever uses the
-                    // ref parameter's current value), so it would otherwise leak. Mirrors the identical fix in
-                    // TextureUtility.CompressTextureForBuildTarget.
-                    TextureUtility.DestroyTexture(original);
+                if (!config.isNormalMap && overrideMaxTextureSize.HasValue)
+                {
+                    // Mirrors CompressTextureForBuildTarget's maxTextureSize resize step. Its DXT5 4-multiple guard is
+                    // irrelevant here: TextureCompressorProvider only resolves to AstcencTextureCompressor for ASTC formats.
+                    var (w, h) = TextureUtility.AspectFitReduction(texToWrite.width, texToWrite.height, overrideMaxTextureSize.Value);
+                    if (w != texToWrite.width || h != texToWrite.height)
+                    {
+                        var original = texToWrite;
+                        texToWrite = TextureUtility.ResizeTextureImmediate(texToWrite, w, h);
+
+                        // ResizeTextureImmediate returns a distinct new instance; the pre-resize one is no longer
+                        // referenced by this method (texToWrite was just reassigned above) or by its caller (the
+                        // requestGenerateImageFunc completion closure in GenerateTexture, which only ever uses the
+                        // ref parameter's current value), so it would otherwise leak. Mirrors the identical fix in
+                        // TextureUtility.CompressTextureForBuildTarget.
+                        TextureUtility.DestroyTexture(original);
+                    }
                 }
+
+                enqueued = PreviewTextureCompressionQueue.TryEnqueue(texToWrite, compressor, compressionFormat, config.isNormalMap, readable: false, overrideMaxTextureSize, cacheFile, config.isSRGB);
+                skippedReason = "the compression queue declined the item";
             }
 
-            return PreviewTextureCompressionQueue.TryEnqueue(texToWrite, compressor, compressionFormat, config.isNormalMap, readable: false, overrideMaxTextureSize, cacheFile, config.isSRGB);
+            Logger.LogDebug(enqueued
+                ? $"Progressive preview compression used for \"{texToWrite.name}\"."
+                : $"Progressive preview compression not used for \"{texToWrite.name}\" ({skippedReason}); using synchronous compression instead.", texToWrite);
+
+            return enqueued;
         }
 
         private static Texture2D TryLoadCacheTexture(Material material, IMaterialConvertSettings settings, bool saveAsPng, string texturesPath, TextureConfig config, string cacheFile, string outFile, (int MaxTextureSize, TextureFormat Format)? platformOverride)

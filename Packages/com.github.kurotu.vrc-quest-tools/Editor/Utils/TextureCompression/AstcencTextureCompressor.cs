@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -98,10 +99,19 @@ namespace KRT.VRCQuestTools.Utils
         /// <inheritdoc/>
         public AsyncCallbackRequest CompressTexture(Texture2D texture, TextureFormat format, Action<Texture2D> completion)
         {
-            if (!AstcUtility.TryGetBlockSize(format, out var blockX, out var blockY) || texture.format != TextureFormat.RGBA32)
+            if (!AstcUtility.TryGetBlockSize(format, out var blockX, out var blockY))
             {
-                // Not a path astcenc can handle (e.g. non-ASTC target format, or an already-compressed source).
-                // This is a normal, expected fallback, not an error, so no warning is logged.
+                // Not a path astcenc can handle (non-ASTC target format). This is a normal, expected fallback,
+                // not an error, so no warning is logged.
+                Logger.LogDebug($"astcenc skipped for \"{texture.name}\" (target format {format} is not an ASTC format); using Unity's texture compression.", texture);
+                return fallback.CompressTexture(texture, format, completion);
+            }
+
+            if (texture.format != TextureFormat.RGBA32)
+            {
+                // Not a path astcenc can handle (an already-compressed source). This is a normal, expected
+                // fallback, not an error, so no warning is logged.
+                Logger.LogDebug($"astcenc skipped for \"{texture.name}\" (source format {texture.format} is not RGBA32); using Unity's texture compression.", texture);
                 return fallback.CompressTexture(texture, format, completion);
             }
 
@@ -187,11 +197,26 @@ namespace KRT.VRCQuestTools.Utils
         /// </remarks>
         public AsyncCallbackRequest CompressNormalMap(Texture2D texture, TextureFormat? format, bool readable, int? maxTextureSize, Action<Texture2D> completion)
         {
-            if (!format.HasValue || !AstcUtility.TryGetBlockSize(format.Value, out var blockX, out var blockY) || !texture.isReadable)
+            if (!format.HasValue)
             {
-                // Not a path astcenc can handle (e.g. a non-mobile normal map left for TextureGenerator to decide,
-                // an unsupported ASTC format, or a non-readable input). This is a normal, expected fallback, not
-                // an error, so no warning is logged.
+                // A non-mobile normal map left for TextureGenerator to decide. This is a normal, expected
+                // fallback, not an error, so no warning is logged.
+                Logger.LogDebug($"astcenc skipped for normal map \"{texture.name}\" (no target format specified); using Unity's texture compression.", texture);
+                return fallback.CompressNormalMap(texture, format, readable, maxTextureSize, completion);
+            }
+
+            if (!AstcUtility.TryGetBlockSize(format.Value, out var blockX, out var blockY))
+            {
+                // An unsupported ASTC format. This is a normal, expected fallback, not an error, so no warning
+                // is logged.
+                Logger.LogDebug($"astcenc skipped for normal map \"{texture.name}\" (target format {format.Value} is not an ASTC format); using Unity's texture compression.", texture);
+                return fallback.CompressNormalMap(texture, format, readable, maxTextureSize, completion);
+            }
+
+            if (!texture.isReadable)
+            {
+                // A non-readable input. This is a normal, expected fallback, not an error, so no warning is logged.
+                Logger.LogDebug($"astcenc skipped for normal map \"{texture.name}\" (texture is not readable); using Unity's texture compression.", texture);
                 return fallback.CompressNormalMap(texture, format, readable, maxTextureSize, completion);
             }
 
@@ -346,8 +371,15 @@ namespace KRT.VRCQuestTools.Utils
         /// <exception cref="OperationCanceledException">Thrown when <paramref name="cancellationToken"/> is cancelled before every mip level finished compressing.</exception>
         internal async Task<Texture2D> CompressTextureAsync(Texture2D texture, TextureFormat format, CancellationToken cancellationToken = default)
         {
-            if (!AstcUtility.TryGetBlockSize(format, out var blockX, out var blockY) || texture.format != TextureFormat.RGBA32)
+            if (!AstcUtility.TryGetBlockSize(format, out var blockX, out var blockY))
             {
+                Logger.LogDebug($"astcenc skipped for \"{texture.name}\" (target format {format} is not an ASTC format); the caller will fall back to Unity's texture compression.", texture);
+                throw new NotSupportedException($"astcenc cannot asynchronously compress texture \"{texture.name}\" ({texture.format}) to {format}.");
+            }
+
+            if (texture.format != TextureFormat.RGBA32)
+            {
+                Logger.LogDebug($"astcenc skipped for \"{texture.name}\" (source format {texture.format} is not RGBA32); the caller will fall back to Unity's texture compression.", texture);
                 throw new NotSupportedException($"astcenc cannot asynchronously compress texture \"{texture.name}\" ({texture.format}) to {format}.");
             }
 
@@ -389,6 +421,7 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             byte[] combined;
+            var stopwatch = Stopwatch.StartNew();
             await AsyncCompressionGate.WaitAsync(cancellationToken);
             try
             {
@@ -398,6 +431,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 AsyncCompressionGate.Release();
             }
+            stopwatch.Stop();
 
             // Back on the main thread (the awaits above resume via the calling thread's SynchronizationContext):
             // safe to touch Unity API again from here on.
@@ -413,6 +447,7 @@ namespace KRT.VRCQuestTools.Utils
             result.anisoLevel = anisoLevel;
 
             SuccessfulCompressionCount++;
+            Logger.LogDebug($"astcenc compressed texture \"{name}\" to {format} ({result.width}x{result.height}, {levels.Count} mips, {preset}) in {stopwatch.ElapsedMilliseconds} ms (background).", result);
             return result;
         }
 
@@ -432,8 +467,21 @@ namespace KRT.VRCQuestTools.Utils
         /// <exception cref="OperationCanceledException">Thrown when <paramref name="cancellationToken"/> is cancelled before every mip level finished compressing.</exception>
         internal async Task<Texture2D> CompressNormalMapAsync(Texture2D texture, TextureFormat? format, bool readable, int? maxTextureSize, CancellationToken cancellationToken = default)
         {
-            if (!format.HasValue || !AstcUtility.TryGetBlockSize(format.Value, out var blockX, out var blockY) || !texture.isReadable)
+            if (!format.HasValue)
             {
+                Logger.LogDebug($"astcenc skipped for normal map \"{texture.name}\" (no target format specified); the caller will fall back to Unity's texture compression.", texture);
+                throw new NotSupportedException($"astcenc cannot asynchronously compress normal map \"{texture.name}\" to {format}.");
+            }
+
+            if (!AstcUtility.TryGetBlockSize(format.Value, out var blockX, out var blockY))
+            {
+                Logger.LogDebug($"astcenc skipped for normal map \"{texture.name}\" (target format {format.Value} is not an ASTC format); the caller will fall back to Unity's texture compression.", texture);
+                throw new NotSupportedException($"astcenc cannot asynchronously compress normal map \"{texture.name}\" to {format}.");
+            }
+
+            if (!texture.isReadable)
+            {
+                Logger.LogDebug($"astcenc skipped for normal map \"{texture.name}\" (texture is not readable); the caller will fall back to Unity's texture compression.", texture);
                 throw new NotSupportedException($"astcenc cannot asynchronously compress normal map \"{texture.name}\" to {format}.");
             }
 
@@ -480,6 +528,7 @@ namespace KRT.VRCQuestTools.Utils
             var jobs = Math.Max(1, SystemInfo.processorCount);
 
             byte[] combined;
+            var stopwatch = Stopwatch.StartNew();
             await AsyncCompressionGate.WaitAsync(cancellationToken);
             try
             {
@@ -489,6 +538,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 AsyncCompressionGate.Release();
             }
+            stopwatch.Stop();
 
             // Back on the main thread; see CompressTextureAsync's identical comment.
             var result = new Texture2D(width, height, format.Value, levelSizes.Count > 1, true);
@@ -503,6 +553,7 @@ namespace KRT.VRCQuestTools.Utils
             TextureUtility.SetStreamingMipMaps(result, true);
 
             SuccessfulCompressionCount++;
+            Logger.LogDebug($"astcenc compressed normal map \"{name}\" to {format.Value} ({result.width}x{result.height}, {levelSizes.Count} mips, {preset}) in {stopwatch.ElapsedMilliseconds} ms (background).", result);
             return result;
         }
 
@@ -647,6 +698,7 @@ namespace KRT.VRCQuestTools.Utils
         {
             var tempFiles = new List<string>();
             Texture2D result = null;
+            var stopwatch = Stopwatch.StartNew();
             try
             {
                 var jobs = Math.Max(1, SystemInfo.processorCount);
@@ -703,6 +755,9 @@ namespace KRT.VRCQuestTools.Utils
                 postProcess?.Invoke(result);
 
                 SuccessfulCompressionCount++;
+                stopwatch.Stop();
+                var kind = string.IsNullOrEmpty(logPrefix) ? "texture" : "normal map";
+                Logger.LogDebug($"astcenc compressed {kind} \"{result.name}\" to {format} ({result.width}x{result.height}, {levels.Count} mips, {preset}) in {stopwatch.ElapsedMilliseconds} ms (synchronous).", result);
                 return result;
             }
             catch (Exception e)
