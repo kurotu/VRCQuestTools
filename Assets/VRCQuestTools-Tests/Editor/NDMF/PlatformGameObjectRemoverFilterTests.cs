@@ -3,7 +3,9 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+#if VQT_NDMF_HAS_PROP_CACHE_DEBUG
 using System.Linq;
+#endif
 using KRT.VRCQuestTools.Components;
 using nadena.dev.ndmf.preview;
 using NUnit.Framework;
@@ -35,6 +37,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
         }
 
+#if VQT_NDMF_HAS_PROP_CACHE_DEBUG
         /// <summary>
         /// Renderers under a GameObject removed for the Android target are targeted by the filter.
         /// </summary>
@@ -91,6 +94,7 @@ namespace KRT.VRCQuestTools.Ndmf
             Assert.IsTrue(targets.Contains(renderer), "Supported renderer must be targeted.");
             Assert.IsFalse(targets.Contains(particleRenderer), "ParticleSystemRenderer must be excluded from render groups.");
         }
+#endif
 
         /// <summary>
         /// The filter node disables the proxy renderer on each frame without touching the original.
@@ -125,12 +129,17 @@ namespace KRT.VRCQuestTools.Ndmf
             return child.AddComponent<SkinnedMeshRenderer>();
         }
 
+#if VQT_NDMF_HAS_PROP_CACHE_DEBUG
         private Renderer[] GetTargetRenderers()
         {
             // Global queries are cached and don't observe objects created inside a synchronous test body.
+            // PropCacheDebug.InvalidateAllCaches() itself requires NDMF 1.10.0+ (see VQT_NDMF_HAS_PROP_CACHE_DEBUG),
+            // so GetTargetGroups() is only exercised here; PlatformGameObjectRemoverFilter still supports the
+            // project's NDMF 1.5.0 floor, this test just can't verify it against that old a version.
             PropCacheDebug.InvalidateAllCaches();
             var groups = new PlatformGameObjectRemoverFilter().GetTargetGroups(new ComputeContext("test"));
             return groups.SelectMany(g => g.Renderers).ToArray();
         }
+#endif
     }
 }
