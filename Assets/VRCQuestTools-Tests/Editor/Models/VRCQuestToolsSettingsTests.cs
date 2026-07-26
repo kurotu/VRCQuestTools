@@ -69,12 +69,34 @@ namespace KRT.VRCQuestTools.Models
         {
             var folder1 = VRCQuestToolsSettings.TextureCacheFolder;
             var folder2 = VRCQuestToolsSettings.TextureCacheFolder;
-            
+
             // Should always return the same path
             Assert.AreEqual(folder1, folder2);
-            
+
             // Should be a relative path
             Assert.IsFalse(Path.IsPathRooted(folder1), "Cache folder should be a relative path");
+        }
+
+        /// <summary>
+        /// Test that debug log setting can be set and retrieved, and round-trips through both values.
+        /// </summary>
+        [Test]
+        public void DebugLogEnabledCanBeSetAndRetrieved()
+        {
+            var originalValue = VRCQuestToolsSettings.IsDebugLogEnabled;
+
+            try
+            {
+                VRCQuestToolsSettings.IsDebugLogEnabled = true;
+                Assert.IsTrue(VRCQuestToolsSettings.IsDebugLogEnabled);
+
+                VRCQuestToolsSettings.IsDebugLogEnabled = false;
+                Assert.IsFalse(VRCQuestToolsSettings.IsDebugLogEnabled);
+            }
+            finally
+            {
+                VRCQuestToolsSettings.IsDebugLogEnabled = originalValue;
+            }
         }
     }
 }
