@@ -206,6 +206,22 @@ namespace KRT.VRCQuestTools.Utils
                         throw new InvalidDataException($"Invalid texture cache data length: {dataLength}.");
                     }
 
+                    // Compared against what the file actually holds *before* ReadBytes below, which allocates a
+                    // buffer of exactly this size upfront: a corrupt length field would otherwise ask for an
+                    // arbitrarily large allocation, and the post-read truncation check would only notice once
+                    // that allocation had already been attempted. BinaryReader consumes exactly the bytes it is
+                    // asked for (it never reads ahead), so the stream position here is the real read position.
+                    // Streams passed in by CacheManager are always seekable (FileStream); for anything else the
+                    // truncation check below remains the only guard.
+                    if (stream.CanSeek)
+                    {
+                        var remaining = stream.Length - stream.Position;
+                        if (dataLength > remaining)
+                        {
+                            throw new InvalidDataException($"Truncated texture cache entry: the header declares {dataLength} bytes of texture data but only {remaining} bytes remain.");
+                        }
+                    }
+
                     var rawData = reader.ReadBytes(dataLength);
                     if (rawData.Length != dataLength)
                     {

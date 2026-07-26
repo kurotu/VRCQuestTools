@@ -377,6 +377,35 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Test that a corrupt data length in an otherwise well-formed entry is rejected before a buffer of that
+        /// size is allocated, rather than after the read has already been attempted.
+        /// </summary>
+        [Test]
+        public void TextureCache_ReadFromRejectsImplausibleDataLength()
+        {
+            using (var stream = new MemoryStream())
+            {
+                // Mirrors TextureCache.WriteTo's layout, but declares far more texture data than the entry holds.
+                using (var writer = new BinaryWriter(stream, System.Text.Encoding.UTF8, true))
+                {
+                    writer.Write(new byte[] { (byte)'V', (byte)'Q', (byte)'T', (byte)'C' });
+                    writer.Write(CacheUtility.TextureCache.FormatVersion);
+                    writer.Write(16);
+                    writer.Write(16);
+                    writer.Write((int)TextureFormat.RGBA32);
+                    writer.Write((int)BuildTarget.Android);
+                    writer.Write(false);
+                    writer.Write(false);
+                    writer.Write(false);
+                    writer.Write(int.MaxValue);
+                }
+                stream.Position = 0;
+
+                Assert.Throws<InvalidDataException>(() => CacheUtility.TextureCache.ReadFrom(stream));
+            }
+        }
+
+        /// <summary>
         /// Test that TextureCache.ToTexture2D falls back to building the normal map container directly
         /// (instead of throwing) when the pre-baked blank normal map asset used as a container doesn't match
         /// the texture attributes recorded at cache-save time.
