@@ -69,6 +69,7 @@ Toggles the behavior of VRCQuestTools.
 
 - **Enable Validation Automator**: Automatically validates avatars in the scene and notifies you of problems.
 - **[NDMF] Enable Texture Format Check on Windows Build**: Checks Windows builds for texture formats which can't be used on Mobile.
+- **Enable Debug Log**: Outputs verbose debug logs to the Console for troubleshooting.
 
 ## Languages
 
