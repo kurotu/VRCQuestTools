@@ -39,19 +39,33 @@ namespace KRT.VRCQuestTools.Utils
         /// compressed) at once. Progressive keeps each placeholder (an uncompressed baked RGBA32 texture, with
         /// mips) alive in memory until its compressed replacement is ready; a 2048x2048 RGBA32 texture with a
         /// full mip chain is about 22 MB (2048*2048*4 * 4/3 for the mip chain overhead). 512 MB allows roughly
-        /// 23 such textures to be in flight -- generous for normal preview activity (compression is processed
-        /// one at a time, so the queue drains quickly relative to typical preview edit rates) -- while still
-        /// bounding the worst case (e.g. toggling material preview for many avatars at once) so it cannot balloon
-        /// editor memory unboundedly. Enqueue attempts beyond this cap fall back to synchronous compression.
+        /// 23 such textures to be in flight -- generous for normal preview activity (see
+        /// <see cref="MaxConcurrentCompressions"/> for how many of those are actually compressing at once; the
+        /// rest simply wait their turn) -- while still bounding the worst case (e.g. toggling material preview
+        /// for many avatars at once) so it cannot balloon editor memory unboundedly. Enqueue attempts beyond this
+        /// cap fall back to synchronous compression.
         /// </summary>
         internal const long MaxPendingBytes = 512L * 1024 * 1024;
 
+        /// <summary>
+        /// Real, core-count-derived value of <see cref="MaxConcurrentCompressions"/> (i.e. ignoring
+        /// <see cref="MaxConcurrentCompressionsOverrideForTesting"/>). Computed once: <see cref="SystemInfo.processorCount"/>
+        /// does not change during a session.
+        /// </summary>
+        private static readonly int DefaultMaxConcurrentCompressions = Math.Max(1, Math.Min(3, SystemInfo.processorCount / 4));
+
+        // Only ever touched via Count/indexed-access (Pending[0]) or whole-list operations (Add/RemoveAt(0)/Clear),
+        // never foreach'd: with more than one item allowed in flight at once (see MaxConcurrentCompressions), more
+        // than one item's continuation (inside ProcessItemAsync, resumed via the captured SynchronizationContext)
+        // can run within the same editor update tick -- e.g. one continuation calling TryEnqueue (via a fresh
+        // preview regeneration it triggers) while another is still unwinding. An enumerator-based traversal here
+        // would be unsafe under that kind of reentrancy; indexed/whole-list access is not.
         private static readonly List<PendingItem> Pending = new List<PendingItem>();
 
         private static Func<Texture, Texture, int> materialTextureReplacer;
         private static long pendingBytes;
         private static bool updateHooked;
-        private static bool processing;
+        private static int inFlight;
         private static bool assemblyReloading;
         private static CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -61,6 +75,62 @@ namespace KRT.VRCQuestTools.Utils
             AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
             EditorApplication.quitting += OnEditorQuitting;
         }
+
+        /// <summary>
+        /// Gets the maximum number of items allowed to be compressing at once (dispatched but not yet finished).
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The problem this solves is not astcenc being too slow: each item's astcenc process already asks for
+        /// every CPU core via <c>-j</c> (see <see cref="AstcencTextureCompressor.CompressTextureAsync"/>'s
+        /// <c>jobs</c> parameter), so a single item alone can already saturate the machine while it is running. The
+        /// problem is that a single item is not always running astcenc: <see cref="ProcessItemAsync"/> also does
+        /// real main-thread work before and after the astcenc call (pixel extraction / normal map mip generation
+        /// beforehand, <see cref="Texture2D"/> construction, <c>LoadRawTextureData</c>, the disk cache's base64
+        /// encode, and a repaint afterward) during which no astcenc process is running at all -- CPU sits idle
+        /// during that gap. Allowing a small number of items to be in flight together means the next item's astcenc
+        /// process can be starting (or already running) while the previous item is still doing that main-thread
+        /// work, filling the gap instead of leaving it empty.
+        /// </para>
+        /// <para>
+        /// This is deliberately small and NOT "one per core": running <see cref="MaxConcurrentCompressions"/> astcenc
+        /// processes at once, each itself asking for every core via <c>-j</c>, means the machine is asked for
+        /// <see cref="MaxConcurrentCompressions"/> times its own core count -- the goal is to keep a core or two
+        /// busy through the main-thread gaps described above, not to multiply total CPU demand. The OS scheduler is
+        /// left to sort out the resulting modest oversubscription; on a lightly loaded editor machine this is cheap
+        /// and self-correcting (idle cores simply run whichever process is ready), and going further would just
+        /// mean processes fighting harder over the same cores without a matching gain. What must not regress is the
+        /// single-item case: it must not be slower than before this was introduced, which is why <c>-j</c> itself
+        /// (see <see cref="AstcencTextureCompressor.CompressionJobs"/>) is left untouched at every core, rather than
+        /// divided by this value.
+        /// </para>
+        /// </remarks>
+        internal static int MaxConcurrentCompressions => MaxConcurrentCompressionsOverrideForTesting ?? DefaultMaxConcurrentCompressions;
+
+        /// <summary>
+        /// Test-only override for <see cref="MaxConcurrentCompressions"/>, so tests can deterministically exercise
+        /// dispatch-cap behavior (e.g. "exactly N items are ever in flight together") without depending on the
+        /// actual core count of the machine running the test. Null (the default) means "use the real,
+        /// core-count-derived value." Tests that set this must restore it to null in teardown: this is process-wide
+        /// static state, otherwise it would leak into unrelated tests (and real preview activity) for the rest of
+        /// the editor session. Does not retroactively resize <see cref="AstcencTextureCompressor"/>'s own
+        /// astcenc-process concurrency gate, which is sized once from the real value.
+        /// </summary>
+        internal static int? MaxConcurrentCompressionsOverrideForTesting { get; set; }
+
+        /// <summary>
+        /// Test-only switch to suspend <see cref="OnUpdate"/>'s own dispatch loop (its <c>EditorApplication.update</c>
+        /// subscribe/unsubscribe bookkeeping is unaffected). Needed because <see cref="OnUpdate"/> is not just an
+        /// implementation detail a test can ignore: <see cref="TryEnqueue"/> subscribes it to the real
+        /// <c>EditorApplication.update</c>, which a running Unity Editor session fires for real -- including during
+        /// any <c>yield return null</c> a <c>[UnityTest]</c> performs while awaiting a task (e.g. inside
+        /// <see cref="TestUtils.WaitForTask"/>). Without this, a test driving dispatch deterministically via
+        /// <see cref="DispatchAvailableForTesting"/> or <see cref="ProcessNextForTesting"/> would race the real
+        /// production dispatch loop, which is equally entitled to dequeue and dispatch the very same pending items
+        /// the moment an in-flight slot frees up. Must be restored to false in teardown -- this is process-wide
+        /// static state.
+        /// </summary>
+        internal static bool SuspendAutoDispatchForTesting { get; set; }
 
         /// <summary>
         /// Registers the callback used to swap a placeholder texture for its compressed replacement across every
@@ -136,10 +206,16 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Gets the number of items currently waiting to start compression (excludes the item, if any, currently being compressed).
-        /// For tests only.
+        /// Gets the number of items currently waiting to start compression (excludes items currently compressing --
+        /// see <see cref="InFlightCountForTesting"/> for those). For tests only.
         /// </summary>
         internal static int PendingCountForTesting => Pending.Count;
+
+        /// <summary>
+        /// Gets the number of items currently dispatched (compressing, not yet finished). Never exceeds
+        /// <see cref="MaxConcurrentCompressions"/>. For tests only.
+        /// </summary>
+        internal static int InFlightCountForTesting => inFlight;
 
         /// <summary>
         /// Gets the estimated total bytes of every pending (not yet compressed) placeholder. For tests only.
@@ -167,10 +243,10 @@ namespace KRT.VRCQuestTools.Utils
         /// <c>async Task</c> test methods under <c>[Test]</c>, and blocking synchronously via e.g. <c>Task.Wait()</c>
         /// would deadlock).
         /// </summary>
-        /// <returns>A task that completes once the dequeued item finishes processing, with result true; or an already-completed task with result false if the queue was empty (or something is already processing).</returns>
+        /// <returns>A task that completes once the dequeued item finishes processing, with result true; or an already-completed task with result false if the queue was empty (or the in-flight budget, <see cref="MaxConcurrentCompressions"/>, was already exhausted).</returns>
         internal static async System.Threading.Tasks.Task<bool> ProcessNextForTesting()
         {
-            if (processing || Pending.Count == 0)
+            if (inFlight >= MaxConcurrentCompressions || Pending.Count == 0)
             {
                 return false;
             }
@@ -180,9 +256,32 @@ namespace KRT.VRCQuestTools.Utils
             return true;
         }
 
+        /// <summary>
+        /// Test-only hook mirroring a single tick of <see cref="OnUpdate"/>'s dispatch loop: dequeues and starts as
+        /// many pending items as the current in-flight budget (<see cref="MaxConcurrentCompressions"/>) allows, in
+        /// one go, without awaiting any of them to completion. Unlike <see cref="ProcessNextForTesting"/> --  which
+        /// fully awaits one item before returning, so two calls can never actually overlap -- the tasks returned
+        /// here genuinely run concurrently (each has already been dispatched past its first real await point by the
+        /// time this method returns), letting a test observe real overlap (e.g. assert
+        /// <see cref="InFlightCountForTesting"/> equals the dispatched count before awaiting, then
+        /// <see cref="System.Threading.Tasks.Task.WhenAll(System.Threading.Tasks.Task[])"/> the result).
+        /// </summary>
+        /// <returns>The tasks started by this call, in dispatch order. Empty when nothing was pending or the in-flight budget was already exhausted.</returns>
+        internal static System.Threading.Tasks.Task[] DispatchAvailableForTesting()
+        {
+            var tasks = new List<System.Threading.Tasks.Task>();
+            while (inFlight < MaxConcurrentCompressions && Pending.Count > 0)
+            {
+                DequeueAndProcess(out var task);
+                tasks.Add(task);
+            }
+
+            return tasks.ToArray();
+        }
+
         private static void DequeueAndProcess(out System.Threading.Tasks.Task task)
         {
-            processing = true;
+            inFlight++;
             var item = Pending[0];
             Pending.RemoveAt(0);
             task = ProcessItemAsync(item);
@@ -201,30 +300,41 @@ namespace KRT.VRCQuestTools.Utils
 
         private static void OnUpdate()
         {
-            if (processing || Pending.Count == 0)
+            // Dispatches as many pending items as the in-flight budget allows in this single tick -- not just one
+            // -- so that, e.g., enqueuing 3 items at once on a machine with MaxConcurrentCompressions == 3 starts
+            // all 3 right away instead of trickling them out one per editor update. Each iteration only reads
+            // `inFlight` and `Pending.Count`, both main-thread-only state (see this type's remarks), so re-entering
+            // this loop synchronously for each item is safe even though ProcessItemAsync's own continuation can
+            // later resume on this same thread mid-loop-of-a-*different*-tick.
+            //
+            // Skipped entirely when SuspendAutoDispatchForTesting is set: see that property's remarks for why a
+            // test needs this to drive dispatch deterministically via DispatchAvailableForTesting/ProcessNextForTesting
+            // without this real hook racing it.
+            if (!SuspendAutoDispatchForTesting)
             {
-                if (!processing && Pending.Count == 0 && updateHooked)
+                while (inFlight < MaxConcurrentCompressions && Pending.Count > 0)
                 {
-                    EditorApplication.update -= OnUpdate;
-                    updateHooked = false;
-                }
+                    DequeueAndProcess(out var task);
 
-                return;
+                    // ProcessItemAsync already handles every failure it knows how to handle internally (falling
+                    // back to synchronous compression, logging, and cleaning up any orphaned texture); this
+                    // ContinueWith is only a last-resort safety net for an exception that slips past that -- e.g.
+                    // a bug in the fallback path itself, or in the pendingBytes/inFlight bookkeeping in
+                    // ProcessItemAsync's own finally block -- so that it is at least logged instead of becoming an
+                    // unobserved task exception. Since ProcessItemAsync's own catch blocks do not rethrow, this
+                    // deliberately should not normally fire; if it ever does, this is the only place logging it,
+                    // so there is no risk of double-logging the same exception both here and inside ProcessItemAsync.
+                    task.ContinueWith(
+                        t => Logger.LogException(t.Exception),
+                        System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted);
+                }
             }
 
-            DequeueAndProcess(out var task);
-
-            // ProcessItemAsync already handles every failure it knows how to handle internally (falling back to
-            // synchronous compression, logging, and cleaning up any orphaned texture); this ContinueWith is only
-            // a last-resort safety net for an exception that slips past that -- e.g. a bug in the fallback path
-            // itself, or in the pendingBytes/processing bookkeeping in ProcessItemAsync's own finally block --
-            // so that it is at least logged instead of becoming an unobserved task exception. Since
-            // ProcessItemAsync's own catch blocks do not rethrow, this deliberately should not normally fire; if
-            // it ever does, this is the only place logging it, so there is no risk of double-logging the same
-            // exception both here and inside ProcessItemAsync.
-            task.ContinueWith(
-                t => Logger.LogException(t.Exception),
-                System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted);
+            if (inFlight == 0 && Pending.Count == 0 && updateHooked)
+            {
+                EditorApplication.update -= OnUpdate;
+                updateHooked = false;
+            }
         }
 
         private static async System.Threading.Tasks.Task ProcessItemAsync(PendingItem item)
@@ -290,11 +400,13 @@ namespace KRT.VRCQuestTools.Utils
             }
             finally
             {
-                // Clamped rather than allowed to go negative: OnBeforeAssemblyReload/OnEditorQuitting zero this
-                // out immediately (so a reload/quit is not blocked waiting on in-flight work), but this item's own
-                // finally still runs afterwards and would otherwise subtract its EstimatedBytes a second time.
+                // Both clamped rather than allowed to go negative: OnBeforeAssemblyReload/OnEditorQuitting reset
+                // both counters to zero immediately (so a reload/quit is not blocked waiting on in-flight work),
+                // but every still-in-flight item's own finally (there can be more than one at once, up to
+                // MaxConcurrentCompressions) runs afterwards and would otherwise subtract its own share a second
+                // (or, with several in-flight items, several times over) time.
                 pendingBytes = Math.Max(0, pendingBytes - item.EstimatedBytes);
-                processing = false;
+                inFlight = Math.Max(0, inFlight - 1);
             }
         }
 
@@ -500,13 +612,14 @@ namespace KRT.VRCQuestTools.Utils
                 updateHooked = false;
             }
 
-            // The in-flight item's own ProcessItemAsync (if any) is not awaited here -- it will unwind on its
-            // own shortly (its astcenc call now throws, is caught, and returns without further work, since
-            // cts.IsCancellationRequested is true) and its finally block re-applies this same reset
-            // (pendingBytes clamped via Math.Max(0, ...), processing = false), which is safe to run twice.
+            // Every in-flight item's own ProcessItemAsync (there can be more than one at once, up to
+            // MaxConcurrentCompressions -- none of them are awaited here) will unwind on its own shortly (its
+            // astcenc call now throws, is caught, and returns without further work, since cts.IsCancellationRequested
+            // is true) and its finally block re-applies this same reset (pendingBytes and inFlight both clamped via
+            // Math.Max(0, ...)), which is safe to run any number of times over.
             Pending.Clear();
             pendingBytes = 0;
-            processing = false;
+            inFlight = 0;
 
             // The placeholder texture(s) still referenced by preview materials are deliberately NOT destroyed
             // here: they are live Unity objects owned by those materials, and the next preview regeneration

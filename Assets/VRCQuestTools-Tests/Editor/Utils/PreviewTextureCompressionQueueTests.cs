@@ -47,12 +47,19 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Restores the material-texture-replacer saved in <see cref="SetUp"/>.
+        /// Restores the material-texture-replacer saved in <see cref="SetUp"/>, the real (non-overridden)
+        /// <see cref="PreviewTextureCompressionQueue.MaxConcurrentCompressions"/> for tests that set
+        /// <see cref="PreviewTextureCompressionQueue.MaxConcurrentCompressionsOverrideForTesting"/>, and re-enables
+        /// the real dispatch loop for tests that set <see cref="PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting"/>
+        /// -- all unconditionally, so a test that fails/throws partway through still leaves this process-wide
+        /// static state clean for every later test (and real preview activity) in the same editor session.
         /// </summary>
         [TearDown]
         public void TearDown()
         {
             PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer(savedReplacer);
+            PreviewTextureCompressionQueue.MaxConcurrentCompressionsOverrideForTesting = null;
+            PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting = false;
             UnityEngine.TestTools.LogAssert.ignoreFailingMessages = false;
         }
 
@@ -359,6 +366,232 @@ namespace KRT.VRCQuestTools.Utils
             finally
             {
                 field.SetValue(null, originalPendingBytes);
+            }
+        }
+
+        /// <summary>
+        /// Verifies bounded parallel dispatch: with <see cref="PreviewTextureCompressionQueue.MaxConcurrentCompressionsOverrideForTesting"/>
+        /// forced to 2 and 3 items enqueued, a single dispatch pass (<see cref="PreviewTextureCompressionQueue.DispatchAvailableForTesting"/>,
+        /// mirroring one <c>EditorApplication.update</c> tick) starts exactly 2 -- the cap -- leaving the third
+        /// still pending, and the two dispatched items are genuinely in flight together (not one after another)
+        /// before either is awaited to completion. <see cref="PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting"/>
+        /// is set for the whole test: <see cref="PreviewTextureCompressionQueue.TryEnqueue"/> subscribes the real
+        /// production dispatch loop to <c>EditorApplication.update</c>, which a running Unity Editor session fires
+        /// for real during the <c>yield return null</c>s inside <see cref="TestUtils.WaitForTask"/> below --
+        /// without suspending it, that real loop would race this test's own explicit dispatch calls the moment an
+        /// in-flight slot frees up, making the "exactly 2, then exactly 1 more" expectations flaky.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator DispatchAvailableForTesting_CapTwo_DispatchesExactlyCapAndLeavesRestPending()
+        {
+            PreviewTextureCompressionQueue.MaxConcurrentCompressionsOverrideForTesting = 2;
+            PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting = true;
+
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
+            var placeholders = new[] { CreateColorTexture(8, 8), CreateColorTexture(8, 8), CreateColorTexture(8, 8) };
+            var replacedCount = 0;
+            var destroyedResults = new List<Texture2D>();
+            PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) =>
+            {
+                replacedCount++;
+                destroyedResults.Add(to as Texture2D);
+                return 1;
+            });
+
+            try
+            {
+                for (var i = 0; i < placeholders.Length; i++)
+                {
+                    var cacheFile = $"test_progressive_parallel_{i}_{Guid.NewGuid():N}.json";
+                    var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholders[i], compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
+                    Assert.IsTrue(enqueued);
+                }
+                Assert.AreEqual(3, PreviewTextureCompressionQueue.PendingCountForTesting);
+
+                var firstBatch = PreviewTextureCompressionQueue.DispatchAvailableForTesting();
+
+                // Both assertions happen before anything is awaited: the dispatch loop only yields control back to
+                // this test method once each item's astcenc invocation is genuinely running in the background (see
+                // DispatchAvailableForTesting's remarks), so this is a snapshot of real overlap, not just "2 tasks
+                // were created."
+                Assert.AreEqual(2, firstBatch.Length, "Exactly MaxConcurrentCompressions items should be dispatched in one pass.");
+                Assert.AreEqual(2, PreviewTextureCompressionQueue.InFlightCountForTesting, "Two items must be in flight together, not processed one after another.");
+                Assert.AreEqual(1, PreviewTextureCompressionQueue.PendingCountForTesting, "The third item must still be waiting for a free slot.");
+
+                yield return TestUtils.WaitForTask(System.Threading.Tasks.Task.WhenAll(firstBatch));
+
+                Assert.AreEqual(0, PreviewTextureCompressionQueue.InFlightCountForTesting);
+                Assert.AreEqual(2, replacedCount, "Both dispatched items must have been applied via the replacer.");
+
+                // Dispatch the remaining item (auto-dispatch is still suspended, so this is the only thing that can
+                // have consumed it).
+                var secondBatch = PreviewTextureCompressionQueue.DispatchAvailableForTesting();
+                Assert.AreEqual(1, secondBatch.Length);
+                yield return TestUtils.WaitForTask(System.Threading.Tasks.Task.WhenAll(secondBatch));
+
+                Assert.AreEqual(0, PreviewTextureCompressionQueue.PendingCountForTesting);
+                Assert.AreEqual(0, PreviewTextureCompressionQueue.InFlightCountForTesting);
+                Assert.AreEqual(3, replacedCount, "Every enqueued item must eventually be applied via the replacer, whether dispatched in the first or second batch.");
+                foreach (var placeholder in placeholders)
+                {
+                    Assert.IsTrue(placeholder == null, "Every placeholder must be destroyed once replaced.");
+                }
+            }
+            finally
+            {
+                PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting = false;
+                foreach (var result in destroyedResults)
+                {
+                    if (result != null)
+                    {
+                        UnityEngine.Object.DestroyImmediate(result);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Verifies the in-flight budget is a hard cap, not just a typical outcome: with the cap forced to 2 and 5
+        /// items enqueued, calling <see cref="PreviewTextureCompressionQueue.DispatchAvailableForTesting"/> a
+        /// second time -- while the first batch's 2 items are still genuinely in flight, before either is awaited
+        /// -- dispatches nothing new (mirroring <c>OnUpdate</c> firing again on the very next editor tick while
+        /// the previous tick's dispatched items have not finished yet). Only after the first batch is awaited to
+        /// completion does dispatching resume, and every item is eventually applied via the replacer exactly once.
+        /// <see cref="PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting"/> is set for the whole test --
+        /// see <see cref="DispatchAvailableForTesting_CapTwo_DispatchesExactlyCapAndLeavesRestPending"/>'s remarks
+        /// for why it is required whenever a test asserts an exact dispatched count around a <c>yield return</c>.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator DispatchAvailableForTesting_SecondCallWhileFirstBatchInFlight_DispatchesNothingNew()
+        {
+            PreviewTextureCompressionQueue.MaxConcurrentCompressionsOverrideForTesting = 2;
+            PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting = true;
+
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
+            const int itemCount = 5;
+            var placeholders = new Texture2D[itemCount];
+            for (var i = 0; i < itemCount; i++)
+            {
+                placeholders[i] = CreateColorTexture(8, 8);
+            }
+
+            var replacedCount = 0;
+            var results = new List<Texture2D>();
+            PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) =>
+            {
+                replacedCount++;
+                results.Add(to as Texture2D);
+                return 1;
+            });
+
+            try
+            {
+                foreach (var placeholder in placeholders)
+                {
+                    var cacheFile = $"test_progressive_capbound_{Guid.NewGuid():N}.json";
+                    Assert.IsTrue(PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true));
+                }
+
+                var firstBatch = PreviewTextureCompressionQueue.DispatchAvailableForTesting();
+                Assert.AreEqual(2, firstBatch.Length);
+                Assert.AreEqual(2, PreviewTextureCompressionQueue.InFlightCountForTesting);
+
+                // The would-be-next tick: firstBatch's 2 items are still running (not awaited yet), so the budget
+                // is exhausted and this must be a no-op, regardless of the 3 items still waiting in Pending.
+                var secondCallWhileFirstBatchStillRunning = PreviewTextureCompressionQueue.DispatchAvailableForTesting();
+                Assert.AreEqual(0, secondCallWhileFirstBatchStillRunning.Length, "Dispatching again while the in-flight budget is exhausted must start nothing new.");
+                Assert.AreEqual(2, PreviewTextureCompressionQueue.InFlightCountForTesting, "In-flight count must not change when nothing new was dispatched.");
+                Assert.AreEqual(3, PreviewTextureCompressionQueue.PendingCountForTesting, "The 3 still-waiting items must remain untouched, not partially consumed.");
+
+                yield return TestUtils.WaitForTask(System.Threading.Tasks.Task.WhenAll(firstBatch));
+                Assert.AreEqual(0, PreviewTextureCompressionQueue.InFlightCountForTesting);
+                Assert.AreEqual(2, replacedCount);
+
+                // Drain the rest, batch by batch, confirming the cap holds every time (auto-dispatch is still
+                // suspended, so this loop -- not the real production hook -- is what drives every remaining item).
+                while (PreviewTextureCompressionQueue.PendingCountForTesting > 0)
+                {
+                    var batch = PreviewTextureCompressionQueue.DispatchAvailableForTesting();
+                    Assert.LessOrEqual(batch.Length, 2, "No batch may ever dispatch more than the cap.");
+                    Assert.LessOrEqual(PreviewTextureCompressionQueue.InFlightCountForTesting, 2, "In-flight count must never exceed the cap.");
+                    yield return TestUtils.WaitForTask(System.Threading.Tasks.Task.WhenAll(batch));
+                }
+
+                Assert.AreEqual(itemCount, replacedCount, "Every enqueued item must be applied via the replacer exactly once.");
+                Assert.AreEqual(0, PreviewTextureCompressionQueue.InFlightCountForTesting);
+            }
+            finally
+            {
+                PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting = false;
+                foreach (var result in results)
+                {
+                    if (result != null)
+                    {
+                        UnityEngine.Object.DestroyImmediate(result);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Verifies the single-core-machine (cap == 1) case behaves exactly like the pre-parallel-dispatch queue:
+        /// with the cap forced to 1 and 2 items enqueued, a dispatch pass starts only one item at a time, matching
+        /// what <see cref="PreviewTextureCompressionQueue.ProcessNextForTesting"/> already verified for the
+        /// original single-item-at-a-time design in the other tests in this file.
+        /// <see cref="PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting"/> is set for the whole test --
+        /// see <see cref="DispatchAvailableForTesting_CapTwo_DispatchesExactlyCapAndLeavesRestPending"/>'s remarks
+        /// for why it is required whenever a test asserts an exact dispatched count around a <c>yield return</c>.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator DispatchAvailableForTesting_CapOne_MatchesPreParallelSingleItemBehavior()
+        {
+            PreviewTextureCompressionQueue.MaxConcurrentCompressionsOverrideForTesting = 1;
+            PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting = true;
+
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
+            var placeholderA = CreateColorTexture(8, 8);
+            var placeholderB = CreateColorTexture(8, 8);
+
+            var replacedCount = 0;
+            var results = new List<Texture2D>();
+            PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) =>
+            {
+                replacedCount++;
+                results.Add(to as Texture2D);
+                return 1;
+            });
+
+            try
+            {
+                Assert.IsTrue(PreviewTextureCompressionQueue.TryEnqueue(placeholderA, compressor, TextureFormat.ASTC_4x4, false, false, null, $"test_progressive_capone_a_{Guid.NewGuid():N}.json", true));
+                Assert.IsTrue(PreviewTextureCompressionQueue.TryEnqueue(placeholderB, compressor, TextureFormat.ASTC_4x4, false, false, null, $"test_progressive_capone_b_{Guid.NewGuid():N}.json", true));
+
+                var firstBatch = PreviewTextureCompressionQueue.DispatchAvailableForTesting();
+                Assert.AreEqual(1, firstBatch.Length, "Only one item should be dispatched at a time when the cap is 1.");
+                Assert.AreEqual(1, PreviewTextureCompressionQueue.InFlightCountForTesting);
+                Assert.AreEqual(1, PreviewTextureCompressionQueue.PendingCountForTesting);
+
+                yield return TestUtils.WaitForTask(System.Threading.Tasks.Task.WhenAll(firstBatch));
+                Assert.AreEqual(1, replacedCount);
+
+                var secondBatch = PreviewTextureCompressionQueue.DispatchAvailableForTesting();
+                Assert.AreEqual(1, secondBatch.Length);
+                yield return TestUtils.WaitForTask(System.Threading.Tasks.Task.WhenAll(secondBatch));
+
+                Assert.AreEqual(2, replacedCount);
+                Assert.AreEqual(0, PreviewTextureCompressionQueue.PendingCountForTesting);
+                Assert.AreEqual(0, PreviewTextureCompressionQueue.InFlightCountForTesting);
+            }
+            finally
+            {
+                PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting = false;
+                foreach (var result in results)
+                {
+                    if (result != null)
+                    {
+                        UnityEngine.Object.DestroyImmediate(result);
+                    }
+                }
             }
         }
 

@@ -340,21 +340,28 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Serializes background astcenc process execution across every <see cref="CompressTextureAsync"/> /
+        /// Bounds how many background astcenc processes can run at once across every <see cref="CompressTextureAsync"/> /
         /// <see cref="CompressNormalMapAsync"/> call, regardless of which compressor instance (final or preview
-        /// preset) invoked it: astcenc already parallelizes internally via <c>-j</c> across every CPU core, so
-        /// running two astcenc processes at once would only make them fight over the same cores rather than
-        /// finish sooner.
+        /// preset) invoked it, to <see cref="PreviewTextureCompressionQueue.MaxConcurrentCompressions"/>: astcenc
+        /// already parallelizes internally via <c>-j</c> across every CPU core, so running many astcenc processes
+        /// at once would only make them fight over the same cores without a matching gain. The cap itself -- and
+        /// why it is deliberately small rather than "one per core" -- is documented on
+        /// <see cref="PreviewTextureCompressionQueue.MaxConcurrentCompressions"/>; it is not recomputed here so the
+        /// two never drift apart.
         /// </summary>
         /// <remarks>
-        /// Currently redundant in practice: <see cref="PreviewTextureCompressionQueue"/> is the only caller of
-        /// these two methods, and it already serializes them itself (its own <c>processing</c> flag allows at
-        /// most one item -- and therefore at most one <see cref="CompressTextureAsync"/>/<see cref="CompressNormalMapAsync"/>
-        /// call -- in flight at a time). This gate is kept anyway as a safety net for if a second caller of these
-        /// async methods is ever added outside that queue's own serialization, so it cannot silently regress into
-        /// the core-contention problem described above.
+        /// Redundant in practice as of this writing: <see cref="PreviewTextureCompressionQueue"/> is the only
+        /// caller of these two methods, and it already bounds its own in-flight count to the very same
+        /// <see cref="PreviewTextureCompressionQueue.MaxConcurrentCompressions"/> -- so this gate never actually
+        /// blocks anyone there. It is kept anyway as a safety net for if a second caller of these async methods is
+        /// ever added outside that queue's own bookkeeping, so it cannot silently regress into unbounded
+        /// astcenc-process fan-out. Sized once, from whatever <see cref="PreviewTextureCompressionQueue.MaxConcurrentCompressions"/>
+        /// returns the first time this type is touched (a <see cref="SemaphoreSlim"/>'s maximum count cannot change
+        /// afterward): in production this is always the real, core-count-derived value, since nothing outside tests
+        /// ever sets <see cref="PreviewTextureCompressionQueue.MaxConcurrentCompressionsOverrideForTesting"/>, and
+        /// <see cref="SystemInfo.processorCount"/> does not change during a session either.
         /// </remarks>
-        private static readonly SemaphoreSlim AsyncCompressionGate = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim AsyncCompressionGate = new SemaphoreSlim(PreviewTextureCompressionQueue.MaxConcurrentCompressions, PreviewTextureCompressionQueue.MaxConcurrentCompressions);
 
         /// <summary>
         /// Async, off-main-thread counterpart to <see cref="CompressTexture"/>, used only by the NDMF preview's
