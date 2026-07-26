@@ -1,3 +1,8 @@
+// <copyright file="CacheUtility.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.IO;
 using System.Text;
@@ -92,32 +97,36 @@ namespace KRT.VRCQuestTools.Utils
         /// <summary>
         /// Content cache for texture.
         /// </summary>
-        [Serializable]
+        /// <remarks>
+        /// Entries are persisted as a small binary header followed by the texture's raw bytes verbatim (see
+        /// <see cref="WriteTo"/>), deliberately not as JSON with base64-encoded pixel data. Base64 inflated every
+        /// entry by 4/3 on disk, and encoding/decoding it meant a multi-megabyte string existing alongside the
+        /// byte array for every single texture, on top of the JSON string built around it.
+        /// </remarks>
         internal class TextureCache
         {
-            [SerializeField]
-            private int width;
+            /// <summary>
+            /// Revision of the binary layout written by <see cref="WriteTo"/>. Bump this whenever the layout
+            /// changes: it is part of the texture cache's stamp (see <see cref="CacheManager.Texture"/>), so a
+            /// bump discards every existing entry at once instead of making <see cref="ReadFrom"/> reject them
+            /// one by one as they are looked up.
+            /// </summary>
+            internal const int FormatVersion = 1;
 
-            [SerializeField]
-            private int height;
+            /// <summary>
+            /// Magic number at the head of every entry, so an unrelated or truncated file is rejected before
+            /// its contents are interpreted as texture attributes.
+            /// </summary>
+            private static readonly byte[] MagicBytes = { (byte)'V', (byte)'Q', (byte)'T', (byte)'C' };
 
-            [SerializeField]
-            private TextureFormat format;
-
-            [SerializeField]
-            private bool linear;
-
-            [SerializeField]
-            private bool normalMap;
-
-            [SerializeField]
-            private BuildTarget buildTarget;
-
-            [SerializeField]
-            private bool mipmap;
-
-            [SerializeField]
-            private string base64Data;
+            private readonly int width;
+            private readonly int height;
+            private readonly TextureFormat format;
+            private readonly bool linear;
+            private readonly bool normalMap;
+            private readonly BuildTarget buildTarget;
+            private readonly bool mipmap;
+            private readonly byte[] rawData;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="TextureCache"/> class.
@@ -135,7 +144,99 @@ namespace KRT.VRCQuestTools.Utils
                 this.normalMap = normalMap;
                 this.buildTarget = buildTarget;
                 mipmap = texture.mipmapCount > 1;
-                base64Data = Convert.ToBase64String(texture.GetRawTextureData());
+
+                // The byte[] overload, not GetRawTextureData<byte>(): the NativeArray version throws for a
+                // non-readable texture while this one succeeds, and compressed results are not readable.
+                rawData = texture.GetRawTextureData();
+            }
+
+            private TextureCache(int width, int height, TextureFormat format, bool linear, bool normalMap, BuildTarget buildTarget, bool mipmap, byte[] rawData)
+            {
+                this.width = width;
+                this.height = height;
+                this.format = format;
+                this.linear = linear;
+                this.normalMap = normalMap;
+                this.buildTarget = buildTarget;
+                this.mipmap = mipmap;
+                this.rawData = rawData;
+            }
+
+            /// <summary>
+            /// Reads an entry previously written by <see cref="WriteTo"/>.
+            /// </summary>
+            /// <param name="stream">Stream positioned at the head of an entry.</param>
+            /// <returns>Restored cache entry.</returns>
+            /// <exception cref="InvalidDataException">The stream does not hold an entry of the current format.</exception>
+            internal static TextureCache ReadFrom(Stream stream)
+            {
+                // leaveOpen: true -- the stream belongs to the caller (CacheManager), which closes it itself.
+                using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
+                {
+                    var magic = reader.ReadBytes(MagicBytes.Length);
+                    if (magic.Length != MagicBytes.Length)
+                    {
+                        throw new InvalidDataException("Not a texture cache entry: the file is shorter than its magic number.");
+                    }
+                    for (int i = 0; i < MagicBytes.Length; i++)
+                    {
+                        if (magic[i] != MagicBytes[i])
+                        {
+                            throw new InvalidDataException("Not a texture cache entry: magic number mismatch.");
+                        }
+                    }
+
+                    var formatVersion = reader.ReadInt32();
+                    if (formatVersion != FormatVersion)
+                    {
+                        throw new InvalidDataException($"Unsupported texture cache format version {formatVersion} (expected {FormatVersion}).");
+                    }
+
+                    var width = reader.ReadInt32();
+                    var height = reader.ReadInt32();
+                    var format = (TextureFormat)reader.ReadInt32();
+                    var buildTarget = (BuildTarget)reader.ReadInt32();
+                    var linear = reader.ReadBoolean();
+                    var normalMap = reader.ReadBoolean();
+                    var mipmap = reader.ReadBoolean();
+
+                    var dataLength = reader.ReadInt32();
+                    if (dataLength < 0)
+                    {
+                        throw new InvalidDataException($"Invalid texture cache data length: {dataLength}.");
+                    }
+
+                    var rawData = reader.ReadBytes(dataLength);
+                    if (rawData.Length != dataLength)
+                    {
+                        throw new InvalidDataException($"Truncated texture cache entry: expected {dataLength} bytes of texture data but found {rawData.Length}.");
+                    }
+
+                    return new TextureCache(width, height, format, linear, normalMap, buildTarget, mipmap, rawData);
+                }
+            }
+
+            /// <summary>
+            /// Writes this entry to <paramref name="stream"/> in the layout <see cref="ReadFrom"/> expects.
+            /// </summary>
+            /// <param name="stream">Stream to write to.</param>
+            internal void WriteTo(Stream stream)
+            {
+                // leaveOpen: true -- the stream belongs to the caller (CacheManager), which closes it itself.
+                using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+                {
+                    writer.Write(MagicBytes);
+                    writer.Write(FormatVersion);
+                    writer.Write(width);
+                    writer.Write(height);
+                    writer.Write((int)format);
+                    writer.Write((int)buildTarget);
+                    writer.Write(linear);
+                    writer.Write(normalMap);
+                    writer.Write(mipmap);
+                    writer.Write(rawData.Length);
+                    writer.Write(rawData);
+                }
             }
 
             /// <summary>
@@ -147,7 +248,7 @@ namespace KRT.VRCQuestTools.Utils
                 var tex = normalMap ?
                     CreateCompressedNormalMap(width, height) :
                     new Texture2D(width, height, format, mipmap, linear);
-                tex.LoadRawTextureData(Convert.FromBase64String(base64Data));
+                tex.LoadRawTextureData(rawData);
                 tex.Apply(true, true);
                 return tex;
             }

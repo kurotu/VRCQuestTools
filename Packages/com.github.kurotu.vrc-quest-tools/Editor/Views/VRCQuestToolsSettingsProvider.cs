@@ -1,3 +1,8 @@
+// <copyright file="VRCQuestToolsSettingsProvider.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
@@ -11,6 +16,11 @@ namespace KRT.VRCQuestTools.Views
     internal static class VRCQuestToolsSettingsProvider
     {
         private const ulong MegaBytes = 1024 * 1024;
+
+        /// <summary>
+        /// Largest value accepted in the texture cache size field, in megabytes.
+        /// </summary>
+        private static readonly int MaxCacheSizeMegaBytes = (int)(VRCQuestToolsSettings.MaxTextureCacheSize / MegaBytes);
 
         [SettingsProvider]
         private static SettingsProvider CreateProjectSettingsProvider()
@@ -30,6 +40,12 @@ namespace KRT.VRCQuestTools.Views
                             var cacheSize = EditorGUILayout.IntField("Texture Cache Size (MB)", (int)(VRCQuestToolsSettings.TextureCacheSize / MegaBytes));
                             if (check.changed)
                             {
+                                // Clamped before the unsigned cast, which is where an out-of-range value does its
+                                // damage: a negative megabyte count would wrap around into a limit of nearly
+                                // 2^64 bytes and silently disable eviction entirely, and a large positive one
+                                // would overflow while being scaled to bytes. The field shows the clamped value
+                                // back on the next repaint, since it is read from the stored setting.
+                                cacheSize = Mathf.Clamp(cacheSize, 0, MaxCacheSizeMegaBytes);
                                 VRCQuestToolsSettings.TextureCacheSize = (ulong)cacheSize * MegaBytes;
                                 CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
                             }

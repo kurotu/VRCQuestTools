@@ -137,7 +137,6 @@ namespace KRT.VRCQuestTools.Models.VRChat
             // Convert materials and generate textures.
             var convertSettingsMap = CreateMaterialConvertSettingsMap(avatar);
             var convertedMaterials = ConvertMaterialsForMobile(convertSettingsMap, saveAssetsAsFile, assetsDirectory, progressCallback.onTextureProgress, forEditorPreview: false, avatarRoot: questAvatarObject);
-            CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
 
             ApplyConvertedMaterials(questAvatarObject, convertedMaterials, saveAssetsAsFile, assetsDirectory, progressCallback);
 
@@ -465,6 +464,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     throw new MaterialConversionException("Failed to convert material", material, e);
                 }
             }
+
+            // Trimmed here rather than in ConvertForMobile alone, because this method is also the entry point
+            // the NDMF editor preview uses (MaterialConversionFilter). A preview session writes cache entries
+            // just like a real conversion does, so trimming only after a real conversion let previews grow the
+            // cache past its configured limit for as long as the user never built anything.
+            CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
 
             return convertedMaterials;
         }
