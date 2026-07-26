@@ -97,17 +97,16 @@ namespace KRT.VRCQuestTools.Utils
         internal static int SuccessfulCompressionCount { get; set; }
 
         /// <summary>
-        /// Gets the number of threads to pass to astcenc's -j: every core but one.
+        /// Gets the number of threads to pass to astcenc's -j: every core.
         /// </summary>
         /// <remarks>
-        /// astcenc saturates whatever it is given, and preview compression runs in the background while the user
-        /// keeps working, so handing it every core starves the editor's main thread for the entire compression --
-        /// long enough to be felt as sluggishness even though nothing is actually blocked (a 2048x2048 6x6
-        /// texture takes several seconds at the -thorough preset). Leaving one core free costs a little
-        /// wall-clock time per texture and keeps the editor usable meanwhile. Read on the main thread only,
-        /// before handing the value to the worker.
+        /// astcenc saturates whatever it is given, so this trades how responsive the editor stays during a
+        /// background preview compression against how soon the compressed result appears. Reserving one core for
+        /// the editor was tried and turned out not to be needed in practice, so the whole machine is used and
+        /// each texture finishes as quickly as possible. Read on the main thread only, before handing the value
+        /// to the worker.
         /// </remarks>
-        private static int CompressionJobs => Math.Max(1, SystemInfo.processorCount - 1);
+        private static int CompressionJobs => Math.Max(1, SystemInfo.processorCount);
 
         /// <inheritdoc/>
         public AsyncCallbackRequest CompressTexture(Texture2D texture, TextureFormat format, Action<Texture2D> completion)
