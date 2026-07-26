@@ -11,14 +11,17 @@ namespace KRT.VRCQuestTools.Models
     internal class ToonLitGenerator : IMaterialGenerator
     {
         private readonly IToonLitConvertSettings settings;
+        private readonly bool forEditorPreview;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToonLitGenerator"/> class.
         /// </summary>
         /// <param name="settings">Convert settings.</param>
-        internal ToonLitGenerator(IToonLitConvertSettings settings)
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview.</param>
+        internal ToonLitGenerator(IToonLitConvertSettings settings, bool forEditorPreview = false)
         {
             this.settings = settings;
+            this.forEditorPreview = forEditorPreview;
         }
 
         /// <inheritdoc/>
@@ -51,7 +54,7 @@ namespace KRT.VRCQuestTools.Models
         private AsyncCallbackRequest GenerateToonLitTexture(MaterialBase material, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
             var platformOverride = material.GetToonLitPlatformOverride();
-            return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "main", saveAsPng, texturesPath, (compl) => material.GenerateToonLitImage(settings, compl), completion, platformOverride);
+            return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "main", saveAsPng, texturesPath, (compl) => material.GenerateToonLitImage(settings, compl), completion, platformOverride, forEditorPreview);
         }
     }
 }

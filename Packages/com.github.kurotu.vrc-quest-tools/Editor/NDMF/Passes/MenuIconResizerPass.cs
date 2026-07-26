@@ -102,8 +102,12 @@ namespace KRT.VRCQuestTools.Ndmf
 
             VRCSDKUtility.ResizeExpressionMenuIcons(newMenu, maxSize, compressTextures, (oldTex, newTex) =>
             {
-                TextureUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression);
-                objectRegistry.RegisterReplacedObject(oldTex, newTex);
+                // CompressTextureForBuildTarget may return a different instance than newTex (e.g. the astcenc path
+                // destroys its input and returns a new Texture2D), so the compressed result -- not newTex -- must be
+                // what gets registered and ultimately wired up as the control's icon by ResizeExpressionMenuIcons.
+                var compressedTex = TextureUtility.CompressTextureForBuildTarget(newTex, UnityEditor.EditorUserBuildSettings.activeBuildTarget, mobileTextureFormatForCompression);
+                objectRegistry.RegisterReplacedObject(oldTex, compressedTex);
+                return compressedTex;
             });
         }
     }

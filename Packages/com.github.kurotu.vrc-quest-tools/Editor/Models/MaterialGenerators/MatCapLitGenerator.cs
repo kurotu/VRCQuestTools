@@ -18,10 +18,11 @@ namespace KRT.VRCQuestTools.Models
         /// Initializes a new instance of the <see cref="MatCapLitGenerator"/> class.
         /// </summary>
         /// <param name="matCapLitConvertSettings">Convert setttings.</param>
-        public MatCapLitGenerator(MatCapLitConvertSettings matCapLitConvertSettings)
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview.</param>
+        public MatCapLitGenerator(MatCapLitConvertSettings matCapLitConvertSettings, bool forEditorPreview = false)
         {
             this.matCapLitConvertSettings = matCapLitConvertSettings;
-            toonLitGenerator = new ToonLitGenerator(matCapLitConvertSettings);
+            toonLitGenerator = new ToonLitGenerator(matCapLitConvertSettings, forEditorPreview);
         }
 
         /// <inheritdoc/>

@@ -1,0 +1,4 @@
+# Bundled astcenc binaries are downloaded by scripts/download-astcenc.sh and are
+# normally gitignored (not tracked). This entry is a safety net in case someone
+# force-adds them (git add -f) anyway, so they never go through EOL conversion.
+Packages/com.github.kurotu.vrc-quest-tools/Editor/Tools/astcenc/** -text

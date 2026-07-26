@@ -16,6 +16,10 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
+
+      - name: Download astcenc
+        run: ./scripts/download-astcenc.sh --platform all
+
       - uses: actions/cache@v4
         with:
           path: Library
@@ -101,6 +105,10 @@ jobs:
               name: aao-minimum
     steps:
       - uses: actions/checkout@v4
+
+      - name: Download astcenc
+        run: ./scripts/download-astcenc.sh --platform linux
+
       - uses: actions/cache@v4
         with:
           path: Library
@@ -215,6 +223,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Download astcenc
+        run: ./scripts/download-astcenc.sh --platform all
       - name: Copy README
         run: cp README.md Packages/com.github.kurotu.vrc-quest-tools/
       - name: Make zip

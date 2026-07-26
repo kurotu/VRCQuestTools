@@ -160,13 +160,38 @@ namespace KRT.VRCQuestTools.Utils
                     var normal = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
                     if (normal != null)
                     {
-                        // Restore the cached color space (normal maps are linear); CopyAsReadable's bool is the Texture2D "linear" flag.
-                        return TextureUtility.CopyAsReadable(normal, linear);
+                        // The blank normal map asset's .meta only overrides the import format to ASTC for the
+                        // Android/iOS platforms. When the active build target differs (e.g. Standalone/Linux in
+                        // CI), Unity imports the same asset with an Automatic (non-ASTC) format instead, so its
+                        // format/dimensions/mip layout no longer match what this TextureCache recorded at save
+                        // time. Using such an asset as a raw-byte container would make the LoadRawTextureData
+                        // call in ToTexture2D() over/underread the stored buffer. Only use the asset as a
+                        // container when it actually matches; otherwise fall back to building the container
+                        // directly below. This mismatch is an expected, environment-dependent situation (not a
+                        // missing asset), so no warning is logged for it.
+                        if (normal.format == format && normal.width == width && normal.height == height && (normal.mipmapCount > 1) == mipmap)
+                        {
+                            // Restore the cached color space (normal maps are linear); CopyAsReadable's bool is the Texture2D "linear" flag.
+                            return TextureUtility.CopyAsReadable(normal, linear);
+                        }
                     }
-                    Logger.LogWarning($"Failed to load normal map from {path}. Creating normal map from uncompressed one.");
+                    else
+                    {
+                        Logger.LogWarning($"Failed to load normal map from {path}. Creating normal map from uncompressed one.");
+                    }
                 }
-                var tex = new Texture2D(width, height, format, mipmap, linear);
-                return TextureUtility.CompressNormalMap(tex, buildTarget, format, true);
+                // Build the container directly instead of going through TextureUtility.CompressNormalMap /
+                // TextureCompressorProvider. This texture's fields (format/mipmap/linear/dimensions) are a
+                // one-to-one match for the values recorded in TextureCache at save time, and ToTexture2D()
+                // immediately replaces the entire content via LoadRawTextureData -- no compression step is
+                // needed to produce it. Routing through the compressor facade would resolve the format via
+                // the active build target (TextureUtility.ResolveEffectiveCompressionFormat), which only
+                // honors the ASTC mobileFormat when the active build target is Android/iOS; on any other
+                // active build target (e.g. Linux/Windows standalone in CI) it would silently produce a
+                // container in a different format than the one actually stored in the cache, causing
+                // LoadRawTextureData to fail on a byte-size mismatch. Building the container directly avoids
+                // this active-build-target dependency entirely.
+                return new Texture2D(width, height, format, mipmap, linear);
             }
 
             private string ResolveNormalMapPath()

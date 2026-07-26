@@ -591,8 +591,8 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Gets whether the game object is effectively "EditorOnly" in the avatar hierarchy, i.e. the object itself or
-        /// any ancestor below the avatar root is tagged as "EditorOnly". Such objects are removed by VRCSDK during build.
+        /// Gets whether the game object is effectively "EditorOnly" in the avatar hierarchy, i.e. the object itself or
+        /// any ancestor below the avatar root is tagged as "EditorOnly". Such objects are removed by VRCSDK during build.
         /// </summary>
         /// <param name="avatarRoot">Avatar root object.</param>
         /// <param name="gameObject">Game object to test.</param>
@@ -821,8 +821,13 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="rootMenu">Root menu.</param>
         /// <param name="maxSize">Max texture size. Set 0 to remove.</param>
         /// <param name="compressTextures">Whether to compress textures. Compress them in progressCallback.</param>
-        /// <param name="progressCallback">Callback for created textures.</param>
-        internal static void ResizeExpressionMenuIcons(VRCExpressionsMenu rootMenu, int maxSize, bool compressTextures, Action<Texture2D, Texture2D> progressCallback)
+        /// <param name="progressCallback">Callback invoked with (originalIcon, resizedIcon) for each icon that was resized.
+        /// Must return the texture instance to actually assign as the control's icon: return <paramref name="progressCallback"/>'s
+        /// second argument unchanged when no further processing is done, or a replacement instance when the callback
+        /// compresses/transforms it in place (e.g. via a compressor that discards its input and returns a new instance).
+        /// The returned instance is what gets stored in <c>control.icon</c> and in the resized-texture cache used for
+        /// icons shared by multiple controls, so a stale (possibly destroyed) instance must never be returned.</param>
+        internal static void ResizeExpressionMenuIcons(VRCExpressionsMenu rootMenu, int maxSize, bool compressTextures, Func<Texture2D, Texture2D, Texture2D> progressCallback)
         {
             if (rootMenu == null)
             {
@@ -855,9 +860,13 @@ namespace KRT.VRCQuestTools.Utils
                             var request = TextureUtility.ResizeTexture(icon, true, newWidth, newHeight, (newIcon) =>
                             {
                                 newIcon.name = icon.name + " (VQT Resize)";
-                                control.icon = newIcon;
-                                resizedTextures.Add(icon, newIcon);
-                                progressCallback?.Invoke(icon, newIcon);
+
+                                // The callback may compress newIcon via a compressor that discards its input and
+                                // returns a new instance (e.g. AstcencTextureCompressor), so the callback's return
+                                // value -- not newIcon itself -- is the texture that must be wired up everywhere.
+                                var finalIcon = progressCallback != null ? progressCallback(icon, newIcon) : newIcon;
+                                control.icon = finalIcon;
+                                resizedTextures.Add(icon, finalIcon);
                             });
                             request.WaitForCompletion();
                         }

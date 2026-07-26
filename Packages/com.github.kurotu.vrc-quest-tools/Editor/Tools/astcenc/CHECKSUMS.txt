@@ -1,0 +1,26 @@
+astcenc 5.3.0 (https://github.com/ARM-software/astc-encoder)
+
+These binaries are not committed to the repository. Run
+scripts/download-astcenc.sh (or scripts/download-astcenc.ps1 on Windows) to
+fetch them; the script downloads the archives below, verifies their SHA256
+against the values recorded in this file, and extracts only the avx2/sse2
+binaries into win-x64/ and linux-x64/ next to this file.
+
+Version note: 5.3.0 is the newest release whose Linux binaries require
+GLIBC_2.34 or older, so they run on Ubuntu 22.04 (glibc 2.35) used by
+Unity CI images. Newer releases (5.4.0+) require GLIBC_2.38.
+
+Binaries are extracted from the official release archives:
+- https://github.com/ARM-software/astc-encoder/releases/download/5.3.0/astcenc-5.3.0-windows-x64.zip
+  (SHA256: 199b2287be0264182292869798bef91c35a64791e52bfd43824d1d3ac3e7846f)
+- https://github.com/ARM-software/astc-encoder/releases/download/5.3.0/astcenc-5.3.0-linux-x64.zip
+  (SHA256: 495b2f0cf0357ae05728a727e3d0e81d6e7f27b242c21cb5ef6254dd56dba5ff)
+
+Archive checksums are published by the upstream project:
+https://github.com/ARM-software/astc-encoder/releases/download/5.3.0/release-sha256.txt
+
+SHA256 of bundled binaries:
+c2eb4bbbad344666ccd9c176f3b915077c057366681a3093c4047a7677e6504b  win-x64/astcenc-avx2.exe
+02154aaab77770cf279d09629fd75c1ae912e3748067616a38a2d75137429cdd  win-x64/astcenc-sse2.exe
+eaa0d194e82790bd338ef00e69e5d085ae6a2134da30bf7b3f186b78fb19f5cb  linux-x64/astcenc-avx2
+61071c177f3c4b873097a223283be9b47d9c14f6a0f3de34d2e7c97019344300  linux-x64/astcenc-sse2

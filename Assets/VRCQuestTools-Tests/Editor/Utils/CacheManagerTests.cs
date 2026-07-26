@@ -1,6 +1,8 @@
 using System.IO;
 using System.Threading;
 using NUnit.Framework;
+using UnityEditor;
+using UnityEngine;
 
 namespace KRT.VRCQuestTools.Utils
 {
@@ -223,6 +225,59 @@ namespace KRT.VRCQuestTools.Utils
                 if (File.Exists(destPath))
                 {
                     File.Delete(destPath);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Test that TextureCache.ToTexture2D falls back to building the normal map container directly
+        /// (instead of throwing) when the pre-baked blank normal map asset used as a container doesn't match
+        /// the texture attributes recorded at cache-save time.
+        ///
+        /// This reproduces the Linux CI failure (NormalMapPreviewRenderingTests): the blank normal map
+        /// asset's .meta only overrides the import format to ASTC for the Android/iOS platforms, so on a
+        /// non-mobile active build target the asset is imported with a different format and its raw byte
+        /// layout no longer matches what was recorded, which used to make LoadRawTextureData
+        /// overread/underread the stored buffer.
+        ///
+        /// The mismatch is reproduced here via mip layout instead of format, which keeps the test independent
+        /// of the running editor/CI's active build target: the blank asset always has mipmaps generated (its
+        /// .meta has enableMipMap: 1, a generic, platform-independent import setting), so caching a
+        /// non-mipmapped source texture always mismatches it, regardless of which format the asset actually
+        /// imported as.
+        /// </summary>
+        [Test]
+        public void TextureCache_NormalMap_FallsBackWhenContainerAssetMismatches()
+        {
+            var folder = AssetDatabase.GUIDToAssetPath("17d9dbede49f19943a367a284154f9d4"); // Package/-/Assets/BlankNormalMaps
+            var assetPath = Path.Combine(folder, "VQT_Normal_256px_ASTC_6x6.png").Replace('\\', '/');
+            var blankAsset = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
+            Assert.IsNotNull(blankAsset, "Precondition: blank normal map asset should exist for this test to exercise the mismatch path.");
+            Assert.IsTrue(blankAsset.mipmapCount > 1, "Precondition: blank normal map asset should have mipmaps so it mismatches a no-mip cached texture.");
+
+            Texture2D source = null;
+            Texture2D restored = null;
+            try
+            {
+                source = new Texture2D(256, 256, TextureFormat.ASTC_6x6, false, true);
+                var cache = new CacheUtility.TextureCache(source, true, true, BuildTarget.Android);
+
+                Assert.DoesNotThrow(() => restored = cache.ToTexture2D(), "Restoring from cache should fall back to building the container directly instead of throwing when the blank asset container doesn't match.");
+                Assert.IsNotNull(restored);
+                Assert.AreEqual(256, restored.width);
+                Assert.AreEqual(256, restored.height);
+                Assert.AreEqual(TextureFormat.ASTC_6x6, restored.format);
+                Assert.AreEqual(1, restored.mipmapCount, "Restored texture should follow the cached (no-mip) layout, proving the mismatched blank asset was not used as the container.");
+            }
+            finally
+            {
+                if (source != null)
+                {
+                    Object.DestroyImmediate(source);
+                }
+                if (restored != null)
+                {
+                    Object.DestroyImmediate(restored);
                 }
             }
         }

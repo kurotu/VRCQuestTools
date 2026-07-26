@@ -17,14 +17,17 @@ namespace KRT.VRCQuestTools.Models
     internal class ParticleGenerator : IMaterialGenerator
     {
         private readonly IMaterialConvertSettings settings;
+        private readonly bool forEditorPreview;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ParticleGenerator"/> class.
         /// </summary>
         /// <param name="settings">Convert settings selected for the material (texture format/size are reused).</param>
-        internal ParticleGenerator(IMaterialConvertSettings settings)
+        /// <param name="forEditorPreview">Whether the conversion is for the NDMF editor preview.</param>
+        internal ParticleGenerator(IMaterialConvertSettings settings, bool forEditorPreview = false)
         {
             this.settings = settings;
+            this.forEditorPreview = forEditorPreview;
         }
 
         /// <inheritdoc/>
@@ -81,7 +84,8 @@ namespace KRT.VRCQuestTools.Models
                 texturesPath,
                 (compl) => material.GenerateParticleImage(maxTextureSize, compl),
                 completion,
-                platformOverride);
+                platformOverride,
+                forEditorPreview);
         }
 
         private bool ShouldGenerateTextures()
