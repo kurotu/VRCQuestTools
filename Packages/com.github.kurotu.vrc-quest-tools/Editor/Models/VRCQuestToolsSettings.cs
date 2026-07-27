@@ -1,4 +1,4 @@
-﻿// <copyright file="VRCQuestToolsSettings.cs" company="kurotu">
+// <copyright file="VRCQuestToolsSettings.cs" company="kurotu">
 // Copyright (c) kurotu.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -20,7 +20,21 @@ namespace KRT.VRCQuestTools.Models
         private const string FALSE = "FALSE";
         private const string TRUE = "TRUE";
         private const string ProjectSettingsFile = "ProjectSettings/VRCQuestToolsSettings.json";
-        private const ulong DefaultTextureCacheSize = 128 * 1024 * 1024; // 128MB
+
+        /// <summary>
+        /// Upper bound accepted for <see cref="TextureCacheSize"/> (1TB). Guards against a value large enough
+        /// to overflow the byte arithmetic in the settings UI, and against a nonsensical limit reached by
+        /// hand-editing the settings file.
+        /// </summary>
+        internal const ulong MaxTextureCacheSize = 1024UL * 1024 * 1024 * 1024;
+
+        /// <summary>
+        /// Texture cache size default used before <see cref="VRCQuestToolsProjectSettings.CurrentSettingsVersion"/>
+        /// 1 (128MB). Kept only to recognize stored values that came from that default rather than from a
+        /// deliberate choice; see <see cref="MigrateProjectSettings"/>.
+        /// </summary>
+        private const ulong LegacyDefaultTextureCacheSize = 128UL * 1024 * 1024;
+
         private static readonly string DefaultTextureCacheDirectory = Path.Combine("Library", "VRCQuestTools", "Cache", "TextureCache");
 
         private static I18nBase i18n = null;
@@ -126,20 +140,22 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
-        /// Gets or sets the total size of texture cache.
+        /// Gets or sets the total size of texture cache. Clamped to <see cref="MaxTextureCacheSize"/> on both
+        /// read and write, so neither a caller nor a hand-edited settings file can install a limit that breaks
+        /// eviction.
         /// </summary>
         internal static ulong TextureCacheSize
         {
             get
             {
                 var settings = GetProjectSettings();
-                return settings.TextureCacheSize;
+                return ClampTextureCacheSize(settings.TextureCacheSize);
             }
 
             set
             {
                 var settings = GetProjectSettings();
-                settings.TextureCacheSize = value;
+                settings.TextureCacheSize = ClampTextureCacheSize(value);
                 SaveProjectSettings(settings);
             }
         }
@@ -190,8 +206,13 @@ namespace KRT.VRCQuestTools.Models
         internal static void ResetPreferences()
         {
             var settings = GetProjectSettings();
-            settings.TextureCacheSize = DefaultTextureCacheSize;
+            settings.TextureCacheSize = VRCQuestToolsProjectSettings.DefaultTextureCacheSize;
             SaveProjectSettings(settings);
+        }
+
+        private static ulong ClampTextureCacheSize(ulong size)
+        {
+            return size > MaxTextureCacheSize ? MaxTextureCacheSize : size;
         }
 
         private static void SetBooleanConfigValue(string name, bool value)
@@ -221,11 +242,44 @@ namespace KRT.VRCQuestTools.Models
                 SaveProjectSettings(settings);
             }
             var json = File.ReadAllText(ProjectSettingsFile);
-            return JsonUtility.FromJson<VRCQuestToolsProjectSettings>(json);
+            var loaded = JsonUtility.FromJson<VRCQuestToolsProjectSettings>(json);
+            if (MigrateProjectSettings(loaded))
+            {
+                SaveProjectSettings(loaded);
+            }
+            return loaded;
+        }
+
+        /// <summary>
+        /// Brings settings written by an older schema version up to date.
+        /// </summary>
+        /// <param name="settings">Settings just loaded from the settings file.</param>
+        /// <returns>true when something changed and the settings should be written back.</returns>
+        private static bool MigrateProjectSettings(VRCQuestToolsProjectSettings settings)
+        {
+            if (settings.SettingsVersion >= VRCQuestToolsProjectSettings.CurrentSettingsVersion)
+            {
+                return false;
+            }
+
+            // Adopt the new, larger texture cache default for anyone who never chose a size themselves.
+            // GetProjectSettings writes the whole settings file the first time anything reads a setting, so an
+            // unversioned file always carries a texture cache size even when the user never opened the settings
+            // UI -- meaning "stored value == the old default" cannot be told apart from "user deliberately
+            // picked the old default", and is treated as the former. Any other value is left untouched.
+            if (settings.TextureCacheSize == LegacyDefaultTextureCacheSize)
+            {
+                settings.TextureCacheSize = VRCQuestToolsProjectSettings.DefaultTextureCacheSize;
+            }
+
+            return true;
         }
 
         private static void SaveProjectSettings(VRCQuestToolsProjectSettings settings)
         {
+            // Stamped here rather than by each caller so every write records the schema the file was written
+            // with, which is what keeps MigrateProjectSettings a one-time operation.
+            settings.SettingsVersion = VRCQuestToolsProjectSettings.CurrentSettingsVersion;
             var json = JsonUtility.ToJson(settings, true);
             File.WriteAllText(ProjectSettingsFile, json);
         }

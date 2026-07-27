@@ -49,9 +49,13 @@
 - メニューアイコン設定を `Avatar Converter Settings` に統合し、NDMFのアイコン処理を `VQT Menu Icon Resizer` に統一。
 - `Convert Avatar for Mobile` を `Setup Avatar for Mobile` に改名し、初期セットアップをMA/AAOの利用可否対応・既存コンポーネント無効化表示・`MA Sync Parameter Sequence` の `PrimaryPlatform=PC` 設定を含む挙動へ統合。
 - `Avatar Converter Settings` インスペクターのレイアウトを改善。
+- テクスチャキャッシュの上限のデフォルトを 128MB から 1GB に変更。生成したテクスチャが再利用される前に破棄されにくくなります。設定を変更していないプロジェクトは自動的に新しいデフォルトへ更新されます。
+- テクスチャキャッシュの保存形式を base64 の JSON からバイナリ形式に変更。ディスク使用量が約 25% 減り、変換中のメモリ使用量も減ります。他のバージョンが書き込んだキャッシュは上限を占有せず自動的に破棄されます。
+- NDMF のマテリアル変換プレビューの後にもテクスチャキャッシュの上限を適用するように変更。従来はアバターを変換するまで上限を超えて増え続けていました。
 
 ### 修正
 - `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。
+- Project Settings の `Texture Cache Size (MB)` が範囲外の値を受け付け、負の値を入力すると上限が無効になる問題を修正。
 - アバター変換時のテクスチャ生成処理における RenderTexture と Material のメモリリークを修正。
 - 一度も描画されていない RenderTexture をテクスチャとして使用しているマテリアルのテクスチャ生成が失敗する問題を修正。
 - アバター変換失敗ダイアログに表示するスタックトレースの行数を制限し、ダイアログが操作不能になる問題を修正。

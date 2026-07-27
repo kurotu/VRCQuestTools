@@ -79,6 +79,91 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Test that binary entries survive a save/load round trip without going through a string.
+        /// </summary>
+        [Test]
+        public void SaveAndLoadBinary()
+        {
+            var testFileName = "binary.bin";
+            var testData = new byte[] { 0x00, 0x01, 0xFE, 0xFF, 0x7F, 0x80 };
+
+            testCacheManager.SaveBinary(testFileName, stream => stream.Write(testData, 0, testData.Length));
+            Assert.IsTrue(testCacheManager.Exists(testFileName));
+
+            var loaded = testCacheManager.LoadBinary(testFileName, stream =>
+            {
+                var buffer = new byte[testData.Length];
+                var read = stream.Read(buffer, 0, buffer.Length);
+                Assert.AreEqual(testData.Length, read);
+                Assert.AreEqual(-1, stream.ReadByte(), "Entry should contain exactly the written bytes.");
+                return buffer;
+            });
+
+            Assert.AreEqual(testData, loaded);
+        }
+
+        /// <summary>
+        /// Test that eviction removes the least recently accessed entries until the total fits the given size.
+        /// </summary>
+        [Test]
+        public void ClearToFitSizeEvictsLeastRecentlyAccessed()
+        {
+            var data = new string('x', 1000);
+            var names = new[] { "oldest.txt", "middle.txt", "newest.txt" };
+            for (int i = 0; i < names.Length; i++)
+            {
+                testCacheManager.Save(names[i], data);
+                File.SetLastAccessTimeUtc(Path.Combine(testCacheFolder, names[i]), new System.DateTime(2020, 1, 1 + i, 0, 0, 0, System.DateTimeKind.Utc));
+            }
+
+            // Fits the two most recently accessed entries (2000 bytes), but not the third.
+            testCacheManager.Clear(2500);
+
+            Assert.IsFalse(testCacheManager.Exists("oldest.txt"), "The least recently accessed entry should be evicted.");
+            Assert.IsTrue(testCacheManager.Exists("middle.txt"));
+            Assert.IsTrue(testCacheManager.Exists("newest.txt"));
+        }
+
+        /// <summary>
+        /// Test that entries written under a different stamp (e.g. by another tool version, or in another cache
+        /// entry format) are discarded on first access, since their file names are hashed and cannot be
+        /// recognized individually.
+        /// </summary>
+        [Test]
+        public void StampMismatchDiscardsEntries()
+        {
+            var name = "stamped.bin";
+            var oldStampManager = new CacheManager(() => testCacheFolder, true, () => "stamp-a");
+            oldStampManager.Save(name, "data");
+            Assert.IsTrue(oldStampManager.Exists(name));
+
+            // A fresh instance stands in for the next domain reload, this time expecting another stamp.
+            var newStampManager = new CacheManager(() => testCacheFolder, true, () => "stamp-b");
+            Assert.IsFalse(newStampManager.Exists(name), "Entries written under the previous stamp should be discarded.");
+        }
+
+        /// <summary>
+        /// Test that entries are kept when the recorded stamp still matches, and that clearing the cache does
+        /// not lose the recorded stamp (which would make the next access discard perfectly valid entries).
+        /// </summary>
+        [Test]
+        public void StampMatchKeepsEntries()
+        {
+            var name = "stamped.bin";
+            var manager = new CacheManager(() => testCacheFolder, true, () => "stamp-a");
+            manager.Save(name, "data");
+
+            var sameStampManager = new CacheManager(() => testCacheFolder, true, () => "stamp-a");
+            Assert.IsTrue(sameStampManager.Exists(name), "Entries written under the same stamp should be kept.");
+
+            sameStampManager.Clear();
+            sameStampManager.Save(name, "data again");
+
+            var afterClearManager = new CacheManager(() => testCacheFolder, true, () => "stamp-a");
+            Assert.IsTrue(afterClearManager.Exists(name), "Clearing the cache should not lose the recorded stamp.");
+        }
+
+        /// <summary>
         /// Test that cache uses lock for thread-safety.
         /// </summary>
         [Test]
@@ -226,6 +311,97 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     File.Delete(destPath);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Test that a texture cache entry survives a binary write/read round trip with its attributes and its
+        /// raw bytes intact.
+        /// </summary>
+        [Test]
+        public void TextureCache_BinaryRoundTrip()
+        {
+            Texture2D source = null;
+            Texture2D restored = null;
+            try
+            {
+                source = new Texture2D(8, 8, TextureFormat.RGBA32, false, false);
+                var pixels = new Color32[8 * 8];
+                for (int i = 0; i < pixels.Length; i++)
+                {
+                    pixels[i] = new Color32((byte)i, (byte)(255 - i), (byte)(i * 2), 255);
+                }
+                source.SetPixels32(pixels);
+                source.Apply();
+
+                var expectedBytes = source.GetRawTextureData();
+
+                CacheUtility.TextureCache readBack;
+                using (var stream = new MemoryStream())
+                {
+                    new CacheUtility.TextureCache(source, false, false, BuildTarget.Android).WriteTo(stream);
+                    stream.Position = 0;
+                    readBack = CacheUtility.TextureCache.ReadFrom(stream);
+                }
+
+                restored = readBack.ToTexture2D();
+                Assert.AreEqual(source.width, restored.width);
+                Assert.AreEqual(source.height, restored.height);
+                Assert.AreEqual(source.format, restored.format);
+                Assert.AreEqual(source.mipmapCount, restored.mipmapCount);
+                Assert.AreEqual(expectedBytes, restored.GetRawTextureData());
+            }
+            finally
+            {
+                if (source != null)
+                {
+                    Object.DestroyImmediate(source);
+                }
+                if (restored != null)
+                {
+                    Object.DestroyImmediate(restored);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Test that a file which is not a texture cache entry is rejected instead of being interpreted as one.
+        /// </summary>
+        [Test]
+        public void TextureCache_ReadFromRejectsForeignData()
+        {
+            using (var stream = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }))
+            {
+                Assert.Throws<InvalidDataException>(() => CacheUtility.TextureCache.ReadFrom(stream));
+            }
+        }
+
+        /// <summary>
+        /// Test that a corrupt data length in an otherwise well-formed entry is rejected before a buffer of that
+        /// size is allocated, rather than after the read has already been attempted.
+        /// </summary>
+        [Test]
+        public void TextureCache_ReadFromRejectsImplausibleDataLength()
+        {
+            using (var stream = new MemoryStream())
+            {
+                // Mirrors TextureCache.WriteTo's layout, but declares far more texture data than the entry holds.
+                using (var writer = new BinaryWriter(stream, System.Text.Encoding.UTF8, true))
+                {
+                    writer.Write(new byte[] { (byte)'V', (byte)'Q', (byte)'T', (byte)'C' });
+                    writer.Write(CacheUtility.TextureCache.FormatVersion);
+                    writer.Write(16);
+                    writer.Write(16);
+                    writer.Write((int)TextureFormat.RGBA32);
+                    writer.Write((int)BuildTarget.Android);
+                    writer.Write(false);
+                    writer.Write(false);
+                    writer.Write(false);
+                    writer.Write(int.MaxValue);
+                }
+                stream.Position = 0;
+
+                Assert.Throws<InvalidDataException>(() => CacheUtility.TextureCache.ReadFrom(stream));
             }
         }
 

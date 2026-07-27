@@ -40,10 +40,10 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
-        /// Test that default texture cache size is 128MB.
+        /// Test that default texture cache size is 1GB.
         /// </summary>
         [Test]
-        public void DefaultTextureCacheSizeIs128MB()
+        public void DefaultTextureCacheSizeIs1GB()
         {
             var originalSize = VRCQuestToolsSettings.TextureCacheSize;
 
@@ -52,8 +52,28 @@ namespace KRT.VRCQuestTools.Models
                 // Reset to defaults
                 VRCQuestToolsSettings.ResetPreferences();
 
-                var expectedSize = 128UL * 1024 * 1024;
+                var expectedSize = 1024UL * 1024 * 1024;
                 Assert.AreEqual(expectedSize, VRCQuestToolsSettings.TextureCacheSize);
+            }
+            finally
+            {
+                VRCQuestToolsSettings.TextureCacheSize = originalSize;
+            }
+        }
+
+        /// <summary>
+        /// Test that an out-of-range texture cache size is clamped instead of stored as-is, so eviction can
+        /// never be handed a limit it cannot act on.
+        /// </summary>
+        [Test]
+        public void TextureCacheSizeIsClampedToMaximum()
+        {
+            var originalSize = VRCQuestToolsSettings.TextureCacheSize;
+
+            try
+            {
+                VRCQuestToolsSettings.TextureCacheSize = ulong.MaxValue;
+                Assert.AreEqual(VRCQuestToolsSettings.MaxTextureCacheSize, VRCQuestToolsSettings.TextureCacheSize);
             }
             finally
             {

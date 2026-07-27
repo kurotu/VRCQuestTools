@@ -86,8 +86,8 @@ namespace KRT.VRCQuestTools.Utils
         /// <c>jobs</c> parameter), so a single item alone can already saturate the machine while it is running. The
         /// problem is that a single item is not always running astcenc: <see cref="ProcessItemAsync"/> also does
         /// real main-thread work before and after the astcenc call (pixel extraction / normal map mip generation
-        /// beforehand, <see cref="Texture2D"/> construction, <c>LoadRawTextureData</c>, the disk cache's base64
-        /// encode, and a repaint afterward) during which no astcenc process is running at all -- CPU sits idle
+        /// beforehand, <see cref="Texture2D"/> construction, <c>LoadRawTextureData</c>, the disk cache write,
+        /// and a repaint afterward) during which no astcenc process is running at all -- CPU sits idle
         /// during that gap. Allowing a small number of items to be in flight together means the next item's astcenc
         /// process can be starting (or already running) while the previous item is still doing that main-thread
         /// work, filling the gap instead of leaving it empty.
@@ -334,6 +334,29 @@ namespace KRT.VRCQuestTools.Utils
             {
                 EditorApplication.update -= OnUpdate;
                 updateHooked = false;
+
+                // The batch just finished. Every item in it wrote its own disk cache entry
+                // (ApplyCompressedResult), all of them after the conversion that enqueued them already returned
+                // and trimmed the cache -- so without trimming here too, a preview-only session (which never
+                // runs a real conversion) would keep growing the cache past its configured limit.
+                TrimTextureCache();
+            }
+        }
+
+        /// <summary>
+        /// Trims the texture cache down to the configured limit, ignoring failures: this is opportunistic
+        /// maintenance running inside an <c>EditorApplication.update</c> callback, where a throw would just
+        /// spam the console every tick.
+        /// </summary>
+        private static void TrimTextureCache()
+        {
+            try
+            {
+                CacheManager.Texture.Clear(Models.VRCQuestToolsSettings.TextureCacheSize);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning($"Failed to trim the texture cache after progressive preview compression. {e.Message}");
             }
         }
 
@@ -511,7 +534,8 @@ namespace KRT.VRCQuestTools.Utils
 
             try
             {
-                CacheManager.Texture.Save(item.CacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(compressed, !item.IsSRGB, item.IsNormalMap, item.BuildTarget)));
+                var cache = new CacheUtility.TextureCache(compressed, !item.IsSRGB, item.IsNormalMap, item.BuildTarget);
+                CacheManager.Texture.SaveBinary(item.CacheFile, cache.WriteTo);
             }
             catch (Exception e)
             {

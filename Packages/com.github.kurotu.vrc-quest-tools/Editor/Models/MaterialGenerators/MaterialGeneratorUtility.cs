@@ -1,3 +1,8 @@
+// <copyright file="MaterialGeneratorUtility.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.IO;
 using KRT.VRCQuestTools.Utils;
@@ -105,7 +110,7 @@ namespace KRT.VRCQuestTools.Models
                 compressorKeyComponent = "_" + TextureCompressorProvider.GetCompressor(compressionFormat).CacheKeyComponent;
             }
 
-            var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}{compressorKeyComponent}_{assetHash}" + (saveAsPng ? ".png" : ".json");
+            var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}{compressorKeyComponent}_{assetHash}" + (saveAsPng ? ".png" : ".bin");
             var texName = $"{material.name}_{textureType}";
             string outFile = null;
             if (saveAsPng)
@@ -245,7 +250,7 @@ namespace KRT.VRCQuestTools.Models
                     }
                     else
                     {
-                        var cache = JsonUtility.FromJson<CacheUtility.TextureCache>(CacheManager.Texture.LoadString(cacheFile));
+                        var cache = CacheManager.Texture.LoadBinary(cacheFile, CacheUtility.TextureCache.ReadFrom);
                         var tex = cache.ToTexture2D();
                         TextureUtility.SetStreamingMipMaps(tex, true);
                         return tex;
@@ -303,7 +308,8 @@ namespace KRT.VRCQuestTools.Models
                 // instance (e.g. the astcenc path always returns a new Texture2D on success), which would silently
                 // drop a flag set on the pre-compression instance.
                 TextureUtility.SetStreamingMipMaps(texToWrite, true);
-                CacheManager.Texture.Save(cacheFile, JsonUtility.ToJson(new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap, EditorUserBuildSettings.activeBuildTarget)));
+                var cache = new CacheUtility.TextureCache(texToWrite, !config.isSRGB, config.isNormalMap, EditorUserBuildSettings.activeBuildTarget);
+                CacheManager.Texture.SaveBinary(cacheFile, cache.WriteTo);
             }
 
             return texToWrite;

@@ -82,7 +82,7 @@ namespace KRT.VRCQuestTools.Utils
                 return 1;
             });
 
-            var cacheFile = $"test_progressive_{Guid.NewGuid():N}.json";
+            var cacheFile = $"test_progressive_{Guid.NewGuid():N}.bin";
             var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
             Assert.IsTrue(enqueued, "TryEnqueue should succeed when a replacer is registered and the pending-bytes cap has headroom.");
             Assert.AreEqual(1, PreviewTextureCompressionQueue.PendingCountForTesting);
@@ -117,7 +117,7 @@ namespace KRT.VRCQuestTools.Utils
                 return 1;
             });
 
-            var cacheFile = $"test_progressive_normal_{Guid.NewGuid():N}.json";
+            var cacheFile = $"test_progressive_normal_{Guid.NewGuid():N}.bin";
             var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, true, false, null, cacheFile, false);
             Assert.IsTrue(enqueued);
 
@@ -146,7 +146,7 @@ namespace KRT.VRCQuestTools.Utils
 
             PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) => 0);
 
-            var cacheFile = $"test_progressive_orphan_{Guid.NewGuid():N}.json";
+            var cacheFile = $"test_progressive_orphan_{Guid.NewGuid():N}.bin";
             PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
 
             var task = PreviewTextureCompressionQueue.ProcessNextForTesting();
@@ -171,7 +171,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer(null);
 
-                var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, "test_progressive_none.json", true);
+                var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, "test_progressive_none.bin", true);
 
                 Assert.IsFalse(enqueued);
                 Assert.AreEqual(0, PreviewTextureCompressionQueue.PendingCountForTesting);
@@ -207,7 +207,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 field.SetValue(null, PreviewTextureCompressionQueue.MaxPendingBytes);
 
-                var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, "test_progressive_cap.json", true);
+                var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, "test_progressive_cap.bin", true);
 
                 Assert.IsFalse(enqueued, "TryEnqueue must refuse once the pending-bytes cap would be exceeded.");
                 Assert.AreEqual(0, PreviewTextureCompressionQueue.PendingCountForTesting);
@@ -246,7 +246,7 @@ namespace KRT.VRCQuestTools.Utils
                 return 1;
             });
 
-            var cacheFile = $"test_progressive_fallback_{Guid.NewGuid():N}.json";
+            var cacheFile = $"test_progressive_fallback_{Guid.NewGuid():N}.bin";
             var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, brokenCompressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
             Assert.IsTrue(enqueued);
 
@@ -291,7 +291,7 @@ namespace KRT.VRCQuestTools.Utils
 
             PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) => 1);
 
-            var cacheFile = $"test_progressive_predestroyed_{Guid.NewGuid():N}.json";
+            var cacheFile = $"test_progressive_predestroyed_{Guid.NewGuid():N}.bin";
             var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
             Assert.IsTrue(enqueued);
 
@@ -346,7 +346,7 @@ namespace KRT.VRCQuestTools.Utils
 
             PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) => 1);
 
-            var cacheFile = $"test_progressive_underflow_{Guid.NewGuid():N}.json";
+            var cacheFile = $"test_progressive_underflow_{Guid.NewGuid():N}.bin";
             var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
             Assert.IsTrue(enqueued);
 
@@ -402,7 +402,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 for (var i = 0; i < placeholders.Length; i++)
                 {
-                    var cacheFile = $"test_progressive_parallel_{i}_{Guid.NewGuid():N}.json";
+                    var cacheFile = $"test_progressive_parallel_{i}_{Guid.NewGuid():N}.bin";
                     var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholders[i], compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
                     Assert.IsTrue(enqueued);
                 }
@@ -488,7 +488,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 foreach (var placeholder in placeholders)
                 {
-                    var cacheFile = $"test_progressive_capbound_{Guid.NewGuid():N}.json";
+                    var cacheFile = $"test_progressive_capbound_{Guid.NewGuid():N}.bin";
                     Assert.IsTrue(PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true));
                 }
 
@@ -563,8 +563,8 @@ namespace KRT.VRCQuestTools.Utils
 
             try
             {
-                Assert.IsTrue(PreviewTextureCompressionQueue.TryEnqueue(placeholderA, compressor, TextureFormat.ASTC_4x4, false, false, null, $"test_progressive_capone_a_{Guid.NewGuid():N}.json", true));
-                Assert.IsTrue(PreviewTextureCompressionQueue.TryEnqueue(placeholderB, compressor, TextureFormat.ASTC_4x4, false, false, null, $"test_progressive_capone_b_{Guid.NewGuid():N}.json", true));
+                Assert.IsTrue(PreviewTextureCompressionQueue.TryEnqueue(placeholderA, compressor, TextureFormat.ASTC_4x4, false, false, null, $"test_progressive_capone_a_{Guid.NewGuid():N}.bin", true));
+                Assert.IsTrue(PreviewTextureCompressionQueue.TryEnqueue(placeholderB, compressor, TextureFormat.ASTC_4x4, false, false, null, $"test_progressive_capone_b_{Guid.NewGuid():N}.bin", true));
 
                 var firstBatch = PreviewTextureCompressionQueue.DispatchAvailableForTesting();
                 Assert.AreEqual(1, firstBatch.Length, "Only one item should be dispatched at a time when the cap is 1.");

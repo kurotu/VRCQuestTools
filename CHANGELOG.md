@@ -50,9 +50,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integrated menu icon settings into `Avatar Converter Settings`, and aligned NDMF icon processing with `VQT Menu Icon Resizer`.
 - Renamed `Convert Avatar for Mobile` to `Setup Avatar for Mobile` and updated setup to use availability-aware MA/AAO options with disabled already-added items and `MA Sync Parameter Sequence` defaulting `PrimaryPlatform` to `PC`.
 - Improved `Avatar Converter Settings` inspector layout.
+- The default texture cache size limit is now 1GB instead of 128MB, so generated textures survive long enough to actually be reused. Projects which never changed the setting are updated to the new default automatically.
+- Texture cache entries are now stored in a compact binary format instead of base64-encoded JSON, which makes the cache about 25% smaller on disk and reduces memory use while converting. Entries written by other versions are discarded automatically instead of occupying the size limit.
+- The texture cache size limit is now applied after NDMF material conversion previews as well, which previously could grow the cache beyond the limit until an avatar was actually converted.
 
 ### Fixed
 - `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
+- Fixed `Texture Cache Size (MB)` in Project Settings accepting an out-of-range value, where a negative value disabled the size limit entirely.
 - Fixed RenderTexture and Material memory leaks in texture generation pipeline during avatar conversion.
 - Fixed an issue where texture generation failed when a material used an un-rendered RenderTexture as a texture.
 - Limited stack trace lines shown in avatar conversion failure dialog to keep the dialog operable.
