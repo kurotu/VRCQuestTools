@@ -1,5 +1,7 @@
 using System;
+#if VQT_VRCFURY
 using System.Reflection;
+#endif
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
