@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Limited stack trace lines shown in avatar conversion failure dialog to keep the dialog operable.
 - Fixed lilToon to Toon Standard conversion producing overly dark results by deriving occlusion strength from the lilToon shadow colors instead of always applying full-strength occlusion.
 - Fixed lilToon to Toon Standard conversion computing gloss/metallic strength from the un-linearized (gamma-space) Reflection Color, which also caused Metallic to be inadvertently gamma-decoded a second time.
+- [NDMF] Fixed converted materials turning pink when VRCFury is present and the NDMF phase resolves to Optimizing, by suppressing VRCFury's own non-mobile material removal for avatars VRCQuestTools is about to convert in that phase. `Auto` now resolves to the Optimizing phase even when VRCFury components exist.
 
 ### Removed
 - Removed support for Unity 2019.

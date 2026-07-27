@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
@@ -35,6 +36,15 @@ namespace KRT.VRCQuestTools.Models
             }
             return type;
         });
+
+        // Proxy for whether VRCFuryMaterialRemovalPatch (Editor/NDMF/Compat) can find and patch VRCFury's
+        // material removal service. If VRCFury made breaking changes and this method can no longer be
+        // found, the patch can't be applied either, so Auto must fall back to the Transforming phase.
+        private static Lazy<bool> IsVRCFuryMaterialRemovalPatchable = new Lazy<bool>(() =>
+        {
+            var type = GetTypeByName("VF.Service.RemoveNonQuestMaterialsService");
+            return type?.GetMethod("Apply", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance) != null;
+        });
 #endif
 
         /// <summary>
@@ -59,8 +69,10 @@ namespace KRT.VRCQuestTools.Models
                     return AvatarConverterNdmfPhase.Transforming;
                 }
 
-                if (avatarRoot.GetComponentInChildren(VRCFuryComponentType.Value, true) != null)
+                if (avatarRoot.GetComponentInChildren(VRCFuryComponentType.Value, true) != null && !IsVRCFuryMaterialRemovalPatchable.Value)
                 {
+                    // VRCFuryMaterialRemovalPatch can't suppress VRCFury's material removal, so avoid the
+                    // Optimizing phase to prevent VRCFury from stripping materials before conversion.
                     return AvatarConverterNdmfPhase.Transforming;
                 }
 #endif
