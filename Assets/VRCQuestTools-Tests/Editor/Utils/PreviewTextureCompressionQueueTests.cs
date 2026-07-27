@@ -84,7 +84,7 @@ namespace KRT.VRCQuestTools.Utils
 
             var cacheFile = $"test_progressive_{Guid.NewGuid():N}.bin";
             var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
-            Assert.IsTrue(enqueued, "TryEnqueue should succeed when a replacer is registered and the pending-bytes cap has headroom.");
+            Assert.IsTrue(enqueued, "TryEnqueue should succeed when a replacer is registered.");
             Assert.AreEqual(1, PreviewTextureCompressionQueue.PendingCountForTesting);
 
             var task = PreviewTextureCompressionQueue.ProcessNextForTesting();
@@ -183,19 +183,23 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
-        /// Verifies the pending-bytes memory safety valve: once the accumulated pending bytes would exceed
-        /// <see cref="PreviewTextureCompressionQueue.MaxPendingBytes"/>, TryEnqueue refuses instead of growing
-        /// the queue further. Reaches the cap via reflection into the private pendingBytes counter (restored
-        /// afterwards) rather than actually allocating hundreds of megabytes of placeholder textures, which would
-        /// make this test slow and liable to flake on memory-constrained CI runners.
+        /// Verifies that a large backlog no longer refuses the enqueue. Passing
+        /// <see cref="PreviewTextureCompressionQueue.MaxPendingBytes"/> used to make TryEnqueue return false, which
+        /// sent <c>MaterialGeneratorUtility</c> into synchronous compression -- stalling the main thread at the
+        /// same astcenc preset while background astcenc processes were already saturating the CPU, and not even
+        /// saving the memory it was meant to save, since the placeholder is baked and assigned before TryEnqueue
+        /// is ever called. The threshold now only produces a warning, which this test asserts is still logged
+        /// exactly once for the batch. Reaches the threshold via reflection into the private pendingBytes counter
+        /// (restored afterwards) rather than actually allocating hundreds of megabytes of placeholder textures,
+        /// which would make this test slow and liable to flake on memory-constrained CI runners.
         /// </summary>
-        [Test]
-        public void TryEnqueue_PendingBytesCapReached_ReturnsFalse()
+        [UnityTest]
+        public IEnumerator TryEnqueue_BacklogOverHighWaterMark_StillAcceptsAndWarnsOnce()
         {
             var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
             var placeholder = CreateColorTexture(4, 4);
 
-            // Register a (non-null) replacer explicitly so this test exercises the pending-bytes cap
+            // Register a (non-null) replacer explicitly so this test exercises the backlog threshold
             // specifically, regardless of whether NDMF happens to be installed in this environment (which
             // determines what SetUp's saved/restored replacer actually is).
             PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) => 1);
@@ -203,20 +207,101 @@ namespace KRT.VRCQuestTools.Utils
             var field = typeof(PreviewTextureCompressionQueue).GetField("pendingBytes", BindingFlags.NonPublic | BindingFlags.Static);
             Assert.IsNotNull(field, "PreviewTextureCompressionQueue.pendingBytes field must exist for this test to drive it.");
             var originalPendingBytes = (long)field.GetValue(null);
+
+            var replaced = new List<Texture>();
+            PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) =>
+            {
+                replaced.Add(to);
+                return 1;
+            });
+
+            // Only this queue's own backlog warning is counted; unrelated warnings from whatever else the running
+            // editor session happens to log while this test runs must not make it flake.
+            var warnings = new List<string>();
+            void OnLogMessage(string condition, string stackTrace, LogType type)
+            {
+                if (type == LogType.Warning && condition.Contains("uncompressed placeholder textures"))
+                {
+                    warnings.Add(condition);
+                }
+            }
+
+            // Suspends the production dispatch loop, which TryEnqueue below hooks to EditorApplication.update:
+            // the running editor fires that for real, including during the `yield return`s in the drain loop
+            // below, so without this it would dequeue and dispatch these very items in parallel with the drain
+            // -- leaving an item still in flight when the drain loop sees an empty queue and exits, and that
+            // leaked in-flight item then breaks every later test that asserts on the dispatch counters.
+            // TearDown restores this unconditionally.
+            PreviewTextureCompressionQueue.SuspendAutoDispatchForTesting = true;
+
+            field.SetValue(null, PreviewTextureCompressionQueue.MaxPendingBytes);
+
+            bool enqueued;
+            bool enqueuedAgain;
+            Application.logMessageReceived += OnLogMessage;
             try
             {
-                field.SetValue(null, PreviewTextureCompressionQueue.MaxPendingBytes);
+                enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, $"test_progressive_backlog_{Guid.NewGuid():N}.bin", true);
 
-                var enqueued = PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, "test_progressive_cap.bin", true);
-
-                Assert.IsFalse(enqueued, "TryEnqueue must refuse once the pending-bytes cap would be exceeded.");
-                Assert.AreEqual(0, PreviewTextureCompressionQueue.PendingCountForTesting);
+                // A second item over the same threshold must not warn again: the warning is latched per batch,
+                // otherwise a large avatar would emit one warning per baked texture.
+                enqueuedAgain = PreviewTextureCompressionQueue.TryEnqueue(CreateColorTexture(4, 4), compressor, TextureFormat.ASTC_4x4, false, false, null, $"test_progressive_backlog_{Guid.NewGuid():N}.bin", true);
             }
             finally
             {
-                field.SetValue(null, originalPendingBytes);
-                UnityEngine.Object.DestroyImmediate(placeholder);
+                Application.logMessageReceived -= OnLogMessage;
             }
+
+            var pendingAfterEnqueue = PreviewTextureCompressionQueue.PendingCountForTesting;
+
+            // Drained (and the counter restored) before asserting: a failed assertion below must not leave this
+            // test's items, its forced pendingBytes value, or the latched warning state behind for later tests in
+            // the same editor session. `yield return` cannot appear inside a finally block, hence the ordering.
+            while (PreviewTextureCompressionQueue.PendingCountForTesting > 0 || PreviewTextureCompressionQueue.InFlightCountForTesting > 0)
+            {
+                var drain = PreviewTextureCompressionQueue.ProcessNextForTesting();
+                yield return TestUtils.WaitForTask(drain);
+            }
+
+            field.SetValue(null, originalPendingBytes);
+            foreach (var texture in replaced)
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
+
+            Assert.IsTrue(enqueued, "TryEnqueue must accept even past the backlog threshold, rather than pushing the caller into synchronous compression.");
+            Assert.IsTrue(enqueuedAgain);
+            Assert.AreEqual(2, pendingAfterEnqueue, "Both items must have been queued.");
+            Assert.AreEqual(1, warnings.Count, $"Exactly one backlog warning must be logged per batch. Got: {string.Join(" | ", warnings)}");
+        }
+
+        /// <summary>
+        /// Verifies that a finished compression is written to the disk texture cache even when nothing on screen
+        /// wants it anymore -- the replacer reporting zero replacements, i.e. every preview material lease
+        /// referencing the placeholder was released while astcenc was running (routine: editing a convert setting
+        /// changes the cache key, which drops the old entry's last reference). The bytes are valid and keyed by
+        /// material content plus convert settings, not by what happens to be displayed, so skipping the write
+        /// here used to throw away a whole astcenc run and guarantee it was redone the next time that same
+        /// material and settings combination came back.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator ProcessNextForTesting_ReplacerReportsZero_StillWritesDiskCacheEntry()
+        {
+            var compressor = TestUtils.CreateAstcencCompressorOrIgnore();
+            var placeholder = CreateColorTexture(8, 8);
+
+            PreviewTextureCompressionQueue.RegisterMaterialTextureReplacer((from, to) => 0);
+
+            var cacheFile = $"test_progressive_orphan_cache_{Guid.NewGuid():N}.bin";
+            Assert.IsFalse(CacheManager.Texture.Exists(cacheFile), "The unique cache file must not exist before the test runs.");
+
+            PreviewTextureCompressionQueue.TryEnqueue(placeholder, compressor, TextureFormat.ASTC_4x4, false, false, null, cacheFile, true);
+
+            var task = PreviewTextureCompressionQueue.ProcessNextForTesting();
+            yield return TestUtils.WaitForTask(task);
+
+            Assert.IsTrue(task.Result);
+            Assert.IsTrue(CacheManager.Texture.Exists(cacheFile), "The compressed result must be cached to disk even when no preview material references it anymore.");
         }
 
         /// <summary>
@@ -335,8 +420,8 @@ namespace KRT.VRCQuestTools.Utils
         /// item would otherwise do. Only asserts the counter never goes negative (rather than an exact final
         /// value) and restores whatever was there beforehand: <c>pendingBytes</c> is process-wide static state,
         /// potentially shared with real (non-test) preview activity in the running editor session, not scoped to
-        /// this test -- same accommodation <see cref="TryEnqueue_PendingBytesCapReached_ReturnsFalse"/> already
-        /// makes for the same reason.
+        /// this test -- same accommodation <see cref="TryEnqueue_BacklogOverHighWaterMark_StillAcceptsAndWarnsOnce"/>
+        /// already makes for the same reason.
         /// </summary>
         [UnityTest]
         public IEnumerator ProcessNextForTesting_PendingBytesWouldUnderflow_ClampsToZero()
