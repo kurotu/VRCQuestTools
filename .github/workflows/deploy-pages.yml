@@ -117,7 +117,7 @@ jobs:
           MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
           PATCH=$(echo "$CURRENT_VERSION" | cut -d. -f3 | cut -d- -f1)
           NEXT_PATCH=$((PATCH + 1))
-          DATE=$(date +%Y%m%d)
+          DATE=$(date +%Y%m%d.%H%M)
           RUN_NUMBER="${GITHUB_RUN_NUMBER}"
           SHORT_SHA=$(git rev-parse --short HEAD)
           VERSION="${MAJOR}.${MINOR}.${NEXT_PATCH}-master.${DATE}.${RUN_NUMBER}.${SHORT_SHA}"
@@ -129,6 +129,8 @@ jobs:
           sed -i "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" "$PACKAGE_JSON"
           sed -i "s|\"url\": \".*\"|\"url\": \"https://kurotu.github.io/VRCQuestTools/com.github.kurotu.vrc-quest-tools-${VERSION}.zip\"|" "$PACKAGE_JSON"
           sed -i "s/string Version = \".*\"/string Version = \"${VERSION}\"/" "Packages/com.github.kurotu.vrc-quest-tools/Editor/VRCQuestTools.cs"
+      - name: Download astcenc
+        run: ./scripts/download-astcenc.sh --platform all
       - name: Create zip package
         run: |
           VERSION="${{ steps.version.outputs.version }}"
