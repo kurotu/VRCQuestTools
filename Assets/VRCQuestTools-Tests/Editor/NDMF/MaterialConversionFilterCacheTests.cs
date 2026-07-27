@@ -8,6 +8,7 @@ using System.Reflection;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
+using nadena.dev.ndmf.preview;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -166,6 +167,65 @@ namespace KRT.VRCQuestTools.Ndmf
                     Object.DestroyImmediate(replacement);
                 }
             }
+        }
+
+        /// <summary>
+        /// The preview filter node may only hand itself back to a new pipeline generation for changes that cannot
+        /// affect which material a renderer slot uses. Returning itself for anything else would keep a stale
+        /// conversion on screen; returning null merely costs a rebuild, so this asserts the safe direction for
+        /// every aspect. Zero is included because NDMF passes it when the node's own ComputeContext was
+        /// invalidated -- i.e. exactly when the convert settings or a source material changed.
+        /// </summary>
+        [Test]
+        public void FilterNode_Refresh_ReturnsSelfOnlyForShapeChanges()
+        {
+            var nodeType = typeof(MaterialConversionFilter).GetNestedType("MaterialConversionFilterNode", BindingFlags.NonPublic);
+            Assert.IsNotNull(nodeType, "MaterialConversionFilter.MaterialConversionFilterNode was not found.");
+
+            var lease = new SharedMaterialMapLease(new Dictionary<Material, Material>(), new HashSet<string>());
+            var node = (IRenderFilterNode)System.Activator.CreateInstance(
+                nodeType,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                null,
+                new object[] { new Dictionary<Material, Material>(), false, lease, null, null, new Material[0] },
+                null);
+
+            var proxyPairs = new (Renderer, Renderer)[0];
+
+            Assert.AreSame(node, Refresh(node, proxyPairs, RenderAspects.Shapes), "Blendshape/bone updates cannot change material assignment, so the node must be reusable.");
+            Assert.IsNull(Refresh(node, proxyPairs, RenderAspects.Material), "A material change upstream must force a rebuild.");
+            Assert.IsNull(Refresh(node, proxyPairs, RenderAspects.Texture), "A texture change upstream must force a rebuild.");
+            Assert.IsNull(Refresh(node, proxyPairs, RenderAspects.Mesh), "A mesh change alters the submesh count, and therefore which slots are remapped, so it must force a rebuild.");
+            Assert.IsNull(Refresh(node, proxyPairs, RenderAspects.Shapes | RenderAspects.Mesh), "A reusable aspect combined with a non-reusable one must still force a rebuild.");
+            Assert.IsNull(Refresh(node, proxyPairs, 0), "Zero means this node's own context was invalidated, which must force a rebuild.");
+        }
+
+        /// <summary>
+        /// A node returned by one of MaterialConversionFilter.Instantiate's early exits (wrong phase, non-mobile
+        /// target, or a conversion that threw) holds no lease, and must always rebuild so the condition that made
+        /// it a no-op is re-evaluated.
+        /// </summary>
+        [Test]
+        public void FilterNode_Refresh_NoOpNodeWithoutLease_AlwaysRebuilds()
+        {
+            var nodeType = typeof(MaterialConversionFilter).GetNestedType("MaterialConversionFilterNode", BindingFlags.NonPublic);
+            Assert.IsNotNull(nodeType, "MaterialConversionFilter.MaterialConversionFilterNode was not found.");
+
+            var node = (IRenderFilterNode)System.Activator.CreateInstance(
+                nodeType,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                null,
+                new object[] { new Dictionary<Material, Material>(), false, null, null, null, null },
+                null);
+
+            Assert.IsNull(Refresh(node, new (Renderer, Renderer)[0], RenderAspects.Shapes));
+        }
+
+        private static IRenderFilterNode Refresh(IRenderFilterNode node, IEnumerable<(Renderer, Renderer)> proxyPairs, RenderAspects updatedAspects)
+        {
+            var task = node.Refresh(proxyPairs, new ComputeContext($"test {updatedAspects}"), updatedAspects);
+            Assert.IsTrue(task.IsCompleted, "MaterialConversionFilterNode.Refresh is synchronous and must complete immediately.");
+            return task.Result;
         }
 
         private static MethodInfo GetSharedCacheMethod(string methodName)
