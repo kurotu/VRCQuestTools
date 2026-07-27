@@ -21,7 +21,8 @@
         "VRCSDKBase.dll",
         "VRCSDKBase-Editor.dll",
         "VRC.Dynamics.dll",
-        "VRC.SDK3.Dynamics.PhysBone.dll"
+        "VRC.SDK3.Dynamics.PhysBone.dll",
+        "0Harmony.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
