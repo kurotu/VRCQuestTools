@@ -102,7 +102,12 @@ namespace KRT.VRCQuestTools.Ndmf
                 settings = avatarRoot.GetComponent<MaterialConversionSettings>();
             }
             context.Observe(settings as Object, s => (s as IMaterialConversionComponent).GetCacheKey());
-            if (settings is Component c && c.TryGetComponent<PlatformTargetSettings>(out var targetSettings))
+
+            // Hoisted out of the `if` below (rather than declared by its `out var`) so it stays in scope, and
+            // definitely assigned, for the MaterialConversionFilterNode built at the end of this method: the node
+            // has to re-observe it in Refresh. TryGetComponent leaves it null when there is no such component.
+            PlatformTargetSettings targetSettings = null;
+            if (settings is Component c && c.TryGetComponent<PlatformTargetSettings>(out targetSettings))
             {
                 context.Observe(targetSettings);
             }
@@ -189,7 +194,13 @@ namespace KRT.VRCQuestTools.Ndmf
                     NdmfObjectRegistry.TryRegisterReplacedObjectToActiveRegistry(original, converted);
                 }
 
-                return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(materialLease.MaterialMap, removeExtraMaterialSlots, materialLease));
+                return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(
+                    materialLease.MaterialMap,
+                    removeExtraMaterialSlots,
+                    materialLease,
+                    settings as Object,
+                    targetSettings,
+                    avatarMaterials.ToArray()));
             }
             catch (System.Exception e)
             {
@@ -205,16 +216,103 @@ namespace KRT.VRCQuestTools.Ndmf
             private readonly Dictionary<Material, Material> materialMap;
             private readonly bool removeExtraMaterialSlots;
             private readonly SharedMaterialMapLease materialLease;
+            private readonly Object settingsComponent;
+            private readonly PlatformTargetSettings platformTargetSettings;
+            private readonly Material[] observedMaterials;
             private bool disposedValue;
 
-            public MaterialConversionFilterNode(Dictionary<Material, Material> materialMap, bool removeExtraMaterialSlots, SharedMaterialMapLease materialLease)
+            public MaterialConversionFilterNode(
+                Dictionary<Material, Material> materialMap,
+                bool removeExtraMaterialSlots,
+                SharedMaterialMapLease materialLease,
+                Object settingsComponent = null,
+                PlatformTargetSettings platformTargetSettings = null,
+                Material[] observedMaterials = null)
             {
                 this.materialMap = materialMap;
                 this.removeExtraMaterialSlots = removeExtraMaterialSlots;
                 this.materialLease = materialLease;
+                this.settingsComponent = settingsComponent;
+                this.platformTargetSettings = platformTargetSettings;
+                this.observedMaterials = observedMaterials;
             }
 
             public RenderAspects WhatChanged => RenderAspects.Material;
+
+            /// <summary>
+            /// Gets the set of upstream changes this node's output survives, as a <see cref="RenderAspects"/>
+            /// flag set. Material and Texture are never in it: they change the very things the material map is
+            /// keyed by and built from. Blendshape and bone updates always are, since they cannot affect which
+            /// material a renderer slot uses.
+            /// </summary>
+            /// <remarks>
+            /// Mesh depends on <see cref="removeExtraMaterialSlots"/>, which is what decides how
+            /// <see cref="OnFrame"/> counts slots. With it off, the count is <c>proxy.sharedMaterials.Length</c>,
+            /// which no mesh change can move, so the conversion stays valid. With it on, the count is the
+            /// submesh count: an upstream node that raises it makes <see cref="OnFrame"/> reach a slot that was
+            /// an extra slot when <see cref="Instantiate"/> ran, and the material sitting there was therefore
+            /// never collected or converted -- it would render unconverted. Rebuilding in that case is the only
+            /// way to pick it up, and renderers carrying extra material slots are common enough in real avatars
+            /// to be worth the rebuild.
+            /// </remarks>
+            private RenderAspects ReusableAspects => removeExtraMaterialSlots
+                ? RenderAspects.Shapes
+                : RenderAspects.Shapes | RenderAspects.Mesh;
+
+            /// <summary>
+            /// Lets the preview pipeline carry this node over to a new generation instead of running
+            /// <see cref="Instantiate"/> -- and therefore the whole material conversion -- again. Without this,
+            /// NDMF's default implementation returns null and every upstream change, however unrelated, forces a
+            /// full re-conversion of the avatar.
+            /// </summary>
+            /// <remarks>
+            /// Returning <c>this</c> is safe for the shared converted materials: NDMF increments its own
+            /// reference count on the reused node (NodeController.Refresh) and only disposes it once both the old
+            /// and the new generation are gone, which is exactly the lifetime <see cref="SharedMaterialMapLease"/>
+            /// needs. The observations, however, are not carried over: the NodeController built around a reused
+            /// node takes the *new* ComputeContext passed in here, so everything <see cref="Instantiate"/>
+            /// observed has to be observed again on it. Miss one and this node is never invalidated again --
+            /// editing the avatar's convert settings would silently stop updating the preview.
+            /// </remarks>
+            public Task<IRenderFilterNode> Refresh(IEnumerable<(Renderer, Renderer)> proxyPairs, ComputeContext context, RenderAspects updatedAspects)
+            {
+                // updatedAspects == 0 means this node's own ComputeContext was invalidated -- the convert
+                // settings or one of the source materials changed -- so the conversion has to be redone.
+                // A node without a lease is one of the no-op nodes Instantiate returns early (wrong phase,
+                // non-mobile target, or a conversion that threw); rebuilding those is cheap and re-evaluates
+                // the condition that made them no-ops in the first place.
+                if (disposedValue || materialLease == null || updatedAspects == 0 || (updatedAspects & ~ReusableAspects) != 0)
+                {
+                    return Task.FromResult<IRenderFilterNode>(null);
+                }
+
+                // Re-register every observation Instantiate made, onto the new context. See the remarks above.
+                if (settingsComponent != null)
+                {
+                    context.Observe(settingsComponent, s => (s as IMaterialConversionComponent).GetCacheKey());
+                }
+                if (platformTargetSettings != null)
+                {
+                    context.Observe(platformTargetSettings);
+                }
+                foreach (var (original, proxy) in proxyPairs)
+                {
+                    context.Observe(original);
+                    context.Observe(proxy);
+                }
+                if (observedMaterials != null)
+                {
+                    foreach (var m in observedMaterials)
+                    {
+                        if (m != null)
+                        {
+                            context.Observe(m);
+                        }
+                    }
+                }
+
+                return Task.FromResult<IRenderFilterNode>(this);
+            }
 
             public void OnFrame(Renderer original, Renderer proxy)
             {

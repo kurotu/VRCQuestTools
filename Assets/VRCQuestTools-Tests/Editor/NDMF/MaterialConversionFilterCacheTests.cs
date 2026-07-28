@@ -8,6 +8,7 @@ using System.Reflection;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
+using nadena.dev.ndmf.preview;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -166,6 +167,86 @@ namespace KRT.VRCQuestTools.Ndmf
                     Object.DestroyImmediate(replacement);
                 }
             }
+        }
+
+        /// <summary>
+        /// With extra material slots kept, OnFrame takes proxy.sharedMaterials.Length slots, so no mesh change
+        /// can move which slots are remapped and Mesh is reusable alongside Shapes. Material and Texture never
+        /// are -- returning the node for those would keep a stale conversion on screen. Zero is included because
+        /// NDMF passes it when the node's own ComputeContext was invalidated, i.e. exactly when the convert
+        /// settings or a source material changed.
+        /// </summary>
+        [Test]
+        public void FilterNode_Refresh_KeepingExtraSlots_ReusesForShapeAndMeshChanges()
+        {
+            var node = CreateFilterNode(removeExtraMaterialSlots: false);
+            var proxyPairs = new (Renderer, Renderer)[0];
+
+            Assert.AreSame(node, Refresh(node, proxyPairs, RenderAspects.Shapes), "Blendshape/bone updates cannot change material assignment, so the node must be reusable.");
+            Assert.AreSame(node, Refresh(node, proxyPairs, RenderAspects.Mesh), "With extra material slots kept, the slot count comes from sharedMaterials.Length, so a mesh change cannot invalidate the conversion.");
+            Assert.AreSame(node, Refresh(node, proxyPairs, RenderAspects.Shapes | RenderAspects.Mesh), "RenderAspects is a flag set; a combination of reusable aspects must still be reusable.");
+            Assert.IsNull(Refresh(node, proxyPairs, RenderAspects.Material), "A material change upstream must force a rebuild.");
+            Assert.IsNull(Refresh(node, proxyPairs, RenderAspects.Texture), "A texture change upstream must force a rebuild.");
+            Assert.IsNull(Refresh(node, proxyPairs, RenderAspects.Mesh | RenderAspects.Material), "A reusable aspect combined with a non-reusable one must still force a rebuild.");
+            Assert.IsNull(Refresh(node, proxyPairs, 0), "Zero means this node's own context was invalidated, which must force a rebuild.");
+        }
+
+        /// <summary>
+        /// With extra material slots removed, OnFrame takes as many slots as the mesh has submeshes. An upstream
+        /// node that raises that count would reach a slot that was an extra slot when Instantiate ran, whose
+        /// material was therefore never converted, so a mesh change has to force a rebuild here.
+        /// </summary>
+        [Test]
+        public void FilterNode_Refresh_RemovingExtraSlots_RebuildsForMeshChanges()
+        {
+            var node = CreateFilterNode(removeExtraMaterialSlots: true);
+            var proxyPairs = new (Renderer, Renderer)[0];
+
+            Assert.AreSame(node, Refresh(node, proxyPairs, RenderAspects.Shapes), "Blendshape/bone updates stay reusable regardless of the slot handling.");
+            Assert.IsNull(Refresh(node, proxyPairs, RenderAspects.Mesh), "The submesh count decides the slot count here, so a mesh change must force a rebuild.");
+            Assert.IsNull(Refresh(node, proxyPairs, RenderAspects.Shapes | RenderAspects.Mesh), "A reusable aspect combined with a non-reusable one must still force a rebuild.");
+        }
+
+        /// <summary>
+        /// A node returned by one of MaterialConversionFilter.Instantiate's early exits (wrong phase, non-mobile
+        /// target, or a conversion that threw) holds no lease, and must always rebuild so the condition that made
+        /// it a no-op is re-evaluated.
+        /// </summary>
+        [Test]
+        public void FilterNode_Refresh_NoOpNodeWithoutLease_AlwaysRebuilds()
+        {
+            var nodeType = typeof(MaterialConversionFilter).GetNestedType("MaterialConversionFilterNode", BindingFlags.NonPublic);
+            Assert.IsNotNull(nodeType, "MaterialConversionFilter.MaterialConversionFilterNode was not found.");
+
+            var node = (IRenderFilterNode)System.Activator.CreateInstance(
+                nodeType,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                null,
+                new object[] { new Dictionary<Material, Material>(), false, null, null, null, null },
+                null);
+
+            Assert.IsNull(Refresh(node, new (Renderer, Renderer)[0], RenderAspects.Shapes));
+        }
+
+        private static IRenderFilterNode CreateFilterNode(bool removeExtraMaterialSlots)
+        {
+            var nodeType = typeof(MaterialConversionFilter).GetNestedType("MaterialConversionFilterNode", BindingFlags.NonPublic);
+            Assert.IsNotNull(nodeType, "MaterialConversionFilter.MaterialConversionFilterNode was not found.");
+
+            var lease = new SharedMaterialMapLease(new Dictionary<Material, Material>(), new HashSet<string>());
+            return (IRenderFilterNode)System.Activator.CreateInstance(
+                nodeType,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                null,
+                new object[] { new Dictionary<Material, Material>(), removeExtraMaterialSlots, lease, null, null, new Material[0] },
+                null);
+        }
+
+        private static IRenderFilterNode Refresh(IRenderFilterNode node, IEnumerable<(Renderer Original, Renderer Proxy)> proxyPairs, RenderAspects updatedAspects)
+        {
+            var task = node.Refresh(proxyPairs, new ComputeContext($"test {updatedAspects}"), updatedAspects);
+            Assert.IsTrue(task.IsCompleted, "MaterialConversionFilterNode.Refresh is synchronous and must complete immediately.");
+            return task.Result;
         }
 
         private static MethodInfo GetSharedCacheMethod(string methodName)

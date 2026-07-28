@@ -138,7 +138,9 @@ namespace KRT.VRCQuestTools.Models
                     // is handed to PreviewTextureCompressionQueue for background compression, disk cache save,
                     // and eventual material texture replacement. TryEnqueueProgressiveCompression returns false
                     // (falling through to the normal synchronous path below) when astcenc is unavailable for this
-                    // format or the queue's pending-bytes safety valve is full.
+                    // format, or when the queue cannot take ownership at all (NDMF not installed, so nothing
+                    // would ever swap the result in; or an assembly reload about to discard the queue). A large
+                    // backlog is deliberately not one of those cases -- see PreviewTextureCompressionQueue.MaxPendingBytes.
                     if (!saveAsPng && forEditorPreview && TryEnqueueProgressiveCompression(compressionFormat, config, cacheFile, platformOverride, ref texToWrite))
                     {
                         completion?.Invoke(texToWrite);
@@ -176,7 +178,7 @@ namespace KRT.VRCQuestTools.Models
         /// <param name="cacheFile">Disk cache file name the compressed result should eventually be saved under.</param>
         /// <param name="platformOverride">Optional platform override; only its MaxTextureSize is used here (its Format already went into <paramref name="compressionFormat"/>).</param>
         /// <param name="texToWrite">The freshly baked, uncompressed texture. For color textures with a maxTextureSize override, replaced in place with a resized instance (mirroring <see cref="TextureUtility.CompressTextureForBuildTarget"/>'s own maxTextureSize handling) before being enqueued as the placeholder; normal maps are left untouched here since <see cref="AstcencTextureCompressor.CompressNormalMapAsync"/> applies its own maxTextureSize shrink internally, mirroring <see cref="TextureUtility.CompressNormalMap"/>.</param>
-        /// <returns>True when the texture was successfully enqueued for background compression (the caller must treat <paramref name="texToWrite"/> as the new placeholder and do nothing further to it). False when astcenc is unavailable for <paramref name="compressionFormat"/>, or the queue's pending-bytes cap was reached, in which case the caller must fall back to synchronous compression.</returns>
+        /// <returns>True when the texture was successfully enqueued for background compression (the caller must treat <paramref name="texToWrite"/> as the new placeholder and do nothing further to it). False when astcenc is unavailable for <paramref name="compressionFormat"/>, or the queue declined to take ownership of the placeholder, in which case the caller must fall back to synchronous compression.</returns>
         private static bool TryEnqueueProgressiveCompression(TextureFormat? compressionFormat, TextureConfig config, string cacheFile, (int MaxTextureSize, TextureFormat Format)? platformOverride, ref Texture2D texToWrite)
         {
             bool enqueued;

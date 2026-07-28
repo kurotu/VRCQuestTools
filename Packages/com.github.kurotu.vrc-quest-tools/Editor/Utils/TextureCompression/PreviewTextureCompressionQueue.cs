@@ -35,16 +35,24 @@ namespace KRT.VRCQuestTools.Utils
     internal static class PreviewTextureCompressionQueue
     {
         /// <summary>
-        /// Maximum total estimated bytes of placeholder textures allowed to be pending (enqueued but not yet
-        /// compressed) at once. Progressive keeps each placeholder (an uncompressed baked RGBA32 texture, with
-        /// mips) alive in memory until its compressed replacement is ready; a 2048x2048 RGBA32 texture with a
-        /// full mip chain is about 22 MB (2048*2048*4 * 4/3 for the mip chain overhead). 512 MB allows roughly
-        /// 23 such textures to be in flight -- generous for normal preview activity (see
-        /// <see cref="MaxConcurrentCompressions"/> for how many of those are actually compressing at once; the
-        /// rest simply wait their turn) -- while still bounding the worst case (e.g. toggling material preview
-        /// for many avatars at once) so it cannot balloon editor memory unboundedly. Enqueue attempts beyond this
-        /// cap fall back to synchronous compression.
+        /// Estimated total bytes of pending (enqueued but not yet compressed) placeholder textures at which a
+        /// single warning is logged per batch. Progressive keeps each placeholder (an uncompressed baked RGBA32
+        /// texture, with mips) alive in memory until its compressed replacement is ready; a 2048x2048 RGBA32
+        /// texture with a full mip chain is about 22 MB (2048*2048*4 * 4/3 for the mip chain overhead), so this
+        /// is roughly 23 such textures held at once (see <see cref="MaxConcurrentCompressions"/> for how many of
+        /// those are actually compressing at any moment; the rest simply wait their turn).
         /// </summary>
+        /// <remarks>
+        /// This is a diagnostic threshold, not a cap: passing it does not refuse the enqueue. It used to, with
+        /// <see cref="Models.MaterialGeneratorUtility"/> falling back to synchronous compression -- but that
+        /// traded a bounded amount of memory for the worst available outcome, a main-thread stall running
+        /// astcenc at the same preset while up to <see cref="MaxConcurrentCompressions"/> background astcenc
+        /// processes were already asking for every core each. It also did not actually save the memory it was
+        /// meant to save, except for as long as that stall lasted: the placeholder has already been baked and
+        /// assigned to the preview material by the time <see cref="TryEnqueue"/> is called, so it occupies
+        /// memory either way until something replaces it. What remains is the warning, so that an unexpectedly
+        /// large backlog is visible rather than silent.
+        /// </remarks>
         internal const long MaxPendingBytes = 512L * 1024 * 1024;
 
         /// <summary>
@@ -67,6 +75,7 @@ namespace KRT.VRCQuestTools.Utils
         private static bool updateHooked;
         private static int inFlight;
         private static bool assemblyReloading;
+        private static bool highWaterWarned;
         private static CancellationTokenSource cts = new CancellationTokenSource();
 
         static PreviewTextureCompressionQueue()
@@ -157,7 +166,7 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="maxTextureSize">Normal map only: optional max texture size override.</param>
         /// <param name="cacheFile">Disk cache file name to save the compressed result under once ready, matching what the synchronous path would have used.</param>
         /// <param name="isSRGB">Whether the texture is sRGB data; recorded into the disk cache entry as <c>!isSRGB</c> (linear), matching <see cref="Models.MaterialGeneratorUtility"/>'s synchronous save.</param>
-        /// <returns>True when the texture was enqueued (the caller must not touch <paramref name="placeholder"/> or fall back to synchronous compression); false when no material-texture-replacer is registered (e.g. NDMF is not installed), or the pending-bytes cap would be exceeded, in which case the caller must fall back to synchronous compression itself and <paramref name="placeholder"/> remains entirely the caller's responsibility.</returns>
+        /// <returns>True when the texture was enqueued (the caller must not touch <paramref name="placeholder"/> or fall back to synchronous compression); false when the queue cannot take ownership at all -- no material-texture-replacer is registered (e.g. NDMF is not installed), so nothing would ever swap the compressed result in, or an assembly reload is in progress, which is about to discard the queue -- in which case the caller must fall back to synchronous compression itself and <paramref name="placeholder"/> remains entirely the caller's responsibility. A large backlog is no longer a refusal reason; see <see cref="MaxPendingBytes"/>.</returns>
         internal static bool TryEnqueue(Texture2D placeholder, AstcencTextureCompressor compressor, TextureFormat? format, bool isNormalMap, bool readable, int? maxTextureSize, string cacheFile, bool isSRGB)
         {
             if (assemblyReloading)
@@ -173,11 +182,6 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             var estimatedBytes = EstimatePlaceholderBytes(placeholder);
-            if (pendingBytes + estimatedBytes > MaxPendingBytes)
-            {
-                Logger.LogDebug($"Progressive compression queue declined \"{placeholder.name}\" (pending bytes cap reached: {pendingBytes + estimatedBytes} > {MaxPendingBytes}); the caller will fall back to synchronous compression.", placeholder);
-                return false;
-            }
 
             Pending.Add(new PendingItem
             {
@@ -201,8 +205,26 @@ namespace KRT.VRCQuestTools.Utils
             });
             pendingBytes += estimatedBytes;
             EnsureUpdateHooked();
+            WarnOnceIfBacklogIsLarge();
             Logger.LogDebug($"Progressive compression queue accepted \"{placeholder.name}\" (estimated {estimatedBytes} bytes, queue length {Pending.Count}).", placeholder);
             return true;
+        }
+
+        /// <summary>
+        /// Logs a single warning per batch once <see cref="pendingBytes"/> passes <see cref="MaxPendingBytes"/>.
+        /// Latched via <see cref="highWaterWarned"/> and cleared when the batch drains (see
+        /// <see cref="ProcessItemAsync"/>) or work is abandoned (see <see cref="StopAllWork"/>), so one oversized
+        /// batch warns once rather than once per texture, while a later batch can warn again.
+        /// </summary>
+        private static void WarnOnceIfBacklogIsLarge()
+        {
+            if (highWaterWarned || pendingBytes <= MaxPendingBytes)
+            {
+                return;
+            }
+
+            highWaterWarned = true;
+            Logger.LogWarning($"Progressive preview compression is holding about {pendingBytes / (1024 * 1024)} MB of uncompressed placeholder textures ({Pending.Count} queued, {inFlight} compressing). They are freed as compression completes; the preview shows the uncompressed textures until then.");
         }
 
         /// <summary>
@@ -430,6 +452,14 @@ namespace KRT.VRCQuestTools.Utils
                 // (or, with several in-flight items, several times over) time.
                 pendingBytes = Math.Max(0, pendingBytes - item.EstimatedBytes);
                 inFlight = Math.Max(0, inFlight - 1);
+
+                // Batch drained: re-arm the backlog warning for the next one. Keyed on the item counts rather
+                // than pendingBytes, so it also re-arms under the test hooks, which can leave the byte counter
+                // at an arbitrary forced value.
+                if (inFlight == 0 && Pending.Count == 0)
+                {
+                    highWaterWarned = false;
+                }
             }
         }
 
@@ -492,9 +522,19 @@ namespace KRT.VRCQuestTools.Utils
 
         /// <summary>
         /// Shared success path for both the background compression attempt and its synchronous fallback: enables
-        /// streaming mipmaps on the result, replaces every cached preview material reference to the placeholder,
-        /// saves the disk cache entry, destroys the placeholder, and repaints every editor view.
+        /// streaming mipmaps on the result, saves the disk cache entry, replaces every cached preview material
+        /// reference to the placeholder, destroys the placeholder, and repaints every editor view.
         /// </summary>
+        /// <remarks>
+        /// The disk cache entry is written before -- and independently of -- everything to do with the preview
+        /// materials, because the two are unrelated: the entry is keyed by the source material's content and the
+        /// convert settings (see <see cref="Models.MaterialGeneratorUtility"/>), not by whether anything happens
+        /// to be displaying the result right now. Both early exits below are reached routinely (a settings edit
+        /// releases every lease on the old key while its textures are still compressing, so the placeholder is
+        /// destroyed and no material references it anymore), and skipping the write there used to throw away a
+        /// whole finished astcenc run -- guaranteeing it would be redone from scratch the next time that exact
+        /// material and settings combination came back, e.g. when the user undid the edit.
+        /// </remarks>
         /// <param name="item">The item that finished compressing.</param>
         /// <param name="compressed">The compressed result. Destroyed by this method if it ends up unused (the placeholder was destroyed mid-flight, or nothing references it anymore).</param>
         /// <param name="checkPlaceholderStillAlive">Whether to treat <c>item.Placeholder</c> reading as destroyed
@@ -505,10 +545,19 @@ namespace KRT.VRCQuestTools.Utils
         /// <see cref="FallbackToSynchronousCompression"/>'s call site for why that is still safe).</param>
         private static void ApplyCompressedResult(PendingItem item, Texture2D compressed, bool checkPlaceholderStillAlive)
         {
+            // Matches what the synchronous path (MaterialGeneratorUtility.SaveTexture) does for both color and
+            // normal map textures; AstcencTextureCompressor.CompressNormalMap(Async) already does this itself for
+            // the normal map path, so doing it again here is a harmless no-op for that case. Runs before the disk
+            // cache write so the flag is set on the very instance whose raw bytes get stored, exactly as the
+            // synchronous path does.
+            TextureUtility.SetStreamingMipMaps(compressed, true);
+            SaveToDiskCache(item, compressed);
+
             if (checkPlaceholderStillAlive && item.Placeholder == null)
             {
                 // Destroyed while compression was in flight (e.g. a full domain reload recovery, or every
-                // preview material lease was released mid-compression).
+                // preview material lease was released mid-compression). The entry is already saved above, so
+                // the compression itself was not wasted.
                 TextureUtility.DestroyTexture(compressed);
                 return;
             }
@@ -519,7 +568,7 @@ namespace KRT.VRCQuestTools.Utils
             {
                 // No cached preview material references the placeholder anymore (e.g. every lease was
                 // released while this was compressing in the background, or the replacer was unregistered
-                // mid-flight). Nothing left to update.
+                // mid-flight). Nothing left to update on screen -- but, again, the entry is already saved.
                 TextureUtility.DestroyTexture(compressed);
                 DestroyPlaceholderUnlessItIsTheResult(item, compressed);
                 return;
@@ -527,11 +576,23 @@ namespace KRT.VRCQuestTools.Utils
 
             Logger.LogDebug($"Progressive compression replaced \"{compressed.name}\" in {replacedCount} cached preview material propert{(replacedCount == 1 ? "y" : "ies")}.", compressed);
 
-            // Matches what the synchronous path (MaterialGeneratorUtility.SaveTexture) does for both color and
-            // normal map textures; AstcencTextureCompressor.CompressNormalMap(Async) already does this itself for
-            // the normal map path, so doing it again here is a harmless no-op for that case.
-            TextureUtility.SetStreamingMipMaps(compressed, true);
+            DestroyPlaceholderUnlessItIsTheResult(item, compressed);
 
+            // InternalEditorUtility.RepaintAllViews() (rather than just SceneView.RepaintAll()) also repaints the
+            // Game view and the material preview thumbnails, both of which can also be displaying the just-replaced texture.
+            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+        }
+
+        /// <summary>
+        /// Stores <paramref name="compressed"/> under <paramref name="item"/>'s cache file name, so a later
+        /// preview generation (or a real conversion, which shares the same key space) reuses it instead of
+        /// running astcenc again. Failures are logged and swallowed: the compressed texture is still perfectly
+        /// usable on screen, only the reuse of it later is lost.
+        /// </summary>
+        /// <param name="item">The item that finished compressing; supplies the cache file name and the attributes recorded alongside the bytes.</param>
+        /// <param name="compressed">The compressed result whose raw bytes are stored.</param>
+        private static void SaveToDiskCache(PendingItem item, Texture2D compressed)
+        {
             try
             {
                 var cache = new CacheUtility.TextureCache(compressed, !item.IsSRGB, item.IsNormalMap, item.BuildTarget);
@@ -539,16 +600,8 @@ namespace KRT.VRCQuestTools.Utils
             }
             catch (Exception e)
             {
-                // The material already displays the compressed texture (replaced above); only the disk cache
-                // write failed, so the next preview generation just re-does the work instead of reusing a cache hit.
                 Logger.LogWarning($"Failed to save the disk cache entry for progressively compressed preview texture \"{compressed.name}\". {e.Message}");
             }
-
-            DestroyPlaceholderUnlessItIsTheResult(item, compressed);
-
-            // InternalEditorUtility.RepaintAllViews() (rather than just SceneView.RepaintAll()) also repaints the
-            // Game view and the material preview thumbnails, both of which can also be displaying the just-replaced texture.
-            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
         }
 
         /// <summary>
@@ -644,6 +697,7 @@ namespace KRT.VRCQuestTools.Utils
             Pending.Clear();
             pendingBytes = 0;
             inFlight = 0;
+            highWaterWarned = false;
 
             // The placeholder texture(s) still referenced by preview materials are deliberately NOT destroyed
             // here: they are live Unity objects owned by those materials, and the next preview regeneration
