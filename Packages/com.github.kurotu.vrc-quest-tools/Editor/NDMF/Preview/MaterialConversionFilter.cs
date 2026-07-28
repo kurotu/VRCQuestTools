@@ -213,16 +213,6 @@ namespace KRT.VRCQuestTools.Ndmf
 
         private class MaterialConversionFilterNode : IRenderFilterNode
         {
-            /// <summary>
-            /// The only upstream change this node's output survives. Blendshape and bone updates cannot affect
-            /// which material a slot uses, so the conversion result stays valid. Everything else can:
-            /// Material and Texture change the very things the material map is keyed by and built from, and Mesh
-            /// changes the submesh count, which decides how many slots <see cref="OnFrame"/> takes -- and
-            /// therefore whether a material that was never converted (because it sat in an extra slot) starts
-            /// being rendered.
-            /// </summary>
-            private const RenderAspects ReusableAspects = RenderAspects.Shapes;
-
             private readonly Dictionary<Material, Material> materialMap;
             private readonly bool removeExtraMaterialSlots;
             private readonly SharedMaterialMapLease materialLease;
@@ -248,6 +238,26 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             public RenderAspects WhatChanged => RenderAspects.Material;
+
+            /// <summary>
+            /// Gets the set of upstream changes this node's output survives, as a <see cref="RenderAspects"/>
+            /// flag set. Material and Texture are never in it: they change the very things the material map is
+            /// keyed by and built from. Blendshape and bone updates always are, since they cannot affect which
+            /// material a renderer slot uses.
+            /// </summary>
+            /// <remarks>
+            /// Mesh depends on <see cref="removeExtraMaterialSlots"/>, which is what decides how
+            /// <see cref="OnFrame"/> counts slots. With it off, the count is <c>proxy.sharedMaterials.Length</c>,
+            /// which no mesh change can move, so the conversion stays valid. With it on, the count is the
+            /// submesh count: an upstream node that raises it makes <see cref="OnFrame"/> reach a slot that was
+            /// an extra slot when <see cref="Instantiate"/> ran, and the material sitting there was therefore
+            /// never collected or converted -- it would render unconverted. Rebuilding in that case is the only
+            /// way to pick it up, and renderers carrying extra material slots are common enough in real avatars
+            /// to be worth the rebuild.
+            /// </remarks>
+            private RenderAspects ReusableAspects => removeExtraMaterialSlots
+                ? RenderAspects.Shapes
+                : RenderAspects.Shapes | RenderAspects.Mesh;
 
             /// <summary>
             /// Lets the preview pipeline carry this node over to a new generation instead of running
