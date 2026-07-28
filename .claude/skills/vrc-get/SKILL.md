@@ -105,7 +105,7 @@ Repository: `https://kurotu.github.io/vpm-repos/vpm.json`
 
 ```bash
 vrc-get search nadena.dev.ndmf
-# Not found -> repo isn't registered yet:
+# If not found, the repo isn't registered yet:
 vrc-get repo add https://vpm.nadena.dev/vpm.json
 vrc-get search nadena.dev.ndmf   # confirm it resolves now
 vrc-get install -y nadena.dev.ndmf 1.5.0

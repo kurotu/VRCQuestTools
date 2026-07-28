@@ -25,8 +25,8 @@ Note: When you need to execute `npm` and `npx`, use `pnpm` and `pnpm dlx` instea
 
 #### New worktree setup
 
-Packages under `Packages/` (e.g. `com.vrchat.avatars`, `com.vrchat.base`) are VPM dependencies
-resolved into the working copy, not tracked in git — a fresh worktree starts without them. Check
+Some packages under `Packages/` (e.g. `com.vrchat.avatars`, `com.vrchat.base`) are VPM dependencies
+resolved into the working copy and are not tracked in git — a fresh worktree starts without them. Check
 whether `Packages/com.vrchat.base` exists; if it's missing, run `vrc-get resolve` (see the
 `vrc-get` skill) to install all VPM dependencies **before** launching Unity with `uloop-launch`.
 Launching Unity first can cause it to fail or generate broken package state.
