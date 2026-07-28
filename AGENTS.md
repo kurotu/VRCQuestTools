@@ -9,6 +9,7 @@ Unity editor extension for converting VRChat PC avatars to Android (Quest/PICO) 
 **Preferred** for compilation and testing when Unity Editor is running. Uses [unity-cli-loop](https://github.com/hatayama/unity-cli-loop)-based skills:
 
 > First run `uloop-launch` to start Unity, then run other `uloop-*` commands after the editor is ready.
+> In a freshly created worktree, resolve VPM packages before launching Unity — see "New worktree setup" below.
 
 | Skill | Purpose |
 |-------|---------|
@@ -21,6 +22,14 @@ Unity editor extension for converting VRChat PC avatars to Android (Quest/PICO) 
 Note: When you need to execute `npm` and `npx`, use `pnpm` and `pnpm dlx` instead.
 
 ### Setup
+
+#### New worktree setup
+
+Some packages under `Packages/` (e.g. `com.vrchat.avatars`, `com.vrchat.base`) are VPM dependencies
+resolved into the working copy and are not tracked in git — a fresh worktree starts without them. Check
+whether `Packages/com.vrchat.base` exists; if it's missing, run `vrc-get resolve` (see the
+`vrc-get` skill) to install all VPM dependencies **before** launching Unity with `uloop-launch`.
+Launching Unity first can cause it to fail or generate broken package state.
 
 The `astcenc` CLI binaries used for fast ASTC texture compression are not committed to the
 repository; download them once per clone/worktree:
