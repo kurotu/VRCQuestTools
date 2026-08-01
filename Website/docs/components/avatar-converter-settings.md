@@ -62,6 +62,7 @@ In addition to the same settings as Toon Lit:
 
 The "Mode" of the features decides how new features added in the future are handled.
 With opt-in, new features stay disabled; with opt-out, they are automatically enabled.
+The default is opt-out with all features enabled.
 
 #### Material Replacement
 
