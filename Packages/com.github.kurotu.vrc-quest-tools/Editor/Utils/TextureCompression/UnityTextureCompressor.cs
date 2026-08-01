@@ -20,6 +20,14 @@ namespace KRT.VRCQuestTools.Utils
         public string CacheKeyComponent => "unity";
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// This is also the path used for the PC/Standalone DXT5 fallback (see
+        /// <see cref="TextureUtility.ResolveEffectiveCompressionFormat"/>): unlike ASTC, which
+        /// <see cref="AstcencTextureCompressor"/> instead runs out-of-process/async because Unity's built-in ASTC
+        /// encoder is slow enough to stall NDMF preview, Unity's built-in DXT encoder was measured
+        /// (<c>DxtBenchmarkTests</c>) at low tens of milliseconds even at 4096px -- no async/external-CLI path is
+        /// warranted for it.
+        /// </remarks>
         public AsyncCallbackRequest CompressTexture(Texture2D texture, TextureFormat format, Action<Texture2D> completion)
         {
             EditorUtility.CompressTexture(texture, format, TextureCompressionQuality.Best);

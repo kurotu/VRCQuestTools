@@ -1,0 +1,130 @@
+// <copyright file="DxtBenchmarkTests.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+using NUnit.Framework;
+using UnityEditor;
+using UnityEngine;
+using Debug = UnityEngine.Debug;
+
+namespace KRT.VRCQuestTools.Utils
+{
+    /// <summary>
+    /// Manual benchmark measuring how long Unity's built-in DXT5 compression
+    /// (<see cref="EditorUtility.CompressTexture"/> with <see cref="TextureCompressionQuality.Best"/>, the same
+    /// call <see cref="UnityTextureCompressor.CompressTexture"/> makes for the PC/Standalone fallback format)
+    /// takes on the main thread. Used to decide whether the same out-of-process/async pattern used for ASTC
+    /// (see <see cref="AstcencTextureCompressor"/>, justified by <see cref="AstcencBenchmarkTests"/>) is worth
+    /// building for DXT too. This is not part of the normal (CI) test run: it is marked
+    /// <see cref="ExplicitAttribute"/> and must be invoked directly from the Test Runner.
+    /// </summary>
+    /// <remarks>
+    /// Measured result (Windows, procedurally generated non-flat textures, DXT5/DXT1): 512px ~1.6 ms, 1024px
+    /// ~2.2 ms, 2048px ~9-16 ms, 4096px ~24-36 ms. Unlike ASTC's "-thorough"-equivalent Unity encoding (which
+    /// astcenc's multi-core, out-of-process path was built to speed up and to keep off the main thread for NDMF
+    /// preview), Unity's built-in DXT encoder is already sub-frame even at 4096px -- there is no multi-second
+    /// stall to hide and no editor freeze to fix. Conclusion: an external CLI DXT/BC encoder run out-of-process
+    /// (mirroring <see cref="AstcencCli"/>) is not worth building; the complexity of bundling/downloading a new
+    /// binary and its own temp-file pipeline would not measurably improve either compression speed or preview
+    /// responsiveness. <see cref="UnityTextureCompressor.CompressTexture"/> remains synchronous for DXT/BC.
+    /// </remarks>
+    [Explicit("Benchmark")]
+    public class DxtBenchmarkTests
+    {
+        private static readonly int[] Sizes = { 512, 1024, 2048, 4096 };
+
+        /// <summary>
+        /// Measures <see cref="EditorUtility.CompressTexture"/> wall-clock time for DXT5 across texture sizes.
+        /// Each measurement is logged as a CSV-style row (size,format,timeMs), followed by a summary table.
+        /// </summary>
+        [Test]
+        public void SpeedMatrix()
+        {
+            var rows = new List<Row>();
+            Debug.Log("size,format,timeMs");
+
+            foreach (var size in Sizes)
+            {
+                MeasureUnity(size, TextureFormat.DXT5, rows);
+                MeasureUnity(size, TextureFormat.DXT1, rows);
+            }
+
+            LogSummary(rows);
+        }
+
+        private static void MeasureUnity(int size, TextureFormat format, List<Row> rows)
+        {
+            var candidate = CreateNaturalisticTexture(size);
+            var sw = Stopwatch.StartNew();
+            EditorUtility.CompressTexture(candidate, format, TextureCompressionQuality.Best);
+            sw.Stop();
+
+            rows.Add(new Row(size, format.ToString(), sw.Elapsed.TotalMilliseconds));
+            Debug.Log($"{size},{format},{sw.Elapsed.TotalMilliseconds:F1}");
+
+            UnityEngine.Object.DestroyImmediate(candidate);
+        }
+
+        private static void LogSummary(List<Row> rows)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("=== Summary (time ms) ===");
+            foreach (var row in rows)
+            {
+                sb.AppendLine($"  size={row.Size,5} format={row.Format,-6} time={row.TimeMs,9:F1}ms");
+            }
+            Debug.Log(sb.ToString());
+        }
+
+        /// <summary>
+        /// Generates a fully opaque procedural texture mixing several sine/cosine frequencies per channel
+        /// (same generator as <see cref="AstcencBenchmarkTests.CreateNaturalisticTexture(int, bool)"/>) so it
+        /// has both smooth gradients and higher-frequency detail instead of a flat placeholder image, which
+        /// would let the encoder take shortcuts unrepresentative of real content.
+        /// </summary>
+        private static Texture2D CreateNaturalisticTexture(int size)
+        {
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false, false);
+            var pixels = new Color32[size * size];
+            for (var y = 0; y < size; y++)
+            {
+                for (var x = 0; x < size; x++)
+                {
+                    var fx = x / (float)size;
+                    var fy = y / (float)size;
+                    var r = 127f + (80f * Mathf.Sin(x * 0.13f)) + (48f * Mathf.Sin((y * 0.07f) + (x * 0.02f)));
+                    var g = 127f + (80f * Mathf.Cos(y * 0.11f)) + (48f * Mathf.Sin((x + y) * 0.05f));
+                    var b = 127f + (100f * fx * fy) + (40f * Mathf.Sin((x * 0.29f) + (y * 0.19f)));
+                    pixels[(y * size) + x] = new Color32(
+                        (byte)Mathf.Clamp(r, 0f, 255f),
+                        (byte)Mathf.Clamp(g, 0f, 255f),
+                        (byte)Mathf.Clamp(b, 0f, 255f),
+                        255);
+                }
+            }
+            tex.SetPixels32(pixels);
+            tex.Apply(false, false);
+            return tex;
+        }
+
+        private readonly struct Row
+        {
+            internal Row(int size, string format, double timeMs)
+            {
+                Size = size;
+                Format = format;
+                TimeMs = timeMs;
+            }
+
+            internal int Size { get; }
+
+            internal string Format { get; }
+
+            internal double TimeMs { get; }
+        }
+    }
+}
