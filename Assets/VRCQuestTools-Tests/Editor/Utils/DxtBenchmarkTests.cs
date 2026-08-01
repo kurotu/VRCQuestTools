@@ -27,10 +27,11 @@ namespace KRT.VRCQuestTools.Utils
     /// ~2.2 ms, 2048px ~9-16 ms, 4096px ~24-36 ms. Unlike ASTC's "-thorough"-equivalent Unity encoding (which
     /// astcenc's multi-core, out-of-process path was built to speed up and to keep off the main thread for NDMF
     /// preview), Unity's built-in DXT encoder is already sub-frame even at 4096px -- there is no multi-second
-    /// stall to hide and no editor freeze to fix. Conclusion: an external CLI DXT/BC encoder run out-of-process
-    /// (mirroring <see cref="AstcencCli"/>) is not worth building; the complexity of bundling/downloading a new
-    /// binary and its own temp-file pipeline would not measurably improve either compression speed or preview
-    /// responsiveness. <see cref="UnityTextureCompressor.CompressTexture"/> remains synchronous for DXT/BC.
+    /// stall to hide and no editor freeze to fix. <see cref="DxtCliBenchmarkTests"/> then confirmed the other
+    /// side of the comparison: actual DXT/BC encoder CLIs (texconv, Compressonator) are 25-100x *slower* than
+    /// Unity here, and their per-invocation process overhead alone exceeds Unity's entire compression time.
+    /// Conclusion: an external CLI DXT/BC encoder run out-of-process (mirroring <see cref="AstcencCli"/>) is not
+    /// worth building; <see cref="UnityTextureCompressor.CompressTexture"/> remains synchronous for DXT/BC.
     /// </remarks>
     [Explicit("Benchmark")]
     public class DxtBenchmarkTests
@@ -62,6 +63,10 @@ namespace KRT.VRCQuestTools.Utils
             var sw = Stopwatch.StartNew();
             EditorUtility.CompressTexture(candidate, format, TextureCompressionQuality.Best);
             sw.Stop();
+
+            // Guards the measurement itself: if the requested format were silently not applied, the timing
+            // below would be of something other than the compression this benchmark claims to measure.
+            Assert.AreEqual(format, candidate.format, $"Texture was not compressed to {format} at size={size}.");
 
             rows.Add(new Row(size, format.ToString(), sw.Elapsed.TotalMilliseconds));
             Debug.Log($"{size},{format},{sw.Elapsed.TotalMilliseconds:F1}");
