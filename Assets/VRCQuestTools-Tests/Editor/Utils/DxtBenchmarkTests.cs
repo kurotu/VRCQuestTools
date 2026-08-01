@@ -23,15 +23,17 @@ namespace KRT.VRCQuestTools.Utils
     /// <see cref="ExplicitAttribute"/> and must be invoked directly from the Test Runner.
     /// </summary>
     /// <remarks>
-    /// Measured result (Windows, procedurally generated non-flat textures, DXT5/DXT1): 512px ~1.6 ms, 1024px
-    /// ~2.2 ms, 2048px ~9-16 ms, 4096px ~24-36 ms. Unlike ASTC's "-thorough"-equivalent Unity encoding (which
-    /// astcenc's multi-core, out-of-process path was built to speed up and to keep off the main thread for NDMF
-    /// preview), Unity's built-in DXT encoder is already sub-frame even at 4096px -- there is no multi-second
-    /// stall to hide and no editor freeze to fix. <see cref="DxtCliBenchmarkTests"/> then confirmed the other
-    /// side of the comparison: actual DXT/BC encoder CLIs (texconv, Compressonator) are 25-100x *slower* than
-    /// Unity here, and their per-invocation process overhead alone exceeds Unity's entire compression time.
-    /// Conclusion: an external CLI DXT/BC encoder run out-of-process (mirroring <see cref="AstcencCli"/>) is not
-    /// worth building; <see cref="UnityTextureCompressor.CompressTexture"/> remains synchronous for DXT/BC.
+    /// Measured result (Windows, procedurally generated non-flat textures, DXT5/DXT1, median of 5 after warmup
+    /// with the compressed bytes read back inside the timed region): 512px 0.8-1.3 ms, 1024px 2.6-11 ms, 2048px
+    /// 11.5-14.1 ms, 4096px 33.8-43.2 ms. Unlike ASTC's "-thorough"-equivalent Unity encoding (which astcenc's
+    /// multi-core, out-of-process path was built to speed up and to keep off the main thread for NDMF preview),
+    /// Unity's built-in DXT encoder is already sub-frame even at 4096px -- there is no multi-second stall to
+    /// hide and no editor freeze to fix. <see cref="DxtCliBenchmarkTests"/> then confirmed the other side of the
+    /// comparison: actual DXT/BC encoder CLIs (texconv, Compressonator) are 10-75x *slower* than Unity here even
+    /// though both already run multi-threaded, and their per-invocation process overhead alone exceeds Unity's
+    /// entire compression time. Conclusion: an external CLI DXT/BC encoder run out-of-process (mirroring
+    /// <see cref="AstcencCli"/>) is not worth building;
+    /// <see cref="UnityTextureCompressor.CompressTexture"/> remains synchronous for DXT/BC.
     /// </remarks>
     [Explicit("Benchmark")]
     public class DxtBenchmarkTests
@@ -59,25 +61,49 @@ namespace KRT.VRCQuestTools.Utils
 
         private static void MeasureUnity(int size, TextureFormat format, List<Row> rows)
         {
-            var candidate = CreateNaturalisticTexture(size);
-            var sw = Stopwatch.StartNew();
-            EditorUtility.CompressTexture(candidate, format, TextureCompressionQuality.Best);
-            sw.Stop();
+            // One warmup plus a median over several runs: a single cold measurement is dominated by one-time
+            // initialization, which showed up as 512px appearing *slower* than 1024px when this was measured
+            // once per size.
+            const int warmups = 1;
+            const int iterations = 5;
+            var samples = new List<double>(iterations);
 
-            // Guards the measurement itself: if the requested format were silently not applied, the timing
-            // below would be of something other than the compression this benchmark claims to measure.
-            Assert.AreEqual(format, candidate.format, $"Texture was not compressed to {format} at size={size}.");
+            for (var i = 0; i < warmups + iterations; i++)
+            {
+                var candidate = CreateNaturalisticTexture(size);
+                var sw = Stopwatch.StartNew();
+                EditorUtility.CompressTexture(candidate, format, TextureCompressionQuality.Best);
 
-            rows.Add(new Row(size, format.ToString(), sw.Elapsed.TotalMilliseconds));
-            Debug.Log($"{size},{format},{sw.Elapsed.TotalMilliseconds:F1}");
+                // Inside the timed region on purpose: reading the compressed bytes back forces them to actually
+                // be materialized, so a deferred or lazily-evaluated compression cannot make this look faster
+                // than it is. Costs a memcpy of the (already small) compressed data on top of the encode.
+                var bytes = candidate.GetRawTextureData();
+                sw.Stop();
 
-            UnityEngine.Object.DestroyImmediate(candidate);
+                // Guards the measurement itself: if the requested format were silently not applied, or no data
+                // produced, the timing would be of something other than the compression this benchmark claims.
+                Assert.AreEqual(format, candidate.format, $"Texture was not compressed to {format} at size={size}.");
+                Assert.Greater(bytes.Length, 0, $"Compressed texture has no data at size={size}.");
+
+                if (i >= warmups)
+                {
+                    samples.Add(sw.Elapsed.TotalMilliseconds);
+                }
+
+                UnityEngine.Object.DestroyImmediate(candidate);
+            }
+
+            samples.Sort();
+            var median = samples[samples.Count / 2];
+
+            rows.Add(new Row(size, format.ToString(), median));
+            Debug.Log($"{size},{format},{median:F1}");
         }
 
         private static void LogSummary(List<Row> rows)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("=== Summary (time ms) ===");
+            sb.AppendLine("=== Summary (median ms over 5 runs, after warmup, incl. forced readback) ===");
             foreach (var row in rows)
             {
                 sb.AppendLine($"  size={row.Size,5} format={row.Format,-6} time={row.TimeMs,9:F1}ms");

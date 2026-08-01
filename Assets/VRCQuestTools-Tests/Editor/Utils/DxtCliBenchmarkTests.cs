@@ -40,23 +40,32 @@ namespace KRT.VRCQuestTools.Utils
     /// a full mip chain means 11 invocations, so the floor is paid 11 times over.
     /// </para>
     /// <para>
-    /// Measured result (Windows, DXT5/BC3). Unity compresses the whole texture in 2.2-31 ms; both CLIs need that
-    /// much or more just to start up, and are 25-100x slower overall for mip 0 alone:
+    /// Measured result (Windows, 12 cores, DXT5/BC3), CLI process wall time vs Unity's median-of-5 whole-texture
+    /// time from <see cref="DxtBenchmarkTests"/>:
     /// </para>
     /// <list type="table">
-    /// <item><description>512px: unity 3.4 ms / texconv 83 ms / compressonator 435 ms</description></item>
-    /// <item><description>1024px: unity 2.2 ms / texconv 115 ms / compressonator 570 ms</description></item>
-    /// <item><description>2048px: unity 8.3 ms / texconv 363 ms / compressonator 1148 ms</description></item>
-    /// <item><description>4096px: unity 31 ms / texconv 801 ms / compressonator 3232 ms</description></item>
+    /// <item><description>1024px: unity 2.6 ms / texconv 61 ms / compressonator 523 ms</description></item>
+    /// <item><description>2048px: unity 14.1 ms / texconv 108 ms / compressonator 966 ms</description></item>
+    /// <item><description>4096px: unity 33.8 ms / texconv 335 ms / compressonator 2509 ms</description></item>
     /// </list>
     /// <para>
-    /// The per-invocation floor is 49 ms (texconv) and 344 ms (compressonator), so a full mip chain costs
-    /// 0.5-0.6 s resp. 3.4-4.5 s in pure process/I-O overhead before any encoding happens -- an order of
-    /// magnitude more than Unity spends on the entire texture. Quality is not a compensating factor either:
-    /// image diff came out 0.00029 (unity), 0.00056 (texconv, worse) and 0.00028 (compressonator, equal within
-    /// noise). Conclusion: unlike ASTC, there is nothing for an out-of-process DXT encoder to win -- it would be
-    /// slower, not faster, so no async/CLI path is built for DXT. See
-    /// <see cref="UnityTextureCompressor.CompressTexture"/>.
+    /// The gap is NOT a missed parallelism flag, which was checked explicitly. Measuring each process's
+    /// <see cref="System.Diagnostics.Process.TotalProcessorTime"/> against its wall time gives a cpu/wall ratio
+    /// of 2.6-7.9x (texconv) and 3.2-9.5x (compressonator) on a 12-core machine -- both encoders already run
+    /// multi-threaded and saturate most of the box by default. Compressonator's alternate backends were tried
+    /// too and none help for BC3: <c>-EncodeWith HPC</c> measured the same as the default CPU path (967 vs
+    /// 929 ms at 2048px, within noise; HPC targets BC6H/BC7), while <c>DXC</c> (3207 ms) and <c>GPU</c>
+    /// (1299 ms) were worse. Its <c>-NumThreads</c> option is documented as BC6H/BC7-only. In CPU-time terms the
+    /// difference is stark: at 4096px texconv spends 2.6 s and compressonator 23.9 s of CPU to do what Unity
+    /// finishes in 33.8 ms of wall time.
+    /// </para>
+    /// <para>
+    /// On top of the encode itself, the per-invocation floor is 49 ms (texconv) and 344 ms (compressonator), so
+    /// a full mip chain costs 0.5-0.6 s resp. 3.4-4.5 s in pure process/I-O overhead before any encoding
+    /// happens. Quality is not a compensating factor either: image diff came out 0.00029 (unity), 0.00056
+    /// (texconv, worse) and 0.00028 (compressonator, equal within noise). Conclusion: unlike ASTC, there is
+    /// nothing for an out-of-process DXT encoder to win -- it would be slower, not faster, so no async/CLI path
+    /// is built for DXT. See <see cref="UnityTextureCompressor.CompressTexture"/>.
     /// </para>
     /// </remarks>
     [Explicit("Benchmark")]
@@ -126,7 +135,7 @@ namespace KRT.VRCQuestTools.Utils
                     for (var i = 0; i < iterations; i++)
                     {
                         var sw = Stopwatch.StartNew();
-                        RunCliPipeline(encoder, reference, 4, out _, out _, out _, out _);
+                        RunCliPipeline(encoder, reference, 4, out _, out _, out _, out _, out _);
                         sw.Stop();
                         samples.Add(sw.Elapsed.TotalMilliseconds);
                     }
@@ -149,6 +158,54 @@ namespace KRT.VRCQuestTools.Utils
                 UnityEngine.Object.DestroyImmediate(reference);
             }
 
+            Debug.Log(sb.ToString());
+        }
+
+        /// <summary>
+        /// Checks whether the CLI encoders are actually using multiple cores, by comparing each process's total
+        /// CPU time (summed over all its threads) against its wall time. This exists to rule out the obvious
+        /// explanation for the CLIs losing so badly in <see cref="PipelineBreakdown"/> -- that they were left
+        /// running single-threaded while Unity's encoder was not -- rather than leaving it assumed.
+        /// </summary>
+        /// <remarks>
+        /// Measured on a 12-core Windows machine: texconv reaches 2.6x (1024px) to 7.9x (4096px) and
+        /// Compressonator 3.2x to 9.5x, i.e. both already engage most of the machine without any extra flag.
+        /// Compressonator's <c>-EncodeWith HPC</c> was tried separately and made no difference for BC3 (it
+        /// targets BC6H/BC7), and its <c>-NumThreads</c> is documented as BC6H/BC7-only.
+        /// </remarks>
+        [Test]
+        public void ParallelismCheck()
+        {
+            var encoders = ResolveEncoders();
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"=== Encoder parallelism (cpu time / wall time; machine has {SystemInfo.processorCount} cores) ===");
+
+            foreach (var size in new[] { 1024, 2048, 4096 })
+            {
+                var reference = CreateNaturalisticTexture(size);
+                try
+                {
+                    foreach (var encoder in encoders)
+                    {
+                        // Warm up first so the reported ratio reflects steady state rather than cold module load.
+                        RunCliPipeline(encoder, reference, size, out _, out _, out _, out _, out _);
+
+                        var blocks = RunCliPipeline(encoder, reference, size, out _, out var processMs, out _, out var cpuMs, out var output);
+                        Assert.IsNotNull(blocks, $"{encoder.Name} failed for size={size}: {output}");
+
+                        var ratio = processMs > 0 ? cpuMs / processMs : 0;
+                        sb.AppendLine($"  {size,5}px {encoder.Name,-22} wall={processMs,8:F1}ms cpu={cpuMs,9:F1}ms cpu/wall={ratio,5:F2}x");
+                    }
+                }
+                finally
+                {
+                    UnityEngine.Object.DestroyImmediate(reference);
+                }
+            }
+
+            sb.AppendLine("A ratio well above 1.00x means the encoder is already multi-threaded, so its slowness");
+            sb.AppendLine("relative to Unity is not explained by a missing parallelism option.");
             Debug.Log(sb.ToString());
         }
 
@@ -208,7 +265,7 @@ namespace KRT.VRCQuestTools.Utils
         private static void MeasureCli(EncoderSpec encoder, Texture2D reference, int size, List<Row> rows)
         {
             var sw = Stopwatch.StartNew();
-            var blocks = RunCliPipeline(encoder, reference, size, out var writeMs, out var processMs, out var readMs, out var output);
+            var blocks = RunCliPipeline(encoder, reference, size, out var writeMs, out var processMs, out var readMs, out _, out var output);
             sw.Stop();
             Assert.IsNotNull(blocks, $"{encoder.Name} failed for size={size}: {output}");
 
@@ -233,11 +290,12 @@ namespace KRT.VRCQuestTools.Utils
         /// <param name="source">Source image to encode.</param>
         /// <param name="size">Width and height of <paramref name="source"/>.</param>
         /// <param name="writeMs">Milliseconds spent writing the TGA input.</param>
-        /// <param name="processMs">Milliseconds spent running the encoder process.</param>
+        /// <param name="processMs">Milliseconds spent running the encoder process (wall clock).</param>
         /// <param name="readMs">Milliseconds spent reading the DDS output back.</param>
+        /// <param name="cpuMs">CPU time consumed by the encoder process across all its threads.</param>
         /// <param name="output">Captured process output, for failure diagnosis.</param>
         /// <returns>Raw compressed block data, or null when the encoder failed.</returns>
-        private static byte[] RunCliPipeline(EncoderSpec encoder, Texture2D source, int size, out double writeMs, out double processMs, out double readMs, out string output)
+        private static byte[] RunCliPipeline(EncoderSpec encoder, Texture2D source, int size, out double writeMs, out double processMs, out double readMs, out double cpuMs, out string output)
         {
             var tempDir = Path.GetFullPath(TempDirectory);
             Directory.CreateDirectory(tempDir);
@@ -259,6 +317,8 @@ namespace KRT.VRCQuestTools.Utils
                 swProcess.Stop();
                 processMs = swProcess.Elapsed.TotalMilliseconds;
                 output = result.Output;
+
+                cpuMs = result.CpuMs;
 
                 if (result.ExitCode != 0 || !File.Exists(ddsPath))
                 {
@@ -329,10 +389,15 @@ namespace KRT.VRCQuestTools.Utils
                 if (!process.WaitForExit(timeoutMs))
                 {
                     AstcencCli.KillSilently(process);
-                    return new ProcessRunResult(-1, "timed out");
+                    return new ProcessRunResult(-1, "timed out", 0);
                 }
                 process.WaitForExit(); // Ensure redirected streams are flushed.
-                return new ProcessRunResult(process.ExitCode, stdErrTask.Result + stdOutTask.Result);
+
+                // Read before leaving the using block: TotalProcessorTime is still available for an exited
+                // process, but not for a disposed one. Summed across every thread the process used, so
+                // comparing it against wall time reveals how many cores the encoder actually engaged.
+                var cpuMs = process.TotalProcessorTime.TotalMilliseconds;
+                return new ProcessRunResult(process.ExitCode, stdErrTask.Result + stdOutTask.Result, cpuMs);
             }
         }
 
@@ -477,15 +542,21 @@ namespace KRT.VRCQuestTools.Utils
 
         private readonly struct ProcessRunResult
         {
-            internal ProcessRunResult(int exitCode, string output)
+            internal ProcessRunResult(int exitCode, string output, double cpuMs)
             {
                 ExitCode = exitCode;
                 Output = output;
+                CpuMs = cpuMs;
             }
 
             internal int ExitCode { get; }
 
             internal string Output { get; }
+
+            /// <summary>
+            /// Gets the total CPU time consumed across all of the process's threads, in milliseconds.
+            /// </summary>
+            internal double CpuMs { get; }
         }
 
         private readonly struct Row
