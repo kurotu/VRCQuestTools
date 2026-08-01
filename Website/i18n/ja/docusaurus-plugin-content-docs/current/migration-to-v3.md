@@ -29,7 +29,7 @@ lilToon と NDMF は、古いバージョンのままだとビルドや変換が
 
 - 通常のアップロードは、VRChat SDK の Control Panel からそのままビルドしてアップロードしてください。
 - ローカルでの動作確認だけを行いたい場合は、アバターを右クリックして「VRCQuestTools」→「[NDMF] Build and Test for PC with Mobile Settings」を選んでください。
-    Mobile 向け設定を適用した状態で PC 向けにビルドし、その場でテストできます。
+  Mobile 向け設定を適用した状態で PC 向けにビルドし、その場でテストできます。
 
 ## 動作が変わった機能
 

@@ -29,7 +29,7 @@ What it used to do is replaced by one of the following.
 
 - For a regular upload, build and upload directly from the VRChat SDK's Control Panel.
 - To test locally only, right-click the avatar and select "VRCQuestTools" → "[NDMF] Build and Test for PC with Mobile Settings".
-    It builds for PC with Mobile settings applied, so you can test it right away.
+  It builds for PC with Mobile settings applied, so you can test it right away.
 
 ## Behavior Changes
 
