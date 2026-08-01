@@ -1,3 +1,8 @@
+// <copyright file="MeshFlipperFilter.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -68,20 +73,35 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <inheritdoc/>
         public Task<IRenderFilterNode> Instantiate(RenderGroup group, IEnumerable<(Renderer, Renderer)> proxyPairs, ComputeContext context)
         {
-            var meshFlipper = group.Renderers[0].GetComponent<MeshFlipper>();
+            // Observed lookup: registers a component-list monitor so removing the component invalidates this node,
+            // and returns null instead of racing with component removal.
+            var meshFlipper = context.GetComponent<MeshFlipper>(group.Renderers[0].gameObject);
             var targetRenderer = proxyPairs.First().Item2;
 
-            var mesh = RendererUtility.GetSharedMesh(targetRenderer);
-            if (mesh == null)
+            var mesh = targetRenderer != null ? RendererUtility.GetSharedMesh(targetRenderer) : null;
+            if (meshFlipper == null || mesh == null)
             {
-                return Task.FromResult<IRenderFilterNode>(null);
+                // NDMF's NodeController does not null-check Instantiate's result; a null node would throw and
+                // take down the whole preview pipeline build. Return a no-op node instead.
+                return Task.FromResult<IRenderFilterNode>(new MeshFlipperFilterNode(null, false, null, null, null));
             }
 
             context.Observe(meshFlipper);
             context.Observe(mesh);
 
+            var avatarRoot = context.GetAvatarRoot(meshFlipper.gameObject);
+
+            // NdmfHelper.ResolveBuildTarget reads PlatformTargetSettings without ComputeContext, so observe it
+            // here to rebuild the preview when the target platform changes. context.GetComponent registers a
+            // component-list monitor, so a PlatformTargetSettings added later is caught as well.
+            var platformSettings = avatarRoot != null ? context.GetComponent<PlatformTargetSettings>(avatarRoot) : null;
+            if (platformSettings != null)
+            {
+                context.Observe(platformSettings);
+            }
+
             var shouldProcess = meshFlipper.processingPhase == phase;
-            var isMobileTarget = NdmfHelper.ResolveBuildTarget(context.GetAvatarRoot(meshFlipper.gameObject)) == Models.BuildTarget.Android;
+            var isMobileTarget = NdmfHelper.ResolveBuildTarget(avatarRoot) == Models.BuildTarget.Android;
             if (isMobileTarget)
             {
                 shouldProcess &= meshFlipper.enabledOnAndroid;
@@ -92,11 +112,13 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             Mesh result = mesh;
+            var ownsMesh = false;
             if (shouldProcess)
             {
                 try
                 {
                     result = MeshFlipper.CreateFlippedMesh(meshFlipper, mesh);
+                    ownsMesh = true;
 
                     // Register the replaced mesh so the ObjectRegistry can trace it back to the original,
                     // matching build-pass behavior. Runs inside Instantiate where an ObjectRegistryScope is active.
@@ -107,23 +129,74 @@ namespace KRT.VRCQuestTools.Ndmf
                     // do not report missing mask.
                 }
             }
-            return Task.FromResult<IRenderFilterNode>(new MeshFlipperFilterNode(result));
+            return Task.FromResult<IRenderFilterNode>(new MeshFlipperFilterNode(result, ownsMesh, meshFlipper, mesh, avatarRoot));
         }
 
         private class MeshFlipperFilterNode : IRenderFilterNode
         {
+            /// <summary>
+            /// Upstream changes this node's flipped mesh survives. The mesh was flipped from the proxy's mesh,
+            /// so only an upstream Mesh change (or an invalidation of this node's own observations, which
+            /// arrives as updatedAspects == 0) requires re-flipping; blendshape, bone, material and texture
+            /// changes cannot affect the flipped geometry.
+            /// </summary>
+            private const RenderAspects ReusableAspects = RenderAspects.Shapes | RenderAspects.Material | RenderAspects.Texture;
+
+            private readonly bool ownsMesh;
+            private readonly MeshFlipper meshFlipper;
+            private readonly Mesh sourceMesh;
+            private readonly GameObject avatarRoot;
             private Mesh flippedMesh;
             private bool disposedValue;
 
-            public MeshFlipperFilterNode(Mesh flippedMesh)
+            public MeshFlipperFilterNode(Mesh flippedMesh, bool ownsMesh, MeshFlipper meshFlipper, Mesh sourceMesh, GameObject avatarRoot)
             {
                 this.flippedMesh = flippedMesh;
+                this.ownsMesh = ownsMesh;
+                this.meshFlipper = meshFlipper;
+                this.sourceMesh = sourceMesh;
+                this.avatarRoot = avatarRoot;
             }
 
             public RenderAspects WhatChanged => RenderAspects.Mesh;
 
+            public Task<IRenderFilterNode> Refresh(IEnumerable<(Renderer, Renderer)> proxyPairs, ComputeContext context, RenderAspects updatedAspects)
+            {
+                // No-op nodes (flippedMesh == null) and destroyed components always rebuild; rebuilding them is
+                // cheap and re-evaluates the condition that made them no-ops in the first place.
+                if (disposedValue || flippedMesh == null || meshFlipper == null
+                    || updatedAspects == 0 || (updatedAspects & ~ReusableAspects) != 0)
+                {
+                    return Task.FromResult<IRenderFilterNode>(null);
+                }
+
+                // Re-register every observation Instantiate made, onto the new context. The NodeController built
+                // around a reused node takes the new ComputeContext passed in here; missing one observation would
+                // mean this node is never invalidated again.
+                context.Observe(meshFlipper);
+                if (sourceMesh != null)
+                {
+                    context.Observe(sourceMesh);
+                }
+                if (avatarRoot != null)
+                {
+                    var platformSettings = context.GetComponent<PlatformTargetSettings>(avatarRoot);
+                    if (platformSettings != null)
+                    {
+                        context.Observe(platformSettings);
+                    }
+                }
+
+                return Task.FromResult<IRenderFilterNode>(this);
+            }
+
             public void OnFrame(Renderer original, Renderer proxy)
             {
+                if (flippedMesh == null)
+                {
+                    return;
+                }
+
                 switch (proxy)
                 {
                     case SkinnedMeshRenderer smr:
@@ -154,7 +227,9 @@ namespace KRT.VRCQuestTools.Ndmf
                 {
                     if (flippedMesh != null)
                     {
-                        if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(flippedMesh)))
+                        // Only destroy meshes this node created. When shouldProcess was false, flippedMesh is the
+                        // source mesh itself, which may be an in-memory mesh owned by an upstream preview node.
+                        if (ownsMesh && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(flippedMesh)))
                         {
                             UnityEngine.Object.DestroyImmediate(flippedMesh);
                         }
