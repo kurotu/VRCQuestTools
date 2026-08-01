@@ -361,6 +361,11 @@ namespace KRT.VRCQuestTools.Inspector
                         if (GUILayout.Button(new GUIContent("[NDMF] " + forceLabel, i18n.ForceMaterialPreviewTooltip)))
                         {
                             converterSettings.forceMaterialPreview = !converterSettings.forceMaterialPreview;
+
+                            // forceMaterialPreview is not serialized and is written directly here, so Unity's
+                            // object change stream reports nothing. Tell NDMF explicitly, or the preview filters
+                            // observing this flag are never invalidated and the preview does not update.
+                            Utils.NdmfUtility.NotifyObjectUpdate(converterSettings);
                         }
                         GUI.backgroundColor = oldBg;
                     }

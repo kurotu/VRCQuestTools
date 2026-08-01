@@ -1,3 +1,8 @@
+// <copyright file="MaterialConversionFilter.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -54,8 +59,13 @@ namespace KRT.VRCQuestTools.Ndmf
         public ImmutableList<RenderGroup> GetTargetGroups(ComputeContext context)
         {
             Logger.LogDebug("Getting target groups");
+
+            // Observed lookup: GetAvatarRoots() is backed by a PropCache whose SequenceEqual comparer stops
+            // propagation when the root list is unchanged, so a plain GetComponents here would never see a
+            // conversion component added to (or removed from) an existing root. context.GetComponents registers
+            // a component-list monitor on each root instead.
             var rootConversions = context.GetAvatarRoots()
-                .Select(root => ComponentUtility.GetPrimaryMaterialConversionComponent(root))
+                .Select(root => context.GetComponents<IMaterialConversionComponent>(root).FirstOrDefault(c => c.IsPrimaryRoot))
                 .Cast<Component>()
                 .Where(component =>
                 {
@@ -84,9 +94,15 @@ namespace KRT.VRCQuestTools.Ndmf
                 context.Observe(rootConversion, c => AvatarConverterPassUtility.ResolveAvatarConverterNdmfPhase(c.gameObject));
             }
 
-            return rootConversions.Select(root => context.GetComponentsInChildren<Renderer>(root.gameObject, true).Where(r => r is SkinnedMeshRenderer || r is MeshRenderer))
-                .Where(r => r.Any())
-                .Select(r => RenderGroup.For(r))
+            // Attach the primary component as group data (explicit type argument: RenderGroup data equality is
+            // typed, and GetData<Component>() in Instantiate throws unless the same T was used). When the primary
+            // component's identity changes while the renderer set stays equal (e.g. an AvatarConverterSettings is
+            // added next to an existing MaterialConversionSettings), the groups compare unequal and NDMF discards
+            // the prior node instead of silently reusing it with the stale settings.
+            return rootConversions
+                .Select(component => (component, renderers: context.GetComponentsInChildren<Renderer>(component.gameObject, true).Where(r => r is SkinnedMeshRenderer || r is MeshRenderer)))
+                .Where(pair => pair.renderers.Any())
+                .Select(pair => RenderGroup.For(pair.renderers).WithData<Component>(pair.component))
                 .ToImmutableList();
         }
 
@@ -96,18 +112,28 @@ namespace KRT.VRCQuestTools.Ndmf
             var avatarRoot = context.GetAvatarRoot(group.Renderers[0].gameObject);
             Logger.LogDebug($"Instantiating material conversion filter for {avatarRoot}", avatarRoot);
 
-            IMaterialConversionComponent settings = avatarRoot.GetComponent<AvatarConverterSettings>();
-            if (settings == null)
+            // The primary conversion component was resolved by GetTargetGroups and attached as group data.
+            // Guard against it being destroyed between GetTargetGroups and Instantiate: NDMF's NodeController
+            // does not null-check Instantiate's result, so return a no-op node instead.
+            var settings = group.GetData<Component>() as IMaterialConversionComponent;
+            if (settings == null || (settings as Component) == null)
             {
-                settings = avatarRoot.GetComponent<MaterialConversionSettings>();
+                return Task.FromResult<IRenderFilterNode>(new MaterialConversionFilterNode(new Dictionary<Material, Material>(), false, null));
             }
+
+            var settingsGameObject = (settings as Component).gameObject;
             context.Observe(settings as Object, s => (s as IMaterialConversionComponent).GetCacheKey());
 
-            // Hoisted out of the `if` below (rather than declared by its `out var`) so it stays in scope, and
-            // definitely assigned, for the MaterialConversionFilterNode built at the end of this method: the node
-            // has to re-observe it in Refresh. TryGetComponent leaves it null when there is no such component.
-            PlatformTargetSettings targetSettings = null;
-            if (settings is Component c && c.TryGetComponent<PlatformTargetSettings>(out targetSettings))
+            // GetCacheKey deliberately excludes ForceMaterialPreview, so observe it separately: it feeds the
+            // conversion decision below. Extractor-based observations are re-evaluated every frame by NDMF's
+            // PropertyMonitor, which is what makes the non-serialized inspector toggle take effect here.
+            context.Observe(settings as Object, s => (s as IMaterialConversionComponent).ForceMaterialPreview);
+
+            // NdmfHelper.ResolveBuildTarget reads PlatformTargetSettings without ComputeContext, so observe it
+            // here. context.GetComponent registers a component-list monitor, so a PlatformTargetSettings added
+            // later is caught as well. Kept in a local so the node can re-observe it in Refresh.
+            var targetSettings = context.GetComponent<PlatformTargetSettings>(settingsGameObject);
+            if (targetSettings != null)
             {
                 context.Observe(targetSettings);
             }
@@ -119,7 +145,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var isTargetMobile = NdmfHelper.ResolveBuildTarget(avatarRoot) == Models.BuildTarget.Android;
-            var forcePreview = settings != null && settings.ForceMaterialPreview;
+            var forcePreview = settings.ForceMaterialPreview;
             if (!isTargetMobile && !forcePreview)
             {
                 // If the target is not mobile and preview is not forced, we do not process this filter.
@@ -130,8 +156,10 @@ namespace KRT.VRCQuestTools.Ndmf
             HashSet<Material> avatarMaterials = new();
             foreach (var (original, proxy) in proxyPairs)
             {
-                context.Observe(original);
-                context.Observe(proxy);
+                // The renderers themselves are intentionally not observed: NDMF's ProxyObjectController already
+                // monitors each original renderer, its materials and its mesh, and any change it reports arrives
+                // as non-zero updatedAspects in Refresh (a sharedMaterials array change arrives as Material,
+                // which is never reusable, so the node rebuilds and re-reads the arrays).
                 var slots = removeExtraMaterialSlots
                     ? RendererUtility.GetSharedMeshSubMeshCount(original)
                     : original.sharedMaterials.Length;
@@ -199,7 +227,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     removeExtraMaterialSlots,
                     materialLease,
                     settings as Object,
-                    targetSettings,
+                    settingsGameObject,
                     avatarMaterials.ToArray()));
             }
             catch (System.Exception e)
@@ -217,7 +245,7 @@ namespace KRT.VRCQuestTools.Ndmf
             private readonly bool removeExtraMaterialSlots;
             private readonly SharedMaterialMapLease materialLease;
             private readonly Object settingsComponent;
-            private readonly PlatformTargetSettings platformTargetSettings;
+            private readonly GameObject settingsGameObject;
             private readonly Material[] observedMaterials;
             private bool disposedValue;
 
@@ -226,14 +254,14 @@ namespace KRT.VRCQuestTools.Ndmf
                 bool removeExtraMaterialSlots,
                 SharedMaterialMapLease materialLease,
                 Object settingsComponent = null,
-                PlatformTargetSettings platformTargetSettings = null,
+                GameObject settingsGameObject = null,
                 Material[] observedMaterials = null)
             {
                 this.materialMap = materialMap;
                 this.removeExtraMaterialSlots = removeExtraMaterialSlots;
                 this.materialLease = materialLease;
                 this.settingsComponent = settingsComponent;
-                this.platformTargetSettings = platformTargetSettings;
+                this.settingsGameObject = settingsGameObject;
                 this.observedMaterials = observedMaterials;
             }
 
@@ -272,7 +300,10 @@ namespace KRT.VRCQuestTools.Ndmf
             /// needs. The observations, however, are not carried over: the NodeController built around a reused
             /// node takes the *new* ComputeContext passed in here, so everything <see cref="Instantiate"/>
             /// observed has to be observed again on it. Miss one and this node is never invalidated again --
-            /// editing the avatar's convert settings would silently stop updating the preview.
+            /// editing the avatar's convert settings would silently stop updating the preview. The renderers are
+            /// intentionally not observed (neither here nor in <see cref="Instantiate"/>): NDMF's
+            /// ProxyObjectController already monitors each original renderer, its materials and its mesh, and any
+            /// change it reports arrives as non-zero <paramref name="updatedAspects"/>.
             /// </remarks>
             public Task<IRenderFilterNode> Refresh(IEnumerable<(Renderer, Renderer)> proxyPairs, ComputeContext context, RenderAspects updatedAspects)
             {
@@ -290,15 +321,15 @@ namespace KRT.VRCQuestTools.Ndmf
                 if (settingsComponent != null)
                 {
                     context.Observe(settingsComponent, s => (s as IMaterialConversionComponent).GetCacheKey());
+                    context.Observe(settingsComponent, s => (s as IMaterialConversionComponent).ForceMaterialPreview);
                 }
-                if (platformTargetSettings != null)
+                if (settingsGameObject != null)
                 {
-                    context.Observe(platformTargetSettings);
-                }
-                foreach (var (original, proxy) in proxyPairs)
-                {
-                    context.Observe(original);
-                    context.Observe(proxy);
+                    var platformSettings = context.GetComponent<PlatformTargetSettings>(settingsGameObject);
+                    if (platformSettings != null)
+                    {
+                        context.Observe(platformSettings);
+                    }
                 }
                 if (observedMaterials != null)
                 {
