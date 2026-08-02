@@ -58,12 +58,13 @@ namespace KRT.VRCQuestTools.Inspector
             {
                 var component = TargetComponent;
                 var forceLabel = component.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
+                var forceTooltip = component.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableTooltip : i18n.ForceMaterialPreviewEnableTooltip;
                 var oldBg = GUI.backgroundColor;
                 if (component.ForceMaterialPreview)
                 {
                     GUI.backgroundColor = Color.green;
                 }
-                if (GUILayout.Button(new GUIContent("[NDMF] " + forceLabel, i18n.ForceMaterialPreviewTooltip)))
+                if (GUILayout.Button(new GUIContent("[NDMF] " + forceLabel, forceTooltip)))
                 {
                     component.forceMaterialPreview = !component.forceMaterialPreview;
 

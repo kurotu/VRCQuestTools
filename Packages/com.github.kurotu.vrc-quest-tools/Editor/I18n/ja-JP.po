@@ -49,9 +49,6 @@ msgstr "修正"
 msgid "Maximum"
 msgstr "最大"
 
-msgid "IncompatibleSDK"
-msgstr "非対応の VRChat SDK です。報告をお願いします。"
-
 msgid "TextureFormatHighQuality"
 msgstr "高品質"
 
@@ -91,14 +88,8 @@ msgstr "対応シェーダー"
 msgid "SaveToLabel"
 msgstr "保存先フォルダ"
 
-msgid "SelectButtonLabel"
-msgstr "選択"
-
 msgid "ConvertButtonLabel"
 msgstr "変換"
-
-msgid "AssignButtonLabel"
-msgstr "割り当て"
 
 msgid "UpdateTexturesLabel"
 msgstr "変換後のMobile用テクスチャを更新"
@@ -111,7 +102,7 @@ msgstr "メッシュから頂点カラーを削除"
 
 msgid "RemoveVertexColorTooltip"
 msgstr "通常このオプションを無効にする必要はありません。PC用アバターで頂点カラーの必要な特別なシェーダーを使用している場合は、誤動作を防ぐためにこのオプションを無効にできます。\n"
-"誤って頂点カラーを削除した場合は、アバターの\"VertexColorRemover\"コンポーネントで復元できます。"
+"この処理は複製したメッシュに対してのみ行われ、元のメッシュには影響しません。"
 
 msgid "RemoveExtraMaterialSlotsLabel"
 msgstr "余分なマテリアルスロットを削除する"
@@ -127,9 +118,6 @@ msgstr "メニューのアイコンをリサイズする"
 
 msgid "ResizeExpressionsMenuIconsTooltip"
 msgstr "MobileビルドターゲットでExpressions Menuのアイコンをリサイズします。"
-
-msgid "CompressExpressionsMenuIconsLabel"
-msgstr "メニューアイコンを圧縮"
 
 msgid "CompressExpressionsMenuIconsTooltip"
 msgstr "Expressions Menuのアイコンが圧縮されていなければ圧縮します。"
@@ -164,8 +152,11 @@ msgstr "一時的なプレビューを有効化"
 msgid "ForceMaterialPreviewDisableLabel"
 msgstr "一時的なプレビューを無効化"
 
-msgid "ForceMaterialPreviewTooltip"
+msgid "ForceMaterialPreviewEnableTooltip"
 msgstr "NDMF プレビューによるマテリアル変換を一時的に有効化します。"
+
+msgid "ForceMaterialPreviewDisableTooltip"
+msgstr "一時的に有効化した NDMF プレビューによるマテリアル変換を無効化します。"
 
 msgid "GeneratingTexturesDialogMessage"
 msgstr "テクスチャを生成中"
@@ -177,7 +168,7 @@ msgid "MaterialExceptionDialogMessage"
 msgstr "マテリアルの変換中にエラーが発生しました。変換を中止します。"
 
 msgid "AnimationClipExceptionDialogMessage"
-msgstr "アニメーションの変換中にエラーが発生しました。変換を中止します。"
+msgstr "アニメーションクリップの変換中にエラーが発生しました。変換を中止します。"
 
 msgid "AnimatorControllerExceptionDialogMessage"
 msgstr "Animator Controllerの変換中にエラーが発生しました。変換を中止します。"
@@ -185,14 +176,11 @@ msgstr "Animator Controllerの変換中にエラーが発生しました。変�
 msgid "InvalidReplacementMaterialExceptionDialogMessage"
 msgstr "置換先マテリアルが Mobile アバターでは許可されていません。変換を中止します。"
 
-msgid "InfoForNdmfConversion"
-msgstr "プロジェクトに Non-Destructive Modular Framework (NDMF) パッケージがある場合、アバターのビルド時に非破壊的に変換をすることができます。 VRChat SDK による制限を回避するため、専用の Avatar Builder を使用してください。"
-
 msgid "InfoForNdmfConversion2"
 msgstr "プロジェクトに Non-Destructive Modular Framework (NDMF) パッケージがある場合、アバターのビルド時に非破壊的に変換をすることができます。 VRChat SDK コントロールパネルから直接アップロードすることもできます。"
 
 msgid "InfoForNdmfAutoConversion"
-msgstr "このアバターはビルド時に自動的に非破壊変換されます。そのままVRChat SDKコントロールパネルからアップロードしてください。"
+msgstr "ビルドターゲットが Mobile の場合、このアバターはビルド時に自動的に非破壊変換されます。そのまま VRChat SDK コントロールパネルからアップロードできます。"
 
 msgid "PhysBoneSyncReminder"
 msgstr "PCとMobileでPhysBoneを同期させるために、変換前のアバターをPC向けにアップロードしてください。"
@@ -202,7 +190,7 @@ msgstr "変換後のアバターの推定パフォーマンスランクは Very 
 "デフォルトではインポスターまたはフォールバックアバターが表示されますが、見る側が「アバターの表示」設定を個別に変更することで表示できます。 (Show Avatar 操作)"
 
 msgid "WarningForAppearance"
-msgstr "テクスチャの透過が反映されないため、頬染めなどの表現に問題がある場合があります。そのような場合はアニメーション編集やメッシュ削除などの方法で対策する必要があります。\n"
+msgstr "テクスチャの透過が反映されないため、表情の表現に問題が生じます。その場合はアニメーション編集やメッシュ削除などの方法で対策してください。\n"
 "別の Blueprint ID でのアップロードや Avatars 3.0 のローカルテストを使用して、変換後のアバターの見た目をPCで確認することをお勧めします。"
 
 msgid "WarningForUnsupportedShaders"
@@ -264,16 +252,13 @@ msgid "AvatarConverterContactsTooltip"
 msgstr "変換時に残しておく ContactSender と ContactReceiver を選択します。"
 
 msgid "ManualConversionWarning"
-msgstr "手動で変換する場合 MA Merge Animator 以外の非破壊コンポーネントを考慮しません。組み合わせた後の動作に予期せぬ問題があるかもしれません。"
+msgstr "手動で変換する場合、MA Merge Animator 以外の非破壊コンポーネントを考慮しません。組み合わせた後の動作に予期せぬ問題があるかもしれません。"
 
 msgid "ManualConvertButtonLabel"
 msgstr "変換する"
 
 msgid "ManualConversionFoldoutLabel"
 msgstr "手動変換"
-
-msgid "ConfirmationForUnityConstraints"
-msgstr "手動変換では Unity Constraints が削除されます。アバターに MA Convert Constraints コンポーネントを追加し Avatar Builder を使用してアップロードすることで VRChat Constraints に非破壊的に変換することができますが、本当に変換を続行しますか？"
 
 msgid "ConfirmationForMAConvertConstraints"
 msgstr "MA Convert Constraints コンポーネントを追加すると Unity Constraints を VRChat Constraints に非破壊的に変換することができます。変換前にコンポーネントを追加しますか？"
@@ -303,16 +288,16 @@ msgid "ToonLitConvertSettingsGenerateShadowFromNormalMapLabel"
 msgstr "ノーマルマップから影を生成する"
 
 msgid "MatCapLitConvertSettingsMatCapTextureLabel"
-msgstr "MatCap テクスチャ"
+msgstr "マットキャップテクスチャ"
 
 msgid "MatCapLitConvertSettingsMatCapTextureWarning"
-msgstr "MatCap テクスチャを設定してください。"
+msgstr "マットキャップテクスチャを設定してください。"
 
 msgid "ToonStandardConvertSettingsFallbackShadowRampLabel"
 msgstr "影のフォールバック"
 
 msgid "ToonStandardConvertSettingsGenerateShadowRampLabel"
-msgstr "影の設定を生成する"
+msgstr "Shadow Ramp を生成する"
 
 msgid "ToonStandardConvertSettingsCustomFallbackShadowRampLabel"
 msgstr "Shadow Ramp"
@@ -338,20 +323,11 @@ msgstr "マットキャップ"
 msgid "ToonStandardConvertSettingsFeaturesRimLightingLabel"
 msgstr "リムライト"
 
-msgid "ToonStandardConvertSettingsFeaturesMode"
-msgstr "モード"
-
 msgid "ToonStandardConvertSettingsFeaturesModeOptIn"
 msgstr "オプトイン"
 
 msgid "ToonStandardConvertSettingsFeaturesModeOptOut"
 msgstr "オプトアウト"
-
-msgid "ToonStandardConvertSettingsMaskTextureSizeLimitLabel"
-msgstr "マスクの最大サイズ"
-
-msgid "ToonStandardConvertSettingsMaskMobileTextureFormatLabel"
-msgstr "マスクの圧縮形式"
 
 msgid "AdditionalMaterialConvertSettingsTargetMaterialLabel"
 msgstr "対象マテリアル"
@@ -416,9 +392,6 @@ msgstr "削除せずに残すコンポーネントを選択してください。
 msgid "PhysBonesListTooltip"
 msgstr "コンポーネントと Root Transform の一覧"
 
-msgid "KeepAll"
-msgstr "すべて残す"
-
 msgid "PhysBonesWillBeRemovedAtRunTime"
 msgstr "Mobile用にアップロードできますが、すべての PhysBone が削除されます。 PhysBone の数を減らしてください。"
 
@@ -426,7 +399,7 @@ msgid "PhysBoneCollidersWillBeRemovedAtRunTime"
 msgstr "Mobile用にアップロードできますが、すべての PhysBoneCollider が削除されます。 PhysBoneCollider の数を減らしてください。"
 
 msgid "ContactsWillBeRemovedAtRunTime"
-msgstr "Mobile用にアップロードできますが、すべての ContactReceiver と ContactSender が削除されます。数を減らしてください。"
+msgstr "Mobile用にアップロードできますが、すべての ContactReceiver と ContactSender が削除されます。 ContactReceiver と ContactSender の数を減らしてください。"
 
 msgid "PhysBonesTransformsShouldBeReduced"
 msgstr "Mobile用にアップロードできますが、すべての PhysBone が削除されます。 PhysBone の数を減らすか、PhysBone の子オブジェクトの数を減らしてください。"
@@ -441,7 +414,7 @@ msgid "AlertForMultiplePhysBones"
 msgstr "1つの GameObject に複数の PhysBone があります。Mobile 用に PhysBone を削除した場合、PC と Mobile で正しく同期しない可能性があります。"
 
 msgid "EstimatedPerformanceStats"
-msgstr "推定パフォーマンスランク"
+msgstr "推定パフォーマンス統計"
 
 msgid "DeleteUnselectedComponents"
 msgstr "選択していないコンポーネントを削除"
@@ -477,7 +450,7 @@ msgid "GenerateButtonLabel"
 msgstr "Metallic Smoothness を生成"
 
 msgid "RecommendedUnitySettingsForAndroid"
-msgstr "Android 用の推奨設定"
+msgstr "Mobile 用の推奨設定"
 
 msgid "AndroidBuildSupportHelp"
 msgstr "Android 向けにアバターをアップロードするには Android Build Support が必要です。"
@@ -498,10 +471,7 @@ msgid "TextureCompressionHelp"
 msgstr "ASTCを使用するとAndroid用のテクスチャ圧縮に時間がかかる代わりに画質が向上します。"
 
 msgid "TextureCompressionButtonLabel"
-msgstr "ASTCでテクスチャを圧縮"
-
-msgid "ApplyAllButtonLabel"
-msgstr "すべての設定を適用"
+msgstr "テクスチャ圧縮をASTCに設定"
 
 msgid "ShowOnStartupLabel"
 msgstr "起動時に表示"
@@ -518,11 +488,8 @@ msgstr "変更履歴"
 msgid "SkipThisVersion"
 msgstr "スキップ"
 
-msgid "NewVersionIsAvailable"
-msgstr "新しいバージョン {0} があります。"
-
 msgid "NewVersionHasBreakingChanges"
-msgstr "このバージョンには互換性に関する重要な変更がある可能性があります。"
+msgstr "このバージョンには互換性を損なう破壊的な変更が含まれている可能性があります。"
 
 msgid "MissingScripts"
 msgstr "以下のオブジェクトには \"Missing\" 状態のコンポーネントがあります。インポートし忘れたアセットやパッケージがないか確認してください。"
@@ -585,7 +552,7 @@ msgid "ComponentLabel"
 msgstr "コンポーネント"
 
 msgid "PlatformGameObjectRemoverEditorDescription"
-msgstr "チェックマークを入れていないビルドターゲットでは、このGameObjectをビルド時に削除します。"
+msgstr "チェックを入れていないビルドターゲットでは、このGameObjectをビルド時に削除します。"
 
 msgid "PlatformGameObjectRemoverEditorKeepOnPCLabel"
 msgstr "PCで維持"
@@ -620,7 +587,7 @@ msgstr "NDMFフェーズ"
 msgid "MeshFlipperEditorEnabledOnPCWarning"
 msgstr "このコンポーネントを使用しなくてもシェーダーの設定で実現できる可能性があります。"
 
-msgid "MeshFlipperEditorEnabledOnMobileWarning"
+msgid "MeshFlipperEditorBothSidesWarning"
 msgstr "このメッシュのポリゴン数は増加します。"
 
 msgid "MeshFlipperEditorMaskTextureMissingError"
@@ -651,13 +618,13 @@ msgid "MaterialSwapEditorSelectMaterialLabel"
 msgstr "子オブジェクトから選択"
 
 msgid "MaterialSwapEditorReplacementMaterialError"
-msgstr "このマテリアルのシェーダーはモバイルアバターでは許可されていません。"
+msgstr "このマテリアルのシェーダーは Mobile アバターでは許可されていません。"
 
 msgid "MaterialConversionSettingsEditorDescription"
 msgstr "Mobile プラットフォーム向けにマテリアルを変換します。"
 
 msgid "MaterialConversionSettingsEditorDefaultConversionWarning"
-msgstr "無効になっている設定を使用するにはこのコンポーネントをアバターのルートオブジェクトに配置してください。ただし VQT Avatar Converter Settings の設定が優先されます。"
+msgstr "このコンポーネントをアバターのルートオブジェクトに単独で配置するか、VQT Avatar Converter Settings の設定を使用してください(その場合はそちらの設定が優先されます)。"
 
 msgid "MaterialConversionSettingsEditorConversionSettingsLabel"
 msgstr "マテリアル変換設定"
@@ -691,9 +658,6 @@ msgstr "現在のバージョンの{0}には非対応です。{0}を{1}以降に
 
 msgid "BreakingPackageExceptionMessage"
 msgstr "現在のバージョンの{0}には非対応です。VRCQuestToolsを更新するか{0}を{1}未満にダウングレードしてください。"
-
-msgid "FeatureRequiresNdmf"
-msgstr "Non-Destructive Modular Framework (NDMF) が必要です。"
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
 msgstr "非対応コンポーネントの削除"

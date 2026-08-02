@@ -66,8 +66,6 @@ namespace KRT.VRCQuestTools.I18n
 
         internal string Maximum => GetText("Maximum");
 
-        internal string IncompatibleSDK => GetText("IncompatibleSDK");
-
         internal string TextureFormatHighQuality => GetText("TextureFormatHighQuality");
         internal string TextureFormatStandard => GetText("TextureFormatStandard");
         internal string TextureFormatHighCompression => GetText("TextureFormatHighCompression");
@@ -84,9 +82,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string GenerateMobileTexturesTooltip => GetText("GenerateMobileTexturesTooltip");
         internal string SupportedShadersLabel => GetText("SupportedShadersLabel");
         internal string SaveToLabel => GetText("SaveToLabel");
-        internal string SelectButtonLabel => GetText("SelectButtonLabel");
         internal string ConvertButtonLabel => GetText("ConvertButtonLabel");
-        internal string AssignButtonLabel => GetText("AssignButtonLabel");
         internal string UpdateTexturesLabel => GetText("UpdateTexturesLabel");
         internal string AdvancedConverterSettingsLabel => GetText("AdvancedConverterSettingsLabel");
         internal string RemoveVertexColorLabel => GetText("RemoveVertexColorLabel");
@@ -96,7 +92,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string MenuIconSettingsLabel => GetText("MenuIconSettingsLabel");
         internal string ResizeExpressionsMenuIconsLabel => GetText("ResizeExpressionsMenuIconsLabel");
         internal string ResizeExpressionsMenuIconsTooltip => GetText("ResizeExpressionsMenuIconsTooltip");
-        internal string CompressExpressionsMenuIconsLabel => GetText("CompressExpressionsMenuIconsLabel");
         internal string CompressExpressionsMenuIconsTooltip => GetText("CompressExpressionsMenuIconsTooltip");
         internal string AssignNetworkIdsLabel => GetText("AssignNetworkIdsLabel");
         internal string AssignNetworkIdsTooltip => GetText("AssignNetworkIdsTooltip");
@@ -108,14 +103,14 @@ namespace KRT.VRCQuestTools.I18n
         internal string EnableMaterialPreviewTooltip => GetText("EnableMaterialPreviewTooltip");
         internal string ForceMaterialPreviewEnableLabel => GetText("ForceMaterialPreviewEnableLabel");
         internal string ForceMaterialPreviewDisableLabel => GetText("ForceMaterialPreviewDisableLabel");
-        internal string ForceMaterialPreviewTooltip => GetText("ForceMaterialPreviewTooltip");
+        internal string ForceMaterialPreviewEnableTooltip => GetText("ForceMaterialPreviewEnableTooltip");
+        internal string ForceMaterialPreviewDisableTooltip => GetText("ForceMaterialPreviewDisableTooltip");
         internal string GeneratingTexturesDialogMessage => GetText("GeneratingTexturesDialogMessage");
         internal string AvatarConverterFailedDialogMessage => GetText("AvatarConverterFailedDialogMessage");
         internal string MaterialExceptionDialogMessage => GetText("MaterialExceptionDialogMessage");
         internal string AnimationClipExceptionDialogMessage => GetText("AnimationClipExceptionDialogMessage");
         internal string AnimatorControllerExceptionDialogMessage => GetText("AnimatorControllerExceptionDialogMessage");
         internal string InvalidReplacementMaterialExceptionDialogMessage => GetText("InvalidReplacementMaterialExceptionDialogMessage");
-        internal string InfoForNdmfConversion => GetText("InfoForNdmfConversion");
         internal string InfoForNdmfConversion2 => GetText("InfoForNdmfConversion2");
         internal string InfoForNdmfAutoConversion => GetText("InfoForNdmfAutoConversion");
         internal string PhysBoneSyncReminder => GetText("PhysBoneSyncReminder");
@@ -147,7 +142,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string ManualConversionWarning => GetText("ManualConversionWarning");
         internal string ManualConvertButtonLabel => GetText("ManualConvertButtonLabel");
         internal string ManualConversionFoldoutLabel => GetText("ManualConversionFoldoutLabel");
-        internal string ConfirmationForUnityConstraints => GetText("ConfirmationForUnityConstraints");
         internal string ConfirmationForMAConvertConstraints => GetText("ConfirmationForMAConvertConstraints");
 
         // IMaterialConvertSettings
@@ -171,11 +165,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string ToonStandardConvertSettingsFeaturesSpecularLabel => GetText("ToonStandardConvertSettingsFeaturesSpecularLabel");
         internal string ToonStandardConvertSettingsFeaturesMatcapLabel => GetText("ToonStandardConvertSettingsFeaturesMatcapLabel");
         internal string ToonStandardConvertSettingsFeaturesRimLightingLabel => GetText("ToonStandardConvertSettingsFeaturesRimLightingLabel");
-        internal string ToonStandardConvertSettingsFeaturesMode => GetText("ToonStandardConvertSettingsFeaturesMode");
         internal string ToonStandardConvertSettingsFeaturesModeOptIn => GetText("ToonStandardConvertSettingsFeaturesModeOptIn");
         internal string ToonStandardConvertSettingsFeaturesModeOptOut => GetText("ToonStandardConvertSettingsFeaturesModeOptOut");
-        internal string ToonStandardConvertSettingsMaskTextureSizeLimitLabel => GetText("ToonStandardConvertSettingsMaskTextureSizeLimitLabel");
-        internal string ToonStandardConvertSettingsMaskMobileTextureFormatLabel => GetText("ToonStandardConvertSettingsMaskMobileTextureFormatLabel");
         internal string AdditionalMaterialConvertSettingsTargetMaterialLabel => GetText("AdditionalMaterialConvertSettingsTargetMaterialLabel");
         internal string AdditionalMaterialConvertSettingsSelectMaterialLabel => GetText("AdditionalMaterialConvertSettingsSelectMaterialLabel");
         internal string MaterialConvertTypePopupLabelToonLit => GetText("MaterialConvertTypePopupLabelToonLit");
@@ -205,7 +196,6 @@ namespace KRT.VRCQuestTools.I18n
         // Remove PhysBones
         internal string SelectComponentsToKeep => GetText("SelectComponentsToKeep");
         internal string PhysBonesListTooltip => GetText("PhysBonesListTooltip");
-        internal string KeepAll => GetText("KeepAll");
         internal string PhysBonesWillBeRemovedAtRunTime => GetText("PhysBonesWillBeRemovedAtRunTime");
         internal string PhysBoneCollidersWillBeRemovedAtRunTime => GetText("PhysBoneCollidersWillBeRemovedAtRunTime");
         internal string ContactsWillBeRemovedAtRunTime => GetText("ContactsWillBeRemovedAtRunTime");
@@ -239,7 +229,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string TextureCompressionLabel => GetText("TextureCompressionLabel");
         internal string TextureCompressionHelp => GetText("TextureCompressionHelp");
         internal string TextureCompressionButtonLabel => GetText("TextureCompressionButtonLabel");
-        internal string ApplyAllButtonLabel => GetText("ApplyAllButtonLabel");
         internal string ShowOnStartupLabel => GetText("ShowOnStartupLabel");
         internal string AllAppliedHelp => GetText("AllAppliedHelp");
 
@@ -247,7 +236,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string GetUpdate => GetText("GetUpdate");
         internal string SeeChangelog => GetText("SeeChangelog");
         internal string SkipThisVersion => GetText("SkipThisVersion");
-        internal string NewVersionIsAvailable(string latestVersion) => GetText("NewVersionIsAvailable", latestVersion);
         internal string NewVersionHasBreakingChanges => GetText("NewVersionHasBreakingChanges");
 
         // Validations
@@ -299,7 +287,7 @@ namespace KRT.VRCQuestTools.I18n
         internal string MeshFlipperEditorEnabledOnPCLabel => GetText("MeshFlipperEditorEnabledOnPCLabel");
         internal string MeshFlipperEditorEnabledOnMobileLabel => GetText("MeshFlipperEditorEnabledOnMobileLabel");
         internal string MeshFlipperEditorEnabledOnPCWarning => GetText("MeshFlipperEditorEnabledOnPCWarning");
-        internal string MeshFlipperEditorEnabledOnMobileWarning => GetText("MeshFlipperEditorEnabledOnMobileWarning");
+        internal string MeshFlipperEditorBothSidesWarning => GetText("MeshFlipperEditorBothSidesWarning");
         internal string MeshFlipperEditorMaskTextureMissingError => GetText("MeshFlipperEditorMaskTextureMissingError");
         internal string MeshFlipperEditorMaskTextureNotReadableError => GetText("MeshFlipperEditorMaskTextureNotReadableError");
         internal string MeshFlipperMeshDirectionFlip => GetText("MeshFlipperMeshDirectionFlip");
@@ -336,7 +324,5 @@ namespace KRT.VRCQuestTools.I18n
         internal string LegacyPackageExceptionMessage(string packageName, string requiredVersion) => GetText("LegacyPackageExceptionMessage", packageName, requiredVersion);
         internal string BreakingPackageExceptionMessage(string packageName, string breakingVersion) => GetText("BreakingPackageExceptionMessage", packageName, breakingVersion);
 
-        // NDMF
-        internal string FeatureRequiresNdmf => GetText("FeatureRequiresNdmf");
     }
 }
