@@ -390,7 +390,7 @@ msgstr "Пожалуйста, выберите место для сохране�
 msgid "GenerateButtonLabel"
 msgstr "Создать металлическую гладкость"
 
-msgid "RecommendedUnitySettingsForAndroid"
+msgid "RecommendedUnitySettingsForMobile"
 msgstr "Рекомендуемые настройки для Mobile"
 
 msgid "AndroidBuildSupportHelp"

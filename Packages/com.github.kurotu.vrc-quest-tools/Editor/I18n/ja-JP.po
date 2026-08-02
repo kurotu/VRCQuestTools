@@ -449,7 +449,7 @@ msgstr "テクスチャの保存先を選択してください"
 msgid "GenerateButtonLabel"
 msgstr "Metallic Smoothness を生成"
 
-msgid "RecommendedUnitySettingsForAndroid"
+msgid "RecommendedUnitySettingsForMobile"
 msgstr "Mobile 用の推奨設定"
 
 msgid "AndroidBuildSupportHelp"

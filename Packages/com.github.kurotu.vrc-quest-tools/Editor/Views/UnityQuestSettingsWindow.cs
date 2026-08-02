@@ -36,7 +36,7 @@ namespace KRT.VRCQuestTools.Views
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
 
-            EditorGUILayout.LabelField(i18n.RecommendedUnitySettingsForAndroid, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(i18n.RecommendedUnitySettingsForMobile, EditorStyles.boldLabel);
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("Build Settings", EditorStyles.boldLabel);

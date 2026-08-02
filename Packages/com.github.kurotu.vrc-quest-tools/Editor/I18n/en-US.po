@@ -449,7 +449,7 @@ msgstr "Please choose a location to save the texture"
 msgid "GenerateButtonLabel"
 msgstr "Generate Metallic Smoothness"
 
-msgid "RecommendedUnitySettingsForAndroid"
+msgid "RecommendedUnitySettingsForMobile"
 msgstr "Recommended Settings for Mobile"
 
 msgid "AndroidBuildSupportHelp"
