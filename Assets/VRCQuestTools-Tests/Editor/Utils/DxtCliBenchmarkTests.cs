@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using UnityEditor;
@@ -28,8 +29,13 @@ namespace KRT.VRCQuestTools.Utils
     /// running:
     /// <c>curl -sL -o Temp/dxtbench/texconv_dxtex/texconv.exe https://github.com/microsoft/DirectXTex/releases/latest/download/texconv.exe</c>
     /// and the <c>compressonatorcli-*-win64.zip</c> from the Compressonator releases page extracted under
-    /// <c>Temp/dxtbench/compressonator/</c>. Each encoder is skipped individually when absent, and the whole
-    /// class is marked <see cref="ExplicitAttribute"/> so it never runs in CI.
+    /// <c>Temp/dxtbench/compressonator/</c> -- any release will do, since <c>compressonatorcli.exe</c> is
+    /// searched for beneath that directory rather than at a version-specific path. texconv must go in its own
+    /// <c>texconv_dxtex/</c> directory as shown, because the Compressonator package bundles a copy of
+    /// <c>texconv.exe</c> too and the two must not be confused. Whichever encoders were resolved is logged at
+    /// the start of each test, so an encoder missed because of a wrong path is visible rather than silently
+    /// dropped from the comparison; the whole class is marked <see cref="ExplicitAttribute"/> so it never runs
+    /// in CI.
     /// </para>
     /// <para>
     /// Two per-invocation costs matter and are reported separately. <see cref="PipelineBreakdown"/> measures one
@@ -75,6 +81,13 @@ namespace KRT.VRCQuestTools.Utils
         /// Temporary directory for benchmark work files, relative to the Unity project root.
         /// </summary>
         private const string TempDirectory = "Temp/dxtbench/work";
+
+        /// <summary>
+        /// Directory the Compressonator release archive is expected to be extracted under, relative to the Unity
+        /// project root. The executable is searched for beneath it (see <see cref="FindExecutableUnder"/>) rather
+        /// than at a fixed path, since the archive's own folder name carries the release version.
+        /// </summary>
+        private const string CompressonatorRoot = "Temp/dxtbench/compressonator";
 
         private static readonly int[] Sizes = { 512, 1024, 2048, 4096 };
 
@@ -217,7 +230,11 @@ namespace KRT.VRCQuestTools.Utils
         private static List<EncoderSpec> ResolveEncoders()
         {
             var encoders = new List<EncoderSpec>();
+            var missing = new List<string>();
 
+            // Pinned to its own directory instead of being searched for: the Compressonator package below
+            // bundles its own copy of texconv.exe, so a wider search under Temp/dxtbench would silently
+            // benchmark AMD's bundled build in place of the DirectXTex release this row is meant to measure.
             var texconv = Path.GetFullPath("Temp/dxtbench/texconv_dxtex/texconv.exe");
             if (File.Exists(texconv))
             {
@@ -229,15 +246,30 @@ namespace KRT.VRCQuestTools.Utils
                     texconv,
                     (input, output, tempDir) => $"-nologo -y -f BC3_UNORM -m 1 -o \"{tempDir}\" \"{input}\""));
             }
+            else
+            {
+                missing.Add($"texconv ({texconv})");
+            }
 
-            var compressonator = Path.GetFullPath("Temp/dxtbench/compressonator/compressonatorcli-4.5.52-win64/compressonatorcli.exe");
-            if (File.Exists(compressonator))
+            var compressonator = FindExecutableUnder(CompressonatorRoot, "compressonatorcli.exe");
+            if (compressonator != null)
             {
                 encoders.Add(new EncoderSpec(
                     "compressonator/BC3",
                     compressonator,
                     (input, output, tempDir) => $"-nomipmap -fd BC3 \"{input}\" \"{output}\""));
             }
+            else
+            {
+                missing.Add($"compressonator ({CompressonatorRoot}/**/compressonatorcli.exe)");
+            }
+
+            // Logged because only a *complete* absence of encoders ignores the test: without this, a run that
+            // resolved just one of the two would quietly report half the comparison as though it were the whole
+            // of it, which is exactly the way a stale or mistyped path goes unnoticed.
+            var found = encoders.Count > 0 ? string.Join(", ", encoders.Select(e => e.Name)) : "(none)";
+            var notFound = missing.Count > 0 ? $" | not found: {string.Join(", ", missing)}" : string.Empty;
+            Debug.Log($"DXT CLI encoders resolved: {found}{notFound}");
 
             if (encoders.Count == 0)
             {
@@ -245,6 +277,44 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             return encoders;
+        }
+
+        /// <summary>
+        /// Finds an executable anywhere beneath a directory, without pinning the intermediate folder names.
+        /// </summary>
+        /// <remarks>
+        /// The Compressonator release archive extracts into a version-named folder (e.g.
+        /// <c>compressonatorcli-4.5.52-win64</c>), so hard-coding one release's directory name would make every
+        /// other release read as "not installed" -- and, because a single missing encoder does not fail or
+        /// ignore the test, do so silently. Searching instead keeps the class remarks ("extract it under
+        /// <see cref="CompressonatorRoot"/>") true for any release.
+        /// </remarks>
+        /// <param name="relativeRoot">Directory to search, relative to the Unity project root.</param>
+        /// <param name="fileName">Executable file name to look for.</param>
+        /// <returns>Full path of the first match in sorted order, or null when the directory or file is absent.</returns>
+        private static string FindExecutableUnder(string relativeRoot, string fileName)
+        {
+            var root = Path.GetFullPath(relativeRoot);
+            if (!Directory.Exists(root))
+            {
+                return null;
+            }
+
+            try
+            {
+                var matches = Directory.GetFiles(root, fileName, SearchOption.AllDirectories);
+
+                // Sorted so the pick stays deterministic if several releases happen to be extracted side by side.
+                Array.Sort(matches, StringComparer.OrdinalIgnoreCase);
+                return matches.Length > 0 ? matches[0] : null;
+            }
+            catch (Exception e)
+            {
+                // e.g. an unreadable directory. Reported rather than thrown: a resolution failure should read
+                // as "this encoder is unavailable", the same as it not being installed.
+                Debug.Log($"Failed to search for {fileName} under {root}: {e.Message}");
+                return null;
+            }
         }
 
         private static void MeasureUnity(Texture2D reference, int size, List<Row> rows)
@@ -359,6 +429,11 @@ namespace KRT.VRCQuestTools.Utils
             // DDS_HEADER) + 8 (offset of dwFourCC within DDS_PIXELFORMAT).
             var fourCC = Encoding.ASCII.GetString(fileData, 84, 4);
             var dataOffset = fourCC == "DX10" ? LegacyHeaderBytes + Dxt10HeaderBytes : LegacyHeaderBytes;
+
+            // Re-checked against the resolved offset rather than only the legacy minimum asserted above: a
+            // DX10-tagged file between 128 and 147 bytes long would otherwise compute a negative length here
+            // and throw on the allocation, instead of failing with a message that names the actual problem.
+            Assert.GreaterOrEqual(fileData.Length, dataOffset, $"DDS file is shorter than its {dataOffset}-byte header.");
 
             var blocks = new byte[fileData.Length - dataOffset];
             Buffer.BlockCopy(fileData, dataOffset, blocks, 0, blocks.Length);
