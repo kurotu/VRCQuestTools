@@ -3,8 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.ViewModels;
 using UnityEditor;
@@ -37,9 +35,8 @@ namespace KRT.VRCQuestTools.Views
         private void OnGUI()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
-            var allActions = new List<Action>();
 
-            EditorGUILayout.LabelField(i18n.RecommendedUnitySettingsForAndroid, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(i18n.RecommendedUnitySettingsForMobile, EditorStyles.boldLabel);
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("Build Settings", EditorStyles.boldLabel);
@@ -72,7 +69,6 @@ namespace KRT.VRCQuestTools.Views
             if (!model.HasValidAndroidTextureCompression)
             {
                 EditorGUILayout.HelpBox(i18n.TextureCompressionHelp, MessageType.Info);
-                allActions.Add(OnClickTextureCompressionButton);
                 if (GUILayout.Button(i18n.TextureCompressionButtonLabel))
                 {
                     OnClickTextureCompressionButton();
@@ -81,17 +77,7 @@ namespace KRT.VRCQuestTools.Views
 
             EditorGUILayout.Space();
 
-            if (allActions.Count >= 2)
-            {
-                if (GUILayout.Button(i18n.ApplyAllButtonLabel))
-                {
-                    foreach (var action in allActions)
-                    {
-                        action();
-                    }
-                }
-            }
-            else if (model.AllSettingsValid)
+            if (model.AllSettingsValid)
             {
                 EditorGUILayout.HelpBox(i18n.AllAppliedHelp, MessageType.Info);
             }

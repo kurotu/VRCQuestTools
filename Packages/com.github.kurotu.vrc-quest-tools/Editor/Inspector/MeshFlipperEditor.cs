@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools.Inspector
 
             if (direction.enumValueIndex == (int)MeshFlipperMeshDirection.BothSides)
             {
-                EditorGUILayout.HelpBox(i18n.MeshFlipperEditorEnabledOnMobileWarning, MessageType.Warning);
+                EditorGUILayout.HelpBox(i18n.MeshFlipperEditorBothSidesWarning, MessageType.Warning);
             }
 
             var useMask = so.FindProperty("useMask");

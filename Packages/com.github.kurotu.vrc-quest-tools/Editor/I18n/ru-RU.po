@@ -49,9 +49,6 @@ msgstr ""
 msgid "Maximum"
 msgstr "Максимум"
 
-msgid "IncompatibleSDK"
-msgstr "Несовместимый VRChat SDK. Пожалуйста, сообщите об этом."
-
 msgid "TextureFormatHighQuality"
 msgstr ""
 
@@ -91,14 +88,8 @@ msgstr "Поддерживаемые шейдеры"
 msgid "SaveToLabel"
 msgstr "Папка для сохранения"
 
-msgid "SelectButtonLabel"
-msgstr "Выбрать"
-
 msgid "ConvertButtonLabel"
 msgstr "Конвертировать"
-
-msgid "AssignButtonLabel"
-msgstr "Назначить"
 
 msgid "UpdateTexturesLabel"
 msgstr "Обновить конвертированные текстуры для Mobile"
@@ -116,9 +107,6 @@ msgid "RemoveExtraMaterialSlotsLabel"
 msgstr ""
 
 msgid "RemoveExtraMaterialSlotsTooltip"
-msgstr ""
-
-msgid "CompressExpressionsMenuIconsLabel"
 msgstr ""
 
 msgid "CompressExpressionsMenuIconsTooltip"
@@ -160,9 +148,6 @@ msgstr "Произошла ошибка при конвертации контр
 msgid "InvalidReplacementMaterialExceptionDialogMessage"
 msgstr ""
 
-msgid "InfoForNdmfConversion"
-msgstr "Вы можете неразрушающе конвертировать аватар во время сборки, когда проект имеет пакет Неразрушаемая Модульная Структура (NDMF). Пожалуйста, используйте Конструктор Аватаров, чтобы избежать ограничений VRChat SDK."
-
 msgid "InfoForNdmfConversion2"
 msgstr ""
 
@@ -172,7 +157,7 @@ msgstr "Оценочная оценка производительности —
 "Мобильные пользователи по умолчанию увидят его импостер или резервный аватар. Однако они могут увидеть аватар, изменив настройку «Отображение аватара» (также известную как «Показать аватар»)."
 
 msgid "WarningForAppearance"
-msgstr "Прозрачность текстуры не оказывает никакого эффекта, поэтому это будет проблемой для выражения лица."
+msgstr "Прозрачность текстуры не оказывает никакого эффекта, поэтому могут возникнуть проблемы с мимикой."
 
 msgid "WarningForUnsupportedShaders"
 msgstr "Следующие материалы используют неподдерживаемые шейдеры. Текстуры могут быть сгенерированы неправильно."
@@ -190,7 +175,7 @@ msgid "AlertForUnityConstraintsConversion"
 msgstr "Не конвертируйте ограничения Unity в ограничения VRChat. Пожалуйста, настройте ограничения VRChat перед конвертацией аватара."
 
 msgid "AlertForAvatarDynamicsPerformance"
-msgstr "Оценка производительности динамики аватара (физические кости и контакты) будет \"Очень Плохо\", поэтому компоненты будут удалены даже при загрузке для Mobile. Пожалуйста, поддерживайте оценку \"Плохо\" в категориях динамики аватара."
+msgstr "Оценка производительности динамики аватара (физические кости и контакты) будет \"Очень Плохо\", поэтому компоненты будут удалены даже при загрузке для Mobile. Пожалуйста, уменьшите количество компонентов, чтобы оценка производительности динамики аватара оставалась на уровне \"Плохо\" или выше."
 
 msgid "ErrorForPrefabStage"
 msgstr "Невозможно конвертировать аватар в режиме префаба. Пожалуйста, вернитесь к сцене из режима префаба."
@@ -230,9 +215,6 @@ msgstr "При ручном преобразовании не учитывают
 
 msgid "ManualConvertButtonLabel"
 msgstr "Преобразовать"
-
-msgid "ConfirmationForUnityConstraints"
-msgstr "Ручное преобразование удалит Unity Constraints. Вы можете без разрушения преобразовать их в VRChat Constraints, добавив компонент MA Convert Constraints к аватару и используя Avatar Builder для загрузки. Вы действительно хотите продолжить преобразование?"
 
 msgid "ConfirmationForMAConvertConstraints"
 msgstr ""
@@ -307,7 +289,7 @@ msgid "MaterialConvertTypePopupLabelMaterialReplace"
 msgstr "Замена материала"
 
 msgid "MaterialReplaceSettingsMaterialLabel"
-msgstr "Заменяемый материал"
+msgstr "Заменяющий материал"
 
 msgid "MaterialReplaceSettingsMaterialTooltip"
 msgstr "Целевой материал будет заменен этим материалом."
@@ -350,9 +332,6 @@ msgstr "Выберите компоненты для сохранения."
 
 msgid "PhysBonesListTooltip"
 msgstr "Список компонентов и их корневых трансформаций."
-
-msgid "KeepAll"
-msgstr "Сохранить все"
 
 msgid "PhysBonesWillBeRemovedAtRunTime"
 msgstr "Вы можете загрузить этот аватар для Mobile, но все компоненты PhysBone будут удалены. Пожалуйста, уменьшите количество компонентов PhysBone."
@@ -406,13 +385,13 @@ msgid "SaveFileDialogTitle"
 msgstr "Сохранить {0}"
 
 msgid "SaveFileDialogMessage"
-msgstr "Пожалуйста, введите имя файла для сохранения текстуры"
+msgstr "Пожалуйста, выберите место для сохранения текстуры"
 
 msgid "GenerateButtonLabel"
 msgstr "Создать металлическую гладкость"
 
-msgid "RecommendedUnitySettingsForAndroid"
-msgstr "Рекомендуемые настройки для Android"
+msgid "RecommendedUnitySettingsForMobile"
+msgstr "Рекомендуемые настройки для Mobile"
 
 msgid "AndroidBuildSupportHelp"
 msgstr ""
@@ -429,9 +408,6 @@ msgstr "ASTC улучшает качество текстур для Android в 
 msgid "TextureCompressionButtonLabel"
 msgstr "Установить сжатие текстур на ASTC"
 
-msgid "ApplyAllButtonLabel"
-msgstr "Применить все настройки"
-
 msgid "ShowOnStartupLabel"
 msgstr "Показывать при запуске"
 
@@ -446,9 +422,6 @@ msgstr "Журнал изменений"
 
 msgid "SkipThisVersion"
 msgstr "Пропустить эту версию"
-
-msgid "NewVersionIsAvailable"
-msgstr "Доступна новая версия {0}."
 
 msgid "NewVersionHasBreakingChanges"
 msgstr "Эта версия может иметь критические изменения в совместимости."
@@ -484,7 +457,7 @@ msgid "PlatformTargetSettingsEditorDescription"
 msgstr "Компоненты принудительно используют определенные настройки платформы в процессе сборки NDMF."
 
 msgid "PlatformTargetSettingsIsRequiredToEnforcePlatform"
-msgstr "Чтобы переопределить платформу для этого компонента, добавьте компонент PlatformTargetSettings в корневой объект аватара."
+msgstr "Чтобы переопределить платформу для этого компонента, добавьте компонент Platform Target Settings в корневой объект аватара."
 
 msgid "ComponentRequiresNdmf"
 msgstr "Требуется Неразрушаемая Модульная Структура (NDMF)."
@@ -549,7 +522,7 @@ msgstr ""
 msgid "MeshFlipperEditorEnabledOnPCWarning"
 msgstr "Возможно, это можно сделать с помощью настроек шейдера без использования этого компонента."
 
-msgid "MeshFlipperEditorEnabledOnMobileWarning"
+msgid "MeshFlipperEditorBothSidesWarning"
 msgstr "Количество полигонов для этой сетки увеличится."
 
 msgid "MeshFlipperEditorMaskTextureMissingError"
@@ -620,9 +593,6 @@ msgstr ""
 
 msgid "BreakingPackageExceptionMessage"
 msgstr ""
-
-msgid "FeatureRequiresNdmf"
-msgstr "Требуется Неразрушаемая Модульная Структура (NDMF)."
 
 msgid "NDMF:RemovedUnsupportedComponentTitle"
 msgstr "Удалён неподдерживаемый компонент"

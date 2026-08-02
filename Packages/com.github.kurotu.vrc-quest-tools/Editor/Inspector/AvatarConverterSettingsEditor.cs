@@ -353,12 +353,13 @@ namespace KRT.VRCQuestTools.Inspector
                     using (var disabledPreview = new EditorGUI.DisabledGroupScope(Utils.ComponentUtility.IsMobileBuildTarget(descriptor.gameObject)))
                     {
                         var forceLabel = converterSettings.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableLabel : i18n.ForceMaterialPreviewEnableLabel;
+                        var forceTooltip = converterSettings.ForceMaterialPreview ? i18n.ForceMaterialPreviewDisableTooltip : i18n.ForceMaterialPreviewEnableTooltip;
                         var oldBg = GUI.backgroundColor;
                         if (converterSettings.ForceMaterialPreview)
                         {
                             GUI.backgroundColor = Color.green;
                         }
-                        if (GUILayout.Button(new GUIContent("[NDMF] " + forceLabel, i18n.ForceMaterialPreviewTooltip)))
+                        if (GUILayout.Button(new GUIContent("[NDMF] " + forceLabel, forceTooltip)))
                         {
                             converterSettings.forceMaterialPreview = !converterSettings.forceMaterialPreview;
 

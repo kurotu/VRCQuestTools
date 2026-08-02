@@ -16,8 +16,10 @@ namespace KRT.VRCQuestTools.Inspector
         /// <inheritdoc />
         public override void OnInspectorGUIInternal()
         {
+#if VQT_HAS_NDMF
             var i18n = VRCQuestToolsSettings.I18nResource;
             EditorGUILayout.LabelField(i18n.ConvertedAvatarEditorNDMFMessage, EditorStyles.wordWrappedLabel);
+#endif
         }
     }
 }
