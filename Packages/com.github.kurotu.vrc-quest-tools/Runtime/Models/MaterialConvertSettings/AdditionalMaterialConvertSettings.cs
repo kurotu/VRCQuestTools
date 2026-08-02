@@ -21,7 +21,7 @@ namespace KRT.VRCQuestTools.Models
         /// Material convert settings.
         /// </summary>
         [SerializeReference]
-        public IMaterialConvertSettings materialConvertSettings = ToonStandardConvertSettings.SimpleFeatures;
+        public IMaterialConvertSettings materialConvertSettings = ToonStandardConvertSettings.Default;
 
         /// <summary>
         /// Load default assets for the material convert settings.

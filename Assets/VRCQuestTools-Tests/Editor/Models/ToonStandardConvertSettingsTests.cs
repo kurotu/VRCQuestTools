@@ -14,13 +14,13 @@ namespace KRT.VRCQuestTools.Models
     internal class ToonStandardConvertSettingsTests
     {
         /// <summary>
-        /// Default featureMode should be OptIn.
+        /// Default featureMode should be OptOut.
         /// </summary>
         [Test]
-        public void DefaultFeatureMode_IsOptIn()
+        public void DefaultFeatureMode_IsOptOut()
         {
             var settings = new ToonStandardConvertSettings();
-            Assert.AreEqual(ToonStandardFeaturesMode.OptIn, settings.featureMode);
+            Assert.AreEqual(ToonStandardFeaturesMode.OptOut, settings.featureMode);
         }
 
         /// <summary>
@@ -40,19 +40,38 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
-        /// LoadDefaultAssets sets featureMode=OptIn and all features to false.
+        /// LoadDefaultAssets sets featureMode=OptOut and all features to true.
         /// </summary>
         [Test]
-        public void LoadDefaultAssets_SetsOptInAndAllFalse()
+        public void LoadDefaultAssets_SetsOptOutAndAllTrue()
         {
             var settings = new ToonStandardConvertSettings();
+            settings.SetAllFeatures(false);
+            settings.featureMode = ToonStandardFeaturesMode.OptIn;
             settings.LoadDefaultAssets();
-            Assert.AreEqual(ToonStandardFeaturesMode.OptIn, settings.featureMode);
+            Assert.AreEqual(ToonStandardFeaturesMode.OptOut, settings.featureMode);
             foreach (var propName in ToonStandardConvertSettings.FeaturePropertyNames)
             {
                 var field = typeof(ToonStandardConvertSettings).GetField(propName, BindingFlags.Instance | BindingFlags.Public);
                 var value = (bool)field.GetValue(settings);
-                Assert.IsFalse(value, $"Field {propName} should be false after LoadDefaultAssets");
+                Assert.IsTrue(value, $"Field {propName} should be true after LoadDefaultAssets");
+            }
+        }
+
+        /// <summary>
+        /// The Default instance uses OptOut mode with all features enabled.
+        /// </summary>
+        [Test]
+        public void Default_IsOptOutAndAllTrue()
+        {
+            var settings = ToonStandardConvertSettings.Default;
+            Assert.AreEqual(ToonStandardFeaturesMode.OptOut, settings.featureMode);
+            Assert.IsTrue(settings.generateShadowRamp);
+            foreach (var propName in ToonStandardConvertSettings.FeaturePropertyNames)
+            {
+                var field = typeof(ToonStandardConvertSettings).GetField(propName, BindingFlags.Instance | BindingFlags.Public);
+                var value = (bool)field.GetValue(settings);
+                Assert.IsTrue(value, $"Field {propName} should be true");
             }
         }
 

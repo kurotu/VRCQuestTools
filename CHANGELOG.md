@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `Features` to select features to apply to the converted material.
     - `Mask Textures Size Limit` and `Mask Compression Format` to control max resolution and compression format of mask textures independently.
     - `MatCap Texture Settings` to control max resolution and compression format of matcap textures independently. The default max resolution is 256x256.
-- Added opt-in/opt-out mode for Toon Standard feature selection.
+- Added opt-in/opt-out mode for Toon Standard feature selection. The default is opt-out with all features enabled.
 - Preview wireframe when selecting PhysBones to keep.
 - [NDMF] Preview for material conversion and removal of vertex color.
 - Added "No Override" option to texture compression format settings, allowing Unity's default ASTC compression settings to control texture format instead of forcing platform-specific overrides. The default texture compression format for `Avatar Converter Settings` component is now "No Override".

@@ -137,7 +137,7 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Feature selection mode.
         /// </summary>
-        public ToonStandardFeaturesMode featureMode = ToonStandardFeaturesMode.OptIn;
+        public ToonStandardFeaturesMode featureMode = ToonStandardFeaturesMode.OptOut;
 
         /// <summary>Serialized schema version for forward compatibility.</summary>
         [SerializeField]
@@ -164,17 +164,18 @@ namespace KRT.VRCQuestTools.Models
         public static IReadOnlyList<string> FeaturePropertyNames => featurePropertyNamesLazy.Value;
 
         /// <summary>
-        /// Gets a default instance of <see cref="ToonStandardConvertSettings"/> with all features disabled.
+        /// Gets a default instance of <see cref="ToonStandardConvertSettings"/> with all features enabled.
         /// </summary>
-        public static ToonStandardConvertSettings SimpleFeatures
+        public static ToonStandardConvertSettings Default
         {
             get
             {
                 var settings = new ToonStandardConvertSettings
                 {
                     generateShadowRamp = true,
+                    featureMode = ToonStandardFeaturesMode.OptOut,
                 };
-                settings.SetAllFeatures(false);
+                settings.SetAllFeatures(true);
                 return settings;
             }
         }
@@ -229,8 +230,8 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public void LoadDefaultAssets()
         {
-            featureMode = ToonStandardFeaturesMode.OptIn;
-            SetAllFeatures(false);
+            featureMode = ToonStandardFeaturesMode.OptOut;
+            SetAllFeatures(true);
             serializedVersion = CurrentVersion;
 #if UNITY_EDITOR
             // RealisticVerySoft shadow
