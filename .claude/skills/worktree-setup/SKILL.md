@@ -1,6 +1,6 @@
 ---
 name: worktree-setup
-description: "Set up a fresh VRCQuestTools clone or git worktree before launching Unity: resolve VPM packages with vrc-get and download astcenc binaries. Use whenever a new worktree or clone was just created (git worktree add, EnterWorktree), before the first uloop-launch in a working copy, or when Packages/com.vrchat.base is missing, Unity fails to open the project, or compilation reports missing VRChat SDK/NDMF types."
+description: "Use this skill FIRST, before anything else, whenever work is about to happen in a brand-new VRCQuestTools checkout — right after `git clone` or `git worktree add`, or when the user mentions a fresh/new worktree, clone, or checkout and wants to launch Unity, run EditMode/PlayMode tests, or build there. A fresh checkout is always missing untracked dependencies; this skill performs the two mandatory setup steps (resolve VPM packages, download astcenc binaries). Also use when a fresh checkout misbehaves in ways that indicate skipped setup: Unity won't open the project or spams missing-package errors in the console, compilation fails with \"type or namespace could not be found\" for VRC/VRCSDK/NDMF, Packages/com.vrchat.base doesn't exist, or all astcenc tests are skipped. Do not use for upgrading package versions, packages-lock.json questions, CI workflow tuning, or explaining how git worktrees work."
 ---
 
 # New Worktree / Clone Setup

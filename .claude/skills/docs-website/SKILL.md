@@ -1,6 +1,6 @@
 ---
 name: docs-website
-description: "Guidelines for the VRCQuestTools documentation website (Website/, Docusaurus, bilingual en/ja). Use whenever creating or editing pages under Website/docs/ or Website/i18n/, documenting a new or changed component, menu, or feature, updating the manual or tutorial, translating docs pages, changing site config, theme, or sidebar, or building/verifying the docs site — even if the request only says 'update the docs', 'write the manual page', or 'ドキュメントを更新'."
+description: "Use this skill FIRST for any task whose output lives in the `Website/` directory — the VRCQuestTools user manual / docs site (Docusaurus, bilingual en/ja). That means: editing or writing any manual page (intro.md, tutorial, component reference pages like \"Avatar Converter Settings\", menu reference, troubleshooting) — adding an entry, documenting a new or changed option, or rewriting an explanation that users found unclear (説明の追記・書き直し・わかりにくい); translating pages between en and ja; fixing sidebar ordering, theme, or site config; and diagnosing Docusaurus build failures such as broken links/anchors or locale (ja) issues. A request counts even if it never says \"docs\": mentioning マニュアル, マニュアルページ, ドキュメント, サイドバー, Website, a docs filename, or \"add/fix X on the website\" is enough, as is naming a plugin feature when the deliverable is its manual page. Read this skill before touching any file under Website/, because it defines required workflow (Japanese-first writing, URL compatibility, build verification)."
 ---
 
 # Documentation Website (`Website/`)
