@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Models.VRChat;
 using KRT.VRCQuestTools.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -56,7 +57,7 @@ namespace KRT.VRCQuestTools.Ndmf
             var representativeMaterials = new Dictionary<string, (Material Material, IMaterialConvertSettings Settings)>();
             foreach (var (material, settings) in settingsMap)
             {
-                if (VRCSDKUtility.IsMaterialAllowedForQuestAvatar(material))
+                if (!AvatarConverter.RequiresConversion(material, settings))
                 {
                     continue;
                 }

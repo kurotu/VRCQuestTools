@@ -24,4 +24,5 @@ Add pairs of materials to the "Material Mappings" list.
 ## Notes
 
 - When the shader of the replacement material is not allowed for Mobile avatars, an error appears in the Inspector.
+- You can also set a material which already uses a shader allowed for Mobile avatars as the original material.
 - If you just want to change the conversion per material, you can also select "Material Replacement" in "Additional Material Conversion Settings" of [VQT Avatar Converter Settings](./avatar-converter-settings.md).
