@@ -3,9 +3,11 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Reflection;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
+using KRT.VRCQuestTools.Models.Unity;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -16,6 +18,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// </summary>
     public class AvatarConverterTests
     {
+        private const string MobileToonLitShaderName = "VRChat/Mobile/Toon Lit";
+
         /// <summary>
         /// Test that Platform GameObject Remover deletes marked GameObjects on Android conversion.
         /// </summary>
@@ -192,6 +196,95 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Object.DestroyImmediate(root);
         }
 #endif
+
+        /// <summary>
+        /// Test that a material which is already allowed for mobile avatars is not converted by default.
+        /// </summary>
+        [Test]
+        public void RequiresConversion_MobileMaterialWithoutReplacement_ReturnsFalse()
+        {
+            var shader = Shader.Find(MobileToonLitShaderName);
+            if (shader == null)
+            {
+                Assert.Ignore($"{MobileToonLitShaderName} shader not found.");
+            }
+            var material = new Material(shader);
+
+            Assert.IsFalse(AvatarConverter.RequiresConversion(material, new ToonLitConvertSettings()));
+
+            Object.DestroyImmediate(material);
+        }
+
+        /// <summary>
+        /// Test that a material which is already allowed for mobile avatars is still replaced when the user
+        /// explicitly configured a material replacement for it. See https://github.com/kurotu/VRCQuestTools/issues/293.
+        /// </summary>
+        [Test]
+        public void RequiresConversion_MobileMaterialWithReplacement_ReturnsTrue()
+        {
+            var shader = Shader.Find(MobileToonLitShaderName);
+            if (shader == null)
+            {
+                Assert.Ignore($"{MobileToonLitShaderName} shader not found.");
+            }
+            var material = new Material(shader);
+            var replacement = new Material(shader);
+
+            Assert.IsTrue(AvatarConverter.RequiresConversion(material, new MaterialReplaceSettings { material = replacement }));
+
+            Object.DestroyImmediate(replacement);
+            Object.DestroyImmediate(material);
+        }
+
+        /// <summary>
+        /// Test that a material which is not allowed for mobile avatars is always converted.
+        /// </summary>
+        [Test]
+        public void RequiresConversion_NonMobileMaterial_ReturnsTrue()
+        {
+            var material = new Material(Shader.Find("Standard"));
+
+            Assert.IsTrue(AvatarConverter.RequiresConversion(material, new ToonLitConvertSettings()));
+
+            Object.DestroyImmediate(material);
+        }
+
+        /// <summary>
+        /// Test that VQT Material Swap replaces a material which is already allowed for mobile avatars.
+        /// </summary>
+        [Test]
+        public void ConvertMaterialsForMobile_MaterialSwapOfMobileMaterial_ReplacesMaterial()
+        {
+            var shader = Shader.Find(MobileToonLitShaderName);
+            if (shader == null)
+            {
+                Assert.Ignore($"{MobileToonLitShaderName} shader not found.");
+            }
+            var original = new Material(shader) { name = "Original" };
+            var replacement = new Material(shader) { name = "Replacement" };
+
+            var root = new GameObject("AvatarRoot");
+            var swap = root.AddComponent<MaterialSwap>();
+            swap.materialMappings = new List<MaterialSwap.MaterialMapping>
+            {
+                new MaterialSwap.MaterialMapping
+                {
+                    originalMaterial = original,
+                    replacementMaterial = replacement,
+                },
+            };
+
+            var converter = new AvatarConverter(new MaterialWrapperBuilder());
+            var settingsMap = converter.CreateMaterialConvertSettingsMap(root, new Material[] { original });
+            var converted = converter.ConvertMaterialsForMobile(settingsMap, false, string.Empty, null, false, root);
+
+            Assert.IsTrue(converted.ContainsKey(original), "Mobile material specified as a swap target should be converted.");
+            Assert.AreEqual(replacement, converted[original]);
+
+            Object.DestroyImmediate(root);
+            Object.DestroyImmediate(replacement);
+            Object.DestroyImmediate(original);
+        }
 
         /// <summary>
         /// Invokes AvatarConverter.ApplyPlatformGameObjectRemoversForAndroid by reflection.

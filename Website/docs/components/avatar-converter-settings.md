@@ -74,6 +74,7 @@ The default is opt-out with all features enabled.
 
 Add these when you want specific materials to use a conversion different from the default.
 Specify the original material in "Target Material" and select the conversion.
+When you select "Material Replacement", you can also target a material which already uses a shader allowed for Mobile avatars.
 
 ## Avatar Dynamics Settings
 

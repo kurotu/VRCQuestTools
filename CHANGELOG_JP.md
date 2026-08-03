@@ -62,6 +62,7 @@
 - lilToon から Toon Standard への変換結果が暗くなりすぎる問題を修正。Occlusion の強度を常にフル適用するのではなく、lilToon の陰影色から算出するように変更。
 - lilToon から Toon Standard への変換で、Gloss/Metallic の強度を Reflection Color から算出する際に色空間の線形変換をしていなかった問題を修正。Metallic 側は意図せず二重にガンマデコードされていました。
 - [NDMF] VRCFuryが存在し、かつNDMFフェーズがOptimizingに解決される場合に変換後のマテリアルがピンク色になる問題を修正。VRCQuestToolsがそのフェーズで変換しようとしているアバターについては、VRCFury自身の非モバイルマテリアル削除処理を抑制するようにしました。`Auto`は、VRCFuryのマテリアル削除処理を抑制できる場合に限りOptimizingフェーズに解決されるようになりました（抑制できない場合は従来どおりTransformingフェーズにフォールバックします）。
+- 置換元のマテリアルが Mobile アバターで許可されたシェーダーを使用している場合にマテリアル置換が行われない問題を修正。`VQT Material Swap` と追加のマテリアル変換設定の「マテリアル置換」の両方で、そのようなマテリアルを置換の対象に指定できます。
 
 ### 削除
 - Unity 2019 のサポートを終了。

@@ -439,8 +439,9 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var explicitlyConfiguredMaterials = GetExplicitlyConfiguredMaterials(avatarRoot);
 
             // Get unique materials that need conversion
-            var materialsToConvert = convertSettingsMap.Keys
-                .Where(m => !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(m))
+            var materialsToConvert = convertSettingsMap
+                .Where(pair => RequiresConversion(pair.Key, pair.Value))
+                .Select(pair => pair.Key)
                 .Distinct()
                 .ToArray();
 
@@ -472,6 +473,31 @@ namespace KRT.VRCQuestTools.Models.VRChat
             CacheManager.Texture.Clear(VRCQuestToolsSettings.TextureCacheSize);
 
             return convertedMaterials;
+        }
+
+        /// <summary>
+        /// Gets whether the material has to go through the conversion pipeline.
+        /// A material whose shader is already allowed for mobile avatars needs no automatic conversion,
+        /// but an explicit replacement (<see cref="MaterialReplaceSettings"/>, set either per material or by
+        /// <see cref="MaterialSwap"/>) is a deliberate choice by the user and must be applied to such a
+        /// material as well.
+        /// </summary>
+        /// <param name="material">Material to test.</param>
+        /// <param name="settings">Convert settings for the material.</param>
+        /// <returns>true when the material has to be converted.</returns>
+        internal static bool RequiresConversion(Material material, IMaterialConvertSettings settings)
+        {
+            if (material == null)
+            {
+                return false;
+            }
+
+            if (settings is MaterialReplaceSettings)
+            {
+                return true;
+            }
+
+            return !VRCSDKUtility.IsMaterialAllowedForQuestAvatar(material);
         }
 
         /// <summary>
