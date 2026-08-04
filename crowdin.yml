@@ -2,4 +2,5 @@ files:
   - source: /Packages/com.github.kurotu.vrc-quest-tools/Editor/I18n/en-US.po
     translation: /%original_path%/%locale%.po
 
-commit_message: ""
+commit_message: "New translations {fileName} ({languageName})"
+append_commit_message: false
