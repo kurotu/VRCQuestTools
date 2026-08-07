@@ -32,6 +32,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up mise
+        uses: jdx/mise-action@v4
+
       - name: Cache Library folder
         uses: actions/cache@v4
         with:
@@ -54,11 +57,6 @@ jobs:
           retry_wait_seconds: 60
           command: vrc-get resolve
       - run: vrc-get info project
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 9.0.x
 
       - name: Setup Unity Hub
         run: |
@@ -89,17 +87,18 @@ jobs:
             echo "Unity Editor already installed, skipping installation"
           fi
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Cache pnpm store
+        uses: actions/cache@v4
         with:
-          node-version: 22
-          cache: 'pnpm'
-          cache-dependency-path: Website/pnpm-lock.yaml
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('Website/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - run: cd Website && pnpm install --frozen-lockfile
 
       - name: Generate solution

@@ -162,6 +162,8 @@ jobs:
     container: unityci/editor:ubuntu-2022.3.22f1-windows-mono-3
     steps:
       - uses: actions/checkout@v4
+      - name: Set up mise
+        uses: jdx/mise-action@v4
       - uses: actions/cache@v4
         with:
           path: Library
@@ -179,11 +181,6 @@ jobs:
       - run: vrc-get info project
       - run: vrc-get repo add https://vpm.nadena.dev/vpm-prerelease.json
       - run: scripts/vrc-get-install.sh nadena.dev.modular-avatar latest
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 9.0.x
 
       # See https://github.com/game-ci/documentation/issues/408#issuecomment-3211109962 for UNITY_SERIAL
       - name: Generate Solution
@@ -240,13 +237,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - name: Set up mise
+        uses: jdx/mise-action@v4
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - name: Cache pnpm store
+        uses: actions/cache@v4
         with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          cache: 'pnpm'
-          cache-dependency-path: Website/pnpm-lock.yaml
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('Website/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
       - run: cd Website && pnpm install --frozen-lockfile
       - run: cd Website && pnpm run build
 
