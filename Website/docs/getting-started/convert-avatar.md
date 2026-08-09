@@ -35,16 +35,19 @@ Typical ones are:
 ## Upload
 
 :::caution Upload the PC version first
-To synchronize PhysBone swaying between PC and Mobile, the same avatar must be uploaded to both platforms.
+To synchronize PhysBones between PC and Mobile, the same avatar must be uploaded to both platforms.
 Before uploading for Mobile, upload the avatar with the converter settings added for PC.
 :::
 
-The following steps depend on whether you use NDMF.
-When using NDMF, no copy of the avatar is created, so you don't need separate scenes or avatars for PC and Mobile.
-When you use other non-destructive tools such as Modular Avatar, they are processed together on upload, so they combine correctly.
-If you are unsure which way to go, we recommend installing NDMF.
+The following steps depend on whether you use the automatic conversion on upload.
+With the automatic conversion, no copy of the avatar is created, so you don't need separate scenes or avatars for PC and Mobile.
+When you use non-destructive tools such as Modular Avatar, they are processed together on upload, so they combine correctly.
+If you are unsure, we recommend the automatic conversion.
 
-### Using NDMF (Recommended)
+The automatic conversion requires NDMF in your project.
+If you use Modular Avatar, NDMF is already included in your project.
+
+### Converting Automatically on Upload (Recommended) {#automatic-conversion}
 
 The avatar is automatically converted on upload.
 You keep the same operations as a usual PC upload and only switch the platform.
@@ -62,18 +65,18 @@ VRChat can hold different avatar data for each platform: players on PC see the a
 To upload for the iOS version of VRChat as well, also select iOS in "Platform(s)".
 Switching the platform to iOS requires [iOS Build Support](./set-up-environment.md#ios-build-support).
 
-### Not Using NDMF
+### Converting Manually {#manual-conversion}
 
 Create a converted copy of the avatar with "Manual Conversion", then upload it.
 
 :::caution Combining with non-destructive tools
 Manual conversion does not consider non-destructive components other than MA Merge Animator.
 On avatars using non-destructive tools such as Modular Avatar, unexpected issues may arise in the behavior after combining.
-In that case, install NDMF and use the automatic conversion on upload.
+In that case, use the automatic conversion on upload.
 :::
 
 1. Press the "Convert" button in the converter settings.
-2. After the conversion, a copy named "(avatar name) (Android)" is created in the scene. The original avatar is automatically deactivated.
+2. After the conversion, a copy named "(avatar name) (Mobile)" is created in the scene. The copy is placed a little away from the original avatar so they don't overlap.
 3. Switch the platform to Android (or iOS for the iOS version) in the VRChat SDK control panel.
 4. Upload the converted copy with the same Blueprint ID as the original avatar.
 

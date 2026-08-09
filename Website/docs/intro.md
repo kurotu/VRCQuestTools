@@ -30,7 +30,21 @@ Mobile shaders can't fully reproduce the appearance of PC shaders.
 
 ## Requirements
 
+- Unity 2022.3.22f1
 - VRChat SDK - Avatars 3.9.0 or later
+
+### Optional Packages {#optional-packages}
+
+The following packages are not required, but VRCQuestTools supports each of them when they are in your project.
+Where a version is listed, check that your project meets it if you already use the package.
+
+- **Non-Destructive Modular Framework (NDMF)** 1.5.0 or later: Converts the avatar automatically on upload.
+- **lilToon** 1.10.0 or later: Converts lilToon materials.
+- **Modular Avatar** 1.12.2 or later: Suggests adding components which help the conversion, such as "MA Convert Constraints".
+- **Avatar Optimizer (AAO)**: Suggests adding "AAO Trace and Optimize".
+
+With an outdated version of NDMF, lilToon, or Modular Avatar, the conversion or the build stops with an error.
+Check their versions in VCC or ALCOM.
 
 ## How to Read This Documentation
 
