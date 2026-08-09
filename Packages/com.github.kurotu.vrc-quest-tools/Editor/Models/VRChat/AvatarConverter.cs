@@ -71,7 +71,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Selection.activeGameObject = avatarConverterSettings.AvatarDescriptor.gameObject;
             Unsupported.DuplicateGameObjectsUsingPasteboard();
             var questAvatarObject = Selection.activeGameObject;
-            questAvatarObject.name = avatarConverterSettings.gameObject.name + " (Android)";
+            questAvatarObject.name = avatarConverterSettings.gameObject.name + " (Mobile)";
 
             var questAvatar = new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
             PrepareConvertForQuestInPlace(questAvatar);
