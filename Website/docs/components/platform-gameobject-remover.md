@@ -6,7 +6,8 @@ slug: /references/components/platform-gameobject-remover
 
 A component which removes the GameObject at build time depending on the platform.
 Attach it to the GameObject you want to remove.
-NDMF is required.
+NDMF is required to remove it at build time.
+Even without NDMF, the manual conversion of [VQT Avatar Converter Settings](./avatar-converter-settings.md) applies the settings to remove on Mobile to the converted avatar.
 
 For example, you can remove a PC-only accessory entirely on Mobile.
 

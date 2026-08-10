@@ -18,7 +18,7 @@ The settings are the same as the material conversion settings of [VQT Avatar Con
 
 | Setting | Description |
 |---|---|
-| Default Material Conversion Settings | How to convert the materials. The default is "Toon Lit". |
+| Default Material Conversion Settings | How to convert the materials. The default is "Toon Standard". |
 | Additional Material Conversion Settings | Specifies a different conversion for specific materials. |
 | Remove Extra Material Slots | Removes material slots which exceed the number of submeshes. |
 | NDMF Phase to Convert | Specifies in which NDMF phase the materials are converted. Usually keep it Auto. |

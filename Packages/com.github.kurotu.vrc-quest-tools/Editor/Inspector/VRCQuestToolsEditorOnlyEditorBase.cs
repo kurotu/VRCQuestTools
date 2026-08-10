@@ -55,7 +55,12 @@ namespace KRT.VRCQuestTools.Inspector
             EditorGUILayout.LabelField(description, EditorStyles.wordWrappedLabel);
 
 #if !VQT_HAS_NDMF
-            if (target is INdmfComponent)
+            if (target is IManualConversionComponent)
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.HelpBox(i18n.ComponentRequiresNdmfForBuild, MessageType.Info);
+            }
+            else if (target is INdmfComponent)
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.HelpBox(i18n.ComponentRequiresNdmf, MessageType.Warning);

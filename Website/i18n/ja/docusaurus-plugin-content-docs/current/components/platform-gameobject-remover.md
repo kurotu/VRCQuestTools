@@ -6,7 +6,8 @@ slug: /references/components/platform-gameobject-remover
 
 プラットフォームに応じて、GameObject をビルド時に削除するコンポーネントです。
 削除したい GameObject に追加します。
-動作には NDMF が必要です。
+ビルド時の削除には NDMF が必要です。
+NDMF がない場合でも、[VQT Avatar Converter Settings](./avatar-converter-settings.md) の手動変換では、Mobile で削除する設定が変換後のアバターに適用されます。
 
 PC 専用のアクセサリーを Mobile では丸ごと外す、といった使い方ができます。
 

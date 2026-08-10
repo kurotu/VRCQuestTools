@@ -1,4 +1,5 @@
-﻿using KRT.VRCQuestTools.Components;
+﻿using System.Linq;
+using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models.VRChat;
 using UnityEditor;
@@ -11,13 +12,28 @@ namespace KRT.VRCQuestTools.Models.Validators
     /// </summary>
     internal class MissingNdmfRule : IAvatarValidationRule
     {
+        /// <summary>
+        /// Gets the components which don't work without NDMF.
+        /// <see cref="IManualConversionComponent"/> components are excluded because the manual conversion
+        /// applies their settings for Mobile even when NDMF is not installed.
+        /// </summary>
+        /// <param name="avatarObject">Avatar root object.</param>
+        /// <returns>Components which require NDMF.</returns>
+        internal static Component[] GetComponentsRequiringNdmf(GameObject avatarObject)
+        {
+            return avatarObject.GetComponentsInChildren<INdmfComponent>(true)
+                .Where(c => !(c is IManualConversionComponent))
+                .OfType<Component>()
+                .ToArray();
+        }
+
         /// <inheritdoc/>
         public NotificationItem Validate(VRChatAvatar avatar)
         {
 #if VQT_HAS_NDMF
             return null;
 #else
-            var components = avatar.GameObject.GetComponentsInChildren<INdmfComponent>(true);
+            var components = GetComponentsRequiringNdmf(avatar.GameObject);
             if (components.Length == 0)
             {
                 return null;
@@ -30,7 +46,7 @@ namespace KRT.VRCQuestTools.Models.Validators
                     return true;
                 }
 
-                var c = avatar.GameObject.GetComponentsInChildren<INdmfComponent>(true);
+                var c = GetComponentsRequiringNdmf(avatar.GameObject);
                 if (c.Length == 0)
                 {
                     return true;
@@ -45,7 +61,7 @@ namespace KRT.VRCQuestTools.Models.Validators
                 {
                     foreach (var obj in c)
                     {
-                        EditorGUILayout.ObjectField((Component)obj, typeof(GameObject), true);
+                        EditorGUILayout.ObjectField(obj, typeof(GameObject), true);
                     }
                 }
 

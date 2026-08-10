@@ -12,4 +12,4 @@ There are no settings.
 
 ## Notes
 
-With NDMF, unsupported components on avatars with this component are removed in the NDMF Optimization phase.
+With NDMF, unsupported components on avatars with this component are removed in the NDMF Optimizing phase.

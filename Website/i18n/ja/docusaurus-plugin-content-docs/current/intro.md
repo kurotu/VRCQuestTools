@@ -30,7 +30,21 @@ Mobile 用シェーダーでは、PC 用シェーダーの表現を完全には�
 
 ## 動作環境
 
+- Unity 2022.3.22f1
 - VRChat SDK - Avatars 3.9.0 以降
+
+### オプションのパッケージ {#optional-packages}
+
+次のパッケージは必須ではありませんが、プロジェクトにあると VRCQuestTools がそれぞれの機能に対応します。
+バージョンを記載しているものは、すでに導入している場合に、そのバージョンを満たしているか確認してください。
+
+- **Non-Destructive Modular Framework (NDMF)** 1.5.0 以降：アップロード時にアバターを自動で変換します。
+- **lilToon** 1.10.0 以降：lilToon のマテリアルを変換します。
+- **Modular Avatar** 1.12.2 以降：「MA Convert Constraints」など、変換に役立つコンポーネントの追加を提案します。
+- **Avatar Optimizer (AAO)**：「AAO Trace and Optimize」の追加を提案します。
+
+NDMF、lilToon、Modular Avatar は、古いバージョンのままだと変換やビルドがエラーで中断します。
+VCC または ALCOM でバージョンを確認してください。
 
 ## このドキュメントの読み方
 

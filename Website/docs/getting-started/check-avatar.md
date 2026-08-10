@@ -16,7 +16,7 @@ When using NDMF, there are two ways:
 - **Preview in the scene**: Press the "[NDMF] Enable temporary preview" button in the inspector of [VQT Avatar Converter Settings](../components/avatar-converter-settings.md). The converted materials are displayed in the Scene view. Press the button again to go back to the original appearance.
 - **Check with a local test in VRChat**: Right-click the avatar in the Hierarchy and select "VRCQuestTools" → "[NDMF] Build and Test for PC with Mobile Settings". You can locally test the avatar converted with the Mobile settings in VRChat on PC.
 
-With manual conversion, you can directly check the "(avatar name) (Android)" copy created in the scene.
+With manual conversion, you can directly check the "(avatar name) (Mobile)" copy created in the scene.
 Using the VRChat SDK local test (Build & Test), you can check the appearance in VRChat without uploading.
 
 ## Points to Check

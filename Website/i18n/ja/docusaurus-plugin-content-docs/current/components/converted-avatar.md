@@ -12,4 +12,4 @@ slug: /references/components/converted-avatar
 
 ## 補足
 
-NDMF がある場合、このコンポーネントの付いたアバターでは、Mobile 非対応コンポーネントの削除が NDMF の Optimization フェーズで行われます。
+NDMF がある場合、このコンポーネントの付いたアバターでは、Mobile 非対応コンポーネントの削除が NDMF の Optimizing フェーズで行われます。

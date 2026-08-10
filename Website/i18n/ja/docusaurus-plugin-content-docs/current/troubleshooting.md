@@ -28,6 +28,32 @@ Mobile 用シェーダーではテクスチャの透過が反映されません�
 - [VQT Platform Component Remover](./components/platform-component-remover.md) や [VQT Platform GameObject Remover](./components/platform-gameobject-remover.md) で、Mobile では対象のオブジェクトを削除する
 - メッシュやテクスチャを Mobile 用に編集する
 
+頬染めなどの表情が不透明なベタ塗り（いわゆる「海苔」）になる場合は、アバターが対応していれば次のツールでも対策できます。
+
+- [NoriBlocker](https://riceworks.booth.pm/items/5808613)：ベタ塗りになる表情をアニメーションで上書きし、表示されないようにします。
+- [海苔はずシート & 海苔む～ば～](https://riceworks.booth.pm/items/6955600)：ベタ塗りになる部分のメッシュを削除します。
+
+対応アバターの一覧は、それぞれの配布ページを確認してください。
+
+VRoid Studio で作成したアバターについては、[眉やまつげが四角く見える](#vroid-transparency)も参照してください。
+
+### VRoid Studio で作成したアバターの眉やまつげが四角く見える {#vroid-transparency}
+
+VRoid Studio で作成したアバターは、眉やまつげなどを透過テクスチャのメッシュで表現しています。
+Mobile 用シェーダーは透過を描画しないため、変換すると透過していた部分が不透明な面として残り、眉やまつげが四角く見えます。
+
+[Yoridori Modifiers](https://yoridrill.booth.pm/items/8189252) の「YM Mesh Trimmer」を使用すると、テクスチャの透過に合わせてメッシュを切り取り、この問題を回避できます。
+
+### 頬染めなどの透過をパーティクルシェーダーで再現したい {#particle-shader}
+
+「VRChat/Mobile/Particles/Additive」などのパーティクル用シェーダーを使うと、Mobile でも頬染めなどの透過を表現できることが知られています。
+VRCQuestTools はこの方法を推奨しておらず、アバターのマテリアルをパーティクル用シェーダーに変換する機能を提供する予定もありません。
+
+- [VRChat のドキュメント](https://creators.vrchat.com/platforms/android/quest-content-limitations)では、これらのシェーダーは「Should be used on particles.」（パーティクルに使用してください）と説明されています。
+- 透過（アルファブレンド）の描画は Mobile 向けの GPU では負荷が高く、[Meta のドキュメント](https://developers.meta.com/horizon/design/design-graphic-rendering-pipeline/)でも過度な使用を避けるよう案内されています。
+
+パーティクル用シェーダーへの変換は、もとからパーティクル用シェーダーを使っているマテリアルと、パーティクルシステム、Trail Renderer、Line Renderer で使われているマテリアルに限り提供します。
+
 ### 非対応シェーダーの警告が表示される {#unsupported-shaders}
 
 マテリアル変換は、次のシェーダーに対応しています。
@@ -48,8 +74,11 @@ Mobile 用シェーダーではテクスチャの透過が反映されません�
 
 ### スカートの裏側などが見えなくなる {#backface}
 
-Mobile 用シェーダーではポリゴンの裏面が描画されません。
-[VQT Mesh Flipper](./components/mesh-flipper.md) でメッシュを両面化すると表示できます。
+Toon Lit ではポリゴンの裏面が描画されません。
+Toon Standard は裏面を描画できますが、変換で両面表示になるのは lilToon と Poiyomi のマテリアルから変換した場合だけです。
+このとき、元のマテリアルの両面表示の設定を引き継ぎます。
+
+それ以外のシェーダーから変換した場合や、Toon Lit で変換した場合は、[VQT Mesh Flipper](./components/mesh-flipper.md) でメッシュを両面化すると表示できます。
 
 ### 生成されたテクスチャの内容が古い、またはおかしい {#texture-cache}
 
@@ -78,11 +107,25 @@ Avatar Dynamics のパフォーマンスランクが Poor に収まるように�
 - アバター変換を使う場合：[VQT Avatar Converter Settings](./components/avatar-converter-settings.md) の「Avatar Dynamics 設定」で、残すコンポーネントを選択します。
 - アバター変換を使わない場合：メニューバーの「Tools」→「VRCQuestTools」→「Remove PhysBones」で削除するコンポーネントを選択します。
 
-## PhysBone の問題
+## 同期の問題
 
-### PC 版と Mobile 版で PhysBone の揺れ方が同期しない {#physbone-sync}
+### PC と Mobile でギミックや衣装の状態が一致しない {#parameter-sync}
 
-PhysBone を正しく同期させるには、PC 版と Mobile 版で PhysBone が同じネットワーク ID を持つ必要があります。
+VRChat がプラットフォーム間でパラメーターを同期するには、同期するパラメーターが Expression Parameters の先頭に同じ順序で並んでいる必要があります。
+PC と Mobile で並び順がずれていると、別のパラメーターに値が入り、衣装やギミックの状態が食い違います。
+
+Modular Avatar の「MA Sync Parameter Sequence」をアバターに追加すると、プラットフォーム間で並び順が揃うように調整されます。
+基準にするプラットフォーム（Primary Platform）を選び、そのプラットフォームから先にアップロードしてください。
+Modular Avatar 1.16.0 以降を使っている場合、[VQT Avatar Converter Settings](./components/avatar-converter-settings.md) では、このコンポーネントがないと追加を促す警告が表示されます。
+
+詳しくは Modular Avatar の [Sync Parameter Sequence](https://modular-avatar.nadena.dev/ja/docs/reference/sync-parameter-sequence) を参照してください。
+
+### PC 版と Mobile 版で PhysBone の同期がずれる {#physbone-sync}
+
+PhysBone の状態は、ネットワーク ID でどの PhysBone かを識別して同期されます。
+PC 版と Mobile 版で ID が一致していないと、PhysBone をつかんだときに、別のプラットフォームのプレイヤーの画面では違うボーンが動いてしまいます。
+
+正しく同期させるには、PC 版と Mobile 版で PhysBone が同じネットワーク ID を持つ必要があります。
 
 [VQT Avatar Converter Settings](./components/avatar-converter-settings.md) の「Network ID を割り当てる」を有効にするか、[VQT Network ID Assigner](./components/network-id-assigner.md) をアバターに追加してください。
 その後、PC 用と Mobile 用の両方のアバターをアップロードし直すと同期するようになります。

@@ -28,6 +28,32 @@ There are several workarounds:
 - Remove the objects on Mobile with [VQT Platform Component Remover](./components/platform-component-remover.md) or [VQT Platform GameObject Remover](./components/platform-gameobject-remover.md).
 - Edit the meshes or textures for Mobile.
 
+When blushing and similar expressions turn into opaque solid colors (called "nori" in Japanese), the following tools also work around it if they support your avatar.
+
+- [NoriBlocker](https://riceworks.booth.pm/items/5808613): Overrides the expressions which become solid colors with animations so that they are not displayed.
+- [海苔はずシート & 海苔む～ば～](https://riceworks.booth.pm/items/6955600): Removes the meshes of the parts which become solid colors.
+
+Check each distribution page for the list of supported avatars.
+
+For avatars created with VRoid Studio, also see [Eyebrows and eyelashes look like squares](#vroid-transparency).
+
+### Eyebrows and eyelashes of a VRoid Studio avatar look like squares {#vroid-transparency}
+
+Avatars created with VRoid Studio express eyebrows and eyelashes with meshes using transparent textures.
+Mobile shaders don't render transparency, so after the conversion the transparent parts remain as opaque faces and the eyebrows and eyelashes look like squares.
+
+Using "YM Mesh Trimmer" in [Yoridori Modifiers](https://yoridrill.booth.pm/items/8189252) works around this by trimming the mesh along the transparency of the texture.
+
+### Reproducing transparency such as blushing with a particle shader {#particle-shader}
+
+Particle shaders such as "VRChat/Mobile/Particles/Additive" are known as a way to express transparency, like blushing, on Mobile.
+VRCQuestTools doesn't recommend this way, and there is no plan to provide a conversion of avatar materials into particle shaders.
+
+- The [VRChat documentation](https://creators.vrchat.com/platforms/android/quest-content-limitations) describes these shaders as "Should be used on particles."
+- Rendering transparency (alpha blending) is expensive on mobile GPUs, and the [Meta documentation](https://developers.meta.com/horizon/design/design-graphic-rendering-pipeline/) also advises against excessive use.
+
+Conversion into particle shaders is provided only for materials which already use a particle shader, and for materials used by particle systems, Trail Renderers and Line Renderers.
+
 ### A warning about unsupported shaders is shown {#unsupported-shaders}
 
 Material conversion supports the following shaders.
@@ -48,8 +74,11 @@ In that case, try the following:
 
 ### The inside of skirts and similar parts becomes invisible {#backface}
 
-Mobile shaders don't render the backfaces of polygons.
-You can display them by making the mesh double-sided with [VQT Mesh Flipper](./components/mesh-flipper.md).
+Toon Lit doesn't render the backfaces of polygons.
+Toon Standard can render them, but the conversion makes the material double-sided only when converting from lilToon or Poiyomi materials.
+In that case, the double-sided setting of the original material is kept.
+
+For other shaders, and when you convert with Toon Lit, you can display them by making the mesh double-sided with [VQT Mesh Flipper](./components/mesh-flipper.md).
 
 ### Generated textures are outdated or wrong {#texture-cache}
 
@@ -78,9 +107,23 @@ Reduce the components so that the Avatar Dynamics performance rank fits within P
 - With avatar conversion: Select the components to keep in "Avatar Dynamics Settings" of [VQT Avatar Converter Settings](./components/avatar-converter-settings.md).
 - Without avatar conversion: Select the components to remove with "Tools" → "VRCQuestTools" → "Remove PhysBones" in the menu bar.
 
-## PhysBone Problems
+## Synchronization Problems
 
-### PhysBones are not synchronized between PC and Mobile {#physbone-sync}
+### Gimmicks and outfits are in a different state on PC and Mobile {#parameter-sync}
+
+To synchronize parameters across platforms, VRChat requires the synced parameters to be placed at the beginning of the Expression Parameters in the same order.
+When the order differs between PC and Mobile, values go into other parameters and the state of outfits and gimmicks doesn't match.
+
+Adding "MA Sync Parameter Sequence" of Modular Avatar to the avatar adjusts the order so that it is the same across platforms.
+Select the platform to use as the reference (Primary Platform) and upload that platform first.
+When you use Modular Avatar 1.16.0 or later, [VQT Avatar Converter Settings](./components/avatar-converter-settings.md) shows a warning to add this component when it is missing.
+
+For details, see [Sync Parameter Sequence](https://modular-avatar.nadena.dev/docs/reference/sync-parameter-sequence) of Modular Avatar.
+
+### PhysBone synchronization is off between PC and Mobile {#physbone-sync}
+
+The state of a PhysBone is synchronized by identifying it with its network ID.
+When the IDs don't match between the PC and Mobile versions, grabbing a PhysBone moves a different bone on the screens of players on the other platform.
 
 To synchronize PhysBones correctly, they must have the same network IDs on the PC and Mobile versions.
 

@@ -16,7 +16,7 @@ NDMF を使う場合は、次の 2 つの方法を使えます。
 - **シーンでプレビューする**：[VQT Avatar Converter Settings](../components/avatar-converter-settings.md) のインスペクターで「[NDMF] 一時的なプレビューを有効化」ボタンを押します。変換後のマテリアルが Scene ビューに表示されます。もう一度押すと元の表示に戻ります。
 - **VRChat のローカルテストで確認する**：Hierarchy でアバターを右クリックし、「VRCQuestTools」→「[NDMF] Build and Test for PC with Mobile Settings」を選択します。Mobile 用の設定で変換したアバターを、PC の VRChat でローカルテストできます。
 
-手動変換の場合は、シーンに作成された「(アバター名) (Android)」をそのまま確認できます。
+手動変換の場合は、シーンに作成された「(アバター名) (Mobile)」をそのまま確認できます。
 VRChat SDK のローカルテスト（Build & Test）を使うと、アップロードせずに VRChat 内で見た目を確認できます。
 
 ## 確認しておきたいポイント

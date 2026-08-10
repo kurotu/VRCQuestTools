@@ -39,7 +39,8 @@ Inspector の「Add Component」ボタンから「VRCQuestTools」カテゴリ�
 - VQT Platform GameObject Remover
 - VQT Platform Target Settings
 
-プロジェクトに NDMF がない場合、これらのコンポーネントは動作せず、Inspector に警告が表示されます。
+プロジェクトに NDMF がない場合、これらのコンポーネントはビルド時に動作せず、Inspector にその旨が表示されます。
+ただし VQT Platform Component Remover と VQT Platform GameObject Remover は、NDMF がなくても手動変換で Mobile 向けの設定が適用されます。
 NDMF は、[Modular Avatar](https://modular-avatar.nadena.dev/ja) のトップページにある「ダウンロード」ボタンでリポジトリを追加してインストールできます。
 
 ## ビルドターゲットについて

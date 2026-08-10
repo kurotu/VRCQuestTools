@@ -6,7 +6,9 @@ slug: /references/components/platform-component-remover
 
 プラットフォームに応じて、同じ GameObject にあるコンポーネントをビルド時に削除するコンポーネントです。
 削除したいコンポーネントのある GameObject に追加します。
-動作には NDMF が必要です。
+ビルド時の削除には NDMF が必要です。
+NDMF がない場合でも、[VQT Avatar Converter Settings](./avatar-converter-settings.md) の手動変換では、Mobile で削除する設定が変換後のアバターに適用されます。
+ただし、Avatar Dynamics の設定が VQT Avatar Converter Settings 側に残っているアバターでは、手動変換でそちらの設定が使われ、このコンポーネントの設定は適用されません。
 
 PC では使いたいが Mobile では削除したいコンポーネント（またはその逆）があるときに使用します。
 たとえば、Mobile 用にアップロードするときだけ特定の PhysBone を削除する、といった使い方ができます。

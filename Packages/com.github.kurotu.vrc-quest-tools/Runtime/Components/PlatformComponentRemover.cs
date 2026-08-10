@@ -11,7 +11,7 @@ namespace KRT.VRCQuestTools.Components
     [AddComponentMenu("VRCQuestTools/VQT Platform Component Remover")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/platform-component-remover?lang=auto")]
     [DisallowMultipleComponent]
-    public class PlatformComponentRemover : VRCQuestToolsEditorOnly, INdmfComponent
+    public class PlatformComponentRemover : VRCQuestToolsEditorOnly, INdmfComponent, IManualConversionComponent
     {
         /// <summary>
         /// PlatformComponentRemoverItems to manage components.
@@ -22,9 +22,9 @@ namespace KRT.VRCQuestTools.Components
         /// Serialized schema version for forward compatibility.
         /// </summary>
         [SerializeField]
-#pragma warning disable CS0414
+#pragma warning disable CS0414
         private int serializedVersion = 1;
-#pragma warning restore CS0414
+#pragma warning restore CS0414
 
         /// <summary>
         /// Remove non-existing components then add unregistered components.
