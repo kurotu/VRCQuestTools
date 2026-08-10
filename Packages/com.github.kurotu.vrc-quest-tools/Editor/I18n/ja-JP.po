@@ -527,6 +527,9 @@ msgstr "このコンポーネントの対象プラットフォームを上書き
 msgid "ComponentRequiresNdmf"
 msgstr "Non-Destructive Modular Framework (NDMF) が必要です。"
 
+msgid "ComponentRequiresNdmfForBuild"
+msgstr "ビルド時に適用するには Non-Destructive Modular Framework (NDMF) が必要です。NDMF がない場合、Avatar Converter Settings の手動変換で Mobile 向けの設定のみ適用されます。"
+
 msgid "BuildTargetLabel"
 msgstr "ビルドターゲット"
 

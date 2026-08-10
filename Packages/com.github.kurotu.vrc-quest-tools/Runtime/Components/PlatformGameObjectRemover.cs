@@ -7,7 +7,7 @@ namespace KRT.VRCQuestTools.Components
     [AddComponentMenu("VRCQuestTools/VQT Platform GameObject Remover")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/platform-gameobject-remover?lang=auto")]
     [DisallowMultipleComponent]
-    public class PlatformGameObjectRemover : VRCQuestToolsEditorOnly, INdmfComponent
+    public class PlatformGameObjectRemover : VRCQuestToolsEditorOnly, INdmfComponent, IManualConversionComponent
     {
         /// <summary>
         /// Remove the GameObject this component is attached when the target platform is PC.
@@ -23,8 +23,8 @@ namespace KRT.VRCQuestTools.Components
         /// Serialized schema version for forward compatibility.
         /// </summary>
         [SerializeField]
-#pragma warning disable CS0414
+#pragma warning disable CS0414
         private int serializedVersion = 1;
-#pragma warning restore CS0414
+#pragma warning restore CS0414
     }
 }

@@ -527,6 +527,9 @@ msgstr "To override the platform for this component, add a Platform Target Setti
 msgid "ComponentRequiresNdmf"
 msgstr "Non-Destructive Modular Framework (NDMF) is required."
 
+msgid "ComponentRequiresNdmfForBuild"
+msgstr "Non-Destructive Modular Framework (NDMF) is required to apply this component on build. Without NDMF, only the settings for Mobile are applied by the manual conversion of Avatar Converter Settings."
+
 msgid "BuildTargetLabel"
 msgstr "Build Target"
 
