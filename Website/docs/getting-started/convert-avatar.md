@@ -28,7 +28,7 @@ They are not errors.
 They tell you in advance what changes during the conversion, or what to finish before converting.
 Typical ones are:
 
-- **Removal of unsupported components**: Components which can't be used on Mobile (such as Constraints) are removed during conversion. After the conversion, check that the avatar's features still work.
+- **Removal of unsupported components**: Components which can't be used on Mobile (such as Audio Source) are removed during conversion. After the conversion, check that the avatar's features still work.
 - **Dynamic Bone**: VRCQuestTools does not convert Dynamic Bone to PhysBone. Convert them to PhysBones with the VRChat SDK feature beforehand.
 - **Avatar Dynamics performance**: When there are too many PhysBones or Contacts, the components are removed even if the avatar can be uploaded. You need to [reduce PhysBones](../troubleshooting.md#avatar-dynamics).
 

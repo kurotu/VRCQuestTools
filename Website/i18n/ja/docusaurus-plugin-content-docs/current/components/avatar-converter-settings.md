@@ -101,6 +101,6 @@ Mobile では Avatar Dynamics のパフォーマンスランクが Poor に収�
 
 ## 補足
 
-- 変換時、Mobile で使用できないコンポーネント（Constraint など）は削除されます。削除されるコンポーネントは Inspector に警告として表示されます。
+- 変換時、Mobile で使用できないコンポーネント（Audio Source など）は削除されます。削除されるコンポーネントは Inspector に警告として表示されます。
 - Dynamic Bone は PhysBone に変換されません。先に PhysBone への移行を済ませてください。
 - 手動変換で生成されたマテリアルやテクスチャは「保存先フォルダ」に表示されたフォルダーへ保存されます。

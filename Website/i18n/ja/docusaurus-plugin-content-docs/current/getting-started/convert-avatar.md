@@ -28,7 +28,7 @@ Modular Avatar や Avatar Optimizer がプロジェクトにある場合は、�
 変換によって変わる箇所や、変換の前に済ませておく作業を、事前に知らせるものです。
 代表的なものは次のとおりです。
 
-- **非対応コンポーネントの削除**：Mobile で使用できないコンポーネント（Constraint など）は変換時に削除されます。変換後にアバターの機能へ支障がないか確認してください。
+- **非対応コンポーネントの削除**：Mobile で使用できないコンポーネント（Audio Source など）は変換時に削除されます。変換後にアバターの機能へ支障がないか確認してください。
 - **Dynamic Bone**：VRCQuestTools は Dynamic Bone を PhysBone に変換しません。先に VRChat SDK の機能で PhysBone へ変換しておいてください。
 - **Avatar Dynamics のパフォーマンス**：PhysBone や Contact が多すぎると、アップロードできてもコンポーネントが削除されます。[PhysBone を削減する](../troubleshooting.md#avatar-dynamics)必要があります。
 
