@@ -39,8 +39,8 @@ The following components use Non-Destructive Modular Framework (NDMF) for their 
 - VQT Platform GameObject Remover
 - VQT Platform Target Settings
 
-When the project doesn't have NDMF, these components don't work and a warning appears in the Inspector.
-However, VQT Platform Component Remover and VQT Platform GameObject Remover apply their removal for Mobile in the manual conversion even without NDMF.
+When the project doesn't have NDMF, these components don't work at build time and the Inspector says so.
+However, VQT Platform Component Remover and VQT Platform GameObject Remover apply their settings for Mobile in the manual conversion even without NDMF.
 To install NDMF, add the repository with the "Download" button at the top of the [Modular Avatar](https://modular-avatar.nadena.dev/) website.
 
 ## About Build Targets

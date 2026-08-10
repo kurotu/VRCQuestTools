@@ -52,7 +52,7 @@ VRCQuestTools はこの方法を推奨しておらず、アバターのマテリ
 - [VRChat のドキュメント](https://creators.vrchat.com/platforms/android/quest-content-limitations)では、これらのシェーダーは「Should be used on particles.」（パーティクルに使用してください）と説明されています。
 - 透過（アルファブレンド）の描画は Mobile 向けの GPU では負荷が高く、[Meta のドキュメント](https://developers.meta.com/horizon/design/design-graphic-rendering-pipeline/)でも過度な使用を避けるよう案内されています。
 
-パーティクル用シェーダーへの変換は、パーティクルシステム、Trail Renderer、Line Renderer で使われているマテリアルに限り提供します。
+パーティクル用シェーダーへの変換は、もとからパーティクル用シェーダーを使っているマテリアルと、パーティクルシステム、Trail Renderer、Line Renderer で使われているマテリアルに限り提供します。
 
 ### 非対応シェーダーの警告が表示される {#unsupported-shaders}
 
@@ -75,11 +75,10 @@ VRCQuestTools はこの方法を推奨しておらず、アバターのマテリ
 ### スカートの裏側などが見えなくなる {#backface}
 
 Toon Lit ではポリゴンの裏面が描画されません。
-Toon Standard は裏面の描画に対応しているため、[マテリアル変換設定](./components/avatar-converter-settings.md)を Toon Standard にすると表示できます。
-デフォルトのマテリアル変換設定は Toon Standard です。
-lilToon や Poiyomi のマテリアルから変換する場合は、元のマテリアルの両面表示の設定を引き継ぎます。
+Toon Standard は裏面を描画できますが、変換で両面表示になるのは lilToon と Poiyomi のマテリアルから変換した場合だけです。
+このとき、元のマテリアルの両面表示の設定を引き継ぎます。
 
-Toon Lit で変換する場合は、[VQT Mesh Flipper](./components/mesh-flipper.md) でメッシュを両面化すると表示できます。
+それ以外のシェーダーから変換した場合や、Toon Lit で変換した場合は、[VQT Mesh Flipper](./components/mesh-flipper.md) でメッシュを両面化すると表示できます。
 
 ### 生成されたテクスチャの内容が古い、またはおかしい {#texture-cache}
 
@@ -117,7 +116,7 @@ PC と Mobile で並び順がずれていると、別のパラメーターに値
 
 Modular Avatar の「MA Sync Parameter Sequence」をアバターに追加すると、プラットフォーム間で並び順が揃うように調整されます。
 基準にするプラットフォーム（Primary Platform）を選び、そのプラットフォームから先にアップロードしてください。
-[VQT Avatar Converter Settings](./components/avatar-converter-settings.md) では、このコンポーネントがない場合に追加を促す警告が表示されます。
+Modular Avatar 1.16.0 以降を使っている場合、[VQT Avatar Converter Settings](./components/avatar-converter-settings.md) では、このコンポーネントがないと追加を促す警告が表示されます。
 
 詳しくは Modular Avatar の [Sync Parameter Sequence](https://modular-avatar.nadena.dev/ja/docs/reference/sync-parameter-sequence) を参照してください。
 

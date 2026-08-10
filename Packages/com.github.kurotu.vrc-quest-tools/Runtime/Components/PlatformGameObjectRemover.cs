@@ -3,7 +3,8 @@
 namespace KRT.VRCQuestTools.Components
 {
     /// <summary>
-    /// PlatformComponentRemover removes the attached GameObject depending on the target platform.
+    /// PlatformGameObjectRemover removes the attached GameObject depending on the target platform.
+    /// </summary>
     [AddComponentMenu("VRCQuestTools/VQT Platform GameObject Remover")]
     [HelpURL("https://kurotu.github.io/VRCQuestTools/docs/references/components/platform-gameobject-remover?lang=auto")]
     [DisallowMultipleComponent]

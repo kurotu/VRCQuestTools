@@ -8,6 +8,7 @@ A component which removes components on the same GameObject at build time depend
 Attach it to the GameObject with the components you want to remove.
 NDMF is required to remove them at build time.
 Even without NDMF, the manual conversion of [VQT Avatar Converter Settings](./avatar-converter-settings.md) applies the settings to remove on Mobile to the converted avatar.
+However, on avatars whose Avatar Dynamics settings are still stored in VQT Avatar Converter Settings, the manual conversion uses those settings instead of the settings of this component.
 
 Use it when there are components you want to use on PC but remove on Mobile (or the other way around).
 For example, you can remove specific PhysBones only when uploading for Mobile.

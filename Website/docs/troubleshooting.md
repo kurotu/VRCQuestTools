@@ -52,7 +52,7 @@ VRCQuestTools doesn't recommend this way, and there is no plan to provide a conv
 - The [VRChat documentation](https://creators.vrchat.com/platforms/android/quest-content-limitations) describes these shaders as "Should be used on particles."
 - Rendering transparency (alpha blending) is expensive on mobile GPUs, and the [Meta documentation](https://developers.meta.com/horizon/design/design-graphic-rendering-pipeline/) also advises against excessive use.
 
-Conversion into particle shaders is provided only for the materials used by particle systems, Trail Renderers and Line Renderers.
+Conversion into particle shaders is provided only for materials which already use a particle shader, and for materials used by particle systems, Trail Renderers and Line Renderers.
 
 ### A warning about unsupported shaders is shown {#unsupported-shaders}
 
@@ -75,11 +75,10 @@ In that case, try the following:
 ### The inside of skirts and similar parts becomes invisible {#backface}
 
 Toon Lit doesn't render the backfaces of polygons.
-Toon Standard does render them, so you can display them by setting the [material conversion settings](./components/avatar-converter-settings.md) to Toon Standard.
-The default material conversion setting is Toon Standard.
-When converting from lilToon or Poiyomi materials, the double-sided setting of the original material is kept.
+Toon Standard can render them, but the conversion makes the material double-sided only when converting from lilToon or Poiyomi materials.
+In that case, the double-sided setting of the original material is kept.
 
-When you convert with Toon Lit, you can display them by making the mesh double-sided with [VQT Mesh Flipper](./components/mesh-flipper.md).
+For other shaders, and when you convert with Toon Lit, you can display them by making the mesh double-sided with [VQT Mesh Flipper](./components/mesh-flipper.md).
 
 ### Generated textures are outdated or wrong {#texture-cache}
 
@@ -117,7 +116,7 @@ When the order differs between PC and Mobile, values go into other parameters an
 
 Adding "MA Sync Parameter Sequence" of Modular Avatar to the avatar adjusts the order so that it is the same across platforms.
 Select the platform to use as the reference (Primary Platform) and upload that platform first.
-[VQT Avatar Converter Settings](./components/avatar-converter-settings.md) shows a warning to add this component when it is missing.
+When you use Modular Avatar 1.16.0 or later, [VQT Avatar Converter Settings](./components/avatar-converter-settings.md) shows a warning to add this component when it is missing.
 
 For details, see [Sync Parameter Sequence](https://modular-avatar.nadena.dev/docs/reference/sync-parameter-sequence) of Modular Avatar.
 

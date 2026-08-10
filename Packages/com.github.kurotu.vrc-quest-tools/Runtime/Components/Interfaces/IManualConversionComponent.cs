@@ -1,3 +1,8 @@
+// <copyright file="IManualConversionComponent.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 namespace KRT.VRCQuestTools.Components
 {
     /// <summary>

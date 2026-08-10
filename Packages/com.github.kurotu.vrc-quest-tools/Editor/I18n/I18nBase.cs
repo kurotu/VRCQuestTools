@@ -264,6 +264,7 @@ namespace KRT.VRCQuestTools.I18n
         // Platform Component Remover
         internal string ComponentRequiresNdmf => GetText("ComponentRequiresNdmf");
         internal string ComponentRequiresNdmfForBuild => GetText("ComponentRequiresNdmfForBuild");
+        internal string PlatformComponentRemoverManualConversionUnavailable => GetText("PlatformComponentRemoverManualConversionUnavailable");
         internal string BuildTargetLabel => GetText("BuildTargetLabel");
         internal string BuildTargetTooltip => GetText("BuildTargetTooltip");
         internal string PlatformComponentRemoverEditorDescription => GetText("PlatformComponentRemoverEditorDescription");

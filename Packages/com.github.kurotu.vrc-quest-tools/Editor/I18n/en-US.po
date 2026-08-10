@@ -530,6 +530,9 @@ msgstr "Non-Destructive Modular Framework (NDMF) is required."
 msgid "ComponentRequiresNdmfForBuild"
 msgstr "Non-Destructive Modular Framework (NDMF) is required to apply this component on build. Without NDMF, only the settings for Mobile are applied by the manual conversion of Avatar Converter Settings."
 
+msgid "PlatformComponentRemoverManualConversionUnavailable"
+msgstr "The Avatar Dynamics settings are still stored in Avatar Converter Settings, so the manual conversion applies those settings instead of this component's ones."
+
 msgid "BuildTargetLabel"
 msgstr "Build Target"
 

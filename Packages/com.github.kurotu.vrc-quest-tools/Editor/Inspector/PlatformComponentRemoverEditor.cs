@@ -17,10 +17,34 @@ namespace KRT.VRCQuestTools.Inspector
         /// <inheritdoc/>
         protected override string Description => VRCQuestToolsSettings.I18nResource.PlatformComponentRemoverEditorDescription;
 
+        /// <summary>
+        /// Gets whether the avatar still stores its Avatar Dynamics settings in AvatarConverterSettings.
+        /// In that case the manual conversion applies those settings instead of this component's ones.
+        /// </summary>
+        /// <param name="remover">Component to inspect.</param>
+        /// <returns>true when the avatar has unmigrated Avatar Dynamics settings.</returns>
+        internal static bool HasUnmigratedAvatarDynamicsSettings(PlatformComponentRemover remover)
+        {
+            if (remover == null)
+            {
+                return false;
+            }
+
+            var converterSettings = remover.GetComponentInParent<AvatarConverterSettings>();
+            return converterSettings != null && converterSettings.HasLegacyAvatarDynamicsSettings;
+        }
+
         /// <inheritdoc />
         public override void OnInspectorGUIInternal()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
+
+#if !VQT_HAS_NDMF
+            if (HasUnmigratedAvatarDynamicsSettings(TargetComponent))
+            {
+                EditorGUILayout.HelpBox(i18n.PlatformComponentRemoverManualConversionUnavailable, MessageType.Warning);
+            }
+#endif
 
             TargetComponent.UpdateComponentSettings();
 
