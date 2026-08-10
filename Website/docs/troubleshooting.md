@@ -44,6 +44,16 @@ Mobile shaders don't render transparency, so after the conversion the transparen
 
 Using "YM Mesh Trimmer" in [Yoridori Modifiers](https://yoridrill.booth.pm/items/8189252) works around this by trimming the mesh along the transparency of the texture.
 
+### Reproducing transparency such as blushing with a particle shader {#particle-shader}
+
+Particle shaders such as "VRChat/Mobile/Particles/Additive" are known as a way to express transparency, like blushing, on Mobile.
+VRCQuestTools doesn't recommend this way, and there is no plan to provide a conversion of avatar materials into particle shaders.
+
+- The [VRChat documentation](https://creators.vrchat.com/platforms/android/quest-content-limitations) describes these shaders as "Should be used on particles."
+- Rendering transparency (alpha blending) is expensive on mobile GPUs, and the [Meta documentation](https://developers.meta.com/horizon/design/design-graphic-rendering-pipeline/) also advises against excessive use.
+
+Conversion into particle shaders is provided only for the materials used by particle systems, Trail Renderers and Line Renderers.
+
 ### A warning about unsupported shaders is shown {#unsupported-shaders}
 
 Material conversion supports the following shaders.

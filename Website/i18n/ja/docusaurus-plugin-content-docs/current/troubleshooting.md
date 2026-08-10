@@ -44,6 +44,16 @@ Mobile 用シェーダーは透過を描画しないため、変換すると透�
 
 [Yoridori Modifiers](https://yoridrill.booth.pm/items/8189252) の「YM Mesh Trimmer」を使用すると、テクスチャの透過に合わせてメッシュを切り取り、この問題を回避できます。
 
+### 頬染めなどの透過をパーティクルシェーダーで再現したい {#particle-shader}
+
+「VRChat/Mobile/Particles/Additive」などのパーティクル用シェーダーを使うと、Mobile でも頬染めなどの透過を表現できることが知られています。
+VRCQuestTools はこの方法を推奨しておらず、アバターのマテリアルをパーティクル用シェーダーに変換する機能を提供する予定もありません。
+
+- [VRChat のドキュメント](https://creators.vrchat.com/platforms/android/quest-content-limitations)では、これらのシェーダーは「Should be used on particles.」（パーティクルに使用してください）と説明されています。
+- 透過（アルファブレンド）の描画は Mobile 向けの GPU では負荷が高く、[Meta のドキュメント](https://developers.meta.com/horizon/design/design-graphic-rendering-pipeline/)でも過度な使用を避けるよう案内されています。
+
+パーティクル用シェーダーへの変換は、パーティクルシステム、Trail Renderer、Line Renderer で使われているマテリアルに限り提供します。
+
 ### 非対応シェーダーの警告が表示される {#unsupported-shaders}
 
 マテリアル変換は、次のシェーダーに対応しています。
