@@ -47,6 +47,9 @@ const config = {
           editLocalizedFiles: true,
           editCurrentVersion: true,
         },
+        // This site has no blog. Docusaurus 3.10 generates an empty blog index
+        // unless the plugin is explicitly disabled.
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },

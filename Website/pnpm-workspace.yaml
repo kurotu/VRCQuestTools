@@ -1,0 +1,7 @@
+# Only install package versions that have been published for at least a week,
+# to avoid picking up compromised or broken releases right after publication.
+minimumReleaseAge: 10080
+
+# core-js only prints a funding banner in its postinstall script.
+allowBuilds:
+  core-js: false
