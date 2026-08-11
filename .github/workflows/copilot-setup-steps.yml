@@ -30,13 +30,13 @@ jobs:
     # If you do not check out your code, Copilot will do this for you.
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up mise
         uses: jdx/mise-action@v4
 
       - name: Cache Library folder
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: Library
           key: Library-build-${{ github.ref }}
@@ -50,7 +50,7 @@ jobs:
         run: vrc-get repo add https://vpm-catalog.vercel.app/index.json
 
       - name: Resolve VPM packages
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           timeout_minutes: 10
           max_attempts: 5
@@ -67,7 +67,7 @@ jobs:
 
       - name: Cache Unity Editor
         id: cache-unity-editor
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/Unity/Hub/Editor
           key: Unity-Editor-2022.3.22f1-${{ github.head_ref || github.ref }}
@@ -92,7 +92,7 @@ jobs:
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
 
       - name: Cache pnpm store
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('Website/pnpm-lock.yaml') }}

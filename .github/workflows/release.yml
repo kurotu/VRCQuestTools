@@ -13,7 +13,7 @@ jobs:
       TZ: Asia/Tokyo
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           token: ${{ secrets.PAT }}
       - name: Make release commit and push it
@@ -29,7 +29,7 @@ jobs:
     needs: bump
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: latest-docs
           token: ${{ secrets.PAT }}
