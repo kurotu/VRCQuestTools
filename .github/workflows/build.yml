@@ -15,12 +15,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Download astcenc
         run: ./scripts/download-astcenc.sh --platform all
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: Library
           key: Library-build-${{ github.ref }}
@@ -28,7 +28,7 @@ jobs:
             Library-build-
 
       - uses: anatawa12/sh-actions/setup-vrc-get@master
-      - uses: nick-fields/retry@v3
+      - uses: nick-fields/retry@v4
         with:
           timeout_minutes: 10
           max_attempts: 5
@@ -39,7 +39,7 @@ jobs:
       - name: Copy README
         run: cp README.md Packages/com.github.kurotu.vrc-quest-tools/
 
-      - uses: game-ci/unity-builder@v4
+      - uses: game-ci/unity-builder@v5
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -51,7 +51,7 @@ jobs:
           allowDirtyBuild: true
           versioning: None
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: unitypackage
           path: VRCQuestTools.unitypackage
@@ -105,12 +105,12 @@ jobs:
             dependencies:
               name: aao-minimum
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Download astcenc
         run: ./scripts/download-astcenc.sh --platform linux
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: Library
           key: Library-test-${{ matrix.sdk.unityVersion }}-${{ matrix.sdk.vrcsdkVersion }}-${{ github.ref }}
@@ -118,7 +118,7 @@ jobs:
             Library-test-${{ matrix.sdk.unityVersion }}-${{ matrix.sdk.vrcsdkVersion }}
 
       - uses: anatawa12/sh-actions/setup-vrc-get@master
-      - uses: nick-fields/retry@v3
+      - uses: nick-fields/retry@v4
         with:
           timeout_minutes: 10
           max_attempts: 5
@@ -163,10 +163,10 @@ jobs:
     runs-on: ubuntu-latest
     container: unityci/editor:ubuntu-2022.3.22f1-windows-mono-3
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up mise
         uses: jdx/mise-action@v4
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: Library
           key: Library-build-${{ github.ref }}
@@ -174,7 +174,7 @@ jobs:
             Library-build-
 
       - uses: anatawa12/sh-actions/setup-vrc-get@master
-      - uses: nick-fields/retry@v3
+      - uses: nick-fields/retry@v4
         with:
           timeout_minutes: 10
           max_attempts: 5
@@ -212,7 +212,7 @@ jobs:
           DOTNET_CLI_UI_LANGUAGE: en
 
       - name: Upload lint log
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: lint
@@ -221,7 +221,7 @@ jobs:
   vpm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Download astcenc
         run: ./scripts/download-astcenc.sh --platform all
       - name: Copy README
@@ -230,7 +230,7 @@ jobs:
         run: |
           cd Packages/com.github.kurotu.vrc-quest-tools
           zip -r ../../$(jq -r '.name' package.json)-$(jq -r '.version' package.json).zip $(ls)
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: vpm
           path: "*.zip"
@@ -238,14 +238,14 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up mise
         uses: jdx/mise-action@v4
       - name: Get pnpm store directory
         id: pnpm-cache
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
       - name: Cache pnpm store
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('Website/pnpm-lock.yaml') }}
@@ -259,13 +259,13 @@ jobs:
     needs: [build, test, lint, vpm, docs]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: unitypackage
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: vpm
 
@@ -284,7 +284,7 @@ jobs:
       - name: Generate release note
         run: ./scripts/generate-releasenote.sh ${GITHUB_REF#refs/tags/v} | tee ${{ github.workspace }}-release.txt
 
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v3
         with:
           body_path: ${{ github.workspace }}-release.txt
           draft: true
