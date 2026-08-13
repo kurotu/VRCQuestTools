@@ -23,6 +23,7 @@ namespace KRT.VRCQuestTools.Menus
             internal const string RemoveMissingComponents = RootMenu + "Remove Missing Components";
             internal const string RemoveAllVertexColors = RootMenu + "Remove All Vertex Colors";
             internal const string RemovePhysBones = RootMenu + "Remove PhysBones";
+            internal const string MigrateAvatarDynamicsSettings = RootMenu + "Migrate Legacy Avatar Dynamics Settings";
             internal const string BlendShapesCopy = RootMenu + "BlendShapes Copy";
             internal const string MSMapGenerator = RootMenu + "Metallic Smoothness Map";
             internal const string UnitySettings = RootMenu + "Unity Settings for Mobile";
@@ -49,6 +50,7 @@ namespace KRT.VRCQuestTools.Menus
             RemoveMissingComponents,
             RemoveUnsupportedComponents,
             RemoveAllVertexColors,
+            MigrateAvatarDynamicsSettings,
             BlendShapesCopy = 800,
             MSMapGenerator,
             UnitySettings = 900,

@@ -274,6 +274,17 @@ namespace KRT.VRCQuestTools.I18n
         internal string PlatformComponentRemoverEditorCheckboxMobileTooltip => GetText("PlatformComponentRemoverEditorCheckboxMobileTooltip");
         internal string ComponentLabel => GetText("ComponentLabel");
 
+        // Avatar Dynamics Migration
+        internal string MigrateAvatarDynamicsSettingsWindowTitle => GetText("MigrateAvatarDynamicsSettingsWindowTitle");
+        internal string MigrateAvatarDynamicsSettingsDescription => GetText("MigrateAvatarDynamicsSettingsDescription");
+        internal string MigrateAvatarDynamicsSettingsAssetWarning => GetText("MigrateAvatarDynamicsSettingsAssetWarning");
+        internal string MigrateAvatarDynamicsSettingsConfirmation(int directWriteCount) => GetText("MigrateAvatarDynamicsSettingsConfirmation", directWriteCount);
+        internal string MigrateAvatarDynamicsSettingsProjectPrefabsLabel => GetText("MigrateAvatarDynamicsSettingsProjectPrefabsLabel");
+        internal string MigrateAvatarDynamicsSettingsSceneObjectsLabel => GetText("MigrateAvatarDynamicsSettingsSceneObjectsLabel");
+        internal string MigrateAvatarDynamicsSettingsNoTargetsMessage => GetText("MigrateAvatarDynamicsSettingsNoTargetsMessage");
+        internal string MigrateAvatarDynamicsSettingsButtonLabel(int count) => GetText("MigrateAvatarDynamicsSettingsButtonLabel", count);
+        internal string MigrateAvatarDynamicsSettingsResultMessage(int migratedCount, int skippedCount) => GetText("MigrateAvatarDynamicsSettingsResultMessage", migratedCount, skippedCount);
+
         // Platform GameObject Remover
         internal string PlatformGameObjectRemoverEditorDescription => GetText("PlatformGameObjectRemoverEditorDescription");
         internal string PlatformGameObjectRemoverEditorKeepOnPCLabel => GetText("PlatformGameObjectRemoverEditorKeepOnPCLabel");
