@@ -125,9 +125,14 @@ namespace KRT.VRCQuestTools.Inspector
                 new VRCPhysBoneCollider[] { physBoneCollider },
                 new ContactBase[] { contact });
 
-            Assert.AreEqual(0, converterSettings.physBonesToKeep.Length, "physBonesToKeep should be cleared");
-            Assert.AreEqual(0, converterSettings.physBoneCollidersToKeep.Length, "physBoneCollidersToKeep should be cleared");
-            Assert.AreEqual(0, converterSettings.contactsToKeep.Length, "contactsToKeep should be cleared");
+            // Elements are nulled in place rather than shrinking the arrays (protects any prefab
+            // variant/instance that overrides these same arrays with different, equal-length
+            // content - see AvatarDynamicsSettingsUtility.ClearLegacyArraysInPlace), so "cleared"
+            // means all-null, not necessarily zero-length.
+            Assert.IsTrue(converterSettings.physBonesToKeep.All(p => p == null), "physBonesToKeep should be cleared");
+            Assert.IsTrue(converterSettings.physBoneCollidersToKeep.All(c => c == null), "physBoneCollidersToKeep should be cleared");
+            Assert.IsTrue(converterSettings.contactsToKeep.All(c => c == null), "contactsToKeep should be cleared");
+            Assert.IsFalse(converterSettings.HasLegacyAvatarDynamicsSettings);
         }
 
         /// <summary>

@@ -557,6 +557,33 @@ msgstr "Keep the selected components in the Mobile build."
 msgid "ComponentLabel"
 msgstr "Component"
 
+msgid "MigrateAvatarDynamicsSettingsWindowTitle"
+msgstr "Avatar Dynamics Migration"
+
+msgid "MigrateAvatarDynamicsSettingsDescription"
+msgstr "Avatar Dynamics keep/remove settings are now managed with the Platform Component Remover component. The Avatar Converter Settings listed here still have settings saved in the old format. Migrating replaces them with Platform Component Remover components while preserving which PhysBones, PhysBone Colliders, and Contacts are kept. Select the Prefabs and scene objects to migrate."
+
+msgid "MigrateAvatarDynamicsSettingsAssetWarning"
+msgstr "Migrating a Prefab or an unloaded scene file writes the changes directly to the asset file. Undo cannot revert them. Before continuing, back up your project or make sure it is under version control."
+
+msgid "MigrateAvatarDynamicsSettingsConfirmation"
+msgstr "This will directly modify {0} project Prefab asset(s) and unloaded scene file(s) in total. Undo cannot revert this change. Continue?"
+
+msgid "MigrateAvatarDynamicsSettingsProjectPrefabsLabel"
+msgstr "Project Prefabs"
+
+msgid "MigrateAvatarDynamicsSettingsSceneObjectsLabel"
+msgstr "Scene Objects"
+
+msgid "MigrateAvatarDynamicsSettingsNoTargetsMessage"
+msgstr "No Avatar Dynamics settings need migration."
+
+msgid "MigrateAvatarDynamicsSettingsButtonLabel"
+msgstr "Migrate Selected ({0})"
+
+msgid "MigrateAvatarDynamicsSettingsResultMessage"
+msgstr "Migrated {0} target(s). {1} target(s) needed no change, for example because they inherit settings from an already migrated base Prefab."
+
 msgid "PlatformGameObjectRemoverEditorDescription"
 msgstr "This GameObject will be removed at build time for unselected build targets."
 

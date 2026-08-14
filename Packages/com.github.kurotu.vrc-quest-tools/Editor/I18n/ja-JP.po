@@ -557,6 +557,33 @@ msgstr "チェックを入れたコンポーネントをMobileビルドで維持
 msgid "ComponentLabel"
 msgstr "コンポーネント"
 
+msgid "MigrateAvatarDynamicsSettingsWindowTitle"
+msgstr "Avatar Dynamics の移行"
+
+msgid "MigrateAvatarDynamicsSettingsDescription"
+msgstr "Avatar Dynamics の維持・削除に関する設定は、Platform Component Remover コンポーネントで管理するようになりました。一覧にある Avatar Converter Settings には、旧形式で保存された設定が残っています。移行すると、維持する PhysBone・PhysBone Collider・Contact の選択を保ったまま、設定が Platform Component Remover コンポーネントに置き換わります。移行する Prefab とシーン内のオブジェクトを選んでください。"
+
+msgid "MigrateAvatarDynamicsSettingsAssetWarning"
+msgstr "Prefab や開いていないシーンファイルを移行すると、変更はアセットファイルへ直接書き込まれます。Undo では元に戻せません。続行する前に、プロジェクトをバックアップするか、バージョン管理下にあることを確認してください。"
+
+msgid "MigrateAvatarDynamicsSettingsConfirmation"
+msgstr "プロジェクトの Prefab アセットと開いていないシーンファイルを、合わせて {0} 件直接変更します。この変更は Undo では元に戻せません。続行しますか？"
+
+msgid "MigrateAvatarDynamicsSettingsProjectPrefabsLabel"
+msgstr "プロジェクトの Prefab"
+
+msgid "MigrateAvatarDynamicsSettingsSceneObjectsLabel"
+msgstr "シーン内のオブジェクト"
+
+msgid "MigrateAvatarDynamicsSettingsNoTargetsMessage"
+msgstr "移行が必要な Avatar Dynamics の設定はありません。"
+
+msgid "MigrateAvatarDynamicsSettingsButtonLabel"
+msgstr "選択項目を移行 ({0})"
+
+msgid "MigrateAvatarDynamicsSettingsResultMessage"
+msgstr "{0} 件を移行しました。{1} 件は、移行済みの元 Prefab から設定を継承しているなどの理由で、変更の必要がありませんでした。"
+
 msgid "PlatformGameObjectRemoverEditorDescription"
 msgstr "チェックを入れていないビルドターゲットでは、このGameObjectをビルド時に削除します。"
 

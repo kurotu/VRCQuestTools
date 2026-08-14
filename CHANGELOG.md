@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Avatar Converter Settings` now warns when a MA Sync Parameter Sequence or AAO Trace and Optimize component is missing on the avatar, with a button to add it.
 - [NDMF] Preview for `Platform GameObject Remover`. Renderers under GameObjects to be removed are hidden for the target platform.
 - Added `Enable Debug Log` menu under `Tools/VRCQuestTools/Settings` to enable verbose debug logging in real projects.
+- Added `Migrate Legacy Avatar Dynamics Settings` menu under `Tools/VRCQuestTools` to migrate obsolete Avatar Dynamics settings of `Avatar Converter Settings` to `Platform Component Remover` components.
 
 ### Changed
 - NDMF material conversion previews now appear immediately and finish compressing in the background, so the editor no longer freezes while a preview regenerates.
@@ -66,6 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lilToon to Toon Standard conversion computing gloss/metallic strength from the un-linearized (gamma-space) Reflection Color, which also caused Metallic to be inadvertently gamma-decoded a second time.
 - [NDMF] Fixed converted materials turning pink when VRCFury is present and the NDMF phase resolves to Optimizing, by suppressing VRCFury's own non-mobile material removal for avatars VRCQuestTools is about to convert in that phase. `Auto` now resolves to the Optimizing phase even when VRCFury components exist, as long as VRCFury's material removal can be suppressed; otherwise it falls back to the Transforming phase as before.
 - Fixed material replacement doing nothing when the target material already used a shader allowed for Mobile avatars. Both `VQT Material Swap` and `Material Replacement` in additional material conversion settings now accept such a material as the replacement target.
+- Fixed applying Avatar Dynamics settings to a Prefab silently discarding the keep selection of a Prefab Variant or prefab instance which overrode the legacy keep lists with the same array length.
 
 ### Removed
 - Removed support for Unity 2019.
