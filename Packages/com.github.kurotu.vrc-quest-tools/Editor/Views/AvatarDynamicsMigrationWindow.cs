@@ -30,8 +30,17 @@ namespace KRT.VRCQuestTools.Views
         /// </summary>
         internal static void ShowWindow()
         {
+            // Creating the window runs OnEnable, which already scans; an unconditional Rescan here
+            // would repeat the expensive scan (it opens every unloaded scene under Assets/) on
+            // first open. Rescan explicitly only when reusing an already-open window, so invoking
+            // the menu again still refreshes the list.
+            var isOpen = HasOpenInstances<AvatarDynamicsMigrationWindow>();
             var window = GetWindow<AvatarDynamicsMigrationWindow>();
-            window.Rescan();
+            if (isOpen)
+            {
+                window.Rescan();
+            }
+
             window.Show();
         }
 

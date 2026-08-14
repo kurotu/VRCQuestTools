@@ -25,6 +25,7 @@
 - `Avatar Converter Settings` で、アバターに MA Sync Parameter Sequence または AAO Trace and Optimize コンポーネントがない場合に警告と追加ボタンを表示するように追加。
 - [NDMF] `Platform GameObject Remover` のプレビューを追加。対象プラットフォームで削除される GameObject 配下の Renderer が非表示になります。
 - `Tools/VRCQuestTools/Settings` に `Enable Debug Log` メニューを追加し、実プロジェクトでもデバッグログを有効化できるようにしました。
+- `Tools/VRCQuestTools` に `Migrate Legacy Avatar Dynamics Settings` メニューを追加。`Avatar Converter Settings` の旧形式の Avatar Dynamics 設定を `Platform Component Remover` コンポーネントへ移行できます。
 
 ### 変更
 - NDMF のマテリアル変換プレビューを即座に表示し、圧縮はバックグラウンドで完了するように変更。プレビューの再生成中にエディターが固まらなくなります。
@@ -64,6 +65,7 @@
 - lilToon から Toon Standard への変換で、Gloss/Metallic の強度を Reflection Color から算出する際に色空間の線形変換をしていなかった問題を修正。Metallic 側は意図せず二重にガンマデコードされていました。
 - [NDMF] VRCFuryが存在し、かつNDMFフェーズがOptimizingに解決される場合に変換後のマテリアルがピンク色になる問題を修正。VRCQuestToolsがそのフェーズで変換しようとしているアバターについては、VRCFury自身の非モバイルマテリアル削除処理を抑制するようにしました。`Auto`は、VRCFuryのマテリアル削除処理を抑制できる場合に限りOptimizingフェーズに解決されるようになりました（抑制できない場合は従来どおりTransformingフェーズにフォールバックします）。
 - 置換元のマテリアルが Mobile アバターで許可されたシェーダーを使用している場合にマテリアル置換が行われない問題を修正。`VQT Material Swap` と追加のマテリアル変換設定の「マテリアル置換」の両方で、そのようなマテリアルを置換の対象に指定できます。
+- Prefab へ Avatar Dynamics 設定を適用したときに、旧形式の維持リストを同じ配列長でオーバーライドしている Prefab Variant やインスタンス側の選択が失われる問題を修正。
 
 ### 削除
 - Unity 2019 のサポートを終了。
