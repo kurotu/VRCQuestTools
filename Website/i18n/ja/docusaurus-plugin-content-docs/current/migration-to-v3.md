@@ -33,14 +33,19 @@ lilToon と NDMF は、古いバージョンのままだとビルドや変換が
 
 ## 動作が変わった機能
 
-### Avatar Dynamics の保存先
+### Avatar Dynamics の保存先 {#avatar-dynamics-storage}
 
 **Avatar Dynamics Selector** で選んだ PhysBone/PhysBone Collider/Contacts の設定は、**Avatar Converter Settings** コンポーネント内ではなく、**Platform Component Remover** コンポーネントに保存されるようになりました。
 
 この移行は自動では行われません。
-v2 系で設定済みのアバターは、Avatar Dynamics Selector の「適用」ボタンを押さない限り、従来どおり Avatar Converter Settings 側の設定で動作し続けます。
+v2 系で設定済みのアバターは、新しい保存先へ移行しない限り、従来どおり Avatar Converter Settings 側の設定で動作し続けます。
 そのため、アップデートしただけで設定が失われることはありません。
-新しい保存先へ移行する場合だけ、「適用」ボタンを押してください。
+
+新しい保存先へ移行するには、次のいずれかを実行します。
+どちらの方法でも、維持する PhysBone/PhysBone Collider/Contacts の選択は保たれます。
+
+- プロジェクト内の旧形式の設定をまとめて移行するには、メニューバーの「Tools」→「VRCQuestTools」→[「Migrate Legacy Avatar Dynamics Settings」](./menu-reference.md#migrate-legacy-avatar-dynamics-settings)を実行する。
+- アバターごとに移行するには、Avatar Dynamics Selector の「適用」ボタンを押す。
 
 ### 頂点カラー除去のしくみ
 
@@ -64,6 +69,6 @@ v2 系の手動変換ではこれらの設定は反映されなかったため�
 
 1. プロジェクトの Unity、VRChat SDK、lilToon、NDMF のバージョンが、上記の必要バージョンを満たしているか確認する。
 2. VCC または ALCOM で VRCQuestTools を v3.0.0 に更新する。
-3. 必要であれば、Avatar Dynamics Selector で「適用」を押して Platform Component Remover への移行を済ませる。
+3. 必要であれば、「Migrate Legacy Avatar Dynamics Settings」メニューか Avatar Dynamics Selector の「適用」ボタンで、Platform Component Remover への移行を済ませる。
 
 v3.0.0 におけるすべての変更点は [変更履歴](./changelog.md) にまとめています。

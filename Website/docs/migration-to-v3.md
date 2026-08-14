@@ -33,14 +33,19 @@ What it used to do is replaced by one of the following.
 
 ## Behavior Changes
 
-### Where Avatar Dynamics Settings Are Stored
+### Where Avatar Dynamics Settings Are Stored {#avatar-dynamics-storage}
 
 The PhysBone/PhysBone Collider/Contacts settings chosen in the **Avatar Dynamics Selector** are now stored in a **Platform Component Remover** component instead of inside the **Avatar Converter Settings** component.
 
 This migration doesn't happen automatically.
-An avatar already set up under v2.x keeps working from the settings stored in Avatar Converter Settings, unless you press the "Apply" button in the Avatar Dynamics Selector.
+An avatar already set up under v2.x keeps working from the settings stored in Avatar Converter Settings until you migrate it to the new location.
 So updating the package alone never loses your existing settings.
-Press the "Apply" button only when you want to move your settings to the new location.
+
+To migrate to the new location, do either of the following.
+Both ways preserve which PhysBones, PhysBone Colliders, and Contacts are kept.
+
+- To migrate all old-format settings in the project at once, run ["Migrate Legacy Avatar Dynamics Settings"](./menu-reference.md#migrate-legacy-avatar-dynamics-settings) from "Tools" → "VRCQuestTools" in the menu bar.
+- To migrate per avatar, press the "Apply" button in the Avatar Dynamics Selector.
 
 ### How Vertex Color Removal Works
 
@@ -64,6 +69,6 @@ For avatars whose Avatar Dynamics settings haven't been migrated to Platform Com
 
 1. Check that your project's Unity, VRChat SDK, lilToon, and NDMF versions meet the required versions above.
 2. Update VRCQuestTools to v3.0.0 with VCC or ALCOM.
-3. If needed, press "Apply" in the Avatar Dynamics Selector to finish migrating to Platform Component Remover.
+3. If needed, finish migrating to Platform Component Remover with the "Migrate Legacy Avatar Dynamics Settings" menu or the "Apply" button in the Avatar Dynamics Selector.
 
 The [Changelog](./changelog.md) covers every change in v3.0.0.

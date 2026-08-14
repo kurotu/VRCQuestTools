@@ -35,6 +35,18 @@ Avatar Dynamics のパフォーマンスランクを確認しながら削減で�
 
 ![Remove PhysBones ウィンドウ](/img/remove_physbones.png)
 
+## Migrate Legacy Avatar Dynamics Settings {#migrate-legacy-avatar-dynamics-settings}
+
+v2 系の [VQT Avatar Converter Settings](./components/avatar-converter-settings.md) に保存された旧形式の Avatar Dynamics 設定を、[VQT Platform Component Remover](./components/platform-component-remover.md) コンポーネントへ移行するウィンドウを開きます。
+プロジェクト内の Prefab とシーンを検索し、旧形式の設定が残っているアバターを一覧表示します。
+移行する対象を選んで「選択項目を移行」を押すと、維持する PhysBone, PhysBone Collider, Contact の選択を保ったまま、設定が Platform Component Remover コンポーネントに置き換わります。
+詳細は[v2 系から v3.0.0 への移行ガイド](./migration-to-v3.md#avatar-dynamics-storage)を参照してください。
+
+:::caution Prefab とシーンファイルは Undo で元に戻せません
+Prefab や開いていないシーンファイルを移行すると、変更はアセットファイルへ直接書き込まれ、Undo では元に戻せません。
+移行する前に、プロジェクトをバックアップするか、バージョン管理下にあることを確認してください。
+:::
+
 ## BlendShapes Copy
 
 ブレンドシェイプ（シェイプキー）の値を、別のメッシュへコピーするウィンドウを開きます。
