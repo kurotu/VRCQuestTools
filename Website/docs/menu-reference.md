@@ -35,6 +35,18 @@ You can reduce the components while checking the Avatar Dynamics performance ran
 
 ![Remove PhysBones window](/img/remove_physbones.png)
 
+## Migrate Legacy Avatar Dynamics Settings {#migrate-legacy-avatar-dynamics-settings}
+
+Opens a window to migrate old-format Avatar Dynamics settings stored in a v2.x [VQT Avatar Converter Settings](./components/avatar-converter-settings.md) to the [VQT Platform Component Remover](./components/platform-component-remover.md) component.
+It scans the project's Prefabs and scenes, and lists the avatars which still have old-format settings.
+Select the targets and press "Migrate Selected" to replace the settings with Platform Component Remover components while preserving which PhysBones, PhysBone Colliders, and Contacts are kept.
+See [Migration Guide from v2.x to v3.0.0](./migration-to-v3.md#avatar-dynamics-storage) for details.
+
+:::caution Prefabs and scene files can't be reverted with Undo
+Migrating a Prefab or an unloaded scene file writes the changes directly to the asset file, and Undo can't revert them.
+Before migrating, back up your project or make sure it is under version control.
+:::
+
 ## BlendShapes Copy
 
 Opens a window to copy blendshape (shape key) weights to another mesh.
