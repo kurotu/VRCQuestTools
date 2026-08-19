@@ -91,6 +91,7 @@ namespace KRT.VRCQuestTools.Menus
                 { DisplayLanguage.English, VRCQuestToolsMenus.MenuPaths.LanguageEnglish },
                 { DisplayLanguage.Japanese, VRCQuestToolsMenus.MenuPaths.LanguageJapanese },
                 { DisplayLanguage.Russian, VRCQuestToolsMenus.MenuPaths.LanguageRussian },
+                { DisplayLanguage.SimplifiedChinese, VRCQuestToolsMenus.MenuPaths.LanguageSimplifiedChinese },
             };
             Debug.Assert(menus.Count == Enum.GetValues(typeof(DisplayLanguage)).Length);
 
