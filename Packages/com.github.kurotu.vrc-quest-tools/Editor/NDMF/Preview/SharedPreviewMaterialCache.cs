@@ -88,8 +88,8 @@ namespace KRT.VRCQuestTools.Ndmf
                     {
                         cachedEntry.ReferenceCount++;
                         acquiredKeys.Add(key);
-                        var srcNames = string.Join(", ", groupedOriginalMaterials[key].Select(m => m != null ? $"{m.name} (id:{m.GetInstanceID()})" : "<null>"));
-                        var convertedIdStr = cachedEntry.Material != null ? cachedEntry.Material.GetInstanceID().ToString() : "<null>";
+                        var srcNames = string.Join(", ", groupedOriginalMaterials[key].Select(m => m != null ? $"{m.name} (id:{ObjectIdentity.GetId(m)})" : "<null>"));
+                        var convertedIdStr = cachedEntry.Material != null ? ObjectIdentity.GetId(cachedEntry.Material).ToString() : "<null>";
                         Logger.LogDebug($"Reusing cached preview material for {groupedOriginalMaterials[key].Count} source material(s): {srcNames}. Converted: {(cachedEntry.Material != null ? cachedEntry.Material.name : "<null>")} (id:{convertedIdStr}).");
                         foreach (var original in groupedOriginalMaterials[key])
                         {
@@ -119,8 +119,8 @@ namespace KRT.VRCQuestTools.Ndmf
                             {
                                 existingEntry.ReferenceCount++;
                                 acquiredKeys.Add(key);
-                                var srcNames = string.Join(", ", groupedOriginalMaterials[key].Select(m => m != null ? $"{m.name} (id:{m.GetInstanceID()})" : "<null>"));
-                                var existingConvertedIdStr = existingEntry.Material != null ? existingEntry.Material.GetInstanceID().ToString() : "<null>";
+                                var srcNames = string.Join(", ", groupedOriginalMaterials[key].Select(m => m != null ? $"{m.name} (id:{ObjectIdentity.GetId(m)})" : "<null>"));
+                                var existingConvertedIdStr = existingEntry.Material != null ? ObjectIdentity.GetId(existingEntry.Material).ToString() : "<null>";
                                 Logger.LogDebug($"Reusing cached preview material after conversion merge for {groupedOriginalMaterials[key].Count} source material(s): {srcNames}. Converted: {(existingEntry.Material != null ? existingEntry.Material.name : "<null>")} (id:{existingConvertedIdStr}).");
                                 foreach (var original in groupedOriginalMaterials[key])
                                 {
@@ -195,7 +195,7 @@ namespace KRT.VRCQuestTools.Ndmf
                         Entries.Remove(key);
                         materialsToDestroy.Add(entry.Material);
                         var materialName = entry.Material != null ? entry.Material.name : "<null>";
-                        var materialId = entry.Material != null ? entry.Material.GetInstanceID().ToString() : "<null>";
+                        var materialId = entry.Material != null ? ObjectIdentity.GetId(entry.Material).ToString() : "<null>";
                         Logger.LogDebug($"Cache entry released for converted material: {materialName} (id:{materialId}). Reference count reached zero; scheduled for destruction.");
                     }
                 }
@@ -204,7 +204,7 @@ namespace KRT.VRCQuestTools.Ndmf
             foreach (var material in materialsToDestroy)
             {
                 var matName = material != null ? material.name : "<null>";
-                var matId = material != null ? material.GetInstanceID().ToString() : "<null>";
+                var matId = material != null ? ObjectIdentity.GetId(material).ToString() : "<null>";
                 var assetPath = material != null ? AssetDatabase.GetAssetPath(material) : string.Empty;
                 Logger.LogDebug($"Destroying converted material: {matName} (id:{matId}). AssetPath: {assetPath}");
                 DestroyConvertedMaterial(material);
@@ -298,7 +298,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     return $"{nameof(MaterialReplaceSettings)}_null";
                 }
 
-                return $"{nameof(MaterialReplaceSettings)}_{replaceSettings.material.GetInstanceID()}_{CacheUtility.GetContentCacheKey(replaceSettings.material)}";
+                return $"{nameof(MaterialReplaceSettings)}_{ObjectIdentity.GetId(replaceSettings.material)}_{CacheUtility.GetContentCacheKey(replaceSettings.material)}";
             }
 
             return $"{settings.GetType().FullName}_{settings.GetCacheKey()}";

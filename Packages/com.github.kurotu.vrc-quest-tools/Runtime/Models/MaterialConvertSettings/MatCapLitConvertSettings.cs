@@ -92,6 +92,8 @@ namespace KRT.VRCQuestTools.Models
                 {
 #if UNITY_EDITOR
                     valueObject = texture.imageContentsHash;
+#elif UNITY_6000_4_OR_NEWER
+                    valueObject = EntityId.ToULong(texture.GetEntityId());
 #else
                     valueObject = texture.GetInstanceID();
 #endif

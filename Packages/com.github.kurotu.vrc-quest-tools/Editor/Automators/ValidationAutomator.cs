@@ -60,7 +60,7 @@ namespace KRT.VRCQuestTools.Automators
                 foreach (var rule in AvatarValidationRules.Rules)
                 {
                     var result = rule.Validate(new VRChatAvatar(avatar));
-                    var key = $"{rule.GetType().FullName}-{avatar.gameObject.GetInstanceID()}";
+                    var key = $"{rule.GetType().FullName}-{ObjectIdentity.GetId(avatar.gameObject)}";
                     if (result != null)
                     {
                         NotificationWindow.instance.RegisterNotification(key, result);
