@@ -888,7 +888,12 @@ namespace KRT.VRCQuestTools.Services
                 yield break;
             }
 
-            foreach (var physBone in UnityEngine.Object.FindObjectsOfType<VRCPhysBone>(true))
+#if UNITY_6000_4_OR_NEWER
+            var physBones = UnityEngine.Object.FindObjectsByType<VRCPhysBone>(FindObjectsInactive.Include);
+#else
+            var physBones = UnityEngine.Object.FindObjectsByType<VRCPhysBone>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#endif
+            foreach (var physBone in physBones)
             {
                 yield return physBone;
             }

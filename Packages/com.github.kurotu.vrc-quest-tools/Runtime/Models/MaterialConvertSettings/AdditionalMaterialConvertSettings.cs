@@ -105,6 +105,8 @@ namespace KRT.VRCQuestTools.Models
                 default:
 #if UNITY_EDITOR
                     return texture.imageContentsHash;
+#elif UNITY_6000_4_OR_NEWER
+                    return Hash128.Compute(EntityId.ToULong(texture.GetEntityId()).ToString());
 #else
                     return Hash128.Compute(texture.GetInstanceID());
 #endif

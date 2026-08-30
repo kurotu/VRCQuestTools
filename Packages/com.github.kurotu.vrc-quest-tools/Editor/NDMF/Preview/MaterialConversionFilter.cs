@@ -217,7 +217,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
                     var original = materialGroup.Select(kv => kv.Key)
                         .Where(m => m != null)
-                        .OrderBy(m => m.GetInstanceID())
+                        .OrderBy(m => ObjectIdentity.GetId(m))
                         .FirstOrDefault();
                     NdmfObjectRegistry.TryRegisterReplacedObjectToActiveRegistry(original, converted);
                 }

@@ -8,6 +8,7 @@ using System.Reflection;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Models.VRChat;
+using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf.preview;
 using NUnit.Framework;
 using UnityEngine;
@@ -67,7 +68,7 @@ namespace KRT.VRCQuestTools.Ndmf
 
                 var key = (string)method.Invoke(null, new object[] { settings });
                 Assert.That(key, Does.Contain("MaterialReplaceSettings"));
-                Assert.That(key, Does.Contain(replacement.GetInstanceID().ToString()));
+                Assert.That(key, Does.Contain(ObjectIdentity.GetId(replacement).ToString()));
             }
             finally
             {
