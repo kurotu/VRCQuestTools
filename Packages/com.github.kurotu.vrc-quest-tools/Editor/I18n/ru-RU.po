@@ -112,12 +112,6 @@ msgstr ""
 msgid "CompressExpressionsMenuIconsTooltip"
 msgstr ""
 
-msgid "AnimationOverrideLabel"
-msgstr "Переопределение анимации"
-
-msgid "AnimationOverrideTooltip"
-msgstr "Конвертировать контроллеры анимации с анимациями контроллера переопределения анимации."
-
 msgid "NdmfPhaseLabel"
 msgstr "Этап NDMF для конвертации"
 

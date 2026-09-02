@@ -212,32 +212,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
         {
             var avatar = new VRChatAvatar(questAvatarObject.GetComponent<VRC_AvatarDescriptor>());
 
-            var setting = questAvatarObject.GetComponent<AvatarConverterSettings>();
-            var overrideControllers = setting != null ? setting.animatorOverrideControllers.Where(oc => oc != null).ToArray() : new AnimatorOverrideController[0];
-
             // Convert animator controllers and their animation clips.
-            if (avatar.HasAnimatedMaterials || overrideControllers.Length > 0)
+            if (avatar.HasAnimatedMaterials)
             {
                 var convertedAnimationClips = ConvertAnimationClipsForQuest(avatar.GetRuntimeAnimatorControllers(), saveAssetsAsFile, assetsDirectory, convertedMaterials, progressCallback.onAnimationClipProgress);
-
-                // Inject animation override.
-                foreach (var oc in overrideControllers)
-                {
-                    if (oc == null)
-                    {
-                        continue;
-                    }
-
-                    var overrides = new List<KeyValuePair<AnimationClip, AnimationClip>>();
-                    oc.GetOverrides(overrides);
-                    foreach (var pair in overrides)
-                    {
-                        if (pair.Value)
-                        {
-                            convertedAnimationClips[pair.Key] = pair.Value;
-                        }
-                    }
-                }
 
                 var convertedBlendTrees = ConvertBlendTreesForQuest(
                     avatar.GetRuntimeAnimatorControllers().Where(c => c is AnimatorController).Cast<AnimatorController>().ToArray(),

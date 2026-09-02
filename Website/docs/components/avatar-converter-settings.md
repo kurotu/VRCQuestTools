@@ -90,7 +90,6 @@ Because Avatar Dynamics must fit within the Poor performance rank on Mobile, red
 
 | Setting | Description |
 |---|---|
-| Animation Override | Converts Animator Controllers using the animations specified by Animator Override Controllers. |
 | Remove Vertex Color from Meshes | Removes vertex colors to display texture colors correctly. Usually keep this enabled. |
 | Remove Extra Material Slots | Removes material slots which exceed the number of submeshes. |
 | Resize Menu Icons | Resizes expressions menu icons in Mobile builds. |

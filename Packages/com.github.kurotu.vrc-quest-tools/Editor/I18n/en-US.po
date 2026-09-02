@@ -128,12 +128,6 @@ msgstr "Assign Network IDs"
 msgid "AssignNetworkIdsTooltip"
 msgstr "Assign network IDs to PhysBones during build."
 
-msgid "AnimationOverrideLabel"
-msgstr "Animation Override"
-
-msgid "AnimationOverrideTooltip"
-msgstr "Convert Animator Controllers using the animations specified in the Animator Override Controller."
-
 msgid "NdmfPhaseLabel"
 msgstr "NDMF Phase to Convert"
 

@@ -224,7 +224,6 @@ namespace KRT.VRCQuestTools.Inspector
                 editorState.foldOutAdvancedSettings = Views.EditorGUIUtility.Foldout(i18n.AdvancedConverterSettingsLabel, editorState.foldOutAdvancedSettings);
                 if (editorState.foldOutAdvancedSettings)
                 {
-                    EditorGUILayout.PropertyField(so.FindProperty("animatorOverrideControllers"), new GUIContent(i18n.AnimationOverrideLabel, i18n.AnimationOverrideTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("removeVertexColor"), new GUIContent(i18n.RemoveVertexColorLabel, i18n.RemoveVertexColorTooltip));
                     EditorGUILayout.PropertyField(so.FindProperty("removeExtraMaterialSlots"), new GUIContent(i18n.RemoveExtraMaterialSlotsLabel, i18n.RemoveExtraMaterialSlotsTooltip));
 

@@ -128,12 +128,6 @@ msgstr "分配网络 ID"
 msgid "AssignNetworkIdsTooltip"
 msgstr "在构建时为 PhysBone 分配网络 ID。"
 
-msgid "AnimationOverrideLabel"
-msgstr "动画覆盖"
-
-msgid "AnimationOverrideTooltip"
-msgstr "使用 Animator Override Controller 中指定的动画转换 Animator Controller。"
-
 msgid "NdmfPhaseLabel"
 msgstr "NDMF 转换阶段"
 

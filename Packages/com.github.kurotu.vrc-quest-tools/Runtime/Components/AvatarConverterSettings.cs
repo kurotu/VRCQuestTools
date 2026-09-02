@@ -55,13 +55,6 @@ namespace KRT.VRCQuestTools.Components
         public ContactBase[] contactsToKeep = { };
 
         /// <summary>
-        /// Animator override controllers to apply while conversion.
-        /// </summary>
-        [SerializeField]
-        [NonReorderable] // somehow reorderable list doesn't work well
-        public AnimatorOverrideController[] animatorOverrideControllers = { };
-
-        /// <summary>
         /// Whether to remove vertex color.
         /// </summary>
         [SerializeField]
@@ -120,6 +113,18 @@ namespace KRT.VRCQuestTools.Components
         /// </summary>
         [System.NonSerialized]
         public bool forceMaterialPreview = false;
+
+        /// <summary>
+        /// Animator override controllers to apply while conversion.
+        /// </summary>
+        /// <remarks>
+        /// Deprecated: the animation override feature has been removed.
+        /// The field remains only to keep existing serialized data.
+        /// </remarks>
+        [SerializeField]
+#pragma warning disable CS0414
+        private AnimatorOverrideController[] animatorOverrideControllers = { };
+#pragma warning restore CS0414
 
         /// <summary>
         /// Serialized schema version for forward compatibility.
