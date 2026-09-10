@@ -182,6 +182,53 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
+        /// Ensure an enabled Poiyomi emission channel with zero strength does not tint the whole Toon Standard material.
+        /// </summary>
+        [Test]
+        public void ConvertToToonStandard_NonBake_ZeroStrengthEmissionDisabled()
+        {
+            if (!AssetUtility.IsPoiyomiImported())
+            {
+                Assert.Ignore("Poiyomi is not installed.");
+                return;
+            }
+
+            TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Standard");
+
+            var shader = Shader.Find(PoiyomiShaderName);
+            Assert.NotNull(shader, $"{PoiyomiShaderName} shader not found.");
+
+            using var sourceMaterial = DisposableObject.New(new Material(shader));
+            sourceMaterial.Object.SetFloat("_EnableEmission", 0.0f);
+            sourceMaterial.Object.SetFloat("_EnableEmission1", 0.0f);
+            sourceMaterial.Object.SetFloat("_EnableEmission2", 0.0f);
+            sourceMaterial.Object.SetFloat("_EnableEmission3", 1.0f);
+            sourceMaterial.Object.SetFloat("_EmissionStrength3", 0.0f);
+            sourceMaterial.Object.SetColor("_EmissionColor3", Color.red);
+
+            using var sharedBlack = DisposableObject.New(new Texture2D(2, 2));
+            sharedBlack.Object.SetPixel(0, 0, Color.black);
+            sharedBlack.Object.Apply();
+
+            var settings = new ToonStandardConvertSettings
+            {
+                generateQuestTextures = false,
+            };
+
+            var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
+            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, sharedBlack.Object, false);
+
+            Material resultMat = null;
+            generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
+            using var resultMaterial = DisposableObject.New(resultMat);
+
+            Assert.IsNotNull(resultMat, "Generated material should not be null.");
+            var wrapper = new ToonStandardMaterialWrapper(resultMat);
+            Assert.AreEqual(sharedBlack.Object, wrapper.EmissionMap, "Emission map should be shared black texture when the only enabled channel has zero strength.");
+            Assert.AreEqual(Color.black, wrapper.EmissionColor, "Emission color should be black when the only enabled channel has zero strength.");
+        }
+
+        /// <summary>
         /// Ensure non-bake conversion uses the texture scale/offset of the channel the primary
         /// emission map comes from, not always channel 0.
         /// </summary>

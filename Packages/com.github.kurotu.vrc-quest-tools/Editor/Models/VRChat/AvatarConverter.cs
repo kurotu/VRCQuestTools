@@ -27,6 +27,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// </summary>
     internal class AvatarConverter
     {
+        private readonly Dictionary<int, Dictionary<Material, Material>> pendingLateMaterialReplacements = new Dictionary<int, Dictionary<Material, Material>>();
+
         /// <summary>
         /// MaterialWrapperBuilder to use.
         /// </summary>
@@ -290,7 +292,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             // Apply AFTER animator controllers because original animation clips overwrite sharedMaterials.
             foreach (var renderer in questAvatarObject.GetComponentsInChildren<Renderer>(true))
             {
-                renderer.sharedMaterials = renderer.sharedMaterials.Select(m =>
+                var materials = renderer.sharedMaterials.Select(m =>
                 {
                     if (m == null)
                     {
@@ -302,6 +304,58 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                     return m;
                 }).ToArray();
+                renderer.sharedMaterials = materials;
+                EditorUtility.SetDirty(renderer);
+                if (PrefabUtility.IsPartOfPrefabInstance(renderer))
+                {
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(renderer);
+                }
+            }
+
+            pendingLateMaterialReplacements[questAvatarObject.GetInstanceID()] = new Dictionary<Material, Material>(convertedMaterials);
+        }
+
+        /// <summary>
+        /// Reapplies converted materials after NDMF has saved and reloaded generated assets.
+        /// </summary>
+        /// <param name="avatarObject">Processed avatar passed to the VRChat build pipeline.</param>
+        internal void ReapplyConvertedMaterialsAfterAssetSave(GameObject avatarObject)
+        {
+            if (!pendingLateMaterialReplacements.TryGetValue(avatarObject.GetInstanceID(), out var convertedMaterials))
+            {
+                return;
+            }
+
+            try
+            {
+                foreach (var renderer in avatarObject.GetComponentsInChildren<Renderer>(true))
+                {
+                    var materials = renderer.sharedMaterials;
+                    var changed = false;
+                    for (var i = 0; i < materials.Length; i++)
+                    {
+                        var material = materials[i];
+                        if (material != null && convertedMaterials.TryGetValue(material, out var converted))
+                        {
+                            materials[i] = converted;
+                            changed = true;
+                        }
+                    }
+
+                    if (changed)
+                    {
+                        renderer.sharedMaterials = materials;
+                        EditorUtility.SetDirty(renderer);
+                        if (PrefabUtility.IsPartOfPrefabInstance(renderer))
+                        {
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(renderer);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                pendingLateMaterialReplacements.Remove(avatarObject.GetInstanceID());
             }
         }
 

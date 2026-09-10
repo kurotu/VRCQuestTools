@@ -30,6 +30,9 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 return true;
             }
+
+            VRCQuestTools.AvatarConverter.ReapplyConvertedMaterialsAfterAssetSave(avatarGameObject);
+
             var pipelineManager = avatarGameObject.GetComponent<PipelineManager>();
             if (string.IsNullOrEmpty(pipelineManager.blueprintId))
             {
