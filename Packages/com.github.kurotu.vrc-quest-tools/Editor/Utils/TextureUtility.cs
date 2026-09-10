@@ -276,6 +276,13 @@ namespace KRT.VRCQuestTools.Utils
                 {
                     rt.Create();
                 }
+
+                if (rt.graphicsFormat == UnityEngine.Experimental.Rendering.GraphicsFormat.None
+                    || rt.descriptor.graphicsFormat == UnityEngine.Experimental.Rendering.GraphicsFormat.None)
+                {
+                    return CreateReadableTextureCopy(rt);
+                }
+
                 Texture2D newTex = null;
                 var request = RequestReadbackRenderTexture(rt, rt.mipmapCount > 1, !rt.isDataSRGB, (result) =>
                 {
@@ -286,6 +293,7 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             var path = AssetDatabase.GetAssetPath(texture);
+
             if (path == "Resources/unity_builtin_extra")
             {
                 return (Texture2D)UnityEngine.Object.Instantiate(texture);
@@ -302,11 +310,11 @@ namespace KRT.VRCQuestTools.Utils
                 return texture;
             }
 
-            // already saved as an asset file
-            var extension = Path.GetExtension(path).ToLower();
-            if (extension == ".asset")
+            // Generated assets may serialize Texture2D objects as sub-assets of a non-texture
+            // container. In that case the path belongs to the container and has no TextureImporter.
+            if (!(AssetImporter.GetAtPath(path) is TextureImporter))
             {
-                return texture;
+                return CreateReadableTextureCopy(texture);
             }
 
             var tex2 = LoadUncompressedTexture(path, false);
@@ -323,7 +331,12 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Loaded texture.</returns>
         internal static Texture2D LoadUncompressedTexture(string path, bool makeReadable)
         {
-            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null)
+            {
+                throw new ArgumentException($"{path} does not have a TextureImporter", nameof(path));
+            }
+
             var extension = Path.GetExtension(path).ToLower();
             if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
             {
@@ -388,6 +401,51 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             return (Texture2D)ret;
+        }
+
+        /// <summary>
+        /// Creates an independent readable RGBA32 copy without relying on the source asset importer.
+        /// </summary>
+        /// <param name="texture">Source texture.</param>
+        /// <returns>Readable texture copy.</returns>
+        private static Texture2D CreateReadableTextureCopy(Texture texture)
+        {
+            var previousActive = RenderTexture.active;
+            var readWrite = texture.isDataSRGB ? RenderTextureReadWrite.sRGB : RenderTextureReadWrite.Linear;
+            var temporary = RenderTexture.GetTemporary(
+                texture.width,
+                texture.height,
+                0,
+                RenderTextureFormat.ARGB32,
+                readWrite);
+            try
+            {
+                Graphics.Blit(texture, temporary);
+                RenderTexture.active = temporary;
+
+                var useMipmap = texture.mipmapCount > 1;
+                var result = new Texture2D(
+                    texture.width,
+                    texture.height,
+                    TextureFormat.RGBA32,
+                    useMipmap,
+                    linear: !texture.isDataSRGB)
+                {
+                    name = texture.name,
+                    filterMode = texture.filterMode,
+                    wrapMode = texture.wrapMode,
+                    anisoLevel = texture.anisoLevel,
+                    mipMapBias = texture.mipMapBias,
+                };
+                result.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
+                result.Apply(useMipmap, false);
+                return result;
+            }
+            finally
+            {
+                RenderTexture.active = previousActive;
+                RenderTexture.ReleaseTemporary(temporary);
+            }
         }
 
         /// <summary>

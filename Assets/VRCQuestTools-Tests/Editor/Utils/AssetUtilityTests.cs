@@ -79,6 +79,49 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Test loading a texture serialized as a sub-asset of a non-texture asset.
+        /// </summary>
+        [Test]
+        public void LoadUncompressedTextureSubAsset()
+        {
+            var path = $"Assets/test_tmp_{GUID.Generate()}.mat";
+            var material = new Material(Shader.Find("Standard"));
+            var texture = new Texture2D(4, 4, TextureFormat.RGBA32, false, false)
+            {
+                name = "TextureSubAsset",
+            };
+            texture.SetPixels(new[]
+            {
+                Color.red, Color.red, Color.red, Color.red,
+                Color.red, Color.red, Color.red, Color.red,
+                Color.red, Color.red, Color.red, Color.red,
+                Color.red, Color.red, Color.red, Color.red,
+            });
+            texture.Apply(false, true);
+
+            try
+            {
+                AssetDatabase.CreateAsset(material, path);
+                AssetDatabase.AddObjectToAsset(texture, material);
+                AssetDatabase.SaveAssets();
+
+                var loaded = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+                using (var result = new DisposableObject<Texture2D>(TextureUtility.LoadUncompressedTexture(loaded)))
+                {
+                    Assert.AreNotSame(loaded, result.Object);
+                    Assert.IsEmpty(AssetDatabase.GetAssetPath(result.Object));
+                    Assert.IsTrue(result.Object.isReadable);
+                    Assert.AreEqual(TextureFormat.RGBA32, result.Object.format);
+                    Assert.AreEqual(Color.red, result.Object.GetPixel(0, 0));
+                }
+            }
+            finally
+            {
+                AssetDatabase.DeleteAsset(path);
+            }
+        }
+
+        /// <summary>
         /// Test AssetUtility.CreateAsset().
         /// </summary>
         [Test]
