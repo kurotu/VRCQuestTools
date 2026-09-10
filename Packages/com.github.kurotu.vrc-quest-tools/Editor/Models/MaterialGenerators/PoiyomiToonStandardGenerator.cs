@@ -979,16 +979,16 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseEmission()
         {
-            return poiyomiMaterial.UseEmission;
+            return GetEnabledEmissionChannels().Any();
         }
 
         /// <inheritdoc/>
         protected override bool GetUseEmissionMap()
         {
-            return IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission0, poiyomiMaterial.EmissionMap0, poiyomiMaterial.EmissionMask0, poiyomiMaterial.EmissionBaseColorAsMap0)
-                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission1, poiyomiMaterial.EmissionMap1, poiyomiMaterial.EmissionMask1, poiyomiMaterial.EmissionBaseColorAsMap1)
-                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission2, poiyomiMaterial.EmissionMap2, poiyomiMaterial.EmissionMask2, poiyomiMaterial.EmissionBaseColorAsMap2)
-                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission3, poiyomiMaterial.EmissionMap3, poiyomiMaterial.EmissionMask3, poiyomiMaterial.EmissionBaseColorAsMap3);
+            return IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission0, poiyomiMaterial.EmissionStrength0, poiyomiMaterial.EmissionMap0, poiyomiMaterial.EmissionMask0, poiyomiMaterial.EmissionBaseColorAsMap0)
+                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission1, poiyomiMaterial.EmissionStrength1, poiyomiMaterial.EmissionMap1, poiyomiMaterial.EmissionMask1, poiyomiMaterial.EmissionBaseColorAsMap1)
+                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission2, poiyomiMaterial.EmissionStrength2, poiyomiMaterial.EmissionMap2, poiyomiMaterial.EmissionMask2, poiyomiMaterial.EmissionBaseColorAsMap2)
+                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission3, poiyomiMaterial.EmissionStrength3, poiyomiMaterial.EmissionMap3, poiyomiMaterial.EmissionMask3, poiyomiMaterial.EmissionBaseColorAsMap3);
         }
 
         /// <inheritdoc/>
@@ -1000,7 +1000,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseMainTexture()
         {
-            return poiyomiMaterial.Material.mainTexture != null || (poiyomiMaterial.UseEmission && !Settings.useEmission);
+            return poiyomiMaterial.Material.mainTexture != null || (GetUseEmission() && !Settings.useEmission);
         }
 
         /// <inheritdoc/>
@@ -1183,22 +1183,22 @@ namespace KRT.VRCQuestTools.Models
 
         private IEnumerable<int> GetEnabledEmissionChannels()
         {
-            if (poiyomiMaterial.EnableEmission0)
+            if (IsEmissionChannelActive(poiyomiMaterial.EnableEmission0, poiyomiMaterial.EmissionStrength0))
             {
                 yield return 0;
             }
 
-            if (poiyomiMaterial.EnableEmission1)
+            if (IsEmissionChannelActive(poiyomiMaterial.EnableEmission1, poiyomiMaterial.EmissionStrength1))
             {
                 yield return 1;
             }
 
-            if (poiyomiMaterial.EnableEmission2)
+            if (IsEmissionChannelActive(poiyomiMaterial.EnableEmission2, poiyomiMaterial.EmissionStrength2))
             {
                 yield return 2;
             }
 
-            if (poiyomiMaterial.EnableEmission3)
+            if (IsEmissionChannelActive(poiyomiMaterial.EnableEmission3, poiyomiMaterial.EmissionStrength3))
             {
                 yield return 3;
             }
@@ -1255,8 +1255,11 @@ namespace KRT.VRCQuestTools.Models
             bakeMat.SetFloat("_EmissionBaseColorAsMap3", poiyomiMaterial.EmissionBaseColorAsMap3 ? 1.0f : 0.0f);
         }
 
-        private static bool IsEmissionChannelTexturized(bool enabled, Texture map, Texture mask, bool baseColorAsMap)
-            => enabled && (map != null || mask != null || baseColorAsMap);
+        private static bool IsEmissionChannelTexturized(bool enabled, float strength, Texture map, Texture mask, bool baseColorAsMap)
+            => IsEmissionChannelActive(enabled, strength) && (map != null || mask != null || baseColorAsMap);
+
+        private static bool IsEmissionChannelActive(bool enabled, float strength)
+            => enabled && strength > 0.0f;
 
         private (int Channel, float Strength) GetPrimaryAOChannelAndStrength()
         {
