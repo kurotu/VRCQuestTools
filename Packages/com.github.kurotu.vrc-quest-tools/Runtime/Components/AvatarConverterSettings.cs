@@ -115,16 +115,14 @@ namespace KRT.VRCQuestTools.Components
         public bool forceMaterialPreview = false;
 
         /// <summary>
-        /// Animator override controllers to apply while conversion.
+        /// Deprecated serialized field retained for backward compatibility.
         /// </summary>
         /// <remarks>
         /// Deprecated: the animation override feature has been removed.
         /// The field remains only to keep existing serialized data.
         /// </remarks>
         [SerializeField]
-#pragma warning disable CS0414
-        private AnimatorOverrideController[] animatorOverrideControllers = { };
-#pragma warning restore CS0414
+        private AnimatorOverrideController[] animatorOverrideControllers;
 
         /// <summary>
         /// Serialized schema version for forward compatibility.
