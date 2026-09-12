@@ -73,6 +73,7 @@
 - VRCSDK 3.9.0 未満のサポートを終了。
 - lilToon 1.10.0 未満のサポートを終了。
 - NDMF 1.5.0 未満のサポートを終了。
+- `Avatar Converter Settings` の「アニメーションオーバーライド」機能を削除。設定値はシリアライズされたまま残りますが、変換時には使用されなくなりました。
 - VQT Avatar Builder ウィンドウを削除。アバターのビルドとアップロードには VRChat SDK コントロールパネルを直接使用するか、ローカルテストには「[NDMF] Build and Test for PC with Android Settings」コンテキストメニューを使用してください。
 
 ## [2.11.7] - 2026-06-27

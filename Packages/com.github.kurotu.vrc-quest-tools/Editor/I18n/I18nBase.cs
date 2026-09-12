@@ -95,8 +95,6 @@ namespace KRT.VRCQuestTools.I18n
         internal string CompressExpressionsMenuIconsTooltip => GetText("CompressExpressionsMenuIconsTooltip");
         internal string AssignNetworkIdsLabel => GetText("AssignNetworkIdsLabel");
         internal string AssignNetworkIdsTooltip => GetText("AssignNetworkIdsTooltip");
-        internal string AnimationOverrideLabel => GetText("AnimationOverrideLabel");
-        internal string AnimationOverrideTooltip => GetText("AnimationOverrideTooltip");
         internal string NdmfPhaseLabel => GetText("NdmfPhaseLabel");
         internal string NdmfPhaseTooltip => GetText("NdmfPhaseTooltip");
         internal string EnableMaterialPreviewLabel => GetText("EnableMaterialPreviewLabel");

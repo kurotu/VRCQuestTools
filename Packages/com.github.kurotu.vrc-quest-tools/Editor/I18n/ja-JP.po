@@ -128,12 +128,6 @@ msgstr "Network ID を割り当てる"
 msgid "AssignNetworkIdsTooltip"
 msgstr "ビルド時に PhysBone の Network ID を割り当てます。"
 
-msgid "AnimationOverrideLabel"
-msgstr "アニメーションオーバーライド"
-
-msgid "AnimationOverrideTooltip"
-msgstr "Animator Override Controller で指定したアニメーションを使用して Animator Controller を変換します。"
-
 msgid "NdmfPhaseLabel"
 msgstr "NDMF変換フェーズ"
 
