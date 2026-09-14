@@ -112,6 +112,7 @@ namespace KRT.VRCQuestTools.Models
                 }
 
                 newMaterial.EmissionColor = Utils.ColorUtility.HdrToLdr(GetEmissionColor());
+                newMaterial.EmissionStrength = GetEmissionStrength();
             }
             else
             {
@@ -714,6 +715,30 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override float GetEmissionStrength()
+        {
+            var channels = GetEnabledEmissionChannels().ToArray();
+            if (channels.Length != 1)
+            {
+                return 1.0f;
+            }
+
+            switch (channels[0])
+            {
+                case 0:
+                    return poiyomiMaterial.EmissionStrength0;
+                case 1:
+                    return poiyomiMaterial.EmissionStrength1;
+                case 2:
+                    return poiyomiMaterial.EmissionStrength2;
+                case 3:
+                    return poiyomiMaterial.EmissionStrength3;
+                default:
+                    throw new InvalidOperationException("Unknown emission channel.");
+            }
+        }
+
+        /// <inheritdoc/>
         protected override (Vector2 Scale, Vector2 Offset) GetGlossMapST()
         {
             return GetSpecularGlossMapST();
@@ -979,16 +1004,16 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseEmission()
         {
-            return GetEnabledEmissionChannels().Any();
+            return poiyomiMaterial.UseEmission;
         }
 
         /// <inheritdoc/>
         protected override bool GetUseEmissionMap()
         {
-            return IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission0, poiyomiMaterial.EmissionStrength0, poiyomiMaterial.EmissionMap0, poiyomiMaterial.EmissionMask0, poiyomiMaterial.EmissionBaseColorAsMap0)
-                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission1, poiyomiMaterial.EmissionStrength1, poiyomiMaterial.EmissionMap1, poiyomiMaterial.EmissionMask1, poiyomiMaterial.EmissionBaseColorAsMap1)
-                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission2, poiyomiMaterial.EmissionStrength2, poiyomiMaterial.EmissionMap2, poiyomiMaterial.EmissionMask2, poiyomiMaterial.EmissionBaseColorAsMap2)
-                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission3, poiyomiMaterial.EmissionStrength3, poiyomiMaterial.EmissionMap3, poiyomiMaterial.EmissionMask3, poiyomiMaterial.EmissionBaseColorAsMap3);
+            return IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission0, poiyomiMaterial.EmissionMap0, poiyomiMaterial.EmissionMask0, poiyomiMaterial.EmissionBaseColorAsMap0)
+                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission1, poiyomiMaterial.EmissionMap1, poiyomiMaterial.EmissionMask1, poiyomiMaterial.EmissionBaseColorAsMap1)
+                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission2, poiyomiMaterial.EmissionMap2, poiyomiMaterial.EmissionMask2, poiyomiMaterial.EmissionBaseColorAsMap2)
+                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission3, poiyomiMaterial.EmissionMap3, poiyomiMaterial.EmissionMask3, poiyomiMaterial.EmissionBaseColorAsMap3);
         }
 
         /// <inheritdoc/>
@@ -1183,22 +1208,22 @@ namespace KRT.VRCQuestTools.Models
 
         private IEnumerable<int> GetEnabledEmissionChannels()
         {
-            if (IsEmissionChannelActive(poiyomiMaterial.EnableEmission0, poiyomiMaterial.EmissionStrength0))
+            if (poiyomiMaterial.EnableEmission0)
             {
                 yield return 0;
             }
 
-            if (IsEmissionChannelActive(poiyomiMaterial.EnableEmission1, poiyomiMaterial.EmissionStrength1))
+            if (poiyomiMaterial.EnableEmission1)
             {
                 yield return 1;
             }
 
-            if (IsEmissionChannelActive(poiyomiMaterial.EnableEmission2, poiyomiMaterial.EmissionStrength2))
+            if (poiyomiMaterial.EnableEmission2)
             {
                 yield return 2;
             }
 
-            if (IsEmissionChannelActive(poiyomiMaterial.EnableEmission3, poiyomiMaterial.EmissionStrength3))
+            if (poiyomiMaterial.EnableEmission3)
             {
                 yield return 3;
             }
@@ -1255,11 +1280,8 @@ namespace KRT.VRCQuestTools.Models
             bakeMat.SetFloat("_EmissionBaseColorAsMap3", poiyomiMaterial.EmissionBaseColorAsMap3 ? 1.0f : 0.0f);
         }
 
-        private static bool IsEmissionChannelTexturized(bool enabled, float strength, Texture map, Texture mask, bool baseColorAsMap)
-            => IsEmissionChannelActive(enabled, strength) && (map != null || mask != null || baseColorAsMap);
-
-        private static bool IsEmissionChannelActive(bool enabled, float strength)
-            => enabled && strength > 0.0f;
+        private static bool IsEmissionChannelTexturized(bool enabled, Texture map, Texture mask, bool baseColorAsMap)
+            => enabled && (map != null || mask != null || baseColorAsMap);
 
         private (int Channel, float Strength) GetPrimaryAOChannelAndStrength()
         {

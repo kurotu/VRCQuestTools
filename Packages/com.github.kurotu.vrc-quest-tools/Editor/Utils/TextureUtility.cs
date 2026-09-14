@@ -272,15 +272,16 @@ namespace KRT.VRCQuestTools.Utils
 
             if (texture is RenderTexture rt)
             {
+                // Depth-only runtime inputs have no color buffer to read back.
+                // Keep the input available to the bake shader without trying to convert it.
+                if (rt.graphicsFormat == UnityEngine.Experimental.Rendering.GraphicsFormat.None)
+                {
+                    return rt;
+                }
+
                 if (!rt.IsCreated())
                 {
                     rt.Create();
-                }
-
-                if (rt.graphicsFormat == UnityEngine.Experimental.Rendering.GraphicsFormat.None
-                    || rt.descriptor.graphicsFormat == UnityEngine.Experimental.Rendering.GraphicsFormat.None)
-                {
-                    return CreateReadableTextureCopy(rt);
                 }
 
                 Texture2D newTex = null;
@@ -314,7 +315,7 @@ namespace KRT.VRCQuestTools.Utils
             // container. In that case the path belongs to the container and has no TextureImporter.
             if (!(AssetImporter.GetAtPath(path) is TextureImporter))
             {
-                return CreateReadableTextureCopy(texture);
+                return texture;
             }
 
             var tex2 = LoadUncompressedTexture(path, false);
@@ -401,51 +402,6 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             return (Texture2D)ret;
-        }
-
-        /// <summary>
-        /// Creates an independent readable RGBA32 copy without relying on the source asset importer.
-        /// </summary>
-        /// <param name="texture">Source texture.</param>
-        /// <returns>Readable texture copy.</returns>
-        private static Texture2D CreateReadableTextureCopy(Texture texture)
-        {
-            var previousActive = RenderTexture.active;
-            var readWrite = texture.isDataSRGB ? RenderTextureReadWrite.sRGB : RenderTextureReadWrite.Linear;
-            var temporary = RenderTexture.GetTemporary(
-                texture.width,
-                texture.height,
-                0,
-                RenderTextureFormat.ARGB32,
-                readWrite);
-            try
-            {
-                Graphics.Blit(texture, temporary);
-                RenderTexture.active = temporary;
-
-                var useMipmap = texture.mipmapCount > 1;
-                var result = new Texture2D(
-                    texture.width,
-                    texture.height,
-                    TextureFormat.RGBA32,
-                    useMipmap,
-                    linear: !texture.isDataSRGB)
-                {
-                    name = texture.name,
-                    filterMode = texture.filterMode,
-                    wrapMode = texture.wrapMode,
-                    anisoLevel = texture.anisoLevel,
-                    mipMapBias = texture.mipMapBias,
-                };
-                result.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
-                result.Apply(useMipmap, false);
-                return result;
-            }
-            finally
-            {
-                RenderTexture.active = previousActive;
-                RenderTexture.ReleaseTemporary(temporary);
-            }
         }
 
         /// <summary>

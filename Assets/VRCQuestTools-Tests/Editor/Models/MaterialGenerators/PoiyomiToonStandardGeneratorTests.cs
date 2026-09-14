@@ -182,10 +182,15 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
-        /// Ensure an enabled Poiyomi emission channel with zero strength does not tint the whole Toon Standard material.
+        /// Preserve an enabled channel's color and strength, including zero, without baking its strength twice.
         /// </summary>
-        [Test]
-        public void ConvertToToonStandard_NonBake_ZeroStrengthEmissionDisabled()
+        /// <param name="bake">Whether texture baking is enabled.</param>
+        /// <param name="strength">Source emission strength.</param>
+        [TestCase(false, 0.0f)]
+        [TestCase(false, 0.5f)]
+        [TestCase(true, 0.0f)]
+        [TestCase(true, 0.5f)]
+        public void ConvertToToonStandard_UntexturedEmissionStrengthPreserved(bool bake, float strength)
         {
             if (!AssetUtility.IsPoiyomiImported())
             {
@@ -203,8 +208,12 @@ namespace KRT.VRCQuestTools.Models
             sourceMaterial.Object.SetFloat("_EnableEmission1", 0.0f);
             sourceMaterial.Object.SetFloat("_EnableEmission2", 0.0f);
             sourceMaterial.Object.SetFloat("_EnableEmission3", 1.0f);
-            sourceMaterial.Object.SetFloat("_EmissionStrength3", 0.0f);
+            sourceMaterial.Object.SetFloat("_EmissionStrength3", strength);
             sourceMaterial.Object.SetColor("_EmissionColor3", Color.red);
+            sourceMaterial.Object.SetTexture("_EmissionMap3", null);
+            sourceMaterial.Object.SetTexture("_EmissionMask3", null);
+            sourceMaterial.Object.SetFloat("_EmissionBaseColorAsMap3", 0.0f);
+            sourceMaterial.Object.mainTexture = null;
 
             using var sharedBlack = DisposableObject.New(new Texture2D(2, 2));
             sharedBlack.Object.SetPixel(0, 0, Color.black);
@@ -212,7 +221,12 @@ namespace KRT.VRCQuestTools.Models
 
             var settings = new ToonStandardConvertSettings
             {
-                generateQuestTextures = false,
+                generateQuestTextures = bake,
+                useNormalMap = false,
+                useMatCap = false,
+                useOcclusion = false,
+                useSpecular = false,
+                generateShadowRamp = false,
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
@@ -224,8 +238,9 @@ namespace KRT.VRCQuestTools.Models
 
             Assert.IsNotNull(resultMat, "Generated material should not be null.");
             var wrapper = new ToonStandardMaterialWrapper(resultMat);
-            Assert.AreEqual(sharedBlack.Object, wrapper.EmissionMap, "Emission map should be shared black texture when the only enabled channel has zero strength.");
-            Assert.AreEqual(Color.black, wrapper.EmissionColor, "Emission color should be black when the only enabled channel has zero strength.");
+            Assert.AreNotEqual(sharedBlack.Object, wrapper.EmissionMap, "An enabled channel must not be replaced with a black texture.");
+            Assert.AreEqual(Color.red, wrapper.EmissionColor);
+            Assert.AreEqual(strength, wrapper.EmissionStrength);
         }
 
         /// <summary>
