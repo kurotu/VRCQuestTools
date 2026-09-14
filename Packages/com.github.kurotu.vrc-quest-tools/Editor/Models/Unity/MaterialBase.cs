@@ -127,7 +127,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                     texturesForOverride.Add(t);
                     var tex = TextureUtility.LoadUncompressedTexture(t);
-                    disposables.Add(DisposableObject.New(tex));
+                    // The loader can return borrowed generated textures and runtime buffers.
+                    if (tex != t)
+                    {
+                        disposables.Add(DisposableObject.New(tex));
+                    }
                     baker.Object.SetTexture(name, tex);
                     if (t == mainTexture)
                     {

@@ -106,18 +106,37 @@ namespace KRT.VRCQuestTools.Utils
                 AssetDatabase.SaveAssets();
 
                 var loaded = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
-                using (var result = new DisposableObject<Texture2D>(TextureUtility.LoadUncompressedTexture(loaded)))
+                using (var result = DisposableObject.New(TextureUtility.LoadUncompressedTexture(loaded)))
                 {
-                    Assert.AreNotSame(loaded, result.Object);
-                    Assert.IsEmpty(AssetDatabase.GetAssetPath(result.Object));
-                    Assert.IsTrue(result.Object.isReadable);
-                    Assert.AreEqual(TextureFormat.RGBA32, result.Object.format);
-                    Assert.AreEqual(Color.red, result.Object.GetPixel(0, 0));
+                    Assert.IsNotNull(loaded);
+                    Assert.IsTrue(AssetDatabase.IsSubAsset(loaded));
+                    Assert.IsFalse(loaded.isReadable);
+                    Assert.AreSame(loaded, result.Object);
                 }
+                Assert.IsTrue(loaded != null, "Borrowed sub-assets must survive disposal after baking.");
             }
             finally
             {
                 AssetDatabase.DeleteAsset(path);
+            }
+        }
+
+        /// <summary>
+        /// Depth-only runtime textures must not be submitted for color readback.
+        /// </summary>
+        [Test]
+        public void LoadUncompressedTexture_DepthOnlyInputIsBorrowed()
+        {
+            var texture = new RenderTexture(4, 4, 24, RenderTextureFormat.Depth);
+            try
+            {
+                Assert.AreEqual(UnityEngine.Experimental.Rendering.GraphicsFormat.None, texture.graphicsFormat);
+                Assert.AreSame(texture, TextureUtility.LoadUncompressedTexture(texture));
+                Assert.IsFalse(texture.IsCreated(), "Loading should not allocate a depth-only runtime input.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(texture);
             }
         }
 

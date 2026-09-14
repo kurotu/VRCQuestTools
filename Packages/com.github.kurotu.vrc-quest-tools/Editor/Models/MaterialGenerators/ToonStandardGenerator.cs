@@ -235,6 +235,7 @@ namespace KRT.VRCQuestTools.Models
                     else
                     {
                         newMaterial.EmissionColor = GetEmissionColor();
+                        newMaterial.EmissionStrength = GetEmissionStrength();
                     }
                 }
                 else
@@ -457,6 +458,12 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Emission color.</returns>
         protected abstract Color GetEmissionColor();
+
+        /// <summary>
+        /// Gets emission strength when it has not already been baked into a texture.
+        /// </summary>
+        /// <returns>Emission strength.</returns>
+        protected virtual float GetEmissionStrength() => 1.0f;
 
         /// <summary>
         /// Gets the material should use occulusion map.

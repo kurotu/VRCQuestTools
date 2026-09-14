@@ -27,7 +27,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// </summary>
     internal class AvatarConverter
     {
-        private readonly Dictionary<int, Dictionary<Material, Material>> pendingLateMaterialReplacements = new Dictionary<int, Dictionary<Material, Material>>();
+        private readonly Dictionary<ulong, Dictionary<Material, Material>> pendingLateMaterialReplacements = new Dictionary<ulong, Dictionary<Material, Material>>();
 
         /// <summary>
         /// MaterialWrapperBuilder to use.
@@ -305,14 +305,34 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     return m;
                 }).ToArray();
                 renderer.sharedMaterials = materials;
-                EditorUtility.SetDirty(renderer);
-                if (PrefabUtility.IsPartOfPrefabInstance(renderer))
-                {
-                    PrefabUtility.RecordPrefabInstancePropertyModifications(renderer);
-                }
             }
 
-            pendingLateMaterialReplacements[questAvatarObject.GetInstanceID()] = new Dictionary<Material, Material>(convertedMaterials);
+            if (!saveAssetsAsFile && !EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                RememberConvertedMaterialsForBuild(questAvatarObject, convertedMaterials);
+            }
+        }
+
+        /// <summary>
+        /// Keeps replacements until the final synchronous SDK callback or the next editor update.
+        /// </summary>
+        /// <param name="avatarObject">Build avatar.</param>
+        /// <param name="convertedMaterials">Material replacements.</param>
+        internal void RememberConvertedMaterialsForBuild(GameObject avatarObject, Dictionary<Material, Material> convertedMaterials)
+        {
+            var id = ObjectIdentity.GetId(avatarObject);
+            var replacements = new Dictionary<Material, Material>(convertedMaterials);
+            pendingLateMaterialReplacements[id] = replacements;
+
+            // Failed builds and standalone NDMF processing may never reach the final SDK callback.
+            // Do not retain their material references for the rest of the editor session.
+            EditorApplication.delayCall += () =>
+            {
+                if (pendingLateMaterialReplacements.TryGetValue(id, out var current) && ReferenceEquals(current, replacements))
+                {
+                    pendingLateMaterialReplacements.Remove(id);
+                }
+            };
         }
 
         /// <summary>
@@ -321,7 +341,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
         /// <param name="avatarObject">Processed avatar passed to the VRChat build pipeline.</param>
         internal void ReapplyConvertedMaterialsAfterAssetSave(GameObject avatarObject)
         {
-            if (!pendingLateMaterialReplacements.TryGetValue(avatarObject.GetInstanceID(), out var convertedMaterials))
+            var id = ObjectIdentity.GetId(avatarObject);
+            if (!pendingLateMaterialReplacements.TryGetValue(id, out var convertedMaterials))
             {
                 return;
             }
@@ -345,17 +366,12 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     if (changed)
                     {
                         renderer.sharedMaterials = materials;
-                        EditorUtility.SetDirty(renderer);
-                        if (PrefabUtility.IsPartOfPrefabInstance(renderer))
-                        {
-                            PrefabUtility.RecordPrefabInstancePropertyModifications(renderer);
-                        }
                     }
                 }
             }
             finally
             {
-                pendingLateMaterialReplacements.Remove(avatarObject.GetInstanceID());
+                pendingLateMaterialReplacements.Remove(id);
             }
         }
 
