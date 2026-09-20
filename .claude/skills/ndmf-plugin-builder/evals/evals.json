@@ -1,0 +1,82 @@
+{
+  "skill_name": "ndmf-plugin-builder",
+  "evals": [
+    {
+      "id": 1,
+      "name": "material-swap-plugin",
+      "prompt": "Hey, I've got a Unity/VRChat avatar project. Right now I have an Editor script that walks the avatar hierarchy and directly overwrites every material using the 'MyToon' shader family -- swaps them to 'MyToonOutlineVariant' and tweaks a couple of properties, editing the actual .mat assets in place. A friend told me I should turn this into a proper NDMF plugin instead so it doesn't touch my source assets and only applies at build time. Can you write me an NDMF plugin (Runtime + Editor asmdefs, a settings component the user adds to the avatar, and the pass) that does this conversion non-destructively? It needs to run after Modular Avatar if that's installed. Also, some of my outfit toggle animations swap this material via the FX layer, so make sure those still work correctly after conversion.",
+      "expected_output": "An NDMF plugin package (Runtime settings component + Editor Plugin<T>/Pass<T>) that clones MyToon materials (never mutates the originals), swaps them to MyToonOutlineVariant on the clones, reassigns renderer references, rewrites FX-layer animation object-reference curves to the same clones (with a de-duplicating cache so a shared material maps to one clone), registers replacements via ObjectRegistry (relying on NDMF's automatic end-of-build serialization to persist the wired-in clones, rather than reflexively calling AssetSaver), runs in Transforming phase with AfterPlugin(\"nadena.dev.modular-avatar\"), and reports failures via ErrorReport rather than throwing.",
+      "files": [],
+      "assertions": [
+        "Declares a Plugin<T> subclass with an overridden Configure() method that registers a pass in BuildPhase.Transforming",
+        "Uses the string-based soft-dependency overload AfterPlugin(\"nadena.dev.modular-avatar\") rather than a hard-referenced generic overload",
+        "Clones the material (e.g. `new Material(original)`) rather than mutating the original material asset in place",
+        "Uses a de-duplicating cache (e.g. a Dictionary keyed by the original material) so the same source material maps to one clone",
+        "Rewrites FX-layer animation object-reference curves that reference the swapped material (not just the live renderer reference), e.g. via AnimationIndex.RewriteObjectCurves or equivalent, with a [DependsOnContext(typeof(AnimatorServicesContext))] or WithRequiredExtension activation",
+        "Calls ObjectRegistry.RegisterReplacedObject when swapping a material reference",
+        "Does not reflexively call AssetSaver.SaveAsset for the cloned materials (they're wired into a live renderer reference and animation curves, so NDMF's automatic end-of-build serialization already persists them)",
+        "Uses ErrorReport for recoverable failures (e.g. missing target shader) instead of throwing an exception that would abort the whole build",
+        "Settings component implements INDMFEditorOnly rather than a hand-rolled #if VRC_SDK guard"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "collider-cleanup-plugin",
+      "prompt": "I want an NDMF plugin for my VRChat avatar setup. When a component called `EyeColliderStripper` is present on the avatar root, the plugin should, at build time, find and remove every `VRCPhysBoneCollider` whose GameObject name starts with 'Eye', and also make sure no FX animation clip still references those removed colliders (some of my blink/eye animations toggle collider radius via animation curves). This should run in the Transforming phase after Modular Avatar since MA sometimes generates the eye colliders in the first place. Write the plugin (component + pass), following NDMF conventions.",
+      "expected_output": "An NDMF plugin with an EyeColliderStripper settings component (INDMFEditorOnly) and a Pass<T> in the Transforming phase with AfterPlugin(\"nadena.dev.modular-avatar\") that finds VRCPhysBoneCollider components on GameObjects named starting with 'Eye', removes them from the live hierarchy, and also strips or rewrites any FX animation curves that reference those collider GameObjects/components (using the animator-services layer, not just deleting the live components), so no dangling animation curve is left pointing at a removed object. Destroys the marker component at the end.",
+      "files": [],
+      "assertions": [
+        "Declares a Plugin<T> subclass with Configure() registering a pass in BuildPhase.Transforming with AfterPlugin(\"nadena.dev.modular-avatar\")",
+        "Defines an EyeColliderStripper (or equivalently named) settings component implementing INDMFEditorOnly",
+        "Finds VRCPhysBoneCollider components on GameObjects whose name starts with 'Eye' and removes/destroys them",
+        "Addresses the animation curves referencing the removed colliders' radius (a float curve, not an object-reference curve) -- e.g. via VirtualClip float curve accessors (GetFloatCurveBindings/GetFloatCurve/SetFloatCurve) or explicit binding removal -- rather than only deleting the live components and ignoring the animation layer",
+        "Destroys the settings/marker component at the end of the pass"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "blendshape-toggle-plugin-with-tests",
+      "prompt": "Can you build me an NDMF plugin + tests? I have a settings component with a bool field `disableBlink` -- when true, at build time the plugin should set the 'Blink' blend shape weight on the face SkinnedMeshRenderer to a fixed value (e.g. 100) instead of leaving it animator-controlled, and also strip/rewrite the FX layer's blink animation so it doesn't fight with the fixed value. I'd like EditMode tests for this too since I don't have a lot of NDMF testing experience -- please include tests that build a minimal avatar in code and check the behavior.",
+      "expected_output": "An NDMF plugin (settings component + Pass<T>) that, when disableBlink is true, sets the SkinnedMeshRenderer's Blink blend shape weight to a fixed value and removes/neutralizes the FX layer's animation curve driving that blend shape (via the animator-services layer), plus EditMode tests that build a minimal VRCAvatarDescriptor + SkinnedMeshRenderer + FX AnimatorController avatar in code, run the pass via BuildContext(root, null) + ActivateExtensionContextRecursive<AnimatorServicesContext>(), and assert both the blend shape weight and the absence/neutralization of the conflicting FX curve.",
+      "files": [],
+      "assertions": [
+        "Declares a Plugin<T> subclass with Configure() registering a pass in BuildPhase.Transforming",
+        "Sets the blend shape weight via SkinnedMeshRenderer.SetBlendShapeWeight for the 'Blink' shape when disableBlink is true",
+        "Neutralizes or removes the FX layer's float curve driving the Blink blend shape weight (not just setting the live value), referencing a float-curve API (GetFloatCurveBindings/GetFloatCurve/SetFloatCurve) or equivalent rather than only RewriteObjectCurves",
+        "Includes an EditMode test assembly (.asmdef) referencing UnityEngine.TestRunner/UnityEditor.TestRunner",
+        "Test code constructs a BuildContext via `new BuildContext(root, null)`",
+        "Test code activates the animator services context via ActivateExtensionContextRecursive<AnimatorServicesContext>() (not the non-recursive ActivateExtensionContext<T>) and calls DeactivateAllExtensionContexts() before asserting",
+        "Test builds a minimal VRCAvatarDescriptor with a populated baseAnimationLayers array rather than assuming it is pre-populated"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "material-swap-plugin-with-preview",
+      "prompt": "Building on the MyToon-to-MyToonOutlineVariant NDMF plugin from before -- I also want NDMF Preview support, so I can see the swapped material live in the Scene view on my avatar without running a full build every time.",
+      "expected_output": "An IRenderFilter/IRenderFilterNode implementation registered via .PreviewingWith(...) chained off the existing .Run(...) call, using a single static/singleton filter instance. GetTargetGroups queries through ComputeContext (context.GetAvatarRoots(), context.GetComponentsInChildren, ...) rather than plain Unity APIs so the preview recomputes reactively. Instantiate/Refresh only ever write to the proxy renderer, never the original. Critically, OnFrame reapplies the converted materials to the proxy every frame (from a cache like Dictionary<Renderer, Material[]> computed once in Instantiate/Refresh), because NDMF resets the proxy's materials from the original before every rendered frame. The preview path does not call context.AssetSaver.SaveAsset (nothing to persist, no BuildContext) and does not route failures through ErrorReport.ReportError (falls back silently instead), reusing the same core conversion logic as the build-time pass.",
+      "files": [],
+      "assertions": [
+        "Registers the preview filter via .PreviewingWith(...) chained off the same .Run(...) call that registers the build-time pass",
+        "Uses a single static/singleton IRenderFilter instance rather than constructing a new filter per call or registering the same instance twice",
+        "Implements IRenderFilter.GetTargetGroups using ComputeContext queries (e.g. context.GetAvatarRoots(), context.GetComponentsInChildren) rather than plain Unity scene APIs",
+        "Implements IRenderFilterNode.OnFrame and reapplies the converted materials to the proxy renderer inside it (not only assigning them in Instantiate/Refresh)",
+        "Instantiate/Refresh write only to the proxy renderer and never mutate the original renderer's materials",
+        "Does not call context.AssetSaver.SaveAsset(...) from the preview filter code path",
+        "Does not call ErrorReport.ReportError(...) from the preview filter code path"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "material-variant-swap-plugin",
+      "prompt": "One more wrinkle on that MyToon-to-MyToonOutlineVariant conversion: some of the MyToon materials on my avatar are Material Variants (created via the Project window's 'Create > Material Variant', so they have a parent material). After conversion those ones still render with the old shader even though the non-variant ones convert fine. Make sure the conversion actually applies the new shader to the variants too.",
+      "expected_output": "After cloning a Material Variant (new Material(original) where original.isVariant is true / original.parent is non-null), the pass breaks the variant link on the clone (clone.parent = null, which bakes the currently-resolved values into a standalone material) before assigning the new shader -- because a variant clone otherwise silently ignores shader changes the variant system locks, with no exception or warning. The original material's parent link is left untouched, and non-variant materials are handled as before.",
+      "files": [],
+      "assertions": [
+        "Detects that the cloned material is a Material Variant (e.g. checks clone.isVariant or clone.parent != null)",
+        "Breaks the variant link on the clone (sets clone.parent = null) before assigning the new shader",
+        "Explains or accounts for the failure mode being silent (no exception or console warning when a variant ignores a shader assignment)",
+        "Does not modify original.parent or otherwise mutate the original material asset"
+      ]
+    }
+  ]
+}
