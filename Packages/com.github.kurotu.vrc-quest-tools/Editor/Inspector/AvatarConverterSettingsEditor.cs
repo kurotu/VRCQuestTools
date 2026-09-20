@@ -372,6 +372,18 @@ namespace KRT.VRCQuestTools.Inspector
 
                     EditorGUILayout.Space();
 
+                    var avatarToBuild = descriptor ? descriptor.gameObject : null;
+                    using (var disabledBuildAndTest = new EditorGUI.DisabledGroupScope(!NdmfAvatarBuilder.CanBuildAndTestWithMobileSettings(avatarToBuild)))
+                    {
+                        if (GUILayout.Button(new GUIContent("[NDMF] " + i18n.NdmfBuildAndTestLabel, i18n.NdmfBuildAndTestTooltip)))
+                        {
+                            // BuildAndTestWithMobileSettings reports its own results with dialogs, so the task needs no continuation here.
+                            _ = NdmfAvatarBuilder.BuildAndTestWithMobileSettings(avatarToBuild);
+                        }
+                    }
+
+                    EditorGUILayout.Space();
+
                     editorState.foldOutManualConversion = EditorGUILayout.Foldout(editorState.foldOutManualConversion, i18n.ManualConversionFoldoutLabel, true);
                     if (editorState.foldOutManualConversion)
                     {

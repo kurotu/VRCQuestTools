@@ -152,6 +152,12 @@ msgstr "Temporarily enable material conversion preview via NDMF Preview."
 msgid "ForceMaterialPreviewDisableTooltip"
 msgstr "Disable the temporarily enabled material conversion preview via NDMF Preview."
 
+msgid "NdmfBuildAndTestLabel"
+msgstr "Test avatar on PC"
+
+msgid "NdmfBuildAndTestTooltip"
+msgstr "Build the avatar with mobile settings to make it testable on PC."
+
 msgid "GeneratingTexturesDialogMessage"
 msgstr "Generating textures..."
 
@@ -678,7 +684,7 @@ msgid "BuildAndTestFailed"
 msgstr "Failed to build avatar: {0}"
 
 msgid "BuildAndTestSucceeded"
-msgstr "Successfully built the avatar {0} for local testing."
+msgstr "Successfully built the avatar {0} for local testing.\nYou can test it in \"SDK Test Avatars\" in VRChat."
 
 msgid "LegacyPackageExceptionMessage"
 msgstr "The current version of {0} is not supported. Update {0} to {1} or later."
