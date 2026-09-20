@@ -1,0 +1,82 @@
+[
+  {
+    "query": "NDMFプラグインを自作したいです。アバターのビルド時に特定のマテリアルを複製して色違い版に差し替えるものです。Plugin<T>とPassの書き方から教えてください。",
+    "should_trigger": true
+  },
+  {
+    "query": "I have an editor script that tints my avatar's textures, but it modifies the source material assets directly. I want this to happen automatically at upload time instead, without touching the project files. It's a VRChat avatar set up with VCC.",
+    "should_trigger": true
+  },
+  {
+    "query": "うちのNDMFプラグインにプレビュー対応を足したい。ビルドしなくてもSceneビューで結果が見えるようにしたい。IRenderFilterってやつを使うらしいけどよくわからない",
+    "should_trigger": true
+  },
+  {
+    "query": "my ndmf pass runs before modular avatar merges armatures so the bone references end up wrong. how do i make my plugin run after nadena.dev.modular-avatar in the transforming phase?",
+    "should_trigger": true
+  },
+  {
+    "query": "自作のNDMFパスでメッシュのマテリアルを差し替えているんだけど、エディタ上では正しく見えるのにアニメーションを再生するとマテリアルが元に戻ってしまう。原因は何?",
+    "should_trigger": true
+  },
+  {
+    "query": "so i have this unity tool that deletes helper gameobjects and swaps blendshape values on my vrchat avatar before upload, but i have to click a button every time and it wrecks the prefab. can we make it non-destructive so it just applies during the avatar build",
+    "should_trigger": true
+  },
+  {
+    "query": "自作プラグインの挙動が、普通のNDMFビルドとVRChatのアップロード時とで違う。VRCFuryも入っている環境です。パスの実行順が関係している?",
+    "should_trigger": true
+  },
+  {
+    "query": "writing a pass that needs to find all SkinnedMeshRenderers under the avatar root and add a marker component to each — what's the right way to get the avatar root from BuildContext, and should this go in the Generating or Transforming phase?",
+    "should_trigger": true
+  },
+  {
+    "query": "NDMFプラグインのEditModeテストを書きたい。テスト内で最小構成のアバターを組み立ててパスを直接実行し、結果を検証する方法を教えて。",
+    "should_trigger": true
+  },
+  {
+    "query": "how do i make an ndmf plugin that renames bones and also fixes up the animation clips that reference them? unity 2022 with the vrchat sdk",
+    "should_trigger": true
+  },
+  {
+    "query": "Modular Avatarで衣装を導入したらボーンが二重になってしまった。MA Merge Armatureの設定のどこが間違っている?",
+    "should_trigger": false
+  },
+  {
+    "query": "can you explain how Modular Avatar's Merge Armature works internally? like how it decides which bones to merge vs reparent — I'm curious about the algorithm",
+    "should_trigger": false
+  },
+  {
+    "query": "VRChatアバターに服のトグルを作りたい。Expression MenuとAnimatorでオンオフできるようにしたい。FXレイヤーの組み方を教えて。",
+    "should_trigger": false
+  },
+  {
+    "query": "AAO Trace and Optimize is stripping a blendshape that my OSC app animates at runtime. how do I tell it to keep that blendshape? I'm not writing any code, just using the tool",
+    "should_trigger": false
+  },
+  {
+    "query": "Unityのエディタ拡張で、選択中のフォルダ内の全テクスチャのインポート設定を一括変更するウィンドウを作りたい",
+    "should_trigger": false
+  },
+  {
+    "query": "for our mobile game I need a build preprocessing step that swaps hi-res textures for compressed ones at build time. should I use AssetPostprocessor or IPreprocessBuildWithReport?",
+    "should_trigger": false
+  },
+  {
+    "query": "VRCFuryのToggleで服の着せ替えを作っていたんだけど、アップロードするとメニューが二重に生成される。VRCFuryの設定の問題?",
+    "should_trigger": false
+  },
+  {
+    "query": "im making a vrchat world with udonsharp, need a script that teleports players to a spawn point when they enter a trigger zone",
+    "should_trigger": false
+  },
+  {
+    "query": "自作MonoBehaviourのInspectorを見やすくしたい。CustomEditorでボタンや折りたたみを追加する方法は?",
+    "should_trigger": false
+  },
+  {
+    "query": "I want my avatar's material to change color at runtime based on the time of day in the instance — some kind of shader or animator setup for vrchat?",
+    "should_trigger": false
+  }
+]
