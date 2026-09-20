@@ -26,6 +26,7 @@
 - [NDMF] `Platform GameObject Remover` のプレビューを追加。対象プラットフォームで削除される GameObject 配下の Renderer が非表示になります。
 - `Tools/VRCQuestTools/Settings` に `Enable Debug Log` メニューを追加し、実プロジェクトでもデバッグログを有効化できるようにしました。
 - `Tools/VRCQuestTools` に `Migrate Legacy Avatar Dynamics Settings` メニューを追加。`Avatar Converter Settings` の旧形式の Avatar Dynamics 設定を `Platform Component Remover` コンポーネントへ移行できます。
+- [NDMF] `Avatar Converter Settings` に `PCでアバターをテスト` ボタンを追加。モバイル設定を適用してアバターをビルドし、PCでテスト可能にします。
 
 ### 変更
 - NDMF のマテリアル変換プレビューを即座に表示し、圧縮はバックグラウンドで完了するように変更。プレビューの再生成中にエディターが固まらなくなります。

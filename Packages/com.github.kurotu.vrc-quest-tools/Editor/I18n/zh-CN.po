@@ -678,7 +678,7 @@ msgid "BuildAndTestFailed"
 msgstr "构建化身失败:{0}"
 
 msgid "BuildAndTestSucceeded"
-msgstr "已成功构建化身 {0} 用于本地测试。"
+msgstr "已成功构建化身 {0} 用于本地测试。\n你可以在 VRChat 的“SDK 本地测试模型”中进行测试。"
 
 msgid "LegacyPackageExceptionMessage"
 msgstr "当前版本的 {0} 不受支持。请将 {0} 更新到 {1} 或更高版本。"

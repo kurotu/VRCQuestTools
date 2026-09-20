@@ -1,3 +1,8 @@
+// <copyright file="NdmfSessionState.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -7,6 +12,7 @@ namespace KRT.VRCQuestTools.Ndmf
 {
     /// <summary>
     /// Session state for VRCQuestTools NDMF.
+    /// This lives in the main editor assembly because inspectors also request a build target.
     /// </summary>
     internal static class NdmfSessionState
     {

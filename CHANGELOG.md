@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [NDMF] Preview for `Platform GameObject Remover`. Renderers under GameObjects to be removed are hidden for the target platform.
 - Added `Enable Debug Log` menu under `Tools/VRCQuestTools/Settings` to enable verbose debug logging in real projects.
 - Added `Migrate Legacy Avatar Dynamics Settings` menu under `Tools/VRCQuestTools` to migrate obsolete Avatar Dynamics settings of `Avatar Converter Settings` to `Platform Component Remover` components.
+- [NDMF] Added `Test avatar on PC` button to `Avatar Converter Settings` to build the avatar with mobile settings for local testing on PC.
 
 ### Changed
 - NDMF material conversion previews now appear immediately and finish compressing in the background, so the editor no longer freezes while a preview regenerates.

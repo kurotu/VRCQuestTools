@@ -103,6 +103,8 @@ namespace KRT.VRCQuestTools.I18n
         internal string ForceMaterialPreviewDisableLabel => GetText("ForceMaterialPreviewDisableLabel");
         internal string ForceMaterialPreviewEnableTooltip => GetText("ForceMaterialPreviewEnableTooltip");
         internal string ForceMaterialPreviewDisableTooltip => GetText("ForceMaterialPreviewDisableTooltip");
+        internal string NdmfBuildAndTestLabel => GetText("NdmfBuildAndTestLabel");
+        internal string NdmfBuildAndTestTooltip => GetText("NdmfBuildAndTestTooltip");
         internal string GeneratingTexturesDialogMessage => GetText("GeneratingTexturesDialogMessage");
         internal string AvatarConverterFailedDialogMessage => GetText("AvatarConverterFailedDialogMessage");
         internal string MaterialExceptionDialogMessage => GetText("MaterialExceptionDialogMessage");
