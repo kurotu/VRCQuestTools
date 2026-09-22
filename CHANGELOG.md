@@ -8,75 +8,76 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Added iOS Build Support check in `Unity Settings for Mobile`; when missing, guidance is shown but it does not trigger startup auto-open.
-- Apply platform-specific texture override settings (compression format and max texture size) from source textures to generated textures.
-- Added options to Toon Standard conversion settings.
-    - `Generate shadow ramp` to generate shadow ramp texture.
-    - `Features` to select features to apply to the converted material.
-    - `Mask Textures Size Limit` and `Mask Compression Format` to control max resolution and compression format of mask textures independently.
-    - `MatCap Texture Settings` to control max resolution and compression format of matcap textures independently. The default max resolution is 256x256.
-- Added opt-in/opt-out mode for Toon Standard feature selection. The default is opt-out with all features enabled.
-- Preview wireframe when selecting PhysBones to keep.
-- [NDMF] Preview for material conversion and removal of vertex color.
-- Added "No Override" option to texture compression format settings, allowing Unity's default ASTC compression settings to control texture format instead of forcing platform-specific overrides. The default texture compression format for `Avatar Converter Settings` component is now "No Override".
-- Added `VQT Fallback Avatar` component that automatically sets an avatar as a fallback avatar after upload when performance requirements are met (Good or better rating for mobile platforms).
-- Show warning logs during mobile upload when Avatar Dynamics categories are rated Very Poor.
+- Options for Toon Standard conversion settings.
+    - "Generate shadow ramp": generates a ramp texture for shadow settings.
+    - "Feature Settings": selects the features to apply to the converted material, as opt-in or opt-out.
+    - "Mask Texture Settings": sets the max resolution and compression format of mask textures separately.
+    - "MatCap Settings": sets the max resolution and compression format of MatCap textures separately.
+- Material conversion dedicated to particle shaders, particle systems, Trail Renderers, and Line Renderers.
+- `No Override` option for texture compression format. It sets no platform-specific override and follows Unity's default settings. The default value of material conversion settings is now `No Override`.
+- Apply platform-specific override settings (compression format and max texture size) of source textures to generated textures.
+- Wireframe preview when selecting Avatar Dynamics components to keep.
+- Button in `PhysBones Remover` to apply the current keep/remove selection to `VQT Platform Component Remover` components.
+- Warning logs when uploading for Mobile if an Avatar Dynamics category is rated Very Poor.
+- Menu icon compression and resize settings in `VQT Avatar Converter Settings`.
+- "Assign Network IDs" option in the advanced settings of `VQT Avatar Converter Settings`.
+- Warning in `VQT Avatar Converter Settings` when the avatar has no `MA Sync Parameter Sequence` or `AAO Trace and Optimize` component.
+- `VQT Fallback Avatar` component. It automatically sets the avatar as a fallback avatar after upload when the performance rank for Mobile is Good or better.
+- iOS Build Support check in `Unity Settings for Mobile`.
+- `Migrate Legacy Avatar Dynamics Settings` menu under `Tools/VRCQuestTools`.
+- `Enable Debug Log` menu under `Tools/VRCQuestTools/Settings`.
+- Simplified Chinese (简体中文) translation. (by @Saukiya)
+- [NDMF] Preview for material conversion and vertex color removal.
+- [NDMF] Preview for `VQT Platform GameObject Remover`.
+- [NDMF] "Test avatar on PC" button in `VQT Avatar Converter Settings`.
+- [NDMF] `[NDMF] Build and Test for PC with Mobile Settings` context menu.
 - (Experimental) Material conversion from Poiyomi to Toon Standard.
-- Material conversion for particle shaders, particle systems, trail renderers and line renderers.
-- `Avatar Converter Settings` now warns when a MA Sync Parameter Sequence or AAO Trace and Optimize component is missing on the avatar, with a button to add it.
-- [NDMF] Preview for `Platform GameObject Remover`. Renderers under GameObjects to be removed are hidden for the target platform.
-- Added `Enable Debug Log` menu under `Tools/VRCQuestTools/Settings` to enable verbose debug logging in real projects.
-- Added `Migrate Legacy Avatar Dynamics Settings` menu under `Tools/VRCQuestTools` to migrate obsolete Avatar Dynamics settings of `Avatar Converter Settings` to `Platform Component Remover` components.
-- [NDMF] Added `Test avatar on PC` button to `Avatar Converter Settings` to build the avatar with mobile settings for local testing on PC.
 
 ### Changed
-- NDMF material conversion previews now appear immediately and finish compressing in the background, so the editor no longer freezes while a preview regenerates.
-- Texture compression for ASTC formats now uses the bundled astcenc encoder (Windows/Linux) or a system-installed astcenc (macOS), running on all CPU cores. When astcenc is not available, the previous Unity compressor is used as before.
-- Avatar Dynamics Selector now stores keep/remove settings in `Platform Component Remover` instead of the legacy arrays in `Avatar Converter Settings`. Applying the selector migrates settings and clears the legacy arrays to avoid stale references.
-- Added a button in PhysBones Remover to apply current keep/remove selections to `Platform Component Remover`.
-- Grouped the component list in Avatar Dynamics Selector and PhysBones Remover by prefab.
-- Optimized Avatar Dynamics performance estimation timing in `Avatar Converter Settings` inspector.
-- Manual conversion from `Avatar Converter Settings` now keeps the original avatar active and places the converted avatar offset along world +Z from the original avatar.
-- Changed the initial value of default material conversion settings to Toon Standard.
+- Changed the default material conversion settings to Toon Standard.
 - Improved the appearance when converting lilToon normal mode MatCap to Toon Standard.
-- Unsupported materials to be processed are no longer warned in `Avatar Converter Settings` and `Material Conversion Settings`.
+- Improved the error message of material conversion when using an unsupported version of lilToon.
+- Unsupported materials that already have a conversion method set are no longer warned in `VQT Avatar Converter Settings` and `VQT Material Conversion Settings`.
+- Vertex color removal during avatar conversion now uses `.vqtmesh` assets instead of `VQT Vertex Color Remover` components.
+- ASTC texture compression now uses the bundled astcenc (Windows/Linux) or a system-installed astcenc (macOS). When astcenc is not available, Unity's compressor is used as before.
+- Moved the texture cache from the user folder to the project's Library folder.
+- Changed the default texture cache size limit from 128MB to 1GB.
+- Changed the texture cache format from base64 JSON to binary.
+- `Avatar Dynamics Selector` now saves keep/remove settings to `VQT Platform Component Remover` components instead of the settings of `VQT Avatar Converter Settings`.
+- Grouped the component lists of `Avatar Dynamics Selector` and `PhysBones Remover` by prefab.
+- Improved the layout of the `VQT Avatar Converter Settings` inspector.
+- Optimized the timing of Avatar Dynamics performance estimation in the `VQT Avatar Converter Settings` inspector.
+- Manual conversion with the convert button of `VQT Avatar Converter Settings` no longer deactivates the original avatar, and places the converted avatar offset from the original along world +Z.
+- Manual conversion with the convert button of `VQT Avatar Converter Settings` now applies `VQT Platform GameObject Remover` settings and removes GameObjects marked for removal on Mobile.
+- Renamed the `Convert Avatar for Mobile` menu to `Setup Avatar for Mobile`. Options for Modular Avatar and Avatar Optimizer components are shown only when each package is installed, and already added ones are shown disabled.
+- `Setup Avatar for Mobile` no longer adds `VQT Network ID Assigner` automatically. Use "Assign Network IDs" in the advanced settings of `VQT Avatar Converter Settings` instead.
+- Unified the Android/iOS terminology to "Mobile".
+- Changed the suffix appended to the converted avatar's object name from ` (Android)` to ` (Mobile)`.
+- Adjusted component icons.
+- Avatar conversion now fails with an error when using an unsupported version of Modular Avatar.
 - Turned off Auto Referenced in asmdef.
-- Improved error messages when converting unsupported lilToon materials.
-- Changed to show an error when converting an avatar that uses an unsupported Modular Avatar.
-- Changed to use `.vqtmesh` asset to remove vertex color in avatar conversion instead of using `Vertex Color Remover` component.
-- [NDMF] Show an error dialog then abort the build when using unsupported version of NDMF.
-- [NDMF] Enabled preview for `Mesh Flipper` by default.
-- Unified Android/iOS terminology to "Mobile" in user-facing strings and UI elements. Android-specific terminology is retained for Unity Build Support settings and internal APIs.
-- Change suffix of converted avatar's object name to ` (Mobile)` instead of ` (Android)`.
-- Manual conversion from `Avatar Converter Settings` now applies `Platform GameObject Remover` settings and removes marked GameObjects for Android.
-- `Convert Avatar for Mobile` no longer auto-attaches `VQT Network ID Assigner`; use the new `Assign Network IDs` option in `Avatar Converter Settings` advanced settings instead.
-- Adjusted component icons for improved visual consistency.
-- Integrated menu icon settings into `Avatar Converter Settings`, and aligned NDMF icon processing with `VQT Menu Icon Resizer`.
-- Renamed `Convert Avatar for Mobile` to `Setup Avatar for Mobile` and updated setup to use availability-aware MA/AAO options with disabled already-added items and `MA Sync Parameter Sequence` defaulting `PrimaryPlatform` to `PC`.
-- Improved `Avatar Converter Settings` inspector layout.
-- The default texture cache size limit is now 1GB instead of 128MB, so generated textures survive long enough to actually be reused. Projects which never changed the setting are updated to the new default automatically.
-- Texture cache entries are now stored in a compact binary format instead of base64-encoded JSON, which makes the cache about 25% smaller on disk and reduces memory use while converting. Entries written by other versions are discarded automatically instead of occupying the size limit.
-- The texture cache size limit is now applied after NDMF material conversion previews as well, which previously could grow the cache beyond the limit until an avatar was actually converted.
+- [NDMF] Show an error dialog and abort the build when using an unsupported version of NDMF.
+- [NDMF] The `Auto` NDMF phase now converts in the Optimizing phase even when VRCFury is present. VRCQuestTools suppresses VRCFury's removal of materials unsupported on Mobile.
+- [NDMF] Enabled the preview of `VQT Mesh Flipper` by default.
 
 ### Fixed
-- `InvalidMaterialSwapNullException` did not properly return the invalid mapping.
-- Fixed `Texture Cache Size (MB)` in Project Settings accepting an out-of-range value, where a negative value disabled the size limit entirely.
-- Fixed RenderTexture and Material memory leaks in texture generation pipeline during avatar conversion.
-- Fixed an issue where texture generation failed when a material used an un-rendered RenderTexture as a texture.
-- Limited stack trace lines shown in avatar conversion failure dialog to keep the dialog operable.
-- Fixed lilToon to Toon Standard conversion producing overly dark results by deriving occlusion strength from the lilToon shadow colors instead of always applying full-strength occlusion.
-- Fixed lilToon to Toon Standard conversion computing gloss/metallic strength from the un-linearized (gamma-space) Reflection Color, which also caused Metallic to be inadvertently gamma-decoded a second time.
-- [NDMF] Fixed converted materials turning pink when VRCFury is present and the NDMF phase resolves to Optimizing, by suppressing VRCFury's own non-mobile material removal for avatars VRCQuestTools is about to convert in that phase. `Auto` now resolves to the Optimizing phase even when VRCFury components exist, as long as VRCFury's material removal can be suppressed; otherwise it falls back to the Transforming phase as before.
-- Fixed material replacement doing nothing when the target material already used a shader allowed for Mobile avatars. Both `VQT Material Swap` and `Material Replacement` in additional material conversion settings now accept such a material as the replacement target.
-- Fixed applying Avatar Dynamics settings to a Prefab silently discarding the keep selection of a Prefab Variant or prefab instance which overrode the legacy keep lists with the same array length.
+- Fixed lilToon to Toon Standard conversion producing dark results because shadow colors were not reflected in Occlusion.
+- Fixed lilToon to Toon Standard conversion not converting Reflection Color to linear color space when computing Gloss/Metallic strength.
+- Fixed material replacement not being applied when the source material uses a shader allowed for Mobile avatars.
+- Fixed texture generation failing for materials that use a never-rendered RenderTexture as a texture.
+- Fixed RenderTexture and Material memory leaks in texture generation during avatar conversion.
+- Fixed the avatar conversion failure dialog becoming inoperable when the stack trace is long. The number of displayed lines is now limited.
+- Fixed `Texture Cache Size (MB)` in Project Settings accepting out-of-range values, where a negative value disabled the limit.
+- Fixed `InvalidMaterialSwapNullException` not returning the mapping.
+- Fixed compile errors in Unity 6.
 
 ### Removed
 - Removed support for Unity 2019.
 - Removed support for VRCSDK earlier than 3.9.0.
 - Removed support for lilToon earlier than 1.10.0.
 - Removed support for NDMF earlier than 1.5.0.
-- Removed the `Animation Override` feature from `Avatar Converter Settings`. The setting remains serialized but is no longer used during conversion.
-- Removed VQT Avatar Builder window. Use VRChat SDK Control Panel to build and upload avatars directly, or use the "[NDMF] Build and Test for PC with Android Settings" context menu for local testing.
+- Removed the "Animation Override" feature from `VQT Avatar Converter Settings`.
+- Removed the `VQT Avatar Builder` window. Use the VRChat SDK control panel to build and upload avatars, and the `[NDMF] Build and Test for PC with Mobile Settings` context menu to test on PC.
 
 ## [2.11.7] - 2026-06-27
 
