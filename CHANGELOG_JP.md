@@ -7,75 +7,76 @@
 ## [Unreleased]
 
 ### 追加
-- `Unity Settings for Mobile` に iOS Build Support の確認項目を追加。未インストール時は案内を表示しますが、起動時の自動表示条件には含めません。
-- 元テクスチャのプラットフォーム別オーバーライド設定（圧縮形式と最大テクスチャサイズ）を生成テクスチャに反映。
-- Toon Standard の変換設定に項目を追加
-    - `影の設定を生成する`: 影の設定用のRampテクスチャを生成します。
-    - `機能設定`: 変換されたマテリアルに適用する機能を選択します。
-    - `マスクテクスチャの最大サイズ` と `マスクの圧縮形式`: マスクテクスチャの最大解像度と圧縮形式を個別に設定できます。
-    - `マットキャップ設定`: マットキャップテクスチャの最大解像度と圧縮形式を個別に設定できます。デフォルトの最大解像度は256x256です。
-- Toon Standard の機能設定にオプトイン/オプトアウトモードを追加。初期値はオプトアウトで、すべての機能が有効です。
-- 残しておく PhysBone を選択するときにワイヤーフレームによるプレビューを追加。
-- [NDMF] マテリアル変換と頂点カラー削除のプレビューを追加。
-- テクスチャ圧縮形式の設定に「No Override」オプションを追加し、プラットフォーム別オーバーライドを設定せずにUnityのデフォルト設定でASTC圧縮を制御できるようにしました。`Avatar Converter Settings` コンポーネントのテクスチャ圧縮形式のデフォルト値は「No Override」になりました。
-- `VQT Fallback Avatar` コンポーネントを追加。モバイルプラットフォームのパフォーマンス要件（Good以上）を満たした場合、アップロード後に自動的にアバターをフォールバックアバターとして設定します。
-- Mobile向けアップロード時、Avatar Dynamics のカテゴリが Very Poor の場合に警告ログを表示するよう追加。
-- (実験的機能) Poiyomi から Toon Standard へのマテリアル変換を追加。
+- Toon Standard の変換設定に項目を追加。
+    - 「Shadow Ramp を生成する」: 影の設定用の Ramp テクスチャを生成。
+    - 「機能設定」: 変換後のマテリアルに適用する機能をオプトインまたはオプトアウト形式で選択。
+    - 「マスクテクスチャ設定」: マスクテクスチャの最大解像度と圧縮形式を個別に設定。
+    - 「マットキャップ設定」: MatCap テクスチャの最大解像度と圧縮形式を個別に設定。
 - パーティクルシェーダー、パーティクルシステム、Trail Renderer、Line Renderer 専用のマテリアル変換を追加。
-- `Avatar Converter Settings` で、アバターに MA Sync Parameter Sequence または AAO Trace and Optimize コンポーネントがない場合に警告と追加ボタンを表示するように追加。
-- [NDMF] `Platform GameObject Remover` のプレビューを追加。対象プラットフォームで削除される GameObject 配下の Renderer が非表示になります。
-- `Tools/VRCQuestTools/Settings` に `Enable Debug Log` メニューを追加し、実プロジェクトでもデバッグログを有効化できるようにしました。
-- `Tools/VRCQuestTools` に `Migrate Legacy Avatar Dynamics Settings` メニューを追加。`Avatar Converter Settings` の旧形式の Avatar Dynamics 設定を `Platform Component Remover` コンポーネントへ移行できます。
-- [NDMF] `Avatar Converter Settings` に `PCでアバターをテスト` ボタンを追加。モバイル設定を適用してアバターをビルドし、PCでテスト可能にします。
+- テクスチャの圧縮形式に `No Override` オプションを追加。プラットフォーム別のオーバーライドを設定せず、Unity のデフォルト設定に従います。マテリアル変換設定のデフォルト値は `No Override` になります。
+- 変換元テクスチャのプラットフォーム別オーバーライド設定 (圧縮形式と最大テクスチャサイズ) を生成後のテクスチャに反映する機能を追加。
+- 残しておく Avatar Dynamics コンポーネントを選択するときにワイヤーフレームによるプレビューを追加。
+- `PhysBones Remover` に、現在の保持/削除の選択を `VQT Platform Component Remover` として反映するボタンを追加。
+- Mobile 向けアップロード時、Avatar Dynamics のカテゴリが Very Poor の場合に警告ログを表示。
+- `VQT Avatar Converter Settings` にメニューアイコンの圧縮とリサイズの設定を追加。
+- `VQT Avatar Converter Settings` の高度な設定に「Network ID を割り当てる」オプションを追加。
+- `VQT Avatar Converter Settings` で、アバターに `MA Sync Parameter Sequence` または `AAO Trace and Optimize` コンポーネントがない場合に警告を表示。
+- `VQT Fallback Avatar` コンポーネントを追加。Mobile 向けのパフォーマンスランクが Good 以上の場合、アップロード後に自動でフォールバックアバターとして設定します。
+- `Unity Settings for Mobile` に iOS Build Support の確認項目を追加。
+- `Tools/VRCQuestTools` に `Migrate Legacy Avatar Dynamics Settings` メニューを追加。
+- `Tools/VRCQuestTools/Settings` に `Enable Debug Log` メニューを追加。
+- 簡体字中国語 (简体中文) 翻訳を追加。 (by @Saukiya)
+- [NDMF] マテリアル変換と頂点カラー削除のプレビューを追加。
+- [NDMF] `VQT Platform GameObject Remover` のプレビューを追加。
+- [NDMF] `VQT Avatar Converter Settings` に「PCでアバターをテスト」ボタンを追加。
+- [NDMF] `[NDMF] Build and Test for PC with Mobile Settings` 右クリックメニューを追加。
+- (実験的機能) Poiyomi から Toon Standard へのマテリアル変換を追加。
 
 ### 変更
-- NDMF のマテリアル変換プレビューを即座に表示し、圧縮はバックグラウンドで完了するように変更。プレビューの再生成中にエディターが固まらなくなります。
-- ASTC 形式のテクスチャ圧縮に同梱の astcenc エンコーダー (Windows/Linux) またはシステムにインストールされた astcenc (macOS) を使用し、全 CPU コアで実行するように変更。astcenc を利用できない場合は従来どおり Unity の圧縮処理を使用します。
-- Avatar Dynamics Selector の保持/削除設定を `Avatar Converter Settings` のレガシー配列ではなく `Platform Component Remover` に保存するように変更。適用時に設定を移行し、古い参照が残らないようレガシー配列をクリアします。
-- PhysBones Remover に、現在の保持/削除選択を `Platform Component Remover` に反映するボタンを追加。
-- Avatar Dynamics Selector と PhysBones Remover のコンポーネント一覧をプレハブごとにグループ化。
-- `Avatar Converter Settings` インスペクターの Avatar Dynamics パフォーマンス推定タイミングを最適化。
-- `Avatar Converter Settings` の変換ボタンによる手動変換で、元アバターを非アクティブ化せず、変換後アバターを元アバターの位置からワールド座標の +Z 方向に配置するよう変更。
-- デフォルトのマテリアル変換設定の初期値を Toon Standard に変更。
+- デフォルトのマテリアル変換設定を Toon Standard に変更。
 - lilToon の通常モードの MatCap を Toon Standard に変換するときの見た目を改善。
-- 処理対象の非対応マテリアルは `Avatar Converter Settings` と `Material Conversion Settings` で警告されないように変更。
-- asmdefの Auto Referenced をオフに変更。
-- 非対応の lilToon のマテリアルを変換するときのエラーメッセージを改善。
-- 非対応の Modular Avatar を使用しているときアバターの変換時にエラーとなるよう変更。
-- アバター変換時の頂点カラー削除を `Vertex Color Remover` コンポーネントの代わりに `.vqtmesh` アセットを使用するように変更。
-- [NDMF] 非対応のバージョンを使用しているときビルド時にエラーダイアログを表示してビルドを中止するように変更。
-- [NDMF] `Mesh Flipper` のプレビューをデフォルトで有効化。
-- ユーザーが目にする文言とUI要素において、Android/iOSの表記を「Mobile」に統一。Unity Build Supportの設定と内部APIではAndroid固有の用語を維持。
+- 非対応バージョンの lilToon を使用しているときのマテリアル変換のエラーメッセージを改善。
+- 変換方法が設定済みの非対応マテリアルについて、`VQT Avatar Converter Settings` と `VQT Material Conversion Settings` で警告しないように変更。
+- アバター変換時の頂点カラー削除に、`VQT Vertex Color Remover` コンポーネントの代わりに `.vqtmesh` アセットを使用するように変更。
+- ASTC 形式のテクスチャ圧縮に、同梱の astcenc (Windows/Linux) またはシステムにインストールされた astcenc (macOS) を使用するように変更。astcenc を利用できない場合は従来どおり Unity の圧縮処理を使用します。
+- テクスチャキャッシュの保存場所をユーザーフォルダからプロジェクトの Library フォルダに変更。
+- テクスチャキャッシュの上限のデフォルトを 128MB から 1GB に変更。
+- テクスチャキャッシュの保存形式を base64 の JSON からバイナリ形式に変更。
+- `Avatar Dynamics Selector` の保持/削除設定を、`VQT Avatar Converter Settings` の設定ではなく `VQT Platform Component Remover` コンポーネントに保存するように変更。
+- `Avatar Dynamics Selector` と `PhysBones Remover` のコンポーネント一覧をプレハブごとにグループ化。
+- `VQT Avatar Converter Settings` インスペクターのレイアウトを改善。
+- `VQT Avatar Converter Settings` インスペクターの Avatar Dynamics パフォーマンス推定のタイミングを最適化。
+- `VQT Avatar Converter Settings` の変換ボタンによる手動変換で、元アバターを非アクティブ化せず、変換後のアバターを元アバターからワールド座標の +Z 方向にずらして配置するように変更。
+- `VQT Avatar Converter Settings` の変換ボタンによる手動変換で `VQT Platform GameObject Remover` の設定を適用し、Mobile で削除対象に設定した GameObject を削除するように変更。
+- `Convert Avatar for Mobile` メニューを `Setup Avatar for Mobile` に変更。Modular Avatar と Avatar Optimizer のコンポーネントの選択肢は、それぞれがインストールされている場合のみ表示され、すでに追加済みのものは無効化して表示します。
+- `Setup Avatar for Mobile` で `VQT Network ID Assigner` を自動追加しないように変更。代わりに `VQT Avatar Converter Settings` の高度な設定の「Network ID を割り当てる」を使用してください。
+- Android/iOS の表記を「Mobile」に統一。
 - 変換後のアバターのオブジェクト名に付与する接尾語を ` (Android)` から ` (Mobile)` に変更。
-- `Avatar Converter Settings` の変換ボタンによる手動変換で `Platform GameObject Remover` の設定を適用し、Android 向けに指定された GameObject を削除するよう変更。
-- `Convert Avatar for Mobile` で `VQT Network ID Assigner` を自動追加しないよう変更。代わりに `Avatar Converter Settings` の高度な設定に `Network ID を割り当てる` オプションを追加。
-- メニューアイコン設定を `Avatar Converter Settings` に統合し、NDMFのアイコン処理を `VQT Menu Icon Resizer` に統一。
-- コンポーネントのアイコンを調整し、視認性を向上。
-- `Convert Avatar for Mobile` を `Setup Avatar for Mobile` に改名し、初期セットアップをMA/AAOの利用可否対応・既存コンポーネント無効化表示・`MA Sync Parameter Sequence` の `PrimaryPlatform=PC` 設定を含む挙動へ統合。
-- `Avatar Converter Settings` インスペクターのレイアウトを改善。
-- テクスチャキャッシュの上限のデフォルトを 128MB から 1GB に変更。生成したテクスチャが再利用される前に破棄されにくくなります。設定を変更していないプロジェクトは自動的に新しいデフォルトへ更新されます。
-- テクスチャキャッシュの保存形式を base64 の JSON からバイナリ形式に変更。ディスク使用量が約 25% 減り、変換中のメモリ使用量も減ります。他のバージョンが書き込んだキャッシュは上限を占有せず自動的に破棄されます。
-- NDMF のマテリアル変換プレビューの後にもテクスチャキャッシュの上限を適用するように変更。従来はアバターを変換するまで上限を超えて増え続けていました。
+- コンポーネントのアイコンを調整。
+- 非対応バージョンの Modular Avatar を使用しているとき、アバターの変換時にエラーとなるように変更。
+- asmdef の Auto Referenced をオフに変更。
+- [NDMF] 非対応バージョンの NDMF を使用しているとき、ビルド時にエラーダイアログを表示してビルドを中止するように変更。
+- [NDMF] VRCFury が存在する場合も、NDMF フェーズの `Auto` を Optimizing フェーズで変換するように変更。VRCFury による Mobile 非対応マテリアルの削除は VRCQuestTools が抑制します。
+- [NDMF] `VQT Mesh Flipper` のプレビューをデフォルトで有効化。
 
 ### 修正
-- `InvalidMaterialSwapNullException` が問題のあるマッピングを返さない問題を修正。
-- Project Settings の `Texture Cache Size (MB)` が範囲外の値を受け付け、負の値を入力すると上限が無効になる問題を修正。
-- アバター変換時のテクスチャ生成処理における RenderTexture と Material のメモリリークを修正。
+- lilToon から Toon Standard への変換時に Occlusion に陰影色が反映されず、結果が暗くなる問題を修正。
+- lilToon から Toon Standard への変換で、Gloss/Metallic の強度を Reflection Color から算出する際にリニア色空間への変換をしていなかった問題を修正。
+- 置換元のマテリアルが Mobile アバターで許可されたシェーダーを使用している場合にマテリアル置換が行われない問題を修正。
 - 一度も描画されていない RenderTexture をテクスチャとして使用しているマテリアルのテクスチャ生成が失敗する問題を修正。
-- アバター変換失敗ダイアログに表示するスタックトレースの行数を制限し、ダイアログが操作不能になる問題を修正。
-- lilToon から Toon Standard への変換結果が暗くなりすぎる問題を修正。Occlusion の強度を常にフル適用するのではなく、lilToon の陰影色から算出するように変更。
-- lilToon から Toon Standard への変換で、Gloss/Metallic の強度を Reflection Color から算出する際に色空間の線形変換をしていなかった問題を修正。Metallic 側は意図せず二重にガンマデコードされていました。
-- [NDMF] VRCFuryが存在し、かつNDMFフェーズがOptimizingに解決される場合に変換後のマテリアルがピンク色になる問題を修正。VRCQuestToolsがそのフェーズで変換しようとしているアバターについては、VRCFury自身の非モバイルマテリアル削除処理を抑制するようにしました。`Auto`は、VRCFuryのマテリアル削除処理を抑制できる場合に限りOptimizingフェーズに解決されるようになりました（抑制できない場合は従来どおりTransformingフェーズにフォールバックします）。
-- 置換元のマテリアルが Mobile アバターで許可されたシェーダーを使用している場合にマテリアル置換が行われない問題を修正。`VQT Material Swap` と追加のマテリアル変換設定の「マテリアル置換」の両方で、そのようなマテリアルを置換の対象に指定できます。
-- Prefab へ Avatar Dynamics 設定を適用したときに、旧形式の維持リストを同じ配列長でオーバーライドしている Prefab Variant やインスタンス側の選択が失われる問題を修正。
+- アバター変換時のテクスチャ生成処理における RenderTexture と Material のメモリリークを修正。
+- スタックトレースが長いとアバター変換失敗ダイアログが操作不能になる問題を修正。表示する行数を制限します。
+- Project Settings の `Texture Cache Size (MB)` が範囲外の値を受け付け、負の値を入力すると上限が無効になる問題を修正。
+- `InvalidMaterialSwapNullException` がマッピング内容を返さない問題を修正。
+- Unity 6 で発生するコンパイルエラーを修正。
 
 ### 削除
 - Unity 2019 のサポートを終了。
 - VRCSDK 3.9.0 未満のサポートを終了。
 - lilToon 1.10.0 未満のサポートを終了。
 - NDMF 1.5.0 未満のサポートを終了。
-- `Avatar Converter Settings` の「アニメーションオーバーライド」機能を削除。設定値はシリアライズされたまま残りますが、変換時には使用されなくなりました。
-- VQT Avatar Builder ウィンドウを削除。アバターのビルドとアップロードには VRChat SDK コントロールパネルを直接使用するか、ローカルテストには「[NDMF] Build and Test for PC with Android Settings」コンテキストメニューを使用してください。
+- `VQT Avatar Converter Settings` の「アニメーションオーバーライド」機能を削除。
+- `VQT Avatar Builder` ウィンドウを削除。アバターのビルドとアップロードには VRChat SDK のコントロールパネルを、PC でのテストには `[NDMF] Build and Test for PC with Mobile Settings` 右クリックメニューを使用してください。
 
 ## [2.11.7] - 2026-06-27
 
