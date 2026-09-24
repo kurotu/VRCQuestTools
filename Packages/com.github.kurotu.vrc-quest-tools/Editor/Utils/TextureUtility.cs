@@ -272,10 +272,18 @@ namespace KRT.VRCQuestTools.Utils
 
             if (texture is RenderTexture rt)
             {
+                // Depth-only runtime inputs have no color buffer to read back.
+                // Keep the input available to the bake shader without trying to convert it.
+                if (rt.graphicsFormat == UnityEngine.Experimental.Rendering.GraphicsFormat.None)
+                {
+                    return rt;
+                }
+
                 if (!rt.IsCreated())
                 {
                     rt.Create();
                 }
+
                 Texture2D newTex = null;
                 var request = RequestReadbackRenderTexture(rt, rt.mipmapCount > 1, !rt.isDataSRGB, (result) =>
                 {
@@ -286,6 +294,7 @@ namespace KRT.VRCQuestTools.Utils
             }
 
             var path = AssetDatabase.GetAssetPath(texture);
+
             if (path == "Resources/unity_builtin_extra")
             {
                 return (Texture2D)UnityEngine.Object.Instantiate(texture);
@@ -302,9 +311,9 @@ namespace KRT.VRCQuestTools.Utils
                 return texture;
             }
 
-            // already saved as an asset file
-            var extension = Path.GetExtension(path).ToLower();
-            if (extension == ".asset")
+            // Generated assets may serialize Texture2D objects as sub-assets of a non-texture
+            // container. In that case the path belongs to the container and has no TextureImporter.
+            if (!(AssetImporter.GetAtPath(path) is TextureImporter))
             {
                 return texture;
             }
@@ -323,7 +332,12 @@ namespace KRT.VRCQuestTools.Utils
         /// <returns>Loaded texture.</returns>
         internal static Texture2D LoadUncompressedTexture(string path, bool makeReadable)
         {
-            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null)
+            {
+                throw new ArgumentException($"{path} does not have a TextureImporter", nameof(path));
+            }
+
             var extension = Path.GetExtension(path).ToLower();
             if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
             {

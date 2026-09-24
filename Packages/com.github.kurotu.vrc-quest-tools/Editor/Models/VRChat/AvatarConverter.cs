@@ -27,6 +27,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
     /// </summary>
     internal class AvatarConverter
     {
+        private readonly Dictionary<ulong, Dictionary<Material, Material>> pendingLateMaterialReplacements = new Dictionary<ulong, Dictionary<Material, Material>>();
+
         /// <summary>
         /// MaterialWrapperBuilder to use.
         /// </summary>
@@ -268,7 +270,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
             // Apply AFTER animator controllers because original animation clips overwrite sharedMaterials.
             foreach (var renderer in questAvatarObject.GetComponentsInChildren<Renderer>(true))
             {
-                renderer.sharedMaterials = renderer.sharedMaterials.Select(m =>
+                var materials = renderer.sharedMaterials.Select(m =>
                 {
                     if (m == null)
                     {
@@ -280,6 +282,74 @@ namespace KRT.VRCQuestTools.Models.VRChat
                     }
                     return m;
                 }).ToArray();
+                renderer.sharedMaterials = materials;
+            }
+
+            if (!saveAssetsAsFile && !EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                RememberConvertedMaterialsForBuild(questAvatarObject, convertedMaterials);
+            }
+        }
+
+        /// <summary>
+        /// Keeps replacements until the final synchronous SDK callback or the next editor update.
+        /// </summary>
+        /// <param name="avatarObject">Build avatar.</param>
+        /// <param name="convertedMaterials">Material replacements.</param>
+        internal void RememberConvertedMaterialsForBuild(GameObject avatarObject, Dictionary<Material, Material> convertedMaterials)
+        {
+            var id = ObjectIdentity.GetId(avatarObject);
+            var replacements = new Dictionary<Material, Material>(convertedMaterials);
+            pendingLateMaterialReplacements[id] = replacements;
+
+            // Failed builds and standalone NDMF processing may never reach the final SDK callback.
+            // Do not retain their material references for the rest of the editor session.
+            EditorApplication.delayCall += () =>
+            {
+                if (pendingLateMaterialReplacements.TryGetValue(id, out var current) && ReferenceEquals(current, replacements))
+                {
+                    pendingLateMaterialReplacements.Remove(id);
+                }
+            };
+        }
+
+        /// <summary>
+        /// Reapplies converted materials after NDMF has saved and reloaded generated assets.
+        /// </summary>
+        /// <param name="avatarObject">Processed avatar passed to the VRChat build pipeline.</param>
+        internal void ReapplyConvertedMaterialsAfterAssetSave(GameObject avatarObject)
+        {
+            var id = ObjectIdentity.GetId(avatarObject);
+            if (!pendingLateMaterialReplacements.TryGetValue(id, out var convertedMaterials))
+            {
+                return;
+            }
+
+            try
+            {
+                foreach (var renderer in avatarObject.GetComponentsInChildren<Renderer>(true))
+                {
+                    var materials = renderer.sharedMaterials;
+                    var changed = false;
+                    for (var i = 0; i < materials.Length; i++)
+                    {
+                        var material = materials[i];
+                        if (material != null && convertedMaterials.TryGetValue(material, out var converted))
+                        {
+                            materials[i] = converted;
+                            changed = true;
+                        }
+                    }
+
+                    if (changed)
+                    {
+                        renderer.sharedMaterials = materials;
+                    }
+                }
+            }
+            finally
+            {
+                pendingLateMaterialReplacements.Remove(id);
             }
         }
 

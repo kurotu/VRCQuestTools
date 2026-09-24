@@ -3,6 +3,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using KRT.VRCQuestTools.Components;
@@ -10,6 +11,7 @@ using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace KRT.VRCQuestTools.Models.VRChat
 {
@@ -284,6 +286,70 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Object.DestroyImmediate(root);
             Object.DestroyImmediate(replacement);
             Object.DestroyImmediate(original);
+        }
+
+        /// <summary>
+        /// Late replacements apply once and only to the recorded avatar.
+        /// </summary>
+        [Test]
+        public void LateMaterialReplacements_ApplyOnceToRecordedAvatar()
+        {
+            var root = new GameObject("BuildAvatar");
+            var otherRoot = new GameObject("OtherAvatar");
+            var original = new Material(Shader.Find("Standard"));
+            var replacement = new Material(Shader.Find("Standard"));
+            try
+            {
+                var renderer = root.AddComponent<MeshRenderer>();
+                var otherRenderer = otherRoot.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = original;
+                otherRenderer.sharedMaterial = original;
+                var converter = new AvatarConverter(null);
+                converter.RememberConvertedMaterialsForBuild(root, new Dictionary<Material, Material> { { original, replacement } });
+
+                converter.ReapplyConvertedMaterialsAfterAssetSave(otherRoot);
+                Assert.AreSame(original, otherRenderer.sharedMaterial);
+                converter.ReapplyConvertedMaterialsAfterAssetSave(root);
+                Assert.AreSame(replacement, renderer.sharedMaterial);
+
+                renderer.sharedMaterial = original;
+                converter.ReapplyConvertedMaterialsAfterAssetSave(root);
+                Assert.AreSame(original, renderer.sharedMaterial, "Completed builds must discard their replacements.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(otherRoot);
+                Object.DestroyImmediate(original);
+                Object.DestroyImmediate(replacement);
+            }
+        }
+
+        /// <summary>
+        /// An aborted build does not retain replacement materials indefinitely.
+        /// </summary>
+        /// <returns>Test coroutine.</returns>
+        [UnityTest]
+        public IEnumerator LateMaterialReplacements_ExpireWithoutFinalCallback()
+        {
+            var root = new GameObject("AbortedBuildAvatar");
+            try
+            {
+                var converter = new AvatarConverter(null);
+                converter.RememberConvertedMaterialsForBuild(root, new Dictionary<Material, Material>());
+                var field = typeof(AvatarConverter).GetField("pendingLateMaterialReplacements", BindingFlags.NonPublic | BindingFlags.Instance);
+                var pending = (IDictionary)field.GetValue(converter);
+                Assert.AreEqual(1, pending.Count);
+                for (var frame = 0; frame < 10 && pending.Count > 0; frame++)
+                {
+                    yield return null;
+                }
+                Assert.AreEqual(0, pending.Count);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
         }
 
         /// <summary>
