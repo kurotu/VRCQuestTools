@@ -223,7 +223,7 @@ namespace KRT.VRCQuestTools.Models
             {
                 generateQuestTextures = bake,
                 useNormalMap = false,
-                useMatCap = false,
+                useMatcap = false,
                 useOcclusion = false,
                 useSpecular = false,
                 generateShadowRamp = false,
