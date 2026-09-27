@@ -59,7 +59,26 @@ namespace KRT.VRCQuestTools.Utils
             var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(fixturesFolder + "/NestedStateMachines.controller");
             Assert.NotNull(controller);
 
-            Assert.DoesNotThrow(() => UnityAnimationUtility.ReplaceAnimationClips(controller, false, null, new Dictionary<Motion, Motion> { }));
+            var sourceRoot = controller.layers[0].stateMachine;
+            var sourceNested = sourceRoot.stateMachines[0].stateMachine;
+            var sourceChild = sourceNested.stateMachines[0].stateMachine;
+            Assert.AreEqual(1, sourceNested.GetStateMachineTransitions(sourceChild).Length);
+
+            var duplicate = UnityAnimationUtility.ReplaceAnimationClips(controller, false, null, new Dictionary<Motion, Motion> { });
+            try
+            {
+                var duplicateRoot = duplicate.layers[0].stateMachine;
+                var duplicateNested = duplicateRoot.stateMachines[0].stateMachine;
+                var duplicateChild = duplicateNested.stateMachines[0].stateMachine;
+                var transitions = duplicateNested.GetStateMachineTransitions(duplicateChild);
+
+                Assert.AreEqual(1, transitions.Length);
+                Assert.AreSame(duplicateRoot.states[0].state, transitions[0].destinationState);
+            }
+            finally
+            {
+                Object.DestroyImmediate(duplicate);
+            }
         }
 
         /// <summary>
