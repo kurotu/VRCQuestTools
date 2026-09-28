@@ -1,3 +1,8 @@
+// <copyright file="AnimatorControllerDuplicator.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Animations;
@@ -89,6 +94,12 @@ namespace KRT.VRCQuestTools.Utils
             newStateMachine.parentStateMachinePosition = stateMachine.parentStateMachinePosition;
             newStateMachine.states = stateMachine.states.Select(Duplicate).ToArray();
             newStateMachine.stateMachines = stateMachine.stateMachines.Select(Duplicate).ToArray();
+            foreach (var childStateMachine in stateMachine.stateMachines)
+            {
+                newStateMachine.SetStateMachineTransitions(
+                    stateMachineMap[childStateMachine.stateMachine],
+                    stateMachine.GetStateMachineTransitions(childStateMachine.stateMachine).Select(Duplicate).ToArray());
+            }
             return newStateMachine;
         }
 
