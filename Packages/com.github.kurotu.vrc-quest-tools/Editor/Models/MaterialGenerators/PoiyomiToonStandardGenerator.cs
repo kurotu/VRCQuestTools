@@ -112,6 +112,7 @@ namespace KRT.VRCQuestTools.Models
                 }
 
                 newMaterial.EmissionColor = Utils.ColorUtility.HdrToLdr(GetEmissionColor());
+                newMaterial.EmissionStrength = GetEmissionStrength();
             }
             else
             {
@@ -714,6 +715,30 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
+        protected override float GetEmissionStrength()
+        {
+            var channels = GetEnabledEmissionChannels().ToArray();
+            if (channels.Length != 1)
+            {
+                return 1.0f;
+            }
+
+            switch (channels[0])
+            {
+                case 0:
+                    return poiyomiMaterial.EmissionStrength0;
+                case 1:
+                    return poiyomiMaterial.EmissionStrength1;
+                case 2:
+                    return poiyomiMaterial.EmissionStrength2;
+                case 3:
+                    return poiyomiMaterial.EmissionStrength3;
+                default:
+                    throw new InvalidOperationException("Unknown emission channel.");
+            }
+        }
+
+        /// <inheritdoc/>
         protected override (Vector2 Scale, Vector2 Offset) GetGlossMapST()
         {
             return GetSpecularGlossMapST();
@@ -1000,7 +1025,7 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         protected override bool GetUseMainTexture()
         {
-            return poiyomiMaterial.Material.mainTexture != null || (poiyomiMaterial.UseEmission && !Settings.useEmission);
+            return poiyomiMaterial.Material.mainTexture != null || (GetUseEmission() && !Settings.useEmission);
         }
 
         /// <inheritdoc/>

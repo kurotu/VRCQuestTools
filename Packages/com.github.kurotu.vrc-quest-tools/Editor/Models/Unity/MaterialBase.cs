@@ -91,6 +91,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal virtual AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
         {
             var mainTexture = Material.mainTexture ?? Texture2D.whiteTexture;
+            var bakeMainTexture = mainTexture;
 
             using (var disposables = new CompositeDisposable())
             using (var baker = DisposableObject.New(Object.Instantiate(Material)))
@@ -126,8 +127,16 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                     texturesForOverride.Add(t);
                     var tex = TextureUtility.LoadUncompressedTexture(t);
-                    disposables.Add(DisposableObject.New(tex));
+                    // The loader can return borrowed generated textures and runtime buffers.
+                    if (tex != t)
+                    {
+                        disposables.Add(DisposableObject.New(tex));
+                    }
                     baker.Object.SetTexture(name, tex);
+                    if (t == mainTexture)
+                    {
+                        bakeMainTexture = tex;
+                    }
                 }
 
                 // Check platform override settings from source textures used in baking
@@ -142,7 +151,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                     height = System.Math.Min(maxTextureSize, height);
                 }
 
-                return TextureUtility.BakeTexture(mainTexture, true, width, height, true, baker.Object, completion);
+                return TextureUtility.BakeTexture(bakeMainTexture, true, width, height, true, baker.Object, completion);
             }
         }
     }

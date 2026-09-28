@@ -79,6 +79,68 @@ namespace KRT.VRCQuestTools.Utils
         }
 
         /// <summary>
+        /// Test loading a texture serialized as a sub-asset of a non-texture asset.
+        /// </summary>
+        [Test]
+        public void LoadUncompressedTextureSubAsset()
+        {
+            var path = $"Assets/test_tmp_{GUID.Generate()}.mat";
+            var material = new Material(Shader.Find("Standard"));
+            var texture = new Texture2D(4, 4, TextureFormat.RGBA32, false, false)
+            {
+                name = "TextureSubAsset",
+            };
+            texture.SetPixels(new[]
+            {
+                Color.red, Color.red, Color.red, Color.red,
+                Color.red, Color.red, Color.red, Color.red,
+                Color.red, Color.red, Color.red, Color.red,
+                Color.red, Color.red, Color.red, Color.red,
+            });
+            texture.Apply(false, true);
+
+            try
+            {
+                AssetDatabase.CreateAsset(material, path);
+                AssetDatabase.AddObjectToAsset(texture, material);
+                AssetDatabase.SaveAssets();
+
+                var loaded = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+                using (var result = DisposableObject.New(TextureUtility.LoadUncompressedTexture(loaded)))
+                {
+                    Assert.IsNotNull(loaded);
+                    Assert.IsTrue(AssetDatabase.IsSubAsset(loaded));
+                    Assert.IsFalse(loaded.isReadable);
+                    Assert.AreSame(loaded, result.Object);
+                }
+                Assert.IsTrue(loaded != null, "Borrowed sub-assets must survive disposal after baking.");
+            }
+            finally
+            {
+                AssetDatabase.DeleteAsset(path);
+            }
+        }
+
+        /// <summary>
+        /// Depth-only runtime textures must not be submitted for color readback.
+        /// </summary>
+        [Test]
+        public void LoadUncompressedTexture_DepthOnlyInputIsBorrowed()
+        {
+            var texture = new RenderTexture(4, 4, 24, RenderTextureFormat.Depth);
+            try
+            {
+                Assert.AreEqual(UnityEngine.Experimental.Rendering.GraphicsFormat.None, texture.graphicsFormat);
+                Assert.AreSame(texture, TextureUtility.LoadUncompressedTexture(texture));
+                Assert.IsFalse(texture.IsCreated(), "Loading should not allocate a depth-only runtime input.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(texture);
+            }
+        }
+
+        /// <summary>
         /// Test AssetUtility.CreateAsset().
         /// </summary>
         [Test]
