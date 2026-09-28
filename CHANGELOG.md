@@ -66,6 +66,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed material replacement not being applied when the source material uses a shader allowed for Mobile avatars.
 - Fixed texture generation failing for materials that use a never-rendered RenderTexture as a texture.
 - Fixed RenderTexture and Material memory leaks in texture generation during avatar conversion.
+- Fixed texture generation failing for materials that use textures saved as sub-assets.
+- Fixed texture generation failing for materials that use a depth-only RenderTexture.
+- Fixed transitions from sub-state machines being lost when converting Animator Controllers.
 - Fixed the avatar conversion failure dialog becoming inoperable when the stack trace is long. The number of displayed lines is now limited.
 - Fixed `Texture Cache Size (MB)` in Project Settings accepting out-of-range values, where a negative value disabled the limit.
 - Fixed `InvalidMaterialSwapNullException` not returning the mapping.
