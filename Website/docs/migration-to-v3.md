@@ -3,17 +3,17 @@ sidebar_position: 6
 slug: /migration-to-v3
 ---
 
-# Migration Guide from v2.x to v3.0.0
+# Migration Guide from Version 2.x to 3.0.0
 
-VRCQuestTools v3.0.0 is a major update.
-Updating can affect scenes and prefabs you created under v2.x, and part of the conversion procedure.
+VRCQuestTools 3.0.0 is a major update.
+Updating can affect scenes and prefabs you created under version 2.x, and part of the conversion procedure.
 
 Non-Destructive Modular Framework (NDMF) conversion doesn't rewrite avatars in the scene, so your existing settings are applied the same way at build time after the update.
 If you don't meet the required versions below or use a removed feature, you need to take action when migrating.
 
 ## Requirement Changes
 
-v3.0.0 requires the following versions.
+VRCQuestTools 3.0.0 requires the following versions.
 
 - Unity 2022.3 or later
 - VRChat SDK - Avatars 3.9.0 or later
@@ -38,7 +38,7 @@ What it used to do is replaced by one of the following.
 The PhysBone/PhysBone Collider/Contacts settings chosen in the **Avatar Dynamics Selector** are now stored in a **Platform Component Remover** component instead of inside the **Avatar Converter Settings** component.
 
 This migration doesn't happen automatically.
-An avatar already set up under v2.x keeps working from the settings stored in Avatar Converter Settings until you migrate it to the new location.
+An avatar already set up under version 2.x keeps working from the settings stored in Avatar Converter Settings until you migrate it to the new location.
 So updating the package alone never loses your existing settings.
 
 To migrate to the new location, do either of the following.
@@ -50,8 +50,8 @@ Both ways preserve which PhysBones, PhysBone Colliders, and Contacts are kept.
 ### How Vertex Color Removal Works
 
 Vertex color removal during conversion changed from using the **Vertex Color Remover** component to generating a dedicated mesh (a `.vqtmesh` asset) for the converted avatar.
-In v2.x, vertex colors were removed directly from the original mesh, so for avatars that use vertex colors to control their outlines, the pre-conversion avatar's appearance could also change.
-Conversion in v3.0.0 no longer causes this problem.
+In version 2.x, vertex colors were removed directly from the original mesh, so for avatars that use vertex colors to control their outlines, the pre-conversion avatar's appearance could also change.
+Conversion in version 3.0.0 no longer causes this problem.
 The Vertex Color Remover component itself is still available, and attached components keep working as before.
 
 ### Avatar Active State After Manual Conversion
@@ -62,13 +62,13 @@ Note that both avatars remain active in the scene.
 ### Platform GameObject Remover and Platform Component Remover in Manual Conversion
 
 Manual conversion now also applies **Platform GameObject Remover** and Platform Component Remover settings for Mobile.
-These settings weren't reflected in v2.x manual conversion, so if your avatar specifies removal targets for Mobile, the conversion result differs from v2.x.
+These settings weren't reflected in manual conversion in version 2.x, so if your avatar specifies removal targets for Mobile, the conversion result differs from version 2.x.
 For avatars whose Avatar Dynamics settings haven't been migrated to Platform Component Remover, components are still removed based on the settings in Avatar Converter Settings, as before.
 
 ## Migration Checklist
 
 1. Check that your project's Unity, VRChat SDK, lilToon, and NDMF versions meet the required versions above.
-2. Update VRCQuestTools to v3.0.0 with VCC or ALCOM.
+2. Update VRCQuestTools to 3.0.0 with VCC or ALCOM.
 3. If needed, finish migrating to Platform Component Remover with the "Migrate Legacy Avatar Dynamics Settings" menu or the "Apply" button in the Avatar Dynamics Selector.
 
-The [Changelog](./changelog.md) covers every change in v3.0.0.
+The [Changelog](./changelog.md) covers every change in version 3.0.0.
