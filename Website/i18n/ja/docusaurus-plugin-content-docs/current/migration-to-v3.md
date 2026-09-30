@@ -3,17 +3,17 @@ sidebar_position: 6
 slug: /migration-to-v3
 ---
 
-# v2 系から v3.0.0 への移行ガイド
+# バージョン 2 系から 3.0.0 への移行ガイド
 
-VRCQuestTools v3.0.0 はメジャーアップデートです。
-アップデートによって、v2 系で作成したシーンやプレハブ、変換の手順の一部に影響が生じます。
+VRCQuestTools 3.0.0 はメジャーアップデートです。
+アップデートによって、バージョン 2 系で作成したシーンやプレハブ、変換の手順の一部に影響が生じます。
 
 Non-Destructive Modular Framework (NDMF) を使った変換はシーン上のアバターを書き換えないため、既存の設定はアップデート後もビルド時に同じように適用されます。
 後述する必要バージョンを満たしていない場合や、削除された機能を使っている場合は、移行にあたり対応が必要になります。
 
 ## 動作要件の変更
 
-v3.0.0 の動作に必要なバージョンは以下のとおりです。
+VRCQuestTools 3.0.0 の動作に必要なバージョンは以下のとおりです。
 
 - Unity 2022.3 以降
 - VRChat SDK - Avatars 3.9.0 以降
@@ -38,7 +38,7 @@ lilToon と NDMF は、古いバージョンのままだとビルドや変換が
 **Avatar Dynamics Selector** で選んだ PhysBone/PhysBone Collider/Contacts の設定は、**Avatar Converter Settings** コンポーネント内ではなく、**Platform Component Remover** コンポーネントに保存されるようになりました。
 
 この移行は自動では行われません。
-v2 系で設定済みのアバターは、新しい保存先へ移行しない限り、従来どおり Avatar Converter Settings 側の設定で動作し続けます。
+バージョン 2 系で設定済みのアバターは、新しい保存先へ移行しない限り、従来どおり Avatar Converter Settings 側の設定で動作し続けます。
 そのため、アップデートしただけで設定が失われることはありません。
 
 新しい保存先へ移行するには、次のいずれかを実行します。
@@ -50,8 +50,8 @@ v2 系で設定済みのアバターは、新しい保存先へ移行しない�
 ### 頂点カラー除去のしくみ
 
 変換時の頂点カラー除去は、**Vertex Color Remover** コンポーネントを使う方式から、変換後のアバター専用のメッシュ (`.vqtmesh` アセット) を生成する方式に変わりました。
-v2 系では元のメッシュから直接頂点カラーを削除していたため、輪郭線の制御に頂点カラーを使うアバターでは、変換前のアバターの表示も変わってしまうことがありました。
-v3.0.0 の変換では、この影響はありません。
+バージョン 2 系では元のメッシュから直接頂点カラーを削除していたため、輪郭線の制御に頂点カラーを使うアバターでは、変換前のアバターの表示も変わってしまうことがありました。
+バージョン 3.0.0 の変換では、この影響はありません。
 Vertex Color Remover コンポーネント自体は引き続き使用でき、アタッチ済みのコンポーネントもそのまま動作します。
 
 ### 手動変換後のアバターのアクティブ状態
@@ -62,13 +62,13 @@ Avatar Converter Settings から手動変換したとき、変換前のアバタ
 ### 手動変換での Platform GameObject Remover と Platform Component Remover の適用
 
 手動変換でも、**Platform GameObject Remover** と Platform Component Remover の設定が Mobile 向けに適用されるようになりました。
-v2 系の手動変換ではこれらの設定は反映されなかったため、Mobile 向けの削除対象を指定しているアバターは変換結果が変わります。
+バージョン 2 系の手動変換ではこれらの設定は反映されなかったため、Mobile 向けの削除対象を指定しているアバターは変換結果が変わります。
 なお、Avatar Dynamics の設定を Platform Component Remover に移行していないアバターでは、従来どおり Avatar Converter Settings 側の設定に基づく削除が行われます。
 
 ## 移行手順チェックリスト
 
 1. プロジェクトの Unity、VRChat SDK、lilToon、NDMF のバージョンが、上記の必要バージョンを満たしているか確認する。
-2. VCC または ALCOM で VRCQuestTools を v3.0.0 に更新する。
+2. VCC または ALCOM で VRCQuestTools を 3.0.0 に更新する。
 3. 必要であれば、「Migrate Legacy Avatar Dynamics Settings」メニューか Avatar Dynamics Selector の「適用」ボタンで、Platform Component Remover への移行を済ませる。
 
-v3.0.0 におけるすべての変更点は [変更履歴](./changelog.md) にまとめています。
+バージョン 3.0.0 におけるすべての変更点は [変更履歴](./changelog.md) にまとめています。
