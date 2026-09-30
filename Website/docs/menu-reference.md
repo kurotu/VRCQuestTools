@@ -37,7 +37,7 @@ You can reduce the components while checking the Avatar Dynamics performance ran
 
 ## Migrate Legacy Avatar Dynamics Settings {#migrate-legacy-avatar-dynamics-settings}
 
-Opens a window to migrate old-format Avatar Dynamics settings stored in [VQT Avatar Converter Settings](./components/avatar-converter-settings.md) by version 2.x to the [VQT Platform Component Remover](./components/platform-component-remover.md) component.
+Opens a window to migrate old-format Avatar Dynamics settings stored in a version 2.x [VQT Avatar Converter Settings](./components/avatar-converter-settings.md) to the [VQT Platform Component Remover](./components/platform-component-remover.md) component.
 It scans the project's Prefabs and scenes, and lists the avatars which still have old-format settings.
 Select the targets and press "Migrate Selected" to replace the settings with Platform Component Remover components while preserving which PhysBones, PhysBone Colliders, and Contacts are kept.
 See [Migration Guide from Version 2.x to 3.0.0](./migration-to-v3.md#avatar-dynamics-storage) for details.
