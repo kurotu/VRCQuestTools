@@ -62,8 +62,7 @@ jobs:
 
       - name: Set up mise
         uses: jdx/mise-action@v4
-      # TODO: use pnpm
-      - run: cd Website && pnpm ci
+      - run: cd Website && pnpm install --frozen-lockfile
 
       - name: Generate changelog
         run: |
