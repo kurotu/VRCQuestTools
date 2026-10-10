@@ -63,7 +63,7 @@ jobs:
       - name: Set up mise
         uses: jdx/mise-action@v4
       # TODO: use pnpm
-      - run: cd Website && npm ci
+      - run: cd Website && pnpm ci
 
       - name: Generate changelog
         run: |
