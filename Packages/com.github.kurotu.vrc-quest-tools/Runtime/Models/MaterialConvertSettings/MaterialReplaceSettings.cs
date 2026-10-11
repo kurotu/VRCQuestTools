@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+// <copyright file="MaterialReplaceSettings.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models
 {
@@ -31,7 +36,18 @@ namespace KRT.VRCQuestTools.Models
         /// <inheritdoc/>
         public string GetCacheKey()
         {
-            throw new System.InvalidProgramException("MaterialReplaceSettings doesn't generate textures.");
+            if (material == null)
+            {
+                return $"{nameof(MaterialReplaceSettings)}_null";
+            }
+
+#if UNITY_6000_4_OR_NEWER
+            var materialId = EntityId.ToULong(material.GetEntityId());
+#else
+            var materialId = unchecked((uint)material.GetInstanceID());
+#endif
+
+            return $"{nameof(MaterialReplaceSettings)}_{materialId}_{AdditionalMaterialConvertSettings.GetContentCacheKey(material)}";
         }
     }
 }

@@ -1,4 +1,9 @@
-﻿using System;
+// <copyright file="AdditionalMaterialConvertSettings.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -46,7 +51,7 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <param name="material">Target material.</param>
         /// <returns>Cache key.</returns>
-        private static string GetContentCacheKey(Material material)
+        internal static string GetContentCacheKey(Material material)
         {
             var sb = new StringBuilder(material.shader.name);
 
