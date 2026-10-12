@@ -149,15 +149,45 @@ jobs:
 
       - run: vrc-get info project
 
+      # unity-test-runner runs the game-ci CLI, which activates Unity with the account
+      # (the .ulf file's machine binding doesn't match the runner, so UNITY_LICENSE is not used).
+      # cliVersion is pinned because resolving "latest" calls the GitHub API and hits 403 (rate limit) in matrix jobs.
       - uses: game-ci/unity-test-runner@v4
+        id: test
+        continue-on-error: true
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
+          cliVersion: v0.1.72
           unityVersion: ${{ matrix.sdk.unityVersion }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: "Test Results: ${{matrix.sdk.unityVersion}}, sdk-${{matrix.sdk.name}}, deps-${{matrix.dependencies.name}}"
+
+      # Unity may reject simultaneous account activations from matrix jobs.
+      # Retry only when the first run failed before producing test results.
+      - name: Wait before retry
+        if: steps.test.outcome == 'failure' && hashFiles('artifacts/*.xml') == ''
+        run: |
+          delay=$((60 + RANDOM % 121))
+          echo "Sleeping for ${delay} seconds"
+          sleep "$delay"
+
+      - uses: game-ci/unity-test-runner@v4
+        id: test-retry
+        if: steps.test.outcome == 'failure' && hashFiles('artifacts/*.xml') == ''
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          cliVersion: v0.1.72
+          unityVersion: ${{ matrix.sdk.unityVersion }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: "Test Results: ${{matrix.sdk.unityVersion}}, sdk-${{matrix.sdk.name}}, deps-${{matrix.dependencies.name}}"
+
+      - name: Fail if tests failed
+        if: steps.test.outcome == 'failure' && steps.test-retry.outcome != 'success'
+        run: exit 1
 
   lint:
     runs-on: ubuntu-latest
