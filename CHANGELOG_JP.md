@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- [NDMF] マテリアルの変換設定の個別設定でマテリアル置換を使用したとき、マテリアル変換のプレビューで例外が発生する問題を修正。
+
 ## [3.0.0] - 2026-10-10
 
 ### 追加
