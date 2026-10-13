@@ -13,26 +13,35 @@ jobs:
       TZ: Asia/Tokyo
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v5
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ steps.app-token.outputs.token }}
       - name: Make release commit and push it
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           ./scripts/bump.sh ${{ github.event.inputs.version }}
-          git push origin v${{ github.event.inputs.version }}
-          git push
+          git push --atomic origin HEAD v${{ github.event.inputs.version }}
 
   update-docs:
     if: ${{ !contains(github.event.inputs.version, '-') }}
     needs: bump
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v5
         with:
           ref: latest-docs
-          token: ${{ secrets.PAT }}
+          token: ${{ steps.app-token.outputs.token }}
       - name: Fetch tags
         run: git fetch --prune --unshallow --tags
       - name: Merge latest release
