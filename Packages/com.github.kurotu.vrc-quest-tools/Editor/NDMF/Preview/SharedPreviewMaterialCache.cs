@@ -76,7 +76,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
 
             var materialMap = new Dictionary<Material, Material>();
-            var acquiredKeys = new HashSet<string>();
+            var acquiredEntries = new Dictionary<string, CacheEntry>();
             var materialsToConvert = new Dictionary<Material, IMaterialConvertSettings>();
             var keyByRepresentative = new Dictionary<Material, string>();
 
@@ -87,7 +87,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     if (TryGetAliveEntry(key, out var cachedEntry))
                     {
                         cachedEntry.ReferenceCount++;
-                        acquiredKeys.Add(key);
+                        acquiredEntries[key] = cachedEntry;
                         var srcNames = string.Join(", ", groupedOriginalMaterials[key].Select(m => m != null ? $"{m.name} (id:{ObjectIdentity.GetId(m)})" : "<null>"));
                         var convertedIdStr = cachedEntry.Material != null ? ObjectIdentity.GetId(cachedEntry.Material).ToString() : "<null>";
                         Logger.LogDebug($"Reusing cached preview material for {groupedOriginalMaterials[key].Count} source material(s): {srcNames}. Converted: {(cachedEntry.Material != null ? cachedEntry.Material.name : "<null>")} (id:{convertedIdStr}).");
@@ -118,7 +118,7 @@ namespace KRT.VRCQuestTools.Ndmf
                             if (TryGetAliveEntry(key, out var existingEntry))
                             {
                                 existingEntry.ReferenceCount++;
-                                acquiredKeys.Add(key);
+                                acquiredEntries[key] = existingEntry;
                                 var srcNames = string.Join(", ", groupedOriginalMaterials[key].Select(m => m != null ? $"{m.name} (id:{ObjectIdentity.GetId(m)})" : "<null>"));
                                 var existingConvertedIdStr = existingEntry.Material != null ? ObjectIdentity.GetId(existingEntry.Material).ToString() : "<null>";
                                 Logger.LogDebug($"Reusing cached preview material after conversion merge for {groupedOriginalMaterials[key].Count} source material(s): {srcNames}. Converted: {(existingEntry.Material != null ? existingEntry.Material.name : "<null>")} (id:{existingConvertedIdStr}).");
@@ -140,8 +140,9 @@ namespace KRT.VRCQuestTools.Ndmf
                                 continue;
                             }
 
-                            Entries[key] = new CacheEntry(convertedMaterial);
-                            acquiredKeys.Add(key);
+                            var entry = new CacheEntry(convertedMaterial);
+                            Entries[key] = entry;
+                            acquiredEntries[key] = entry;
                             foreach (var original in groupedOriginalMaterials[key])
                             {
                                 materialMap[original] = convertedMaterial;
@@ -152,7 +153,7 @@ namespace KRT.VRCQuestTools.Ndmf
             }
             catch
             {
-                Release(acquiredKeys);
+                Release(acquiredEntries);
                 throw;
             }
             finally
@@ -163,18 +164,19 @@ namespace KRT.VRCQuestTools.Ndmf
                 }
             }
 
-            return new SharedMaterialMapLease(materialMap, acquiredKeys);
+            return new SharedMaterialMapLease(materialMap, acquiredEntries);
         }
 
         /// <summary>
         /// Release previously acquired cache entries.
-        /// Decrements the reference count for each key in <paramref name="acquiredKeys"/>; entries with zero references are removed
-        /// from the cache and scheduled for destruction. This method is idempotent for a given set of keys.
+        /// Decrements the reference count of the actual entries acquired by a lease, even if a destroyed entry
+        /// has since been replaced under the same key. Entries with zero references are removed and destroyed.
+        /// This method is idempotent for a given dictionary of acquired entries.
         /// </summary>
-        /// <param name="acquiredKeys">Set of cache keys acquired from <see cref="Acquire"/>.</param>
-        internal static void Release(HashSet<string> acquiredKeys)
+        /// <param name="acquiredEntries">Cache entries acquired from <see cref="Acquire"/>, indexed by key.</param>
+        internal static void Release(Dictionary<string, CacheEntry> acquiredEntries)
         {
-            if (acquiredKeys.Count == 0)
+            if (acquiredEntries.Count == 0)
             {
                 return;
             }
@@ -182,17 +184,18 @@ namespace KRT.VRCQuestTools.Ndmf
             var materialsToDestroy = new List<Material>();
             lock (SyncRoot)
             {
-                foreach (var key in acquiredKeys)
+                foreach (var (key, entry) in acquiredEntries)
                 {
-                    if (!Entries.TryGetValue(key, out var entry))
-                    {
-                        continue;
-                    }
-
                     entry.ReferenceCount--;
                     if (entry.ReferenceCount <= 0)
                     {
-                        Entries.Remove(key);
+                        // An old preview generation may release its lease after a scene reload has destroyed
+                        // its material and Acquire has installed a new entry under the same content key.
+                        // Only remove the entry this lease actually owns; never release its replacement.
+                        if (Entries.TryGetValue(key, out var currentEntry) && ReferenceEquals(currentEntry, entry))
+                        {
+                            Entries.Remove(key);
+                        }
                         materialsToDestroy.Add(entry.Material);
                         var materialName = entry.Material != null ? entry.Material.name : "<null>";
                         var materialId = entry.Material != null ? ObjectIdentity.GetId(entry.Material).ToString() : "<null>";
@@ -211,7 +214,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 Logger.LogDebug($"Destroyed cached converted material: {matName} (id:{matId})");
             }
 
-            acquiredKeys.Clear();
+            acquiredEntries.Clear();
         }
 
         /// <summary>
@@ -365,7 +368,7 @@ namespace KRT.VRCQuestTools.Ndmf
         /// <summary>
         /// Internal cache entry storing converted material and its reference count.
         /// </summary>
-        private class CacheEntry
+        internal class CacheEntry
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="CacheEntry"/> class.

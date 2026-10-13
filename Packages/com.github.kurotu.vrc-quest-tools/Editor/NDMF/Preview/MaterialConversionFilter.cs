@@ -228,7 +228,8 @@ namespace KRT.VRCQuestTools.Ndmf
                     materialLease,
                     settings as Object,
                     settingsGameObject,
-                    avatarMaterials.ToArray()));
+                    avatarMaterials.ToArray(),
+                    context));
             }
             catch (System.Exception e)
             {
@@ -247,6 +248,7 @@ namespace KRT.VRCQuestTools.Ndmf
             private readonly Object settingsComponent;
             private readonly GameObject settingsGameObject;
             private readonly Material[] observedMaterials;
+            private readonly ComputeContext materialContext;
             private bool disposedValue;
 
             public MaterialConversionFilterNode(
@@ -255,7 +257,8 @@ namespace KRT.VRCQuestTools.Ndmf
                 SharedMaterialMapLease materialLease,
                 Object settingsComponent = null,
                 GameObject settingsGameObject = null,
-                Material[] observedMaterials = null)
+                Material[] observedMaterials = null,
+                ComputeContext context = null)
             {
                 this.materialMap = materialMap;
                 this.removeExtraMaterialSlots = removeExtraMaterialSlots;
@@ -263,6 +266,16 @@ namespace KRT.VRCQuestTools.Ndmf
                 this.settingsComponent = settingsComponent;
                 this.settingsGameObject = settingsGameObject;
                 this.observedMaterials = observedMaterials;
+                if (materialLease != null)
+                {
+                    // A reused node can belong to overlapping pipeline generations. One material-lifetime
+                    // context invalidates every generation without retaining their contexts strongly.
+                    materialContext = new ComputeContext("VRCQuestTools converted preview materials");
+                    if (context != null)
+                    {
+                        materialContext.Invalidates(context);
+                    }
+                }
             }
 
             public RenderAspects WhatChanged => RenderAspects.Material;
@@ -312,7 +325,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 // A node without a lease is one of the no-op nodes Instantiate returns early (wrong phase,
                 // non-mobile target, or a conversion that threw); rebuilding those is cheap and re-evaluates
                 // the condition that made them no-ops in the first place.
-                if (disposedValue || materialLease == null || updatedAspects == 0 || (updatedAspects & ~ReusableAspects) != 0)
+                if (disposedValue || materialLease == null || materialMap.Values.Any(m => m == null) || updatedAspects == 0 || (updatedAspects & ~ReusableAspects) != 0)
                 {
                     return Task.FromResult<IRenderFilterNode>(null);
                 }
@@ -342,7 +355,18 @@ namespace KRT.VRCQuestTools.Ndmf
                     }
                 }
 
+                materialContext.Invalidates(context);
                 return Task.FromResult<IRenderFilterNode>(this);
+            }
+
+            public void OnFrameGroup()
+            {
+                // Scene reloads can destroy native materials without an Undo event. NDMF can also reuse a
+                // node without calling Refresh, so detect lost outputs here and request a fresh conversion.
+                if (materialMap.Values.Any(m => m == null))
+                {
+                    materialContext?.Invalidate();
+                }
             }
 
             public void OnFrame(Renderer original, Renderer proxy)
@@ -352,7 +376,7 @@ namespace KRT.VRCQuestTools.Ndmf
                     return;
                 }
                 var slots = removeExtraMaterialSlots ? RendererUtility.GetSharedMeshSubMeshCount(proxy) : proxy.sharedMaterials.Length;
-                proxy.sharedMaterials = proxy.sharedMaterials.Take(slots).Select(m => materialMap.TryGetValue(m, out var converted) ? converted : m).ToArray();
+                proxy.sharedMaterials = proxy.sharedMaterials.Take(slots).Select(m => materialMap.TryGetValue(m, out var converted) && converted != null ? converted : m).ToArray();
             }
 
             public void Dispose()
@@ -365,6 +389,7 @@ namespace KRT.VRCQuestTools.Ndmf
             {
                 if (!disposedValue)
                 {
+                    materialContext?.Invalidate();
                     if (materialLease != null)
                     {
                         materialLease.Release();

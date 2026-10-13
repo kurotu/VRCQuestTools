@@ -12,6 +12,7 @@ using KRT.VRCQuestTools.Utils;
 using nadena.dev.ndmf.preview;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace KRT.VRCQuestTools.Ndmf
 {
@@ -223,23 +224,113 @@ namespace KRT.VRCQuestTools.Ndmf
                 nodeType,
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
                 null,
-                new object[] { new Dictionary<Material, Material>(), false, null, null, null, null },
+                new object[] { new Dictionary<Material, Material>(), false, null, null, null, null, null },
                 null);
 
             Assert.IsNull(Refresh(node, new (Renderer, Renderer)[0], RenderAspects.Shapes));
         }
 
-        private static IRenderFilterNode CreateFilterNode(bool removeExtraMaterialSlots)
+        /// <summary>
+        /// Destroyed outputs must not be reused even when the upstream changes would normally be reusable.
+        /// </summary>
+        [Test]
+        public void FilterNode_Refresh_DestroyedOutput_Rebuilds()
+        {
+            var shader = Shader.Find("Standard");
+            var source = new Material(shader);
+            var converted = new Material(shader);
+            var map = new Dictionary<Material, Material> { [source] = converted };
+            var node = CreateFilterNode(false, map);
+            try
+            {
+                Object.DestroyImmediate(converted);
+                Assert.IsNull(Refresh(node, new (Renderer, Renderer)[0], RenderAspects.Shapes));
+                Assert.IsNull(Refresh(node, new (Renderer, Renderer)[0], RenderAspects.Mesh));
+            }
+            finally
+            {
+                node.Dispose();
+                Object.DestroyImmediate(source);
+                if (converted != null)
+                {
+                    Object.DestroyImmediate(converted);
+                }
+            }
+        }
+
+        /// <summary>
+        /// A lost output must invalidate all contexts of a reused node, including overlapping generations,
+        /// and leave the proxy's upstream material in place until the conversion is rebuilt.
+        /// </summary>
+        [UnityTest]
+        public System.Collections.IEnumerator FilterNode_OnFrameGroup_DestroyedOutput_InvalidatesReusedContextsAndPreservesInput()
+        {
+            var shader = Shader.Find("Standard");
+            var source = new Material(shader);
+            var converted = new Material(shader);
+            var originalObject = new GameObject("Original");
+            var proxyObject = new GameObject("Proxy");
+            Renderer original = originalObject.AddComponent<MeshRenderer>();
+            Renderer proxy = proxyObject.AddComponent<MeshRenderer>();
+            original.sharedMaterial = source;
+            proxy.sharedMaterial = source;
+            var map = new Dictionary<Material, Material> { [source] = converted };
+            var initialContext = new ComputeContext("initial material preview");
+            var refreshedContext = new ComputeContext("refreshed material preview");
+            var node = CreateFilterNode(false, map, initialContext);
+            try
+            {
+                Assert.AreSame(node, node.Refresh(new[] { (original, proxy) }, refreshedContext, RenderAspects.Shapes).Result);
+                node.OnFrameGroup();
+                node.OnFrame(original, proxy);
+                Assert.AreSame(converted, proxy.sharedMaterial, "Live conversions must still be applied.");
+                Assert.IsFalse(initialContext.IsInvalidated);
+                Assert.IsFalse(refreshedContext.IsInvalidated);
+
+                Object.DestroyImmediate(converted);
+                proxy.sharedMaterial = source; // NDMF resets the proxy from the original each frame.
+                node.OnFrameGroup();
+                node.OnFrame(original, proxy);
+                // NDMFSyncContext initializes on delayCall. Let editor updates process the invalidation,
+                // including when this is the first test to use it after the test runner's domain reload.
+                for (var frame = 0; frame < 10 && (!initialContext.IsInvalidated || !refreshedContext.IsInvalidated); frame++)
+                {
+                    yield return null;
+                    ComputeContext.FlushInvalidates();
+                }
+                Assert.IsTrue(initialContext.IsInvalidated);
+                Assert.IsTrue(refreshedContext.IsInvalidated);
+                Assert.AreSame(source, proxy.sharedMaterial, "A dead conversion must never overwrite a slot with null.");
+                Assert.AreSame(source, original.sharedMaterial, "The original renderer must remain untouched.");
+                Assert.IsNull(node.Refresh(new[] { (original, proxy) }, new ComputeContext("rebuild"), RenderAspects.Shapes).Result);
+            }
+            finally
+            {
+                node.Dispose();
+                initialContext.Invalidate();
+                refreshedContext.Invalidate();
+                Object.DestroyImmediate(originalObject);
+                Object.DestroyImmediate(proxyObject);
+                Object.DestroyImmediate(source);
+                if (converted != null)
+                {
+                    Object.DestroyImmediate(converted);
+                }
+            }
+        }
+
+        private static IRenderFilterNode CreateFilterNode(bool removeExtraMaterialSlots, Dictionary<Material, Material> materialMap = null, ComputeContext context = null)
         {
             var nodeType = typeof(MaterialConversionFilter).GetNestedType("MaterialConversionFilterNode", BindingFlags.NonPublic);
             Assert.IsNotNull(nodeType, "MaterialConversionFilter.MaterialConversionFilterNode was not found.");
 
-            var lease = new SharedMaterialMapLease(new Dictionary<Material, Material>(), new HashSet<string>());
+            materialMap ??= new Dictionary<Material, Material>();
+            var lease = new SharedMaterialMapLease(materialMap, new Dictionary<string, SharedPreviewMaterialCache.CacheEntry>());
             return (IRenderFilterNode)System.Activator.CreateInstance(
                 nodeType,
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
                 null,
-                new object[] { new Dictionary<Material, Material>(), removeExtraMaterialSlots, lease, null, null, new Material[0] },
+                new object[] { materialMap, removeExtraMaterialSlots, lease, null, null, new Material[0], context },
                 null);
         }
 
