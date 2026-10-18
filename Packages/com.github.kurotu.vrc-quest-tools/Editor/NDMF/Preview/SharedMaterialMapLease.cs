@@ -10,23 +10,23 @@ namespace KRT.VRCQuestTools.Ndmf
 {
     /// <summary>
     /// Represents a lease for a shared mapping of source materials to converted preview materials.
-    /// The lease keeps a reference to cache keys that were acquired; calling <see cref="Release"/> will decrement
+    /// The lease keeps a reference to the cache entries that were acquired; calling <see cref="Release"/> will decrement
     /// the underlying cache reference counts and schedule any unreferenced converted materials for destruction.
     /// </summary>
     internal class SharedMaterialMapLease
     {
-        private readonly HashSet<string> acquiredKeys;
+        private readonly Dictionary<string, SharedPreviewMaterialCache.CacheEntry> acquiredEntries;
         private bool disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SharedMaterialMapLease"/> class.
         /// </summary>
         /// <param name="materialMap">Mapping from original materials to converted (shared) preview materials.</param>
-        /// <param name="acquiredKeys">Set of cache keys that correspond to the acquired entries.</param>
-        public SharedMaterialMapLease(Dictionary<Material, Material> materialMap, HashSet<string> acquiredKeys)
+        /// <param name="acquiredEntries">The cache entries owned by this lease, indexed by their keys.</param>
+        public SharedMaterialMapLease(Dictionary<Material, Material> materialMap, Dictionary<string, SharedPreviewMaterialCache.CacheEntry> acquiredEntries)
         {
             MaterialMap = materialMap;
-            this.acquiredKeys = acquiredKeys;
+            this.acquiredEntries = acquiredEntries;
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace KRT.VRCQuestTools.Ndmf
                 return;
             }
 
-            SharedPreviewMaterialCache.Release(acquiredKeys);
+            SharedPreviewMaterialCache.Release(acquiredEntries);
             MaterialMap.Clear();
             disposed = true;
         }

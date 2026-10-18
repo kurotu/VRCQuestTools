@@ -21,6 +21,92 @@ namespace KRT.VRCQuestTools.Ndmf
     public class SharedPreviewMaterialCacheReplaceTests
     {
         /// <summary>
+        /// A scene reload can destroy a converted material while its old preview nodes still hold leases.
+        /// Releasing those leases must not decrement a replacement entry created under the same cache key.
+        /// </summary>
+        [TestCase(false)]
+        [TestCase(true)]
+        public void AcquireRelease_DestroyedEntry_DoesNotReleaseReplacement(bool releaseReplacementFirst)
+        {
+            var shader = Shader.Find("Standard");
+            Assert.IsNotNull(shader);
+            var source = new Material(shader);
+            var settingsMap = new Dictionary<Material, IMaterialConvertSettings> { [source] = new DummySettings() };
+            var leases = new List<SharedMaterialMapLease>();
+            var generated = new List<Material>();
+            var textures = new List<Texture2D>();
+            Func<Dictionary<Material, IMaterialConvertSettings>, Dictionary<Material, Material>> convert = _ =>
+            {
+                var texture = TextureUtility.CreateColorTexture(new Color32(1, 2, 3, 255));
+                var material = new Material(shader) { mainTexture = texture };
+                generated.Add(material);
+                textures.Add(texture);
+                return new Dictionary<Material, Material> { [source] = material };
+            };
+
+            try
+            {
+                var oldLease = SharedPreviewMaterialCache.Acquire(settingsMap, convert);
+                leases.Add(oldLease);
+                var secondOldLease = SharedPreviewMaterialCache.Acquire(settingsMap, convert);
+                leases.Add(secondOldLease);
+                UnityEngine.Object.DestroyImmediate(oldLease.MaterialMap[source]);
+
+                var newLease = SharedPreviewMaterialCache.Acquire(settingsMap, convert);
+                leases.Add(newLease);
+                var secondNewLease = SharedPreviewMaterialCache.Acquire(settingsMap, convert);
+                leases.Add(secondNewLease);
+                var replacement = newLease.MaterialMap[source];
+                var replacementTexture = replacement.mainTexture;
+                Assert.AreEqual(2, generated.Count, "Only the destroyed entry should be regenerated.");
+                Assert.AreSame(replacement, secondNewLease.MaterialMap[source]);
+
+                if (releaseReplacementFirst)
+                {
+                    newLease.Release();
+                }
+                oldLease.Release();
+                oldLease.Release();
+                secondOldLease.Release();
+                Assert.IsTrue(replacement != null, "Old leases must not destroy the replacement material.");
+                Assert.IsTrue(replacementTexture != null, "Old leases must not destroy the replacement's textures.");
+
+                var thirdNewLease = SharedPreviewMaterialCache.Acquire(settingsMap, convert);
+                leases.Add(thirdNewLease);
+                Assert.AreSame(replacement, thirdNewLease.MaterialMap[source], "The replacement must remain indexed.");
+                Assert.AreEqual(2, generated.Count);
+                thirdNewLease.Release();
+                newLease.Release();
+                Assert.IsTrue(replacement != null, "The second new lease still owns the replacement.");
+                secondNewLease.Release();
+                Assert.IsTrue(replacement == null);
+                Assert.IsTrue(replacementTexture == null);
+            }
+            finally
+            {
+                foreach (var lease in leases)
+                {
+                    lease.Release();
+                }
+                foreach (var material in generated)
+                {
+                    if (material != null)
+                    {
+                        UnityEngine.Object.DestroyImmediate(material);
+                    }
+                }
+                foreach (var texture in textures)
+                {
+                    if (texture != null)
+                    {
+                        UnityEngine.Object.DestroyImmediate(texture);
+                    }
+                }
+                UnityEngine.Object.DestroyImmediate(source);
+            }
+        }
+
+        /// <summary>
         /// Verifies that <see cref="SharedPreviewMaterialCache.ReplaceTextureReferences"/> swaps a texture
         /// property on every cached converted material that references it, returns how many properties were
         /// replaced, and finds nothing left to replace on a second call once the old texture is no longer
