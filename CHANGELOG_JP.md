@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- [NDMF] 既に開いているシーンファイルを再度開くとプレビューがマテリアルエラーを起こす問題を修正。
+
 ## [3.0.1] - 2026-10-13
 
 ### 修正
