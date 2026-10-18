@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - [NDMF] Fixed preview material errors when reopening an already opened scene file.
+- Fixed the "Build Target" option of `VQT Platform Target Settings` showing `Android` instead of `Mobile`.
 
 ## [3.0.1] - 2026-10-13
 

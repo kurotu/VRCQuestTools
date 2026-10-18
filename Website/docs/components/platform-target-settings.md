@@ -22,4 +22,4 @@ With this component, the avatar is built with the settings of the specified plat
 ## Notes
 
 This is convenient to check the Mobile behavior in PC builds.
-For example, setting "Build Target" to Android builds the avatar with the Mobile settings even when Unity targets Windows.
+For example, setting "Build Target" to Mobile builds the avatar with the Mobile settings even when Unity targets Windows.

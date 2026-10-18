@@ -22,4 +22,4 @@ slug: /references/components/platform-target-settings
 ## 補足
 
 PC 用のビルドで Mobile 向けの動作を確認したいときに便利です。
-たとえば「ビルドターゲット」を Android にすると、Unity が Windows ターゲットのままでも Mobile 用の設定でビルドされます。
+たとえば「ビルドターゲット」を Mobile にすると、Unity が Windows ターゲットのままでも Mobile 用の設定でビルドされます。
