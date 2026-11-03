@@ -1180,7 +1180,10 @@ namespace KRT.VRCQuestTools.Models.VRChat
 
                 var originalName = mesh.name;
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(mesh, out string guid, out long _);
-                var outFile = $"{saveDirectory}/{originalName}_from_{guid}.vqtmesh";
+                // Mesh names may contain characters that are invalid in file names (e.g. "?"). Keep "/" as a directory separator.
+                var invalidChars = Path.GetInvalidFileNameChars();
+                var fileName = string.Join("/", originalName.Split('/').Select(part => new string(part.Select(c => invalidChars.Contains(c) ? '_' : c).ToArray())));
+                var outFile = $"{saveDirectory}/{fileName}_from_{guid}.vqtmesh";
 
                 // When the mesh is added into another asset, "/" is acceptable as name.
                 if (originalName.Contains("/"))
