@@ -479,6 +479,18 @@ namespace KRT.VRCQuestTools.Models.VRChat
         }
 
         /// <summary>
+        /// Replaces characters which cannot be used in a file name. "/" is kept as a directory separator.
+        /// </summary>
+        /// <param name="meshName">Mesh name.</param>
+        /// <param name="invalidChars">Characters to replace.</param>
+        /// <returns>Relative file path without extension.</returns>
+        private static string ReplaceInvalidFileNameChars(string meshName, char[] invalidChars)
+        {
+            var parts = meshName.Split('/').Select(part => new string(part.Select(c => invalidChars.Contains(c) ? '_' : c).ToArray()));
+            return string.Join("/", parts);
+        }
+
+        /// <summary>
         /// Builds the material wrapper that decides how a material is converted.
         /// Materials with an explicit per-material convert setting bypass automatic particle conversion.
         /// A particle-like renderer material whose rendered (Graphics.Blit) appearance is fully opaque does
@@ -1179,10 +1191,11 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 }
 
                 var originalName = mesh.name;
-                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(mesh, out string guid, out long _);
-                var invalidChars = Path.GetInvalidFileNameChars();
-                var fileName = string.Join("/", originalName.Split('/').Select(part => new string(part.Select(c => invalidChars.Contains(c) ? '_' : c).ToArray())));
-                var outFile = $"{saveDirectory}/{fileName}_from_{guid}.vqtmesh";
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(mesh, out string guid, out long localId);
+
+                // Mesh names may contain characters that are invalid in file names (e.g. "?"). Keep "/" as a directory separator.
+                var fileName = ReplaceInvalidFileNameChars(originalName, Path.GetInvalidFileNameChars());
+                var outFile = $"{saveDirectory}/{fileName}_from_{guid}_{localId}.vqtmesh";
 
                 // When the mesh is added into another asset, "/" is acceptable as name.
                 if (originalName.Contains("/"))
