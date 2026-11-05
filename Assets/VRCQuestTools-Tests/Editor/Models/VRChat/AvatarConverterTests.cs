@@ -4,11 +4,14 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.Models;
 using KRT.VRCQuestTools.Models.Unity;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 namespace KRT.VRCQuestTools.Models.VRChat
@@ -19,6 +22,8 @@ namespace KRT.VRCQuestTools.Models.VRChat
     public class AvatarConverterTests
     {
         private const string MobileToonLitShaderName = "VRChat/Mobile/Toon Lit";
+        private const string TempRoot = "Assets/VRCQuestTools-Tests/Temp";
+        private static readonly char[] WindowsInvalidFileNameChars = { '"', '<', '>', '|', ':', '*', '?', '\\', '/' };
 
         /// <summary>
         /// Test that Platform GameObject Remover deletes marked GameObjects on Android conversion.
@@ -58,6 +63,70 @@ namespace KRT.VRCQuestTools.Models.VRChat
             Assert.IsFalse(child == null, "GameObject should remain when removeOnAndroid is false.");
 
             Object.DestroyImmediate(root);
+        }
+
+        /// <summary>
+        /// Test that characters invalid on Windows are replaced while "/" is kept as a directory separator.
+        /// </summary>
+        /// <param name="meshName">Mesh name.</param>
+        /// <param name="expected">Expected file name.</param>
+        [TestCase("Body", "Body")]
+        [TestCase("HairPin_???", "HairPin____")]
+        [TestCase("a:b*c", "a_b_c")]
+        [TestCase("Parent/Child?", "Parent/Child_")]
+        public void ReplaceInvalidFileNameChars_WindowsInvalidChars_ReplacesWithUnderscore(string meshName, string expected)
+        {
+            var method = typeof(AvatarConverter).GetMethod("ReplaceInvalidFileNameChars", BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.IsNotNull(method, "ReplaceInvalidFileNameChars method should exist.");
+
+            var actual = method.Invoke(null, new object[] { meshName, WindowsInvalidFileNameChars });
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        /// Test that meshes in one source file get separate outputs when their file names would collide.
+        /// </summary>
+        /// <param name="firstName">Name of the first mesh.</param>
+        /// <param name="secondName">Name of the second mesh.</param>
+        [TestCase("Hair", "Hair")]
+        [TestCase("Hair?", "Hair_")]
+        [TestCase("Parent/Child?", "Parent/Child_")]
+        public void RemoveVertexColor_MeshesInOneSourceFile_KeepsEachMesh(string firstName, string secondName)
+        {
+            var tempFolder = $"{TempRoot}/{System.Guid.NewGuid():N}";
+            Directory.CreateDirectory(tempFolder);
+            AssetDatabase.Refresh();
+            var root = new GameObject("AvatarRoot");
+            try
+            {
+                var sourcePath = $"{tempFolder}/source.asset";
+                var firstSource = CreateMeshWithVertexColors(firstName, 3);
+                var secondSource = CreateMeshWithVertexColors(secondName, 4);
+
+                // CreateAsset renames the main object to the file name, so both meshes must be sub-assets.
+                AssetDatabase.CreateAsset(new Mesh(), sourcePath);
+                AssetDatabase.AddObjectToAsset(firstSource, sourcePath);
+                AssetDatabase.AddObjectToAsset(secondSource, sourcePath);
+                AssetDatabase.SaveAssets();
+                Assert.AreEqual(firstName, firstSource.name);
+                Assert.AreEqual(secondName, secondSource.name);
+                var firstFilter = CreateMeshObject(root, "First", firstSource);
+                var secondFilter = CreateMeshObject(root, "Second", secondSource);
+
+                InvokeRemoveVertexColor(new AvatarConverter(null), root, tempFolder);
+
+                Assert.AreNotEqual(AssetDatabase.GetAssetPath(firstFilter.sharedMesh), AssetDatabase.GetAssetPath(secondFilter.sharedMesh));
+                Assert.AreEqual(3, firstFilter.sharedMesh.vertexCount);
+                Assert.AreEqual(4, secondFilter.sharedMesh.vertexCount);
+                Assert.Zero(firstFilter.sharedMesh.colors32.Length);
+                Assert.Zero(secondFilter.sharedMesh.colors32.Length);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                AssetDatabase.DeleteAsset(tempFolder);
+            }
         }
 
         /// <summary>
@@ -296,6 +365,55 @@ namespace KRT.VRCQuestTools.Models.VRChat
             var method = type.GetMethod("ApplyPlatformGameObjectRemoversForAndroid", BindingFlags.NonPublic | BindingFlags.Static);
             Assert.IsNotNull(method, "ApplyPlatformGameObjectRemoversForAndroid method should exist.");
             method.Invoke(null, new object[] { avatarObject });
+        }
+
+        /// <summary>
+        /// Creates a mesh with vertex colors.
+        /// </summary>
+        /// <param name="name">Mesh name.</param>
+        /// <param name="vertexCount">Vertex count, which identifies the mesh in assertions.</param>
+        /// <returns>Created mesh.</returns>
+        private static Mesh CreateMeshWithVertexColors(string name, int vertexCount)
+        {
+            var mesh = new Mesh { name = name };
+            mesh.vertices = Enumerable.Range(0, vertexCount)
+                .Select(i => Quaternion.Euler(0f, 0f, 360f * i / vertexCount) * Vector3.right)
+                .ToArray();
+            mesh.triangles = Enumerable.Range(1, vertexCount - 2)
+                .SelectMany(i => new[] { 0, i, i + 1 })
+                .ToArray();
+            mesh.colors32 = Enumerable.Repeat(new Color32(255, 0, 0, 255), vertexCount).ToArray();
+            return mesh;
+        }
+
+        /// <summary>
+        /// Creates a child object which renders the mesh.
+        /// </summary>
+        /// <param name="root">Parent object.</param>
+        /// <param name="name">Object name.</param>
+        /// <param name="mesh">Mesh to render.</param>
+        /// <returns>Created mesh filter.</returns>
+        private static MeshFilter CreateMeshObject(GameObject root, string name, Mesh mesh)
+        {
+            var obj = new GameObject(name);
+            obj.transform.SetParent(root.transform);
+            obj.AddComponent<MeshRenderer>();
+            var filter = obj.AddComponent<MeshFilter>();
+            filter.sharedMesh = mesh;
+            return filter;
+        }
+
+        /// <summary>
+        /// Invokes AvatarConverter.RemoveVertexColor by reflection.
+        /// </summary>
+        /// <param name="converter">AvatarConverter instance.</param>
+        /// <param name="avatarObject">Avatar root object.</param>
+        /// <param name="assetsDirectory">Output directory.</param>
+        private static void InvokeRemoveVertexColor(AvatarConverter converter, GameObject avatarObject, string assetsDirectory)
+        {
+            var method = typeof(AvatarConverter).GetMethod("RemoveVertexColor", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "RemoveVertexColor method should exist.");
+            method.Invoke(converter, new object[] { avatarObject, assetsDirectory });
         }
 
         /// <summary>
