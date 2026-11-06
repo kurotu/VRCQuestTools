@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- メッシュの名称にファイル名に使用できない文字を使用していると、頂点カラーを削除したメッシュの保存時にエラーが発生する問題を修正。 (by @armadavalor)
+
 ## [3.0.2] - 2026-10-25
 
 ### 修正
