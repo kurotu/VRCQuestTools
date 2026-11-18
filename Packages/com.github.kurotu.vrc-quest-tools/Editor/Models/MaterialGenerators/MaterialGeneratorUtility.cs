@@ -110,7 +110,10 @@ namespace KRT.VRCQuestTools.Models
                 compressorKeyComponent = "_" + TextureCompressorProvider.GetCompressor(compressionFormat).CacheKeyComponent;
             }
 
-            var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}{compressorKeyComponent}_{assetHash}" + (saveAsPng ? ".png" : ".bin");
+            // The entry stores how the texture is decoded (sRGB, linear or normal map), so textures generated with a different
+            // config must not share an entry even when the other inputs are identical.
+            var configKeyComponent = config.isNormalMap ? "normal" : (config.isSRGB ? "srgb" : "linear");
+            var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{configKeyComponent}_{EditorUserBuildSettings.activeBuildTarget}{compressorKeyComponent}_{assetHash}" + (saveAsPng ? ".png" : ".bin");
             var texName = $"{material.name}_{textureType}";
             string outFile = null;
             if (saveAsPng)
