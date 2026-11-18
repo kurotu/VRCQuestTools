@@ -383,6 +383,24 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
+        /// Creates the albedo bake request which reproduces the main texture for Toon Standard.
+        /// </summary>
+        /// <returns>Albedo bake request.</returns>
+        protected AlbedoBakeRequest CreateAlbedoBakeRequest()
+        {
+            return new AlbedoBakeRequest
+            {
+                GenerateQuestTextures = Settings.generateQuestTextures,
+                MaxTextureSize = Settings.maxTextureSize,
+                MobileTextureFormat = Settings.mobileTextureFormat,
+                Brightness = 1.0f,
+                ShadeFromNormalMap = !Settings.useNormalMap,
+                FoldEmission = !Settings.useEmission,
+                TargetRendersMatcap = Settings.useMatcap,
+            };
+        }
+
+        /// <summary>
         /// Converts internal material to Toon Standard.
         /// </summary>
         /// <returns>Toon Standard Material.</returns>

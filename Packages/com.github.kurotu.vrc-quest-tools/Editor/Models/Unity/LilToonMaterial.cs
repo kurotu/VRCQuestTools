@@ -14,7 +14,7 @@ namespace KRT.VRCQuestTools.Models.Unity
     /// <summary>
     /// lilToon material.
     /// </summary>
-    internal class LilToonMaterial : MaterialBase, IToonStandardConvertable
+    internal partial class LilToonMaterial : MaterialBase, IToonStandardConvertable
     {
         /// <summary>
         /// Package display name.

@@ -106,7 +106,7 @@ namespace KRT.VRCQuestTools.Models
                     // Poiyomi has four emission channels; the chosen map may be from channel 1/2/3, in
                     // which case channel 0's UV transform would sample it incorrectly.
                     var emissionChannel = GetPrimaryEmissionChannel();
-                    newMaterial.EmissionMap = GetEmissionMapByIndex(emissionChannel);
+                    newMaterial.EmissionMap = poiyomiMaterial.GetEmissionMapByIndex(emissionChannel);
                     newMaterial.EmissionMapTextureScale = GetEmissionMapTextureScaleByIndex(emissionChannel);
                     newMaterial.EmissionMapTextureOffset = GetEmissionMapTextureOffsetByIndex(emissionChannel);
                 }
@@ -130,7 +130,7 @@ namespace KRT.VRCQuestTools.Models
 
             if (GetUseOcclusionMap() && Settings.useOcclusion)
             {
-                var (aoChannel, aoStrength) = GetPrimaryAOChannelAndStrength();
+                var (aoChannel, aoStrength) = poiyomiMaterial.GetPrimaryAOChannelAndStrength();
                 newMaterial.UseOcclusion = true;
                 newMaterial.OcclusionMap = poiyomiMaterial.AOMap;
                 newMaterial.OcclusionMapTextureScale = poiyomiMaterial.AOMapTextureScale;
@@ -205,30 +205,13 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(poiyomiMaterial.Material.mainTexture);
-        }
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride() => ((IAlbedoSource)poiyomiMaterial).GetAlbedoPlatformOverride();
 
         /// <inheritdoc/>
-        protected override (int MaxTextureSize, TextureFormat Format)? GetNormalMapPlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(poiyomiMaterial.NormalMap);
-        }
+        protected override (int MaxTextureSize, TextureFormat Format)? GetNormalMapPlatformOverride() => ((INormalMapSource)poiyomiMaterial).GetNormalMapPlatformOverride();
 
         /// <inheritdoc/>
-        protected override (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(
-                poiyomiMaterial.EmissionMap0,
-                poiyomiMaterial.EmissionMask0,
-                poiyomiMaterial.EmissionMap1,
-                poiyomiMaterial.EmissionMask1,
-                poiyomiMaterial.EmissionMap2,
-                poiyomiMaterial.EmissionMask2,
-                poiyomiMaterial.EmissionMap3,
-                poiyomiMaterial.EmissionMask3);
-        }
+        protected override (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride() => ((IEmissionSource)poiyomiMaterial).GetEmissionMapPlatformOverride();
 
         /// <inheritdoc/>
         protected override (int MaxTextureSize, TextureFormat Format)? GetMatcapPlatformOverride()
@@ -255,10 +238,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override (int MaxTextureSize, TextureFormat Format)? GetOcclusionMapPlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(poiyomiMaterial.AOMap);
-        }
+        protected override (int MaxTextureSize, TextureFormat Format)? GetOcclusionMapPlatformOverride() => ((IOcclusionSource)poiyomiMaterial).GetOcclusionMapPlatformOverride();
 
         /// <inheritdoc/>
         protected override (int MaxTextureSize, TextureFormat Format)? GetPackedMaskPlatformOverride(TexturePack pack)
@@ -305,39 +285,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override AsyncCallbackRequest GenerateEmissionMap(Action<Texture2D> completion)
-        {
-            Texture2D main = null;
-            GenerateMainTexture((tex) =>
-            {
-                main = tex;
-            }).WaitForCompletion();
-
-            var shader = Shader.Find("Hidden/VRCQuestTools/Poiyomi/Emission");
-            if (shader == null)
-            {
-                throw new InvalidOperationException("Shader not found: Hidden/VRCQuestTools/Poiyomi/Emission");
-            }
-
-            var bakeMat = new Material(shader);
-            bakeMat.parent = null;
-            bakeMat.SetTexture("_VQT_AlbedoTex", main);
-            SetEmissionBakeProperties(bakeMat);
-
-            var (sourceWidth, sourceHeight) = GetEmissionSourceSize();
-            var platformOverride = GetEmissionMapPlatformOverride();
-            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
-            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, maxTextureSize);
-
-            var rt = RenderTexture.GetTemporary(targetWidth, targetHeight, 0, RenderTextureFormat.ARGB32);
-            Graphics.Blit(null, rt, bakeMat);
-            return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
-            {
-                RenderTexture.ReleaseTemporary(rt);
-                UnityEngine.Object.DestroyImmediate(bakeMat);
-                completion?.Invoke(tex);
-            });
-        }
+        protected override AsyncCallbackRequest GenerateEmissionMap(Action<Texture2D> completion) => ((IEmissionSource)poiyomiMaterial).GenerateEmissionMap(CreateAlbedoBakeRequest(), Settings.maxTextureSize, completion);
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateGlossMap(Action<Texture2D> completion)
@@ -368,49 +316,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override AsyncCallbackRequest GenerateMainTexture(Action<Texture2D> completion)
-        {
-            var toonLitConvertSettings = new ToonLitConvertSettings
-            {
-                generateQuestTextures = Settings.generateQuestTextures,
-                maxTextureSize = Settings.maxTextureSize,
-                mobileTextureFormat = Settings.mobileTextureFormat,
-                mainTextureBrightness = 1.0f,
-                generateShadowFromNormalMap = !Settings.useNormalMap,
-            };
-
-            var toonLitBakeMat = new PoiyomiMaterial(new Material(poiyomiMaterial.Material));
-            if (Settings.useEmission)
-            {
-                // Emission is baked separately into the emission map, so it must not be baked into the
-                // main (ToonLit) texture. The EnableEmissionN setter no-ops on locked Poiyomi shaders where
-                // the toggle property was stripped, which would leave emission enabled after the shader is
-                // swapped to the bake shader (Hidden/VRCQuestTools/Poiyomi declares _EnableEmission*),
-                // double-counting emission. Write 0 directly to the bake shader's properties instead so the
-                // value persists through the swap regardless of whether the source shader is locked.
-                toonLitBakeMat.Material.SetFloat("_EnableEmission", 0.0f);
-                toonLitBakeMat.Material.SetFloat("_EnableEmission1", 0.0f);
-                toonLitBakeMat.Material.SetFloat("_EnableEmission2", 0.0f);
-                toonLitBakeMat.Material.SetFloat("_EnableEmission3", 0.0f);
-            }
-
-            if (Settings.useMatcap)
-            {
-                // Disable both matcap slots so neither is baked into the main (ToonLit) texture,
-                // regardless of which slot is the active one.
-                if (toonLitBakeMat.Material.HasProperty("_MatcapEnable"))
-                {
-                    toonLitBakeMat.Material.SetFloat("_MatcapEnable", 0.0f);
-                }
-
-                if (toonLitBakeMat.Material.HasProperty("_Matcap2Enable"))
-                {
-                    toonLitBakeMat.Material.SetFloat("_Matcap2Enable", 0.0f);
-                }
-            }
-
-            return toonLitBakeMat.GenerateToonLitImage(toonLitConvertSettings, completion);
-        }
+        protected override AsyncCallbackRequest GenerateMainTexture(Action<Texture2D> completion) => ((IAlbedoSource)poiyomiMaterial).GenerateAlbedo(CreateAlbedoBakeRequest(), completion);
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateMatcap(Action<Texture2D> completion)
@@ -512,45 +418,10 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion)
-        {
-            var normal = (Texture2D)poiyomiMaterial.NormalMap;
-            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(normal);
-            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
-            var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, maxTextureSize);
-            var newTex = TextureUtility.DownscaleNormalMap(normal, outputRGB, width, height);
-            return new ResultRequest<Texture2D>(newTex, completion);
-        }
+        protected override AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion) => ((INormalMapSource)poiyomiMaterial).GenerateNormalMap(outputRGB, Settings.maxTextureSize, completion);
 
         /// <inheritdoc/>
-        protected override AsyncCallbackRequest GenerateOcclusionMap(Action<Texture2D> completion)
-        {
-            var aoMap = (Texture2D)poiyomiMaterial.AOMap;
-            var (channel, _) = GetPrimaryAOChannelAndStrength();
-
-            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(aoMap);
-            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
-            var (width, height) = TextureUtility.AspectFitReduction(aoMap.width, aoMap.height, maxTextureSize);
-
-            var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
-            swizzleMat.SetTexture("_Texture0", aoMap);
-            swizzleMat.SetFloat("_Texture0Input", channel);
-            swizzleMat.SetFloat("_Texture0Output", 1); // G
-
-            var rt = RenderTexture.GetTemporary(aoMap.width, aoMap.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
-            Graphics.Blit(null, rt, swizzleMat);
-
-            var rt2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
-            TextureUtility.DownscaleBlit(rt, false, rt2);
-
-            return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
-            {
-                RenderTexture.ReleaseTemporary(rt);
-                RenderTexture.ReleaseTemporary(rt2);
-                UnityEngine.Object.DestroyImmediate(swizzleMat);
-                completion?.Invoke(tex);
-            });
-        }
+        protected override AsyncCallbackRequest GenerateOcclusionMap(Action<Texture2D> completion) => ((IOcclusionSource)poiyomiMaterial).GenerateOcclusionMap(Settings.maxTextureSize, completion);
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GeneratePackedMask(TexturePack pack, Action<Texture2D> completion)
@@ -701,42 +572,10 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override Color GetEmissionColor()
-        {
-            var enabledChannels = GetEnabledEmissionChannels().ToList();
-            if (enabledChannels.Count > 1)
-            {
-                return Color.white;
-            }
-
-            return enabledChannels.Count == 1
-                ? GetEmissionColorByIndex(enabledChannels[0])
-                : Color.black;
-        }
+        protected override Color GetEmissionColor() => ((IEmissionSource)poiyomiMaterial).EmissionColor;
 
         /// <inheritdoc/>
-        protected override float GetEmissionStrength()
-        {
-            var channels = GetEnabledEmissionChannels().ToArray();
-            if (channels.Length != 1)
-            {
-                return 1.0f;
-            }
-
-            switch (channels[0])
-            {
-                case 0:
-                    return poiyomiMaterial.EmissionStrength0;
-                case 1:
-                    return poiyomiMaterial.EmissionStrength1;
-                case 2:
-                    return poiyomiMaterial.EmissionStrength2;
-                case 3:
-                    return poiyomiMaterial.EmissionStrength3;
-                default:
-                    throw new InvalidOperationException("Unknown emission channel.");
-            }
-        }
+        protected override float GetEmissionStrength() => ((IEmissionSource)poiyomiMaterial).EmissionStrength;
 
         /// <inheritdoc/>
         protected override (Vector2 Scale, Vector2 Offset) GetGlossMapST()
@@ -780,10 +619,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override (Vector2 Scale, Vector2 Offset) GetMainTextureST()
-        {
-            return (poiyomiMaterial.MainTextureScale, poiyomiMaterial.MainTextureOffset);
-        }
+        protected override (Vector2 Scale, Vector2 Offset) GetMainTextureST() => ((IAlbedoSource)poiyomiMaterial).MainTextureST;
 
         /// <inheritdoc/>
         protected override ToonStandardMaterialWrapper.MatcapTypeMode GetMapcapType()
@@ -842,7 +678,7 @@ namespace KRT.VRCQuestTools.Models
         {
             // Poiyomi _LightingMinLightBrightness is Range(0,1), but ToonStandard _MinBrightness
             // is Range(0, 0.1). Clamp to ToonStandard's upper bound.
-            return Mathf.Min(poiyomiMaterial.LightingMinLightBrightness, 0.1f);
+            return Mathf.Min(((IMinimumBrightnessSource)poiyomiMaterial).MinimumBrightness, 0.1f);
         }
 
         /// <inheritdoc/>
@@ -852,10 +688,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override float GetNormalMapScale()
-        {
-            return poiyomiMaterial.NormalMapScale;
-        }
+        protected override float GetNormalMapScale() => ((INormalMapSource)poiyomiMaterial).NormalMapScale;
 
         /// <inheritdoc/>
         protected override (Vector2 Scale, Vector2 Offset) GetOcculusionMapST()
@@ -864,11 +697,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override float GetOcclusionStrength()
-        {
-            var (_, strength) = GetPrimaryAOChannelAndStrength();
-            return strength;
-        }
+        protected override float GetOcclusionStrength() => ((IOcclusionSource)poiyomiMaterial).OcclusionStrength;
 
         /// <inheritdoc/>
         protected override float GetReflectance()
@@ -1002,19 +831,10 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override bool GetUseEmission()
-        {
-            return poiyomiMaterial.UseEmission;
-        }
+        protected override bool GetUseEmission() => ((IEmissionSource)poiyomiMaterial).UseEmission;
 
         /// <inheritdoc/>
-        protected override bool GetUseEmissionMap()
-        {
-            return IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission0, poiyomiMaterial.EmissionMap0, poiyomiMaterial.EmissionMask0, poiyomiMaterial.EmissionBaseColorAsMap0)
-                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission1, poiyomiMaterial.EmissionMap1, poiyomiMaterial.EmissionMask1, poiyomiMaterial.EmissionBaseColorAsMap1)
-                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission2, poiyomiMaterial.EmissionMap2, poiyomiMaterial.EmissionMask2, poiyomiMaterial.EmissionBaseColorAsMap2)
-                || IsEmissionChannelTexturized(poiyomiMaterial.EnableEmission3, poiyomiMaterial.EmissionMap3, poiyomiMaterial.EmissionMask3, poiyomiMaterial.EmissionBaseColorAsMap3);
-        }
+        protected override bool GetUseEmissionMap() => ((IEmissionSource)poiyomiMaterial).UseEmissionMap;
 
         /// <inheritdoc/>
         protected override bool GetUseGlossMap()
@@ -1023,10 +843,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override bool GetUseMainTexture()
-        {
-            return poiyomiMaterial.Material.mainTexture != null || (GetUseEmission() && !Settings.useEmission);
-        }
+        protected override bool GetUseMainTexture() => ((IAlbedoSource)poiyomiMaterial).RequiresAlbedoTexture(CreateAlbedoBakeRequest());
 
         /// <inheritdoc/>
         protected override bool GetUseMatcap()
@@ -1047,22 +864,10 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override bool GetUseNormalMap()
-        {
-            return poiyomiMaterial.NormalMap != null;
-        }
+        protected override bool GetUseNormalMap() => ((INormalMapSource)poiyomiMaterial).UseNormalMap;
 
         /// <inheritdoc/>
-        protected override bool GetUseOcclusionMap()
-        {
-            if (poiyomiMaterial.AOMap == null)
-            {
-                return false;
-            }
-
-            var (_, strength) = GetPrimaryAOChannelAndStrength();
-            return strength > 0;
-        }
+        protected override bool GetUseOcclusionMap() => ((IOcclusionSource)poiyomiMaterial).UseOcclusionMap;
 
         /// <inheritdoc/>
         protected override bool GetUseRimLighting()
@@ -1188,13 +993,6 @@ namespace KRT.VRCQuestTools.Models
             }
         }
 
-        private static Color NormalizeHdrColor(Color color)
-        {
-            color = Utils.ColorUtility.HdrToLdr(color);
-            color.a = Mathf.Min(color.a, 1.0f);
-            return color;
-        }
-
         private static ToonStandardMaterialWrapper.MaskChannel ChannelIndexToMaskChannel(float channelIndex)
         {
             switch ((int)channelIndex)
@@ -1206,133 +1004,11 @@ namespace KRT.VRCQuestTools.Models
             }
         }
 
-        private IEnumerable<int> GetEnabledEmissionChannels()
-        {
-            if (poiyomiMaterial.EnableEmission0)
-            {
-                yield return 0;
-            }
-
-            if (poiyomiMaterial.EnableEmission1)
-            {
-                yield return 1;
-            }
-
-            if (poiyomiMaterial.EnableEmission2)
-            {
-                yield return 2;
-            }
-
-            if (poiyomiMaterial.EnableEmission3)
-            {
-                yield return 3;
-            }
-        }
-
-        private void SetEmissionBakeProperties(Material bakeMat)
-        {
-            bakeMat.SetFloat("_EnableEmission", poiyomiMaterial.EnableEmission0 ? 1.0f : 0.0f);
-            bakeMat.SetTexture("_EmissionMap", poiyomiMaterial.EmissionMap0);
-            bakeMat.SetTextureScale("_EmissionMap", poiyomiMaterial.EmissionMapTextureScale0);
-            bakeMat.SetTextureOffset("_EmissionMap", poiyomiMaterial.EmissionMapTextureOffset0);
-            bakeMat.SetColor("_EmissionColor", NormalizeHdrColor(poiyomiMaterial.EmissionColor0));
-            bakeMat.SetTexture("_EmissionMask", poiyomiMaterial.EmissionMask0);
-            bakeMat.SetTextureScale("_EmissionMask", poiyomiMaterial.EmissionMaskTextureScale0);
-            bakeMat.SetTextureOffset("_EmissionMask", poiyomiMaterial.EmissionMaskTextureOffset0);
-            bakeMat.SetFloat("_EmissionMaskChannel", poiyomiMaterial.EmissionMaskChannel0);
-            bakeMat.SetFloat("_EmissionStrength", poiyomiMaterial.EmissionStrength0);
-            bakeMat.SetFloat("_EmissionBaseColorAsMap", poiyomiMaterial.EmissionBaseColorAsMap0 ? 1.0f : 0.0f);
-
-            bakeMat.SetFloat("_EnableEmission1", poiyomiMaterial.EnableEmission1 ? 1.0f : 0.0f);
-            bakeMat.SetTexture("_EmissionMap1", poiyomiMaterial.EmissionMap1);
-            bakeMat.SetTextureScale("_EmissionMap1", poiyomiMaterial.EmissionMapTextureScale1);
-            bakeMat.SetTextureOffset("_EmissionMap1", poiyomiMaterial.EmissionMapTextureOffset1);
-            bakeMat.SetColor("_EmissionColor1", NormalizeHdrColor(poiyomiMaterial.EmissionColor1));
-            bakeMat.SetTexture("_EmissionMask1", poiyomiMaterial.EmissionMask1);
-            bakeMat.SetTextureScale("_EmissionMask1", poiyomiMaterial.EmissionMaskTextureScale1);
-            bakeMat.SetTextureOffset("_EmissionMask1", poiyomiMaterial.EmissionMaskTextureOffset1);
-            bakeMat.SetFloat("_EmissionMaskChannel1", poiyomiMaterial.EmissionMaskChannel1);
-            bakeMat.SetFloat("_EmissionStrength1", poiyomiMaterial.EmissionStrength1);
-            bakeMat.SetFloat("_EmissionBaseColorAsMap1", poiyomiMaterial.EmissionBaseColorAsMap1 ? 1.0f : 0.0f);
-
-            bakeMat.SetFloat("_EnableEmission2", poiyomiMaterial.EnableEmission2 ? 1.0f : 0.0f);
-            bakeMat.SetTexture("_EmissionMap2", poiyomiMaterial.EmissionMap2);
-            bakeMat.SetTextureScale("_EmissionMap2", poiyomiMaterial.EmissionMapTextureScale2);
-            bakeMat.SetTextureOffset("_EmissionMap2", poiyomiMaterial.EmissionMapTextureOffset2);
-            bakeMat.SetColor("_EmissionColor2", NormalizeHdrColor(poiyomiMaterial.EmissionColor2));
-            bakeMat.SetTexture("_EmissionMask2", poiyomiMaterial.EmissionMask2);
-            bakeMat.SetTextureScale("_EmissionMask2", poiyomiMaterial.EmissionMaskTextureScale2);
-            bakeMat.SetTextureOffset("_EmissionMask2", poiyomiMaterial.EmissionMaskTextureOffset2);
-            bakeMat.SetFloat("_EmissionMaskChannel2", poiyomiMaterial.EmissionMaskChannel2);
-            bakeMat.SetFloat("_EmissionStrength2", poiyomiMaterial.EmissionStrength2);
-            bakeMat.SetFloat("_EmissionBaseColorAsMap2", poiyomiMaterial.EmissionBaseColorAsMap2 ? 1.0f : 0.0f);
-
-            bakeMat.SetFloat("_EnableEmission3", poiyomiMaterial.EnableEmission3 ? 1.0f : 0.0f);
-            bakeMat.SetTexture("_EmissionMap3", poiyomiMaterial.EmissionMap3);
-            bakeMat.SetTextureScale("_EmissionMap3", poiyomiMaterial.EmissionMapTextureScale3);
-            bakeMat.SetTextureOffset("_EmissionMap3", poiyomiMaterial.EmissionMapTextureOffset3);
-            bakeMat.SetColor("_EmissionColor3", NormalizeHdrColor(poiyomiMaterial.EmissionColor3));
-            bakeMat.SetTexture("_EmissionMask3", poiyomiMaterial.EmissionMask3);
-            bakeMat.SetTextureScale("_EmissionMask3", poiyomiMaterial.EmissionMaskTextureScale3);
-            bakeMat.SetTextureOffset("_EmissionMask3", poiyomiMaterial.EmissionMaskTextureOffset3);
-            bakeMat.SetFloat("_EmissionMaskChannel3", poiyomiMaterial.EmissionMaskChannel3);
-            bakeMat.SetFloat("_EmissionStrength3", poiyomiMaterial.EmissionStrength3);
-            bakeMat.SetFloat("_EmissionBaseColorAsMap3", poiyomiMaterial.EmissionBaseColorAsMap3 ? 1.0f : 0.0f);
-        }
-
-        private static bool IsEmissionChannelTexturized(bool enabled, Texture map, Texture mask, bool baseColorAsMap)
-            => enabled && (map != null || mask != null || baseColorAsMap);
-
-        private (int Channel, float Strength) GetPrimaryAOChannelAndStrength()
-        {
-            var strengths = new float[]
-            {
-                poiyomiMaterial.AOStrengthR,
-                poiyomiMaterial.AOStrengthG,
-                poiyomiMaterial.AOStrengthB,
-                poiyomiMaterial.AOStrengthA,
-            };
-            for (int i = 0; i < strengths.Length; i++)
-            {
-                if (strengths[i] > 0)
-                {
-                    return (i, strengths[i]);
-                }
-            }
-
-            return (0, 1.0f); // Default to R channel at full strength
-        }
-
-        private (int Width, int Height) GetEmissionSourceSize()
-        {
-            var width = 4;
-            var height = 4;
-
-            foreach (var idx in GetEnabledEmissionChannels())
-            {
-                var map = GetEmissionMapByIndex(idx);
-                if (map)
-                {
-                    width = Mathf.Max(width, map.width);
-                    height = Mathf.Max(height, map.height);
-                }
-
-                var mask = GetEmissionMaskByIndex(idx);
-                if (mask)
-                {
-                    width = Mathf.Max(width, mask.width);
-                    height = Mathf.Max(height, mask.height);
-                }
-            }
-
-            return (width, height);
-        }
-
         private int GetPrimaryEmissionChannel()
         {
-            foreach (var idx in GetEnabledEmissionChannels())
+            foreach (var idx in poiyomiMaterial.GetEnabledEmissionChannels())
             {
-                if (GetEmissionMapByIndex(idx) != null)
+                if (poiyomiMaterial.GetEmissionMapByIndex(idx) != null)
                 {
                     return idx;
                 }
@@ -1340,30 +1016,13 @@ namespace KRT.VRCQuestTools.Models
 
             for (int idx = 0; idx <= 3; idx++)
             {
-                if (GetEmissionMapByIndex(idx) != null)
+                if (poiyomiMaterial.GetEmissionMapByIndex(idx) != null)
                 {
                     return idx;
                 }
             }
 
             return 0;
-        }
-
-        private Texture GetEmissionMapByIndex(int index)
-        {
-            switch (index)
-            {
-                case 0:
-                    return poiyomiMaterial.EmissionMap0;
-                case 1:
-                    return poiyomiMaterial.EmissionMap1;
-                case 2:
-                    return poiyomiMaterial.EmissionMap2;
-                case 3:
-                    return poiyomiMaterial.EmissionMap3;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(index));
-            }
         }
 
         private Vector2 GetEmissionMapTextureScaleByIndex(int index)
@@ -1395,40 +1054,6 @@ namespace KRT.VRCQuestTools.Models
                     return poiyomiMaterial.EmissionMapTextureOffset2;
                 case 3:
                     return poiyomiMaterial.EmissionMapTextureOffset3;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(index));
-            }
-        }
-
-        private Texture GetEmissionMaskByIndex(int index)
-        {
-            switch (index)
-            {
-                case 0:
-                    return poiyomiMaterial.EmissionMask0;
-                case 1:
-                    return poiyomiMaterial.EmissionMask1;
-                case 2:
-                    return poiyomiMaterial.EmissionMask2;
-                case 3:
-                    return poiyomiMaterial.EmissionMask3;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(index));
-            }
-        }
-
-        private Color GetEmissionColorByIndex(int index)
-        {
-            switch (index)
-            {
-                case 0:
-                    return poiyomiMaterial.EmissionColor0;
-                case 1:
-                    return poiyomiMaterial.EmissionColor1;
-                case 2:
-                    return poiyomiMaterial.EmissionColor2;
-                case 3:
-                    return poiyomiMaterial.EmissionColor3;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(index));
             }
