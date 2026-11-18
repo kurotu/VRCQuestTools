@@ -322,7 +322,8 @@ namespace KRT.VRCQuestTools.Models
                         var name = $"mask_{pack.R}_{pack.G}_{pack.B}_{pack.A}";
                         var sourcePackedMaskPlatformOverride = GetPackedMaskPlatformOverride(pack);
                         var packedMaskPlatformOverride = BuildEffectiveMaskFormatOverride(sourcePackedMaskPlatformOverride);
-                        MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, name, saveTextureAsPng, texturesPath, (compl) => GeneratePackedMask(pack, compl), (t) =>
+                        // Masks hold linear values, so they must not be stored as sRGB textures.
+                        MaterialGeneratorUtility.GenerateParameterTexture(material.Material, Settings, name, saveTextureAsPng, texturesPath, (compl) => GeneratePackedMask(pack, compl), (t) =>
                         {
                             foreach (var mask in pack.GetMasks())
                             {

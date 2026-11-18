@@ -4,6 +4,11 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
+## [Unreleased]
+
+### 修正
+- テクスチャキャッシュを再利用したとき、Toon Standard への変換でメタリック、グロス、Occlusion、マットキャップのマスクの値が変わる問題を修正。
+
 ## [3.0.4] - 2026-11-23
 
 ### 修正
