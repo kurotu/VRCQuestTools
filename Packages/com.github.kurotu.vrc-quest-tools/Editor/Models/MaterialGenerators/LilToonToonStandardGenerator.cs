@@ -1,3 +1,8 @@
+// <copyright file="LilToonToonStandardGenerator.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -139,64 +144,11 @@ namespace KRT.VRCQuestTools.Models
             return newMaterial;
         }
 
-        /// <summary>
-        /// Gets the platform override settings for main texture.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride()
-        {
-            // Only use color textures, not mask textures, and only from enabled features
-            var textures = new List<Texture>(3);
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetMainTexturePlatformOverride() => ((IAlbedoSource)lilMaterial).GetAlbedoPlatformOverride();
 
-            if (lilMaterial.Material.mainTexture != null)
-            {
-                textures.Add(lilMaterial.Material.mainTexture);
-            }
-
-            if (lilMaterial.UseMain2ndTex && lilMaterial.Main2ndTex != null)
-            {
-                textures.Add(lilMaterial.Main2ndTex);
-            }
-
-            if (lilMaterial.UseMain3rdTex && lilMaterial.Main3rdTex != null)
-            {
-                textures.Add(lilMaterial.Main3rdTex);
-            }
-
-            if (textures.Count > 0)
-            {
-                return TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray());
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the platform override settings for emission map textures.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        protected override (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride()
-        {
-            // Only use color textures, and only if the feature is actually enabled
-            var textures = new List<Texture>(2);
-
-            if (lilMaterial.UseEmission && lilMaterial.EmissionMap != null)
-            {
-                textures.Add(lilMaterial.EmissionMap);
-            }
-
-            if (lilMaterial.UseEmission2nd && lilMaterial.Emission2ndMap != null)
-            {
-                textures.Add(lilMaterial.Emission2ndMap);
-            }
-
-            if (textures.Count > 0)
-            {
-                return TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray());
-            }
-
-            return null;
-        }
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetEmissionMapPlatformOverride() => ((IEmissionSource)lilMaterial).GetEmissionMapPlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for gloss map textures.
@@ -251,23 +203,11 @@ namespace KRT.VRCQuestTools.Models
             return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MetallicMap, lilMaterial.ReflectionColorTex);
         }
 
-        /// <summary>
-        /// Gets the platform override settings for normal map textures.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        protected override (int MaxTextureSize, TextureFormat Format)? GetNormalMapPlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.NormalMap);
-        }
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetNormalMapPlatformOverride() => ((INormalMapSource)lilMaterial).GetNormalMapPlatformOverride();
 
-        /// <summary>
-        /// Gets the platform override settings for occlusion map textures.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        protected override (int MaxTextureSize, TextureFormat Format)? GetOcclusionMapPlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.AOMap);
-        }
+        /// <inheritdoc/>
+        protected override (int MaxTextureSize, TextureFormat Format)? GetOcclusionMapPlatformOverride() => ((IOcclusionSource)lilMaterial).GetOcclusionMapPlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for packed mask textures.
@@ -306,52 +246,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override AsyncCallbackRequest GenerateEmissionMap(Action<Texture2D> completion)
-        {
-            Texture2D main = null;
-            var mTask = GenerateMainTexture((tex) =>
-            {
-                main = tex;
-            });
-            mTask.WaitForCompletion();
-
-            var bakeMat = new Material(lilMaterial.Material);
-            bakeMat.parent = null;
-            bakeMat.shader = Shader.Find("Hidden/VRCQuestTools/lilToon/Emission");
-            var bakeMatWrapper = new LilToonMaterial(bakeMat);
-            bakeMatWrapper.Material.SetTexture("_VQT_AlbedoTex", main);
-            bakeMatWrapper.EmissionColor = Utils.ColorUtility.HdrToLdr(bakeMatWrapper.EmissionColor);
-            bakeMatWrapper.Emission2ndColor = Utils.ColorUtility.HdrToLdr(bakeMatWrapper.Emission2ndColor);
-
-            var sourceWidth = Mathf.Max(
-                lilMaterial.EmissionMap ? lilMaterial.EmissionMap.width : 4,
-                lilMaterial.EmissionBlendMask ? lilMaterial.EmissionBlendMask.width : 4,
-                lilMaterial.Emission2ndMap ? lilMaterial.Emission2ndMap.width : 4,
-                lilMaterial.Emission2ndBlendMask ? lilMaterial.Emission2ndBlendMask.width : 4);
-            var sourceHeight = Mathf.Max(
-                lilMaterial.EmissionMap ? lilMaterial.EmissionMap.height : 4,
-                lilMaterial.EmissionBlendMask ? lilMaterial.EmissionBlendMask.height : 4,
-                lilMaterial.Emission2ndMap ? lilMaterial.Emission2ndMap.height : 4,
-                lilMaterial.Emission2ndBlendMask ? lilMaterial.Emission2ndBlendMask.height : 4);
-
-            // Check platform override settings from source textures used in emission shader
-            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(
-                lilMaterial.EmissionMap,
-                lilMaterial.EmissionBlendMask,
-                lilMaterial.Emission2ndMap,
-                lilMaterial.Emission2ndBlendMask);
-            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
-
-            var (targetWidth, targetHeight) = TextureUtility.AspectFitReduction(sourceWidth, sourceHeight, maxTextureSize);
-            var rt = RenderTexture.GetTemporary(targetWidth, targetHeight, 0, RenderTextureFormat.ARGB32);
-            Graphics.Blit(lilMaterial.EmissionMap, rt, bakeMat);
-            return TextureUtility.RequestReadbackRenderTexture(rt, true, false, (tex) =>
-            {
-                RenderTexture.ReleaseTemporary(rt);
-                UnityEngine.Object.DestroyImmediate(bakeMat);
-                completion?.Invoke(tex);
-            });
-        }
+        protected override AsyncCallbackRequest GenerateEmissionMap(Action<Texture2D> completion) => ((IEmissionSource)lilMaterial).GenerateEmissionMap(CreateAlbedoBakeRequest(), Settings.maxTextureSize, completion);
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateGlossMap(Action<Texture2D> completion)
@@ -412,28 +307,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override AsyncCallbackRequest GenerateMainTexture(Action<Texture2D> completion)
-        {
-            var toonLitConvertSettings = new ToonLitConvertSettings
-            {
-                generateQuestTextures = Settings.generateQuestTextures,
-                maxTextureSize = Settings.maxTextureSize,
-                mobileTextureFormat = Settings.mobileTextureFormat,
-                mainTextureBrightness = 1.0f,
-                generateShadowFromNormalMap = !Settings.useNormalMap,
-            };
-            var toonLitBakeMat = new LilToonMaterial(new Material(lilMaterial.Material));
-            if (Settings.useEmission)
-            {
-                toonLitBakeMat.UseEmission = false;
-                toonLitBakeMat.UseEmission2nd = false;
-            }
-            if (Settings.useMatcap)
-            {
-                toonLitBakeMat.Material.SetFloat("_VQT_UseToonStandardMatCap", 1);
-            }
-            return toonLitBakeMat.GenerateToonLitImage(toonLitConvertSettings, completion);
-        }
+        protected override AsyncCallbackRequest GenerateMainTexture(Action<Texture2D> completion) => ((IAlbedoSource)lilMaterial).GenerateAlbedo(CreateAlbedoBakeRequest(), completion);
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GenerateMatcap(Action<Texture2D> completion)
@@ -565,67 +439,10 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion)
-        {
-            var normal = (Texture2D)lilMaterial.NormalMap;
-
-            // Check platform override settings from source texture
-            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(normal);
-            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
-
-            var (width, height) = TextureUtility.AspectFitReduction(normal.width, normal.height, maxTextureSize);
-            var newTex = TextureUtility.DownscaleNormalMap(normal, outputRGB, width, height);
-            return new ResultRequest<Texture2D>(newTex, completion);
-        }
+        protected override AsyncCallbackRequest GenerateNormalMap(bool outputRGB, Action<Texture2D> completion) => ((INormalMapSource)lilMaterial).GenerateNormalMap(outputRGB, Settings.maxTextureSize, completion);
 
         /// <inheritdoc/>
-        protected override AsyncCallbackRequest GenerateOcclusionMap(Action<Texture2D> completion)
-        {
-            var aoMap = (Texture2D)lilMaterial.AOMap;
-
-            // Check platform override settings from source texture
-            var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(aoMap);
-            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)Settings.maxTextureSize;
-
-            var (width, height) = TextureUtility.AspectFitReduction(aoMap.width, aoMap.height, maxTextureSize);
-
-            var swizzleMat = new Material(Shader.Find("Hidden/VRCQuestTools/Swizzle"));
-            swizzleMat.SetTexture("_Texture0", aoMap);
-
-            // Bake the _ShadowAOShift remap (saturate(v * scale + offset)) of the selected channel into the mask.
-            if (lilMaterial.UseShadow3rd)
-            {
-                swizzleMat.SetFloat("_Texture0Input", 2);
-                swizzleMat.SetFloat("_Texture0Scale", lilMaterial.ShadowAOShift2.x);
-                swizzleMat.SetFloat("_Texture0Offset", lilMaterial.ShadowAOShift2.y);
-            }
-            else if (lilMaterial.UseShadow2nd)
-            {
-                swizzleMat.SetFloat("_Texture0Input", 1);
-                swizzleMat.SetFloat("_Texture0Scale", lilMaterial.ShadowAOShift.z);
-                swizzleMat.SetFloat("_Texture0Offset", lilMaterial.ShadowAOShift.w);
-            }
-            else
-            {
-                swizzleMat.SetFloat("_Texture0Input", 0);
-                swizzleMat.SetFloat("_Texture0Scale", lilMaterial.ShadowAOShift.x);
-                swizzleMat.SetFloat("_Texture0Offset", lilMaterial.ShadowAOShift.y);
-            }
-            swizzleMat.SetFloat("_Texture0Output", 1); // G
-
-            var rt = RenderTexture.GetTemporary(aoMap.width, aoMap.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
-            Graphics.Blit(null, rt, swizzleMat);
-
-            var rt2 = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
-            TextureUtility.DownscaleBlit(rt, false, rt2);
-            return TextureUtility.RequestReadbackRenderTexture(rt2, true, true, (tex) =>
-            {
-                RenderTexture.ReleaseTemporary(rt);
-                RenderTexture.ReleaseTemporary(rt2);
-                UnityEngine.Object.DestroyImmediate(swizzleMat);
-                completion?.Invoke(tex);
-            });
-        }
+        protected override AsyncCallbackRequest GenerateOcclusionMap(Action<Texture2D> completion) => ((IOcclusionSource)lilMaterial).GenerateOcclusionMap(Settings.maxTextureSize, completion);
 
         /// <inheritdoc/>
         protected override AsyncCallbackRequest GeneratePackedMask(TexturePack pack, Action<Texture2D> completion)
@@ -792,22 +609,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override Color GetEmissionColor()
-        {
-            if (lilMaterial.UseEmission && lilMaterial.UseEmission2nd)
-            {
-                return Color.white;
-            }
-            if (lilMaterial.UseEmission)
-            {
-                return lilMaterial.EmissionColor;
-            }
-            if (lilMaterial.UseEmission2nd)
-            {
-                return lilMaterial.Emission2ndColor;
-            }
-            return Color.black;
-        }
+        protected override Color GetEmissionColor() => ((IEmissionSource)lilMaterial).EmissionColor;
 
         /// <inheritdoc/>
         protected override (Vector2 Scale, Vector2 Offset) GetGlossMapST()
@@ -835,10 +637,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override (Vector2 Scale, Vector2 Offset) GetMainTextureST()
-        {
-            return (lilMaterial.MainTextureScale, lilMaterial.MainTextureOffset);
-        }
+        protected override (Vector2 Scale, Vector2 Offset) GetMainTextureST() => ((IAlbedoSource)lilMaterial).MainTextureST;
 
         /// <inheritdoc/>
         protected override ToonStandardMaterialWrapper.MatcapTypeMode GetMapcapType()
@@ -887,10 +686,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override float GetMinBrightness()
-        {
-            return lilMaterial.LightMinLimit;
-        }
+        protected override float GetMinBrightness() => ((IMinimumBrightnessSource)lilMaterial).MinimumBrightness;
 
         /// <inheritdoc/>
         protected override (Vector2 Scale, Vector2 Offset) GetNormalMapST()
@@ -899,10 +695,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override float GetNormalMapScale()
-        {
-            return lilMaterial.NormalMapScale;
-        }
+        protected override float GetNormalMapScale() => ((INormalMapSource)lilMaterial).NormalMapScale;
 
         /// <inheritdoc/>
         protected override float GetReflectance()
@@ -959,24 +752,10 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override bool GetUseEmission()
-        {
-            return lilMaterial.UseEmission || lilMaterial.UseEmission2nd;
-        }
+        protected override bool GetUseEmission() => ((IEmissionSource)lilMaterial).UseEmission;
 
         /// <inheritdoc/>
-        protected override bool GetUseEmissionMap()
-        {
-            if (lilMaterial.UseEmission && (lilMaterial.EmissionMap != null || lilMaterial.EmissionBlendMask != null || lilMaterial.EmissionBlend < 1.0f))
-            {
-                return true;
-            }
-            if (lilMaterial.UseEmission2nd && (lilMaterial.Emission2ndMap != null || lilMaterial.Emission2ndBlendMask != null || lilMaterial.Emission2ndBlend < 1.0f))
-            {
-                return true;
-            }
-            return lilMaterial.UseEmission && lilMaterial.UseEmission2nd;
-        }
+        protected override bool GetUseEmissionMap() => ((IEmissionSource)lilMaterial).UseEmissionMap;
 
         /// <inheritdoc/>
         protected override bool GetUseGlossMap()
@@ -989,14 +768,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override bool GetUseMainTexture()
-        {
-            if (!Settings.useEmission && (lilMaterial.UseEmission || lilMaterial.UseEmission2nd))
-            {
-                return true;
-            }
-            return lilMaterial.Material.mainTexture != null;
-        }
+        protected override bool GetUseMainTexture() => ((IAlbedoSource)lilMaterial).RequiresAlbedoTexture(CreateAlbedoBakeRequest());
 
         /// <inheritdoc/>
         protected override bool GetUseMatcap()
@@ -1021,16 +793,10 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override bool GetUseNormalMap()
-        {
-            return lilMaterial.UseNormalMap && lilMaterial.NormalMap != null;
-        }
+        protected override bool GetUseNormalMap() => ((INormalMapSource)lilMaterial).UseNormalMap;
 
         /// <inheritdoc/>
-        protected override bool GetUseOcclusionMap()
-        {
-            return lilMaterial.UseShadow && lilMaterial.AOMap != null;
-        }
+        protected override bool GetUseOcclusionMap() => ((IOcclusionSource)lilMaterial).UseOcclusionMap;
 
         /// <inheritdoc/>
         protected override (Vector2 Scale, Vector2 Offset) GetOcculusionMapST()
@@ -1039,29 +805,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        protected override float GetOcclusionStrength()
-        {
-            // lilToon's AO map only shifts shadow borders, so the darkest achievable color is bounded by
-            // the shadow color chain. Derive the strength so that Toon Standard's lerp(1, sample, strength)
-            // never darkens below the luminance of the fully shadowed color.
-            // Shadow colors are composed in linear space by the shader, so convert sRGB inspector values first.
-            var floor = Color.white;
-            var c1 = lilMaterial.ShadowColor;
-            floor = Color.Lerp(floor, floor * c1.linear, c1.a);
-            if (lilMaterial.UseShadow2nd)
-            {
-                var c2 = lilMaterial.Shadow2ndColor;
-                floor = Color.Lerp(floor, floor * c2.linear, c2.a);
-            }
-            if (lilMaterial.UseShadow3rd)
-            {
-                var c3 = lilMaterial.Shadow3rdColor;
-                floor = Color.Lerp(floor, floor * c3.linear, c3.a);
-            }
-            floor = Color.Lerp(Color.white, floor, lilMaterial.ShadowStrength);
-            var floorBrightness = Utils.ColorUtility.GetRec709Grayscale(floor);
-            return Mathf.Clamp01(1.0f - floorBrightness);
-        }
+        protected override float GetOcclusionStrength() => ((IOcclusionSource)lilMaterial).OcclusionStrength;
 
         /// <inheritdoc/>
         protected override bool GetUseRimLighting()
