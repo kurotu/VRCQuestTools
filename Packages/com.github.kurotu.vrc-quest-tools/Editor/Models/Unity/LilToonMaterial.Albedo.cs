@@ -40,7 +40,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                 {
                     bakeMat.Material.SetFloat("_VQT_UseToonStandardMatCap", 1);
                 }
-                return bakeMat.BakeAlbedo(request, completion);
+                return bakeMat.BakeAlbedo(request, (texture) =>
+                {
+                    UnityEngine.Object.DestroyImmediate(bakeMat.Material);
+                    completion?.Invoke(texture);
+                });
             }
             return BakeAlbedo(request, completion);
         }

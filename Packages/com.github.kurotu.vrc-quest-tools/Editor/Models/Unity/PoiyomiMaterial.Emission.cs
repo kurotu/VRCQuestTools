@@ -104,6 +104,10 @@ namespace KRT.VRCQuestTools.Models.Unity
             {
                 RenderTexture.ReleaseTemporary(rt);
                 UnityEngine.Object.DestroyImmediate(bakeMat);
+                if (main != null)
+                {
+                    UnityEngine.Object.DestroyImmediate(main);
+                }
                 completion?.Invoke(tex);
             });
         }

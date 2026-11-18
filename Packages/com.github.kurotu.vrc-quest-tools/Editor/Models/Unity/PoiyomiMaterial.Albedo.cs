@@ -56,7 +56,11 @@ namespace KRT.VRCQuestTools.Models.Unity
                     }
                 }
 
-                return bakeMat.BakeAlbedo(request, completion);
+                return bakeMat.BakeAlbedo(request, (texture) =>
+                {
+                    UnityEngine.Object.DestroyImmediate(bakeMat.Material);
+                    completion?.Invoke(texture);
+                });
             }
 
             return BakeAlbedo(request, completion);
