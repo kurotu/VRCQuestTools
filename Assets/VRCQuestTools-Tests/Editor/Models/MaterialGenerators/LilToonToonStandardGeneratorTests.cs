@@ -438,7 +438,7 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
-        /// Test that LilToonMaterial.GenerateToonLitImage does NOT bake UV tiling into the output texture.
+        /// Test that LilToonMaterial.GenerateAlbedo does NOT bake UV tiling into the output texture.
         /// The ltsother_baker shader operates in UV space (0-1) and ignores _MainTex_ST by design.
         /// UV tiling is a real-time rendering concept; for ToonStandard it is preserved on the output
         /// material via GetMainTextureST(), not baked into the texture pixels.
@@ -494,11 +494,11 @@ namespace KRT.VRCQuestTools.Models
             mat22.Object.SetTextureOffset("_MainTex", Vector2.zero);
 
             Texture2D result11 = null;
-            new LilToonMaterial(mat11.Object).GenerateToonLitImage(settings, (t) => { result11 = t; }).WaitForCompletion();
+            new LilToonMaterial(mat11.Object).GenerateAlbedo(AlbedoBakeRequest.FromToonLitSettings(settings), (t) => { result11 = t; }).WaitForCompletion();
             using var result11Disposable = DisposableObject.New(result11);
 
             Texture2D result22 = null;
-            new LilToonMaterial(mat22.Object).GenerateToonLitImage(settings, (t) => { result22 = t; }).WaitForCompletion();
+            new LilToonMaterial(mat22.Object).GenerateAlbedo(AlbedoBakeRequest.FromToonLitSettings(settings), (t) => { result22 = t; }).WaitForCompletion();
             using var result22Disposable = DisposableObject.New(result22);
 
             Assert.IsNotNull(result11, "result for scale (1,1) should not be null.");

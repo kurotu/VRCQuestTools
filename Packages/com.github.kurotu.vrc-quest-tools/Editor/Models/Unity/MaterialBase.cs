@@ -13,7 +13,7 @@ namespace KRT.VRCQuestTools.Models.Unity
     /// <summary>
     /// Abstract class for material wrapper.
     /// </summary>
-    internal abstract class MaterialBase
+    internal abstract class MaterialBase : IAlbedoSource
     {
         /// <summary>
         /// Internal material.
@@ -29,10 +29,13 @@ namespace KRT.VRCQuestTools.Models.Unity
             Material = material;
         }
 
+        /// <inheritdoc/>
+        (Vector2 Scale, Vector2 Offset) IAlbedoSource.MainTextureST => (MainTextureScale, MainTextureOffset);
+
         /// <summary>
-        /// Gets shader to bake Toon Lit texture.
+        /// Gets shader to bake the albedo texture.
         /// </summary>
-        internal abstract Shader ToonLitBakeShader { get; }
+        internal abstract Shader AlbedoBakeShader { get; }
 
         /// <summary>
         /// Gets the main texture scale. Override to extract UV tiling from shader-specific properties.
@@ -43,6 +46,15 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// Gets the main texture offset. Override to extract UV tiling from shader-specific properties.
         /// </summary>
         internal virtual Vector2 MainTextureOffset => Material.mainTextureOffset;
+
+        /// <inheritdoc/>
+        bool IAlbedoSource.RequiresAlbedoTexture(AlbedoBakeRequest request) => RequiresAlbedoTexture(request);
+
+        /// <inheritdoc/>
+        AsyncCallbackRequest IAlbedoSource.GenerateAlbedo(AlbedoBakeRequest request, System.Action<Texture2D> completion) => GenerateAlbedo(request, completion);
+
+        /// <inheritdoc/>
+        (int MaxTextureSize, TextureFormat Format)? IAlbedoSource.GetAlbedoPlatformOverride(AlbedoBakeRequest request) => GetAlbedoPlatformOverride(request);
 
         /// <summary>
         /// Convert internal material to Toon Lit.
@@ -73,22 +85,30 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <summary>
-        /// Gets the platform override settings for Toon Lit texture.
+        /// Gets whether the albedo needs a texture for the request. When false, the main color alone represents the albedo.
         /// </summary>
+        /// <param name="request">Bake request.</param>
+        /// <returns>True when a texture is needed.</returns>
+        internal virtual bool RequiresAlbedoTexture(AlbedoBakeRequest request) => true;
+
+        /// <summary>
+        /// Gets the platform override settings of the source textures which the albedo is baked from.
+        /// </summary>
+        /// <param name="request">Bake request.</param>
         /// <returns>Platform override settings, or null if none.</returns>
-        internal virtual (int MaxTextureSize, TextureFormat Format)? GetToonLitPlatformOverride()
+        internal virtual (int MaxTextureSize, TextureFormat Format)? GetAlbedoPlatformOverride(AlbedoBakeRequest request)
         {
             // Just use the platform override from main texture
             return TextureUtility.GetBestPlatformOverrideSettings(Material.mainTexture);
         }
 
         /// <summary>
-        /// Generates an image for Toon Lit main texture.
+        /// Bakes the albedo (main texture).
         /// </summary>
-        /// <param name="settings">Setting object.</param>
+        /// <param name="request">Bake request.</param>
         /// <param name="completion">Completion action.</param>
         /// <returns>Request to wait.</returns>
-        internal virtual AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
+        internal virtual AsyncCallbackRequest GenerateAlbedo(AlbedoBakeRequest request, System.Action<Texture2D> completion)
         {
             var mainTexture = Material.mainTexture ?? Texture2D.whiteTexture;
             var bakeMainTexture = mainTexture;
@@ -97,9 +117,9 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var baker = DisposableObject.New(Object.Instantiate(Material)))
             {
                 baker.Object.parent = null;
-                baker.Object.shader = ToonLitBakeShader;
-                baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
-                baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);
+                baker.Object.shader = AlbedoBakeShader;
+                baker.Object.SetFloat("_VQT_MainTexBrightness", request.Brightness);
+                baker.Object.SetFloat("_VQT_GenerateShadow", request.ShadeFromNormalMap ? 1 : 0);
 
                 // Reset _MainTex UV tiling on the baker so the bake produces the raw texture appearance
                 // (no embedded tiling). UV tiling is applied at runtime via mainTextureScale/Offset on
@@ -141,7 +161,7 @@ namespace KRT.VRCQuestTools.Models.Unity
 
                 // Check platform override settings from source textures used in baking
                 var platformOverride = TextureUtility.GetBestPlatformOverrideSettings(texturesForOverride.ToArray());
-                var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)settings.MaxTextureSize;
+                var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)request.MaxTextureSize;
 
                 var width = mainTexture.width;
                 var height = mainTexture.height;

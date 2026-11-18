@@ -121,10 +121,11 @@ namespace KRT.VRCQuestTools.Models
                 newMaterial.Name = material.Material.name;
                 var masks = new List<MaskType>();
 
-                if (albedoSource.RequiresAlbedoTexture(CreateAlbedoBakeRequest(Settings)))
+                var albedoRequest = CreateAlbedoBakeRequest(Settings);
+                if (albedoSource.RequiresAlbedoTexture(albedoRequest))
                 {
-                    var mainPlatformOverride = albedoSource.GetAlbedoPlatformOverride();
-                    MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "main", saveTextureAsPng, texturesPath, (compl) => albedoSource.GenerateAlbedo(CreateAlbedoBakeRequest(Settings), compl), (t) =>
+                    var mainPlatformOverride = albedoSource.GetAlbedoPlatformOverride(albedoRequest);
+                    MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "main", saveTextureAsPng, texturesPath, (compl) => albedoSource.GenerateAlbedo(albedoRequest, compl), (t) =>
                     {
                         newMaterial.MainTexture = t;
                         newMaterial.MainColor = new Color(1, 1, 1, 1);

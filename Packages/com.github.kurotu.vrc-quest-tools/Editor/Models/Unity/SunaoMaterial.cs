@@ -22,6 +22,6 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/Sunao");
+        internal override Shader AlbedoBakeShader => Shader.Find("Hidden/VRCQuestTools/Sunao");
     }
 }

@@ -47,18 +47,21 @@ namespace KRT.VRCQuestTools.Models
         internal bool TargetRendersMatcap;
 
         /// <summary>
-        /// Creates Toon Lit convert settings which the albedo bake shaders read.
+        /// Creates a request for Toon Lit style targets, which fold emission into the albedo and do not render matcap.
         /// </summary>
-        /// <returns>Toon Lit convert settings.</returns>
-        internal ToonLitConvertSettings ToToonLitConvertSettings()
+        /// <param name="settings">Toon Lit convert settings.</param>
+        /// <returns>Bake request.</returns>
+        internal static AlbedoBakeRequest FromToonLitSettings(IToonLitConvertSettings settings)
         {
-            return new ToonLitConvertSettings
+            return new AlbedoBakeRequest
             {
-                generateQuestTextures = GenerateQuestTextures,
-                maxTextureSize = MaxTextureSize,
-                mobileTextureFormat = MobileTextureFormat,
-                mainTextureBrightness = Brightness,
-                generateShadowFromNormalMap = ShadeFromNormalMap,
+                GenerateQuestTextures = settings.GenerateQuestTextures,
+                MaxTextureSize = settings.MaxTextureSize,
+                MobileTextureFormat = settings.MobileTextureFormat,
+                Brightness = settings.MainTextureBrightness,
+                ShadeFromNormalMap = settings.GenerateShadowFromNormalMap,
+                FoldEmission = true,
+                TargetRendersMatcap = false,
             };
         }
     }

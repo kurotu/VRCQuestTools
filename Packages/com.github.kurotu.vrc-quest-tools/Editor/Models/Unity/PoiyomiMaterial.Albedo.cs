@@ -12,59 +12,59 @@ namespace KRT.VRCQuestTools.Models.Unity
     /// <content>
     /// Albedo source implementation of Poiyomi material.
     /// </content>
-    internal partial class PoiyomiMaterial : IAlbedoSource
+    internal partial class PoiyomiMaterial
     {
         /// <inheritdoc/>
-        (Vector2 Scale, Vector2 Offset) IAlbedoSource.MainTextureST => (MainTextureScale, MainTextureOffset);
-
-        /// <inheritdoc/>
-        bool IAlbedoSource.RequiresAlbedoTexture(AlbedoBakeRequest request)
+        internal override bool RequiresAlbedoTexture(AlbedoBakeRequest request)
         {
             return Material.mainTexture != null || (((IEmissionSource)this).UseEmission && request.FoldEmission);
         }
 
         /// <inheritdoc/>
-        AsyncCallbackRequest IAlbedoSource.GenerateAlbedo(AlbedoBakeRequest request, Action<Texture2D> completion)
+        internal override AsyncCallbackRequest GenerateAlbedo(AlbedoBakeRequest request, Action<Texture2D> completion)
         {
-            var toonLitConvertSettings = request.ToToonLitConvertSettings();
-
-            var toonLitBakeMat = new PoiyomiMaterial(new Material(Material));
-            if (!request.FoldEmission)
+            if (!request.FoldEmission || request.TargetRendersMatcap)
             {
-                // Emission is baked separately into the emission map, so it must not be baked into the
-                // main (ToonLit) texture. The EnableEmissionN setter no-ops on locked Poiyomi shaders where
-                // the toggle property was stripped, which would leave emission enabled after the shader is
-                // swapped to the bake shader (Hidden/VRCQuestTools/Poiyomi declares _EnableEmission*),
-                // double-counting emission. Write 0 directly to the bake shader's properties instead so the
-                // value persists through the swap regardless of whether the source shader is locked.
-                toonLitBakeMat.Material.SetFloat("_EnableEmission", 0.0f);
-                toonLitBakeMat.Material.SetFloat("_EnableEmission1", 0.0f);
-                toonLitBakeMat.Material.SetFloat("_EnableEmission2", 0.0f);
-                toonLitBakeMat.Material.SetFloat("_EnableEmission3", 0.0f);
-            }
-
-            if (request.TargetRendersMatcap)
-            {
-                // Disable both matcap slots so neither is baked into the main (ToonLit) texture,
-                // regardless of which slot is the active one.
-                if (toonLitBakeMat.Material.HasProperty("_MatcapEnable"))
+                // Bake a copy which excludes what the target renders by itself.
+                var bakeMat = new PoiyomiMaterial(new Material(Material));
+                if (!request.FoldEmission)
                 {
-                    toonLitBakeMat.Material.SetFloat("_MatcapEnable", 0.0f);
+                    // Emission is baked separately into the emission map, so it must not be baked into the
+                    // main texture. The EnableEmissionN setter no-ops on locked Poiyomi shaders where
+                    // the toggle property was stripped, which would leave emission enabled after the shader is
+                    // swapped to the bake shader (Hidden/VRCQuestTools/Poiyomi declares _EnableEmission*),
+                    // double-counting emission. Write 0 directly to the bake shader's properties instead so the
+                    // value persists through the swap regardless of whether the source shader is locked.
+                    bakeMat.Material.SetFloat("_EnableEmission", 0.0f);
+                    bakeMat.Material.SetFloat("_EnableEmission1", 0.0f);
+                    bakeMat.Material.SetFloat("_EnableEmission2", 0.0f);
+                    bakeMat.Material.SetFloat("_EnableEmission3", 0.0f);
                 }
 
-                if (toonLitBakeMat.Material.HasProperty("_Matcap2Enable"))
+                if (request.TargetRendersMatcap)
                 {
-                    toonLitBakeMat.Material.SetFloat("_Matcap2Enable", 0.0f);
+                    // Disable both matcap slots so neither is baked into the main texture,
+                    // regardless of which slot is the active one.
+                    if (bakeMat.Material.HasProperty("_MatcapEnable"))
+                    {
+                        bakeMat.Material.SetFloat("_MatcapEnable", 0.0f);
+                    }
+
+                    if (bakeMat.Material.HasProperty("_Matcap2Enable"))
+                    {
+                        bakeMat.Material.SetFloat("_Matcap2Enable", 0.0f);
+                    }
                 }
+
+                return bakeMat.BakeAlbedo(request, completion);
             }
 
-            return toonLitBakeMat.GenerateToonLitImage(toonLitConvertSettings, completion);
+            return BakeAlbedo(request, completion);
         }
 
-        /// <inheritdoc/>
-        (int MaxTextureSize, TextureFormat Format)? IAlbedoSource.GetAlbedoPlatformOverride()
+        private AsyncCallbackRequest BakeAlbedo(AlbedoBakeRequest request, Action<Texture2D> completion)
         {
-            return TextureUtility.GetBestPlatformOverrideSettings(Material.mainTexture);
+            return base.GenerateAlbedo(request, completion);
         }
     }
 }

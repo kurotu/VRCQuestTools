@@ -4,7 +4,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using KRT.VRCQuestTools.Utils;
 using UnityEngine;
 
@@ -13,13 +12,10 @@ namespace KRT.VRCQuestTools.Models.Unity
     /// <content>
     /// Albedo source implementation of lilToon material.
     /// </content>
-    internal partial class LilToonMaterial : IAlbedoSource
+    internal partial class LilToonMaterial
     {
         /// <inheritdoc/>
-        (Vector2 Scale, Vector2 Offset) IAlbedoSource.MainTextureST => (MainTextureScale, MainTextureOffset);
-
-        /// <inheritdoc/>
-        bool IAlbedoSource.RequiresAlbedoTexture(AlbedoBakeRequest request)
+        internal override bool RequiresAlbedoTexture(AlbedoBakeRequest request)
         {
             if (request.FoldEmission && (UseEmission || UseEmission2nd))
             {
@@ -29,49 +25,34 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        AsyncCallbackRequest IAlbedoSource.GenerateAlbedo(AlbedoBakeRequest request, Action<Texture2D> completion)
+        internal override AsyncCallbackRequest GenerateAlbedo(AlbedoBakeRequest request, Action<Texture2D> completion)
         {
-            var toonLitConvertSettings = request.ToToonLitConvertSettings();
-            var toonLitBakeMat = new LilToonMaterial(new Material(Material));
-            if (!request.FoldEmission)
+            if (!request.FoldEmission || request.TargetRendersMatcap)
             {
-                toonLitBakeMat.UseEmission = false;
-                toonLitBakeMat.UseEmission2nd = false;
+                // Bake a copy which excludes what the target renders by itself.
+                var bakeMat = new LilToonMaterial(new Material(Material));
+                if (!request.FoldEmission)
+                {
+                    bakeMat.UseEmission = false;
+                    bakeMat.UseEmission2nd = false;
+                }
+                if (request.TargetRendersMatcap)
+                {
+                    bakeMat.Material.SetFloat("_VQT_UseToonStandardMatCap", 1);
+                }
+                return bakeMat.BakeAlbedo(request, completion);
             }
-            if (request.TargetRendersMatcap)
-            {
-                toonLitBakeMat.Material.SetFloat("_VQT_UseToonStandardMatCap", 1);
-            }
-            return toonLitBakeMat.GenerateToonLitImage(toonLitConvertSettings, completion);
+            return BakeAlbedo(request, completion);
         }
 
-        /// <inheritdoc/>
-        (int MaxTextureSize, TextureFormat Format)? IAlbedoSource.GetAlbedoPlatformOverride()
+        private AsyncCallbackRequest BakeAlbedo(AlbedoBakeRequest request, Action<Texture2D> completion)
         {
-            // Only use color textures, not mask textures, and only from enabled features
-            var textures = new List<Texture>(3);
-
-            if (Material.mainTexture != null)
+            var main = DisposableObject.New(MainBake(Material, 0));
+            return EmissionBake(main.Object, Material, request, (texture) =>
             {
-                textures.Add(Material.mainTexture);
-            }
-
-            if (UseMain2ndTex && Main2ndTex != null)
-            {
-                textures.Add(Main2ndTex);
-            }
-
-            if (UseMain3rdTex && Main3rdTex != null)
-            {
-                textures.Add(Main3rdTex);
-            }
-
-            if (textures.Count > 0)
-            {
-                return TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray());
-            }
-
-            return null;
+                main.Dispose();
+                completion?.Invoke(texture);
+            });
         }
     }
 }

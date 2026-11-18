@@ -89,7 +89,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal float MinimumBrightness => Material.GetFloat("_LightMinLimit");
 
         /// <inheritdoc/>
-        internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
+        internal override Shader AlbedoBakeShader => Shader.Find("Hidden/VRCQuestTools/lilToon");
 
         /// <summary>
         /// Gets a value indicating whether to use shadow.
@@ -423,9 +423,10 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal float RimLightBlur => Material.GetFloat("_RimBlur");
 
         /// <inheritdoc/>
-        internal override (int MaxTextureSize, TextureFormat Format)? GetToonLitPlatformOverride()
+        internal override (int MaxTextureSize, TextureFormat Format)? GetAlbedoPlatformOverride(AlbedoBakeRequest request)
         {
-            // Use main textures and emission textures, but only if features are actually enabled
+            // Use main textures and emission textures, but only if features are actually enabled.
+            // Emission textures matter only when emission is folded into the albedo.
             var textures = new List<Texture>(5);
 
             // Always include main texture if it exists
@@ -447,14 +448,17 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
 
             // Include emission textures if enabled
-            if (UseEmission && EmissionMap != null)
+            if (request.FoldEmission)
             {
-                textures.Add(EmissionMap);
-            }
+                if (UseEmission && EmissionMap != null)
+                {
+                    textures.Add(EmissionMap);
+                }
 
-            if (UseEmission2nd && Emission2ndMap != null)
-            {
-                textures.Add(Emission2ndMap);
+                if (UseEmission2nd && Emission2ndMap != null)
+                {
+                    textures.Add(Emission2ndMap);
+                }
             }
 
             if (textures.Count > 0)
@@ -463,17 +467,6 @@ namespace KRT.VRCQuestTools.Models.Unity
             }
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, System.Action<Texture2D> completion)
-        {
-            var main = DisposableObject.New(MainBake(Material, 0));
-            return EmissionBake(main.Object, Material, settings, (texture) =>
-            {
-                main.Dispose();
-                completion?.Invoke(texture);
-            });
         }
 
         /// <summary>
@@ -799,7 +792,9 @@ namespace KRT.VRCQuestTools.Models.Unity
         /// </summary>
         /// <param name="main">Baked main texture.</param>
         /// <param name="material">Material to bake.</param>
-        private AsyncCallbackRequest EmissionBake(RenderTexture main, Material material, IToonLitConvertSettings settings, System.Action<Texture2D> completion)
+        /// <param name="request">Albedo bake request.</param>
+        /// <param name="completion">Completion action.</param>
+        private AsyncCallbackRequest EmissionBake(RenderTexture main, Material material, AlbedoBakeRequest request, System.Action<Texture2D> completion)
         {
             var mats = new[] { material };
             var emissionMap = MaterialEditor.GetMaterialProperty(mats, "_EmissionMap");
@@ -818,7 +813,7 @@ namespace KRT.VRCQuestTools.Models.Unity
                 emission2ndBlendMask.textureValue,
                 emission2ndGradTex.textureValue);
 
-            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)settings.MaxTextureSize;
+            var maxTextureSize = platformOverride?.MaxTextureSize ?? (int)request.MaxTextureSize;
             var width = main.width;
             var height = main.height;
             if (maxTextureSize > 0)
@@ -838,8 +833,8 @@ namespace KRT.VRCQuestTools.Models.Unity
                 var lilBaker = Shader.Find("Hidden/VRCQuestTools/lilToon");
                 baker.Object.parent = null;
                 baker.Object.shader = lilBaker;
-                baker.Object.SetFloat("_VQT_MainTexBrightness", settings.MainTextureBrightness);
-                baker.Object.SetFloat("_VQT_GenerateShadow", settings.GenerateShadowFromNormalMap ? 1 : 0);
+                baker.Object.SetFloat("_VQT_MainTexBrightness", request.Brightness);
+                baker.Object.SetFloat("_VQT_GenerateShadow", request.ShadeFromNormalMap ? 1 : 0);
                 baker.Object.mainTexture = main;
                 baker.Object.mainTextureOffset = new Vector2(0.0f, 0.0f);
                 baker.Object.mainTextureScale = new Vector2(1.0f, 1.0f);

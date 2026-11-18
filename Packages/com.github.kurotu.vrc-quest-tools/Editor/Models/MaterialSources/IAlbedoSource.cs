@@ -36,8 +36,10 @@ namespace KRT.VRCQuestTools.Models
 
         /// <summary>
         /// Gets the platform override settings of the source textures which the albedo is baked from.
+        /// The request decides which source textures matter, e.g. emission maps only when emission is folded into the albedo.
         /// </summary>
+        /// <param name="request">Bake request.</param>
         /// <returns>Platform override settings, or null if none.</returns>
-        (int MaxTextureSize, TextureFormat Format)? GetAlbedoPlatformOverride();
+        (int MaxTextureSize, TextureFormat Format)? GetAlbedoPlatformOverride(AlbedoBakeRequest request);
     }
 }

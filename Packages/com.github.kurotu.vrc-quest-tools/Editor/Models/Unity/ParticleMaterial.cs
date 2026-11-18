@@ -132,7 +132,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         internal bool BakeEmission => DestinationShaderName == AdditiveShaderName && HasEmission();
 
         /// <inheritdoc/>
-        internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/Particle");
+        internal override Shader AlbedoBakeShader => Shader.Find("Hidden/VRCQuestTools/Particle");
 
         /// <summary>
         /// Gets a value indicating whether the original _MainTex reference can be reused without baking.
@@ -192,7 +192,7 @@ namespace KRT.VRCQuestTools.Models.Unity
             using (var baker = DisposableObject.New(Object.Instantiate(Material)))
             {
                 baker.Object.parent = null;
-                baker.Object.shader = ToonLitBakeShader;
+                baker.Object.shader = AlbedoBakeShader;
                 baker.Object.SetColor("_VQT_Tint", Tint);
                 baker.Object.SetFloat("_VQT_Invert", Invert ? 1 : 0);
                 baker.Object.SetFloat("_VQT_CutoffEnabled", UseCutout ? 1 : 0);
