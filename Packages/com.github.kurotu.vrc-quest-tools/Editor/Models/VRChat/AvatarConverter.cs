@@ -360,18 +360,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                             case ToonStandardConvertSettings toonStandardConvertSettings:
                                 if (toonStandardConvertSettings.generateQuestTextures)
                                 {
-                                    if (wrapper is LilToonMaterial lil)
-                                    {
-                                        request = new LilToonToonStandardGenerator(lil, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(wrapper, buildTarget, saveAsPng, saveDirectory, Completion);
-                                    }
-                                    else if (wrapper is PoiyomiMaterial poi)
-                                    {
-                                        request = new PoiyomiToonStandardGenerator(poi, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(wrapper, buildTarget, saveAsPng, saveDirectory, Completion);
-                                    }
-                                    else
-                                    {
-                                        request = new GenericToonStandardGenerator(wrapper, toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(wrapper, buildTarget, saveAsPng, saveDirectory, Completion);
-                                    }
+                                    request = new ToonStandardGenerator(toonStandardConvertSettings, sharedBlackTexture, forEditorPreview: false).GenerateTextures(wrapper, buildTarget, saveAsPng, saveDirectory, Completion);
                                 }
                                 else
                                 {
@@ -910,17 +899,7 @@ namespace KRT.VRCQuestTools.Models.VRChat
                 case MatCapLitConvertSettings matCapSettings:
                     return new MatCapLitGenerator(matCapSettings, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case ToonStandardConvertSettings toonStandardSettings:
-                    if (material is LilToonMaterial)
-                    {
-                        return new LilToonToonStandardGenerator((LilToonMaterial)material, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
-                    }
-
-                    if (material is PoiyomiMaterial poiyomi)
-                    {
-                        return new PoiyomiToonStandardGenerator(poiyomi, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
-                    }
-
-                    return new GenericToonStandardGenerator(material, toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
+                    return new ToonStandardGenerator(toonStandardSettings, sharedBlackTexture, forEditorPreview).GenerateMaterial(material, buildTarget, saveAsFile, texturesPath, completion);
                 case MaterialReplaceSettings replaceSettings:
                     if (replaceSettings.material == null)
                     {
