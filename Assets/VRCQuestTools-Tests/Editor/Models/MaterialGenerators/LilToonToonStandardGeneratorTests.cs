@@ -121,7 +121,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var lilMat = new LilToonMaterial(sourceMaterial.Object);
-            var generator = new LilToonToonStandardGenerator(lilMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
@@ -179,7 +179,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var lilMat = new LilToonMaterial(sourceMaterial.Object);
-            var generator = new LilToonToonStandardGenerator(lilMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
@@ -245,7 +245,7 @@ namespace KRT.VRCQuestTools.Models
             settings.SetAllFeatures(false);
 
             var lilMat = new LilToonMaterial(sourceMaterial.Object);
-            var generator = new LilToonToonStandardGenerator(lilMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
@@ -419,7 +419,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var lilMat = new LilToonMaterial(sourceMaterial.Object);
-            var generator = new LilToonToonStandardGenerator(lilMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
@@ -573,9 +573,9 @@ namespace KRT.VRCQuestTools.Models
             settings.SetAllFeatures(false);
 
             var lilMat11 = new LilToonMaterial(mat11.Object);
-            var gen11 = new LilToonToonStandardGenerator(lilMat11, settings, null, false);
+            var gen11 = new ToonStandardGenerator(settings, null, false);
             var lilMat22 = new LilToonMaterial(mat22.Object);
-            var gen22 = new LilToonToonStandardGenerator(lilMat22, settings, null, false);
+            var gen22 = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat11 = null;
             gen11.GenerateMaterial(lilMat11, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat11 = mat; }).WaitForCompletion();
@@ -663,7 +663,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var lilMat = new LilToonMaterial(sourceMaterial.Object);
-            var generator = new LilToonToonStandardGenerator(lilMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
@@ -726,7 +726,7 @@ namespace KRT.VRCQuestTools.Models
             settings.useOcclusion = true;
 
             var lilMat = new LilToonMaterial(sourceMaterial.Object);
-            var generator = new LilToonToonStandardGenerator(lilMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
@@ -986,7 +986,7 @@ namespace KRT.VRCQuestTools.Models
             settings.useSpecular = useSpecular;
 
             var lilMat = new LilToonMaterial(sourceMaterial);
-            var generator = new LilToonToonStandardGenerator(lilMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>

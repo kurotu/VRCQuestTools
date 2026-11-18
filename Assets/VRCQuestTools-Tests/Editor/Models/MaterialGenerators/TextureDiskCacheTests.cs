@@ -110,7 +110,7 @@ namespace KRT.VRCQuestTools.Models
         {
             var lilMat = new LilToonMaterial(sourceMaterial);
             Material resultMat = null;
-            new LilToonToonStandardGenerator(lilMat, settings, null, false).GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (m) => resultMat = m).WaitForCompletion();
+            new ToonStandardGenerator(settings, null, false).GenerateMaterial(lilMat, UnityEditor.BuildTarget.Android, false, string.Empty, (m) => resultMat = m).WaitForCompletion();
             using var result = DisposableObject.New(resultMat);
             var metallicMap = new ToonStandardMaterialWrapper(resultMat).MetallicMap as Texture2D;
             Assert.IsNotNull(metallicMap, "Metallic map should be generated.");

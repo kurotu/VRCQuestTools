@@ -11,7 +11,7 @@ namespace KRT.VRCQuestTools.Models.Unity
     /// <summary>
     /// Represents Poiyomi shader material.
     /// </summary>
-    internal partial class PoiyomiMaterial : StandardMaterial, IToonStandardConvertable
+    internal partial class PoiyomiMaterial : StandardMaterial
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PoiyomiMaterial"/> class.

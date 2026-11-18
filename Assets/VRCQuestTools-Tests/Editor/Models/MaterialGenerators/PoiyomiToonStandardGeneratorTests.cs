@@ -45,7 +45,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) =>
@@ -86,7 +86,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
@@ -125,7 +125,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
@@ -169,7 +169,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, sharedBlack.Object, false);
+            var generator = new ToonStandardGenerator(settings, sharedBlack.Object, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
@@ -230,7 +230,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, sharedBlack.Object, false);
+            var generator = new ToonStandardGenerator(settings, sharedBlack.Object, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
@@ -281,7 +281,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
@@ -321,7 +321,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
@@ -364,7 +364,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
@@ -407,7 +407,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
@@ -449,7 +449,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
@@ -498,7 +498,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
@@ -542,7 +542,7 @@ namespace KRT.VRCQuestTools.Models
             };
 
             var poiMat = new PoiyomiMaterial(sourceMaterial.Object);
-            var generator = new PoiyomiToonStandardGenerator(poiMat, settings, null, false);
+            var generator = new ToonStandardGenerator(settings, null, false);
 
             Material resultMat = null;
             generator.GenerateMaterial(poiMat, UnityEditor.BuildTarget.Android, false, string.Empty, (mat) => { resultMat = mat; }).WaitForCompletion();
