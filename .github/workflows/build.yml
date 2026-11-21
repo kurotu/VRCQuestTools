@@ -67,8 +67,8 @@ jobs:
             unityVersion: 2022.3.22f1
             vrcsdkVersion: 3.9.0 # required for new avatars
           - name: latest
-            unityVersion: 2022.3.22f1
-            vrcsdkVersion: latest
+            unityVersion: 6000.0.67f1
+            vrcsdkVersion: 3.11.0-beta.1
         dependencies:
           - name: nothing
             packages: []
