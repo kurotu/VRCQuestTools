@@ -8,6 +8,7 @@
 
 ### 修正
 - Unity 6 で、テクスチャ生成時に縮小を行うと失敗する問題を修正。
+- アバタールートに VRCQuestTools のコンポーネントがあると、VRChat SDK 3.10.6 以降で `VRC Avatar Descriptor` の「Use All Tracking Keys」トグルなど一部の項目をクリックできなくなる問題を回避。
 
 ## [3.0.3] - 2026-11-08
 
