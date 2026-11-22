@@ -82,6 +82,13 @@ namespace KRT.VRCQuestTools.Models
                 Assert.Ignore("lilToon is not installed.");
                 return;
             }
+
+            var lilToonVersion = AssetUtility.LilToonVersion;
+            if (lilToonVersion < new SemVer(1, 10, 0) || lilToonVersion >= new SemVer(3, 0, 0))
+            {
+                Assert.Ignore($"lilToon version {lilToonVersion} is not supported.");
+                return;
+            }
             TestUtils.AssertIgnoreOnMissingShader("VRChat/Mobile/Toon Standard");
 
             using var sourceMaterial = DisposableObject.New(new Material(Shader.Find("lilToon")));

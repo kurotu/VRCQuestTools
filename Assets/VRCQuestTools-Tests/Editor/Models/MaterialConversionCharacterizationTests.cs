@@ -27,7 +27,8 @@ namespace KRT.VRCQuestTools.Models
     /// a snapshot of the output material (shader, keywords, every property, which properties share a texture, and 4x4 block
     /// averages of each texture as the shader decodes it) with a recorded golden file.</para>
     /// <para>Goldens are stored per build target because texture compression depends on it. When a golden is missing, the case
-    /// records it and reports Inconclusive. To accept an intended output change, delete the golden and run the case again.</para>
+    /// records it and reports Inconclusive (in batch mode, such as CI, the case is ignored instead). To accept an intended output
+    /// change, delete the golden and run the case again.</para>
     /// </remarks>
     public class MaterialConversionCharacterizationTests
     {
@@ -89,6 +90,14 @@ namespace KRT.VRCQuestTools.Models
                 var goldenPath = $"{GoldenFolder}/{caseName}.json";
                 if (!File.Exists(goldenPath))
                 {
+                    // An inconclusive result makes a batch mode run exit as failed, so runs which cannot review a new golden
+                    // (CI on a build target without goldens) skip the comparison instead of recording one.
+                    if (Application.isBatchMode)
+                    {
+                        Assert.Ignore($"No golden for {EditorUserBuildSettings.activeBuildTarget}: {goldenPath}");
+                        return;
+                    }
+
                     Directory.CreateDirectory(GoldenFolder);
                     File.WriteAllText(goldenPath, JsonUtility.ToJson(actual, true));
                     Assert.Inconclusive($"Recorded golden: {goldenPath}");
