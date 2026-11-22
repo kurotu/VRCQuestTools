@@ -145,56 +145,12 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <summary>
-        /// Gets the platform override settings for gloss map textures.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        internal override (int MaxTextureSize, TextureFormat Format)? GetGlossMapPlatformOverride()
-        {
-            var textures = new List<Texture>(2);
-
-            if (lilMaterial.SmoothnessTex != null)
-            {
-                textures.Add(lilMaterial.SmoothnessTex);
-            }
-
-            if (lilMaterial.ReflectionColorTex != null)
-            {
-                textures.Add(lilMaterial.ReflectionColorTex);
-            }
-
-            if (textures.Count > 0)
-            {
-                return TextureUtility.GetBestPlatformOverrideSettings(textures.ToArray());
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// Gets the platform override settings for matcap textures.
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
         internal override (int MaxTextureSize, TextureFormat Format)? GetMatcapPlatformOverride()
         {
             return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MatCapTex);
-        }
-
-        /// <summary>
-        /// Gets the platform override settings for matcap mask textures.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        internal override (int MaxTextureSize, TextureFormat Format)? GetMatcapMaskPlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MatCapMask);
-        }
-
-        /// <summary>
-        /// Gets the platform override settings for metallic map textures.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        internal override (int MaxTextureSize, TextureFormat Format)? GetMetallicMapPlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(lilMaterial.MetallicMap, lilMaterial.ReflectionColorTex);
         }
 
         /// <summary>
@@ -623,12 +579,6 @@ namespace KRT.VRCQuestTools.Models
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        /// <inheritdoc/>
-        internal override Texture GetMatcap()
-        {
-            return lilMaterial.MatCapTex;
         }
 
         /// <inheritdoc/>

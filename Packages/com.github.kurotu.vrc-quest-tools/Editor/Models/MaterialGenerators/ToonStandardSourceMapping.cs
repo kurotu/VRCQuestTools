@@ -164,12 +164,6 @@ namespace KRT.VRCQuestTools.Models
         internal abstract bool GetUseMatcap();
 
         /// <summary>
-        /// Gets the matcap texture of the material.
-        /// </summary>
-        /// <returns>Matcap texture.</returns>
-        internal abstract Texture GetMatcap();
-
-        /// <summary>
         /// Gets the material should use matcap mask.
         /// </summary>
         /// <returns>True if the material should use matcap mask.</returns>
@@ -283,24 +277,6 @@ namespace KRT.VRCQuestTools.Models
         /// </summary>
         /// <returns>Platform override settings, or null if none.</returns>
         internal abstract (int MaxTextureSize, TextureFormat Format)? GetMatcapPlatformOverride();
-
-        /// <summary>
-        /// Gets the platform override settings for matcap mask.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        internal abstract (int MaxTextureSize, TextureFormat Format)? GetMatcapMaskPlatformOverride();
-
-        /// <summary>
-        /// Gets the platform override settings for metallic map.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        internal abstract (int MaxTextureSize, TextureFormat Format)? GetMetallicMapPlatformOverride();
-
-        /// <summary>
-        /// Gets the platform override settings for gloss map.
-        /// </summary>
-        /// <returns>Platform override settings, or null if none.</returns>
-        internal abstract (int MaxTextureSize, TextureFormat Format)? GetGlossMapPlatformOverride();
 
         /// <summary>
         /// Gets the platform override settings for packed mask.

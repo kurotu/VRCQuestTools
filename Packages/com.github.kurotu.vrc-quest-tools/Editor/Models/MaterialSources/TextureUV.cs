@@ -89,7 +89,8 @@ namespace KRT.VRCQuestTools.Models
         /// to this texture's coordinate.
         /// </summary>
         /// <param name="mainST">Tiling and offset of the main texture.</param>
-        /// <returns>Scale and offset, or null when the coordinates are identical.</returns>
+        /// <returns>Scale and offset, or null when no remap applies: the coordinates are identical, or the main tiling is zero and
+        /// mesh UV0 cannot be recovered from the main texture's space.</returns>
         internal (Vector2 Scale, Vector2 Offset)? GetRemapFromMainTextureSpace((Vector2 Scale, Vector2 Offset) mainST)
         {
             if (Basis == TextureUVBasis.MainUV)

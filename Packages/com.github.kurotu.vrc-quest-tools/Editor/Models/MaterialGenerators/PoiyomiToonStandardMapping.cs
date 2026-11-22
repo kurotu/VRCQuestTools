@@ -211,24 +211,6 @@ namespace KRT.VRCQuestTools.Models
         }
 
         /// <inheritdoc/>
-        internal override (int MaxTextureSize, TextureFormat Format)? GetMatcapMaskPlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(poiyomiMaterial.MatcapMask);
-        }
-
-        /// <inheritdoc/>
-        internal override (int MaxTextureSize, TextureFormat Format)? GetMetallicMapPlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(GetSpecularMetallicTexture());
-        }
-
-        /// <inheritdoc/>
-        internal override (int MaxTextureSize, TextureFormat Format)? GetGlossMapPlatformOverride()
-        {
-            return TextureUtility.GetBestPlatformOverrideSettings(GetSpecularGlossTexture());
-        }
-
-        /// <inheritdoc/>
         internal override (int MaxTextureSize, TextureFormat Format)? GetPackedMaskPlatformOverride(TexturePack pack)
         {
             var textures = new List<Texture>();
@@ -599,12 +581,6 @@ namespace KRT.VRCQuestTools.Models
             return poiyomiMaterial.MatcapMultiply > 0.0f
                 ? ToonStandardMaterialWrapper.MatcapTypeMode.Multiplicative
                 : ToonStandardMaterialWrapper.MatcapTypeMode.Additive;
-        }
-
-        /// <inheritdoc/>
-        internal override Texture GetMatcap()
-        {
-            return poiyomiMaterial.MatcapTexture;
         }
 
         /// <inheritdoc/>

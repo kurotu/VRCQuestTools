@@ -444,7 +444,7 @@ namespace KRT.VRCQuestTools.Models
         /// material via GetMainTextureST(), not baked into the texture pixels.
         /// </summary>
         [Test]
-        public void LilToonMaterial_GenerateToonLitImage_MainUVTilingDoesNotAffectBakedOutput()
+        public void LilToonMaterial_GenerateAlbedo_MainUVTilingDoesNotAffectBakedOutput()
         {
             if (!AssetUtility.IsLilToonImported())
             {

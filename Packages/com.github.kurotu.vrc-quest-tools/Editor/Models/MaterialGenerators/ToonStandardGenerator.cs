@@ -21,18 +21,18 @@ namespace KRT.VRCQuestTools.Models
         /// <summary>
         /// Settings for the material conversion.
         /// </summary>
-        protected readonly ToonStandardConvertSettings Settings;
+        private readonly ToonStandardConvertSettings Settings;
 
         /// <summary>
         /// Shared black texture to disable emission.
         /// </summary>
-        protected readonly Texture2D sharedBlackTexture;
+        private readonly Texture2D sharedBlackTexture;
 
         /// <summary>
         /// Whether the conversion is for the NDMF editor preview. When true, the generated normal map is
         /// re-uploaded so it displays correctly in the editor.
         /// </summary>
-        protected readonly bool forEditorPreview;
+        private readonly bool forEditorPreview;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToonStandardGenerator"/> class.
@@ -110,9 +110,9 @@ namespace KRT.VRCQuestTools.Models
             }
 
             var albedoSource = (IAlbedoSource)material;
-            var normalMapSource = (INormalMapSource)material;
-            var emissionSource = (IEmissionSource)material;
-            var occlusionSource = (IOcclusionSource)material;
+            var normalMapSource = material as INormalMapSource;
+            var emissionSource = material as IEmissionSource;
+            var occlusionSource = material as IOcclusionSource;
 
             ToonStandardMaterialWrapper newMaterial;
             if (Settings.generateQuestTextures)
@@ -137,7 +137,7 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.MainColor = mapping.GetMainColor();
                 }
 
-                if (normalMapSource.UseNormalMap && Settings.useNormalMap)
+                if (normalMapSource != null && normalMapSource.UseNormalMap && Settings.useNormalMap)
                 {
                     newMaterial.UseNormalMap = true;
                     var isMobile = buildTarget == UnityEditor.BuildTarget.Android || buildTarget == UnityEditor.BuildTarget.iOS;
@@ -178,12 +178,12 @@ namespace KRT.VRCQuestTools.Models
 
                 newMaterial.MinBrightness = mapping.GetMinBrightness();
 
-                if (emissionSource.UseEmission && Settings.useEmission)
+                if (emissionSource != null && emissionSource.UseEmission && Settings.useEmission)
                 {
                     if (emissionSource.UseEmissionMap)
                     {
                         var emissionPlatformOverride = emissionSource.GetEmissionMapPlatformOverride();
-                        MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "emission", saveTextureAsPng, texturesPath, (compl) => emissionSource.GenerateEmissionMap(CreateAlbedoBakeRequest(Settings), Settings.maxTextureSize, compl), (t) =>
+                        MaterialGeneratorUtility.GenerateTexture(material.Material, Settings, "emission", saveTextureAsPng, texturesPath, (compl) => emissionSource.GenerateEmissionMap(albedoRequest, Settings.maxTextureSize, compl), (t) =>
                         {
                             newMaterial.EmissionMap = t;
                             newMaterial.EmissionColor = new Color(1, 1, 1, 1);
@@ -201,7 +201,7 @@ namespace KRT.VRCQuestTools.Models
                     newMaterial.EmissionColor = Color.black;
                 }
 
-                if (occlusionSource.UseOcclusionMap && Settings.useOcclusion)
+                if (occlusionSource != null && occlusionSource.UseOcclusionMap && Settings.useOcclusion)
                 {
                     newMaterial.UseOcclusion = true;
                     newMaterial.OcclusionStrength = occlusionSource.OcclusionStrength;
