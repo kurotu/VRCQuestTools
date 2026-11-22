@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Toon Standard conversion which bakes emission into the main texture now applies the platform-specific override settings (compression format and max texture size) of lilToon emission textures to the generated main texture, in the same way as Toon Lit conversion.
+
 ### Fixed
-- Fixed Toon Standard conversion producing different metallic, gloss, occlusion and matcap mask values when the texture cache was reused.
+- Fixed metallic, gloss, occlusion and matcap mask values becoming lower than intended in Toon Standard conversion. It happened when the texture cache was reused, and always in manual conversion. Manually converted avatars look different after they are converted again.
 
 ## [3.0.4] - 2026-11-23
 
