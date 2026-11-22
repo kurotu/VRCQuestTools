@@ -135,6 +135,14 @@ namespace KRT.VRCQuestTools.Models
                 {
                     texToWrite.name = texName;
 
+                    // The config decides how the saved texture is decoded (cache entry and PNG importer), not the generated
+                    // texture itself. A texture generated in the other color space looks right when it is fresh and wrong once
+                    // it is restored, so report the mismatch where it is introduced.
+                    if (!config.isNormalMap && texToWrite.isDataSRGB != config.isSRGB)
+                    {
+                        Logger.LogWarning($"Texture \"{texName}\" was generated as {(texToWrite.isDataSRGB ? "sRGB" : "linear")} but is saved as {(config.isSRGB ? "sRGB" : "linear")}.", texToWrite);
+                    }
+
                     // Progressive NDMF preview: on a cache miss, forEditorPreview, and an astcenc-compatible
                     // format, skip the (main-thread-stalling) synchronous compression below entirely. The baked,
                     // uncompressed texToWrite becomes the immediate on-screen placeholder while the same texture
