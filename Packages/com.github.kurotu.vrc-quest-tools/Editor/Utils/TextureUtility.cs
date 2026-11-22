@@ -475,6 +475,7 @@ namespace KRT.VRCQuestTools.Utils
 
             desc.width = width;
             desc.height = height;
+            desc.mipCount = useMipmap ? GetFullMipCount(width, height) : 1;
             var rt2 = RenderTexture.GetTemporary(desc);
             var renderTextures = new List<RenderTexture> { rt, rt2 };
 
@@ -1177,6 +1178,25 @@ namespace KRT.VRCQuestTools.Utils
         private static bool ShouldUseAsyncGPUReadback()
         {
             return SystemInfo.supportsAsyncGPUReadback;
+        }
+
+        /// <summary>
+        /// Gets the mip count of a full mip chain for the given size.
+        /// Unity 6 fails to create a RenderTexture whose mip count exceeds this value.
+        /// </summary>
+        /// <param name="width">Texture width.</param>
+        /// <param name="height">Texture height.</param>
+        /// <returns>Mip count.</returns>
+        private static int GetFullMipCount(int width, int height)
+        {
+            var size = Math.Max(width, height);
+            var count = 1;
+            while (size > 1)
+            {
+                size >>= 1;
+                count++;
+            }
+            return count;
         }
     }
 }

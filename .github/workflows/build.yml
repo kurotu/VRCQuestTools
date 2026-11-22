@@ -66,9 +66,12 @@ jobs:
           - name: minimum
             unityVersion: 2022.3.22f1
             vrcsdkVersion: 3.9.0 # required for new avatars
-          - name: latest
+          - name: unity2022-last
             unityVersion: 2022.3.22f1
-            vrcsdkVersion: latest
+            vrcsdkVersion: 3.10.6
+          - name: latest
+            unityVersion: 6000.0.67f1
+            vrcsdkVersion: 3.11.0-beta.1
         dependencies:
           - name: nothing
             packages: []
@@ -100,6 +103,10 @@ jobs:
             packages:
               - { name: com.anatawa12.avatar-optimizer, version: 'latest' }
         exclude:
+          - sdk:
+              name: unity2022-last
+            dependencies:
+              name: aao-minimum
           - sdk:
               name: latest
             dependencies:
