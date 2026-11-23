@@ -15,7 +15,7 @@
         "Rewrites FX-layer animation object-reference curves that reference the swapped material (not just the live renderer reference), e.g. via AnimationIndex.RewriteObjectCurves or equivalent, with a [DependsOnContext(typeof(AnimatorServicesContext))] or WithRequiredExtension activation",
         "Calls ObjectRegistry.RegisterReplacedObject when swapping a material reference",
         "Does not reflexively call AssetSaver.SaveAsset for the cloned materials (they're wired into a live renderer reference and animation curves, so NDMF's automatic end-of-build serialization already persists them)",
-        "Uses ErrorReport for recoverable failures (e.g. missing target shader) instead of throwing an exception that would abort the whole build",
+        "Uses ErrorReport for recoverable failures (e.g. missing target shader) instead of throwing an exception (which NDMF turns into an upload-blocking InternalError with a raw stack trace, cutting the pass off halfway)",
         "Settings component implements INDMFEditorOnly rather than a hand-rolled #if VRC_SDK guard"
       ]
     },
@@ -76,6 +76,96 @@
         "Breaks the variant link on the clone (sets clone.parent = null) before assigning the new shader",
         "Explains or accounts for the failure mode being silent (no exception or console warning when a variant ignores a shader assignment)",
         "Does not modify original.parent or otherwise mutate the original material asset"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "aao-unknown-component-warning",
+      "prompt": "I maintain a small NDMF plugin for VRChat avatars that merges texture atlases. Users add an `AtlasMergeSettings` component (it implements INDMFEditorOnly and has a `bool enableMerge` checkbox) to their avatar root, and my pass runs in the Optimizing phase so it sees the final materials. Several users who also have Avatar Optimizer installed are reporting a Trace and Optimize warning about an unknown component `AtlasMergeSettings` -- mostly the ones who unchecked enableMerge, but sometimes others too. Here's my pass:\n\n```csharp\nprotected override void Execute(BuildContext ctx)\n{\n    var settings = ctx.AvatarRootObject.GetComponentInChildren<AtlasMergeSettings>();\n    if (settings == null || !settings.enableMerge) return;\n    MergeAtlases(ctx, settings);\n    Object.DestroyImmediate(settings);\n}\n```\n\nand in Configure(): `InPhase(BuildPhase.Optimizing).Run(AtlasMergePass.Instance);`. How do I make this compatible with AAO properly?",
+      "expected_output": "Explains that AAO runs in the Optimizing phase and warns about (and keeps) any component it doesn't recognize, and that INDMFEditorOnly doesn't prevent this because IEditorOnly components are only stripped by the VRCSDK after NDMF's Optimizing phase. Fixes the pass so the settings component is destroyed on every exit path (including the enableMerge == false early return), finds settings components including inactive ones / duplicates, and adds .BeforePlugin(\"com.anatawa12.avatar-optimizer\") to the Optimizing-phase sequence because default order between plugins in the same phase isn't guaranteed. Does not reach for ComponentInformation registration or Asset Description, since this is a build-time-only settings component.",
+      "files": [],
+      "assertions": [
+        "Destroys the settings component even when enableMerge is false (e.g. a try/finally or destroying before the early return), not only after a successful merge",
+        "Adds .BeforePlugin(\"com.anatawa12.avatar-optimizer\") (string overload) to the Optimizing-phase sequence",
+        "Explains that INDMFEditorOnly / IEditorOnly does not stop AAO from seeing the component during the Optimizing phase",
+        "Searches for settings components including inactive GameObjects (GetComponentsInChildren<T>(true) or equivalent) and removes every instance, not just the first",
+        "Recommends removing the component rather than registering it via ComponentInformation or Asset Description as the primary fix for a build-time-only settings component"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "optimizing-plugin-no-aao-mention",
+      "prompt": "I want a small NDMF plugin for my VRChat avatars that strips unused shape keys at build time to cut file size. Users put a `ShapeKeyStripper` component anywhere on their avatar; it has a `bool active` checkbox and a `List<string> keepNames` of blend shapes that must never be removed. The pass should go through every SkinnedMeshRenderer, find blendshapes that are zero-weight and not referenced by any animation, and remove them from a copy of the mesh (don't touch the original mesh asset). Since it should see the final avatar after everything else has run, put it in the Optimizing phase. Please write the Runtime component, the Editor plugin + pass, and the asmdefs.",
+      "expected_output": "Without the user mentioning Avatar Optimizer, the plugin still leaves no ShapeKeyStripper component for AAO to flag as unknown: every instance (including on inactive GameObjects) is destroyed on every exit path, including when `active` is false, and the Optimizing-phase sequence declares .BeforePlugin(\"com.anatawa12.avatar-optimizer\"). No AAO API registration or AAO asmdef reference is added for this build-time-only component.",
+      "files": [],
+      "assertions": [
+        "Declares .BeforePlugin(\"com.anatawa12.avatar-optimizer\") (string overload) on the Optimizing-phase sequence",
+        "Destroys the ShapeKeyStripper component even when `active` is false (not only after a successful strip)",
+        "Finds ShapeKeyStripper components including inactive GameObjects (GetComponentsInChildren<T>(true) or equivalent) and destroys every instance",
+        "Does not add a ComponentInformation registration or an asmdef reference to com.anatawa12.avatar-optimizer.api.editor for this build-time-only component"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "expression-parameter-toggle-cross-platform",
+      "prompt": "I'm making an NDMF plugin for VRChat avatars called GlowToggle. Users drop a `GlowToggle` component on any object that has a Renderer and give it a toggle name; at build time the plugin should add a synced Bool expression parameter for each one, plus an FX layer that switches the renderer's emission on/off, and a menu toggle. Most people upload both PC and Quest versions. The glow uses a PC-only shader, so on Android builds just skip those GlowToggles entirely (no parameter, no layer, no menu entry) so Quest users don't waste synced parameter memory on something that does nothing. To keep parameter names from colliding when two objects share a name, append the object's GetInstanceID() to the parameter name. Please write the Editor pass that builds the parameters and layers.",
+      "expected_output": "An NDMF pass that emits the same Expression Parameters on every build target. It keeps the GlowToggle parameters on Android builds, skipping only the emission animation or renderer work there, and explains that VRChat matches synced parameters across an avatar's platform builds by name for avatars uploaded with SDK 3.11.0+ (by list position and type for older uploads). It replaces GetInstanceID()-based names with deterministic ones (user-given name or avatar-relative path, with a stable disambiguator), noting that per-build names break that name-based matching. Parameter order is deterministic, and the source VRCExpressionParameters asset is cloned before it is modified.",
+      "files": [],
+      "assertions": [
+        "Emits the GlowToggle expression parameters on Android builds too: no activeBuildTarget / UNITY_ANDROID / UNITY_IOS branch decides whether a parameter exists, its position, or its type (a platform check may only gate the FX layer/menu/effect)",
+        "Does not use GetInstanceID(), Guid.NewGuid(), or a Unity object's GetHashCode() in generated parameter names; names derive from the user-given toggle name and/or avatar-relative path",
+        "Defines an IParameterProvider class annotated [ParameterProviderFor(typeof(GlowToggle))]",
+        "The provider has a public constructor taking a GlowToggle",
+        "The Editor asmdef lists nadena.dev.ndmf.vrchat in its references",
+        "The pass and the provider derive the parameter name from the same shared code path (one method/helper called by both), not two independent implementations",
+        "When a Bool entry with the same name already exists in the Expression Parameters asset, the pass reuses it rather than appending a duplicate or failing the build",
+        "When an existing same-named entry has a different type, the pass reports a type conflict through ErrorReport",
+        "The asset entry, the FX animator parameter, and the menu control all use the same name string (the same variable/helper result)"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "outfit-selector-mobile-bool",
+      "prompt": "Writing an NDMF plugin `OutfitSwitcher` for my VRChat avatars. The component has a `List<GameObject> outfits`. At build time it should add an Int expression parameter `Outfit/Index`, an FX layer with one state per outfit that enables that outfit and disables the rest, and a submenu with a toggle per outfit (toggle sets Outfit/Index to its number). Our Quest builds strip most outfits (only outfit 0 and outfit 3 survive, the rest get deleted by a platform filter before my pass runs), so on Android just make it a Bool instead of an Int since there are only 2 outfits there, and number the remaining outfits 0 and 1. Can you write the editor pass + plugin class?",
+      "expected_output": "A pass whose parameter list is identical on every build target: Outfit/Index stays an Int on Android, at the same position, and each outfit keeps the same index value on every platform (outfit 3 is still 3 on Quest; missing outfits just get no state/menu entry). The reply explains that, for avatars uploaded with SDKs before 3.11.0, VRChat matches synced parameters across platform builds by position and type (3.11.0+ matches by name), so the Bool-on-Android plan would desync PC and Quest. The parameter is declared with an IParameterProvider, and the asset is cloned (or started from VRChat's defaults when null) with customExpressions enabled.",
+      "files": [],
+      "assertions": [
+        "Outfit/Index is an Int on every platform; the pass does not switch it to Bool (or any other type) on Android",
+        "Whether the parameter exists, its type, and its position do not depend on activeBuildTarget / UNITY_ANDROID / UNITY_IOS",
+        "Each outfit keeps the same index value on every platform (the index comes from the configured list position, not from a renumbering of the outfits that survive on that platform)",
+        "Explains to the user that VRChat matches synced parameters between PC and Quest/Android builds by position and type (for uploads before VRChat SDK 3.11.0; 3.11.0+ matches by name), so a per-platform type change breaks sync",
+        "Declares Outfit/Index through an IParameterProvider with [ParameterProviderFor(typeof(OutfitSwitcher))]",
+        "Clones the Expression Parameters asset when one is assigned AND, when none is assigned (or customExpressions is false), starts from VRChat's default parameters (keeping VRCEmote etc.) instead of an empty asset; sets customExpressions = true"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "ma-parameters-route",
+      "prompt": "Our NDMF plugin `HeadpatCounter` already hard-depends on Modular Avatar. Users add a `HeadpatCounter` component to their avatar's head bone. At build time we want: a VRCContactReceiver on the head that sets a bool, an FX layer that counts headpats into a synced Int parameter `Headpat/Count`, and a menu button to reset it. We don't want to touch the Expression Parameters asset ourselves -- let MA do it with MA Parameters -- and users should be able to rename our parameters by putting their own MA Parameters on a parent object, or tick auto rename. Please write the Editor side (plugin + pass + asmdef).",
+      "expected_output": "A Generating-phase (or BeforePlugin(\"nadena.dev.modular-avatar\")) pass that creates a generated GameObject holding MA Parameters for Headpat/Count and the contact bool, with the FX controller delivered through MA Merge Animator and the reset button through an MA Menu Item on that same generated object or below it, and the contact receiver inside that subtree too, so MA renames reach all of them. The Expression Parameters asset is not edited directly. The source HeadpatCounter component still declares its parameters with an IParameterProvider. The Editor asmdef references nadena.dev.modular-avatar.core.",
+      "files": [],
+      "assertions": [
+        "Generates a ModularAvatarParameters component at build time and does not write VRCExpressionParameters entries directly",
+        "The pass runs before Modular Avatar: in BuildPhase.Generating, or with .BeforePlugin(\"nadena.dev.modular-avatar\")",
+        "Adds the MA Parameters to a newly created GameObject rather than calling AddComponent<ModularAvatarParameters>() on an existing user object (which may already have one)",
+        "Delivers the FX controller through ModularAvatarMergeAnimator and the reset button through ModularAvatarMenuItem/MenuInstaller placed on the same object as the generated MA Parameters or below it (not written directly into the avatar's FX controller or root menu)",
+        "The VRCContactReceiver is on the same object as the generated MA Parameters or below it, and its parameter name is declared in that MA Parameters",
+        "Keeps an IParameterProvider with [ParameterProviderFor(typeof(HeadpatCounter))] for the source component",
+        "The Editor asmdef references nadena.dev.modular-avatar.core"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "copyasset-manual-bake-null",
+      "prompt": "自作NDMFプラグイン（Generatingフェーズ）で、テンプレートの AnimatorController を `AssetDatabase.CopyAsset(\"Assets/MyPlugin/Template.controller\", \"Assets/MyPlugin/Generated/\" + avatarName + \".controller\")` でコピーしてから `AssetDatabase.LoadAssetAtPath<AnimatorController>` で読み込み、BlendTree を追加して VRCAvatarDescriptor の FX レイヤーに差し込んでいます。Play Mode に入ったときは問題なく動くのに、NDMF の「Manual bake avatar」だと LoadAssetAtPath が null を返して NullReferenceException になります。これは Manual bake 側の不具合でしょうか？原因を説明して、パスのコードを直してください。",
+      "expected_output": "Explains that the manual bake's whole-pipeline StartAssetEditing scope is NDMF's intended behavior and Play Mode is the path missing it (ndmf#816/#817), so the null comes from the deferred import of the CopyAsset result. The fixed pass drops CopyAsset/LoadAssetAtPath and builds the controller as a deep in-memory copy via NDMF's animator API (not a shallow Object.Instantiate, which would edit the template), letting reachability-based saving or AssetSaver.SaveAsset persist it.",
+      "files": [],
+      "assertions": [
+        "Identifies Play Mode (not the manual bake) as the path that deviates from NDMF's intended behavior: the manual bake's build-wide StartAssetEditing scope is how every build is meant to run, so this is not a manual-bake bug",
+        "Explains the null as Unity deferring the import of the copied asset until the outermost StopAssetEditing, which runs after the pass returns",
+        "The fixed pass no longer calls AssetDatabase.CopyAsset and no longer reads the copy back via LoadAssetAtPath",
+        "The fix replaces the file copy with a deep in-memory copy of the controller graph, e.g. via NDMF's animator API (AnimatorServicesContext / CloneContext / VirtualAnimatorController); a bare Object.Instantiate of the controller does not count, since it shares sub-objects with the template",
+        "Does not propose calling StopAssetEditing, AssetDatabase.Refresh, or AssetDatabase.SaveAssets inside the pass as a workaround"
       ]
     }
   ]

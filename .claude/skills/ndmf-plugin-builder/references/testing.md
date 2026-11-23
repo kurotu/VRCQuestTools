@@ -28,9 +28,25 @@ EditMode tests.
 ```csharp
 var context = new BuildContext(avatarRoot, null); // null assetRootPath -> NullAssetSaver; AssetSaver.SaveAsset becomes a no-op
 context.ActivateExtensionContextRecursive<AnimatorServicesContext>(); // NOT ActivateExtensionContext<T> -- see api-reference.md
-YourPass.Instance.RunForTest(context); // or call your internal logic directly (InternalsVisibleTo the test assembly)
+YourPass.Instance.RunForTest(context); // your own internal shim, see below -- NOT an NDMF API
 context.DeactivateAllExtensionContexts(); // commits virtualized controllers back onto the avatar; read results only after this returns
 ```
+
+NDMF gives you no public way to run a pass: `Pass<T>.Execute` is
+`protected`, and the interface NDMF itself calls it through is `internal`.
+Add a one-line shim to your pass and expose it to the test assembly:
+
+```csharp
+// in YourPass
+internal void RunForTest(BuildContext context) => Execute(context);
+
+// in any file of the Editor assembly
+[assembly: InternalsVisibleTo("com.example.my-plugin.tests")] // the test asmdef's name
+```
+
+Calling `Execute` like this skips NDMF's per-pass wrapper. An exception your
+pass throws therefore reaches the test directly, instead of being turned into
+an error report entry the way it is in a real build.
 
 `avatarRoot` must be a plain scene `GameObject`, not a prefab instance --
 `BuildContext` rejects prefab instances.
@@ -38,7 +54,11 @@ context.DeactivateAllExtensionContexts(); // commits virtualized controllers bac
 For a full-pipeline sanity check that exercises plugin discovery, ordering,
 and every registered pass (not just yours), use
 `AvatarProcessor.ProcessAvatar(avatarRoot)` instead of constructing a
-`BuildContext` by hand.
+`BuildContext` by hand. Neither this nor a hand-built `BuildContext` runs your
+pass inside the build-wide `AssetDatabase.StartAssetEditing` scope that NDMF
+intends every build to have (see the `StartAssetEditing` gotcha in
+`api-reference.md`). So a passing test here proves nothing about code that
+touches `AssetDatabase`; check such a pass with a manual bake instead.
 
 ## Building a minimal test avatar
 
@@ -105,8 +125,12 @@ that specific state. Two cheap habits are worth applying to any nontrivial
 pass, beyond what automated tests cover:
 
 1. Actually open a real scene with a real avatar, add your settings component,
-   run the build (Play Mode, or a manual `AvatarProcessor.ProcessAvatar` call),
-   and inspect the result -- a screenshot of the Inspector or Console is cheap
+   run the build (Play Mode, NDMF's "Manual bake avatar" menu item, or a
+   direct `AvatarProcessor.ProcessAvatar` call), and inspect the result. If
+   your pass touches `AssetDatabase`, include the manual bake: it's the only
+   one that currently runs the pipeline inside the intended build-wide
+   `StartAssetEditing` scope (see `api-reference.md`). A screenshot of the
+   Inspector or Console is cheap
    and catches things assertions don't (e.g. a duplicated section header from
    a `[Header]` colliding with a custom inspector's own heading). If you need
    to see *intermediate* state rather than just the final result -- e.g. to

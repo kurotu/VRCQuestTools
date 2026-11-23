@@ -1,4 +1,4 @@
-# NDMF API Version Compatibility (1.3.0 -> 1.14.1)
+# NDMF API Version Compatibility (1.3.0 -> 1.15.1)
 
 This skill's other reference files describe the API surface as it exists in a
 recent NDMF release, but a real project can be pinned to whatever version it
@@ -7,50 +7,27 @@ incrementally, not present from day one -- if the project's installed NDMF
 predates an API's introduction, that API genuinely isn't there yet, and code
 written against it won't compile or won't behave as documented.
 
+**Last verified: 1.15.1 (2026-11-23).**
+
 This file's version data reflects the upstream changelog
 (`https://github.com/bdunderscore/ndmf/blob/main/CHANGELOG.md`, or the vendored
 copy at `Packages/nadena.dev.ndmf/CHANGELOG.md` if one is present in the
-project) as of **1.14.1 (2026-07-18)**. It was compiled by reading that
-changelog, not by testing every API against every version, so treat every
-version number below the same way the rest of this skill treats API names:
-as a strong lead, not an unconditional fact -- if the installed source or
-changelog disagrees with this file, trust the installed source and correct
-this file. For anything released after 1.14.1, this file will simply be
-silent on it; check the changelog directly.
+project) up to and including the release above. It was compiled by reading
+that changelog, not by testing every API against every version, so treat
+every version number below the same way the rest of this skill treats API
+names: as a strong lead, not an unconditional fact -- if the installed source
+or changelog disagrees with this file, trust the installed source. For
+anything released after the version above, this file is simply silent; if the
+project's installed NDMF is newer, skim the changelog entries in between
+before assuming an API's status hasn't changed.
 
 Contents:
 
-- **Freshness** -- how to tell if this file itself is stale, and what to do
-  about it
 - **Checking the installed version** -- where to look
 - **Feature availability** -- minimum version for each API this skill teaches,
   and what to do on an older project
-- **Known breaking/removed APIs** -- two cases where a just-added API didn't
-  survive to the next patch
-
-## Freshness
-
-**Last verified: 1.14.1 (2026-07-18).** There's no automation keeping this in
-sync with new NDMF releases -- whoever next touches this skill (via
-`skill-creator`, per `AGENTS.md`) should spend one glance checking whether
-that's still current before assuming the entries below cover everything:
-
-1. Check the latest version at
-   `https://github.com/bdunderscore/ndmf/blob/main/CHANGELOG.md` (or the
-   vendored `Packages/nadena.dev.ndmf/CHANGELOG.md` if it's newer than what's
-   installed here).
-2. If it's still 1.14.1, this file needs nothing.
-3. If not, skim the new entries for anything that changes what this skill
-   teaches (a new API worth adding, an existing one deprecated/moved/removed --
-   see "Known breaking/removed APIs" below for what that looks like), update
-   the relevant entry or add a new one, and bump this line plus the file's
-   title/banner version.
-
-This is a manual trigger, not a scheduled job -- it only fires when someone is
-already in here for another reason. That's a deliberate, low-overhead choice:
-NDMF ships patch releases often enough that a standing automated check would
-mostly report "nothing new," and the entries that do matter (a removed API, a
-new one worth documenting) need human judgment to write well, not just a diff.
+- **Known breaking/removed APIs and behavior changes** -- cases where an API
+  or a documented behavior changed in a patch release
 
 ## Checking the installed version
 
@@ -77,6 +54,17 @@ release as `ErrorReport` (changelog: "API to record when one object is
 replaced by another"). No fallback needed below 1.3.0 in practice -- this
 skill assumes NDMF 1.3.0+ as a baseline throughout, since that's also where
 `ErrorReport` starts existing.
+
+**Parameter introspection** (`IParameterProvider`, `[ParameterProviderFor]`,
+`ProvidedParameter`, `ParameterInfo`) -- 1.4.0+ (changelog #184: "Added a new
+API to allow NDMF plugins to declare and introspect expressions parameter
+usage"). Matching a provider through base classes and interfaces is also
+1.4.0 (#198). `ProvidedParameter.DefaultValue` came in 1.5.0 (#312), and
+`ParameterInfo.ForPreview(ComputeContext)` presumably did too: #312 added
+`ComputeContext` support to `ParameterInfo`, and `ComputeContext` itself is
+1.5.0. On a pre-1.4.0 project, skip the provider; the pass still has to write
+the Expression Parameters asset itself either way (see
+`expression-parameters.md`).
 
 **NDMF Preview framework** (`IRenderFilter`, `IRenderFilterNode`,
 `RenderGroup`, `ComputeContext`, `.PreviewingWith(...)`) -- 1.5.0+ (changelog:
@@ -129,11 +117,13 @@ NDMF_VRCSDK3_AVATARS` / VRChat `IEditorOnly` guard that `api-reference.md`
 otherwise recommends against.
 
 **`AvatarProcessor.ManualProcessAvatar()`** -- 1.10.0+. `api-reference.md`'s
-"asset import is batched" gotcha references this method by name as one of the
-paths that opens a serialization scope across the whole pipeline; on an older
-project this specific manual-test-bake entry point doesn't exist under this
-name (there may be an older manual-bake path -- check the installed source
-and NDMF's menu items rather than assuming).
+"the whole build is meant to run inside `AssetDatabase.StartAssetEditing`"
+gotcha names this method as the entry point that wraps the whole pipeline in
+`StartAssetEditing` (the intended behavior), and treats the manual bake as
+the reference run. On an older project this entry point doesn't exist under
+this name. There may be an older manual-bake path, and it may not open that
+scope, so check the installed source and NDMF's menu items rather than
+assuming.
 
 **Publicly exposed `PropCache` / `nadena.dev.ndmf.preview.PropCacheDebug.
 InvalidateAllCaches()`** -- flagged here as 1.10.0+, per the changelog entry
@@ -153,12 +143,39 @@ can't use it.
 exists only so this file's feature list is complete. Don't duplicate that
 file's content here -- load it directly when the debugger itself is relevant.
 
-## Known breaking/removed APIs
+**Shadow bones for preview** (`PreviewContext`, `IShadowBoneManagerHandle`
+with `GetBone`/`ReplaceBone`, `ShadowBoneTestFixture`) -- 1.15.0+
+(changelog #839 "Added ShadowBoneManager"; the public entry point is
+`PreviewContext.Instance.ShadowBoneManager`, while the `ShadowBoneManager`
+class itself stays `internal`). Releases before 1.15.0 had an internal
+shadow-bone class that plugins couldn't use, so there's no fallback for
+previewing a bone change below 1.15.0. Details are in `shadow-bones.md`.
 
-Two cases in NDMF's history are worth knowing about specifically because they
-show that "this API exists in version X" isn't always a stable fact even one
-patch release later -- a brand-new API can be pulled again quickly if it
-turns out to cause compatibility problems:
+**`IParameterProvider.ObserveDependencies(ComputeContext)`** -- 1.15.0+,
+a default (no-op) interface member. Declaring it on a provider also compiles
+against older NDMF (it's just never called there), down to 1.5.0 where
+`ComputeContext` appears. See `expression-parameters.md`.
+
+**`ProvidedParameter.NumericBitWidth` / `Signedness` / `LerpDuration`,
+`ParameterSignedness`, and the matching `ParameterInfo.ConflictType` values**
+-- 1.15.0+ (changelog #861 "Support advanced features of ExpressionsParameter
+on IParameterProvider"). NDMF's built-in avatar-descriptor provider fills
+them from the existing Expression Parameters asset only when
+`com.vrchat.avatars` is 3.10.6 or later (asmdef define
+`NDMF_VRCSDK3_AVATARS_PARAMETER_ADVANCED_FEATURES`). On an older SDK they
+stay unset for those entries. The SDK side (`Parameter.bitWidth`,
+`flippedRepresentation`, `useCustomLerpDuration`, `customLerpDuration`) is
+itself new in VRChat SDK 3.10.6. That release also makes hand-written
+field-by-field copies of a `Parameter` lossy. See `expression-parameters.md`,
+"Writing the asset yourself", which was checked against SDK 3.10.6.
+
+## Known breaking/removed APIs and behavior changes
+
+These cases in NDMF's history are worth knowing about specifically because
+they show that "this API exists in version X" isn't always a stable fact even
+one patch release later -- a brand-new API can be pulled again quickly if it
+turns out to cause compatibility problems, and a patch release can change a
+signature or a behavior without the changelog calling it out:
 
 - **`IExtensionContext.Owner`** was added in 1.6.0 and removed again in 1.6.1
   (released the same day) "due to compatibility issues," per the changelog.
@@ -167,6 +184,39 @@ turns out to cause compatibility problems:
 - **`IVirtualizedMotion`** moved from NDMF's main API namespace into
   `nadena.dev.ndmf.animator` in 1.7.2 -- an explicitly semver-breaking change
   per the changelog.
+- **`ChangeNotifier.NotifyObjectUpdate(int instanceId)`** became
+  `NotifyObjectUpdate(EntityId instanceId)` in 1.14.7, as part of the Unity 6
+  support work. The changelog doesn't mention it. On Unity versions before
+  6000.2, `EntityId` is a struct NDMF defines itself
+  (`nadena.dev.ndmf.EntityId`) with an implicit conversion *to* `int` but
+  none *from* it, so existing code passing an `int` stops compiling. Pass the
+  `UnityEngine.Object` to the `NotifyObjectUpdate(Object)` overload instead,
+  which exists on both sides of the change.
+- **NDMF Preview's per-frame proxy reset got broader in 1.14.2.** The API
+  didn't change, but `ProxyObjectController.OnPreFrame()` switched from
+  copying a fixed list of renderer fields to copying the whole serialized
+  renderer component, so a proxy renderer property a filter set only once in
+  `Instantiate`/`Refresh` (one that was outside the old list) now gets reverted
+  every frame. See `preview-api.md`'s `OnFrame` gotcha for details and the
+  fix.
+- **NDMF Preview's component queries got narrower in 1.15.0** (#847).
+  `ComputeContext.GetComponent*`/`GetComponentsInChildren` now invalidate
+  only when the query's own result changes, not on any component
+  add/remove. A filter that only updated because some *other* component
+  change happened to invalidate it goes stale after upgrading. See
+  `preview-api.md`, "Not tracked unless you ask".
+- **Preview filter exceptions are caught from 1.15.0** (#849). An exception
+  from `GetTargetGroups`, `Instantiate`, or `Refresh` (or a `null` from
+  `Instantiate`) is logged once as `Preview filter <type> failed in ...` and
+  the filter or group is skipped. Before 1.15.0 it made the pipeline rebuild
+  continuously, repeating the error. See `preview-api.md`'s checklist.
+- **`VirtualClip.SetFloatCurve` / `SetObjectCurve` validate the binding in
+  1.15.0.** They throw `ArgumentException` when `binding.type` is `null` or
+  isn't a `UnityEngine.Object` type. The changelog doesn't mention it. Before
+  1.15.0 these calls didn't reject an `EditorCurveBinding` without a `type`;
+  now they throw. Always set `type` (e.g. with
+  `EditorCurveBinding.FloatCurve(path, typeof(SkinnedMeshRenderer),
+  "blendShape.X")`).
 
 The practical takeaway: don't assume an API is safe to depend on just because
 this file or another reference file names a version it "shipped in" -- if the

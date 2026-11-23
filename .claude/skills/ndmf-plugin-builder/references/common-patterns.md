@@ -107,4 +107,7 @@ animation clip that reference the same original resolve to the *same* clone.
   sense for the feature.
 - If the component's job is purely to configure a build-time transform,
   destroy it at the end of the pass -- see "Package & component conventions"
-  in `api-reference.md` for the reasoning and the exception.
+  in `api-reference.md` for the reasoning and the exception. Destroy it on
+  *every* exit path, including "feature disabled, nothing to do" early
+  returns: a leftover component reaches Avatar Optimizer as an unknown
+  component (see SKILL.md Step 3, item 5).

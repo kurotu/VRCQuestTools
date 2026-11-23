@@ -40,6 +40,22 @@
     "should_trigger": true
   },
   {
+    "query": "自作NDMFプラグインで、マテリアル差し替え先が未設定のときに throw してるんだけど、そうするとビルド全体が止まって分かりにくいエラーになる。設定ミスはNDMFのエラー画面に日本語と英語で警告として出して、ビルドは続けたい。",
+    "should_trigger": true
+  },
+  {
+    "query": "i maintain a small booth tool that adds a `BlendshapeLinker` MonoBehaviour to avatars and processes it at build time. users report Avatar Optimizer warns it's an unknown component and skips some optimizations. what do I need to change on my side so AAO plays nicely with it?",
+    "should_trigger": true
+  },
+  {
+    "query": "公開してるNDMFプラグインを、VCCでまだ古いNDMF(1.4とか)を使ってる人にも動くようにしたい。AnimatorServicesContextを使ってるところがコンパイルエラーになるらしい。どう分岐すればいい?",
+    "should_trigger": true
+  },
+  {
+    "query": "my pass's output looks wrong in the uploaded avatar but i can't tell which pass breaks it — modular avatar, my plugin, or AAO. is there a way to stop the ndmf build after a specific pass and inspect the intermediate avatar?",
+    "should_trigger": true
+  },
+  {
     "query": "Modular Avatarで衣装を導入したらボーンが二重になってしまった。MA Merge Armatureの設定のどこが間違っている?",
     "should_trigger": false
   },
@@ -77,6 +93,22 @@
   },
   {
     "query": "I want my avatar's material to change color at runtime based on the time of day in the instance — some kind of shader or animator setup for vrchat?",
+    "should_trigger": false
+  },
+  {
+    "query": "アップロードしようとしたらNDMFのエラーレポート画面が出て「MA Bone Proxy の対象が見つかりません」って言われた。自分はスクリプト書けないので、どこを直せばいいか教えて",
+    "should_trigger": false
+  },
+  {
+    "query": "VCCでModular Avatarを更新したら「NDMF 1.8以上が必要」と出てプロジェクトが開けなくなった。パッケージのバージョンをどう揃えればいい?",
+    "should_trigger": false
+  },
+  {
+    "query": "Unityエディタ拡張のEditorWindowを日本語・英語切り替え対応にしたい。文字列テーブルをどう持つのがおすすめ?ローカライズ用のパッケージは使わずに自前でやりたい",
+    "should_trigger": false
+  },
+  {
+    "query": "Unity の Player ビルドが途中で失敗する。ログを見るとどこかのスクリプトで NullReferenceException が出てるけど、ビルドパイプラインのどのステップで落ちているかを特定するには?",
     "should_trigger": false
   }
 ]
