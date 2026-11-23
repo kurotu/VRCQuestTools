@@ -4,7 +4,7 @@
 
 このフォーマットは [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) に基づいており、このプロジェクトは [Semantic Versioning](https://semver.org/spec/v2.0.0.html) に準拠しています。
 
-## [Unreleased]
+## [3.0.4] - 2026-11-23
 
 ### 修正
 - Unity 6 で、テクスチャ生成時に縮小を行うと失敗する問題を修正。
