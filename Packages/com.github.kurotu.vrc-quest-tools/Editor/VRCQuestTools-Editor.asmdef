@@ -77,6 +77,11 @@
             "name": "com.anatawa12.avatar-optimizer",
             "expression": "",
             "define": "VQT_AVATAR_OPTIMIZER"
+        },
+        {
+            "name": "com.vrchat.avatars",
+            "expression": "3.10.6",
+            "define": "VQT_VRCSDK_AVATARS_NO_RESET_GUI_STATE_BUG"
         }
     ],
     "noEngineReferences": false

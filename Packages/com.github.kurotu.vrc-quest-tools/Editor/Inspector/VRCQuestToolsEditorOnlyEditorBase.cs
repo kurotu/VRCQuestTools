@@ -1,3 +1,8 @@
+// <copyright file="VRCQuestToolsEditorOnlyEditorBase.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using KRT.VRCQuestTools.Components;
 using KRT.VRCQuestTools.I18n;
 using KRT.VRCQuestTools.Models;
@@ -27,6 +32,31 @@ namespace KRT.VRCQuestTools.Inspector
 
         /// <inheritdoc />
         public sealed override void OnInspectorGUI()
+        {
+#if VQT_VRCSDK_AVATARS_NO_RESET_GUI_STATE_BUG
+            try
+            {
+                DrawInspectorGUI();
+            }
+            finally
+            {
+                // Workaround for VRChat SDK 3.10.6+ bug: VRC Avatar Descriptor inspector becomes partially unclickable
+                // when an inspector of a component below it changes EditorGUIUtility.labelWidth.
+                // https://feedback.vrchat.com/sdk-bug-reports/p/3106-use-all-tracking-keys-toggle-may-be-unclickable-and-the-left-half-of-field
+                // https://github.com/anatawa12/AvatarOptimizer/pull/1816
+                UnityEditor.EditorGUIUtility.labelWidth = 0;
+            }
+#else
+            DrawInspectorGUI();
+#endif
+        }
+
+        /// <summary>
+        /// Called after header GUI is drawed in OnInspectorGUI.
+        /// </summary>
+        public abstract void OnInspectorGUIInternal();
+
+        private void DrawInspectorGUI()
         {
             var i18n = VRCQuestToolsSettings.I18nResource;
 
@@ -84,10 +114,5 @@ namespace KRT.VRCQuestTools.Inspector
 
             OnInspectorGUIInternal();
         }
-
-        /// <summary>
-        /// Called after header GUI is drawed in OnInspectorGUI.
-        /// </summary>
-        public abstract void OnInspectorGUIInternal();
     }
 }

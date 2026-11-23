@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed texture generation failing when downscaling textures in Unity 6.
+- Worked around a VRChat SDK 3.10.6+ bug where some fields of `VRC Avatar Descriptor`, such as the "Use All Tracking Keys" toggle, become unclickable when VRCQuestTools components are on the avatar root.
 
 ## [3.0.3] - 2026-11-08
 
