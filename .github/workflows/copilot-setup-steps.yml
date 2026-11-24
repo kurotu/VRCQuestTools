@@ -59,12 +59,16 @@ jobs:
           command: vrc-get resolve
       - run: vrc-get info project
 
-      - name: Setup Unity Hub
+      # The native Unity Hub no longer supports `unityhub -- --headless install`, so install Unity Editor with the Unity CLI.
+      # xz-utils is used by the Unity CLI to extract the Editor installer. The other libraries are runtime
+      # dependencies of Unity Editor that the unityhub package used to pull in.
+      - name: Setup Unity CLI
         run: |
           wget -qO - https://hub.unity3d.com/linux/keys/public | gpg --dearmor | sudo tee /usr/share/keyrings/Unity_Technologies_ApS.gpg > /dev/null
-          sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/Unity_Technologies_ApS.gpg] https://hub.unity3d.com/linux/repos/deb stable main" > /etc/apt/sources.list.d/unityhub.list'
-          sudo apt update
-          sudo apt-get -y install unityhub
+          sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/Unity_Technologies_ApS.gpg] https://hub.unity3d.com/linux/repos/deb stable main" > /etc/apt/sources.list.d/unity.list'
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends unity-cli xz-utils libglu1-mesa libgtk-3-0t64 libnss3 libasound2t64 xvfb
+          unity --version
 
       - name: Cache Unity Editor
         id: cache-unity-editor
@@ -81,12 +85,20 @@ jobs:
           echo "UNITY_PATH=$UNITY_PATH" >> $GITHUB_ENV
 
       - name: Install Unity Editor
+        env:
+          UNITY_NON_INTERACTIVE: "1"
+          UNITY_NO_BANNER: "1"
         run: |
-          if [ ! -f "$HOME/Unity/Hub/Editor/2022.3.22f1/Editor/Unity" ]; then
-            xvfb-run unityhub -- --headless install --version 2022.3.22f1 --changeset 887be4894c44 --module windows-mono
-          else
+          if [ -x "$UNITY_PATH" ]; then
             echo "Unity Editor already installed, skipping installation"
+          else
+            # Start clean in case a partial installation was restored from the cache.
+            rm -rf "$HOME/Unity/Hub/Editor/2022.3.22f1"
+            mkdir -p "$HOME/Unity/Hub/Editor"
+            unity install-path --set "$HOME/Unity/Hub/Editor"
+            unity install 2022.3.22f1 --changeset 887be4894c44 --module windows-mono --accept-eula --format human
           fi
+          "$UNITY_PATH" -version
 
       - name: Get pnpm store directory
         id: pnpm-cache
