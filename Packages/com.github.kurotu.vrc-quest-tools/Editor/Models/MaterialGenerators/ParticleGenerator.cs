@@ -71,7 +71,7 @@ namespace KRT.VRCQuestTools.Models
 
         private AsyncCallbackRequest GenerateParticleTexture(ParticleMaterial material, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
-            var platformOverride = material.GetToonLitPlatformOverride();
+            var platformOverride = material.GetAlbedoPlatformOverride(new AlbedoBakeRequest());
             var maxTextureSize = GetMaxTextureSize(platformOverride);
             // Use a dedicated texture type so the cache key does not collide with the "main" texture of a
             // normal Toon Lit/Toon Standard conversion of the same material (the cache key is otherwise

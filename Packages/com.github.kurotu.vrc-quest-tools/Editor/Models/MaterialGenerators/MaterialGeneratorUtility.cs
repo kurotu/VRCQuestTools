@@ -110,7 +110,10 @@ namespace KRT.VRCQuestTools.Models
                 compressorKeyComponent = "_" + TextureCompressorProvider.GetCompressor(compressionFormat).CacheKeyComponent;
             }
 
-            var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{EditorUserBuildSettings.activeBuildTarget}{compressorKeyComponent}_{assetHash}" + (saveAsPng ? ".png" : ".bin");
+            // The entry stores how the texture is decoded (sRGB, linear or normal map), so textures generated with a different
+            // config must not share an entry even when the other inputs are identical.
+            var configKeyComponent = config.isNormalMap ? "normal" : (config.isSRGB ? "srgb" : "linear");
+            var cacheFile = $"texture_{VRCQuestTools.Version}_{settings.GetType()}_{textureType}_{configKeyComponent}_{EditorUserBuildSettings.activeBuildTarget}{compressorKeyComponent}_{assetHash}" + (saveAsPng ? ".png" : ".bin");
             var texName = $"{material.name}_{textureType}";
             string outFile = null;
             if (saveAsPng)
@@ -131,6 +134,14 @@ namespace KRT.VRCQuestTools.Models
                 if (texToWrite)
                 {
                     texToWrite.name = texName;
+
+                    // The config decides how the saved texture is decoded (cache entry and PNG importer), not the generated
+                    // texture itself. A texture generated in the other color space looks right when it is fresh and wrong once
+                    // it is restored, so report the mismatch where it is introduced.
+                    if (!config.isNormalMap && texToWrite.isDataSRGB != config.isSRGB)
+                    {
+                        Logger.LogWarning($"Texture \"{texName}\" was generated as {(texToWrite.isDataSRGB ? "sRGB" : "linear")} but is saved as {(config.isSRGB ? "sRGB" : "linear")}.", texToWrite);
+                    }
 
                     // Progressive NDMF preview: on a cache miss, forEditorPreview, and an astcenc-compatible
                     // format, skip the (main-thread-stalling) synchronous compression below entirely. The baked,

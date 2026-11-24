@@ -24,10 +24,10 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader ToonLitBakeShader => null;
+        internal override Shader AlbedoBakeShader => null;
 
         /// <inheritdoc/>
-        internal override AsyncCallbackRequest GenerateToonLitImage(IToonLitConvertSettings settings, Action<Texture2D> completion)
+        internal override AsyncCallbackRequest GenerateAlbedo(AlbedoBakeRequest request, Action<Texture2D> completion)
         {
             if (Material.shader.name.Contains("/UnlitPreview", StringComparison.OrdinalIgnoreCase))
             {

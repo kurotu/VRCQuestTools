@@ -1,0 +1,1147 @@
+{
+    "shader": "VRChat/Mobile/Toon Standard",
+    "keywords": [
+        "USE_MATCAP",
+        "USE_NORMAL_MAPS",
+        "USE_OCCLUSION_MAP",
+        "USE_RIMLIGHT",
+        "USE_SPECULAR"
+    ],
+    "properties": [
+        {
+            "name": "_Culling",
+            "type": "Float",
+            "values": [
+                2.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_Color",
+            "type": "Color",
+            "values": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_MainTex",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": 0
+        },
+        {
+            "name": "_VertexColor",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_Ramp",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": 1
+        },
+        {
+            "name": "_ShadowBoost",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ShadowAlbedo",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_MinBrightness",
+            "type": "Range",
+            "values": [
+                0.05000000074505806
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_LimitBrightness",
+            "type": "Float",
+            "values": [
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_BumpMap",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": 2
+        },
+        {
+            "name": "_BumpScale",
+            "type": "Float",
+            "values": [
+                0.800000011920929
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_MetallicMap",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": 3
+        },
+        {
+            "name": "_MetallicMapChannel",
+            "type": "Float",
+            "values": [
+                3.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_MetallicStrength",
+            "type": "Range",
+            "values": [
+                0.6000000238418579
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_GlossMap",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": 3
+        },
+        {
+            "name": "_GlossMapChannel",
+            "type": "Float",
+            "values": [
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_GlossStrength",
+            "type": "Range",
+            "values": [
+                0.699999988079071
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_Reflectance",
+            "type": "Range",
+            "values": [
+                0.5
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_SpecularSharpness",
+            "type": "Range",
+            "values": [
+                0.5
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_Matcap",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": 4
+        },
+        {
+            "name": "_MatcapMask",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_MatcapMaskChannel",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_MatcapType",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_MatcapStrength",
+            "type": "Range",
+            "values": [
+                0.20000000298023225
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_RimColor",
+            "type": "Color",
+            "values": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_RimAlbedoTint",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_RimIntensity",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_RimRange",
+            "type": "Range",
+            "values": [
+                0.800000011920929
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_RimSharpness",
+            "type": "Range",
+            "values": [
+                0.75
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_RimEnvironmental",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_EmissionMap",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": 5
+        },
+        {
+            "name": "_EmissionColor",
+            "type": "Color",
+            "values": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_EmissionStrength",
+            "type": "Range",
+            "values": [
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_EmissionUV",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_OcclusionMap",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": 3
+        },
+        {
+            "name": "_OcclusionMapChannel",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_OcclusionStrength",
+            "type": "Range",
+            "values": [
+                0.800000011920929
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_DetailMode",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_DetailMask",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_DetailMaskChannel",
+            "type": "Float",
+            "values": [
+                3.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_DetailAlbedoMap",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_DetailNormalMap",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_DetailNormalMapScale",
+            "type": "Float",
+            "values": [
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_DetailUV",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_HueShift",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_DetailHueShift",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_EmissionHueShift",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_HueShiftMask",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_HueShiftMaskChannel",
+            "type": "Float",
+            "values": [
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ColorMask",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ColorMaskColor1",
+            "type": "Color",
+            "values": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ColorMaskEmissionStrength1",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ColorMaskColor2",
+            "type": "Color",
+            "values": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ColorMaskEmissionStrength2",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ColorMaskColor3",
+            "type": "Color",
+            "values": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ColorMaskEmissionStrength3",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ColorMaskColor4",
+            "type": "Color",
+            "values": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ColorMaskEmissionStrength4",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ColorMaskBlendMode",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_AudioLinkMode",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALBlendMode",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_AudioLinkMask",
+            "type": "Texture",
+            "values": [
+                1.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALTint",
+            "type": "Color",
+            "values": [
+                0.0,
+                0.8980392217636108,
+                0.6274510622024536,
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALIntensity",
+            "type": "Range",
+            "values": [
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALMaskUVChannel",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALMaskByEmission",
+            "type": "Float",
+            "values": [
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALMaskChannel",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALRimMaskStrength",
+            "type": "Range",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALRimMaskSmoothing",
+            "type": "Float",
+            "values": [
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALBand",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALSmoothing",
+            "type": "Range",
+            "values": [
+                7.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALEffectUseMask",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALEffectMaskChannel",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALEffectUVChannel",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALScrollCenterOut",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALScrollScale",
+            "type": "Float",
+            "values": [
+                1.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALBarSmoothing",
+            "type": "Range",
+            "values": [
+                0.10000000149011612
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALEnableFallback",
+            "type": "Float",
+            "values": [
+                0.0
+            ],
+            "textureIndex": -1
+        },
+        {
+            "name": "_ALFallbackSpeed",
+            "type": "Float",
+            "values": [
+                1.0
+            ],
+            "textureIndex": -1
+        }
+    ],
+    "textures": [
+        {
+            "type": "Texture2D",
+            "width": 256,
+            "height": 256,
+            "isAsset": false,
+            "samples": [
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.01151960901916027,
+                0.005974265746772289,
+                1.0,
+                0.0,
+                0.011519608087837696,
+                0.005943628493696451,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.006050859112292528,
+                0.0033241421915590765,
+                1.0,
+                0.0,
+                0.00511642312631011,
+                0.0027420343831181528,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        {
+            "type": "Texture2D",
+            "width": 128,
+            "height": 16,
+            "isAsset": false,
+            "samples": [
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "type": "Texture2D",
+            "width": 256,
+            "height": 256,
+            "isAsset": false,
+            "samples": [
+                1.0,
+                0.5481013059616089,
+                0.5496331453323364,
+                0.5474269390106201,
+                1.0,
+                0.6828441619873047,
+                0.6818637847900391,
+                0.501960813999176,
+                1.0,
+                0.6828441619873047,
+                0.6818637847900391,
+                0.501960813999176,
+                1.0,
+                0.5456503629684448,
+                0.5496332049369812,
+                0.4553152322769165,
+                1.0,
+                0.501960813999176,
+                0.5058823823928833,
+                0.6789230704307556,
+                1.0,
+                0.501960813999176,
+                0.5058823823928833,
+                0.501960813999176,
+                1.0,
+                0.501960813999176,
+                0.5058823823928833,
+                0.501225471496582,
+                1.0,
+                0.501960813999176,
+                0.5058823823928833,
+                0.3242647647857666,
+                1.0,
+                0.501960813999176,
+                0.5058823823928833,
+                0.6789077520370483,
+                1.0,
+                0.5002450942993164,
+                0.5051469206809998,
+                0.501960813999176,
+                1.0,
+                0.5002450942993164,
+                0.5051469206809998,
+                0.501225471496582,
+                1.0,
+                0.501960813999176,
+                0.5058823823928833,
+                0.3242647647857666,
+                1.0,
+                0.4546416699886322,
+                0.4575521647930145,
+                0.5456960797309876,
+                1.0,
+                0.32426461577415469,
+                0.3267155885696411,
+                0.501960813999176,
+                1.0,
+                0.32426461577415469,
+                0.3267155885696411,
+                0.501960813999176,
+                1.0,
+                0.45692408084869387,
+                0.46066176891326907,
+                0.4584558606147766
+            ]
+        },
+        {
+            "type": "Texture2D",
+            "width": 256,
+            "height": 256,
+            "isAsset": false,
+            "samples": [
+                0.11176478862762451,
+                0.11764716356992722,
+                1.0,
+                0.12058829516172409,
+                0.37058889865875246,
+                0.3725496828556061,
+                1.0,
+                0.37524572014808657,
+                0.6281865835189819,
+                0.6247552037239075,
+                1.0,
+                0.6225493550300598,
+                0.8772071599960327,
+                0.874511182308197,
+                1.0,
+                0.8781875371932983,
+                0.11176478862762451,
+                0.11764716356992722,
+                1.0,
+                0.12058829516172409,
+                0.37058889865875246,
+                0.3725496828556061,
+                1.0,
+                0.37524572014808657,
+                0.6281865835189819,
+                0.6247552037239075,
+                1.0,
+                0.6225493550300598,
+                0.8772071599960327,
+                0.874511182308197,
+                1.0,
+                0.8781875371932983,
+                0.11176478862762451,
+                0.11764716356992722,
+                1.0,
+                0.12058829516172409,
+                0.37058889865875246,
+                0.3725496828556061,
+                1.0,
+                0.37524572014808657,
+                0.6281865835189819,
+                0.6247552037239075,
+                1.0,
+                0.6225493550300598,
+                0.8772071599960327,
+                0.874511182308197,
+                1.0,
+                0.8781875371932983,
+                0.11176478862762451,
+                0.11764716356992722,
+                1.0,
+                0.12058829516172409,
+                0.37058889865875246,
+                0.3725496828556061,
+                1.0,
+                0.37524572014808657,
+                0.6281865835189819,
+                0.6247552037239075,
+                1.0,
+                0.6225493550300598,
+                0.8772071599960327,
+                0.874511182308197,
+                1.0,
+                0.8781875371932983
+            ]
+        },
+        {
+            "type": "Texture2D",
+            "width": 256,
+            "height": 256,
+            "isAsset": false,
+            "samples": [
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0006893382524140179,
+                0.0003982843190897256,
+                1.0,
+                0.0,
+                0.000719975505489856,
+                0.00038296569255180657,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.00038296569255180657,
+                0.00018382353300694376,
+                1.0,
+                0.0,
+                0.00033700981293804944,
+                0.00015318627993110567,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        {
+            "type": "Texture2D",
+            "width": 256,
+            "height": 256,
+            "isAsset": false,
+            "samples": [
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.00015318627993110567,
+                0.00012254902685526758,
+                0.000015318628356908448,
+                1.0,
+                0.0009803922148421407,
+                0.0008272058912552893,
+                0.00010723039304139093,
+                1.0,
+                0.0019454658031463624,
+                0.0015318627702072263,
+                0.0001991421595448628,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0035692404489964248,
+                0.0030484069138765337,
+                0.00030637255986221135,
+                1.0,
+                0.025566790252923967,
+                0.02057291939854622,
+                0.0022671569604426624,
+                1.0,
+                0.02477022260427475,
+                0.019929537549614908,
+                0.0020986520685255529,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        }
+    ]
+}

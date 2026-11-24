@@ -11,7 +11,7 @@ namespace KRT.VRCQuestTools.Models.Unity
     /// <summary>
     /// Represents Poiyomi shader material.
     /// </summary>
-    internal class PoiyomiMaterial : StandardMaterial, IToonStandardConvertable
+    internal partial class PoiyomiMaterial : StandardMaterial
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PoiyomiMaterial"/> class.
@@ -23,7 +23,7 @@ namespace KRT.VRCQuestTools.Models.Unity
         }
 
         /// <inheritdoc/>
-        internal override Shader ToonLitBakeShader => Shader.Find("Hidden/VRCQuestTools/Poiyomi");
+        internal override Shader AlbedoBakeShader => Shader.Find("Hidden/VRCQuestTools/Poiyomi");
 
         /// <inheritdoc/>
         internal override Vector2 MainTextureScale

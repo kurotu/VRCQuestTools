@@ -1,3 +1,8 @@
+// <copyright file="ToonLitGenerator.cs" company="kurotu">
+// Copyright (c) kurotu.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
 using System;
 using KRT.VRCQuestTools.Models.Unity;
 using KRT.VRCQuestTools.Utils;
@@ -53,8 +58,10 @@ namespace KRT.VRCQuestTools.Models
 
         private AsyncCallbackRequest GenerateToonLitTexture(MaterialBase material, bool saveAsPng, string texturesPath, Action<Texture2D> completion)
         {
-            var platformOverride = material.GetToonLitPlatformOverride();
-            return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "main", saveAsPng, texturesPath, (compl) => material.GenerateToonLitImage(settings, compl), completion, platformOverride, forEditorPreview);
+            var albedoSource = (IAlbedoSource)material;
+            var albedoRequest = AlbedoBakeRequest.FromToonLitSettings(settings);
+            var platformOverride = albedoSource.GetAlbedoPlatformOverride(albedoRequest);
+            return MaterialGeneratorUtility.GenerateTexture(material.Material, settings, "main", saveAsPng, texturesPath, (compl) => albedoSource.GenerateAlbedo(albedoRequest, compl), completion, platformOverride, forEditorPreview);
         }
     }
 }
